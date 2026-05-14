@@ -9095,7 +9095,6 @@
       if (acente) pushDetail('Acente', toTitleCase(acente));
       if (iletisim) pushDetail('\u0130leti\u015Fim', iletisim);
     } else if (eventType === 'muayene-guncelle' || eventType === 'muayene' || eventType === 'muayene-yenileme') {
-      summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Muayene Biti\u015F Tarihini G\u00FCncelledi.</span>';
       let bitis = formatDateForDisplay(eventData.bitisTarihi || '');
       if (!bitis && legacyAciklama) {
         const m = legacyAciklama.match(/(\d{2}[./-]\d{2}[./-]\d{4})/);
@@ -9104,7 +9103,11 @@
           bitis = raw;
         }
       }
-      if (bitis) pushDetail('Biti\u015F Tarihi', bitis);
+      if (bitis) {
+        summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Muayene Biti\u015F Tarihini </span><span class="history-detail-inline">' + escapeHtml(bitis) + '</span><span class="history-action-text"> Olarak G\u00FCncelledi.</span>';
+      } else {
+        summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Muayene Biti\u015F Tarihini G\u00FCncelledi.</span>';
+      }
       const egzozYapForm = formatDateForDisplay(eventData.egzozMuayeneYapilmaDate || '');
       if (egzozYapForm) pushDetail('Egzoz Muayene — Yapt\u0131r\u0131lan', egzozYapForm);
       const egzozBitis = formatDateForDisplay(eventData.egzozMuayeneDate || '');
@@ -9128,18 +9131,23 @@
       const yeniRaw = eventData.yeniSubeAdi || branches.find(b => String(b.id) === String(eventData.yeniSubeId))?.name || '';
       const eskiRaw = eventData.eskiSubeAdi || branches.find(b => String(b.id) === String(eventData.eskiSubeId))?.name || '';
       const yeniName = yeniRaw ? toTitleCase(String(yeniRaw)) : '';
-      if (yeniName) {
-        summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, \u015Eube Tahsisini </span><span class="history-detail-inline">"' + escapeHtml(yeniName) + '"</span><span class="history-action-text"> Olarak G\u00FCncelledi.</span>';
+      const eskiName = eskiRaw ? toTitleCase(String(eskiRaw)) : '';
+      if (eskiName && yeniName) {
+        summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, </span><span class="history-detail-inline">' + escapeHtml(eskiName) + '</span><span class="history-action-text"> Olan \u015Eubeyi, </span><span class="history-detail-inline">' + escapeHtml(yeniName) + '</span><span class="history-action-text"> Olarak G\u00FCncelledi.</span>';
+      } else if (yeniName) {
+        summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, \u015Eube Tahsisini </span><span class="history-detail-inline">' + escapeHtml(yeniName) + '</span><span class="history-action-text"> Olarak G\u00FCncelledi.</span>';
       } else {
         summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, \u015Eube Tahsisini G\u00FCncelledi.</span>';
       }
-      if (eskiRaw) pushDetail('\u00d6nceki \u015Eube', toTitleCase(String(eskiRaw)));
     } else if (eventType === 'kredi-guncelle') {
       const durum = String(eventData.durum || 'yok').toLowerCase();
       const durumTxt = durum === 'var' ? 'Var' : 'Yok';
-      summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Hak Mahrumiyeti Durumunu </span><span class="history-detail-inline">' + escapeHtml(durumTxt) + '</span><span class="history-action-text"> Olarak G\u00FCncelledi.</span>';
       const detay = (eventData.detay || '').trim();
-      if (detay) pushDetail('Detay', toTitleCase(detay));
+      if (detay) {
+        summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Hak Mahrumiyetini, </span><span class="history-detail-inline">' + escapeHtml(detay) + '</span><span class="history-action-text"> Olarak G\u00FCncelledi.</span>';
+      } else {
+        summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Hak Mahrumiyeti Durumunu </span><span class="history-detail-inline">' + escapeHtml(durumTxt) + '</span><span class="history-action-text"> Olarak G\u00FCncelledi.</span>';
+      }
     } else if (eventType === 'utts-guncelle') {
       const ev = (eventData.durum === true || eventData.durum === 'evet') ? 'Evet' : 'Hay\u0131r';
       summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, UTTS Bilgisini </span><span class="history-detail-inline">' + escapeHtml(ev) + '</span><span class="history-action-text"> Olarak G\u00FCncelledi.</span>';
