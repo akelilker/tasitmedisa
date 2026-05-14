@@ -75,15 +75,24 @@
 
 #vehicles-modal .vehicle-plate-row-inner,
 #vehicles-modal-content[data-render-scope="search-global"] .vehicle-plate-row-inner {
-    display: inline-flex;
+    display: inline-grid;
+    grid-template-columns: 12px minmax(0, 1fr) 12px;
     align-items: center;
-    justify-content: center;
-    gap: 4px;
-    max-width: 100%;
+    justify-content: stretch;
+    column-gap: 4px;
+    width: 100%;
     min-width: 0;
+}
+#vehicles-modal .vehicle-plate-row-text,
+#vehicles-modal-content[data-render-scope="search-global"] .vehicle-plate-row-text {
+    grid-column: 2;
+    min-width: 0;
+    text-align: center;
 }
 #vehicles-modal .vehicle-plate-date-warn,
 #vehicles-modal-content[data-render-scope="search-global"] .vehicle-plate-date-warn {
+    grid-column: 1;
+    justify-self: center;
     flex-shrink: 0;
     font-weight: 800;
     font-size: 1em;

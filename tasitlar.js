@@ -1177,7 +1177,7 @@
       return (
         '<span class="vehicle-plate-row-inner">' +
         '<span class="vehicle-plate-date-warn vehicle-plate-date-warn--red" title="Tarih uyarısı" aria-label="Tarih uyarısı">!</span>' +
-        inner +
+        '<span class="vehicle-plate-row-text">' + inner + '</span>' +
         '</span>'
       );
     }
@@ -1185,7 +1185,7 @@
       return (
         '<span class="vehicle-plate-row-inner">' +
         '<span class="vehicle-plate-date-warn vehicle-plate-date-warn--orange" title="Tarih uyarısı" aria-label="Tarih uyarısı">!</span>' +
-        inner +
+        '<span class="vehicle-plate-row-text">' + inner + '</span>' +
         '</span>'
       );
     }
