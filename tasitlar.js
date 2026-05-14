@@ -9475,10 +9475,12 @@
    */
   function getNotificationActivityMessage(ev, plate) {
     const evData = ev.data || {};
-    const isim = evData.surucu || evData.kisi || evData.kullaniciAdi;
-    const isimStr = isim ? formatAdSoyad(String(isim)) : 'Bilinmiyor';
-    const plateStr = (plate || '-').toString().trim();
     const type = (ev.type || '').toString().trim();
+    const actorName = type === 'kullanici-atama'
+      ? (evData.kaydeden || evData.surucu || evData.kisi)
+      : (evData.surucu || evData.kisi || evData.kullaniciAdi || evData.kaydeden);
+    const isimStr = actorName ? formatAdSoyad(String(actorName)) : 'Bilinmiyor';
+    const plateStr = (plate || '-').toString().trim();
     if (type === 'vehicle-created') {
       const createdPlate = (ev.data && ev.data.plakaSnapshot) || plate || '-';
       return 'Yeni Taşıt Bilgisi Kaydedildi. (' + String(createdPlate).trim() + ')';
