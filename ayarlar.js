@@ -1033,6 +1033,123 @@
       window.__medisaUserManagementSearchOutsideCloseBound = true;
       document.addEventListener('pointerdown', onUserManagementSearchOutsidePointerDown, true);
     }
+
+    /** Plaka/marka araması: tasitlar.js vehicleMatchesSearchQuery ile aynı hizada (NFKC, tire/nokta, formatPlaka). */
+    function medisaNormalizeUserVehicleSearchString(str) {
+      var s = String(str == null ? '' : str);
+      if (typeof s.normalize === 'function') {
+        try {
+          s = s.normalize('NFKC');
+        } catch (e) { /* yoksay */ }
+      }
+      return s;
+    }
+
+    function userFormVehicleMatchesSearch(v, qRaw) {
+      var qTrim = String(qRaw || '').trim();
+      if (!qTrim) return true;
+      var qNorm = medisaNormalizeUserVehicleSearchString(qTrim);
+      var qLower = qNorm.toLocaleLowerCase('tr-TR');
+      var qCompact = qLower.replace(/[\s\-_.]+/g, '');
+
+      var plakaStr = v.plate || v.plaka || '';
+      var pNorm = medisaNormalizeUserVehicleSearchString(plakaStr);
+      var pLower = pNorm.toLocaleLowerCase('tr-TR');
+      var pCompact = pLower.replace(/[\s\-_.]+/g, '');
+
+      if (qCompact && pCompact.indexOf(qCompact) !== -1) return true;
+      if (qLower && pLower.indexOf(qLower) !== -1) return true;
+
+      if (typeof window.formatPlaka === 'function' && qCompact) {
+        var fmt = window.formatPlaka(pNorm);
+        if (fmt && fmt !== '-') {
+          var fCompact = medisaNormalizeUserVehicleSearchString(String(fmt))
+            .toLocaleLowerCase('tr-TR')
+            .replace(/[\s\-_.]+/g, '');
+          if (fCompact.indexOf(qCompact) !== -1) return true;
+        }
+      }
+
+      var rawMm = (v.brandModel || (v.brand || v.marka || '') + ' ' + (v.model || '')).trim();
+      var markaModel = (typeof window.formatBrandModel === 'function' ? window.formatBrandModel(rawMm) : (typeof window.toTitleCase === 'function' ? window.toTitleCase(rawMm) : rawMm));
+      var brandHay = String(markaModel || '').toLocaleLowerCase('tr-TR');
+      if (qLower && brandHay.indexOf(qLower) !== -1) return true;
+
+      if (v.year != null && String(v.year).indexOf(qLower) !== -1) return true;
+      var tks = v.tahsisKisi;
+      if (tks && medisaNormalizeUserVehicleSearchString(String(tks)).toLocaleLowerCase('tr-TR').indexOf(qLower) !== -1) return true;
+
+      return false;
+    }
+
+    function userVehiclesTypeaheadIsTextualFormInput(el) {
+      if (!el || el.tagName !== 'INPUT') return false;
+      var type = String(el.type || '').toLowerCase();
+      if (el.id === 'user-vehicles-search') return false;
+      return type === 'text' || type === 'email' || type === 'tel' || type === 'password' || type === 'search' || type === 'url' || type === 'number';
+    }
+
+    function onUserVehiclesGlobalTypeaheadKeydown(ev) {
+      if (ev.isComposing) return;
+      var dropdown = document.getElementById('user-vehicles-dropdown');
+      if (!dropdown || dropdown.style.display === 'none') return;
+      var modal = document.getElementById('user-form-modal');
+      if (!modal || !modal.classList.contains('active')) return;
+
+      var searchInput = document.getElementById('user-vehicles-search');
+      if (!searchInput) return;
+      if (document.activeElement === searchInput) return;
+
+      var ae = document.activeElement;
+      if (ae && modal.contains(ae)) {
+        if (ae.tagName === 'TEXTAREA') return;
+        if (ae.tagName === 'SELECT') return;
+        if (userVehiclesTypeaheadIsTextualFormInput(ae)) return;
+      }
+
+      var trigger = document.getElementById('user-vehicles-trigger');
+      var inDropdown = ae && ae.closest && ae.closest('#user-vehicles-dropdown');
+      if (!inDropdown && ae !== trigger) return;
+
+      if (ev.ctrlKey || ev.metaKey || ev.altKey) return;
+
+      if (ev.key === 'Backspace') {
+        ev.preventDefault();
+        searchInput.focus();
+        var valBs = searchInput.value;
+        var cut = valBs.slice(0, -1);
+        searchInput.value = cut;
+        if (window.handleUserVehiclesSearch) window.handleUserVehiclesSearch(cut);
+        setTimeout(function() {
+          try {
+            searchInput.setSelectionRange(cut.length, cut.length);
+          } catch (e2) { /* yoksay */ }
+        }, 0);
+        return;
+      }
+
+      var k = ev.key;
+      if (k.length !== 1) return;
+      var code = k.charCodeAt(0);
+      if (code < 32 || code === 127) return;
+
+      ev.preventDefault();
+      searchInput.focus();
+      var val = searchInput.value;
+      var next = val + k;
+      searchInput.value = next;
+      if (window.handleUserVehiclesSearch) window.handleUserVehiclesSearch(next);
+      setTimeout(function() {
+        try {
+          searchInput.setSelectionRange(next.length, next.length);
+        } catch (e2) { /* yoksay */ }
+      }, 0);
+    }
+
+    if (!window.__medisaUserVehiclesTypeaheadKeyBound) {
+      window.__medisaUserVehiclesTypeaheadKeyBound = true;
+      document.addEventListener('keydown', onUserVehiclesGlobalTypeaheadKeydown, true);
+    }
   
     // Kullanıcı formu: atanmış Taşıtlar checkbox listesi doldur (arama + filtreleme)
     function populateUserVehiclesMulti(searchFilter = '') {
@@ -1048,18 +1165,7 @@
       }
       const qRaw = (searchFilter || '').trim();
       if (qRaw) {
-        const qLower = qRaw.toLocaleLowerCase('tr-TR');
-        const qCompact = qRaw.replace(/\s+/g, '').toLocaleLowerCase('tr-TR');
-        activeVehicles = activeVehicles.filter(v => {
-          const plakaStr = v.plate || v.plaka || '';
-          const pCompact = String(plakaStr).replace(/\s+/g, '').toLocaleLowerCase('tr-TR');
-          const rawMm = (v.brandModel || (v.brand || v.marka || '') + ' ' + (v.model || '')).trim();
-          const markaModel = (typeof window.formatBrandModel === 'function' ? window.formatBrandModel(rawMm) : (typeof window.toTitleCase === 'function' ? window.toTitleCase(rawMm) : rawMm));
-          const brandHay = String(markaModel || '').toLocaleLowerCase('tr-TR');
-          if (pCompact.indexOf(qCompact) !== -1) return true;
-          if (brandHay.indexOf(qLower) !== -1) return true;
-          return false;
-        });
+        activeVehicles = activeVehicles.filter(v => userFormVehicleMatchesSearch(v, qRaw));
       }
       const assignedSet = new Set(assignedIds.map(String));
       function userVehiclePlateSortKey(v) {
@@ -1139,7 +1245,7 @@
       dropdown.setAttribute('aria-hidden', 'false');
       trigger.classList.add('user-vehicles-trigger-open');
       trigger.setAttribute('aria-expanded', 'true');
-      if (opts.focusSearch && searchInput) searchInput.focus();
+      if (opts.focusSearch !== false && searchInput) searchInput.focus();
     }
 
     function toggleUserVehiclesDropdown(options) {
