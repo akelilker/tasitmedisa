@@ -1169,6 +1169,29 @@
     );
   }
 
+  /** Tarih uyarısı (sigorta/muayene vb.): plaka yanında ! — kırmızı veya turuncu. */
+  function buildPlateCellHtml(plate, query, plateHit, vehicleDateSeverityClass) {
+    const inner = wrapPlateSearchHighlight(formatPlaka(plate), query, plateHit);
+    const cls = vehicleDateSeverityClass || '';
+    if (cls.indexOf('vehicle-date-warning-red') !== -1) {
+      return (
+        '<span class="vehicle-plate-row-inner">' +
+        '<span class="vehicle-plate-date-warn vehicle-plate-date-warn--red" title="Tarih uyarısı" aria-label="Tarih uyarısı">!</span>' +
+        inner +
+        '</span>'
+      );
+    }
+    if (cls.indexOf('vehicle-date-warning-orange') !== -1) {
+      return (
+        '<span class="vehicle-plate-row-inner">' +
+        '<span class="vehicle-plate-date-warn vehicle-plate-date-warn--orange" title="Tarih uyarısı" aria-label="Tarih uyarısı">!</span>' +
+        inner +
+        '</span>'
+      );
+    }
+    return inner;
+  }
+
   function buildVehicleUserNameHtmlWithSearch(rawName, query, userHit) {
     const q = normalizeVehicleSearchText(query);
     if (!userHit || !q) return buildVehicleUserNameHtml(rawName);
@@ -2648,7 +2671,7 @@
 
         if (viewMode === 'card') {
             // Üçüncü satır boşsa div'i render etme
-            const plateCardHtml = wrapPlateSearchHighlight(formatPlaka(plate), query, searchHits.plate);
+            const plateCardHtml = buildPlateCellHtml(plate, query, searchHits.plate, vehicleDateSeverityClass);
             const brandCardHtml = maybeHighlightCell(formatBrandModel(brandModel), query, searchHits.brand, 'brand');
             let thirdInner = escapeHtml(thirdLineDisplay);
             if (
@@ -2692,7 +2715,7 @@
                   cellClass = 'list-year';
                   break;
                 case 'plate':
-                  cellContent = wrapPlateSearchHighlight(formatPlaka(plate), query, searchHits.plate);
+                  cellContent = buildPlateCellHtml(plate, query, searchHits.plate, vehicleDateSeverityClass);
                   cellClass = 'list-plate';
                   break;
                 case 'brand':
