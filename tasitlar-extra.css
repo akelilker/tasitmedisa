@@ -2821,7 +2821,8 @@
 #monthly-todo-modal .monthly-todo-col-header,
 #monthly-todo-modal .monthly-todo-task-row {
   display: grid;
-  grid-template-columns: minmax(40px, calc(24% - 12px)) minmax(0, 1fr) minmax(126px, calc(34% + 18px));
+  /* İşlem metni uzun: sağ sütun +20px → orta (1fr) daralır; plaka sütunu aynı oran */
+  grid-template-columns: minmax(40px, calc(24% - 12px)) minmax(0, 1fr) minmax(146px, calc(34% + 38px));
   column-gap: 10px;
   align-items: center;
 }
