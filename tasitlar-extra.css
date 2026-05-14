@@ -73,6 +73,32 @@
     color: var(--txt-gray-dark) !important;
 }
 
+#vehicles-modal .vehicle-plate-row-inner,
+#vehicles-modal-content[data-render-scope="search-global"] .vehicle-plate-row-inner {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    max-width: 100%;
+    min-width: 0;
+}
+#vehicles-modal .vehicle-plate-date-warn,
+#vehicles-modal-content[data-render-scope="search-global"] .vehicle-plate-date-warn {
+    flex-shrink: 0;
+    font-weight: 800;
+    font-size: 1em;
+    line-height: 1;
+    user-select: none;
+}
+#vehicles-modal .vehicle-plate-date-warn--red,
+#vehicles-modal-content[data-render-scope="search-global"] .vehicle-plate-date-warn--red {
+    color: var(--theme-color) !important;
+}
+#vehicles-modal .vehicle-plate-date-warn--orange,
+#vehicles-modal-content[data-render-scope="search-global"] .vehicle-plate-date-warn--orange {
+    color: var(--orange-warn) !important;
+}
+
 .view-list .list-cell.list-branch {
     text-align: center !important;
     font-size: inherit !important;
