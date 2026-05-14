@@ -2440,6 +2440,16 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 }
 
 /* Tarih uyarısı (liste): uyarı rengi metinde; satır zemini normal zebra/hover ile kalır. */
+#vehicles-modal .view-list .list-item.vehicle-date-warning-red .list-cell,
+#vehicles-modal .view-list .list-item.vehicle-date-warning-orange .list-cell {
+    font-weight: 600 !important;
+    text-shadow: none !important;
+    filter: none !important;
+    opacity: 1 !important;
+    -webkit-text-fill-color: currentColor !important;
+    text-rendering: geometricPrecision;
+}
+
 #vehicles-modal .view-list .list-item.vehicle-date-warning-red .list-cell {
     color: var(--theme-color) !important;
 }
