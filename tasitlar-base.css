@@ -2444,13 +2444,13 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 
 #vehicles-modal .view-list .list-item.vehicle-date-warning-red .list-cell,
 #vehicles-modal .view-list .list-item.vehicle-date-warning-orange .list-cell {
-    font-weight: 600 !important;
+    font-weight: 500 !important;
     text-shadow: none !important;
     filter: none !important;
     opacity: 1 !important;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
-    color: var(--txt-gray-dark) !important;
+    color: #a0aec0 !important;
 }
 
 /* Idle: hücre zemini şeffaf; zebra/hover yalnızca satır zemininden gelir. */
@@ -2519,9 +2519,10 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     padding: 2px 4px; /* metin–çerçeve arası dikey 2px */
 }
 
-/* Taşıtlar modalı liste: dikey ayraç daha silik — gri ızgara azalır */
+/* Taşıtlar modalı liste: dikey ayraç daha silik; veri metni Premium Dark gri (#a0aec0) */
 #vehicles-modal .view-list .list-cell {
     border-right: 1px solid rgba(255, 255, 255, 0.05) !important;
+    color: #a0aec0 !important;
 }
 
 /* Son sütun (sağ) border yok */
