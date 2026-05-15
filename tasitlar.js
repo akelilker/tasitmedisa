@@ -918,7 +918,7 @@
         : isCompactDesktop
           ? {
               'year': '36px',
-              'plate': '61px',
+              'plate': '77px',
               'brand': 'minmax(0, 1.52fr)',
               'km': '49px',
               'type': 'minmax(0, 0.88fr)',
