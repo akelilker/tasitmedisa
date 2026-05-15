@@ -76,18 +76,22 @@
 #vehicles-modal .vehicle-plate-row-inner,
 #vehicles-modal-content[data-render-scope="search-global"] .vehicle-plate-row-inner {
     display: inline-grid;
-    grid-template-columns: 12px minmax(0, 1fr) 12px;
+    grid-template-columns: 8px minmax(0, 1fr);
     align-items: center;
     justify-content: stretch;
-    column-gap: 4px;
+    column-gap: 2px;
     width: 100%;
     min-width: 0;
 }
 #vehicles-modal .vehicle-plate-row-text,
 #vehicles-modal-content[data-render-scope="search-global"] .vehicle-plate-row-text {
     grid-column: 2;
+    display: block;
     min-width: 0;
     text-align: center;
+    overflow: hidden;
+    text-overflow: clip;
+    white-space: nowrap;
 }
 #vehicles-modal .vehicle-plate-date-warn,
 #vehicles-modal-content[data-render-scope="search-global"] .vehicle-plate-date-warn {
