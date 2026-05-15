@@ -1604,6 +1604,15 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
 }
 .menu-btn:last-child { margin-bottom: 0; }
 
+@media (min-width: 641px) {
+  .menu-container {
+    gap: 13px;
+  }
+  .menu-btn {
+    margin-bottom: 0;
+  }
+}
+
 /* Hover efekti sadece masaüstü (mouse ile) – mobilde yok */
 @media (hover: hover) {
   .menu-btn:hover {
@@ -2006,7 +2015,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero h1 {
     align-self: center;
-    font-size: clamp(calc(17px - 0.5pt), 4.5vw, calc(22px - 0.5pt)) !important;
+    font-size: clamp(17px, 4.5vw, 22px) !important;
     letter-spacing: clamp(1px, 0.42vw, 3px);
   }
   .settings-dropdown:not(#notifications-dropdown) {
