@@ -1033,6 +1033,12 @@
       step: listFitStep
     });
 
+    window.medisaFitTextWithinBox(scope, '.view-list .list-cell.list-plate .vehicle-plate-row-text', {
+      minFontSize: window.innerWidth <= 640 ? 10.5 : 10,
+      maxReduction: 4,
+      step: listFitStep
+    });
+
     // Kullanıcı adında genel shrink agresif görünüyordu; burada sadece isim satırlarına
     // daha yumuşak küçültme uygula ki kısa isimler normal boyutta kalsın.
     window.medisaFitTextWithinBox(scope, [
