@@ -75,29 +75,42 @@
 
 #vehicles-modal .vehicle-plate-row-inner,
 #vehicles-modal-content[data-render-scope="search-global"] .vehicle-plate-row-inner {
-    display: inline-grid;
-    grid-template-columns: 8px minmax(0, 1fr);
-    align-items: center;
-    justify-content: stretch;
-    column-gap: 2px;
+    position: relative;
+    display: block;
     width: 100%;
     min-width: 0;
 }
 #vehicles-modal .vehicle-plate-row-text,
 #vehicles-modal-content[data-render-scope="search-global"] .vehicle-plate-row-text {
-    grid-column: 2;
     display: block;
+    width: 100%;
     min-width: 0;
     text-align: center;
-    overflow: hidden;
-    text-overflow: clip;
+    overflow: visible;
     white-space: nowrap;
+}
+#vehicles-modal .vehicle-plate-row-text .vehicle-search-plate-cell,
+#vehicles-modal-content[data-render-scope="search-global"] .vehicle-plate-row-text .vehicle-search-plate-cell {
+    width: 100%;
+    justify-content: center;
+    gap: 0;
+}
+#vehicles-modal .vehicle-plate-row-text .vehicle-search-plate-accent,
+#vehicles-modal-content[data-render-scope="search-global"] .vehicle-plate-row-text .vehicle-search-plate-accent {
+    display: none;
+}
+#vehicles-modal .vehicle-plate-row-text .vehicle-search-plate-text,
+#vehicles-modal-content[data-render-scope="search-global"] .vehicle-plate-row-text .vehicle-search-plate-text {
+    flex: 0 1 auto;
+    overflow: visible;
+    text-overflow: clip;
 }
 #vehicles-modal .vehicle-plate-date-warn,
 #vehicles-modal-content[data-render-scope="search-global"] .vehicle-plate-date-warn {
-    grid-column: 1;
-    justify-self: center;
-    flex-shrink: 0;
+    position: absolute;
+    left: -1px;
+    top: 50%;
+    transform: translateY(-50%);
     font-weight: 800;
     font-size: 1em;
     line-height: 1;
