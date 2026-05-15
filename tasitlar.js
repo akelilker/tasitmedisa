@@ -10003,6 +10003,7 @@
       notifFeed.sort(function(a, b) { return b.t - a.t; });
       let html = notifFeed.map(function(x) { return x.h; }).join('');
       const hasUnreadInRenderedList = html.indexOf('notification-unread') !== -1;
+      const hasUnreadDriverRequestInRenderedList = /class="[^"]*\bis-driver-request\b[^"]*\bnotification-unread\b/.test(html);
 
       if (notifDropdown) {
         if (hasUnreadMarkableNotification || hasUnreadInRenderedList) {
@@ -10023,7 +10024,7 @@
           notifIcon.classList.add('notification-red', 'notification-pulse');
         } else if (hasOrange) {
           notifIcon.classList.add('notification-orange', 'notification-pulse');
-        } else if (hasUnreadMarkableNotification) {
+        } else if (hasUnreadDriverRequestInRenderedList || hasUnreadMarkableNotification) {
           /* Sadece nütr (faaliyet vb.) okunmamış: renk tema varsayılanı, dikkat için pulse */
           notifIcon.classList.add('notification-pulse');
         }
