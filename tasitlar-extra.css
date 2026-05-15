@@ -2869,7 +2869,7 @@
   box-sizing: border-box;
   text-align: center;
   justify-self: center;
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 700;
   line-height: 1.25;
   color: #ffffff;
@@ -2882,7 +2882,7 @@
 }
 @media (min-width: 641px) {
   #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h {
-    font-size: 11px;
+    font-size: 12px;
     letter-spacing: 0.06em;
   }
 }
