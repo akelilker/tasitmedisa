@@ -922,12 +922,9 @@ body.dashboard-page {
   animation: driver-marquee 12s linear infinite;
 }
 @media (prefers-reduced-motion: reduce) {
-  .driver-warning-marquee-inner {
+  .driver-sliding-warning.driver-warning-pulse,
+  .driver-sliding-warning.driver-warning-kaza-pulse .driver-warning-text {
     animation: none;
-  }
-  .driver-warning-marquee-outer {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
   }
   .driver-action-btn-feedback.driver-request-fab .driver-action-btn-feedback-icon {
     animation: none;
