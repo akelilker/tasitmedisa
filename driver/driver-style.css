@@ -475,7 +475,9 @@ body.dashboard-page {
   display: none;
 }
 .driver-below-hero-notification-slot .driver-sliding-warning {
-  flex: 0 0 auto;
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
   max-width: 100%;
 }
 
