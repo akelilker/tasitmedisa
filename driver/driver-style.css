@@ -3013,6 +3013,7 @@ body.dashboard-page {
     left: 0 !important;
     right: 0 !important;
     transform: none !important;
+    background: rgba(8, 13, 22, 0.92) !important;
   }
 
   #driver-feedback-modal .modal-header,
@@ -3133,7 +3134,7 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 
 #driver-documents-modal .driver-modal-content,
 #driver-documents-modal .modal-container {
-  height: auto !important;
+  height: calc(100% - 24px) !important;
   max-height: calc(100% - 24px) !important;
   overflow: hidden;
   border-top-left-radius: var(--modal-radius, 10px);
@@ -5118,6 +5119,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   #edit-request-modal.driver-modal,
   #driver-event-menu-modal.driver-modal,
   #driver-password-modal.driver-modal,
+  #driver-documents-modal.driver-modal,
   #driver-anahtar-modal.driver-modal,
   #driver-lastik-modal.driver-modal,
   #driver-utts-modal.driver-modal,
@@ -5134,6 +5136,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   /* Geçmiş Kayıtlar + Düzeltme Talebi + Talep/Şikayet: modal–footer arası 10px; koyu dolgu (box-shadow) köşeler dahil kapatsın */
   #history-modal.driver-modal,
   #edit-request-modal.driver-modal,
+  #driver-documents-modal.driver-modal,
   #driver-feedback-modal.driver-modal {
     bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
     box-shadow: none !important;
@@ -6450,10 +6453,12 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   body.dashboard-page:has(#history-modal.driver-modal.show) .driver-dashboard-container::before,
   body.dashboard-page:has(#edit-request-modal.driver-modal.show) .driver-dashboard-container::before,
   body.dashboard-page:has(#driver-password-modal.driver-modal.show) .driver-dashboard-container::before,
+  body.dashboard-page:has(#driver-documents-modal.driver-modal.show) .driver-dashboard-container::before,
   body.dashboard-page:has(#driver-feedback-modal.driver-modal.show) .driver-dashboard-container::before,
   body.login-page:has(#history-modal.driver-modal.show) .driver-dashboard-container::before,
   body.login-page:has(#edit-request-modal.driver-modal.show) .driver-dashboard-container::before,
   body.login-page:has(#driver-password-modal.driver-modal.show) .driver-dashboard-container::before,
+  body.login-page:has(#driver-documents-modal.driver-modal.show) .driver-dashboard-container::before,
   body.login-page:has(#driver-feedback-modal.driver-modal.show) .driver-dashboard-container::before {
     bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
   }
@@ -6471,9 +6476,11 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
      footer glow görünür, modal–footer arası boşluk net kalır. */
   body.dashboard-page:has(#history-modal.driver-modal.show)::after,
   body.dashboard-page:has(#edit-request-modal.driver-modal.show)::after,
+  body.dashboard-page:has(#driver-documents-modal.driver-modal.show)::after,
   body.dashboard-page:has(#driver-feedback-modal.driver-modal.show)::after,
   body.login-page:has(#history-modal.driver-modal.show)::after,
   body.login-page:has(#edit-request-modal.driver-modal.show)::after,
+  body.login-page:has(#driver-documents-modal.driver-modal.show)::after,
   body.login-page:has(#driver-feedback-modal.driver-modal.show)::after {
     display: none !important;
   }
@@ -6489,6 +6496,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   /* Geçmiş/Düzeltme/Talep modalı için gap değeri show durumunda da kilitli kalsın. */
   #history-modal.driver-modal.show,
   #edit-request-modal.driver-modal.show,
+  #driver-documents-modal.driver-modal.show,
   #driver-feedback-modal.driver-modal.show {
     bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
   }
