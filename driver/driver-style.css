@@ -3134,6 +3134,15 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   overscroll-behavior-x: none;
 }
 
+#driver-documents-modal .driver-modal-content,
+#driver-documents-modal .modal-container {
+  height: auto !important;
+  max-height: calc(100% - 24px) !important;
+  overflow: hidden;
+  border-top-left-radius: var(--modal-radius, 10px);
+  border-top-right-radius: var(--modal-radius, 10px);
+}
+
 /* Üst mikro-highlight: Geçmiş + Talep modalı (kayıt modalıyla aynı üst kenar birleşimi, köşede “erken kesilme” hissini düzeltir) */
 #history-modal .modal-container::before,
 #driver-feedback-modal .modal-container::before,
@@ -3386,8 +3395,7 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 @media (max-width: 640px) {
   #driver-documents-modal .driver-modal-content,
   #driver-documents-modal .modal-container {
-    height: auto;
-    max-height: calc(100% - 72px);
+    max-height: calc(100% - 72px) !important;
     border-top-left-radius: var(--modal-radius, 10px);
     border-top-right-radius: var(--modal-radius, 10px);
   }
