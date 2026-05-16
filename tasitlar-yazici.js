@@ -587,6 +587,11 @@
 '</body>' +
 '</html>';
 
+    if (typeof window.isIOSPWA === 'function' && window.isIOSPWA() && typeof window.openMedisaIosPwaPrintPreview === 'function') {
+      window.openMedisaIosPwaPrintPreview(printHtml, 'Taşıt Kartı Yazdır');
+      return;
+    }
+
     if (isAndroidDevice() && openPrintPreviewWindow(printHtml)) {
       return;
     }

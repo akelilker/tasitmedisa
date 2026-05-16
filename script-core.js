@@ -354,6 +354,73 @@ window.getUserRoleLabelAnalytics = function(user) {
 /** Gizli yazdırma iframe (ekran dışına taşıma) — tasitlar / tasitlar-yazici */
 window.MEDISA_PRINT_IFRAME_CSS_TEXT = 'position:fixed;left:0;top:0;width:100vw;height:100vh;border:0;opacity:0.01;pointer-events:none;visibility:visible;transform:translateX(-200vw);background:#fff;z-index:-1;';
 
+/** iOS PWA: otomatik print yerine kapanabilir ön izleme + kullanıcı tıklamasıyla native yazdırma. */
+window.openMedisaIosPwaPrintPreview = function openMedisaIosPwaPrintPreview(printHtml, title) {
+  if (!printHtml) return false;
+  var oldOverlay = document.getElementById('medisa-ios-print-preview-overlay');
+  if (oldOverlay && oldOverlay.parentNode) {
+    oldOverlay.parentNode.removeChild(oldOverlay);
+  }
+
+  var safeTitle = window.escapeHtml ? window.escapeHtml(title || 'Yazdırma Ön İzleme') : String(title || 'Yazdırma Ön İzleme');
+  var frameHtml = String(printHtml);
+  if (frameHtml.indexOf('</head>') !== -1) {
+    frameHtml = frameHtml.replace('</head>', '<style>@media screen{.print-preview-toolbar{display:none!important;}}</style></head>');
+  }
+
+  var overlay = document.createElement('div');
+  overlay.id = 'medisa-ios-print-preview-overlay';
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:2147483647;background:#f3f4f6;color:#111;display:flex;flex-direction:column;padding:calc(env(safe-area-inset-top,0px) + 10px) 10px calc(env(safe-area-inset-bottom,0px) + 10px);box-sizing:border-box;';
+
+  var toolbar = document.createElement('div');
+  toolbar.style.cssText = 'display:flex;align-items:center;gap:8px;margin-bottom:10px;flex:0 0 auto;';
+  toolbar.innerHTML =
+    '<button type="button" data-print-preview-action="back" style="border:1px solid #b8bec8;background:#fff;color:#111;border-radius:10px;padding:10px 12px;font:600 15px Arial,sans-serif;">Geri Dön</button>' +
+    '<div style="flex:1;text-align:center;font:700 16px Arial,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + safeTitle + '</div>' +
+    '<button type="button" data-print-preview-action="print" style="border:1px solid #0f766e;background:#0f766e;color:#fff;border-radius:10px;padding:10px 12px;font:700 15px Arial,sans-serif;">Yazdır</button>' +
+    '<button type="button" data-print-preview-action="close" style="border:1px solid #b8bec8;background:#fff;color:#111;border-radius:10px;padding:10px 12px;font:600 15px Arial,sans-serif;">Kapat</button>';
+
+  var frame = document.createElement('iframe');
+  frame.setAttribute('title', title || 'Yazdırma Ön İzleme');
+  frame.style.cssText = 'flex:1 1 auto;width:100%;min-height:0;border:1px solid #c8cdd6;border-radius:12px;background:#fff;box-shadow:0 10px 28px rgba(0,0,0,.18);';
+
+  function closeOverlay() {
+    try { frame.srcdoc = ''; } catch (eClear) {}
+    if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
+  }
+
+  toolbar.addEventListener('click', function(e) {
+    var btn = e.target && e.target.closest ? e.target.closest('[data-print-preview-action]') : null;
+    if (!btn) return;
+    var action = btn.getAttribute('data-print-preview-action');
+    if (action === 'back' || action === 'close') {
+      closeOverlay();
+      return;
+    }
+    if (action === 'print') {
+      try {
+        var frameWindow = frame.contentWindow;
+        if (!frameWindow || typeof frameWindow.print !== 'function') throw new Error('print_unavailable');
+        try {
+          if (typeof frameWindow.__medisaPreparePrintLayout === 'function') {
+            frameWindow.__medisaPreparePrintLayout();
+          }
+        } catch (prepareErr) {}
+        frameWindow.focus();
+        frameWindow.print();
+      } catch (printErr) {
+        alert('Yazdırma başlatılamadı. Lütfen tekrar deneyin.');
+      }
+    }
+  });
+
+  overlay.appendChild(toolbar);
+  overlay.appendChild(frame);
+  document.body.appendChild(overlay);
+  frame.srcdoc = frameHtml;
+  return true;
+};
+
 /** Plaka: bitişik + tamamen büyük harf (örn. 34ABC123); boşluklar kaldırılır */
 window.formatPlaka = function(str) {
   if (str == null || str === '') return '-';
@@ -819,7 +886,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Lazy modül asset sürümleri — tek nesne; index.html içindeki style-core ?v= ile tasitlar sürümü uyumlu kalmalı
 var MEDISA_MODULE_VERSIONS = {
-  tasitlar: '20260514.10',
+  tasitlar: '20260517.5',
   raporlar: '20260511.3',
   kayitJs: '20260506.1',
   kayitCss: '20260512.1',
