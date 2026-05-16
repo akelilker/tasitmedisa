@@ -2383,7 +2383,7 @@ body.dashboard-page {
 .driver-plate-dropdown-item[aria-selected="true"] {
   background: rgba(var(--theme-color-rgb), 0.15);
 }
-.driver-plate-dropdown-item:nth-child(even) {
+.driver-plate-dropdown-item:nth-child(even):not(:hover):not(:focus):not([aria-selected="true"]) {
   background: rgba(255, 255, 255, 0.045);
 }
 .driver-cards-inner .vehicle-card.driver-card-hidden {
