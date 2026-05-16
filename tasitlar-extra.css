@@ -124,6 +124,65 @@
 #vehicles-modal-content[data-render-scope="search-global"] .vehicle-plate-date-warn--orange {
     color: var(--orange-warn) !important;
 }
+@media (min-width: 769px) {
+    #vehicles-modal .view-list .list-cell.list-plate .vehicle-plate-row-inner,
+    #vehicles-modal-content[data-render-scope="search-global"] .view-list .list-cell.list-plate .vehicle-plate-row-inner {
+        position: static;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        max-width: 100%;
+    }
+    #vehicles-modal .view-list .list-cell.list-plate .vehicle-plate-row-text,
+    #vehicles-modal-content[data-render-scope="search-global"] .view-list .list-cell.list-plate .vehicle-plate-row-text {
+        flex: 0 1 auto;
+        width: auto;
+        max-width: 100%;
+        min-width: 0;
+    }
+    #vehicles-modal .view-list .list-cell.list-plate .vehicle-plate-row-text .vehicle-search-plate-cell,
+    #vehicles-modal-content[data-render-scope="search-global"] .view-list .list-cell.list-plate .vehicle-plate-row-text .vehicle-search-plate-cell {
+        width: auto;
+        max-width: 100%;
+        min-width: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+    #vehicles-modal .view-list .list-cell.list-plate .vehicle-plate-row-text .vehicle-search-plate-text,
+    #vehicles-modal-content[data-render-scope="search-global"] .view-list .list-cell.list-plate .vehicle-plate-row-text .vehicle-search-plate-text {
+        min-width: 0;
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: clip;
+    }
+    #vehicles-modal .view-list .list-cell.list-plate .vehicle-plate-date-warn,
+    #vehicles-modal-content[data-render-scope="search-global"] .view-list .list-cell.list-plate .vehicle-plate-date-warn {
+        position: static;
+        left: auto;
+        top: auto;
+        transform: none;
+        width: 10px;
+        min-width: 10px;
+        height: 9px;
+        font-size: 0;
+        line-height: 0;
+        display: inline-block;
+        flex: 0 0 auto;
+        user-select: none;
+    }
+    #vehicles-modal .view-list .list-cell.list-plate .vehicle-plate-date-warn::before,
+    #vehicles-modal-content[data-render-scope="search-global"] .view-list .list-cell.list-plate .vehicle-plate-date-warn::before {
+        content: '';
+        display: block;
+        width: 0;
+        height: 0;
+        border-left: 5px solid transparent;
+        border-right: 5px solid transparent;
+        border-bottom: 9px solid currentColor;
+    }
+}
 
 .view-list .list-cell.list-branch {
     text-align: center !important;
