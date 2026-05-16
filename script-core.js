@@ -370,7 +370,7 @@ window.openMedisaIosPwaPrintPreview = function openMedisaIosPwaPrintPreview(prin
 
   var overlay = document.createElement('div');
   overlay.id = 'medisa-ios-print-preview-overlay';
-  overlay.style.cssText = 'position:fixed;inset:0;z-index:2147483647;background:#f3f4f6;color:#111;display:flex;flex-direction:column;padding:calc(env(safe-area-inset-top,0px) + 10px) 10px calc(env(safe-area-inset-bottom,0px) + 10px);box-sizing:border-box;';
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:2147483647;background:radial-gradient(circle at top,#1b2438 0%,#0f1724 42%,#050810 100%);color:#eef2f7;display:flex;flex-direction:column;padding:calc(env(safe-area-inset-top,0px) + 10px) 10px calc(env(safe-area-inset-bottom,0px) + 10px);box-sizing:border-box;';
 
   var toolbar = document.createElement('div');
   toolbar.style.cssText = 'display:flex;align-items:center;gap:8px;margin-bottom:10px;flex:0 0 auto;';
@@ -380,9 +380,15 @@ window.openMedisaIosPwaPrintPreview = function openMedisaIosPwaPrintPreview(prin
     '<button type="button" data-print-preview-action="print" style="border:1px solid #0f766e;background:#0f766e;color:#fff;border-radius:10px;padding:10px 12px;font:700 15px Arial,sans-serif;">Yazdır</button>' +
     '<button type="button" data-print-preview-action="close" style="border:1px solid #b8bec8;background:#fff;color:#111;border-radius:10px;padding:10px 12px;font:600 15px Arial,sans-serif;">Kapat</button>';
 
+  toolbar.innerHTML =
+    '<button type="button" data-print-preview-action="back" style="border:1px solid rgba(226,232,240,.18);background:rgba(15,23,36,.82);color:#eef2f7;border-radius:10px;padding:10px 12px;font:600 15px Arial,sans-serif;box-shadow:inset 0 0 0 1px rgba(255,255,255,.04);">Geri D&#246;n</button>' +
+    '<div style="flex:1;text-align:center;font:700 16px Arial,sans-serif;color:#f8fafc;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + safeTitle + '</div>' +
+    '<button type="button" data-print-preview-action="print" style="border:1px solid #0f766e;background:#0f766e;color:#fff;border-radius:10px;padding:10px 12px;font:700 15px Arial,sans-serif;box-shadow:0 10px 24px rgba(15,118,110,.32);">Yazd&#305;r</button>' +
+    '<button type="button" data-print-preview-action="close" style="border:1px solid rgba(226,232,240,.18);background:rgba(15,23,36,.82);color:#eef2f7;border-radius:10px;padding:10px 12px;font:600 15px Arial,sans-serif;box-shadow:inset 0 0 0 1px rgba(255,255,255,.04);">Kapat</button>';
+
   var frame = document.createElement('iframe');
   frame.setAttribute('title', title || 'Yazdırma Ön İzleme');
-  frame.style.cssText = 'flex:1 1 auto;width:100%;min-height:0;border:1px solid #c8cdd6;border-radius:12px;background:#fff;box-shadow:0 10px 28px rgba(0,0,0,.18);';
+  frame.style.cssText = 'flex:1 1 auto;width:100%;min-height:0;border:1px solid rgba(226,232,240,.12);border-radius:12px;background:#fff;box-shadow:0 22px 48px rgba(0,0,0,.42);';
 
   function closeOverlay() {
     try { frame.srcdoc = ''; } catch (eClear) {}
