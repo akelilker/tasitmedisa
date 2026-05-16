@@ -1082,7 +1082,7 @@ body.dashboard-page {
   display: inline-flex;
   align-items: center;
   justify-content: flex-end;
-  flex-direction: row-reverse;
+  flex-direction: row;
   gap: 6px;
   width: 40px;
   min-width: 40px;

@@ -1920,7 +1920,8 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           var iconW = iconEl ? (iconEl.offsetWidth || 24) + 4 : 28;
           var availW = container.clientWidth - iconW - 16;
           var textOverflowing = textSpan.scrollWidth > (textSpan.clientWidth + 1);
-          if (textOverflowing || textW > availW) {
+          var shouldMarquee = raw.length > 34 || textOverflowing || textW > availW;
+          if (shouldMarquee) {
               var safe = escapeHtmlDriver(raw);
               var marqueeHtml = '<span class="driver-warning-marquee-outer"><span class="driver-warning-marquee-inner"><span>' + safe + '</span><span aria-hidden="true">' + safe + '</span></span></span>';
               textSpan.outerHTML = marqueeHtml;
