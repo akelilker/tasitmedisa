@@ -1656,6 +1656,7 @@ body.dashboard-page {
   }
   .driver-right-panel { flex: 1; min-width: 0; }
   .dashboard-page .driver-right-panel {
+    padding-left: 8px !important;
     padding-right: 8px !important;
     box-sizing: border-box !important;
     overflow-x: hidden !important;
@@ -2371,6 +2372,7 @@ body.dashboard-page {
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   text-overflow: clip;
+  text-align: left;
 }
 .driver-plate-dropdown-item:last-child {
   border-bottom: none;
@@ -2385,7 +2387,7 @@ body.dashboard-page {
   background: rgba(var(--theme-color-rgb), 0.15);
 }
 .driver-plate-dropdown-item:nth-child(even) {
-  background: rgba(255, 255, 255, 0.025);
+  background: rgba(255, 255, 255, 0.045);
 }
 .driver-cards-inner .vehicle-card.driver-card-hidden {
   display: none !important;
@@ -3385,7 +3387,7 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   #driver-documents-modal .driver-modal-content,
   #driver-documents-modal .modal-container {
     height: auto;
-    max-height: calc(100% - 24px);
+    max-height: calc(100% - 72px);
     border-top-left-radius: var(--modal-radius, 10px);
     border-top-right-radius: var(--modal-radius, 10px);
   }
@@ -3397,8 +3399,8 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 
   #driver-documents-modal .modal-body {
     flex: 0 1 auto;
-    padding-top: 26px;
-    padding-bottom: 26px;
+    padding-top: 16px;
+    padding-bottom: 16px;
   }
 
   .driver-documents-list {
@@ -3409,6 +3411,8 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   .driver-document-card {
     max-width: none;
     width: 100%;
+    padding-top: 8px;
+    padding-bottom: 8px;
   }
 }
 
