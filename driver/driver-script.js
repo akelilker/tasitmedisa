@@ -989,9 +989,9 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
   }
 
   const DRIVER_DOCUMENT_TYPES = [
-      { key: 'ruhsat', title: 'Ruhsat', pathField: 'ruhsatPath' },
-      { key: 'sigorta', title: 'Trafik Sigortası', pathField: 'sigortaPolicePath' },
-      { key: 'kasko', title: 'Kasko', pathField: 'kaskoPolicePath' }
+      { key: 'ruhsat', title: 'Ruhsat', pathField: 'ruhsatPath', icon: 'document' },
+      { key: 'sigorta', title: 'Sigorta Poliçesi', pathField: 'sigortaPolicePath', icon: 'shield' },
+      { key: 'kasko', title: 'Kasko Poliçesi', pathField: 'kaskoPolicePath', icon: 'shield' }
   ];
 
   function hasDriverDocument(vehicle, config) {
@@ -1017,6 +1017,12 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       messageEl.classList.toggle('is-error', !!isError);
   }
 
+  function getDriverDocumentIconSvg(config) {
+      return config && config.icon === 'shield'
+          ? '<svg class="driver-document-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>'
+          : '<svg class="driver-document-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><path d="M14 2v6h6"></path><path d="M16 13H8"></path><path d="M16 17H8"></path><path d="M10 9H8"></path></svg>';
+  }
+
   function renderDriverDocumentsModal(vehicle) {
       const listEl = document.getElementById('driver-documents-list');
       if (!listEl) return;
@@ -1026,6 +1032,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           const actionText = hasDocument ? 'Görüntüle' : 'Yüklü Değil';
           const disabledAttr = hasDocument ? '' : ' aria-disabled="true"';
           return '<button type="button" class="driver-document-card' + (hasDocument ? '' : ' driver-document-card-missing') + '" data-document-type="' + config.key + '"' + disabledAttr + '>' +
+              '<span class="driver-document-icon-wrap">' + getDriverDocumentIconSvg(config) + '</span>' +
               '<span class="driver-document-title">' + config.title + '</span>' +
               '<span class="driver-document-action">' + actionText + '</span>' +
           '</button>';
