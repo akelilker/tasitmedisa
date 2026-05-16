@@ -6379,7 +6379,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     transform: translateX(-50%) !important;
     width: min(50vw, 420px) !important;
     max-width: min(50vw, 420px) !important;
-    min-width: 320px !important;
+    min-width: 350px !important;
     box-sizing: border-box !important;
     overflow-x: hidden !important;
   }
