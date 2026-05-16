@@ -1071,7 +1071,7 @@ body.dashboard-page {
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  gap: 6px;
+  gap: 10px;
   width: 100%;
   margin-top: 3px;
   min-height: 28px;
@@ -1082,9 +1082,9 @@ body.dashboard-page {
   justify-content: flex-end;
   flex-direction: row-reverse;
   gap: 6px;
-  width: 36px;
-  min-width: 36px;
-  height: 36px;
+  width: 40px;
+  min-width: 40px;
+  height: 40px;
   padding: 0;
   border: none;
   background: transparent;
@@ -1098,8 +1098,8 @@ body.dashboard-page {
   transform: translateX(4px);
 }
 .driver-action-btn-feedback.driver-request-fab .driver-action-btn-feedback-icon {
-  width: 26px;
-  height: 26px;
+  width: 29px;
+  height: 29px;
   flex: 0 0 auto;
   color: currentColor;
   transform-origin: center center;
@@ -1417,15 +1417,15 @@ body.dashboard-page {
   flex-direction: row;
   align-items: center;
   justify-content: flex-end;
-  gap: 6px;
+  gap: 10px;
   overflow: visible;
 }
 .driver-action-group.driver-action-feedback-slot.driver-request-fab-row > .driver-request-fab {
   flex: 0 0 auto;
   display: inline-flex;
-  width: 36px;
-  min-width: 36px;
-  height: 36px;
+  width: 40px;
+  min-width: 40px;
+  height: 40px;
 }
 .driver-action-group.driver-action-feedback-slot.driver-request-fab-row > .driver-request-fab:hover,
 .driver-action-group.driver-action-feedback-slot.driver-request-fab-row > .driver-request-fab:focus-visible {
@@ -1654,7 +1654,7 @@ body.dashboard-page {
   }
   .driver-right-panel { flex: 1; min-width: 0; }
   .dashboard-page .driver-right-panel {
-    padding-right: 12px !important;
+    padding-right: 8px !important;
     box-sizing: border-box !important;
     overflow-x: hidden !important;
   }
@@ -1821,7 +1821,7 @@ body.dashboard-page {
   }
   /* Mobil dashboard header: sadece grid + logo hizası (yeni pseudo çizgi yok; tipografi aşağıda ayrı blokta) */
   .dashboard-page .hero.hero-two-rows {
-    grid-template-columns: 72px minmax(0, 1fr) !important;
+    grid-template-columns: 76px minmax(0, 1fr) !important;
     column-gap: 6px !important;
     align-items: center !important;
   }
@@ -1846,9 +1846,9 @@ body.dashboard-page {
     justify-content: center !important;
     gap: 2px !important;
     flex: 0 1 auto !important;
-    width: 72px !important;
-    min-width: 72px !important;
-    max-width: 72px !important;
+    width: 76px !important;
+    min-width: 76px !important;
+    max-width: 76px !important;
     margin-top: 0 !important;
     margin-left: 0 !important;
     overflow: visible !important;
@@ -1856,8 +1856,8 @@ body.dashboard-page {
   }
   .dashboard-page .hero.hero-two-rows .hero-logo picture {
     display: block !important;
-    width: 58px !important;
-    max-width: 58px !important;
+    width: 62px !important;
+    max-width: 62px !important;
     margin: 0 auto !important;
   }
   .dashboard-page .main-header-user-name {
@@ -1896,8 +1896,8 @@ body.dashboard-page {
     width: 100% !important;
     max-width: 100% !important;
     min-width: 0 !important;
-    font-size: clamp(18px, 4.75vw, 20px) !important;
-    letter-spacing: clamp(0.6px, 0.45vw, 1.8px) !important;
+    font-size: clamp(19px, 5.2vw, 22px) !important;
+    letter-spacing: clamp(0.45px, 0.38vw, 1.45px) !important;
     line-height: 1.08 !important;
     white-space: nowrap !important;
     overflow: hidden !important;
@@ -2318,8 +2318,9 @@ body.dashboard-page {
   padding: 10px 14px;
   font-size: 12px;
   color: var(--txt);
-  display: flex;
-  align-items: flex-start;
+  display: grid;
+  grid-template-columns: 8px max-content max-content minmax(0, 1fr);
+  align-items: start;
   /* Plaka, tire, model arasında boşluk (metindeki whitespace’e güvenilmez); ~1 klavye aralığı */
   gap: 0.35em;
   column-gap: 0.35em;
@@ -2330,6 +2331,19 @@ body.dashboard-page {
   overflow: hidden;
   max-width: 100%;
   box-sizing: border-box;
+}
+.driver-plate-warning-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  margin-top: 0.45em;
+  justify-self: center;
+}
+.driver-plate-warning-dot-red {
+  background: var(--theme-color);
+}
+.driver-plate-warning-dot-orange {
+  background: #f97316;
 }
 .driver-plate-dropdown-item-plate {
   flex: 0 0 auto;
@@ -3363,6 +3377,25 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 }
 
 @media (max-width: 640px) {
+  #driver-documents-modal .driver-modal-content,
+  #driver-documents-modal .modal-container {
+    height: auto;
+    max-height: calc(100% - 24px);
+    border-top-left-radius: var(--modal-radius, 10px);
+    border-top-right-radius: var(--modal-radius, 10px);
+  }
+
+  #driver-documents-modal .modal-header {
+    border-top-left-radius: var(--modal-radius, 10px);
+    border-top-right-radius: var(--modal-radius, 10px);
+  }
+
+  #driver-documents-modal .modal-body {
+    flex: 0 1 auto;
+    padding-top: 26px;
+    padding-bottom: 26px;
+  }
+
   .driver-documents-list {
     flex-direction: column;
     align-items: stretch;
@@ -5702,7 +5735,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
   .dashboard-page .driver-action-area .universal-btn-save,
   .dashboard-page .driver-action-area .universal-btn-cancel {
-    font-size: 16.5px !important;
+    font-size: 15.5px !important;
   }
   .dashboard-page .driver-action-area .universal-btn-save {
     color: rgba(74, 222, 128, 0.96) !important;
@@ -6043,14 +6076,16 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     align-items: center !important;
     display: grid !important;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: 8px !important;
+    gap: 6px !important;
     width: 100%;
   }
   .dashboard-page .driver-action-area .driver-radio-btn {
-    min-height: 31px !important;
-    font-size: 16px !important;
+    min-height: 30px !important;
+    font-size: 15px !important;
     width: 100% !important;
     min-width: 0 !important;
+    padding-left: 6px;
+    padding-right: 6px;
   }
 
   /* Foto 4: KM input dikey yükseklik %15 daralsın */
@@ -6089,8 +6124,8 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     letter-spacing: 2.5px !important;
   }
   .dashboard-page .hero.hero-two-rows .hero-title-block .hero-title-line {
-    font-size: clamp(18px, 4.75vw, 20px) !important;
-    letter-spacing: clamp(0.6px, 0.45vw, 1.8px) !important;
+    font-size: clamp(19px, 5.2vw, 22px) !important;
+    letter-spacing: clamp(0.45px, 0.38vw, 1.45px) !important;
   }
   .login-page .hero h1 {
     font-size: clamp(calc(17.8px - 0.5pt), 5.1vw, calc(21.8px - 0.5pt)) !important;
@@ -6349,11 +6384,19 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 
   .dashboard-page .driver-plate-dropdown-item {
     display: grid !important;
-    grid-template-columns: max-content max-content minmax(0, 1fr) !important;
+    grid-template-columns: 8px max-content max-content minmax(0, 1fr) !important;
     column-gap: 0.35em !important;
     align-items: center !important;
     text-align: left !important;
     justify-items: start !important;
+  }
+
+  .dashboard-page .driver-plate-warning-dot {
+    align-self: center;
+  }
+
+  .dashboard-page .driver-plate-warning-dot:not(.driver-plate-warning-dot-red):not(.driver-plate-warning-dot-orange) {
+    visibility: hidden;
   }
 
   .dashboard-page .driver-plate-dropdown-item-plate,
