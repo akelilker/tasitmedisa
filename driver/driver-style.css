@@ -1169,9 +1169,6 @@ body.dashboard-page {
     margin-right: 0 !important;
     transform: translateX(0) !important;
   }
-  .dashboard-page .driver-action-btn-feedback.driver-request-fab:first-child {
-    margin-left: auto !important;
-  }
   .driver-action-btn-feedback.driver-request-fab:focus,
   .driver-action-btn-feedback.driver-request-fab:active {
     width: 132px;
@@ -1419,8 +1416,9 @@ body.dashboard-page {
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
   gap: 6px;
+  overflow: visible;
 }
 .driver-action-group.driver-action-feedback-slot.driver-request-fab-row > .driver-request-fab {
   flex: 0 0 auto;
@@ -1428,6 +1426,14 @@ body.dashboard-page {
   width: 36px;
   min-width: 36px;
   height: 36px;
+}
+.driver-action-group.driver-action-feedback-slot.driver-request-fab-row > .driver-request-fab:hover,
+.driver-action-group.driver-action-feedback-slot.driver-request-fab-row > .driver-request-fab:focus-visible {
+  width: 132px;
+}
+.driver-action-group.driver-action-feedback-slot.driver-request-fab-row > .driver-documents-fab:hover,
+.driver-action-group.driver-action-feedback-slot.driver-request-fab-row > .driver-documents-fab:focus-visible {
+  width: 112px;
 }
 .driver-action-group:last-child { margin-bottom: 0; }
 .driver-action-group .driver-report-block {
