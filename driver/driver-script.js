@@ -1919,7 +1919,8 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           var iconEl = container.querySelector('.driver-warning-icon');
           var iconW = iconEl ? (iconEl.offsetWidth || 24) + 4 : 28;
           var availW = container.clientWidth - iconW - 16;
-          if (textW > availW) {
+          var textOverflowing = textSpan.scrollWidth > (textSpan.clientWidth + 1);
+          if (textOverflowing || textW > availW) {
               var safe = escapeHtmlDriver(raw);
               var marqueeHtml = '<span class="driver-warning-marquee-outer"><span class="driver-warning-marquee-inner"><span>' + safe + '</span><span aria-hidden="true">' + safe + '</span></span></span>';
               textSpan.outerHTML = marqueeHtml;
