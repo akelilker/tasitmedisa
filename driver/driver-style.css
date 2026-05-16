@@ -3308,10 +3308,15 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   min-width: 0;
   max-width: 168px;
   width: auto;
+  appearance: none;
+  -webkit-appearance: none;
   border: 0;
   border-radius: 0;
   background: transparent;
+  box-shadow: none;
   color: var(--txt-white, #fff);
+  font: inherit;
+  margin: 0;
   padding: 12px 8px;
   display: flex;
   flex-direction: column;
@@ -3422,14 +3427,34 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   .driver-documents-list {
     flex-direction: column;
     align-items: stretch;
+    gap: 20px;
   }
 
   .driver-document-card {
     flex: 0 0 auto;
     max-width: none;
     width: 100%;
-    padding-top: 8px;
-    padding-bottom: 8px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    gap: 10px;
+  }
+
+  .driver-document-icon-wrap {
+    width: 52px;
+    height: 52px;
+  }
+
+  .driver-document-icon {
+    width: 34px;
+    height: 34px;
+  }
+
+  .driver-document-title {
+    font-size: 15px;
+  }
+
+  .driver-document-action {
+    font-size: 12px;
   }
 }
 
