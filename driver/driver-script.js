@@ -499,7 +499,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       } else {
         document.body.classList.remove('driver-history-or-edit-modal-open');
       }
-      if (id === 'driver-feedback-modal') {
+      if (id === 'driver-feedback-modal' || id === 'driver-documents-modal') {
         document.body.classList.add('driver-feedback-modal-open');
       } else {
         document.body.classList.remove('driver-feedback-modal-open');
@@ -988,6 +988,67 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       return allHistoryVehicles.find(v => String(v.id) === String(selectedVehicleId));
   }
 
+  const DRIVER_DOCUMENT_TYPES = [
+      { key: 'ruhsat', title: 'Ruhsat', pathField: 'ruhsatPath' },
+      { key: 'sigorta', title: 'Trafik Sigortası', pathField: 'sigortaPolicePath' },
+      { key: 'kasko', title: 'Kasko', pathField: 'kaskoPolicePath' }
+  ];
+
+  function hasDriverDocument(vehicle, config) {
+      return !!(vehicle && config && String(vehicle[config.pathField] || '').trim());
+  }
+
+  function buildDriverDocumentUrl(vehicleId, documentType) {
+      const rawId = String(vehicleId || '').trim();
+      if (!rawId) return '';
+      const url = new URL(APP_ROOT + 'ruhsat.php', window.location.origin);
+      url.searchParams.set('id', rawId);
+      url.searchParams.set('documentType', String(documentType || 'ruhsat').trim() || 'ruhsat');
+      if (currentToken) {
+          url.searchParams.set('token', currentToken);
+      }
+      return url.toString();
+  }
+
+  function setDriverDocumentsMessage(message, isError) {
+      const messageEl = document.getElementById('driver-documents-message');
+      if (!messageEl) return;
+      messageEl.textContent = message || '';
+      messageEl.classList.toggle('is-error', !!isError);
+  }
+
+  function renderDriverDocumentsModal(vehicle) {
+      const listEl = document.getElementById('driver-documents-list');
+      if (!listEl) return;
+      const vehicleId = vehicle && vehicle.id != null ? String(vehicle.id) : '';
+      listEl.innerHTML = DRIVER_DOCUMENT_TYPES.map(function(config) {
+          const hasDocument = hasDriverDocument(vehicle, config);
+          const actionText = hasDocument ? 'Görüntüle' : 'Yüklü Değil';
+          const disabledAttr = hasDocument ? '' : ' aria-disabled="true"';
+          return '<button type="button" class="driver-document-card' + (hasDocument ? '' : ' driver-document-card-missing') + '" data-document-type="' + config.key + '"' + disabledAttr + '>' +
+              '<span class="driver-document-title">' + config.title + '</span>' +
+              '<span class="driver-document-action">' + actionText + '</span>' +
+          '</button>';
+      }).join('');
+      listEl.querySelectorAll('.driver-document-card').forEach(function(card) {
+          card.addEventListener('click', function() {
+              const documentType = card.getAttribute('data-document-type') || 'ruhsat';
+              const config = DRIVER_DOCUMENT_TYPES.find(function(item) { return item.key === documentType; });
+              if (!hasDriverDocument(vehicle, config)) {
+                  setDriverDocumentsMessage(config.title + ' belgesi yüklü değil.', true);
+                  return;
+              }
+              const url = buildDriverDocumentUrl(vehicleId, documentType);
+              if (!url) {
+                  setDriverDocumentsMessage('Taşıt bilgisi bulunamadı.', true);
+                  return;
+              }
+              setDriverDocumentsMessage('', false);
+              window.open(url, '_blank', 'noopener');
+          });
+      });
+  }
+
   function getVehicleVersionForRequest(vehicleId) {
       var vehicle = allHistoryVehicles && allHistoryVehicles.find(function(v) { return String(v.id) === String(vehicleId); });
       var version = vehicle && vehicle.version != null ? Number(vehicle.version) : 1;
@@ -1438,7 +1499,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
                   </div>
               </div>
               <div class="driver-action-group driver-action-footer"><button type="button" onclick="saveVehicleData('${vid}')" class="universal-btn-save" id="btn-save-${vid}">Bildir</button><div id="status-${vid}" class="status-message"></div></div>
-              <div class="driver-action-group driver-action-feedback-slot driver-request-fab-row"><button type="button" class="driver-action-btn-feedback driver-request-fab" onclick="openDriverFeedbackModal()" aria-label="Talep, şikayet veya öneri gönder"><svg class="driver-action-btn-feedback-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.05" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h14a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3h-2.8L18 21l-5-3H5a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3z"></path><line x1="7" y1="9" x2="17" y2="9"></line><line x1="7" y1="13" x2="14" y2="13"></line></svg><span class="driver-request-fab-label">Talep Gönder</span></button></div>
+              <div class="driver-action-group driver-action-feedback-slot driver-request-fab-row"><button type="button" class="driver-action-btn-feedback driver-request-fab driver-documents-fab" onclick="openDriverDocumentsModal()" aria-label="Belgeler"><svg class="driver-action-btn-feedback-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.05" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h7l5 5v13H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"></path><path d="M14 3v5h5"></path><line x1="8" y1="13" x2="16" y2="13"></line><line x1="8" y1="17" x2="14" y2="17"></line></svg><span class="driver-request-fab-label">Belgeler</span></button><button type="button" class="driver-action-btn-feedback driver-request-fab" onclick="openDriverFeedbackModal()" aria-label="Talep, şikayet veya öneri gönder"><svg class="driver-action-btn-feedback-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.05" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h14a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3h-2.8L18 21l-5-3H5a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3z"></path><line x1="7" y1="9" x2="17" y2="9"></line><line x1="7" y1="13" x2="14" y2="13"></line></svg><span class="driver-request-fab-label">Talep Gönder</span></button></div>
           </div>
       `;
   }
@@ -3390,6 +3451,32 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       modal.classList.add('show');
       updateDriverModalBodyClass();
       /* iOS: textarea’ya otomatik odak tür seçicide ilk dokunuşu / klavyeyi bozabiliyor */
+  };
+
+  window.openDriverDocumentsModal = function() {
+      const modal = document.getElementById('driver-documents-modal');
+      const vehicle = getSelectedVehicle();
+      if (!modal) return;
+      if (!vehicle || vehicle.id == null) {
+          setDriverDocumentsMessage('Taşıt bilgisi bulunamadı.', true);
+          return;
+      }
+      renderDriverDocumentsModal(vehicle);
+      setDriverDocumentsMessage('', false);
+      const inner = document.querySelector('.driver-action-area-inner[data-vehicle-id="' + String(vehicle.id) + '"]');
+      if (inner) inner.classList.add('driver-feedback-panel-open');
+      modal.classList.add('show');
+      updateDriverModalBodyClass();
+  };
+
+  window.closeDriverDocumentsModal = function() {
+      const modal = document.getElementById('driver-documents-modal');
+      if (modal) modal.classList.remove('show');
+      setDriverDocumentsMessage('', false);
+      document.querySelectorAll('.driver-action-area-inner.driver-feedback-panel-open').forEach(function(el) {
+          el.classList.remove('driver-feedback-panel-open');
+      });
+      updateDriverModalBodyClass();
   };
 
   window.closeDriverFeedbackModal = function() {
