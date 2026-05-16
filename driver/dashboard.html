@@ -232,6 +232,24 @@
         </div>
         </div>
 
+        <div id="driver-documents-modal" class="driver-modal modal-overlay" onclick="if(event.target === this) closeDriverDocumentsModal();">
+        <div class="driver-modal-content modal-container" onclick="event.stopPropagation();">
+            <div class="modal-header">
+                <h2>BELGELER</h2>
+                <button type="button" onclick="closeDriverDocumentsModal()" class="modal-close" aria-label="Kapat">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="driver-documents-list" class="driver-documents-list" aria-live="polite"></div>
+                <div id="driver-documents-message" class="driver-documents-message" aria-live="polite"></div>
+            </div>
+        </div>
+        </div>
+
         <div id="history-modal" class="driver-modal modal-overlay">
         <div class="driver-modal-content modal-container">
             <div class="modal-header">
