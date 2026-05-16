@@ -900,7 +900,7 @@
 
   // Grid genişlikleri sütun kimliğine göre (sürükle-bırak sonrası genişlik doğru sütunla kalsın)
   function getVehicleColumnWidths(columnOrder) {
-    const defaultCols = '44px 77px minmax(0, 1.25fr) 56px minmax(0, 0.95fr) minmax(0, 0.7fr) minmax(0, 1.05fr) minmax(0, 1.05fr)';
+    const defaultCols = '44px 86px minmax(0, 1.25fr) 56px minmax(0, 0.95fr) minmax(0, 0.7fr) minmax(0, 1.05fr) minmax(0, 1.05fr)';
     try {
       if (!columnOrder || !Array.isArray(columnOrder) || columnOrder.length === 0) return defaultCols;
       const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
@@ -918,7 +918,7 @@
         : isCompactDesktop
           ? {
               'year': '36px',
-              'plate': '77px',
+              'plate': '86px',
               'brand': 'minmax(0, 1.52fr)',
               'km': '49px',
               'type': 'minmax(0, 0.88fr)',
@@ -928,7 +928,7 @@
             }
         : {
             'year': '44px',
-            'plate': '77px',
+            'plate': '86px',
             'brand': 'minmax(0, 1.72fr)',
             'km': '56px',
             'type': 'minmax(0, 0.82fr)',

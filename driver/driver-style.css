@@ -1103,7 +1103,7 @@ body.dashboard-page {
   flex: 0 0 auto;
   color: currentColor;
   transform-origin: center center;
-  animation: driver-feedback-fab-pulse 8s ease-in-out infinite;
+  animation: none;
 }
 @keyframes driver-feedback-fab-pulse {
   0%, 82%, 100% {
