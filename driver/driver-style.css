@@ -6658,9 +6658,10 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     min-height: 38px !important;
   }
 
-  /* Belgeler + Talep mini FAB: hover'da genişleyip layout oynatmasın; etiket solda overlay gibi açılsın */
+  /* Belgeler + Talep mini FAB: hover'da layout oynamasın; etiket kendi altında açılsın */
   .dashboard-page .driver-action-group.driver-action-feedback-slot.driver-request-fab-row {
-    gap: 8px !important;
+    gap: 10px !important;
+    padding-bottom: 20px !important;
   }
   .dashboard-page .driver-action-btn-feedback.driver-request-fab {
     position: relative !important;
@@ -6671,8 +6672,8 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     flex-direction: row !important;
     gap: 0 !important;
     overflow: visible !important;
-    transform: none !important;
-    transition: color .18s ease, background .18s ease, filter .18s ease !important;
+    transform: translateY(0) !important;
+    transition: color .18s ease, background .18s ease, filter .18s ease, transform .18s ease !important;
   }
   .dashboard-page .driver-action-group.driver-action-feedback-slot.driver-request-fab-row > .driver-request-fab:hover,
   .dashboard-page .driver-action-group.driver-action-feedback-slot.driver-request-fab-row > .driver-request-fab:focus-visible,
@@ -6683,27 +6684,29 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     width: 40px !important;
     min-width: 40px !important;
     padding: 0 !important;
-    transform: none !important;
+    transform: translateY(-3px) !important;
   }
   .dashboard-page .driver-action-btn-feedback.driver-request-fab .driver-request-fab-label {
     position: absolute !important;
-    right: calc(100% + 8px) !important;
-    top: 50% !important;
-    transform: translateY(-50%) !important;
+    left: 50% !important;
+    top: calc(100% + 7px) !important;
+    transform: translate(-50%, 4px) !important;
     opacity: 0 !important;
     max-width: none !important;
     overflow: visible !important;
     white-space: nowrap !important;
     pointer-events: none !important;
+    text-align: center !important;
     color: rgba(238, 246, 255, 0.92) !important;
     text-shadow: 0 0 5px rgba(238, 246, 255, 0.24) !important;
-    transition: opacity .18s ease, color .18s ease !important;
+    transition: opacity .18s ease, color .18s ease, transform .18s ease !important;
   }
   .dashboard-page .driver-action-btn-feedback.driver-request-fab:hover .driver-request-fab-label,
   .dashboard-page .driver-action-btn-feedback.driver-request-fab:focus-visible .driver-request-fab-label {
     opacity: 1 !important;
     max-width: none !important;
     color: #ffffff !important;
+    transform: translate(-50%, 0) !important;
   }
 }
 
