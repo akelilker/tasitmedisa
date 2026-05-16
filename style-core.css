@@ -940,14 +940,19 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
 /* Bildirim simgesi pulse animasyonu */
 .icon-btn.notification-pulse {
   animation: notificationPulse 2s ease-in-out infinite;
+  transform-origin: center center;
+  will-change: transform;
 }
 
 @keyframes notificationPulse {
   0%, 100% {
-    transform: scale(1);
+    transform: translateY(0) scale(1);
   }
-  50% {
-    transform: scale(1.1);
+  35% {
+    transform: translateY(-2px) scale(1.22);
+  }
+  58% {
+    transform: translateY(0) scale(1.06);
   }
 }
 
