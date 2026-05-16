@@ -1159,7 +1159,7 @@ body.dashboard-page {
     margin-bottom: 0 !important;
   }
   .dashboard-page .driver-action-area-inner .driver-action-feedback-slot.driver-request-fab-row {
-    margin-top: 6px !important;
+    margin-top: 2px !important;
   }
   .dashboard-page .driver-request-fab-row {
     justify-content: flex-end !important;
@@ -2383,6 +2383,9 @@ body.dashboard-page {
 }
 .driver-plate-dropdown-item[aria-selected="true"] {
   background: rgba(var(--theme-color-rgb), 0.15);
+}
+.driver-plate-dropdown-item:nth-child(even) {
+  background: rgba(255, 255, 255, 0.025);
 }
 .driver-cards-inner .vehicle-card.driver-card-hidden {
   display: none !important;
@@ -5822,7 +5825,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     margin-bottom: 0 !important;
   }
   .dashboard-page .driver-action-area-inner .driver-action-feedback-slot.driver-request-fab-row {
-    margin-top: 6px !important;
+    margin-top: 2px !important;
   }
   #history-modal .history-filter-label,
   #history-modal .history-vehicle-trigger {
