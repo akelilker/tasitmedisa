@@ -2849,7 +2849,7 @@
 
       // iOS yazıcı izin prompt'unu azaltmak için yazdırma script'ini önceden yükle
       if (!window._printScriptPromise) {
-        window._printScriptPromise = loadScript('tasitlar-yazici.js?v=20260506.11');
+        window._printScriptPromise = loadScript('tasitlar-yazici.js?v=20260517.5');
       }
 
     const modal = DOM.vehicleDetailModal || document.getElementById('vehicle-detail-modal');
@@ -3070,7 +3070,7 @@
         const originalText = printBtn.innerHTML;
         printBtn.innerHTML = '<span class="spin-animation" style="display:inline-block; width:16px; height:16px; border:2px solid currentColor; border-right-color:transparent; border-radius:50%; margin-right:4px;"></span> Yükleniyor...';
         printBtn.disabled = true;
-        (window._printScriptPromise || loadScript('tasitlar-yazici.js?v=20260506.11')).then(function() {
+        (window._printScriptPromise || loadScript('tasitlar-yazici.js?v=20260517.5')).then(function() {
           printBtn.innerHTML = originalText;
           printBtn.disabled = false;
           if (typeof window.printVehicleCard === 'function') {
@@ -6912,7 +6912,7 @@
     var pagesHtml = pageUrls.map(function(pageUrl) {
       return '<section class="ruhsat-pdf-print-page"><img src="' + escapeHtml(pageUrl) + '" alt="Belge sayfası"></section>';
     }).join('');
-    var printCss = '<style>html,body{margin:0;padding:0;background:#fff;}.ruhsat-pdf-print-page{width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#fff;page-break-after:always;break-after:page;}.ruhsat-pdf-print-page:last-child{page-break-after:auto;break-after:auto;}.ruhsat-pdf-print-page img{display:block;width:auto;height:auto;max-width:100vw;max-height:100vh;object-fit:contain;}@media print{@page{size:A4;margin:0;}html,body{width:100% !important;height:auto !important;background:#fff !important;overflow:visible !important;}.ruhsat-pdf-print-page{width:100vw !important;height:100vh !important;overflow:hidden !important;page-break-inside:avoid !important;break-inside:avoid !important;}.ruhsat-pdf-print-page img{width:auto !important;height:auto !important;max-width:100vw !important;max-height:100vh !important;object-fit:contain !important;}}</style>';
+    var printCss = '<style>html,body{margin:0;padding:0;background:#e5e7eb;}.ruhsat-pdf-print-page{width:min(100vw - 24px,210mm);aspect-ratio:210/297;margin:12px auto;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#fff;box-shadow:0 8px 24px rgba(0,0,0,.18);page-break-after:always;break-after:page;}.ruhsat-pdf-print-page:last-child{page-break-after:auto;break-after:auto;}.ruhsat-pdf-print-page img{display:block;width:auto;height:auto;max-width:100%;max-height:100%;object-fit:contain;}@media print{@page{size:A4 portrait;margin:0;}html,body{width:210mm !important;height:auto !important;margin:0 !important;padding:0 !important;background:#fff !important;overflow:visible !important;}.ruhsat-pdf-print-page{width:210mm !important;height:297mm !important;margin:0 !important;box-shadow:none !important;overflow:hidden !important;page-break-inside:avoid !important;break-inside:avoid !important;}.ruhsat-pdf-print-page img{width:auto !important;height:auto !important;max-width:210mm !important;max-height:297mm !important;object-fit:contain !important;}}</style>';
     return '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">' + printCss + '<title>Belge Yazdır</title></head><body>' + pagesHtml + '</body></html>';
   }
 
@@ -7070,6 +7070,7 @@
    */
   function openRuhsatPrintDialog(ruhsatUrl, vehicleId, documentType) {
     const dt = documentType || 'ruhsat';
+    const cfg = getVehicleDocumentConfig(dt);
     const url = toAbsoluteRuhsatUrl(ruhsatUrl);
     if (!url) return;
     var appTasitlar = window.appData && Array.isArray(window.appData.tasitlar) ? window.appData.tasitlar : [];
@@ -7160,6 +7161,14 @@
     }
     if (isIosPwa && isImage) {
       const cachedIosImageUrl = getCachedRuhsatDocumentObjectUrl(vehicleId, documentUrl, dt);
+      if (!cachedIosImageUrl) {
+        alert('Belge henüz hazır değil. Lütfen tekrar deneyin.');
+        return;
+      }
+      if (typeof window.openMedisaIosPwaPrintPreview === 'function') {
+        window.openMedisaIosPwaPrintPreview(buildImagePrintHtml(cachedIosImageUrl), cfg.label + ' Yazdır');
+        return;
+      }
       printCachedIosPwaImage(cachedIosImageUrl);
       return;
     }
@@ -7167,8 +7176,12 @@
     if (isIosPwa && !isImage) {
       var iosPwaPdfCacheKey = getRuhsatDocumentCacheKey(vehicleId, documentUrl, dt);
       var iosPwaPdfEntry = iosPwaPdfCacheKey ? ruhsatDocumentCache.get(iosPwaPdfCacheKey) : null;
-      if (!iosPwaPdfEntry || !iosPwaPdfEntry.pdfStagingReady || !iosPwaPdfEntry.pdfStagingFrame) {
+      if (!iosPwaPdfEntry || !iosPwaPdfEntry.pdfStagingReady || !Array.isArray(iosPwaPdfEntry.pdfPrintPageObjectUrls) || !iosPwaPdfEntry.pdfPrintPageObjectUrls.length) {
         alert('Belge henüz hazır değil. Lütfen tekrar deneyin.');
+        return;
+      }
+      if (typeof window.openMedisaIosPwaPrintPreview === 'function') {
+        window.openMedisaIosPwaPrintPreview(buildIosPwaPdfPrintHtml(iosPwaPdfEntry.pdfPrintPageObjectUrls), cfg.label + ' Yazdır');
         return;
       }
       var iosPwaPdfWin = iosPwaPdfEntry.pdfStagingFrame.contentWindow;
