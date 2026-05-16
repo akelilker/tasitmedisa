@@ -1125,6 +1125,19 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
     if (diffDays <= 21) return { class: 'driver-warn-orange', days: diffDays, level: 'orange' };
     return { class: '', days: diffDays, level: '' };
   }
+
+  function getDriverVehicleWarningLevel(vehicle) {
+      if (!vehicle || typeof vehicle !== 'object') return '';
+      const kmState = getVehicleKmState(vehicle);
+      if (kmState === 'FIRST_ENTRY_REQUIRED' || kmState === 'MONTHLY_UPDATE_DUE_HARD') return 'red';
+      let level = kmState === 'MONTHLY_UPDATE_DUE_SOFT' ? 'orange' : '';
+      [vehicle.sigortaDate, vehicle.kaskoDate, vehicle.muayeneDate, vehicle.egzozMuayeneDate].forEach(function(dateStr) {
+          const w = checkDateWarningsDriver(dateStr);
+          if (w.level === 'red') level = 'red';
+          else if (w.level === 'orange' && level !== 'red') level = 'orange';
+      });
+      return level;
+  }
   
   function syncDriverHeaderUserName() {
       const nameEl = document.getElementById('main-header-user-name');
@@ -1274,8 +1287,11 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           const plate = escapeHtmlDriver(formatDriverPlaka(v.plaka));
           const brandModelHtml = escapeHtmlDriver(brandModel);
           const hasBrandModel = !!brandModel;
+          const warningLevel = getDriverVehicleWarningLevel(v);
+          const warningClass = warningLevel ? (' driver-plate-warning-dot-' + warningLevel) : '';
           return `
               <div class="driver-plate-dropdown-item" role="option" data-vehicle-id="${v.id}" tabindex="0">
+                  <span class="driver-plate-warning-dot${warningClass}" aria-hidden="true"></span>
                   <span class="driver-plate-dropdown-item-plate">${plate}</span>
                   <span class="driver-plate-dropdown-item-separator${hasBrandModel ? '' : ' is-hidden'}" aria-hidden="true">-</span>
                   <span class="driver-plate-dropdown-item-brand">${brandModelHtml}</span>
