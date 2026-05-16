@@ -1415,6 +1415,20 @@ body.dashboard-page {
   gap: 6px;
   margin-bottom: 10px;
 }
+.driver-action-group.driver-action-feedback-slot.driver-request-fab-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.driver-action-group.driver-action-feedback-slot.driver-request-fab-row > .driver-request-fab {
+  flex: 0 0 auto;
+  display: inline-flex;
+  width: 36px;
+  min-width: 36px;
+  height: 36px;
+}
 .driver-action-group:last-child { margin-bottom: 0; }
 .driver-action-group .driver-report-block {
   margin-top: 4px;
