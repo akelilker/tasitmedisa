@@ -1066,11 +1066,12 @@ body.dashboard-page {
   text-align: center;
   align-self: center;
 }
-/* Sağ kolon: Talep Gönder mini FAB (Bildir altında sağda) */
+/* Sağ kolon: Belgeler + Talep Gönder mini FAB satırı (Bildir altında sağda) */
 .driver-request-fab-row {
   display: flex;
   justify-content: flex-end;
   align-items: center;
+  gap: 6px;
   width: 100%;
   margin-top: 3px;
   min-height: 28px;
@@ -1093,7 +1094,7 @@ body.dashboard-page {
   overflow: hidden;
   white-space: nowrap;
   transition: width .18s ease, color .18s ease, background .18s ease, transform .18s ease;
-  margin-left: auto;
+  margin-left: 0;
   transform: translateX(4px);
 }
 .driver-action-btn-feedback.driver-request-fab .driver-action-btn-feedback-icon {
@@ -1145,6 +1146,10 @@ body.dashboard-page {
   opacity: 1;
   max-width: 96px;
 }
+.driver-action-btn-feedback.driver-documents-fab:hover,
+.driver-action-btn-feedback.driver-documents-fab:focus-visible {
+  width: 112px;
+}
 
 @media (max-width: 768px) {
   /* Yeşil Bildir (footer) ile Talep Gönder arası tam 6px (margin çöküşü tek kaynak) */
@@ -1160,9 +1165,12 @@ body.dashboard-page {
     box-sizing: border-box !important;
   }
   .dashboard-page .driver-action-btn-feedback.driver-request-fab {
-    margin-left: auto !important;
+    margin-left: 0 !important;
     margin-right: 0 !important;
     transform: translateX(0) !important;
+  }
+  .dashboard-page .driver-action-btn-feedback.driver-request-fab:first-child {
+    margin-left: auto !important;
   }
   .driver-action-btn-feedback.driver-request-fab:focus,
   .driver-action-btn-feedback.driver-request-fab:active {
@@ -2870,6 +2878,7 @@ body.dashboard-page {
 #driver-event-menu-modal.driver-modal,
 #driver-password-modal.driver-modal,
 #driver-feedback-modal.driver-modal,
+#driver-documents-modal.driver-modal,
 #driver-anahtar-modal.driver-modal,
 #driver-lastik-modal.driver-modal,
 #driver-utts-modal.driver-modal,
@@ -2891,6 +2900,7 @@ body.dashboard-page {
 #driver-event-menu-modal.driver-modal.show,
 #driver-password-modal.driver-modal.show,
 #driver-feedback-modal.driver-modal.show,
+#driver-documents-modal.driver-modal.show,
 #driver-anahtar-modal.driver-modal.show,
 #driver-lastik-modal.driver-modal.show,
 #driver-utts-modal.driver-modal.show,
@@ -2905,7 +2915,8 @@ body.dashboard-page {
   z-index: 10021 !important;
 }
 /* Talep modalı tüm panel katmanlarının üstünde (scroll-area 10004, footer 10005) */
-#driver-feedback-modal.driver-modal.show {
+#driver-feedback-modal.driver-modal.show,
+#driver-documents-modal.driver-modal.show {
   z-index: 10050 !important;
 }
 
@@ -2921,6 +2932,7 @@ body.dashboard-page {
   #driver-event-menu-modal.driver-modal,
   #driver-password-modal.driver-modal,
   #driver-feedback-modal.driver-modal,
+  #driver-documents-modal.driver-modal,
   #driver-anahtar-modal.driver-modal,
   #driver-lastik-modal.driver-modal,
   #driver-utts-modal.driver-modal,
@@ -2931,7 +2943,8 @@ body.dashboard-page {
   }
   #history-modal.driver-modal,
   #edit-request-modal.driver-modal,
-  #driver-feedback-modal.driver-modal {
+  #driver-feedback-modal.driver-modal,
+  #driver-documents-modal.driver-modal {
     bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
   }
 }
@@ -2941,9 +2954,11 @@ body.dashboard-page {
   body.dashboard-page #history-modal.driver-modal,
   body.dashboard-page #edit-request-modal.driver-modal,
   body.dashboard-page #driver-feedback-modal.driver-modal,
+  body.dashboard-page #driver-documents-modal.driver-modal,
   body.login-page #history-modal.driver-modal,
   body.login-page #edit-request-modal.driver-modal,
-  body.login-page #driver-feedback-modal.driver-modal {
+  body.login-page #driver-feedback-modal.driver-modal,
+  body.login-page #driver-documents-modal.driver-modal {
     bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
   }
 }
@@ -2953,7 +2968,8 @@ body.dashboard-page {
   Üst başlık gradient'i köşeye otursun (#driver-password ile aynı üst radius).
 */
 @media (min-width: 641px) {
-  #driver-feedback-modal.driver-modal::before {
+  #driver-feedback-modal.driver-modal::before,
+  #driver-documents-modal.driver-modal::before {
     max-width: none !important;
     width: 100% !important;
     left: 0 !important;
@@ -2961,7 +2977,8 @@ body.dashboard-page {
     transform: none !important;
   }
 
-  #driver-feedback-modal .modal-header {
+  #driver-feedback-modal .modal-header,
+  #driver-documents-modal .modal-header {
     border-top-left-radius: var(--modal-radius, 10px) !important;
     border-top-right-radius: var(--modal-radius, 10px) !important;
     box-shadow: inset 0 1px 0 rgba(200, 208, 216, 0.46) !important;
@@ -2972,6 +2989,7 @@ body.dashboard-page {
 #edit-request-modal.driver-modal::before,
 #driver-event-menu-modal.driver-modal::before,
 #driver-password-modal.driver-modal::before,
+#driver-documents-modal.driver-modal::before,
 #driver-anahtar-modal.driver-modal::before,
 #driver-lastik-modal.driver-modal::before,
 #driver-utts-modal.driver-modal::before,
@@ -2998,7 +3016,8 @@ body.dashboard-page {
 #history-modal.driver-modal.show::before,
 #edit-request-modal.driver-modal.show::before,
 #driver-password-modal.driver-modal.show::before,
-#driver-feedback-modal.driver-modal.show::before {
+#driver-feedback-modal.driver-modal.show::before,
+#driver-documents-modal.driver-modal.show::before {
   clip-path: inset(0 0 calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0) + 4px) 0) !important;
   -webkit-clip-path: inset(0 0 calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0) + 4px) 0) !important;
 }
@@ -3011,7 +3030,9 @@ body.login-page:has(#edit-request-modal.driver-modal.show) #app-footer.login-foo
 }
 /* Talep/şikayet modalı: footer üstte kalmamalı (iOS’ta form alanları tıklanmıyor) */
 body.dashboard-page:has(#driver-feedback-modal.driver-modal.show) #app-footer,
-body.login-page:has(#driver-feedback-modal.driver-modal.show) #app-footer.login-footer {
+body.dashboard-page:has(#driver-documents-modal.driver-modal.show) #app-footer,
+body.login-page:has(#driver-feedback-modal.driver-modal.show) #app-footer.login-footer,
+body.login-page:has(#driver-documents-modal.driver-modal.show) #app-footer.login-footer {
   z-index: 10015 !important;
 }
 body.dashboard-page.driver-feedback-modal-open #app-footer,
@@ -3038,6 +3059,8 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 #driver-password-modal .modal-container,
 #driver-feedback-modal .driver-modal-content,
 #driver-feedback-modal .modal-container,
+#driver-documents-modal .driver-modal-content,
+#driver-documents-modal .modal-container,
 #driver-anahtar-modal .driver-modal-content,
 #driver-anahtar-modal .modal-container,
 #driver-lastik-modal .driver-modal-content,
@@ -3072,7 +3095,8 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 
 /* Üst mikro-highlight: Geçmiş + Talep modalı (kayıt modalıyla aynı üst kenar birleşimi, köşede “erken kesilme” hissini düzeltir) */
 #history-modal .modal-container::before,
-#driver-feedback-modal .modal-container::before {
+#driver-feedback-modal .modal-container::before,
+#driver-documents-modal .modal-container::before {
   content: '';
   position: absolute;
   top: 0;
@@ -3090,6 +3114,7 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 #edit-request-modal .modal-header,
 #driver-event-menu-modal .modal-header,
 #driver-feedback-modal .modal-header,
+#driver-documents-modal .modal-header,
 #driver-anahtar-modal .modal-header,
 #driver-lastik-modal .modal-header,
 #driver-utts-modal .modal-header,
@@ -3128,6 +3153,7 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 #driver-event-menu-modal .modal-header h2,
 #driver-password-modal .modal-header h2,
 #driver-feedback-modal .modal-header h2,
+#driver-documents-modal .modal-header h2,
 #driver-anahtar-modal .modal-header h2,
 #driver-lastik-modal .modal-header h2,
 #driver-utts-modal .modal-header h2,
@@ -3150,6 +3176,7 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 #driver-event-menu-modal .modal-close,
 #driver-password-modal .modal-close,
 #driver-feedback-modal .modal-close,
+#driver-documents-modal .modal-close,
 #driver-anahtar-modal .modal-close,
 #driver-lastik-modal .modal-close,
 #driver-utts-modal .modal-close,
@@ -3176,6 +3203,7 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 #driver-event-menu-modal .modal-close:hover,
 #driver-password-modal .modal-close:hover,
 #driver-feedback-modal .modal-close:hover,
+#driver-documents-modal .modal-close:hover,
 #driver-anahtar-modal .modal-close:hover,
 #driver-lastik-modal .modal-close:hover,
 #driver-utts-modal .modal-close:hover,
@@ -3191,6 +3219,7 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 #driver-event-menu-modal .modal-body,
 #driver-password-modal .modal-body,
 #driver-feedback-modal .modal-body,
+#driver-documents-modal .modal-body,
 #driver-anahtar-modal .modal-body,
 #driver-lastik-modal .modal-body,
 #driver-utts-modal .modal-body,
@@ -3208,6 +3237,82 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   padding-left: 20px !important;
   padding-right: 20px !important;
   box-sizing: border-box !important;
+}
+
+#driver-documents-modal .modal-body {
+  padding: 20px !important;
+  box-sizing: border-box !important;
+}
+
+.driver-documents-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.driver-document-card {
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 12px;
+  background: rgba(15, 20, 24, 0.92);
+  color: var(--txt-white, #fff);
+  padding: 14px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color .18s ease, background .18s ease, transform .18s ease;
+}
+
+.driver-document-card:hover,
+.driver-document-card:focus-visible {
+  border-color: rgba(var(--theme-color-rgb), 0.7);
+  background: rgba(18, 25, 31, 0.98);
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.driver-document-card-missing {
+  color: rgba(255, 255, 255, 0.58);
+  cursor: default;
+}
+
+.driver-document-card-missing:hover,
+.driver-document-card-missing:focus-visible {
+  border-color: rgba(255, 255, 255, 0.14);
+  background: rgba(15, 20, 24, 0.92);
+  transform: none;
+}
+
+.driver-document-title {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.driver-document-action {
+  flex: 0 0 auto;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  color: var(--theme-color);
+}
+
+.driver-document-card-missing .driver-document-action {
+  color: rgba(255, 255, 255, 0.44);
+}
+
+.driver-documents-message {
+  min-height: 18px;
+  margin-top: 12px;
+  font-size: 13px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.68);
+}
+
+.driver-documents-message.is-error {
+  color: #f87171;
 }
 
 #driver-feedback-modal .driver-feedback-form,
@@ -3266,6 +3371,7 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 #driver-event-menu-modal .modal-body::-webkit-scrollbar,
 #driver-password-modal .modal-body::-webkit-scrollbar,
 #driver-feedback-modal .modal-body::-webkit-scrollbar,
+#driver-documents-modal .modal-body::-webkit-scrollbar,
 #driver-anahtar-modal .modal-body::-webkit-scrollbar,
 #driver-lastik-modal .modal-body::-webkit-scrollbar,
 #driver-utts-modal .modal-body::-webkit-scrollbar,
