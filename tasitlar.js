@@ -9220,6 +9220,14 @@
       const aciklama = (eventData.aciklama || '').trim();
       if (tutar) pushDetail('Tutar', tutar + ' TL');
       if (aciklama) pushDetail('A\u00e7\u0131klama', toTitleCase(aciklama));
+    } else if (eventType === 'driver-feedback') {
+      const konuMap = { talep: 'Talep', sikayet: '\u015Eikayet', oneri: '\u00D6neri', diger: 'Di\u011Fer' };
+      const konuKey = String(eventData.konuTuru || eventData.konu_turu || '').trim();
+      const konu = konuMap[konuKey] || '';
+      const mesaj = String(eventData.mesaj || eventData.sebep || '').trim();
+      summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Kullan\u0131c\u0131 Panelinde Talep Kayd\u0131 Olu\u015Fturdu.</span>';
+      if (konu) pushDetail('Konu', konu);
+      if (mesaj) pushDetail('Mesaj', mesaj);
     } else if (eventType === 'not-guncelle') {
       summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Ta\u015F\u0131t Notunu G\u00FCncelledi.</span>';
       const note = String(eventData.not || '').trim();
