@@ -508,6 +508,64 @@ body.modal-open #info-modal.open {
     flex: 1 1 auto;
 }
 
+#required-documents-modal #required-k2-document-status,
+#required-documents-modal #required-k2-document-input {
+    display: none;
+}
+
+#required-documents-modal .required-k2-document-picker {
+    width: 100%;
+    max-width: 280px;
+    min-height: 38px;
+    margin: 0 auto 8px auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--form-label-color, #ffffff);
+    font-size: 14px;
+    line-height: 1.2;
+    cursor: pointer;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+}
+
+#required-documents-modal .required-k2-document-picker:hover,
+#required-documents-modal .required-k2-document-picker:focus-visible {
+    border-color: rgba(255, 255, 255, 0.45);
+    background: rgba(255, 255, 255, 0.06);
+    outline: none;
+}
+
+#required-documents-modal .required-k2-document-picker.upload-success {
+    border-color: rgba(40, 167, 69, 0.72);
+    background: rgba(40, 167, 69, 0.12);
+    color: #7dffae;
+}
+
+#required-documents-modal .required-k2-document-picker-icon {
+    width: 18px;
+    min-width: 18px;
+    height: 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+#required-documents-modal .required-k2-document-picker-label {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 #required-documents-modal .required-k2-date-picker-btn {
     width: 34px;
     height: 34px;
@@ -515,11 +573,17 @@ body.modal-open #info-modal.open {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid var(--border);
+    border: 0;
     border-radius: 8px;
-    background: var(--card-bg);
-    color: var(--txt);
+    background: transparent;
+    color: #8f98a6;
     cursor: pointer;
+}
+
+#required-documents-modal .required-k2-date-picker-btn:hover,
+#required-documents-modal .required-k2-date-picker-btn:focus-visible {
+    color: #b8c0cc;
+    outline: none;
 }
 
 #required-documents-modal .required-k2-date-picker-btn svg {
