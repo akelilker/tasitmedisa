@@ -892,12 +892,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Lazy modül asset sürümleri — tek nesne; index.html içindeki style-core ?v= ile tasitlar sürümü uyumlu kalmalı
 var MEDISA_MODULE_VERSIONS = {
-  tasitlar: '20260517.7',
+  tasitlar: '20260518.1',
   raporlar: '20260511.3',
-  kayitJs: '20260517.7',
+  kayitJs: '20260518.1',
   kayitCss: '20260512.1',
-  ayarlarJs: '20260514.1',
-  ayarlarCss: '20260514.1'
+  ayarlarJs: '20260518.1',
+  ayarlarCss: '20260518.1'
 };
 window.MEDISA_MODULE_VERSIONS = MEDISA_MODULE_VERSIONS;
 var TASITLAR_MODULE_VERSION = MEDISA_MODULE_VERSIONS.tasitlar;
@@ -971,6 +971,7 @@ var TASITLAR_MODULE_VERSION = MEDISA_MODULE_VERSIONS.tasitlar;
   }
   window.openBranchManagement = wrapAyarlar('openBranchManagement');
   window.openUserManagement = wrapAyarlar('openUserManagement');
+  window.openZorunluEvraklar = wrapAyarlar('openZorunluEvraklar');
   window.openDisVeriPanel = wrapAyarlar('openDisVeriPanel');
   window.openDataManagement = wrapAyarlar('openDataManagement');
   window.clearCache = wrapAyarlar('clearCache');
