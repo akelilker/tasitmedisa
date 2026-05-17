@@ -3616,6 +3616,16 @@
     return !!(vehicle && (vehicle.satildiMi === true || vehicle.arsiv === true));
   }
 
+  function isVehicleOperationallyInactive(vehicle) {
+    if (!vehicle || typeof vehicle !== 'object') return true;
+    return vehicle.satildiMi === true
+      || vehicle.arsiv === true
+      || vehicle.pasif === true
+      || vehicle.aktif === false
+      || vehicle.aktifMi === false
+      || String(vehicle.durum || '').trim().toLowerCase() === 'pasif';
+  }
+
   function getEgzozMuayeneState(vehicle) {
     const rawDate = vehicle && vehicle.egzozMuayeneDate != null ? String(vehicle.egzozMuayeneDate).trim() : '';
     if (!rawDate) {
@@ -3668,7 +3678,7 @@
    */
   function getVehicleDateSeverityClass(vehicle) {
     if (!vehicle || typeof vehicle !== 'object') return '';
-    if (vehicle.satildiMi === true) return '';
+    if (isVehicleOperationallyInactive(vehicle)) return '';
     const dates = [
       vehicle.sigortaDate,
       vehicle.kaskoDate,
@@ -3752,8 +3762,7 @@
     var vehicles = readVehicles();
 
     vehicles.forEach(function(vehicle) {
-      if (!vehicle || vehicle.satildiMi) return;
-      if (vehicle.arsiv === true) return;
+      if (isVehicleOperationallyInactive(vehicle)) return;
 
       var plate = vehicle.plate || '-';
       var brandModel = formatBrandModel(vehicle.brandModel || '-');
@@ -3917,7 +3926,7 @@
 
     var k2Date = getK2BelgesiExpiryDate();
     var k2AnchorVehicle = vehicles.find(function(vehicle) {
-      return vehicle && !vehicle.satildiMi && vehicle.arsiv !== true && vehicleNeedsK2Belgesi(vehicle);
+      return !isVehicleOperationallyInactive(vehicle) && vehicleNeedsK2Belgesi(vehicle);
     });
     if (k2AnchorVehicle && k2Date) {
       var wK2 = checkDateWarnings(k2Date);
@@ -5023,7 +5032,7 @@
     if (!rightEl) return;
     
     let html = '';
-    const isSoldOrArchivedVehicle = !!(vehicle && vehicle.satildiMi === true);
+    const isSoldOrArchivedVehicle = isVehicleOperationallyInactive(vehicle);
     
     // Sigorta bitiş tarihi
     const sigortaDate = vehicle.sigortaDate || '';

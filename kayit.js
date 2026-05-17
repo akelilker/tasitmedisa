@@ -79,6 +79,26 @@
   function readVehicles() { return (typeof window.getMedisaVehicles === 'function' ? window.getMedisaVehicles() : null) || []; }
   const VEHICLE_DATE_INPUT_SELECTOR = 'input.form-input[data-date-input="vehicle"]';
 
+  function getRegistrationVehicleTypeKey(vehicleOrType) {
+    if (vehicleOrType && typeof vehicleOrType === 'object') {
+      return String(vehicleOrType.vehicleType || vehicleOrType.tip || '').trim().toLowerCase();
+    }
+    return String(vehicleOrType || '').trim().toLowerCase();
+  }
+
+  function registrationVehicleNeedsTakograf(vehicleOrType) {
+    return getRegistrationVehicleTypeKey(vehicleOrType) === 'kamyon';
+  }
+
+  function clearVehicleTakografFieldsWhenOutOfScope(vehicle) {
+    if (!vehicle || registrationVehicleNeedsTakograf(vehicle)) return vehicle;
+    vehicle.takografKalibrasyonDate = '';
+    vehicle.takografExpiryDate = '';
+    vehicle.takografBelgesiPath = '';
+    vehicle.takografServis = '';
+    return vehicle;
+  }
+
   function getVehicleDateInputs(root) {
     return $all(VEHICLE_DATE_INPUT_SELECTOR, root || document);
   }
@@ -2647,10 +2667,11 @@
       if (isEditMode) {
         const index = vehicles.findIndex(v => v.id === editingVehicleId);
         if (index !== -1) {
-          vehicles[index] = { ...vehicles[index], ...record };
+          vehicles[index] = clearVehicleTakografFieldsWhenOutOfScope({ ...vehicles[index], ...record });
         }
       } else {
         // Yeni kayıt: İlk km'yi guncelKm olarak ayarla ve tarihçeye ekle
+        clearVehicleTakografFieldsWhenOutOfScope(record);
         if (record.km) {
           record.guncelKm = record.km.replace(/\./g, ''); // Noktaları temizle
           
@@ -2960,6 +2981,7 @@
             const vehicle = vehicles.find(v => String(v.id) === String(fromDetailId));
             if (vehicle) {
               vehicle.vehicleType = type;
+              clearVehicleTakografFieldsWhenOutOfScope(vehicle);
               if (window.dataApi && window.dataApi.saveVehiclesList) {
                 window.dataApi.saveVehiclesList(vehicles).catch(function() {});
               }
