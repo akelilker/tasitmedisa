@@ -44,7 +44,7 @@ if (!medisaCanViewVehicleRecord($vehicle, $auth['context'])) {
     respondJsonError(403, 'Bu ruhsatı görüntüleme yetkiniz yok.');
 }
 
-$sourcePath = medisaResolveVehicleDocumentFilePath($vehicle, $documentType);
+$sourcePath = medisaResolveVehicleDocumentFilePath($vehicle, $documentType, $data);
 if (!$sourcePath || !is_file($sourcePath)) {
     respondJsonError(404, $config['notFound']);
 }

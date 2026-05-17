@@ -991,8 +991,33 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
   const DRIVER_DOCUMENT_TYPES = [
       { key: 'ruhsat', title: 'Ruhsat', pathField: 'ruhsatPath', icon: 'document' },
       { key: 'sigorta', title: 'Sigorta Poliçesi', pathField: 'sigortaPolicePath', icon: 'shield' },
-      { key: 'kasko', title: 'Kasko Poliçesi', pathField: 'kaskoPolicePath', icon: 'shield' }
+      { key: 'kasko', title: 'Kasko Poliçesi', pathField: 'kaskoPolicePath', icon: 'shield' },
+      { key: 'k2', title: 'K2 Belgesi', pathField: 'k2BelgesiPath', icon: 'document' },
+      { key: 'tasit_karti', title: 'Taşıt Kartı', pathField: 'tasitKartiPath', icon: 'document' },
+      { key: 'takograf', title: 'Takograf Belgesi', pathField: 'takografBelgesiPath', icon: 'document' }
   ];
+
+  function getDriverVehicleTypeKey(vehicle) {
+      return String((vehicle && (vehicle.vehicleType || vehicle.tip)) || '').trim().toLowerCase();
+  }
+
+  function driverVehicleNeedsK2(vehicle) {
+      var typeKey = getDriverVehicleTypeKey(vehicle);
+      return typeKey === 'minivan' || typeKey === 'kamyon' || typeKey === 'romork';
+  }
+
+  function driverVehicleNeedsTakograf(vehicle) {
+      return getDriverVehicleTypeKey(vehicle) === 'kamyon';
+  }
+
+  function getDriverDocumentTypesForVehicle(vehicle) {
+      var keys = ['ruhsat', 'sigorta', 'kasko'];
+      if (driverVehicleNeedsK2(vehicle)) keys.push('k2', 'tasit_karti');
+      if (driverVehicleNeedsTakograf(vehicle)) keys.push('takograf');
+      return keys.map(function(key) {
+          return DRIVER_DOCUMENT_TYPES.find(function(item) { return item.key === key; });
+      }).filter(Boolean);
+  }
 
   function hasDriverDocument(vehicle, config) {
       return !!(vehicle && config && String(vehicle[config.pathField] || '').trim());
@@ -1027,7 +1052,8 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       const listEl = document.getElementById('driver-documents-list');
       if (!listEl) return;
       const vehicleId = vehicle && vehicle.id != null ? String(vehicle.id) : '';
-      listEl.innerHTML = DRIVER_DOCUMENT_TYPES.map(function(config) {
+      const documentTypes = getDriverDocumentTypesForVehicle(vehicle);
+      listEl.innerHTML = documentTypes.map(function(config) {
           const hasDocument = hasDriverDocument(vehicle, config);
           const actionText = hasDocument ? 'Görüntüle' : 'Yüklü Değil';
           const disabledAttr = hasDocument ? '' : ' aria-disabled="true"';
@@ -1040,7 +1066,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       listEl.querySelectorAll('.driver-document-card').forEach(function(card) {
           card.addEventListener('click', function() {
               const documentType = card.getAttribute('data-document-type') || 'ruhsat';
-              const config = DRIVER_DOCUMENT_TYPES.find(function(item) { return item.key === documentType; });
+              const config = documentTypes.find(function(item) { return item.key === documentType; });
               if (!hasDriverDocument(vehicle, config)) {
                   setDriverDocumentsMessage(config.title + ' belgesi yüklü değil.', true);
                   return;

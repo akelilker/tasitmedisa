@@ -3574,6 +3574,38 @@
     return rawType;
   }
 
+  function getVehicleTypeKey(vehicle) {
+    return String((vehicle && (vehicle.vehicleType || vehicle.tip)) || '').trim().toLowerCase();
+  }
+
+  function vehicleNeedsK2Belgesi(vehicle) {
+    var typeKey = getVehicleTypeKey(vehicle);
+    return typeKey === 'minivan' || typeKey === 'kamyon' || typeKey === 'romork';
+  }
+
+  function vehicleNeedsTakograf(vehicle) {
+    return getVehicleTypeKey(vehicle) === 'kamyon';
+  }
+
+  function getK2BelgesiState() {
+    if (!window.appData) window.appData = {};
+    if (!window.appData.ayarlar || typeof window.appData.ayarlar !== 'object' || Array.isArray(window.appData.ayarlar)) {
+      window.appData.ayarlar = {};
+    }
+    if (!window.appData.ayarlar.k2Belgesi || typeof window.appData.ayarlar.k2Belgesi !== 'object' || Array.isArray(window.appData.ayarlar.k2Belgesi)) {
+      window.appData.ayarlar.k2Belgesi = { expiryDate: '', documentPath: '', updatedAt: '' };
+    }
+    return window.appData.ayarlar.k2Belgesi;
+  }
+
+  function getK2BelgesiExpiryDate() {
+    return String(getK2BelgesiState().expiryDate || '').trim();
+  }
+
+  function getK2BelgesiDocumentPath() {
+    return String(getK2BelgesiState().documentPath || '').trim();
+  }
+
   function getMuayeneRenewalYearsByProfile(profileKey) {
     return profileKey === 'otomobil' ? 2 : 1;
   }
@@ -3782,6 +3814,34 @@
         }
       }
 
+      if (vehicleNeedsTakograf(vehicle) && vehicle.takografExpiryDate) {
+        var wTak = checkDateWarnings(vehicle.takografExpiryDate);
+        if (monthlyOperationalDateTaskFilterPasses(vehicle.takografExpiryDate, wTak)) {
+          monthly.push({
+            vehicle: vehicle,
+            type: 'Takograf',
+            field: 'takografExpiryDate',
+            date: vehicle.takografExpiryDate,
+            days: wTak.days,
+            status: (typeof wTak.days === 'number' && wTak.days < 0) ? 'past' : 'upcoming',
+            warningClass: wTak.class
+          });
+        }
+        if (attachNotif && wTak.class) {
+          var dtak = wTak.days;
+          notificationsArray.push({
+            type: 'takograf',
+            vehicleId: vehicle.id,
+            plate: plate,
+            brandModel: brandModel,
+            date: vehicle.takografExpiryDate,
+            days: dtak,
+            warningClass: wTak.class,
+            status: dtak < 0 ? 'geçmiş' : dtak <= 3 ? 'çok yakın' : 'yaklaşıyor'
+          });
+        }
+      }
+
       if (vehicle.muayeneDate) {
         var wM = computeMuayeneWarningForOperationalScan(vehicle);
         if (wM && monthlyOperationalDateTaskFilterPasses(vehicle.muayeneDate, wM)) {
@@ -3854,6 +3914,38 @@
         });
       }
     });
+
+    var k2Date = getK2BelgesiExpiryDate();
+    var k2AnchorVehicle = vehicles.find(function(vehicle) {
+      return vehicle && !vehicle.satildiMi && vehicle.arsiv !== true && vehicleNeedsK2Belgesi(vehicle);
+    });
+    if (k2AnchorVehicle && k2Date) {
+      var wK2 = checkDateWarnings(k2Date);
+      if (monthlyOperationalDateTaskFilterPasses(k2Date, wK2)) {
+        monthly.push({
+          vehicle: k2AnchorVehicle,
+          type: 'K2 Belgesi',
+          field: 'k2BelgesiExpiryDate',
+          date: k2Date,
+          days: wK2.days,
+          status: (typeof wK2.days === 'number' && wK2.days < 0) ? 'past' : 'upcoming',
+          warningClass: wK2.class
+        });
+      }
+      if (attachNotif && wK2.class) {
+        var dk2 = wK2.days;
+        notificationsArray.push({
+          type: 'k2',
+          vehicleId: k2AnchorVehicle.id,
+          plate: k2AnchorVehicle.plate || '-',
+          brandModel: 'K2 Belgesi',
+          date: k2Date,
+          days: dk2,
+          warningClass: wK2.class,
+          status: dk2 < 0 ? 'geçmiş' : dk2 <= 3 ? 'çok yakın' : 'yaklaşıyor'
+        });
+      }
+    }
 
     monthly.sort(function(a, b) {
       var da = typeof a.days === 'number' ? a.days : 9999;
@@ -3943,6 +4035,8 @@
       else if (f === 'kaskoDate') type = 'Kasko';
       else if (f === 'muayeneDate') type = 'Muayene';
       else if (f === 'egzozMuayeneDate') type = 'Egzoz Muayene';
+      else if (f === 'k2BelgesiExpiryDate') type = 'K2 Belgesi';
+      else if (f === 'takografExpiryDate') type = 'Takograf';
       else if (f === 'muayeneDate+egzozMuayeneDate') type = 'Muayene + Egzoz';
       else if (f === 'sigortaDate+kaskoDate') type = 'Sigorta + Kasko';
       else if (f === 'guncelKm' || f === 'km') type = 'KM';
@@ -3965,6 +4059,10 @@
         return 'Genel Muayene / Egzoz Muayenesi Randevusu Konusunda Destek İhtiyacı';
       case 'Sigorta + Kasko':
         return 'Güncellenen Zorunlu Trafik Sigortası / Kasko Poliçesinin Gönderilmesi.';
+      case 'K2 Belgesi':
+        return 'K2 belgesi geçerlilik durumunun kontrol edilmesi.';
+      case 'Takograf':
+        return 'Takograf kalibrasyon süresinin kontrol edilmesi.';
       case 'KM':
         return 'Güncel Kilometre Bilgisinin Kullanıcı Paneli Üzerinden Bildirilmesi.';
       default:
@@ -4307,7 +4405,9 @@
       'Sigorta + Kasko': 'Trafik Sigortası ve Kasko Poliçesinin',
       'Muayene': 'Taşıt Muayenesinin',
       'Egzoz Muayene': 'Egzoz Muayenesinin',
-      'Muayene + Egzoz': 'Taşıt Muayenesi ve Egzoz Muayenesinin'
+      'Muayene + Egzoz': 'Taşıt Muayenesi ve Egzoz Muayenesinin',
+      'K2 Belgesi': 'K2 Belgesinin',
+      'Takograf': 'Takograf Kalibrasyonunun'
     };
     var users = readUsers();
     var userMap = {};
@@ -4962,6 +5062,23 @@
       const egzozDisplay = formatDateForDetailModal(egzozState.date);
       html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Egzoz Muayene Bitiş</span><span class="detail-row-colon">:</span></div><span class="detail-row-value ${egzozWarningClass}"> ${escapeHtml(egzozDisplay || '-')}</span></div>`;
     }
+
+    if (vehicleNeedsK2Belgesi(vehicle)) {
+      const k2Date = getK2BelgesiExpiryDate();
+      const k2Warning = checkDateWarnings(k2Date);
+      const k2WarningClass = isSoldOrArchivedVehicle ? '' : k2Warning.class;
+      html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">K2 Belgesi Geçerlilik</span><span class="detail-row-colon">:</span></div><span class="detail-row-value ${k2WarningClass}"> ${escapeHtml(formatDateForDetailModal(k2Date) || '-')}</span></div>`;
+
+      const tasitKartiLabel = getVehicleDocumentPath(vehicle, 'tasit_karti') ? 'Yüklü' : 'Yüklü Değil';
+      html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Taşıt Kartı</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(tasitKartiLabel)}</span></div>`;
+    }
+
+    if (vehicleNeedsTakograf(vehicle)) {
+      const takografDate = vehicle.takografExpiryDate || '';
+      const takografWarning = checkDateWarnings(takografDate);
+      const takografWarningClass = isSoldOrArchivedVehicle ? '' : takografWarning.class;
+      html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Takograf Kalibrasyon Bitiş</span><span class="detail-row-colon">:</span></div><span class="detail-row-value ${takografWarningClass}"> ${escapeHtml(formatDateForDetailModal(takografDate) || '-')}</span></div>`;
+    }
     
     // var/yok alanları: boş = Belirtilmedi (kesin Yoktur./Hayır gösterilmez)
     const detailVarYokLabel = function(raw, detailVal) {
@@ -5216,6 +5333,8 @@
     ceza: 'TRAFİK CEZASI EKLE',
     sigorta: 'SİGORTA BİLGİSİ GÜNCELLE',
     kasko: 'KASKO BİLGİSİ GÜNCELLE',
+    k2belgesi: 'K2 BELGESİ BİLGİSİ GÜNCELLE',
+    takograf: 'TAKOGRAF KALİBRASYON GÜNCELLE',
     muayene: 'MUAYENE BİLGİSİ GÜNCELLE',
     anahtar: 'YEDEK ANAHTAR BİLGİSİ GÜNCELLE',
     kredi: 'HAK MAHRUMİYETİ BİLGİSİ GÜNCELLE',
@@ -5331,7 +5450,7 @@
   /** sigorta/kasko/muayene gg/aa/yyyy metin alanlarını kayıttan önce normalize et */
   function bindGgAaYyyyTextInputs(modal) {
     if (!modal) return;
-    ['sigorta-tarih', 'kasko-tarih', 'muayene-tarih', 'muayene-egzoz-yapilma-tarih'].forEach(function(id) {
+    ['sigorta-tarih', 'kasko-tarih', 'k2-belgesi-tarih', 'takograf-kalibrasyon-tarih', 'muayene-tarih', 'muayene-egzoz-yapilma-tarih'].forEach(function(id) {
       const input = modal.querySelector('#' + id);
       if (!input || input.dataset.ggaaNormalizeBound) return;
       input.dataset.ggaaNormalizeBound = '1';
@@ -5344,7 +5463,7 @@
   /** Sigorta/kasko/muayene gg/aa/yyyy metin alanına yerel tarih seçici + simge */
   function setupOlayGgAaYyyyPickers(modal) {
     if (!modal) return;
-    const ids = ['sigorta-tarih', 'kasko-tarih', 'muayene-tarih', 'muayene-egzoz-yapilma-tarih'];
+    const ids = ['sigorta-tarih', 'kasko-tarih', 'k2-belgesi-tarih', 'takograf-kalibrasyon-tarih', 'muayene-tarih', 'muayene-egzoz-yapilma-tarih'];
     const calendarSvg = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>';
     ids.forEach(function(id) {
       const textEl = document.getElementById(id);
@@ -5535,6 +5654,15 @@
           section('Firma', 'kasko-firma', 'input', [['type', 'text'], ['placeholder', 'ör. Anadolu']]) +
           section('Acente', 'kasko-acente', 'input', [['type', 'text'], ['placeholder', 'ör. Hayri Çetin']]) +
           section('İletişim', 'kasko-iletisim', 'input', [['type', 'text'], ['placeholder', '05** *******']]) + '</div>';
+      case 'k2belgesi':
+        return '<div style="display:flex;flex-direction:column;gap:12px;">' +
+          section('K2 Belgesi Geçerlilik (gg/aa/yyyy)', 'k2-belgesi-tarih', 'input', [['type', 'text'], ['placeholder', 'gg/aa/yyyy']]) +
+          section('Not', 'k2-belgesi-not', 'textarea', [['rows', '2'], ['placeholder', 'İsteğe bağlı not']]) + '</div>';
+      case 'takograf':
+        return '<div style="display:flex;flex-direction:column;gap:12px;">' +
+          section('Kalibrasyon Tarihi (gg/aa/yyyy)', 'takograf-kalibrasyon-tarih', 'input', [['type', 'text'], ['placeholder', 'gg/aa/yyyy']]) +
+          section('Servis', 'takograf-servis', 'input', [['type', 'text'], ['placeholder', 'Servis adı']]) +
+          section('Not', 'takograf-not', 'textarea', [['rows', '2'], ['placeholder', 'İsteğe bağlı not']]) + '</div>';
       case 'muayene':
         return '<div style="display:flex;flex-direction:column;gap:12px;">' +
           section('Muayene Tarihi', 'muayene-tarih', 'input', [['type', 'text'], ['placeholder', 'gg/aa/yyyy']]) +
@@ -5636,6 +5764,12 @@
         { id: 'kullanici', label: 'Kullan\u0131c\u0131 Atama/De\u011Fi\u015Fikli\u011Fi Bilgisi G\u00FCncelle' },
         { id: 'satis', label: 'Sat\u0131\u015F/Pert Bildirimi Yap' }
       ];
+      if (vehicleNeedsK2Belgesi(currentMenuVehicle)) {
+        events.splice(7, 0, { id: 'k2belgesi', label: 'K2 Belgesi Bilgisi G\u00FCncelle' });
+      }
+      if (vehicleNeedsTakograf(currentMenuVehicle)) {
+        events.splice(8, 0, { id: 'takograf', label: 'Takograf Kalibrasyon G\u00FCncelle' });
+      }
       if (assignmentLocked) {
         events = events.filter(function(event) {
           return event.id !== 'sube' && event.id !== 'kullanici';
@@ -5747,6 +5881,8 @@
         ceza: window.saveCezaEvent,
         sigorta: window.updateSigortaInfo,
         kasko: window.updateKaskoInfo,
+        k2belgesi: window.updateK2BelgesiInfo,
+        takograf: window.updateTakografKalibrasyonInfo,
         muayene: window.updateMuayeneInfo,
         anahtar: window.updateAnahtarInfo,
         kredi: window.updateKrediInfo,
@@ -5824,6 +5960,13 @@
             if (value) this.value = formatNumber(value);
           });
         }
+      } else if (type === 'k2belgesi') {
+        const input = document.getElementById('k2-belgesi-tarih');
+        if (input) input.value = formatIsoToGgAaYyyy(getK2BelgesiExpiryDate());
+      } else if (type === 'takograf') {
+        const vehicle = readVehicles().find(v => String(v.id) === String(vehicleId || window.currentDetailVehicleId));
+        const input = document.getElementById('takograf-kalibrasyon-tarih');
+        if (input && vehicle) input.value = formatIsoToGgAaYyyy(vehicle.takografKalibrasyonDate || '');
       } else if (type === 'muayene') {
         const vid = vehicleId || window.currentDetailVehicleId;
         const vehicleMuayenePref = vid ? readVehicles().find(v => String(v.id) === String(vid)) : null;
@@ -6364,6 +6507,40 @@
       missingAlert: 'Lütfen kasko poliçesi dosyası seçin.',
       successMessage: 'Kasko Poliçesi Başarıyla Yüklendi',
       icon: 'shield'
+    },
+    k2: {
+      key: 'k2',
+      label: 'K2 Belgesi',
+      title: 'K2 BELGESİ',
+      pathField: 'k2BelgesiPath',
+      uploadButton: 'K2 Belgesi Yükle',
+      changeLabel: 'K2 Belgesini Değiştir',
+      missingAlert: 'Lütfen K2 belgesi dosyası seçin.',
+      successMessage: 'K2 Belgesi Başarıyla Yüklendi',
+      icon: 'document',
+      scope: 'settings'
+    },
+    tasit_karti: {
+      key: 'tasit_karti',
+      label: 'Taşıt Kartı',
+      title: 'TAŞIT KARTI',
+      pathField: 'tasitKartiPath',
+      uploadButton: 'Taşıt Kartı Yükle',
+      changeLabel: 'Taşıt Kartını Değiştir',
+      missingAlert: 'Lütfen taşıt kartı dosyası seçin.',
+      successMessage: 'Taşıt Kartı Başarıyla Yüklendi',
+      icon: 'document'
+    },
+    takograf: {
+      key: 'takograf',
+      label: 'Takograf Belgesi',
+      title: 'TAKOGRAF BELGESİ',
+      pathField: 'takografBelgesiPath',
+      uploadButton: 'Takograf Belgesi Yükle',
+      changeLabel: 'Takograf Belgesini Değiştir',
+      missingAlert: 'Lütfen takograf belgesi dosyası seçin.',
+      successMessage: 'Takograf Belgesi Başarıyla Yüklendi',
+      icon: 'document'
     }
   };
 
@@ -6373,7 +6550,21 @@
 
   function getVehicleDocumentPath(vehicle, documentType) {
     const config = getVehicleDocumentConfig(documentType);
+    if (config.scope === 'settings') {
+      return getK2BelgesiDocumentPath();
+    }
     return vehicle ? String(vehicle[config.pathField] || '') : '';
+  }
+
+  function getVehicleDocumentKeysForVehicle(vehicle) {
+    var keys = ['ruhsat', 'sigorta', 'kasko'];
+    if (vehicleNeedsK2Belgesi(vehicle)) {
+      keys.push('k2', 'tasit_karti');
+    }
+    if (vehicleNeedsTakograf(vehicle)) {
+      keys.push('takograf');
+    }
+    return keys;
   }
 
   /**
@@ -7532,7 +7723,7 @@
 
     const picker = document.createElement('div');
     picker.className = 'vehicle-document-picker';
-    ['ruhsat', 'sigorta', 'kasko'].forEach(function(docKey) {
+    getVehicleDocumentKeysForVehicle(vehicle).forEach(function(docKey) {
       const cfg = VEHICLE_DOCUMENT_TYPES[docKey];
       const docPath = getVehicleDocumentPath(vehicle, docKey);
       const hasDoc = !!docPath;
@@ -7862,15 +8053,27 @@
         setRuhsatUploadUiLocked(false);
         invalidateRuhsatPreviewCache(vehicleId, cfg.key);
         invalidateRuhsatDocumentCache(vehicleId, cfg.key);
-        const currentVehicles = window.appData?.tasitlar || [];
-        const v = currentVehicles.find(function(x) { return String(x.id) === String(vehicleId); });
-        if (v) {
-          var newPath = data.documentPath || data.ruhsatPath;
+        var newPath = data.documentPath || data.ruhsatPath;
+        if (cfg.scope === 'settings') {
+          const k2State = getK2BelgesiState();
           if (newPath) {
-            v[cfg.pathField] = newPath;
+            k2State.documentPath = newPath;
           }
-          if (data.vehicleVersion != null) {
-            v.version = Number(data.vehicleVersion) || v.version;
+          if (data.settingsDocument && typeof data.settingsDocument === 'object') {
+            Object.assign(k2State, data.settingsDocument);
+          } else {
+            k2State.updatedAt = new Date().toISOString();
+          }
+        } else {
+          const currentVehicles = window.appData?.tasitlar || [];
+          const v = currentVehicles.find(function(x) { return String(x.id) === String(vehicleId); });
+          if (v) {
+            if (newPath) {
+              v[cfg.pathField] = newPath;
+            }
+            if (data.vehicleVersion != null) {
+              v.version = Number(data.vehicleVersion) || v.version;
+            }
           }
         }
 
@@ -8455,6 +8658,115 @@
         modalType: 'kasko',
         vehicleId: vehicleId,
         message: 'Kasko bilgisi güncellendi.'
+      });
+    });
+  };
+
+  /**
+   * K2 belgesi merkezi gecerlilik tarihini guncelle.
+   */
+  window.updateK2BelgesiInfo = function() {
+    const tarihInput = document.getElementById('k2-belgesi-tarih');
+    const tarih = normalizeGgAaYyyyInputElement(tarihInput);
+    const not = document.getElementById('k2-belgesi-not')?.value.trim() || '';
+
+    if (!tarih || !parseGgAaYyyyToIso(tarih)) {
+      alert('K2 Belgesi Geçerlilik tarihi zorunludur!');
+      if (tarihInput) tarihInput.focus();
+      return;
+    }
+
+    const svc = resolveVehicleContextForDynamicSave();
+    if (!svc) return;
+    const vehicleId = svc.vehicleId;
+    const vehicle = svc.vehicle;
+    const vehicles = svc.vehicles;
+    if (!vehicleNeedsK2Belgesi(vehicle)) {
+      alert('K2 belgesi sadece küçük ticari, büyük ticari ve römork taşıtlarda kullanılır.');
+      return;
+    }
+
+    const k2State = getK2BelgesiState();
+    k2State.expiryDate = parseGgAaYyyyToIso(tarih);
+    k2State.updatedAt = new Date().toISOString();
+
+    if (!vehicle.events) vehicle.events = [];
+    vehicle.events.unshift({
+      id: Date.now().toString(),
+      type: 'k2-belgesi-guncelle',
+      date: tarih,
+      timestamp: new Date().toISOString(),
+      data: {
+        bitisTarihi: k2State.expiryDate,
+        not: not,
+        surucu: getEventPerformerName(vehicle),
+        kaydeden: getRecorderDisplayName()
+      }
+    });
+
+    return writeVehicles(vehicles).then(function() {
+      if (window.updateNotifications) window.updateNotifications();
+      return completeDynamicEventSave({
+        modalType: 'k2belgesi',
+        vehicleId: vehicleId,
+        message: 'K2 belgesi bilgisi güncellendi.'
+      });
+    });
+  };
+
+  /**
+   * Takograf kalibrasyonunu guncelle; bitis tarihi 2 yil sonrasina ayarlanir.
+   */
+  window.updateTakografKalibrasyonInfo = function() {
+    const tarihInput = document.getElementById('takograf-kalibrasyon-tarih');
+    const tarih = normalizeGgAaYyyyInputElement(tarihInput);
+    const servis = document.getElementById('takograf-servis')?.value.trim() || '';
+    const not = document.getElementById('takograf-not')?.value.trim() || '';
+
+    if (!tarih || !parseGgAaYyyyToIso(tarih)) {
+      alert('Takograf Kalibrasyon Tarihi zorunludur!');
+      if (tarihInput) tarihInput.focus();
+      return;
+    }
+
+    const svc = resolveVehicleContextForDynamicSave();
+    if (!svc) return;
+    const vehicleId = svc.vehicleId;
+    const vehicle = svc.vehicle;
+    const vehicles = svc.vehicles;
+    if (!vehicleNeedsTakograf(vehicle)) {
+      alert('Takograf kalibrasyonu sadece büyük ticari taşıtlarda kullanılır.');
+      return;
+    }
+
+    const kalibrasyonIso = parseGgAaYyyyToIso(tarih);
+    const bitisTarihi = addYears(tarih, 2);
+    vehicle.takografKalibrasyonDate = kalibrasyonIso;
+    vehicle.takografExpiryDate = bitisTarihi;
+    vehicle.takografServis = servis;
+
+    if (!vehicle.events) vehicle.events = [];
+    vehicle.events.unshift({
+      id: Date.now().toString(),
+      type: 'takograf-kalibrasyon-guncelle',
+      date: tarih,
+      timestamp: new Date().toISOString(),
+      data: {
+        kalibrasyonTarihi: kalibrasyonIso,
+        bitisTarihi: bitisTarihi,
+        servis: servis,
+        not: not,
+        surucu: getEventPerformerName(vehicle),
+        kaydeden: getRecorderDisplayName()
+      }
+    });
+
+    return writeVehicles(vehicles).then(function() {
+      if (window.updateNotifications) window.updateNotifications();
+      return completeDynamicEventSave({
+        modalType: 'takograf',
+        vehicleId: vehicleId,
+        message: 'Takograf kalibrasyon bilgisi güncellendi.'
       });
     });
   };
@@ -9084,7 +9396,7 @@
    */
   function renderHistoryDigerEventHtml(event, vehicle, branches) {
     const eventType = String(event.type || '').trim();
-    const isDateRenewalEvent = eventType === 'kasko-guncelle' || eventType === 'sigorta-guncelle' || eventType === 'muayene-guncelle' || eventType === 'muayene' || eventType === 'muayene-yenileme';
+    const isDateRenewalEvent = eventType === 'kasko-guncelle' || eventType === 'sigorta-guncelle' || eventType === 'k2-belgesi-guncelle' || eventType === 'takograf-kalibrasyon-guncelle' || eventType === 'muayene-guncelle' || eventType === 'muayene' || eventType === 'muayene-yenileme';
     function formatHistoryActionDate(ev) {
       const stamp = ev && ev.timestamp ? String(ev.timestamp).trim() : '';
       if (stamp) {
@@ -9151,6 +9463,23 @@
       if (firma) pushDetail('Firma', toTitleCase(firma));
       if (acente) pushDetail('Acente', toTitleCase(acente));
       if (iletisim) pushDetail('\u0130leti\u015Fim', iletisim);
+    } else if (eventType === 'k2-belgesi-guncelle') {
+      const bitis = formatDateForDisplay(eventData.bitisTarihi || '');
+      if (bitis) {
+        summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, K2 Belgesi Geçerlilik Tarihini </span><span class="history-detail-inline">' + escapeHtml(bitis) + '</span><span class="history-action-text"> Olarak Güncelledi.</span>';
+      } else {
+        summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, K2 Belgesi Bilgisini Güncelledi.</span>';
+      }
+      if (eventData.not) pushDetail('Not', eventData.not);
+    } else if (eventType === 'takograf-kalibrasyon-guncelle') {
+      const bitis = formatDateForDisplay(eventData.bitisTarihi || '');
+      if (bitis) {
+        summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Takograf Kalibrasyon Bitiş Tarihini </span><span class="history-detail-inline">' + escapeHtml(bitis) + '</span><span class="history-action-text"> Olarak Güncelledi.</span>';
+      } else {
+        summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Takograf Kalibrasyon Bilgisini Güncelledi.</span>';
+      }
+      if (eventData.servis) pushDetail('Servis', eventData.servis);
+      if (eventData.not) pushDetail('Not', eventData.not);
     } else if (eventType === 'muayene-guncelle' || eventType === 'muayene' || eventType === 'muayene-yenileme') {
       let bitis = formatDateForDisplay(eventData.bitisTarihi || '');
       if (!bitis && legacyAciklama) {
@@ -9581,6 +9910,8 @@
       'ceza': 'Trafik Cezas\u0131 \u0130\u015Fledi',
       'sigorta-guncelle': 'Sigorta Bilgisini G\u00FCncelledi',
       'kasko-guncelle': 'Kasko Bilgisini G\u00FCncelledi',
+      'k2-belgesi-guncelle': 'K2 Belgesi Bilgisini G\u00FCncelledi',
+      'takograf-kalibrasyon-guncelle': 'Takograf Kalibrasyon Bilgisini G\u00FCncelledi',
       'muayene-guncelle': 'Muayene Bilgisini G\u00FCncelledi',
       'anahtar-guncelle': 'Yedek Anahtar Bilgisini G\u00FCncelledi',
       'utts-guncelle': 'UTTS Bilgisini G\u00FCncelledi',
@@ -9932,7 +10263,12 @@
           return a.days - b.days;
         });
         notifications.forEach((notif, dIdx) => {
-            const typeLabel = notif.type === 'sigorta' ? 'Sigorta' : notif.type === 'kasko' ? 'Kasko' : notif.type === 'egzoz' ? 'Egzoz Muayenesi' : 'Muayene';
+            const typeLabel = notif.type === 'sigorta' ? 'Sigorta'
+              : notif.type === 'kasko' ? 'Kasko'
+              : notif.type === 'egzoz' ? 'Egzoz Muayenesi'
+              : notif.type === 'takograf' ? 'Takograf Kalibrasyon'
+              : notif.type === 'k2' ? 'K2 Belgesi'
+              : 'Muayene';
             const notifKey = buildDateNotificationKey(notif);
             const activeDateDisplay = getOrCreateNotificationFirstSeen(notifKey);
             const isRead = viewedKeys.indexOf(notifKey) !== -1;
