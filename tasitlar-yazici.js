@@ -310,6 +310,14 @@
       if (d.tutar) details5.push('Tutar: ' + d.tutar + ' TL');
       if (d.aciklama) details5.push('Nedeni: ' + toTitleCase(String(d.aciklama)));
       extra = details5.join(' | ');
+    } else if (eventType === 'driver-feedback') {
+      text = 'Kullanıcı Panelinde Talep Kaydı Oluşturdu';
+      var details6 = [];
+      var konuMap = { talep: 'Talep', sikayet: 'Şikayet', oneri: 'Öneri', diger: 'Diğer' };
+      var konu = konuMap[String(d.konuTuru || d.konu_turu || '').trim()] || '';
+      if (konu) details6.push('Konu: ' + konu);
+      if (d.mesaj || d.sebep) details6.push('Mesaj: ' + String(d.mesaj || d.sebep));
+      extra = details6.join(' | ');
     } else if (eventType === 'not-guncelle') {
       text = 'Not Güncelleme';
       if (d.not) extra = String(d.not).length > 120 ? String(d.not).slice(0, 120) + '...' : String(d.not);
