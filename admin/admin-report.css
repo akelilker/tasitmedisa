@@ -1996,15 +1996,21 @@ body.admin-report-page .main-header-user-name.is-empty {
 }
 
 .admin-footer-back-wrap {
+  position: fixed;
+  left: 50%;
+  bottom: calc(var(--app-footer-real-height, 42px) + 6px + env(safe-area-inset-bottom, 0));
+  transform: translateX(-50%);
   box-sizing: border-box;
   display: flex;
   justify-content: flex-start;
   width: 100%;
-  max-width: 100%;
-  margin: 0 0 5px 0 !important;
+  max-width: 1200px;
+  margin: 0 !important;
   padding-left: 12px !important;
   padding-right: 12px !important;
   overflow: visible;
+  z-index: 1001;
+  pointer-events: none;
 }
 
 .admin-footer-back-wrap .universal-back-btn {
@@ -2018,6 +2024,7 @@ body.admin-report-page .main-header-user-name.is-empty {
   letter-spacing: 0.5px;
   transition: opacity 0.2s, color 0.2s;
   white-space: nowrap;
+  pointer-events: auto;
 }
 
 .admin-footer-back-wrap .universal-back-label {
