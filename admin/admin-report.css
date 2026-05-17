@@ -2006,7 +2006,7 @@ body.admin-report-page .main-header-user-name.is-empty {
   width: 100%;
   max-width: 400px;
   margin: 0 !important;
-  padding-left: 12px !important;
+  padding-left: 6px !important;
   padding-right: 12px !important;
   overflow: visible;
   z-index: 1001;
