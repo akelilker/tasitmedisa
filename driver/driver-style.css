@@ -6790,12 +6790,18 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 
 body.dashboard-page:has(#history-modal.driver-modal.show) .driver-left-panel,
 body.dashboard-page:has(#edit-request-modal.driver-modal.show) .driver-left-panel,
+body.dashboard-page:has(#driver-documents-modal.driver-modal.show) .driver-left-panel,
+body.dashboard-page:has(#driver-feedback-modal.driver-modal.show) .driver-left-panel,
+body.dashboard-page.driver-feedback-modal-open .driver-left-panel,
 body.dashboard-page.driver-history-or-edit-modal-open .driver-left-panel {
     border-right: none !important;
 }
 
 body.dashboard-page:has(#history-modal.driver-modal.show) .driver-left-panel::after,
 body.dashboard-page:has(#edit-request-modal.driver-modal.show) .driver-left-panel::after,
+body.dashboard-page:has(#driver-documents-modal.driver-modal.show) .driver-left-panel::after,
+body.dashboard-page:has(#driver-feedback-modal.driver-modal.show) .driver-left-panel::after,
+body.dashboard-page.driver-feedback-modal-open .driver-left-panel::after,
 body.dashboard-page.driver-history-or-edit-modal-open .driver-left-panel::after {
     display: none !important;
 }
@@ -6807,9 +6813,22 @@ body.dashboard-page.driver-history-or-edit-modal-open .driver-left-panel-content
     margin-bottom: 12px !important;
 }
 
+body.dashboard-page:has(#driver-documents-modal.driver-modal.show) .driver-left-panel-content,
+body.dashboard-page:has(#driver-feedback-modal.driver-modal.show) .driver-left-panel-content,
+body.dashboard-page.driver-feedback-modal-open .driver-left-panel-content {
+    border-right-color: transparent !important;
+}
+
+body.dashboard-page:has(#driver-documents-modal.driver-modal.show) .driver-left-panel .driver-footer-back-wrap,
+body.dashboard-page:has(#driver-feedback-modal.driver-modal.show) .driver-left-panel .driver-footer-back-wrap,
+body.dashboard-page.driver-feedback-modal-open .driver-left-panel .driver-footer-back-wrap {
+    visibility: hidden !important;
+}
+
 body.dashboard-page:has(#history-modal.driver-modal.show) .driver-dashboard-container::before,
 body.dashboard-page:has(#edit-request-modal.driver-modal.show) .driver-dashboard-container::before,
 body.dashboard-page:has(#driver-password-modal.driver-modal.show) .driver-dashboard-container::before,
+body.dashboard-page:has(#driver-documents-modal.driver-modal.show) .driver-dashboard-container::before,
 body.dashboard-page:has(#driver-feedback-modal.driver-modal.show) .driver-dashboard-container::before,
 body.dashboard-page.driver-history-or-edit-modal-open .driver-dashboard-container::before,
 body.dashboard-page.driver-feedback-modal-open .driver-dashboard-container::before {
