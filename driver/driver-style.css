@@ -2981,9 +2981,11 @@ body.dashboard-page {
   }
   #history-modal.driver-modal,
   #edit-request-modal.driver-modal,
-  #driver-feedback-modal.driver-modal,
-  #driver-documents-modal.driver-modal {
+  #driver-feedback-modal.driver-modal {
     bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
+  }
+  #driver-documents-modal.driver-modal {
+    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0) + 1px) !important;
   }
 }
 
@@ -2992,12 +2994,14 @@ body.dashboard-page {
   body.dashboard-page #history-modal.driver-modal,
   body.dashboard-page #edit-request-modal.driver-modal,
   body.dashboard-page #driver-feedback-modal.driver-modal,
-  body.dashboard-page #driver-documents-modal.driver-modal,
   body.login-page #history-modal.driver-modal,
   body.login-page #edit-request-modal.driver-modal,
-  body.login-page #driver-feedback-modal.driver-modal,
-  body.login-page #driver-documents-modal.driver-modal {
+  body.login-page #driver-feedback-modal.driver-modal {
     bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
+  }
+  body.dashboard-page #driver-documents-modal.driver-modal,
+  body.login-page #driver-documents-modal.driver-modal {
+    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0) + 1px) !important;
   }
 }
 
@@ -3140,8 +3144,8 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 
 #driver-documents-modal .driver-modal-content,
 #driver-documents-modal .modal-container {
-  height: calc(100% - 24px) !important;
-  max-height: calc(100% - 24px) !important;
+  height: 100% !important;
+  max-height: 100% !important;
   overflow: hidden;
   border-top-left-radius: var(--modal-radius, 10px);
   border-top-right-radius: var(--modal-radius, 10px);
