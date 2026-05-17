@@ -1009,12 +1009,16 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       return getDriverVehicleTypeKey(vehicle) === 'kamyon';
   }
 
+  function getDriverDocumentTypeConfig(key) {
+      return DRIVER_DOCUMENT_TYPES.find(function(item) { return item.key === key; });
+  }
+
   function getDriverDocumentTypesForVehicle(vehicle) {
       var keys = ['ruhsat', 'sigorta', 'kasko'];
-      if (driverVehicleNeedsK2(vehicle) || hasDriverDocument(vehicle, DRIVER_DOCUMENT_TYPES.find(function(item) { return item.key === 'tasit_karti'; }))) keys.push('tasit_karti');
-      if (driverVehicleNeedsTakograf(vehicle) || hasDriverDocument(vehicle, DRIVER_DOCUMENT_TYPES.find(function(item) { return item.key === 'takograf'; }))) keys.push('takograf');
+      if (driverVehicleNeedsK2(vehicle) || hasDriverDocument(vehicle, getDriverDocumentTypeConfig('tasit_karti'))) keys.push('tasit_karti');
+      if (driverVehicleNeedsTakograf(vehicle) || hasDriverDocument(vehicle, getDriverDocumentTypeConfig('takograf'))) keys.push('takograf');
       return keys.map(function(key) {
-          return DRIVER_DOCUMENT_TYPES.find(function(item) { return item.key === key; });
+          return getDriverDocumentTypeConfig(key);
       }).filter(Boolean);
   }
 
@@ -1165,6 +1169,11 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           const takografW = checkDateWarningsDriver(vehicle.takografExpiryDate);
           if (takografW.level === 'red') level = 'red';
           else if (takografW.level === 'orange' && level !== 'red') level = 'orange';
+      }
+      if (driverVehicleNeedsK2(vehicle)) {
+          const k2W = checkDateWarningsDriver(vehicle.k2BelgesiExpiryDate);
+          if (k2W.level === 'red') level = 'red';
+          else if (k2W.level === 'orange' && level !== 'red') level = 'orange';
       }
       return level;
   }
@@ -1873,6 +1882,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
   function buildSlidingWarnings(vehicles, records) {
       const warnings = [];
       const period = (currentPeriod || new Date().toISOString().slice(0, 7)).toString().trim();
+      let k2WarningAdded = false;
       const userName = (currentUser && (currentUser.name || currentUser.isim || currentUser.ad_soyad)) || 'Kullanıcı';
   
       for (const v of vehicles) {
@@ -1903,6 +1913,16 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           }
           checkDate(v.sigortaDate, 'Sigorta');
           checkDate(v.kaskoDate, 'Kasko');
+          if (!k2WarningAdded && driverVehicleNeedsK2(v) && v.k2BelgesiExpiryDate) {
+              const k2Warning = checkDateWarningsDriver(v.k2BelgesiExpiryDate);
+              if (k2Warning.class && k2Warning.days != null) {
+                  const k2Text = k2Warning.days <= 0
+                      ? 'Taşıt Kartı / K2 Belgesi Geçerliliği Bitmiştir.'
+                      : 'Taşıt Kartı / K2 Belgesi Geçerliliğine ' + k2Warning.days + ' Gün Kalmıştır';
+                  warnings.push({ text: k2Text, plaka: '', type: null, warnLevel: k2Warning.level });
+                  k2WarningAdded = true;
+              }
+          }
           if (driverVehicleNeedsTakograf(v)) {
               checkDate(v.takografExpiryDate, 'Takograf Kalibrasyon');
           }
