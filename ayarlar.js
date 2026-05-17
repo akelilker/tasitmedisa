@@ -274,6 +274,89 @@
       return /^\d{4}-\d{2}-\d{2}$/.test(value) ? value : '';
     }
 
+    function getZorunluEvraklarAuthToken() {
+      if (typeof window.getStoredPortalToken === 'function') {
+        const token = window.getStoredPortalToken();
+        if (token) return token;
+      }
+      if (typeof getStoredPortalToken === 'function') {
+        const token = getStoredPortalToken();
+        if (token) return token;
+      }
+      const keys = ['medisa_portal_token', 'driver_token'];
+      for (let i = 0; i < keys.length; i++) {
+        try {
+          const token = localStorage.getItem(keys[i]);
+          if (token) return token;
+        } catch (e) {}
+        try {
+          const token = sessionStorage.getItem(keys[i]);
+          if (token) return token;
+        } catch (e) {}
+      }
+      return '';
+    }
+
+    function buildZorunluEvraklarAuthHeaders(extraHeaders) {
+      if (typeof window.buildAuthHeaders === 'function') {
+        return window.buildAuthHeaders(extraHeaders || {});
+      }
+      if (typeof buildAuthHeaders === 'function') {
+        return buildAuthHeaders(extraHeaders || {});
+      }
+      const headers = Object.assign({}, extraHeaders || {});
+      const token = getZorunluEvraklarAuthToken();
+      if (token) headers.Authorization = 'Bearer ' + token;
+      return headers;
+    }
+
+    function setupZorunluEvraklarK2DatePicker() {
+      const input = document.getElementById('required-k2-expiry-date');
+      if (!input) return;
+
+      let nativeInput = document.getElementById('required-k2-expiry-native');
+      if (!nativeInput) {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'required-k2-date-picker';
+        input.parentNode.insertBefore(wrapper, input);
+        wrapper.appendChild(input);
+
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'required-k2-date-picker-btn';
+        btn.setAttribute('aria-label', 'K2 belge tarihini takvimden seç');
+        btn.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>';
+        wrapper.appendChild(btn);
+
+        nativeInput = document.createElement('input');
+        nativeInput.type = 'date';
+        nativeInput.id = 'required-k2-expiry-native';
+        nativeInput.className = 'required-k2-expiry-native';
+        nativeInput.setAttribute('aria-hidden', 'true');
+        nativeInput.tabIndex = -1;
+        wrapper.appendChild(nativeInput);
+
+        const syncNativeFromText = function() {
+          nativeInput.value = parseZorunluEvrakDate(input.value) || '';
+        };
+        input.addEventListener('blur', syncNativeFromText);
+        input.addEventListener('change', syncNativeFromText);
+        nativeInput.addEventListener('change', function() {
+          input.value = formatZorunluEvrakDate(nativeInput.value || '');
+        });
+        btn.addEventListener('click', function() {
+          syncNativeFromText();
+          if (typeof nativeInput.showPicker === 'function') nativeInput.showPicker();
+          else {
+            nativeInput.focus();
+            nativeInput.click();
+          }
+        });
+      }
+
+      nativeInput.value = parseZorunluEvrakDate(input.value) || '';
+    }
+
     function refreshZorunluEvraklarK2View() {
       const state = getZorunluEvraklarK2State();
       const dateInput = document.getElementById('required-k2-expiry-date');
@@ -289,11 +372,9 @@
       const formData = new FormData();
       formData.append('document', fileInput.files[0]);
       formData.append('documentType', 'k2');
-      const token = (typeof window.getMedisaAuthToken === 'function') ? window.getMedisaAuthToken() : '';
-      const headers = token ? { Authorization: 'Bearer ' + token } : {};
       const response = await fetch('upload_ruhsat.php', {
         method: 'POST',
-        headers: headers,
+        headers: buildZorunluEvraklarAuthHeaders(),
         body: formData
       });
       const data = await response.json().catch(function() { return {}; });
@@ -309,6 +390,7 @@
       const modal = document.getElementById('required-documents-modal');
       if (!modal) return;
       refreshZorunluEvraklarK2View();
+      setupZorunluEvraklarK2DatePicker();
       modal.style.display = 'flex';
       requestAnimationFrame(() => modal.classList.add('active'));
     };
@@ -328,7 +410,7 @@
       }
       const url = new URL('ruhsat.php', window.location.href);
       url.searchParams.set('documentType', 'k2');
-      const token = (typeof window.getMedisaAuthToken === 'function') ? window.getMedisaAuthToken() : '';
+      const token = getZorunluEvraklarAuthToken();
       if (token) url.searchParams.set('token', token);
       window.open(url.toString(), '_blank', 'noopener');
     };

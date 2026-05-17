@@ -481,11 +481,72 @@ body.modal-open #info-modal.open {
 #branch-form-modal .universal-back-bar,
 #user-modal .universal-back-bar,
 #user-form-modal .universal-back-bar,
+#required-documents-modal .universal-back-bar,
 #data-management-modal .universal-back-bar,
 #dis-veri-panel .universal-back-bar {
     margin-top: 0;
     flex-shrink: 0;
 }
+
+#required-documents-modal .required-k2-date-section {
+    max-width: 220px;
+    width: 100%;
+}
+
+#required-documents-modal .required-k2-date-picker {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    max-width: 220px;
+    width: 100%;
+    position: relative;
+}
+
+#required-documents-modal #required-k2-expiry-date {
+    width: 180px;
+    max-width: calc(100% - 42px);
+    flex: 1 1 auto;
+}
+
+#required-documents-modal .required-k2-date-picker-btn {
+    width: 34px;
+    height: 34px;
+    flex: 0 0 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--card-bg);
+    color: var(--txt);
+    cursor: pointer;
+}
+
+#required-documents-modal .required-k2-date-picker-btn svg {
+    width: 18px;
+    height: 18px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2;
+}
+
+#required-documents-modal .required-k2-expiry-native {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+}
+
+@media (max-width: 640px) {
+    #required-documents-modal .required-k2-date-section,
+    #required-documents-modal .required-k2-date-picker {
+        max-width: 100%;
+    }
+}
+
 #user-modal .user-management-back-bar {
     justify-content: space-between !important;
     gap: 0 !important;
