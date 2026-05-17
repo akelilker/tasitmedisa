@@ -2127,6 +2127,7 @@
     const egzozDateEl = document.getElementById('vehicle-egzoz-date');
     const transmissionSection = $(`.form-section-inline[data-section="transmission"]`, modal);
     const tramerSection = $(`.form-section-inline[data-section="tramer"]`, modal);
+    const vehicleTypeSection = $('.vehicle-type-btn', modal)?.closest('.form-section-inline, .form-section');
     const transmissionBtn = $('.radio-group button.active', transmissionSection);
     const tramerBtn = $('.radio-group button.active', tramerSection);
     
@@ -2136,6 +2137,7 @@
     });
     if (transmissionSection) transmissionSection.classList.remove('field-error');
     if (tramerSection) tramerSection.classList.remove('field-error');
+    if (vehicleTypeSection) vehicleTypeSection.classList.remove('field-error');
     
     // Get form values (validation sonrası)
     const plate = plateEl?.value.trim() || '';
@@ -2164,6 +2166,10 @@
     if (!brandModel) {
       errors.push('Marka / Model');
       if (brandModelEl) brandModelEl.classList.add('field-error');
+    }
+    if (!vehicleType) {
+      errors.push('Taşıt Tipi');
+      if (vehicleTypeSection) vehicleTypeSection.classList.add('field-error');
     }
     if (!km) {
       errors.push('Km (Alındığı Tarih)');
@@ -2200,6 +2206,28 @@
       else if (kmEl && !km) kmEl.focus();
       
       return;
+    }
+
+    const k2RequiredVehicleType = ['minivan', 'kamyon', 'romork'].includes(String(vehicleType || '').trim().toLowerCase());
+    if (!isEditMode && k2RequiredVehicleType) {
+      if (!window.appData) window.appData = {};
+      if (!window.appData.ayarlar || typeof window.appData.ayarlar !== 'object' || Array.isArray(window.appData.ayarlar)) {
+        window.appData.ayarlar = {};
+      }
+      if (!window.appData.ayarlar.k2Belgesi || typeof window.appData.ayarlar.k2Belgesi !== 'object' || Array.isArray(window.appData.ayarlar.k2Belgesi)) {
+        window.appData.ayarlar.k2Belgesi = { expiryDate: '', documentPath: '', updatedAt: '' };
+      }
+      if (!String(window.appData.ayarlar.k2Belgesi.expiryDate || '').trim()) {
+        const k2Raw = prompt('K2 Belgesi Geçerlilik (gg/aa/yyyy)');
+        if (k2Raw === null) return;
+        const k2Iso = parseVehicleDateRawToIso(k2Raw);
+        if (!k2Iso) {
+          alert('K2 Belgesi Geçerlilik tarihi geçerli olmalıdır. Örnek: 17/05/2027');
+          return;
+        }
+        window.appData.ayarlar.k2Belgesi.expiryDate = k2Iso;
+        window.appData.ayarlar.k2Belgesi.updatedAt = new Date().toISOString();
+      }
     }
     if (muayeneDate && vehicleEgzozPromptState.handledMuayeneDate !== muayeneDate) {
       vehicleEgzozPromptState.resumeSave = true;
@@ -2909,6 +2937,7 @@
         btn.addEventListener("click", () => {
              $all(".vehicle-type-btn", getModal()).forEach(b => b.classList.remove("active"));
              btn.classList.add("active");
+             btn.closest('.form-section-inline, .form-section')?.classList.remove('field-error');
         });
     });
 
@@ -2943,6 +2972,7 @@
             if (formBtn) {
               $all('.vehicle-type-btn', modal).forEach(b => b.classList.remove('active'));
               formBtn.classList.add('active');
+              formBtn.closest('.form-section-inline, .form-section')?.classList.remove('field-error');
             }
             closeVehicleTypePickerOverlay();
           }
