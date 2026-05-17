@@ -246,6 +246,121 @@
     function readBranches() { return (typeof window.getMedisaBranches === 'function' ? window.getMedisaBranches() : null) || (function() { try { var r = localStorage.getItem(BRANCHES_KEY); return r ? JSON.parse(r) : []; } catch (e) { return []; } })(); }
     function writeBranches(arr) { if (typeof window.writeBranches === 'function') { window.writeBranches(arr); return; } localStorage.setItem(BRANCHES_KEY, JSON.stringify(arr)); if (window.appData) { window.appData.branches = arr; if (window.saveDataToServer) window.saveDataToServer().catch(function(err) { console.error('Sunucuya kaydetme hatası (sessiz):', err); }); } }
     function readVehicles() { return (typeof window.getMedisaVehicles === 'function' ? window.getMedisaVehicles() : null) || (function() { try { var r = localStorage.getItem(VEHICLES_KEY); return r ? JSON.parse(r) : []; } catch (e) { return []; } })(); }
+
+    function getZorunluEvraklarK2State() {
+      if (!window.appData || typeof window.appData !== 'object') window.appData = {};
+      if (!window.appData.ayarlar || typeof window.appData.ayarlar !== 'object' || Array.isArray(window.appData.ayarlar)) {
+        window.appData.ayarlar = {};
+      }
+      if (!window.appData.ayarlar.k2Belgesi || typeof window.appData.ayarlar.k2Belgesi !== 'object' || Array.isArray(window.appData.ayarlar.k2Belgesi)) {
+        window.appData.ayarlar.k2Belgesi = { expiryDate: '', documentPath: '', updatedAt: '' };
+      }
+      return window.appData.ayarlar.k2Belgesi;
+    }
+
+    function formatZorunluEvrakDate(isoDate) {
+      if (!isoDate) return '';
+      if (typeof window.formatDateShort === 'function') return window.formatDateShort(isoDate);
+      const parts = String(isoDate).split('-');
+      return parts.length === 3 ? (parts[2] + '/' + parts[1] + '/' + parts[0]) : String(isoDate);
+    }
+
+    function parseZorunluEvrakDate(rawDate) {
+      const value = String(rawDate || '').trim();
+      if (!value) return '';
+      if (typeof window.parseVehicleDateRawToIso === 'function') return window.parseVehicleDateRawToIso(value) || '';
+      const digits = value.replace(/\D/g, '');
+      if (digits.length === 8) return digits.slice(4, 8) + '-' + digits.slice(2, 4) + '-' + digits.slice(0, 2);
+      return /^\d{4}-\d{2}-\d{2}$/.test(value) ? value : '';
+    }
+
+    function refreshZorunluEvraklarK2View() {
+      const state = getZorunluEvraklarK2State();
+      const dateInput = document.getElementById('required-k2-expiry-date');
+      const statusEl = document.getElementById('required-k2-document-status');
+      const fileInput = document.getElementById('required-k2-document-input');
+      if (dateInput) dateInput.value = formatZorunluEvrakDate(state.expiryDate || '');
+      if (statusEl) statusEl.textContent = String(state.documentPath || '').trim() ? 'Yüklü' : 'Yüklü Değil';
+      if (fileInput) fileInput.value = '';
+    }
+
+    async function uploadZorunluEvraklarK2Document(fileInput) {
+      if (!fileInput || !fileInput.files || !fileInput.files[0]) return null;
+      const formData = new FormData();
+      formData.append('document', fileInput.files[0]);
+      formData.append('documentType', 'k2');
+      const token = (typeof window.getMedisaAuthToken === 'function') ? window.getMedisaAuthToken() : '';
+      const headers = token ? { Authorization: 'Bearer ' + token } : {};
+      const response = await fetch('upload_ruhsat.php', {
+        method: 'POST',
+        headers: headers,
+        body: formData
+      });
+      const data = await response.json().catch(function() { return {}; });
+      if (!response.ok || data.success !== true) {
+        throw new Error(data.message || data.error || 'K2 belgesi yüklenemedi.');
+      }
+      return data;
+    }
+
+    window.openZorunluEvraklar = function openZorunluEvraklar() {
+      const settingsMenu = document.getElementById('settings-menu');
+      if (settingsMenu) settingsMenu.classList.remove('open');
+      const modal = document.getElementById('required-documents-modal');
+      if (!modal) return;
+      refreshZorunluEvraklarK2View();
+      modal.style.display = 'flex';
+      requestAnimationFrame(() => modal.classList.add('active'));
+    };
+
+    window.closeZorunluEvraklar = function closeZorunluEvraklar() {
+      const modal = document.getElementById('required-documents-modal');
+      if (!modal) return;
+      modal.classList.remove('active');
+      setTimeout(() => modal.style.display = 'none', 300);
+    };
+
+    window.viewZorunluEvrakK2 = function viewZorunluEvrakK2() {
+      const state = getZorunluEvraklarK2State();
+      if (!String(state.documentPath || '').trim()) {
+        alert('K2 belgesi henüz yüklenmedi.');
+        return;
+      }
+      const url = new URL('ruhsat.php', window.location.href);
+      url.searchParams.set('documentType', 'k2');
+      const token = (typeof window.getMedisaAuthToken === 'function') ? window.getMedisaAuthToken() : '';
+      if (token) url.searchParams.set('token', token);
+      window.open(url.toString(), '_blank', 'noopener');
+    };
+
+    window.saveZorunluEvraklarK2 = async function saveZorunluEvraklarK2() {
+      const dateInput = document.getElementById('required-k2-expiry-date');
+      const fileInput = document.getElementById('required-k2-document-input');
+      const isoDate = parseZorunluEvrakDate(dateInput ? dateInput.value : '');
+      if (!isoDate) {
+        alert('K2 Belgesi Geçerlilik tarihi geçerli olmalıdır. Örnek: 17/05/2027');
+        if (dateInput) dateInput.focus();
+        return;
+      }
+      try {
+        const state = getZorunluEvraklarK2State();
+        state.expiryDate = isoDate;
+        state.updatedAt = new Date().toISOString();
+        const uploadResult = await uploadZorunluEvraklarK2Document(fileInput);
+        if (uploadResult && uploadResult.settingsDocument && typeof uploadResult.settingsDocument === 'object') {
+          Object.assign(state, uploadResult.settingsDocument);
+          state.expiryDate = isoDate;
+        }
+        if (typeof window.saveDataToServer === 'function') {
+          await window.saveDataToServer();
+        }
+        if (typeof window.updateNotifications === 'function') window.updateNotifications();
+        refreshZorunluEvraklarK2View();
+        alert('K2 belgesi bilgisi kaydedildi.');
+      } catch (err) {
+        alert((err && err.message) ? err.message : 'K2 belgesi kaydedilemedi.');
+      }
+    };
   
     // Modal Kontrolü (Ana Liste)
     window.openBranchManagement = function openBranchManagement() {

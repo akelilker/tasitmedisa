@@ -983,7 +983,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           }
       }
   }
-  
+
   function getSelectedVehicle() {
       return allHistoryVehicles.find(v => String(v.id) === String(selectedVehicleId));
   }
@@ -992,7 +992,6 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       { key: 'ruhsat', title: 'Ruhsat', pathField: 'ruhsatPath', icon: 'document' },
       { key: 'sigorta', title: 'Sigorta Poliçesi', pathField: 'sigortaPolicePath', icon: 'shield' },
       { key: 'kasko', title: 'Kasko Poliçesi', pathField: 'kaskoPolicePath', icon: 'shield' },
-      { key: 'k2', title: 'K2 Belgesi', pathField: 'k2BelgesiPath', icon: 'document' },
       { key: 'tasit_karti', title: 'Taşıt Kartı', pathField: 'tasitKartiPath', icon: 'document' },
       { key: 'takograf', title: 'Takograf Belgesi', pathField: 'takografBelgesiPath', icon: 'document' }
   ];
@@ -1012,7 +1011,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
 
   function getDriverDocumentTypesForVehicle(vehicle) {
       var keys = ['ruhsat', 'sigorta', 'kasko'];
-      if (driverVehicleNeedsK2(vehicle)) keys.push('k2', 'tasit_karti');
+      if (driverVehicleNeedsK2(vehicle)) keys.push('tasit_karti');
       if (driverVehicleNeedsTakograf(vehicle)) keys.push('takograf');
       return keys.map(function(key) {
           return DRIVER_DOCUMENT_TYPES.find(function(item) { return item.key === key; });

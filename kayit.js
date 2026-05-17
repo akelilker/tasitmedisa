@@ -2228,27 +2228,6 @@
       return;
     }
 
-    const k2RequiredVehicleType = ['minivan', 'kamyon', 'romork'].includes(String(vehicleType || '').trim().toLowerCase());
-    if (!isEditMode && k2RequiredVehicleType) {
-      if (!window.appData) window.appData = {};
-      if (!window.appData.ayarlar || typeof window.appData.ayarlar !== 'object' || Array.isArray(window.appData.ayarlar)) {
-        window.appData.ayarlar = {};
-      }
-      if (!window.appData.ayarlar.k2Belgesi || typeof window.appData.ayarlar.k2Belgesi !== 'object' || Array.isArray(window.appData.ayarlar.k2Belgesi)) {
-        window.appData.ayarlar.k2Belgesi = { expiryDate: '', documentPath: '', updatedAt: '' };
-      }
-      if (!String(window.appData.ayarlar.k2Belgesi.expiryDate || '').trim()) {
-        const k2Raw = prompt('K2 Belgesi Geçerlilik (gg/aa/yyyy)');
-        if (k2Raw === null) return;
-        const k2Iso = parseVehicleDateRawToIso(k2Raw);
-        if (!k2Iso) {
-          alert('K2 Belgesi Geçerlilik tarihi geçerli olmalıdır. Örnek: 17/05/2027');
-          return;
-        }
-        window.appData.ayarlar.k2Belgesi.expiryDate = k2Iso;
-        window.appData.ayarlar.k2Belgesi.updatedAt = new Date().toISOString();
-      }
-    }
     if (muayeneDate && vehicleEgzozPromptState.handledMuayeneDate !== muayeneDate) {
       vehicleEgzozPromptState.resumeSave = true;
       scheduleMaybePromptVehicleEgzozFlow(0);

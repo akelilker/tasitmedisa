@@ -1619,6 +1619,9 @@
   }
 
   function buildDateNotificationKey(notif) {
+    if (notif && notif.type === 'k2') {
+      return ['date', 'settings', 'k2', String(notif.date || '')].join('|');
+    }
     return ['date', String(notif.vehicleId || ''), String(notif.type || ''), String(notif.date || ''), String(notif.type || '')].join('|');
   }
 
@@ -1870,6 +1873,15 @@
           window.setNotificationsOpenState(false);
         }
         window.location.href = 'admin/driver-report.html?from=notifications';
+        return;
+      }
+      if (action === 'open-required-documents') {
+        e.preventDefault();
+        e.stopPropagation();
+        if (typeof window.setNotificationsOpenState === 'function') {
+          window.setNotificationsOpenState(false);
+        }
+        if (typeof window.openZorunluEvraklar === 'function') window.openZorunluEvraklar();
         return;
       }
       var plate = btn.getAttribute('data-plate') || '';
@@ -3606,6 +3618,20 @@
     return String(getK2BelgesiState().documentPath || '').trim();
   }
 
+  function checkK2BelgesiWarnings(dateString) {
+    if (!dateString) return { class: '', days: null };
+    var date = new Date(dateString + 'T00:00:00');
+    if (isNaN(date.getTime())) return { class: '', days: null };
+    var today = new Date();
+    today.setHours(0, 0, 0, 0);
+    date.setHours(0, 0, 0, 0);
+    var diffDays = Math.ceil((date - today) / (1000 * 60 * 60 * 24));
+    if (diffDays < 0) return { class: 'date-warning-red', days: diffDays };
+    if (diffDays <= 3) return { class: 'date-warning-red', days: diffDays };
+    if (diffDays <= 60) return { class: 'date-warning-orange', days: diffDays };
+    return { class: '', days: diffDays };
+  }
+
   function getMuayeneRenewalYearsByProfile(profileKey) {
     return profileKey === 'otomobil' ? 2 : 1;
   }
@@ -3929,10 +3955,10 @@
       return !isVehicleOperationallyInactive(vehicle) && vehicleNeedsK2Belgesi(vehicle);
     });
     if (k2AnchorVehicle && k2Date) {
-      var wK2 = checkDateWarnings(k2Date);
+      var wK2 = checkK2BelgesiWarnings(k2Date);
       if (monthlyOperationalDateTaskFilterPasses(k2Date, wK2)) {
         monthly.push({
-          vehicle: k2AnchorVehicle,
+          vehicle: { id: '', plate: 'Şirket Evrakı', brandModel: 'K2 Belgesi' },
           type: 'K2 Belgesi',
           field: 'k2BelgesiExpiryDate',
           date: k2Date,
@@ -3945,8 +3971,8 @@
         var dk2 = wK2.days;
         notificationsArray.push({
           type: 'k2',
-          vehicleId: k2AnchorVehicle.id,
-          plate: k2AnchorVehicle.plate || '-',
+          vehicleId: '',
+          plate: 'Şirket Evrakı',
           brandModel: 'K2 Belgesi',
           date: k2Date,
           days: dk2,
@@ -5073,11 +5099,6 @@
     }
 
     if (vehicleNeedsK2Belgesi(vehicle)) {
-      const k2Date = getK2BelgesiExpiryDate();
-      const k2Warning = checkDateWarnings(k2Date);
-      const k2WarningClass = isSoldOrArchivedVehicle ? '' : k2Warning.class;
-      html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">K2 Belgesi Geçerlilik</span><span class="detail-row-colon">:</span></div><span class="detail-row-value ${k2WarningClass}"> ${escapeHtml(formatDateForDetailModal(k2Date) || '-')}</span></div>`;
-
       const tasitKartiLabel = getVehicleDocumentPath(vehicle, 'tasit_karti') ? 'Yüklü' : 'Yüklü Değil';
       html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Taşıt Kartı</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(tasitKartiLabel)}</span></div>`;
     }
@@ -5342,7 +5363,6 @@
     ceza: 'TRAFİK CEZASI EKLE',
     sigorta: 'SİGORTA BİLGİSİ GÜNCELLE',
     kasko: 'KASKO BİLGİSİ GÜNCELLE',
-    k2belgesi: 'K2 BELGESİ BİLGİSİ GÜNCELLE',
     takograf: 'TAKOGRAF KALİBRASYON GÜNCELLE',
     muayene: 'MUAYENE BİLGİSİ GÜNCELLE',
     anahtar: 'YEDEK ANAHTAR BİLGİSİ GÜNCELLE',
@@ -5663,10 +5683,6 @@
           section('Firma', 'kasko-firma', 'input', [['type', 'text'], ['placeholder', 'ör. Anadolu']]) +
           section('Acente', 'kasko-acente', 'input', [['type', 'text'], ['placeholder', 'ör. Hayri Çetin']]) +
           section('İletişim', 'kasko-iletisim', 'input', [['type', 'text'], ['placeholder', '05** *******']]) + '</div>';
-      case 'k2belgesi':
-        return '<div style="display:flex;flex-direction:column;gap:12px;">' +
-          section('K2 Belgesi Geçerlilik (gg/aa/yyyy)', 'k2-belgesi-tarih', 'input', [['type', 'text'], ['placeholder', 'gg/aa/yyyy']]) +
-          section('Not', 'k2-belgesi-not', 'textarea', [['rows', '2'], ['placeholder', 'İsteğe bağlı not']]) + '</div>';
       case 'takograf':
         return '<div style="display:flex;flex-direction:column;gap:12px;">' +
           section('Kalibrasyon Tarihi (gg/aa/yyyy)', 'takograf-kalibrasyon-tarih', 'input', [['type', 'text'], ['placeholder', 'gg/aa/yyyy']]) +
@@ -5773,9 +5789,6 @@
         { id: 'kullanici', label: 'Kullan\u0131c\u0131 Atama/De\u011Fi\u015Fikli\u011Fi Bilgisi G\u00FCncelle' },
         { id: 'satis', label: 'Sat\u0131\u015F/Pert Bildirimi Yap' }
       ];
-      if (vehicleNeedsK2Belgesi(currentMenuVehicle)) {
-        events.splice(7, 0, { id: 'k2belgesi', label: 'K2 Belgesi Bilgisi G\u00FCncelle' });
-      }
       if (vehicleNeedsTakograf(currentMenuVehicle)) {
         events.splice(8, 0, { id: 'takograf', label: 'Takograf Kalibrasyon G\u00FCncelle' });
       }
@@ -5890,7 +5903,6 @@
         ceza: window.saveCezaEvent,
         sigorta: window.updateSigortaInfo,
         kasko: window.updateKaskoInfo,
-        k2belgesi: window.updateK2BelgesiInfo,
         takograf: window.updateTakografKalibrasyonInfo,
         muayene: window.updateMuayeneInfo,
         anahtar: window.updateAnahtarInfo,
@@ -5969,9 +5981,6 @@
             if (value) this.value = formatNumber(value);
           });
         }
-      } else if (type === 'k2belgesi') {
-        const input = document.getElementById('k2-belgesi-tarih');
-        if (input) input.value = formatIsoToGgAaYyyy(getK2BelgesiExpiryDate());
       } else if (type === 'takograf') {
         const vehicle = readVehicles().find(v => String(v.id) === String(vehicleId || window.currentDetailVehicleId));
         const input = document.getElementById('takograf-kalibrasyon-tarih');
@@ -6568,7 +6577,7 @@
   function getVehicleDocumentKeysForVehicle(vehicle) {
     var keys = ['ruhsat', 'sigorta', 'kasko'];
     if (vehicleNeedsK2Belgesi(vehicle)) {
-      keys.push('k2', 'tasit_karti');
+      keys.push('tasit_karti');
     }
     if (vehicleNeedsTakograf(vehicle)) {
       keys.push('takograf');
@@ -8672,58 +8681,6 @@
   };
 
   /**
-   * K2 belgesi merkezi gecerlilik tarihini guncelle.
-   */
-  window.updateK2BelgesiInfo = function() {
-    const tarihInput = document.getElementById('k2-belgesi-tarih');
-    const tarih = normalizeGgAaYyyyInputElement(tarihInput);
-    const not = document.getElementById('k2-belgesi-not')?.value.trim() || '';
-
-    if (!tarih || !parseGgAaYyyyToIso(tarih)) {
-      alert('K2 Belgesi Geçerlilik tarihi zorunludur!');
-      if (tarihInput) tarihInput.focus();
-      return;
-    }
-
-    const svc = resolveVehicleContextForDynamicSave();
-    if (!svc) return;
-    const vehicleId = svc.vehicleId;
-    const vehicle = svc.vehicle;
-    const vehicles = svc.vehicles;
-    if (!vehicleNeedsK2Belgesi(vehicle)) {
-      alert('K2 belgesi sadece küçük ticari, büyük ticari ve römork taşıtlarda kullanılır.');
-      return;
-    }
-
-    const k2State = getK2BelgesiState();
-    k2State.expiryDate = parseGgAaYyyyToIso(tarih);
-    k2State.updatedAt = new Date().toISOString();
-
-    if (!vehicle.events) vehicle.events = [];
-    vehicle.events.unshift({
-      id: Date.now().toString(),
-      type: 'k2-belgesi-guncelle',
-      date: tarih,
-      timestamp: new Date().toISOString(),
-      data: {
-        bitisTarihi: k2State.expiryDate,
-        not: not,
-        surucu: getEventPerformerName(vehicle),
-        kaydeden: getRecorderDisplayName()
-      }
-    });
-
-    return writeVehicles(vehicles).then(function() {
-      if (window.updateNotifications) window.updateNotifications();
-      return completeDynamicEventSave({
-        modalType: 'k2belgesi',
-        vehicleId: vehicleId,
-        message: 'K2 belgesi bilgisi güncellendi.'
-      });
-    });
-  };
-
-  /**
    * Takograf kalibrasyonunu guncelle; bitis tarihi 2 yil sonrasina ayarlanir.
    */
   window.updateTakografKalibrasyonInfo = function() {
@@ -9405,7 +9362,7 @@
    */
   function renderHistoryDigerEventHtml(event, vehicle, branches) {
     const eventType = String(event.type || '').trim();
-    const isDateRenewalEvent = eventType === 'kasko-guncelle' || eventType === 'sigorta-guncelle' || eventType === 'k2-belgesi-guncelle' || eventType === 'takograf-kalibrasyon-guncelle' || eventType === 'muayene-guncelle' || eventType === 'muayene' || eventType === 'muayene-yenileme';
+    const isDateRenewalEvent = eventType === 'kasko-guncelle' || eventType === 'sigorta-guncelle' || eventType === 'takograf-kalibrasyon-guncelle' || eventType === 'muayene-guncelle' || eventType === 'muayene' || eventType === 'muayene-yenileme';
     function formatHistoryActionDate(ev) {
       const stamp = ev && ev.timestamp ? String(ev.timestamp).trim() : '';
       if (stamp) {
@@ -9472,14 +9429,6 @@
       if (firma) pushDetail('Firma', toTitleCase(firma));
       if (acente) pushDetail('Acente', toTitleCase(acente));
       if (iletisim) pushDetail('\u0130leti\u015Fim', iletisim);
-    } else if (eventType === 'k2-belgesi-guncelle') {
-      const bitis = formatDateForDisplay(eventData.bitisTarihi || '');
-      if (bitis) {
-        summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, K2 Belgesi Geçerlilik Tarihini </span><span class="history-detail-inline">' + escapeHtml(bitis) + '</span><span class="history-action-text"> Olarak Güncelledi.</span>';
-      } else {
-        summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, K2 Belgesi Bilgisini Güncelledi.</span>';
-      }
-      if (eventData.not) pushDetail('Not', eventData.not);
     } else if (eventType === 'takograf-kalibrasyon-guncelle') {
       const bitis = formatDateForDisplay(eventData.bitisTarihi || '');
       if (bitis) {
@@ -9919,7 +9868,6 @@
       'ceza': 'Trafik Cezas\u0131 \u0130\u015Fledi',
       'sigorta-guncelle': 'Sigorta Bilgisini G\u00FCncelledi',
       'kasko-guncelle': 'Kasko Bilgisini G\u00FCncelledi',
-      'k2-belgesi-guncelle': 'K2 Belgesi Bilgisini G\u00FCncelledi',
       'takograf-kalibrasyon-guncelle': 'Takograf Kalibrasyon Bilgisini G\u00FCncelledi',
       'muayene-guncelle': 'Muayene Bilgisini G\u00FCncelledi',
       'anahtar-guncelle': 'Yedek Anahtar Bilgisini G\u00FCncelledi',
@@ -10286,7 +10234,13 @@
             const shouldKeepSeverity = isDateSeverity;
 
             let messageText = '';
-            if (notif.days <= 0 && notif.type === 'kasko') {
+            if (notif.type === 'k2' && notif.days < 0) {
+                messageText = `K2 Belgesi Tarihi ${Math.abs(notif.days)} Gün Geçti.`;
+            } else if (notif.type === 'k2' && notif.days === 0) {
+                messageText = 'K2 Belgesi Tarihi Bugün Bitiyor.';
+            } else if (notif.type === 'k2') {
+                messageText = `K2 Belgesi Tarihi ${notif.days} Gün Sonra Bitecek.`;
+            } else if (notif.days <= 0 && notif.type === 'kasko') {
                 messageText = `${notif.plate} Plakalı Taşıtın Kasko Süresi Bitmiştir.`;
             } else if (notif.type === 'egzoz' && notif.missing) {
                 messageText = `${notif.plate} Plakalı Taşıtın Egzoz Muayenesi Tarihi Eksiktir.`;
@@ -10309,8 +10263,8 @@
               : 'rgba(255, 140, 0, 0.6)';
             const readBorderColor = 'rgba(130, 130, 130, 0.55)';
 
-            const safePlate = (notif.plate || '').replace(/"/g, '&quot;');
-            const safeVid = (notif.vehicleId || '').toString().replace(/"/g, '&quot;');
+            const safePlate = (notif.type === 'k2' ? 'Şirket Evrakı' : (notif.plate || '')).replace(/"/g, '&quot;');
+            const safeVid = (notif.type === 'k2' ? '' : (notif.vehicleId || '')).toString().replace(/"/g, '&quot;');
             const safeKey = notifKey.replace(/"/g, '&quot;');
             const stateClass = isUnread ? ' notification-unread' : ' notification-read';
             const borderClass = (shouldKeepSeverity || isUnread) ? (notif.warningClass + '-border') : '';
@@ -10327,7 +10281,8 @@
               hasOrange = true;
             }
 
-            const h = `<button type="button" data-plate="${safePlate}" data-vehicle-id="${safeVid}" data-notif-key="${safeKey}" style="${notifStyle}" class="notification-item ${borderClass}${stateClass}">
+            const k2ActionAttr = notif.type === 'k2' ? ' data-action="open-required-documents"' : '';
+            const h = `<button type="button"${k2ActionAttr} data-plate="${safePlate}" data-vehicle-id="${safeVid}" data-notif-key="${safeKey}" style="${notifStyle}" class="notification-item ${borderClass}${stateClass}">
             <div class="notif-line1 notif-title">
               <span class="${titleClass}">${escapeHtml(messageText)}</span>
             </div>
