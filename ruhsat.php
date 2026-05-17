@@ -37,15 +37,15 @@ function ruhsatDetectMimeType($filePath) {
     return $map[$extension] ?? 'application/octet-stream';
 }
 
-$vehicleId = trim((string)($_GET['id'] ?? ''));
-if ($vehicleId === '') {
-    ruhsatRespondTextError(400, 'id parametresi gerekli');
-}
-
 $documentType = strtolower(trim((string)($_GET['documentType'] ?? 'ruhsat')));
 $config = medisaGetVehicleDocumentConfig($documentType);
 if (!$config) {
     ruhsatRespondTextError(400, 'Geçersiz belge tipi');
+}
+$isSettingsDocument = !empty($config['settingsKey']);
+$vehicleId = trim((string)($_GET['id'] ?? ''));
+if (!$isSettingsDocument && $vehicleId === '') {
+    ruhsatRespondTextError(400, 'id parametresi gerekli');
 }
 
 $data = loadData();
@@ -58,23 +58,32 @@ if (($auth['success'] ?? false) !== true) {
     ruhsatRespondTextError((int)($auth['status'] ?? 403), $auth['message'] ?? 'Bu işlem için yetkiniz yok.');
 }
 
-$vehicleIndex = medisaFindVehicleIndex($data, $vehicleId);
-if ($vehicleIndex < 0) {
-    ruhsatRespondTextError(404, 'Taşıt bulunamadı');
-}
+if ($isSettingsDocument) {
+    $vehicle = [];
+    $filePath = medisaResolveVehicleDocumentFilePath($vehicle, $documentType, $data);
+    if (!$filePath || !is_file($filePath)) {
+        ruhsatRespondTextError(404, $config['notFound']);
+    }
+    $plaka = strtoupper((string)($config['fallbackName'] ?? $documentType));
+} else {
+    $vehicleIndex = medisaFindVehicleIndex($data, $vehicleId);
+    if ($vehicleIndex < 0) {
+        ruhsatRespondTextError(404, 'Taşıt bulunamadı');
+    }
 
-$vehicle = $data['tasitlar'][$vehicleIndex];
-if (!medisaCanViewVehicleRecord($vehicle, $auth['context'])) {
-    ruhsatRespondTextError(403, 'Bu ruhsatı görüntüleme yetkiniz yok.');
-}
+    $vehicle = $data['tasitlar'][$vehicleIndex];
+    if (!medisaCanViewVehicleRecord($vehicle, $auth['context'])) {
+        ruhsatRespondTextError(403, 'Bu ruhsatı görüntüleme yetkiniz yok.');
+    }
 
-$filePath = medisaResolveVehicleDocumentFilePath($vehicle, $documentType, $data);
-if (!$filePath || !is_file($filePath)) {
-    ruhsatRespondTextError(404, $config['notFound']);
+    $filePath = medisaResolveVehicleDocumentFilePath($vehicle, $documentType, $data);
+    if (!$filePath || !is_file($filePath)) {
+        ruhsatRespondTextError(404, $config['notFound']);
+    }
+    $plaka = strtoupper((string)($vehicle['plaka'] ?? $vehicle['plate'] ?? $vehicle['id'] ?? $config['fallbackName']));
 }
 
 $mimeType = ruhsatDetectMimeType($filePath);
-$plaka = strtoupper((string)($vehicle['plaka'] ?? $vehicle['plate'] ?? $vehicle['id'] ?? $config['fallbackName']));
 $extension = strtolower((string)pathinfo($filePath, PATHINFO_EXTENSION));
 $downloadBase = preg_replace('/[^A-Z0-9_-]/', '', $plaka);
 if ($downloadBase === '') {

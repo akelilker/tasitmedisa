@@ -282,6 +282,7 @@
                     <div id="settings-menu" class="settings-dropdown">
                         <button id="settings-branch-btn" onclick="openBranchManagement()">Şube Yönetimi</button>
                         <button id="settings-user-btn" onclick="openUserManagement()">Kullanıcı Yönetimi</button>
+                        <button id="settings-required-documents-btn" onclick="openZorunluEvraklar()">Zorunlu Evraklar</button>
                         <button id="dis-veri-btn" onclick="openDisVeriPanel()" style="display:none;"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg> Dış Veri Yönetimi</button>
                         <div id="settings-data-wrap" class="has-submenu-wrapper">
                             <button class="has-submenu" onclick="openDataManagement(event)" onpointerdown="openDataManagement(event)">
@@ -753,6 +754,46 @@
             </div>
         </div>
 
+        <div id="required-documents-modal" class="modal-overlay ayarlar-modal-overlay">
+            <div class="modal-container">
+                <div class="modal-header">
+                    <h2>ZORUNLU EVRAKLAR</h2>
+                    <button class="modal-close" onclick="closeZorunluEvraklar()">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="universal-back-bar">
+                    <button type="button" class="universal-back-btn" aria-label="Ayarlar" onclick="closeZorunluEvraklar(); var m=document.getElementById('settings-menu'); if(m)m.classList.add('open');">
+                        <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        <span class="universal-back-label">Ayarlar</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="u-p-16">
+                        <div class="form-section">
+                            <label class="form-label" for="required-k2-expiry-date">K2 Belgesi Geçerlilik</label>
+                            <input type="text" id="required-k2-expiry-date" class="form-input" placeholder="gg/aa/yyyy" inputmode="numeric">
+                        </div>
+                        <div class="form-section">
+                            <span class="form-label">K2 Belgesi</span>
+                            <div id="required-k2-document-status" class="settings-card-count">Yüklü Değil</div>
+                        </div>
+                        <div class="form-section">
+                            <input type="file" id="required-k2-document-input" accept="application/pdf,.pdf" class="form-input">
+                        </div>
+                        <div class="universal-btn-group">
+                            <button type="button" class="universal-btn-save" onclick="saveZorunluEvraklarK2()">Kaydet</button>
+                            <button type="button" class="universal-btn-cancel" onclick="viewZorunluEvrakK2()">Görüntüle</button>
+                            <button type="button" class="universal-btn-cancel" onclick="closeZorunluEvraklar()">Vazgeç</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div id="data-management-modal" class="modal-overlay ayarlar-modal-overlay">
             <div class="modal-container">
                 <div class="modal-header">
@@ -1154,7 +1195,7 @@
     <script defer src="portal-session.js?v=20260513.2"></script>
     <script defer src="data-manager.js?v=20260513.2"></script>
     <script defer src="data-service.js?v=20260506.1"></script>
-    <script defer src="script-core.js?v=20260517.7"></script>
+    <script defer src="script-core.js?v=20260518.1"></script>
 </body>
 </html>
 

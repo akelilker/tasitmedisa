@@ -13,15 +13,15 @@ function respondJsonError(int $statusCode, string $message): void
     exit;
 }
 
-$vehicleId = trim((string)($_GET['id'] ?? ''));
-if ($vehicleId === '') {
-    respondJsonError(400, 'id parametresi gerekli');
-}
-
 $documentType = strtolower(trim((string)($_GET['documentType'] ?? 'ruhsat')));
 $config = medisaGetVehicleDocumentConfig($documentType);
 if (!$config) {
     respondJsonError(400, 'Geçersiz belge tipi');
+}
+$isSettingsDocument = !empty($config['settingsKey']);
+$vehicleId = trim((string)($_GET['id'] ?? ''));
+if (!$isSettingsDocument && $vehicleId === '') {
+    respondJsonError(400, 'id parametresi gerekli');
 }
 
 $data = loadData();
@@ -34,17 +34,29 @@ if (($auth['success'] ?? false) !== true) {
     respondJsonError((int)($auth['status'] ?? 403), $auth['message'] ?? 'Bu işlem için yetkiniz yok.');
 }
 
-$vehicleIndex = medisaFindVehicleIndex($data, $vehicleId);
-if ($vehicleIndex < 0) {
-    respondJsonError(404, 'Taşıt bulunamadı');
+if ($isSettingsDocument) {
+    $vehicle = [];
+    $sourcePath = medisaResolveVehicleDocumentFilePath($vehicle, $documentType, $data);
+    $safeId = (string)($config['settingsKey'] ?? $documentType);
+} else {
+    $vehicleIndex = medisaFindVehicleIndex($data, $vehicleId);
+    if ($vehicleIndex < 0) {
+        respondJsonError(404, 'Taşıt bulunamadı');
+    }
+
+    $vehicle = $data['tasitlar'][$vehicleIndex];
+    if (!medisaCanViewVehicleRecord($vehicle, $auth['context'])) {
+        respondJsonError(403, 'Bu ruhsatı görüntüleme yetkiniz yok.');
+    }
+
+    $sourcePath = medisaResolveVehicleDocumentFilePath($vehicle, $documentType, $data);
+    $safeId = preg_replace('/[^a-zA-Z0-9_-]/', '', (string)($vehicle['id'] ?? $vehicleId));
+    if ($safeId === '') {
+        $digitsOnly = preg_replace('/\D/', '', $vehicleId);
+        $safeId = $digitsOnly !== '' ? 'vehicle_' . $digitsOnly : 'unknown';
+    }
 }
 
-$vehicle = $data['tasitlar'][$vehicleIndex];
-if (!medisaCanViewVehicleRecord($vehicle, $auth['context'])) {
-    respondJsonError(403, 'Bu ruhsatı görüntüleme yetkiniz yok.');
-}
-
-$sourcePath = medisaResolveVehicleDocumentFilePath($vehicle, $documentType, $data);
 if (!$sourcePath || !is_file($sourcePath)) {
     respondJsonError(404, $config['notFound']);
 }
@@ -92,12 +104,6 @@ if ($previewMetaRequested) {
     } catch (Throwable $e) {
         respondJsonError(500, 'PDF sayfa bilgisi alınamadı');
     }
-}
-
-$safeId = preg_replace('/[^a-zA-Z0-9_-]/', '', (string)($vehicle['id'] ?? $vehicleId));
-if ($safeId === '') {
-    $digitsOnly = preg_replace('/\D/', '', $vehicleId);
-    $safeId = $digitsOnly !== '' ? 'vehicle_' . $digitsOnly : 'unknown';
 }
 
 $previewDir = __DIR__ . '/data/' . $config['dir'] . '_preview';
