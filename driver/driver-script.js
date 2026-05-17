@@ -1011,8 +1011,8 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
 
   function getDriverDocumentTypesForVehicle(vehicle) {
       var keys = ['ruhsat', 'sigorta', 'kasko'];
-      if (driverVehicleNeedsK2(vehicle)) keys.push('tasit_karti');
-      if (driverVehicleNeedsTakograf(vehicle)) keys.push('takograf');
+      if (driverVehicleNeedsK2(vehicle) || hasDriverDocument(vehicle, DRIVER_DOCUMENT_TYPES.find(function(item) { return item.key === 'tasit_karti'; }))) keys.push('tasit_karti');
+      if (driverVehicleNeedsTakograf(vehicle) || hasDriverDocument(vehicle, DRIVER_DOCUMENT_TYPES.find(function(item) { return item.key === 'takograf'; }))) keys.push('takograf');
       return keys.map(function(key) {
           return DRIVER_DOCUMENT_TYPES.find(function(item) { return item.key === key; });
       }).filter(Boolean);
@@ -1161,6 +1161,11 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           if (w.level === 'red') level = 'red';
           else if (w.level === 'orange' && level !== 'red') level = 'orange';
       });
+      if (driverVehicleNeedsTakograf(vehicle)) {
+          const takografW = checkDateWarningsDriver(vehicle.takografExpiryDate);
+          if (takografW.level === 'red') level = 'red';
+          else if (takografW.level === 'orange' && level !== 'red') level = 'orange';
+      }
       return level;
   }
   
@@ -1898,6 +1903,9 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           }
           checkDate(v.sigortaDate, 'Sigorta');
           checkDate(v.kaskoDate, 'Kasko');
+          if (driverVehicleNeedsTakograf(v)) {
+              checkDate(v.takografExpiryDate, 'Takograf Kalibrasyon');
+          }
       }
       return warnings;
   }
