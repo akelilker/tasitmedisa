@@ -362,9 +362,39 @@
       const dateInput = document.getElementById('required-k2-expiry-date');
       const statusEl = document.getElementById('required-k2-document-status');
       const fileInput = document.getElementById('required-k2-document-input');
+      const picker = document.getElementById('required-k2-document-picker');
+      const pickerIcon = picker ? picker.querySelector('.required-k2-document-picker-icon') : null;
+      const pickerLabel = picker ? picker.querySelector('.required-k2-document-picker-label') : null;
+      const hasDocument = !!String(state.documentPath || '').trim();
       if (dateInput) dateInput.value = formatZorunluEvrakDate(state.expiryDate || '');
-      if (statusEl) statusEl.textContent = String(state.documentPath || '').trim() ? 'Yüklü' : 'Yüklü Değil';
+      if (statusEl) statusEl.textContent = hasDocument ? 'Yüklü' : 'Yüklü Değil';
+      if (picker) picker.classList.toggle('upload-success', hasDocument);
+      if (pickerIcon) pickerIcon.textContent = hasDocument ? '✓' : '+';
+      if (pickerLabel) pickerLabel.textContent = hasDocument ? 'K2 Belgesi Yüklü / Değiştir' : 'Dosya Seç';
       if (fileInput) fileInput.value = '';
+    }
+
+    function setupZorunluEvraklarK2DocumentPicker() {
+      const picker = document.getElementById('required-k2-document-picker');
+      const fileInput = document.getElementById('required-k2-document-input');
+      if (!picker || !fileInput || picker.dataset.k2PickerBound === '1') return;
+
+      picker.dataset.k2PickerBound = '1';
+      picker.addEventListener('click', function() {
+        fileInput.click();
+      });
+      fileInput.addEventListener('change', function() {
+        const selectedFile = fileInput.files && fileInput.files[0] ? fileInput.files[0] : null;
+        if (!selectedFile) {
+          refreshZorunluEvraklarK2View();
+          return;
+        }
+        const pickerIcon = picker.querySelector('.required-k2-document-picker-icon');
+        const pickerLabel = picker.querySelector('.required-k2-document-picker-label');
+        picker.classList.add('upload-success');
+        if (pickerIcon) pickerIcon.textContent = '✓';
+        if (pickerLabel) pickerLabel.textContent = selectedFile.name;
+      });
     }
 
     async function uploadZorunluEvraklarK2Document(fileInput) {
@@ -391,6 +421,7 @@
       if (!modal) return;
       refreshZorunluEvraklarK2View();
       setupZorunluEvraklarK2DatePicker();
+      setupZorunluEvraklarK2DocumentPicker();
       modal.style.display = 'flex';
       requestAnimationFrame(() => modal.classList.add('active'));
     };
