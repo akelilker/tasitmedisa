@@ -362,38 +362,115 @@
       const dateInput = document.getElementById('required-k2-expiry-date');
       const statusEl = document.getElementById('required-k2-document-status');
       const fileInput = document.getElementById('required-k2-document-input');
-      const picker = document.getElementById('required-k2-document-picker');
-      const pickerIcon = picker ? picker.querySelector('.required-k2-document-picker-icon') : null;
-      const pickerLabel = picker ? picker.querySelector('.required-k2-document-picker-label') : null;
       const hasDocument = !!String(state.documentPath || '').trim();
       if (dateInput) dateInput.value = formatZorunluEvrakDate(state.expiryDate || '');
       if (statusEl) statusEl.textContent = hasDocument ? 'Yüklü' : 'Yüklü Değil';
-      if (picker) picker.classList.toggle('upload-success', hasDocument);
-      if (pickerIcon) pickerIcon.textContent = hasDocument ? '✓' : '+';
-      if (pickerLabel) pickerLabel.textContent = hasDocument ? 'K2 Belgesi Yüklü / Değiştir' : 'Dosya Seç';
+      if (hasDocument) renderZorunluEvraklarK2Preview();
+      else renderZorunluEvraklarK2Picker();
       if (fileInput) fileInput.value = '';
     }
 
-    function setupZorunluEvraklarK2DocumentPicker() {
-      const picker = document.getElementById('required-k2-document-picker');
-      const fileInput = document.getElementById('required-k2-document-input');
-      if (!picker || !fileInput || picker.dataset.k2PickerBound === '1') return;
+    function buildZorunluEvraklarK2PreviewUrl() {
+      const url = new URL('ruhsat_preview.php', window.location.href);
+      url.searchParams.set('documentType', 'k2');
+      url.searchParams.set('page', '0');
+      const token = getZorunluEvraklarAuthToken();
+      if (token) url.searchParams.set('token', token);
+      return url.toString();
+    }
 
-      picker.dataset.k2PickerBound = '1';
-      picker.addEventListener('click', function() {
-        fileInput.click();
-      });
+    function renderZorunluEvraklarK2Picker(fileName) {
+      const area = document.getElementById('required-k2-document-area');
+      if (!area) return;
+      area.innerHTML = '';
+
+      const picker = document.createElement('button');
+      picker.type = 'button';
+      picker.id = 'required-k2-document-picker';
+      picker.className = 'required-k2-document-picker';
+      if (fileName) picker.classList.add('has-selected-file');
+
+      const icon = document.createElement('span');
+      icon.className = 'required-k2-document-picker-icon';
+      icon.textContent = fileName ? '✓' : '+';
+
+      const label = document.createElement('span');
+      label.className = 'required-k2-document-picker-label';
+      label.textContent = fileName || 'Dosya Seç';
+
+      picker.appendChild(icon);
+      picker.appendChild(label);
+      area.appendChild(picker);
+    }
+
+    function renderZorunluEvraklarK2Preview() {
+      const area = document.getElementById('required-k2-document-area');
+      if (!area) return;
+      area.innerHTML = '';
+
+      const row = document.createElement('div');
+      row.className = 'required-k2-preview-row';
+
+      const preview = document.createElement('button');
+      preview.type = 'button';
+      preview.className = 'required-k2-preview-link';
+      preview.setAttribute('aria-label', 'K2 belgesini ön izle');
+
+      const image = document.createElement('img');
+      image.className = 'required-k2-preview-image';
+      image.alt = '';
+      image.loading = 'lazy';
+      image.src = buildZorunluEvraklarK2PreviewUrl();
+      image.addEventListener('error', function() {
+        image.remove();
+      }, { once: true });
+
+      const hint = document.createElement('span');
+      hint.className = 'required-k2-preview-hint';
+      hint.textContent = 'Ön İzleme';
+
+      preview.appendChild(image);
+      preview.appendChild(hint);
+
+      const addBtn = document.createElement('button');
+      addBtn.type = 'button';
+      addBtn.className = 'required-k2-add-btn';
+      addBtn.setAttribute('aria-label', 'K2 belgesini değiştir');
+      addBtn.textContent = '+';
+
+      row.appendChild(preview);
+      row.appendChild(addBtn);
+      area.appendChild(row);
+    }
+
+    function setupZorunluEvraklarK2DocumentPicker() {
+      const area = document.getElementById('required-k2-document-area');
+      const fileInput = document.getElementById('required-k2-document-input');
+      if (!area || !fileInput) return;
+
+      if (area.dataset.k2PickerBound !== '1') {
+        area.dataset.k2PickerBound = '1';
+        area.addEventListener('click', function(event) {
+          const picker = event.target.closest('#required-k2-document-picker');
+          const addBtn = event.target.closest('.required-k2-add-btn');
+          const preview = event.target.closest('.required-k2-preview-link');
+          if (picker || addBtn) {
+            fileInput.click();
+            return;
+          }
+          if (preview) window.viewZorunluEvrakK2();
+        });
+      }
+
+      if (fileInput.dataset.k2PickerBound === '1') return;
+      fileInput.dataset.k2PickerBound = '1';
       fileInput.addEventListener('change', function() {
         const selectedFile = fileInput.files && fileInput.files[0] ? fileInput.files[0] : null;
         if (!selectedFile) {
           refreshZorunluEvraklarK2View();
           return;
         }
-        const pickerIcon = picker.querySelector('.required-k2-document-picker-icon');
-        const pickerLabel = picker.querySelector('.required-k2-document-picker-label');
-        picker.classList.add('upload-success');
-        if (pickerIcon) pickerIcon.textContent = '✓';
-        if (pickerLabel) pickerLabel.textContent = selectedFile.name;
+        renderZorunluEvraklarK2Picker(selectedFile.name);
       });
     }
 

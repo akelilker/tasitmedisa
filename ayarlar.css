@@ -513,17 +513,24 @@ body.modal-open #info-modal.open {
     display: none;
 }
 
-#required-documents-modal .required-k2-document-picker {
+#required-documents-modal .required-k2-document-area {
     width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+#required-documents-modal .required-k2-document-picker {
+    width: min(280px, 100%);
     max-width: 280px;
-    min-height: 38px;
+    min-height: 80px;
     margin: 0 auto 8px auto;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    padding: 8px 12px;
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    gap: 7px;
+    padding: 12px;
+    border: 1px dashed rgba(255, 255, 255, 0.32);
     border-radius: 8px;
     background: rgba(255, 255, 255, 0.03);
     color: var(--form-label-color, #ffffff);
@@ -536,34 +543,117 @@ body.modal-open #info-modal.open {
 
 #required-documents-modal .required-k2-document-picker:hover,
 #required-documents-modal .required-k2-document-picker:focus-visible {
-    border-color: rgba(255, 255, 255, 0.45);
-    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(74, 222, 128, 0.48);
+    background: rgba(74, 222, 128, 0.06);
     outline: none;
 }
 
-#required-documents-modal .required-k2-document-picker.upload-success {
+#required-documents-modal .required-k2-document-picker.has-selected-file {
+    border-style: solid;
     border-color: rgba(40, 167, 69, 0.72);
-    background: rgba(40, 167, 69, 0.12);
+    background: rgba(40, 167, 69, 0.1);
     color: #7dffae;
 }
 
 #required-documents-modal .required-k2-document-picker-icon {
-    width: 18px;
-    min-width: 18px;
-    height: 18px;
+    width: 28px;
+    min-width: 28px;
+    height: 28px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-size: 15px;
-    font-weight: 700;
+    font-size: 28px;
+    font-weight: 300;
     line-height: 1;
+    color: rgba(255, 255, 255, 0.72);
 }
 
 #required-documents-modal .required-k2-document-picker-label {
     min-width: 0;
+    max-width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    color: inherit;
+}
+
+#required-documents-modal .required-k2-preview-row {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 120px;
+    margin: 0 auto 8px auto;
+}
+
+#required-documents-modal .required-k2-preview-link {
+    width: 120px;
+    height: 72px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    overflow: hidden;
+    display: block;
+    position: relative;
+    padding: 0;
+    cursor: pointer;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25) inset;
+    background: var(--bg, #0d131f);
+}
+
+#required-documents-modal .required-k2-preview-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+}
+
+#required-documents-modal .required-k2-preview-hint {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: block;
+    padding: 3px 0;
+    font-size: 11px;
+    line-height: 1.2;
+    text-align: center;
+    color: #ffffff;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.58), rgba(0, 0, 0, 0));
+    pointer-events: none;
+}
+
+#required-documents-modal .required-k2-add-btn {
+    position: absolute;
+    left: calc(100% + 12px);
+    top: 50%;
+    transform: translateY(-50%);
+    min-width: 64px;
+    min-height: 64px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.02);
+    color: rgba(255, 255, 255, 0.48);
+    font-size: 42px;
+    font-weight: 300;
+    line-height: 0.9;
+    cursor: pointer;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+    transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+#required-documents-modal .required-k2-add-btn:hover,
+#required-documents-modal .required-k2-add-btn:focus-visible,
+#required-documents-modal .required-k2-add-btn:active {
+    color: #4ade80;
+    border-color: rgba(74, 222, 128, 0.58);
+    background: rgba(74, 222, 128, 0.08);
+    box-shadow: inset 0 0 0 1px rgba(74, 222, 128, 0.18), 0 10px 24px rgba(0, 0, 0, 0.18);
+    transform: translateY(-50%) scale(1.04);
 }
 
 #required-documents-modal .required-k2-date-picker-btn {
