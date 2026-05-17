@@ -6797,6 +6797,12 @@ body.dashboard-page.driver-history-or-edit-modal-open .driver-left-panel {
     border-right: none !important;
 }
 
+body.dashboard-page:has(#driver-documents-modal.driver-modal.show) .driver-left-panel,
+body.dashboard-page:has(#driver-feedback-modal.driver-modal.show) .driver-left-panel,
+body.dashboard-page.driver-feedback-modal-open .driver-left-panel {
+    visibility: hidden !important;
+}
+
 body.dashboard-page:has(#history-modal.driver-modal.show) .driver-left-panel::after,
 body.dashboard-page:has(#edit-request-modal.driver-modal.show) .driver-left-panel::after,
 body.dashboard-page:has(#driver-documents-modal.driver-modal.show) .driver-left-panel::after,
