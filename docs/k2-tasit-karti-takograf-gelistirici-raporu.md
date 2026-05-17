@@ -41,7 +41,7 @@ Yeni kayıt sırasında taşıt tipi zorunludur. Küçük ticari, büyük ticari
 
 Taşıt detayında ilgili araç tipine göre K2 Belgesi Geçerlilik, Taşıt Kartı ve Takograf Kalibrasyon Bitiş alanları gösterilir.
 
-Taşıt tipi değiştirildiğinde kapsam dışı kalan alanlar kayıt öncesinde temizlenmelidir. Örneğin Büyük Ticari seçilmişken takograf tarihi girildikten sonra araç Küçük Ticari, Otomobil veya Römork olarak değiştirilirse `takografKalibrasyonDate`, `takografExpiryDate`, `takografBelgesiPath` ve `takografServis` alanları `null`/boş değere çekilmelidir. Bu temizlik sadece araç bazlı alanlar içindir; merkezi K2 belgesi tek bir aracın tip değişiminde silinmez.
+Taşıt tipi değiştirildiğinde kapsam dışı kalan alanlar kayıt öncesinde temizlenir. Örneğin Büyük Ticari seçilmişken takograf tarihi girildikten sonra araç Küçük Ticari, Otomobil veya Römork olarak değiştirilirse `takografKalibrasyonDate`, `takografExpiryDate`, `takografBelgesiPath` ve `takografServis` alanları boş değere çekilir. Aynı temizlik taşıt detayındaki taşıt tipi picker akışında da uygulanır. Bu temizlik sadece araç bazlı alanlar içindir; merkezi K2 belgesi tek bir aracın tip değişiminde silinmez.
 
 Belgeler modalında:
 
@@ -62,7 +62,7 @@ K2 Belgesi geçerlilik tarihi merkezi olduğu için bildirim/aylık iş listesin
 
 Takograf kalibrasyon bitiş tarihi büyük ticari araçlarda normal tarih uyarı sistemine dahil edilir.
 
-Taşıt satıldığında, silindiğinde veya pasif/arşiv statüsüne alındığında bu araç tarih taramalarında kapsam dışı kalmalıdır. Böylece satılmış ya da pasif büyük ticari araçlar takograf kalibrasyon uyarısı üretmeye devam etmez. Aynı akışta araç bazlı `tasitKartiPath` ve `takograf*` alanları aktif bildirim/aylık iş listesi için yok sayılmalı; araç tamamen silindiyse bu bağlantılar da veri kaydıyla birlikte düşmelidir.
+Taşıt satıldığında, silindiğinde veya pasif/arşiv statüsüne alındığında bu araç tarih taramalarında kapsam dışı kalır. Kod tarafında `satildiMi`, `arsiv`, `pasif`, `aktif === false`, `aktifMi === false` ve `durum === "pasif"` durumları aktif bildirim/aylık iş listesi için operasyon dışı kabul edilir. Böylece satılmış ya da pasif büyük ticari araçlar takograf kalibrasyon uyarısı üretmeye devam etmez. Aynı akışta araç bazlı `tasitKartiPath` ve `takograf*` alanları aktif bildirim/aylık iş listesi için yok sayılır; araç tamamen silindiyse bu bağlantılar da veri kaydıyla birlikte düşer.
 
 ## Faz Dışı Bırakılanlar
 
