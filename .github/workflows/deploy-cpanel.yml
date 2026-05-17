@@ -119,5 +119,6 @@ jobs:
             **/.vscode/**
             **/outputs/**
             **/tmp/**
+            docs/**
             **/*.zip
             data/**
