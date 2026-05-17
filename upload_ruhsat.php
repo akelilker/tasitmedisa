@@ -134,7 +134,8 @@ if (is_file($previewPath)) {
 }
 
 $documentPath = $config['dir'] . '/' . $filename;
-$result = medisaMutateData(function (&$data) use ($vehicleId, $vehicleVersion, $documentPath, $config) {
+$isSettingsDocument = !empty($config['settingsKey']);
+$result = medisaMutateData(function (&$data) use ($vehicleId, $vehicleVersion, $documentPath, $config, $isSettingsDocument) {
     $auth = medisaResolveAuthorizedContext($data, 'view_main_app');
     if (($auth['success'] ?? false) !== true) {
         return medisaBuildErrorResult($auth['message'] ?? 'Bu işlem için yetkiniz yok.', (int)($auth['status'] ?? 403));
@@ -154,6 +155,30 @@ $result = medisaMutateData(function (&$data) use ($vehicleId, $vehicleVersion, $
     $versionCheck = medisaEnsureVehicleVersion($vehicle, $vehicleVersion, 'Bu taşıt başka biri tarafından güncellendi. Güncel veriler yüklendi.');
     if ($versionCheck !== true) {
         return $versionCheck;
+    }
+
+    if ($isSettingsDocument) {
+        if (!isset($data['ayarlar']) || !is_array($data['ayarlar'])) {
+            $data['ayarlar'] = [];
+        }
+        $settingsKey = (string)($config['settingsKey'] ?? '');
+        if ($settingsKey === '') {
+            return medisaBuildErrorResult('Belge ayar anahtarı bulunamadı.', 500);
+        }
+        if (!isset($data['ayarlar'][$settingsKey]) || !is_array($data['ayarlar'][$settingsKey])) {
+            $data['ayarlar'][$settingsKey] = [];
+        }
+        $settingsPathField = (string)($config['settingsPathField'] ?? 'documentPath');
+        $data['ayarlar'][$settingsKey][$settingsPathField] = $documentPath;
+        $data['ayarlar'][$settingsKey]['updatedAt'] = date('c');
+
+        return [
+            'success' => true,
+            'vehicleId' => (string)$vehicleId,
+            'vehicleVersion' => medisaGetVehicleVersion($vehicle),
+            'settingsKey' => $settingsKey,
+            'settingsDocument' => $data['ayarlar'][$settingsKey],
+        ];
     }
 
     $vehicle[$config['pathField']] = $documentPath;

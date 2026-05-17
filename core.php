@@ -57,6 +57,11 @@ function medisaDefaultData() {
             'yetkiliKisi' => '',
             'telefon' => '',
             'eposta' => '',
+            'k2Belgesi' => [
+                'expiryDate' => '',
+                'documentPath' => '',
+                'updatedAt' => '',
+            ],
         ],
         'sifreler' => [],
         'arac_aylik_hareketler' => [],
@@ -997,6 +1002,11 @@ function medisaFilterDataForContextWithUserPredicate($data, $context, $userPredi
             'yetkiliKisi' => '',
             'telefon' => '',
             'eposta' => '',
+            'k2Belgesi' => [
+                'expiryDate' => '',
+                'documentPath' => '',
+                'updatedAt' => '',
+            ],
         ],
         'sifreler' => ($context['role'] ?? 'kullanici') === 'genel_yonetici' ? ($data['sifreler'] ?? []) : [],
         'arac_aylik_hareketler' => $visibleAylikKayitlar,
@@ -1150,12 +1160,32 @@ function medisaGetVehicleDocumentConfig(string $documentType): ?array {
             'fallbackName' => 'kasko-policesi',
             'notFound' => 'Kasko poliçesi bulunamadı',
         ],
+        'k2' => [
+            'pathField' => 'k2BelgesiPath',
+            'settingsKey' => 'k2Belgesi',
+            'settingsPathField' => 'documentPath',
+            'dir' => 'k2_belgesi',
+            'fallbackName' => 'k2-belgesi',
+            'notFound' => 'K2 belgesi bulunamadı',
+        ],
+        'tasit_karti' => [
+            'pathField' => 'tasitKartiPath',
+            'dir' => 'tasit_karti',
+            'fallbackName' => 'tasit-karti',
+            'notFound' => 'Taşıt kartı bulunamadı',
+        ],
+        'takograf' => [
+            'pathField' => 'takografBelgesiPath',
+            'dir' => 'takograf',
+            'fallbackName' => 'takograf-belgesi',
+            'notFound' => 'Takograf belgesi bulunamadı',
+        ],
     ];
 
     return $configs[$type] ?? null;
 }
 
-function medisaResolveVehicleDocumentFilePath($vehicle, string $documentType) {
+function medisaResolveVehicleDocumentFilePath($vehicle, string $documentType, $data = null) {
     if (!is_array($vehicle)) {
         return null;
     }
@@ -1166,6 +1196,21 @@ function medisaResolveVehicleDocumentFilePath($vehicle, string $documentType) {
     }
 
     $candidates = [];
+    $settingsKey = (string)($config['settingsKey'] ?? '');
+    if ($settingsKey !== '' && is_array($data)) {
+        $settingsDoc = $data['ayarlar'][$settingsKey] ?? null;
+        if (is_array($settingsDoc)) {
+            $settingsPathField = (string)($config['settingsPathField'] ?? 'documentPath');
+            $rawSettingsPath = trim((string)($settingsDoc[$settingsPathField] ?? ''));
+            if ($rawSettingsPath !== '') {
+                $normalizedSettings = ltrim(str_replace('\\', '/', $rawSettingsPath), '/');
+                if (strpos($normalizedSettings, 'data/') !== 0) {
+                    $normalizedSettings = 'data/' . $normalizedSettings;
+                }
+                $candidates[] = __DIR__ . '/' . $normalizedSettings;
+            }
+        }
+    }
     $rawPath = trim((string)($vehicle[$config['pathField']] ?? ''));
     if ($rawPath !== '') {
         $normalized = ltrim(str_replace('\\', '/', $rawPath), '/');
