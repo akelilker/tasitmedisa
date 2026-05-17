@@ -773,12 +773,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="u-p-16">
-                        <div class="form-section required-k2-date-section">
-                            <label class="form-label" for="required-k2-expiry-date">K2 Belgesi Geçerlilik</label>
-                            <input type="text" id="required-k2-expiry-date" class="form-input" placeholder="gg/aa/yyyy" inputmode="numeric">
-                        </div>
                         <div class="form-section">
-                            <span class="form-label">K2 Belgesi</span>
                             <div id="required-k2-document-area" class="required-k2-document-area">
                                 <button type="button" id="required-k2-document-picker" class="required-k2-document-picker">
                                     <span class="required-k2-document-picker-icon">+</span>
@@ -788,9 +783,12 @@
                             <div id="required-k2-document-status" class="settings-card-count">Yüklü Değil</div>
                             <input type="file" id="required-k2-document-input" accept="application/pdf,.pdf" class="form-input">
                         </div>
+                        <div class="form-section required-k2-date-section">
+                            <label class="form-label" for="required-k2-expiry-date">K2 Belgesi Geçerlilik</label>
+                            <input type="text" id="required-k2-expiry-date" class="form-input" placeholder="gg/aa/yyyy" inputmode="numeric">
+                        </div>
                         <div class="universal-btn-group">
                             <button type="button" class="universal-btn-save" onclick="saveZorunluEvraklarK2()">Kaydet</button>
-                            <button type="button" class="universal-btn-cancel" onclick="viewZorunluEvrakK2()">Görüntüle</button>
                             <button type="button" class="universal-btn-cancel" onclick="closeZorunluEvraklar()">Vazgeç</button>
                         </div>
                     </div>
@@ -1199,7 +1197,7 @@
     <script defer src="portal-session.js?v=20260513.2"></script>
     <script defer src="data-manager.js?v=20260513.2"></script>
     <script defer src="data-service.js?v=20260506.1"></script>
-    <script defer src="script-core.js?v=20260518.4"></script>
+    <script defer src="script-core.js?v=20260518.5"></script>
 </body>
 </html>
 
