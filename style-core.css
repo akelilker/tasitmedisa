@@ -2467,13 +2467,13 @@ body.modal-open .user-panel-link {
     height: var(--app-footer-real-height, 34px) !important;
     min-height: var(--app-footer-real-height, 34px) !important;
     box-sizing: border-box !important;
-    padding-top: 0 !important;
-    padding-bottom: env(safe-area-inset-bottom, 0) !important;
+    padding-top: 2px !important;
+    padding-bottom: calc(2px + env(safe-area-inset-bottom, 0)) !important;
     border-top: 0.8px solid var(--footer-top-border);
     border-left: 0.5px solid var(--footer-side-border);
     border-right: 0.5px solid var(--footer-side-border);
     box-shadow: var(--footer-red-glow);
-    overflow: hidden;
+    overflow: visible;
     display: flex !important;
     align-items: center;
     justify-content: center;
@@ -2494,22 +2494,10 @@ body.modal-open .user-panel-link {
 
 /* Ana uygulama: footer üstü her zaman belirgin gri çizgi + glow (sadece modal açıkken değil) */
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
-    height: var(--app-footer-real-height, 42px) !important;
-    min-height: var(--app-footer-real-height, 42px) !important;
-    padding: 0 !important;
     border-top: 1px solid var(--footer-top-border) !important;
     box-shadow:
         0 -1px 0 var(--footer-top-highlight),
         var(--footer-red-glow) !important;
-}
-
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer .footer-content {
-    position: relative !important;
-    inset: auto !important;
-    height: 100% !important;
-    align-items: center !important;
-    padding: 0 12px !important;
-    padding-bottom: 0 !important;
 }
 
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.active,
@@ -2594,11 +2582,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     max-width: 500px;
     width: 100%;
     margin: 0 auto;
-    padding: 0 12px;
-    padding-bottom: env(safe-area-inset-bottom, 0);
+    padding: 6px 12px;
+    padding-bottom: max(6px, env(safe-area-inset-bottom));
     box-sizing: border-box;
-    overflow: hidden;
-    min-height: 0;
 }
 
 .footer-content {
@@ -2608,8 +2594,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     max-width: 500px;
     width: 100%;
     margin: 0 auto;
-    padding: 0 12px;
-    padding-bottom: env(safe-area-inset-bottom, 0);
+    padding: 12px 12px;
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
     box-sizing: border-box;
 }
 
@@ -2621,7 +2607,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     color: var(--txt-gray);
     white-space: nowrap;
     opacity: 1; /* Varsayılan opacity */
-    line-height: 1 !important;
 }
 
 /* Versiyon solda - daha belirgin; ezilmesin, taşmasın */
@@ -2632,9 +2617,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     white-space: nowrap !important;
     color: var(--txt-gray);
     font-weight: 500;
-    display: flex;
-    align-items: center;
-    min-height: 0;
 }
 
 /* MEDISA Brand SVG - Ortada, ince detay + ışık efekti */
@@ -2651,8 +2633,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
 /* --- DÜZELTME: img olarak değiştirildi; taşmayı önlemek için alan içinde ölçeklenir --- */
 #app-footer .brand img {
     max-width: 100%;
-    height: 12px !important;
-    max-height: 12px !important;
+    height: auto;
+    max-height: 14px;
     width: auto;
     opacity: 0.4; /* Başlangıç çok soluk */
     filter: none;
@@ -2679,8 +2661,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     align-items: center;
     gap: 4px; /* İkon ve yazı arası */
     min-width: 0; /* Flexbox taşmasını önler */
-    min-height: 0;
-    line-height: 1 !important;
 }
 
 /* Transition'ları her zaman aktif tut */
@@ -3659,8 +3639,8 @@ body.modal-open .app-container {
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
     height: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
     min-height: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
-    padding-top: 0 !important;
-    padding-bottom: env(safe-area-inset-bottom, 0) !important;
+    padding-top: 2px !important;
+    padding-bottom: calc(2px + env(safe-area-inset-bottom, 0)) !important;
     border-top: 1px solid var(--footer-top-border) !important;
     box-shadow:
       0 -1px 0 var(--footer-top-highlight),
@@ -3669,8 +3649,8 @@ body.modal-open .app-container {
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer .footer-content {
     height: 100% !important;
     align-items: center !important;
-    padding: 0 12px !important;
-    padding-bottom: 0 !important;
+    padding: 4px 12px !important;
+    padding-bottom: 4px !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo {
     flex: 0 0 43px !important;
@@ -3811,7 +3791,7 @@ body.modal-open .app-container {
     border-left: 0.5px solid var(--footer-side-border) !important;
     border-right: 0.5px solid var(--footer-side-border) !important;
     border-top: 1px solid var(--footer-top-border) !important;
-    overflow: hidden !important;
+    overflow: visible !important;
     box-shadow:
       0 -1px 0 var(--footer-top-highlight),
       var(--footer-red-glow) !important;
