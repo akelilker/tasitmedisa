@@ -2545,8 +2545,7 @@
         function warnRank(v) {
           var c = getVehicleDateSeverityClass(v);
           if (c.indexOf('vehicle-date-warning-red') !== -1) return 0;
-          if (c.indexOf('vehicle-date-warning-orange') !== -1) return 1;
-          return 2;
+          return 1;
         }
         var tagged = list.map(function(v, i) { return { v: v, i: i }; });
         tagged.sort(function(A, B) {
@@ -9941,7 +9940,7 @@
     const feedKeys = {};
     let hasUnreadMarkableNotification = false;
     const showDesktopSpecialNotifDate = window.innerWidth >= 641;
-    let hasRed = false; // Okunmamış kırmızı bildirim var mı?
+    let hasRed = false; // Aktif kırmızı alarm var mı?
     let hasOrange = false; // Okunmamış turuncu bildirim var mı?
 
     function parseNotificationDisplayDateMs(displayDate) {
@@ -10233,7 +10232,9 @@
             const activeDateDisplay = getOrCreateNotificationFirstSeen(notifKey);
             const isRead = viewedKeys.indexOf(notifKey) !== -1;
             const isUnread = !isRead;
-            const isDateSeverity = notif.warningClass === 'date-warning-red' || notif.warningClass === 'date-warning-orange';
+            const isRedDateSeverity = notif.warningClass === 'date-warning-red';
+            const isOrangeDateSeverity = notif.warningClass === 'date-warning-orange';
+            const isDateSeverity = isRedDateSeverity || isOrangeDateSeverity;
             const shouldKeepSeverity = isDateSeverity;
 
             let messageText = '';
@@ -10278,9 +10279,9 @@
                 ? `--notif-border: ${borderColor}; --notif-fg: #ccc;`
                 : `--notif-border: ${readBorderColor}; --notif-fg: #9a9a9a;`);
             if (isUnread) hasUnreadMarkableNotification = true;
-            if (notif.warningClass === 'date-warning-red') {
+            if (isRedDateSeverity) {
               hasRed = true;
-            } else if (notif.warningClass === 'date-warning-orange') {
+            } else if (isOrangeDateSeverity && isUnread) {
               hasOrange = true;
             }
 
