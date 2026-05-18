@@ -3139,11 +3139,13 @@
 }
 
 #monthly-todo-modal .monthly-todo-middle .monthly-todo-user {
-  display: inline-flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 16px;
   align-items: center;
-  justify-content: center;
-  gap: 4px;
+  justify-content: stretch;
+  column-gap: 4px;
   min-width: 0;
+  width: 100%;
   max-width: 100%;
   color: #a0aec0;
 }
@@ -3158,9 +3160,9 @@
   word-break: normal;
   overflow-wrap: break-word;
   min-width: 0;
-  flex: 1 1 auto;
   color: inherit;
-  text-align: center;
+  text-align: right;
+  justify-self: end;
 }
 
 #monthly-todo-modal .monthly-todo-middle .monthly-todo-wa-link {
