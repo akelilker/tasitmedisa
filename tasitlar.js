@@ -10257,8 +10257,7 @@
             const isUnread = !isRead;
             const isRedDateSeverity = notif.warningClass === 'date-warning-red';
             const isOrangeDateSeverity = notif.warningClass === 'date-warning-orange';
-            const isDateSeverity = isRedDateSeverity || isOrangeDateSeverity;
-            const shouldKeepSeverity = isDateSeverity;
+            const shouldKeepDateSeverityClass = isRedDateSeverity || isOrangeDateSeverity;
 
             let messageText = '';
             if (notif.type === 'k2' && notif.days < 0) {
@@ -10294,9 +10293,9 @@
             const safeVid = (notif.type === 'k2' ? '' : (notif.vehicleId || '')).toString().replace(/"/g, '&quot;');
             const safeKey = notifKey.replace(/"/g, '&quot;');
             const stateClass = isUnread ? ' notification-unread' : ' notification-read';
-            const borderClass = (shouldKeepSeverity || isUnread) ? (notif.warningClass + '-border') : '';
-            const titleClass = (shouldKeepSeverity || isUnread) ? notif.warningClass : 'notif-read-text';
-            const notifStyle = shouldKeepSeverity
+            const borderClass = shouldKeepDateSeverityClass ? (notif.warningClass + '-border') : '';
+            const titleClass = shouldKeepDateSeverityClass ? notif.warningClass : 'notif-read-text';
+            const notifStyle = shouldKeepDateSeverityClass
               ? `--notif-border: ${borderColor}; --notif-fg: var(--theme-color);`
               : (isUnread
                 ? `--notif-border: ${borderColor}; --notif-fg: #ccc;`
