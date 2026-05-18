@@ -10043,6 +10043,7 @@
       const isArchivedVehicle = vehicle.satildiMi === true;
       events.forEach(ev => {
         if (isArchivedVehicle && (!ev || ev.type !== 'satis')) return;
+        if (ev && ev.type === 'driver-feedback') return;
         recentEvents.push({
           vehicleId: vehicle.id,
           plate: plate,
