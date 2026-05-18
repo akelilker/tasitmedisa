@@ -650,10 +650,14 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
         border-top: 1px solid var(--footer-top-border);
         border-left: 0.6px solid var(--footer-side-border);
         border-right: 0.6px solid var(--footer-side-border);
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
     }
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer .footer-content {
-        padding: 8px 12px;
-        padding-bottom: max(8px, env(safe-area-inset-bottom));
+        height: 100% !important;
+        align-items: center !important;
+        padding: 0 12px !important;
+        padding-bottom: 0 !important;
     }
 }
 
