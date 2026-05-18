@@ -492,10 +492,10 @@ body.modal-open #info-modal.open {
 }
 
 #required-documents-modal .required-k2-section-title {
-    margin: 0 auto 36px auto;
+    margin: 0 auto 12px auto;
     text-align: center;
     color: var(--txt-white, #ffffff);
-    font-size: 18px;
+    font-size: 17px;
     font-weight: 700;
     line-height: 1.2;
 }
@@ -503,31 +503,36 @@ body.modal-open #info-modal.open {
 #required-documents-modal .required-k2-date-section {
     max-width: 220px;
     width: 100%;
-    margin: 14px auto 0 auto;
+    margin: 16px auto 0 auto;
     text-align: center;
 }
 
 #required-documents-modal .required-k2-date-section .form-label {
-    text-align: center !important;
+    text-align: center;
+    font-size: 12px;
+    line-height: 1.25;
+    margin-bottom: 8px;
 }
 
 #required-documents-modal .required-k2-date-picker {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    max-width: 264px;
-    width: max-content;
+    max-width: 220px;
+    width: 100%;
     margin: 0 auto;
     position: relative;
 }
 
 #required-documents-modal #required-k2-expiry-date {
-    width: 184px !important;
-    max-width: 184px !important;
-    height: 26px !important;
-    min-height: 26px !important;
-    flex: 0 0 184px;
+    width: 100%;
+    max-width: 220px;
+    height: 34px;
+    min-height: 34px;
+    flex: 0 1 220px;
+    padding-right: 38px;
+    font-size: 13px;
+    font-weight: 600;
 }
 
 #required-documents-modal #required-k2-document-status,
@@ -539,7 +544,7 @@ body.modal-open #info-modal.open {
     width: 100%;
     display: flex;
     justify-content: center;
-    margin: 12px auto 4px auto;
+    margin: 0 auto 4px auto;
 }
 
 #required-documents-modal .required-k2-document-picker {
@@ -601,11 +606,12 @@ body.modal-open #info-modal.open {
 }
 
 #required-documents-modal .required-k2-preview-row {
-    display: inline-flex;
+    display: grid;
+    grid-template-columns: 34px 120px 34px;
     align-items: center;
     justify-content: center;
-    gap: 10px;
-    width: auto;
+    column-gap: 10px;
+    width: 100%;
     max-width: 100%;
     margin: 0 auto 4px auto;
 }
@@ -613,6 +619,7 @@ body.modal-open #info-modal.open {
 #required-documents-modal .required-k2-preview-link {
     width: 120px;
     height: 72px;
+    grid-column: 2;
     border-radius: 8px;
     border: 1px solid rgba(255, 255, 255, 0.28);
     overflow: hidden;
@@ -666,6 +673,7 @@ body.modal-open #info-modal.open {
     cursor: pointer;
     box-shadow: none;
     transition: color 0.2s ease, transform 0.2s ease;
+    grid-column: 3;
 }
 
 #required-documents-modal .required-k2-add-btn:hover,
@@ -688,6 +696,9 @@ body.modal-open #info-modal.open {
     background: transparent;
     color: #8f98a6;
     cursor: pointer;
+    position: absolute;
+    right: 0;
+    top: 0;
 }
 
 #required-documents-modal .required-k2-date-picker-btn:hover,
