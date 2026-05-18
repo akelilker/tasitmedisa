@@ -147,7 +147,7 @@ window.capitalizeWords = function(str) {
   }).join(' ');
 };
 
-/** Tarih uyarı sınıfı (geçmiş/≤3 gün kırmızı, ≤21 gün turuncu) */
+/** Tarih uyarı sınıfı (geçmiş/0-7 gün kırmızı, 8-30 gün turuncu) */
 window.checkDateWarnings = function(dateString) {
   if (!dateString) return { class: '', days: null };
   var date = new Date(dateString + 'T00:00:00');
@@ -157,8 +157,8 @@ window.checkDateWarnings = function(dateString) {
   date.setHours(0, 0, 0, 0);
   var diffDays = Math.ceil((date - today) / (1000 * 60 * 60 * 24));
   if (diffDays < 0) return { class: 'date-warning-red', days: diffDays };
-  if (diffDays <= 3) return { class: 'date-warning-red', days: diffDays };
-  if (diffDays <= 21) return { class: 'date-warning-orange', days: diffDays };
+  if (diffDays <= 7) return { class: 'date-warning-red', days: diffDays };
+  if (diffDays <= 30) return { class: 'date-warning-orange', days: diffDays };
   return { class: '', days: diffDays };
 };
 
@@ -892,12 +892,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Lazy modül asset sürümleri — tek nesne; index.html içindeki style-core ?v= ile tasitlar sürümü uyumlu kalmalı
 var MEDISA_MODULE_VERSIONS = {
-  tasitlar: '20260518.3',
+  tasitlar: '20260518.5',
   raporlar: '20260511.3',
   kayitJs: '20260518.1',
   kayitCss: '20260512.1',
   ayarlarJs: '20260518.5',
-  ayarlarCss: '20260518.7'
+  ayarlarCss: '20260518.8'
 };
 window.MEDISA_MODULE_VERSIONS = MEDISA_MODULE_VERSIONS;
 var TASITLAR_MODULE_VERSION = MEDISA_MODULE_VERSIONS.tasitlar;

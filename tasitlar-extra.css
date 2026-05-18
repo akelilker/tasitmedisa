@@ -3051,7 +3051,7 @@
 }
 
 #monthly-todo-modal .monthly-todo-list-scroll .monthly-todo-task-row:nth-child(even) {
-  background: rgba(255, 255, 255, 0.078);
+  background: rgba(255, 255, 255, 0.06);
 }
 
 #monthly-todo-modal .monthly-todo-task-row:last-child {
