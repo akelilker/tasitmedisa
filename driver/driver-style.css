@@ -784,7 +784,7 @@ body.dashboard-page {
   }
   /* Sağ grid: aksiyon alanı üstten hafif boşlukla görsel dengeye alınır, satır aralığı sıfırlanır */
   .dashboard-page .driver-action-area {
-    padding-top: 8px !important;
+    padding-top: 8px;
   }
   .dashboard-page .driver-action-area-inner {
     gap: 0 !important;
@@ -799,22 +799,22 @@ body.dashboard-page {
     overflow-x: visible !important;
     padding-left: 10px !important;
     padding-right: 14px !important;
-    padding-bottom: 4px !important;
+    padding-bottom: 4px;
     box-sizing: border-box !important;
   }
   .dashboard-page .driver-action-area {
     display: flex !important;
     flex: 1 1 auto !important;
     min-height: 0 !important;
-    padding-top: 6px !important;
+    padding-top: 6px;
   }
   .dashboard-page .driver-action-group {
-    margin-bottom: 6px !important;
-    gap: 4px !important;
+    margin-bottom: 6px;
+    gap: 4px;
   }
   .dashboard-page .driver-action-footer {
-    margin-top: auto !important;
-    margin-bottom: 0 !important;
+    margin-top: auto;
+    margin-bottom: 0;
   }
   .dashboard-page .driver-action-area .form-group label {
     margin-bottom: 4px !important;
@@ -839,39 +839,7 @@ body.dashboard-page {
   }
   /* Masaüstü: Talep/şikayet FAB, Bildir butonundan sonra kontrollü aksın */
   .dashboard-page .driver-action-feedback-slot.driver-request-fab-row {
-    margin-top: 4px !important;
-    margin-bottom: 0 !important;
-  }
-}
-
-/* Masaüstü kısa ekran: kullanıcı paneli footer'a taşmadan tam sığsın */
-@media (min-width: 769px) and (max-height: 980px) {
-  .dashboard-page .driver-right-panel {
-    padding-bottom: 1px;
-  }
-
-  .dashboard-page .driver-action-area {
-    padding-top: 2px;
-  }
-
-  .dashboard-page .driver-action-group {
-    margin-bottom: 2px;
-    gap: 2px;
-  }
-
-  .dashboard-page .driver-action-btn {
-    padding: 4px 8px;
-    line-height: 1.08;
-  }
-
-  .dashboard-page .driver-action-feedback-slot.driver-request-fab-row {
-    margin-top: 1px;
-    padding-bottom: 0;
-    min-height: 24px;
-  }
-
-  .dashboard-page .driver-action-footer {
-    margin-top: 2px;
+    margin-top: 4px;
     margin-bottom: 0;
   }
 }
@@ -1059,7 +1027,7 @@ body.dashboard-page {
   scrollbar-width: none;
   -ms-overflow-style: none;
   -webkit-overflow-scrolling: touch;
-  padding-bottom: 5px !important;
+  padding-bottom: 5px;
 }
 .driver-right-panel::-webkit-scrollbar {
   display: none !important;
@@ -6416,7 +6384,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     overscroll-behavior-y: none !important; /* Sağ grid: parmakla aşağı esnemesin, çakılı gibi; sadece içerik uzarsa yukarı kaydırılır */
     -webkit-overflow-scrolling: touch !important;
     touch-action: pan-y !important;
-    padding-bottom: 8px !important;
+    padding-bottom: 4px;
   }
 }
 
@@ -6753,7 +6721,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 
     /* Bildir butonu footer isiklarina gomulmesin */
     .dashboard-page .driver-right-panel {
-        padding-bottom: 4px !important;
+        padding-bottom: 4px;
     }
 }
 
@@ -6768,7 +6736,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   /* Belgeler + Talep mini FAB: hover'da layout oynamasın; etiket kendi altında açılsın */
   .dashboard-page .driver-action-group.driver-action-feedback-slot.driver-request-fab-row {
     gap: 10px !important;
-    padding-bottom: 20px !important;
+    padding-bottom: 0;
   }
   .dashboard-page .driver-action-btn-feedback.driver-request-fab {
     position: relative !important;
@@ -6814,6 +6782,38 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     max-width: none !important;
     color: #ffffff !important;
     transform: translate(-50%, 0) !important;
+  }
+}
+
+/* Masaüstü kısa ekran: kullanıcı paneli footer'a taşmadan tam sığsın */
+@media (min-width: 769px) and (max-height: 980px) {
+  .dashboard-page .driver-right-panel {
+    padding-bottom: 1px;
+  }
+
+  .dashboard-page .driver-action-area {
+    padding-top: 2px;
+  }
+
+  .dashboard-page .driver-action-group {
+    margin-bottom: 2px;
+    gap: 2px;
+  }
+
+  .dashboard-page .driver-action-btn {
+    padding: 4px 8px;
+    line-height: 1.08;
+  }
+
+  .dashboard-page .driver-action-feedback-slot.driver-request-fab-row {
+    margin-top: 1px;
+    padding-bottom: 0;
+    min-height: 24px;
+  }
+
+  .dashboard-page .driver-action-footer {
+    margin-top: 2px;
+    margin-bottom: 0;
   }
 }
 
