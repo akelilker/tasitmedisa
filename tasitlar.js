@@ -5107,7 +5107,7 @@
       const takografDate = vehicle.takografExpiryDate || '';
       const takografWarning = checkDateWarnings(takografDate);
       const takografWarningClass = isSoldOrArchivedVehicle ? '' : takografWarning.class;
-      html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Takograf Kalibrasyon Bitiş</span><span class="detail-row-colon">:</span></div><span class="detail-row-value ${takografWarningClass}"> ${escapeHtml(formatDateForDetailModal(takografDate) || '-')}</span></div>`;
+      html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Takograf Kalib. Bitiş</span><span class="detail-row-colon">:</span></div><span class="detail-row-value ${takografWarningClass}"> ${escapeHtml(formatDateForDetailModal(takografDate) || '-')}</span></div>`;
     }
     
     // var/yok alanları: boş = Belirtilmedi (kesin Yoktur./Hayır gösterilmez)
@@ -5890,6 +5890,7 @@
       formIcerik.id = 'dinamik-olay-form-icerik';
       window.currentDetailVehicleId = (vehicleId || window.currentDetailVehicleId || '').toString();
       const title = EVENT_TITLES[type] || 'OLAY EKLE';
+      modal.dataset.eventType = type;
       baslikEl.textContent = title;
       formIcerik.innerHTML = getEventFormHtml(type);
       if (!formIcerik.innerHTML.trim()) return;
@@ -7719,6 +7720,7 @@
     const content = DOM.dinamikOlayFormIcerik;
     const saveBtn = DOM.dinamikOlayKaydetBtn;
     if (!modal || !content || !saveBtn) return;
+    modal.dataset.eventType = 'documents';
     if (DOM.dinamikOlayBaslik) DOM.dinamikOlayBaslik.textContent = 'BELGELER';
     content.id = 'ruhsat-modal-content';
     content.classList.add('vehicle-documents-picker-mode');
@@ -7792,6 +7794,7 @@
     const content = DOM.dinamikOlayFormIcerik;
     const saveBtn = DOM.dinamikOlayKaydetBtn;
     if (!modal || !content || !saveBtn) return;
+    modal.dataset.eventType = 'documents';
     if (DOM.dinamikOlayBaslik) DOM.dinamikOlayBaslik.textContent = cfg.title + ' YÜKLEME';
     content.id = 'ruhsat-modal-content';
     content.classList.remove('vehicle-documents-picker-mode');

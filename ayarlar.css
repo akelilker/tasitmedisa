@@ -488,25 +488,43 @@ body.modal-open #info-modal.open {
     flex-shrink: 0;
 }
 
+#required-documents-modal .required-k2-section-title {
+    margin: 0 auto 36px auto;
+    text-align: center;
+    color: var(--txt-white, #ffffff);
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
 #required-documents-modal .required-k2-date-section {
     max-width: 220px;
     width: 100%;
-    margin-top: 14px;
+    margin: 14px auto 0 auto;
+    text-align: center;
+}
+
+#required-documents-modal .required-k2-date-section .form-label {
+    text-align: center !important;
 }
 
 #required-documents-modal .required-k2-date-picker {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
-    max-width: 220px;
-    width: 100%;
+    max-width: 264px;
+    width: max-content;
+    margin: 0 auto;
     position: relative;
 }
 
 #required-documents-modal #required-k2-expiry-date {
-    width: 180px;
-    max-width: calc(100% - 42px);
-    flex: 1 1 auto;
+    width: 184px !important;
+    max-width: 184px !important;
+    height: 26px !important;
+    min-height: 26px !important;
+    flex: 0 0 184px;
 }
 
 #required-documents-modal #required-k2-document-status,
@@ -694,9 +712,29 @@ body.modal-open #info-modal.open {
 }
 
 @media (max-width: 640px) {
-    #required-documents-modal .required-k2-date-section,
+    #required-documents-modal .modal-header {
+        border-bottom: 0 !important;
+        box-shadow: inset 0 1px 0 rgba(236, 242, 250, 0.22) !important;
+    }
+
+    #required-documents-modal .required-k2-date-section {
+        max-width: 204px;
+    }
+
     #required-documents-modal .required-k2-date-picker {
-        max-width: 100%;
+        max-width: 204px;
+    }
+
+    #required-documents-modal #required-k2-expiry-date {
+        width: 158px !important;
+        max-width: 158px !important;
+        flex-basis: 158px;
+    }
+
+    #required-documents-modal .required-k2-date-picker-btn {
+        width: 28px;
+        height: 28px;
+        flex-basis: 28px;
     }
 }
 
