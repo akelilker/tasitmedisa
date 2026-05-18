@@ -1612,6 +1612,12 @@
       .filter(Boolean);
   }
 
+  function getVisibleMarkableNotificationKeys() {
+    return uniqNotificationKeys(DOM.notificationsDropdown ? Array.from(DOM.notificationsDropdown.querySelectorAll('.notification-item[data-notif-key]'))
+      .map(function(el) { return (el.getAttribute('data-notif-key') || '').toString().trim(); })
+      .filter(Boolean) : []);
+  }
+
   function getDismissibleNotificationKeys() {
     return (DOM.notificationsDropdown ? Array.from(DOM.notificationsDropdown.querySelectorAll('.notification-item[data-dismiss-key]')) : [])
       .map(function(el) { return (el.getAttribute('data-dismiss-key') || '').toString().trim(); })
@@ -1836,7 +1842,7 @@
         if (toolbarAction === 'mark-all-read') {
           e.preventDefault();
           e.stopPropagation();
-          markNotificationKeysAsViewed(getUnreadNotificationKeys().concat(getDismissibleNotificationKeys()));
+          markNotificationKeysAsViewed(getVisibleMarkableNotificationKeys().concat(getDismissibleNotificationKeys()));
           return;
         }
       }
@@ -9970,18 +9976,23 @@
     vehicles.forEach(function(vehicle) {
       if (vehicle && vehicle.id != null) vehiclesById[String(vehicle.id)] = vehicle;
     });
+    function resolveRequestUserName(request) {
+      const snapshotName = String((request && request.surucu_adi) || '').trim();
+      if (snapshotName) return snapshotName;
+      const user = usersById[String((request && request.surucu_id) || '')];
+      return user ? (user.isim || user.name || user.ad_soyad || 'Bilinmiyor') : 'Bilinmiyor';
+    }
     const requests = Array.isArray(window.appData.duzeltme_talepleri) ? window.appData.duzeltme_talepleri : [];
     requests.forEach(function(request) {
       if (!request || request.talep_tipi !== 'genel' || request.durum !== 'beklemede') return;
       const vehicle = vehiclesById[String(request.arac_id || '')];
-      const user = usersById[String(request.surucu_id || '')];
       pendingGeneralRequests.push({
         id: request.id,
         type: String(request.konu_turu || 'talep'),
         message: String(request.mesaj || request.sebep || '').trim(),
         date: request.talep_tarihi || '',
         plate: vehicle ? (vehicle.plate || vehicle.plaka || '-') : '-',
-        userName: user ? (user.isim || user.name || user.ad_soyad || 'Bilinmiyor') : 'Bilinmiyor'
+        userName: resolveRequestUserName(request)
       });
     });
     pendingGeneralRequests.sort(function(a, b) {
@@ -10004,7 +10015,6 @@
       const aracId = kayitIdToAracId[kid];
       if (!aracId) return;
       const vehicle = vehiclesById[aracId];
-      const user = usersById[String(request.surucu_id || '')];
       const sebep = String(request.sebep || '').trim();
       const topicBits = [];
       if (request.yeni_km != null) topicBits.push('KM');
@@ -10017,7 +10027,7 @@
         message: sebep,
         date: request.talep_tarihi || '',
         plate: vehicle ? (vehicle.plate || vehicle.plaka || '-') : '-',
-        userName: user ? (user.isim || user.name || user.ad_soyad || 'Bilinmiyor') : 'Bilinmiyor'
+        userName: resolveRequestUserName(request)
       });
     });
     pendingDuzeltmeRequests.sort(function(a, b) {
@@ -10087,16 +10097,14 @@
       if (dismissedKeys.indexOf(kaskoKey) === -1) {
         const kaskoKeyEsc = (kaskoKey || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
         const kaskoRead = viewedKeys.indexOf(kaskoKey) !== -1;
-        const kaskoStateClass = kaskoRead ? ' notification-read' : ' notification-unread date-warning-red-border';
-        const kaskoStyle = kaskoRead
-          ? '--notif-border: rgba(130, 130, 130, 0.55); --notif-fg: #9a9a9a;'
-          : '--notif-border: rgba(212, 0, 0, 0.6); --notif-fg: #fff;';
+        const kaskoStateClass = (kaskoRead ? ' notification-read' : ' notification-unread') + ' date-warning-red-border';
+        const kaskoStyle = '--notif-border: rgba(212, 0, 0, 0.6); --notif-fg: var(--theme-color);';
         const kaskoFirstSeenDisplay = getOrCreateNotificationFirstSeen(kaskoKey);
         kaskoExcelSortMs = parseNotificationDisplayDateMs(kaskoFirstSeenDisplay);
         const kaskoDateHtml = showDesktopSpecialNotifDate ? '<div class="notif-line2 notif-meta-date">' + escapeHtml(kaskoFirstSeenDisplay) + '</div>' : '';
         kaskoExcelHtml = '<div class="notification-item kasko-excel-notification' + kaskoStateClass + '" data-action="open-dis-veri" data-notif-key="' + escapeHtml(kaskoKey) + '" data-dismiss-key="' + escapeHtml(kaskoKey) + '" style="' + kaskoStyle + '"><div class="mtv-text-container"><div class="mtv-main-text notif-line1">G\u00fcncel Kasko De\u011fer Listesinin Y\u00fcklenmesi Gerekmektedir.</div>' + kaskoDateHtml + '</div><div class="mtv-dismiss-wrapper"><button type="button" class="mtv-dismiss-btn" onclick="dismissKaskoExcelNotif(event, \'' + kaskoKeyEsc + '\')" aria-label="Bildirimi Kapat"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button><div class="mtv-tooltip">Kapat</div></div></div>';
         if (!kaskoRead) hasUnreadMarkableNotification = true;
-        if (!kaskoRead) hasRed = true;
+        hasRed = true;
       }
     }
 
@@ -10157,14 +10165,17 @@
           var notifKey = 'request|general|' + String(request.id || reqIdx);
           var dateDisplay = getOrCreateNotificationFirstSeen(notifKey);
           var isRead = viewedKeys.indexOf(notifKey) !== -1;
-          var borderClass = !isRead && notificationFeedbackIsRedSeverity(request.type)
+          var isRedRequest = notificationFeedbackIsRedSeverity(request.type);
+          var borderClass = isRedRequest
             ? 'date-warning-red-border'
             : (!isRead ? 'date-warning-orange-border' : '');
-          var titleClass = !isRead && notificationFeedbackIsRedSeverity(request.type)
+          var titleClass = isRedRequest
             ? 'date-warning-red'
             : (!isRead ? 'date-warning-orange' : 'notif-read-text');
           var stateClass = isRead ? ' notification-read' : ' notification-unread';
-          var notifStyle = isRead ? '--notif-border: rgba(130, 130, 130, 0.55); --notif-fg: #9a9a9a;' : '';
+          var notifStyle = isRedRequest
+            ? '--notif-border: rgba(212, 0, 0, 0.6); --notif-fg: var(--theme-color);'
+            : (isRead ? '--notif-border: rgba(130, 130, 130, 0.55); --notif-fg: #9a9a9a;' : '');
           var h = '<button type="button" data-action="open-driver-report" data-notif-key="' + escapeHtml(notifKey) + '" style="' + notifStyle + '" class="notification-item notification-item-feedback is-driver-request' + stateClass + (borderClass ? ' ' + borderClass : '') + '">' +
           '<div class="notif-line1 notif-title"><span class="' + titleClass + '">' + escapeHtml(messageText) + '</span></div>' +
           '<div class="notif-line2 notif-meta-date">' + escapeHtml(dateDisplay) + '</div>' +
@@ -10179,7 +10190,7 @@
           var t = baseMs - reqIdx * 1e-6;
           pushNotifFeedOnce(notifKey, t, h);
           if (!isRead) hasUnreadMarkableNotification = true;
-          if (!isRead && notificationFeedbackIsRedSeverity(request.type)) {
+          if (isRedRequest) {
             hasRed = true;
           } else if (!isRead) {
             hasOrange = true;
@@ -10194,9 +10205,9 @@
           const dateDisplay = getOrCreateNotificationFirstSeen(notifKey);
           const isRead = viewedKeys.indexOf(notifKey) !== -1;
           const stateClass = isRead ? ' notification-read' : ' notification-unread';
-          const borderClass = isRead ? '' : ' date-warning-red-border';
-          const notifStyle = isRead ? '--notif-border: rgba(130, 130, 130, 0.55); --notif-fg: #9a9a9a;' : '';
-          const titleClass = isRead ? 'notif-read-text' : 'date-warning-red';
+          const borderClass = ' date-warning-red-border';
+          const notifStyle = '--notif-border: rgba(212, 0, 0, 0.6); --notif-fg: var(--theme-color);';
+          const titleClass = 'date-warning-red';
           const h = `<button type="button" data-action="open-driver-report" data-notif-key="${escapeHtml(notifKey)}" style="${notifStyle}" class="notification-item notification-item-feedback${stateClass}${borderClass}">
           <div class="notif-line1 notif-title"><span class="${titleClass}">${escapeHtml(messageText)}</span></div>
           <div class="notif-line2 notif-meta-date">${escapeHtml(dateDisplay)}</div>
@@ -10211,7 +10222,7 @@
           const t = dbaseMs - dreqIdx * 1e-6;
           pushNotifFeedOnce(notifKey, t, h);
           if (!isRead) hasUnreadMarkableNotification = true;
-          if (!isRead) hasRed = true;
+          hasRed = true;
         });
       }
 

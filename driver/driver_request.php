@@ -81,6 +81,8 @@ $result = medisaMutateData(function (&$data) use (
     if ((string)($kayit['surucu_id'] ?? '') !== (string)($tokenData['user_id'] ?? '')) {
         return medisaBuildErrorResult('Bu kayda erişim yetkiniz yok!', 403);
     }
+    $user = medisaFindUserById($data, $tokenData['user_id'] ?? '');
+    $surucuAdi = trim((string)($user['isim'] ?? $user['name'] ?? $user['ad_soyad'] ?? $tokenData['user']['isim'] ?? ''));
 
     $kmChanged = $yeniKm !== null && $yeniKm !== (int)($kayit['guncel_km'] ?? 0);
     $bakimChanged = $yeniBakimAciklama !== null;
@@ -98,6 +100,7 @@ $result = medisaMutateData(function (&$data) use (
         'id' => $newTalepId,
         'kayit_id' => $kayitId,
         'surucu_id' => $tokenData['user_id'],
+        'surucu_adi' => $surucuAdi,
         'talep_tarihi' => date('c'),
         'sebep' => $sebep,
         'eski_km' => $kayit['guncel_km'] ?? null,
