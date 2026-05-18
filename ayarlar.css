@@ -514,6 +514,39 @@ body.modal-open #info-modal.open {
     margin-bottom: 8px;
 }
 
+@media (min-width: 641px) {
+    #required-documents-modal .modal-body > .u-p-16:has(> .required-k2-section-title) {
+        padding-top: 0;
+    }
+
+    #required-documents-modal .required-k2-section-title {
+        margin-bottom: 6px;
+    }
+
+    #required-documents-modal .modal-body > .u-p-16:has(> .required-k2-section-title) > .required-k2-section-title + .form-section {
+        width: auto !important;
+        max-width: 280px !important;
+        margin: 0 auto 4px auto !important;
+        align-items: center !important;
+    }
+
+    #required-documents-modal .modal-body > .u-p-16:has(> .required-k2-section-title) > .required-k2-date-section {
+        width: 120px !important;
+        max-width: 120px !important;
+        margin: 8px auto 0 auto !important;
+        align-items: center !important;
+        text-align: center;
+    }
+
+    #required-documents-modal .modal-body > .u-p-16:has(> .required-k2-section-title) > .required-k2-date-section .form-label {
+        width: 120px;
+        max-width: 120px;
+        align-self: center;
+        text-align: left;
+        margin-bottom: 6px;
+    }
+}
+
 #required-documents-modal .required-k2-date-picker {
     display: flex;
     align-items: center;
