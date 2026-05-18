@@ -846,49 +846,33 @@ body.dashboard-page {
 
 /* Masaüstü kısa ekran: kullanıcı paneli footer'a taşmadan tam sığsın */
 @media (min-width: 769px) and (max-height: 980px) {
-  .dashboard-page .driver-left-panel-content {
-    overflow-y: hidden !important;
-  }
-
-  .dashboard-page .driver-left-panel .driver-vehicle-info {
-    gap: 4px !important;
-    margin-top: 0.55em !important;
-  }
-
   .dashboard-page .driver-right-panel {
-    padding-bottom: 4px !important;
+    padding-bottom: 1px;
   }
 
   .dashboard-page .driver-action-area {
-    padding-top: 4px !important;
+    padding-top: 2px;
   }
 
   .dashboard-page .driver-action-group {
-    margin-bottom: 4px !important;
-    gap: 3px !important;
+    margin-bottom: 2px;
+    gap: 2px;
   }
 
   .dashboard-page .driver-action-btn {
-    padding: 6px 10px !important;
-    line-height: 1.15 !important;
+    padding: 4px 8px;
+    line-height: 1.08;
   }
 
   .dashboard-page .driver-action-feedback-slot.driver-request-fab-row {
-    margin-top: 3px !important;
-    padding-bottom: 0 !important;
+    margin-top: 1px;
+    padding-bottom: 0;
+    min-height: 24px;
   }
 
   .dashboard-page .driver-action-footer {
-    margin-bottom: 0 !important;
-  }
-
-  .dashboard-page .driver-below-hero-pwa-slot .pwa-install-bar {
-    padding: 1px 8px 1px 4px !important;
-  }
-
-  .dashboard-page .driver-below-hero-pwa-slot .pwa-install-btn {
-    font-size: 10px !important;
-    padding: 3px 6px !important;
+    margin-top: 2px;
+    margin-bottom: 0;
   }
 }
 
