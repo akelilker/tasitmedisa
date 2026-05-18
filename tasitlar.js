@@ -1494,6 +1494,40 @@
     return formatDateForDisplay(new Date()) || '-';
   }
 
+  function getCurrentNotificationFirstSeenValue() {
+    return String(Date.now());
+  }
+
+  function parseNotificationFirstSeenMs(value) {
+    const raw = String(value || '').trim();
+    if (!raw || raw === '-') return 0;
+    if (/^\d+$/.test(raw)) {
+      const n = Number(raw);
+      if (isFinite(n) && n > 0) return n < 1000000000000 ? n * 1000 : n;
+    }
+    const trMatch = raw.match(/^(\d{2})[./-](\d{2})[./-](\d{4})(?:\s+(\d{2}):(\d{2}))?$/);
+    if (trMatch) {
+      const day = Number(trMatch[1]);
+      const month = Number(trMatch[2]);
+      const year = Number(trMatch[3]);
+      const hour = trMatch[4] != null ? Number(trMatch[4]) : 0;
+      const minute = trMatch[5] != null ? Number(trMatch[5]) : 0;
+      const dt = new Date(year, month - 1, day, hour, minute, 0, 0);
+      if (!isNaN(dt.getTime())) return dt.getTime();
+    }
+    const parsed = Date.parse(raw);
+    return isNaN(parsed) ? 0 : parsed;
+  }
+
+  function formatNotificationFirstSeenDisplay(value) {
+    const raw = String(value || '').trim();
+    const ms = parseNotificationFirstSeenMs(raw);
+    if (/^\d+$/.test(raw) && ms > 0) {
+      return formatDateForDisplay(new Date(ms).toISOString()) || raw;
+    }
+    return raw || '-';
+  }
+
   function beginNotificationFirstSeenBatch(scopeKey) {
     notifFirstSeenBatchContext = scopeKey ? { scopeKey: scopeKey, previousScoped: null, changed: false } : null;
   }
@@ -1505,7 +1539,7 @@
     saveNotificationScopeStateWithRollback(batch.scopeKey, batch.previousScoped);
   }
 
-  function getOrCreateNotificationFirstSeen(notifKey) {
+  function getOrCreateNotificationFirstSeenValue(notifKey) {
     const normalizedKey = String(notifKey || '').trim();
     if (!normalizedKey) return '-';
     const scopeKey = getCurrentNotifScopeKey();
@@ -1514,7 +1548,7 @@
       const scoped = getNotificationScopeState(scopeKey);
       const existing = scoped.firstSeenDates && scoped.firstSeenDates[normalizedKey];
       if (existing) return existing;
-      const firstSeenDisplay = getTodayNotificationDisplayDate();
+      const firstSeenValue = getCurrentNotificationFirstSeenValue();
       if (!scoped.firstSeenDates || typeof scoped.firstSeenDates !== 'object' || Array.isArray(scoped.firstSeenDates)) {
         scoped.firstSeenDates = {};
       }
@@ -1523,16 +1557,16 @@
         notifFirstSeenBatchContext.changed = true;
       } else {
         const previousScoped = cloneNotificationScopeState(scoped);
-        scoped.firstSeenDates[normalizedKey] = firstSeenDisplay;
+        scoped.firstSeenDates[normalizedKey] = firstSeenValue;
         scoped.updatedAt = new Date().toISOString();
         state[scopeKey] = scoped;
         saveNotificationScopeStateWithRollback(scopeKey, previousScoped);
-        return firstSeenDisplay;
+        return firstSeenValue;
       }
-      scoped.firstSeenDates[normalizedKey] = firstSeenDisplay;
+      scoped.firstSeenDates[normalizedKey] = firstSeenValue;
       scoped.updatedAt = new Date().toISOString();
       state[scopeKey] = scoped;
-      return firstSeenDisplay;
+      return firstSeenValue;
     }
     let localMap = {};
     try {
@@ -1541,12 +1575,25 @@
       localMap = normalizeFirstSeenDatesMap(parsed);
     } catch (err) {}
     if (localMap[normalizedKey]) return localMap[normalizedKey];
-    const firstSeenDisplay = getTodayNotificationDisplayDate();
-    localMap[normalizedKey] = firstSeenDisplay;
+    const firstSeenValue = getCurrentNotificationFirstSeenValue();
+    localMap[normalizedKey] = firstSeenValue;
     try {
       localStorage.setItem(NOTIF_FIRST_SEEN_STORAGE_KEY, JSON.stringify(localMap));
     } catch (err) {}
-    return firstSeenDisplay;
+    return firstSeenValue;
+  }
+
+  function getOrCreateNotificationFirstSeen(notifKey) {
+    return formatNotificationFirstSeenDisplay(getOrCreateNotificationFirstSeenValue(notifKey));
+  }
+
+  function getOrCreateNotificationFirstSeenMs(notifKey) {
+    const normalizedKey = String(notifKey || '').trim();
+    if (!normalizedKey) return 0;
+    const value = getOrCreateNotificationFirstSeenValue(normalizedKey);
+    const ms = parseNotificationFirstSeenMs(value);
+    if (ms > 0) return ms;
+    return Date.now();
   }
 
   function updateNotificationKeys(keys, mode) {
@@ -9963,6 +10010,8 @@
     function parseNotificationDisplayDateMs(displayDate) {
       const raw = String(displayDate || '').trim();
       if (!raw) return 0;
+      const firstSeenMs = parseNotificationFirstSeenMs(raw);
+      if (firstSeenMs > 0) return firstSeenMs;
       const trMatch = raw.match(/^(\d{2})[./-](\d{2})[./-](\d{4})$/);
       if (trMatch) {
         const day = Number(trMatch[1]);
@@ -10239,11 +10288,6 @@
       }
 
       if (notifications.length > 0) {
-        notifications.sort((a, b) => {
-          if (a.warningClass === 'date-warning-red' && b.warningClass !== 'date-warning-red') return -1;
-          if (a.warningClass !== 'date-warning-red' && b.warningClass === 'date-warning-red') return 1;
-          return a.days - b.days;
-        });
         notifications.forEach((notif, dIdx) => {
             const typeLabel = notif.type === 'sigorta' ? 'Sigorta'
               : notif.type === 'kasko' ? 'Kasko'
@@ -10253,6 +10297,7 @@
               : 'Muayene';
             const notifKey = buildDateNotificationKey(notif);
             const activeDateDisplay = getOrCreateNotificationFirstSeen(notifKey);
+            const activeFirstSeenMs = getOrCreateNotificationFirstSeenMs(notifKey);
             const isRead = viewedKeys.indexOf(notifKey) !== -1;
             const isUnread = !isRead;
             const isRedDateSeverity = notif.warningClass === 'date-warning-red';
@@ -10314,8 +10359,7 @@
             </div>
             <div class="notif-line2 notif-meta-date">${escapeHtml(activeDateDisplay)}</div>
           </button>`;
-            const firstSeenMs = parseNotificationDisplayDateMs(activeDateDisplay);
-            const t = (firstSeenMs || tStart) - dIdx * 1e-6;
+            const t = (activeFirstSeenMs || tStart) - dIdx * 1e-6;
             pushNotifFeedOnce(notifKey, t, h);
         });
       }
