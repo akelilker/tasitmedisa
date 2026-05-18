@@ -1642,6 +1642,17 @@
     return ['event', vehicleId, eventType, String(ev.date || '')].join('|');
   }
 
+  function isDriverFeedbackEvent(ev) {
+    if (!ev || typeof ev !== 'object') return false;
+    const eventType = String(ev.type || '').trim().toLowerCase();
+    if (eventType === 'driver-feedback') return true;
+    const eventId = String(ev.id || '').trim().toLowerCase();
+    if (eventId.indexOf('feedback-') === 0) return true;
+    const evData = ev.data && typeof ev.data === 'object' ? ev.data : null;
+    if (!evData) return false;
+    return evData.talepId != null && (evData.konuTuru != null || evData.mesaj != null);
+  }
+
   const DINAMIK_OLAY_MODAL_ID = 'dinamik-olay-modal';
   function setVehiclesDetailUnderlay(active) {
     const vehiclesModal = DOM.vehiclesModal || document.getElementById('vehicles-modal');
@@ -10043,7 +10054,7 @@
       const isArchivedVehicle = vehicle.satildiMi === true;
       events.forEach(ev => {
         if (isArchivedVehicle && (!ev || ev.type !== 'satis')) return;
-        if (ev && ev.type === 'driver-feedback') return;
+        if (isDriverFeedbackEvent(ev)) return;
         recentEvents.push({
           vehicleId: vehicle.id,
           plate: plate,
