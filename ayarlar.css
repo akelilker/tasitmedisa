@@ -531,8 +531,8 @@ body.modal-open #info-modal.open {
     min-height: 34px;
     flex: 0 1 220px;
     padding-right: 38px;
-    font-size: 13px;
-    font-weight: 600;
+    font-size: 14px;
+    font-weight: 700;
 }
 
 #required-documents-modal #required-k2-document-status,
