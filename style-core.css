@@ -2467,13 +2467,13 @@ body.modal-open .user-panel-link {
     height: var(--app-footer-real-height, 34px) !important;
     min-height: var(--app-footer-real-height, 34px) !important;
     box-sizing: border-box !important;
-    padding-top: 2px !important;
-    padding-bottom: calc(2px + env(safe-area-inset-bottom, 0)) !important;
+    padding-top: 0 !important;
+    padding-bottom: env(safe-area-inset-bottom, 0) !important;
     border-top: 0.8px solid var(--footer-top-border);
     border-left: 0.5px solid var(--footer-side-border);
     border-right: 0.5px solid var(--footer-side-border);
     box-shadow: var(--footer-red-glow);
-    overflow: visible;
+    overflow: hidden;
     display: flex !important;
     align-items: center;
     justify-content: center;
@@ -2582,8 +2582,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     max-width: 500px;
     width: 100%;
     margin: 0 auto;
-    padding: 6px 12px;
-    padding-bottom: max(6px, env(safe-area-inset-bottom));
+    padding: 0 12px;
+    padding-bottom: env(safe-area-inset-bottom, 0);
     box-sizing: border-box;
 }
 
@@ -2594,8 +2594,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     max-width: 500px;
     width: 100%;
     margin: 0 auto;
-    padding: 12px 12px;
-    padding-bottom: max(12px, env(safe-area-inset-bottom));
+    padding: 0 12px;
+    padding-bottom: env(safe-area-inset-bottom, 0);
     box-sizing: border-box;
 }
 
