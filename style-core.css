@@ -2348,6 +2348,18 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   scrollbar-width: none !important;
   -ms-overflow-style: none !important;
 }
+#vehicle-history-modal #history-content .history-item {
+  padding-bottom: 14px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid rgba(var(--theme-color-rgb), 0.52);
+  box-shadow: 0 1px 0 rgba(var(--theme-color-rgb), 0.14);
+}
+#vehicle-history-modal #history-content .history-item:last-child {
+  padding-bottom: 0;
+  margin-bottom: 0;
+  border-bottom: none;
+  box-shadow: none;
+}
 #vehicle-history-modal .modal-body,
 #vehicle-history-modal #history-content,
 .modal-overlay:has(.history-tabs) .modal-body {
