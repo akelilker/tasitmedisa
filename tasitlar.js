@@ -3643,7 +3643,7 @@
     date.setHours(0, 0, 0, 0);
     var diffDays = Math.ceil((date - today) / (1000 * 60 * 60 * 24));
     if (diffDays < 0) return { class: 'date-warning-red', days: diffDays };
-    if (diffDays <= 3) return { class: 'date-warning-red', days: diffDays };
+    if (diffDays <= 7) return { class: 'date-warning-red', days: diffDays };
     if (diffDays <= 60) return { class: 'date-warning-orange', days: diffDays };
     return { class: '', days: diffDays };
   }
