@@ -492,7 +492,7 @@ body.modal-open #info-modal.open {
 }
 
 #required-documents-modal .required-k2-section-title {
-    margin: 0 auto 12px auto;
+    margin: 0 auto 10px auto;
     text-align: center;
     color: var(--txt-white, #ffffff);
     font-size: 17px;
@@ -501,14 +501,14 @@ body.modal-open #info-modal.open {
 }
 
 #required-documents-modal .required-k2-date-section {
-    max-width: 220px;
+    max-width: 100%;
     width: 100%;
     margin: 16px auto 0 auto;
-    text-align: center;
+    text-align: left;
 }
 
 #required-documents-modal .required-k2-date-section .form-label {
-    text-align: center;
+    text-align: left;
     font-size: 12px;
     line-height: 1.25;
     margin-bottom: 8px;
@@ -518,20 +518,21 @@ body.modal-open #info-modal.open {
     display: flex;
     align-items: center;
     justify-content: center;
-    max-width: 220px;
-    width: 100%;
+    max-width: 120px;
+    width: 120px;
     margin: 0 auto;
     position: relative;
 }
 
 #required-documents-modal #required-k2-expiry-date {
-    width: 100%;
-    max-width: 220px;
+    width: 120px;
+    max-width: 120px;
     height: 34px;
     min-height: 34px;
-    flex: 0 1 220px;
-    padding-right: 38px;
-    font-size: 14px;
+    flex: 0 0 120px;
+    padding-left: 8px;
+    padding-right: 30px;
+    font-size: 13px;
     font-weight: 700;
 }
 
