@@ -2494,6 +2494,9 @@ body.modal-open .user-panel-link {
 
 /* Ana uygulama: footer üstü her zaman belirgin gri çizgi + glow (sadece modal açıkken değil) */
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
+    height: var(--app-footer-real-height, 42px) !important;
+    min-height: var(--app-footer-real-height, 42px) !important;
+    padding: 0 !important;
     border-top: 1px solid var(--footer-top-border) !important;
     box-shadow:
         0 -1px 0 var(--footer-top-highlight),
@@ -2501,8 +2504,11 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
 }
 
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer .footer-content {
-    align-items: flex-start !important;
-    padding-top: 7px !important;
+    position: relative !important;
+    inset: auto !important;
+    height: 100% !important;
+    align-items: center !important;
+    padding: 0 12px !important;
     padding-bottom: 0 !important;
 }
 
@@ -2579,11 +2585,11 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
 }
 
 #app-footer .footer-content {
-    position: absolute;
-    inset: 0;
+    position: relative;
     z-index: 1;
     display: flex !important;
     align-items: center !important;
+    height: 100% !important;
     justify-content: space-between;
     max-width: 500px;
     width: 100%;
@@ -3653,8 +3659,8 @@ body.modal-open .app-container {
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
     height: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
     min-height: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
-    padding-top: 2px !important;
-    padding-bottom: calc(2px + env(safe-area-inset-bottom, 0)) !important;
+    padding-top: 0 !important;
+    padding-bottom: env(safe-area-inset-bottom, 0) !important;
     border-top: 1px solid var(--footer-top-border) !important;
     box-shadow:
       0 -1px 0 var(--footer-top-highlight),
@@ -3663,8 +3669,8 @@ body.modal-open .app-container {
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer .footer-content {
     height: 100% !important;
     align-items: center !important;
-    padding: 4px 12px !important;
-    padding-bottom: 4px !important;
+    padding: 0 12px !important;
+    padding-bottom: 0 !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo {
     flex: 0 0 43px !important;
@@ -3805,7 +3811,7 @@ body.modal-open .app-container {
     border-left: 0.5px solid var(--footer-side-border) !important;
     border-right: 0.5px solid var(--footer-side-border) !important;
     border-top: 1px solid var(--footer-top-border) !important;
-    overflow: visible !important;
+    overflow: hidden !important;
     box-shadow:
       0 -1px 0 var(--footer-top-highlight),
       var(--footer-red-glow) !important;
