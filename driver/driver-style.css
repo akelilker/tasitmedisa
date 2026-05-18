@@ -6787,6 +6787,22 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 
 /* Masaüstü kısa ekran: kullanıcı paneli footer'a taşmadan tam sığsın */
 @media (min-width: 769px) and (max-height: 980px) {
+  .dashboard-page .driver-left-panel-content {
+    gap: 6px;
+    overflow-y: auto !important;
+  }
+
+  .dashboard-page .driver-left-panel .driver-vehicle-info {
+    gap: 3px !important;
+    margin-top: 0.5em !important;
+  }
+
+  .dashboard-page .driver-left-panel .driver-info-item,
+  .dashboard-page .driver-left-panel .driver-info-item .label,
+  .dashboard-page .driver-left-panel .driver-info-item .value {
+    line-height: 1.18;
+  }
+
   .dashboard-page .driver-right-panel {
     padding-bottom: 1px;
   }
