@@ -20,6 +20,17 @@
     }
 
     let activeUserFormCustomSelect = null;
+    let userFormSelectedVehicleIds = [];
+
+    function getUserFormSelectedVehicleIds() {
+      return userFormSelectedVehicleIds.slice();
+    }
+
+    function setUserFormSelectedVehicleIds(ids) {
+      userFormSelectedVehicleIds = Array.from(new Set((Array.isArray(ids) ? ids : []).map(function(id) {
+        return String(id || '').trim();
+      }).filter(Boolean)));
+    }
 
     function closeUserFormCustomSelect(options) {
       const opts = options || {};
@@ -1461,8 +1472,7 @@
       const container = document.getElementById('user-vehicles-container');
       if (!container) return;
       const scope = getUserManagementSessionScope();
-      // Mevcut seçimleri koru (filtre değişince kaybolmasın)
-      const assignedIds = Array.from(container.querySelectorAll('input[name=user-vehicle]:checked')).map(cb => cb.value);
+      const assignedIds = getUserFormSelectedVehicleIds();
       const vehicles = readVehicles();
       let activeVehicles = vehicles.filter(v => v.satildiMi !== true);
       if (scope.isBranchManager) {
@@ -1499,7 +1509,13 @@
         cb.value = vid;
         cb.name = 'user-vehicle';
         cb.checked = assignedIds.indexOf(vid) !== -1;
-        cb.addEventListener('change', updateUserVehiclesTriggerText);
+        cb.addEventListener('change', function() {
+          const nextSelectedIds = new Set(getUserFormSelectedVehicleIds());
+          if (cb.checked) nextSelectedIds.add(vid);
+          else nextSelectedIds.delete(vid);
+          setUserFormSelectedVehicleIds(Array.from(nextSelectedIds));
+          updateUserVehiclesTriggerText();
+        });
         const plateSpan = document.createElement('span');
         plateSpan.className = 'user-vehicle-plate';
         plateSpan.textContent = plaka;
@@ -1528,10 +1544,8 @@
   
     function updateUserVehiclesTriggerText() {
       const trigger = document.getElementById('user-vehicles-trigger');
-      const container = document.getElementById('user-vehicles-container');
-      if (!trigger || !container) return;
-      const checked = container.querySelectorAll('input[name=user-vehicle]:checked');
-      const n = checked.length;
+      if (!trigger) return;
+      const n = getUserFormSelectedVehicleIds().length;
       const textEl = trigger.querySelector('.user-vehicles-trigger-text');
       if (textEl) textEl.textContent = n === 0 ? 'Taşıt Seçin' : (n === 1 ? '1 Taşıt Seçildi' : n + ' Taşıt Seçildi');
     }
@@ -1677,6 +1691,7 @@
         deleteBtn.classList.add('u-hidden');
         deleteBtn.style.display = 'none';
       }
+      setUserFormSelectedVehicleIds([]);
       populateUserVehiclesMulti();
       const managedBranch = getManagedBranchForUserManagement(scope);
       if (scope.isBranchManager && branchSelect) {
@@ -1710,17 +1725,12 @@
           });
           branchReadonly.value = userBranch ? (userBranch.name || '') : (managedBranch ? (managedBranch.name || '') : '');
         }
-        const vehiclesContainer = document.getElementById('user-vehicles-container');
-        if (vehiclesContainer) {
-          const vehicles = readVehicles();
-          const assignedIds = vehicles
-            .filter(v => String(v.assignedUserId || '') === String(user.id))
-            .map(v => String(v.id));
-          vehiclesContainer.querySelectorAll('input[name=user-vehicle]').forEach(cb => {
-            cb.checked = assignedIds.indexOf(cb.value) !== -1;
-          });
-          populateUserVehiclesMulti('');
-        }
+        const vehicles = readVehicles();
+        const assignedIds = vehicles
+          .filter(v => String(v.assignedUserId || '') === String(user.id))
+          .map(v => String(v.id));
+        setUserFormSelectedVehicleIds(assignedIds);
+        populateUserVehiclesMulti('');
         if (title) title.textContent = 'Kullanıcı Düzenle';
         // Sil butonunu göster
         if (deleteBtn) {
@@ -1761,6 +1771,7 @@
       }
       const form = $('#user-form', modal);
       if (form) form.reset();
+      setUserFormSelectedVehicleIds([]);
       closeUserVehiclesDropdown();
       closeUserFormCustomSelect();
       const searchInput = document.getElementById('user-vehicles-search');
@@ -1911,7 +1922,7 @@
         const roleConfig = getRoleConfigFromSelection(effectiveSelectedRole);
         const role = roleConfig.role;
         const selectedVehicleIds = vehiclesContainer
-          ? Array.from(vehiclesContainer.querySelectorAll('input[name=user-vehicle]:checked')).map(cb => cb.value)
+          ? getUserFormSelectedVehicleIds()
           : [];
         const hasAssignedVehicles = selectedVehicleIds.length > 0;
         const kullanici_paneli = hasAssignedVehicles;
