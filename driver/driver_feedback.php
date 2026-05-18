@@ -65,6 +65,8 @@ $result = medisaMutateData(function (&$data) use ($tokenData, $aracId, $konuTuru
     }
 
     $userId = (string)($tokenData['user_id'] ?? '');
+    $user = medisaFindUserById($data, $userId);
+    $surucuAdi = trim((string)($user['isim'] ?? $user['name'] ?? $user['ad_soyad'] ?? $tokenData['user']['isim'] ?? ''));
     $assignedUserId = (string)($vehicle['assignedUserId'] ?? '');
     $legacyAssigned = false;
     if ($assignedUserId === '') {
@@ -97,6 +99,7 @@ $result = medisaMutateData(function (&$data) use ($tokenData, $aracId, $konuTuru
         'arac_id' => $aracId,
         'kayit_id' => null,
         'surucu_id' => $userId,
+        'surucu_adi' => $surucuAdi,
         'konu_turu' => $konuTuru,
         'mesaj' => $mesaj,
         'sebep' => $mesaj,
