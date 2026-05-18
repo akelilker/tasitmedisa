@@ -241,8 +241,7 @@ body.dashboard-page {
   height: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
   min-height: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
   box-sizing: border-box !important;
-  padding-top: 4px !important;
-  padding-bottom: calc(4px + env(safe-area-inset-bottom, 0)) !important;
+  padding: 0 !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
