@@ -30,7 +30,8 @@ body::-webkit-scrollbar,
   --bg-2: #151515;
   --card-bg: #1a1a1a;
   --txt: #f0f0f0;
-  --muted: rgba(255, 255, 255, 0.5);
+  --muted: rgba(245, 241, 232, 0.76);
+  --text-soft-glow: 0 0 6px rgba(255, 255, 255, 0.08);
   --br: #333;
   --border-shiny: rgba(255, 255, 255, 0.25);
 
@@ -57,18 +58,18 @@ body::-webkit-scrollbar,
   --red: #ef4444;
   --form-label-color: #ffffff;
   /* Girilen veri / açıklama metin rengi (Kontrast problemi çözümü için beyaz-parlak) */
-  --data-value-color: #f8f9fa;
+  --data-value-color: #f5f1e8;
 
   --bg-content: #0d131f;
   --bg-input: #0f1418;
   --bg-input-focus: #0f1622;
   --txt-white: #ffffff;
   --txt-muted: #e0e0e0;
-  --txt-gray: #ccc;
-  --txt-gray-dark: #b5b9c0;
-  --txt-gray-darker: #888;
-  --txt-gray-darkest: #666;
-  --txt-placeholder: #999;
+  --txt-gray: #f5f1e8;
+  --txt-gray-dark: #ece7dd;
+  --txt-gray-darker: #ddd6c8;
+  --txt-gray-darkest: #c8c0b2;
+  --txt-placeholder: #d7d0c4;
   --border-light: rgba(255, 255, 255, 0.5);
   --border-medium: rgba(255, 255, 255, 0.35);
   --border-subtle: rgba(255, 255, 255, 0.3);
@@ -167,7 +168,8 @@ body::-webkit-scrollbar,
 
 /* Etiket: 1 punto küçük (14px → 13px), tüm ekranlar */
 .universal-back-label {
-  color: #adb5bd !important;
+  color: var(--txt-gray-dark, #ece7dd) !important;
+  text-shadow: var(--text-soft-glow);
   font-size: 13px !important; /* 14px → 13px (1 punto küçültme) */
   font-weight: 500 !important;
   line-height: 1 !important;
@@ -439,16 +441,17 @@ select.form-input:focus {
 /* Input/textarea içerik metni (select yukarıdaki blokta) */
 .form-input:not(select),
 textarea.form-input {
-  color: var(--data-value-color, #a0aec0) !important;
+  color: var(--data-value-color, #f5f1e8) !important;
+  text-shadow: var(--text-soft-glow);
 }
 
 /* Olay Ekle modalları: girilen değerleri gri göster (şu an beyaz görünüyor) */
 .olay-ekle-modal .modal-body {
-  --data-value-color: #888;
+  --data-value-color: var(--txt-gray-darker);
 }
 input[type="date"].form-input.has-value,
 input[type="date"].form-input:focus {
-  color: var(--data-value-color, #a0aec0) !important;
+  color: var(--data-value-color, #f5f1e8) !important;
 }
 
 /* TARİH KUTUSU: metin yatay+dikey ortada, ikon metnin hemen yanında 3px boşlukla */
@@ -1135,10 +1138,12 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
   flex: 0 0 auto !important;
 }
 #notifications-dropdown .notification-item:not(.date-warning-red-border):not(.date-warning-orange-border):not(.notification-item-activity.notification-unread) .notif-line2 {
-  color: #999 !important;
+  color: var(--txt-gray-darker, #ddd6c8) !important;
+  text-shadow: var(--text-soft-glow);
 }
 #notifications-dropdown .notification-item.notification-item-activity.notification-unread .notif-line2 {
-  color: rgba(160, 174, 192, 0.95) !important;
+  color: rgba(245, 241, 232, 0.95) !important;
+  text-shadow: var(--text-soft-glow);
   line-height: 1.1 !important;
   margin-top: 0 !important;
   padding: 0 !important;
@@ -1154,11 +1159,13 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
 }
 /* Tarih satırı: okunmuş/okunmamış --notif-fg (genel notif-line2 rengi tarihi örtmesin) */
 #notifications-dropdown.settings-dropdown > button.notification-item:not(.date-warning-red-border):not(.date-warning-orange-border):not(.notification-item-activity.notification-unread) .notif-line2.notif-meta-date {
-  color: var(--notif-fg, #a0aec0) !important;
+  color: var(--notif-fg, var(--txt-gray-dark, #ece7dd)) !important;
+  text-shadow: var(--text-soft-glow);
   opacity: 0.9;
 }
 #notifications-dropdown.settings-dropdown > button.notification-item.notification-item-activity.notification-unread .notif-line2.notif-meta-date {
-  color: rgba(160, 174, 192, 0.92) !important;
+  color: rgba(245, 241, 232, 0.92) !important;
+  text-shadow: var(--text-soft-glow);
   opacity: 0.95;
 }
 #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border .notif-line2.notif-meta-date {
@@ -1749,10 +1756,12 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   }
 
   #notifications-dropdown .notification-item:not(.date-warning-red-border):not(.date-warning-orange-border):not(.notification-item-activity.notification-unread) .notif-line2 {
-    color: #a0aec0 !important;
+    color: var(--txt-gray-dark, #ece7dd) !important;
+    text-shadow: var(--text-soft-glow);
   }
   #notifications-dropdown .notification-item.notification-item-activity.notification-unread .notif-line2 {
-    color: rgba(160, 174, 192, 0.95) !important;
+    color: rgba(245, 241, 232, 0.95) !important;
+    text-shadow: var(--text-soft-glow);
   }
 
   #notifications-dropdown.settings-dropdown > .notification-item:is(:hover, :focus, :active, :focus-visible),
