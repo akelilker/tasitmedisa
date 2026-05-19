@@ -630,9 +630,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-container::before {
         border-left-width: 0.7px;
         border-right-width: 0.7px;
-        border-top-color: rgba(var(--theme-color-rgb), 0.62);
-        border-left-color: rgba(var(--theme-color-rgb), 0.62);
-        border-right-color: rgba(var(--theme-color-rgb), 0.62);
+        border-top-color: rgba(var(--theme-color-rgb), 0.70);
+        border-left-color: rgba(var(--theme-color-rgb), 0.70);
+        border-right-color: rgba(var(--theme-color-rgb), 0.70);
         box-shadow:
             0 0 16px rgba(var(--theme-color-rgb), 0.24),
             inset 0 0 18px rgba(var(--theme-color-rgb), 0.10);
