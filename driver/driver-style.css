@@ -1047,8 +1047,7 @@ body.dashboard-page {
 }
 .driver-plate-subtitle {
   font-size: 14px;
-  color: var(--txt-gray-dark, #ece7dd);
-  text-shadow: var(--text-soft-glow);
+  color: #a0aec0;
   margin-top: 2px;
   line-height: 1.2;
 }
@@ -1256,8 +1255,7 @@ body.dashboard-page {
 }
 /* Açıklamalar (değerler) gri – etiket beyaz kuralı; global --data-value-color (#f8f9fa) bypass */
 .driver-info-item .value {
-  color: var(--data-value-color, #f5f1e8) !important;
-  text-shadow: var(--text-soft-glow);
+  color: #a0aec0 !important;
   word-break: break-word;
   font-size: 13px;
   font-family: inherit;
@@ -1289,7 +1287,7 @@ body.dashboard-page {
 .driver-action-btn {
   background: transparent !important;
   border: 1px solid rgba(238, 246, 255, 0.34);
-  color: var(--data-value-color, #f5f1e8);
+  color: var(--data-value-color, #a0aec0);
   padding: 8px 12px;
   border-radius: 6px;
   font-size: 13px;
@@ -1463,8 +1461,7 @@ body.dashboard-page {
   user-select: none;
 }
 .driver-egzoz-muayene-check > span {
-  color: var(--txt-gray-dark, #ece7dd);
-  text-shadow: var(--text-soft-glow);
+  color: #a0aec0;
   font-weight: 500;
 }
 .driver-egzoz-muayene-check input[type="checkbox"] {
@@ -1541,7 +1538,7 @@ body.dashboard-page {
   border: none !important;
   box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.38) !important;
   border-radius: 8px;
-  color: var(--data-value-color, #f5f1e8);
+  color: var(--data-value-color, #a0aec0);
   font-size: 14px;
   font-family: inherit;
   transition: box-shadow 0.2s;
@@ -1602,7 +1599,7 @@ body.dashboard-page {
 .driver-action-area .driver-report-block .form-group textarea {
   background: #0f1418 !important;
   background-color: #0f1418 !important;
-  color: var(--data-value-color, #f5f1e8);
+  color: var(--data-value-color, #a0aec0);
 }
 .driver-action-area .driver-km-block .form-group input.driver-km-input,
 .driver-action-area .driver-report-block .form-group input,
@@ -2446,7 +2443,7 @@ body.dashboard-page {
   border: none !important;
   box-shadow: inset 0 0 0 0.5px rgba(var(--theme-color-rgb), 0.85) !important;
   border-radius: 8px;
-  color: var(--data-value-color, #f5f1e8);
+  color: var(--data-value-color, #a0aec0);
   font-size: 16px;
   font-family: inherit;
   transition: box-shadow 0.2s;
@@ -2955,7 +2952,7 @@ body.dashboard-page {
 
 /* Düzeltme Talebi: style-core :root --data-value-color (#f8f9fa) neredeyse beyaz; bu modalda açıklama/değer metni gri kalsın */
 #edit-request-modal.driver-modal {
-  --data-value-color: #f5f1e8;
+  --data-value-color: #a0aec0;
 }
 
 /* Masaüstü: kayıt modalı ile aynı – overlay üst padding yok; overlay footer'ı örtmesin, footer görünsün */
@@ -3385,8 +3382,7 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   font-size: 11px;
   font-weight: 500;
   line-height: 1.3;
-  color: var(--txt-gray-dark, #ece7dd);
-  text-shadow: var(--text-soft-glow);
+  color: #a0aec0;
   word-break: break-word;
   overflow-wrap: anywhere;
 }
@@ -3534,8 +3530,7 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 
   #driver-documents-modal .driver-document-action {
     font-size: 12px;
-    color: rgba(245, 241, 232, 0.82);
-    text-shadow: var(--text-soft-glow);
+    color: rgba(160, 174, 192, 0.82);
   }
 }
 
@@ -3640,7 +3635,7 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   border: 1.1px solid rgba(255, 255, 255, 0.4) !important;
   box-shadow: none !important;
   border-radius: 6px;
-  color: var(--data-value-color, #f5f1e8);
+  color: var(--data-value-color, #a0aec0);
   font-size: 16px;
   font-family: inherit;
   transition:
@@ -3908,9 +3903,8 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   margin-bottom: 13px !important;
 }
 #edit-request-modal .driver-current-km strong {
-  color: var(--data-value-color, #f5f1e8) !important;
-  -webkit-text-fill-color: var(--data-value-color, #f5f1e8) !important;
-  text-shadow: var(--text-soft-glow);
+  color: #a0aec0 !important;
+  -webkit-text-fill-color: #a0aec0 !important;
   font-weight: 600;
 }
 #edit-request-modal .form-group label {
@@ -3923,16 +3917,15 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 }
 #edit-request-modal .form-group input,
 #edit-request-modal .form-group textarea {
-  color: var(--data-value-color, #f5f1e8) !important;
-  -webkit-text-fill-color: var(--data-value-color, #f5f1e8) !important;
-  text-shadow: var(--text-soft-glow);
+  color: #a0aec0 !important;
+  -webkit-text-fill-color: #a0aec0 !important;
   padding-top: 3px !important;
   padding-bottom: 3px !important;
 }
 #edit-request-modal .form-group input:focus,
 #edit-request-modal .form-group textarea:focus {
-  color: var(--txt-gray, #f5f1e8) !important;
-  -webkit-text-fill-color: var(--txt-gray, #f5f1e8) !important;
+  color: #b8c5d0 !important;
+  -webkit-text-fill-color: #b8c5d0 !important;
 }
 #edit-request-modal .form-group input:not(:focus),
 #edit-request-modal .form-group textarea:not(:focus) {
@@ -3952,8 +3945,8 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 }
 #edit-request-modal .form-group input::placeholder,
 #edit-request-modal .form-group textarea::placeholder {
-  color: rgba(245, 241, 232, 0.55) !important;
-  -webkit-text-fill-color: rgba(245, 241, 232, 0.55) !important;
+  color: rgba(160, 174, 192, 0.55) !important;
+  -webkit-text-fill-color: rgba(160, 174, 192, 0.55) !important;
 }
 
 /* Düzeltme Talebi: KM input spinner gizli */
@@ -4064,7 +4057,7 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 
 #history-modal .universal-back-bar .universal-back-label,
 #edit-request-modal .universal-back-bar .universal-back-label {
-  color: var(--muted, #f5f1e8) !important;
+  color: var(--muted, #adb5bd) !important;
   font-weight: 500;
   font-size: 13.5px;
 }
@@ -4145,7 +4138,7 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 }
 
 #history-modal .history-vehicle-trigger.history-all-selected .history-vehicle-trigger-text {
-  color: var(--muted, #f5f1e8) !important;
+  color: var(--muted, #adb5bd) !important;
 }
 
 .history-vehicle-chevron {
@@ -4199,7 +4192,7 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 }
 
 #history-modal .history-vehicle-option[data-value=""] {
-  color: var(--muted, #f5f1e8);
+  color: var(--muted, #adb5bd);
 }
 
 .history-vehicle-option:hover {
@@ -4278,11 +4271,10 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   text-align: right;
 }
 
-/* Etiket beyaz, açıklama kırık beyaz */
+/* Etiket beyaz, açıklama gri: değerler #a0aec0 (global --data-value-color bypass) */
 .history-details p {
   font-size: 14px;
-  color: var(--data-value-color, #f5f1e8) !important;
-  text-shadow: var(--text-soft-glow);
+  color: #a0aec0 !important;
   margin: 0;
   padding: 0;
   line-height: 1.3;
@@ -4968,7 +4960,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   border: none !important;
   box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.35) !important;
   border-radius: 8px;
-  color: var(--data-value-color, #f5f1e8);
+  color: var(--data-value-color, #a0aec0);
   font-size: 16px;
   transition: box-shadow 0.2s;
   box-sizing: border-box;
@@ -4984,7 +4976,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 .login-form .form-group input:-webkit-autofill:focus {
   -webkit-box-shadow: 0 0 0 30px #0f1418 inset, inset 0 0 0 0.5px rgba(255, 255, 255, 0.35) !important;
   box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.35) !important;
-  -webkit-text-fill-color: var(--data-value-color, #f5f1e8) !important;
+  -webkit-text-fill-color: var(--data-value-color, #a0aec0) !important;
   background: #0f1418 !important;
   background-color: #0f1418 !important;
   border: none !important;
@@ -5011,7 +5003,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 }
 
 .login-form .form-group input::placeholder {
-  color: rgba(245, 241, 232, 0.6) !important; /* örn: Savaş – çok az daha silik */
+  color: rgba(160, 174, 192, 0.6) !important; /* örn: Savaş – çok az daha silik */
   opacity: 1;
 }
 
@@ -5030,7 +5022,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 
 .form-group-checkbox label {
   font-size: 14px;
-  color: var(--data-value-color, #f5f1e8);
+  color: var(--data-value-color, #a0aec0);
   cursor: pointer;
 }
 
@@ -5186,8 +5178,8 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 .driver-modal .form-group textarea:-webkit-autofill:hover {
   -webkit-box-shadow: 0 0 0 30px #0d131f inset, inset 0 0 0 1px rgba(255, 255, 255, 0.4) !important;
   border: 1.1px solid rgba(255, 255, 255, 0.4) !important;
-  -webkit-text-fill-color: var(--data-value-color, #f5f1e8) !important;
-  caret-color: var(--data-value-color, #f5f1e8);
+  -webkit-text-fill-color: var(--data-value-color, #a0aec0) !important;
+  caret-color: var(--data-value-color, #a0aec0);
   transition: background-color 5000s ease-in-out 0s;
 }
 
@@ -5195,8 +5187,8 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 .driver-modal .form-group textarea:-webkit-autofill:focus {
   -webkit-box-shadow: 0 0 0 30px #0d131f inset, inset 0 0 0 1px var(--theme-color) !important;
   border-color: var(--theme-color) !important;
-  -webkit-text-fill-color: var(--data-value-color, #f5f1e8) !important;
-  caret-color: var(--data-value-color, #f5f1e8);
+  -webkit-text-fill-color: var(--data-value-color, #a0aec0) !important;
+  caret-color: var(--data-value-color, #a0aec0);
 }
 
 /* Bakım/Kaza butonları yükseklik (4px daraltıldı) */
@@ -5985,26 +5977,26 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   #edit-request-modal .form-group input,
   #edit-request-modal .form-group textarea {
     font-size: 17px !important;
-    color: var(--data-value-color, #f5f1e8) !important;
-    -webkit-text-fill-color: var(--data-value-color, #f5f1e8) !important;
+    color: #a0aec0 !important;
+    -webkit-text-fill-color: #a0aec0 !important;
   }
   #edit-request-modal .form-group input:focus,
   #edit-request-modal .form-group textarea:focus {
-    color: var(--txt-gray, #f5f1e8) !important;
-    -webkit-text-fill-color: var(--txt-gray, #f5f1e8) !important;
+    color: #b8c5d0 !important;
+    -webkit-text-fill-color: #b8c5d0 !important;
   }
   #edit-request-modal .driver-current-km {
     color: #ffffff !important;
     -webkit-text-fill-color: #ffffff !important;
   }
   #edit-request-modal .driver-current-km strong {
-    color: var(--data-value-color, #f5f1e8) !important;
-    -webkit-text-fill-color: var(--data-value-color, #f5f1e8) !important;
+    color: #a0aec0 !important;
+    -webkit-text-fill-color: #a0aec0 !important;
   }
   #edit-request-modal .form-group input::placeholder,
   #edit-request-modal .form-group textarea::placeholder {
-    color: rgba(245, 241, 232, 0.55) !important;
-    -webkit-text-fill-color: rgba(245, 241, 232, 0.55) !important;
+    color: rgba(160, 174, 192, 0.55) !important;
+    -webkit-text-fill-color: rgba(160, 174, 192, 0.55) !important;
   }
   #edit-request-modal .btn-submit {
     font-size: 17px !important;
