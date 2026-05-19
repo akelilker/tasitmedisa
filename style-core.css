@@ -634,8 +634,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
         border-left-color: rgba(var(--theme-color-rgb), 0.62);
         border-right-color: rgba(var(--theme-color-rgb), 0.62);
         box-shadow:
-            0 0 14px rgba(var(--theme-color-rgb), 0.20),
-            inset 0 0 16px rgba(var(--theme-color-rgb), 0.08);
+            0 0 16px rgba(var(--theme-color-rgb), 0.24),
+            inset 0 0 18px rgba(var(--theme-color-rgb), 0.10);
     }
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap {
         box-shadow:
