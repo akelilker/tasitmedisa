@@ -2383,6 +2383,9 @@ input.settings-form-input:-moz-autofill,
   #user-modal .modal-body > .user-management-list-inner {
     margin-top: 0 !important;
   }
+  #user-modal .modal-body > .user-management-list-inner {
+    padding-top: 0;
+  }
   #user-modal .user-management-search-wrap {
     position: relative;
     z-index: 5;
@@ -2401,7 +2404,10 @@ input.settings-form-input:-moz-autofill,
     pointer-events: auto;
   }
   #user-modal .modal-body .settings-add-text-btn.user-add-btn {
-    transform: translateY(-16px);
+    transform: none;
+    display: flex;
+    width: max-content;
+    margin: -6px 0 6px auto;
   }
   #branch-form-modal .modal-body #branch-form,
   #user-form-modal .modal-body #user-form.user-form-inner {
