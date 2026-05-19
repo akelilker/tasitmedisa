@@ -1236,11 +1236,20 @@
 
   function getUserBranchIds(user) {
     if (!user) return [];
-    if (Array.isArray(user.branchIds) && user.branchIds.length) return user.branchIds;
-    if (Array.isArray(user.subeIds) && user.subeIds.length) return user.subeIds;
-    if (user.branchId != null && user.branchId !== '') return [user.branchId];
-    if (user.subeId != null && user.subeId !== '') return [user.subeId];
-    return [];
+    var rawIds = [];
+    if (Array.isArray(user.branchIds) && user.branchIds.length) rawIds = rawIds.concat(user.branchIds);
+    if (Array.isArray(user.subeIds) && user.subeIds.length) rawIds = rawIds.concat(user.subeIds);
+    if (Array.isArray(user.sube_ids) && user.sube_ids.length) rawIds = rawIds.concat(user.sube_ids);
+    if (user.branchId != null && user.branchId !== '') rawIds.push(user.branchId);
+    if (user.subeId != null && user.subeId !== '') rawIds.push(user.subeId);
+    if (user.sube_id != null && user.sube_id !== '') rawIds.push(user.sube_id);
+
+    var normalized = [];
+    rawIds.forEach(function(branchId) {
+      var value = String(branchId == null ? '' : branchId).trim();
+      if (value && normalized.indexOf(value) === -1) normalized.push(value);
+    });
+    return normalized;
   }
 
   function getBranchNameById(branchId) {
