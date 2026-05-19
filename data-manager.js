@@ -543,7 +543,63 @@ function ensureMainAppSession() {
     return true;
 }
 
+function normalizeOfflineAppDataSnapshot(data) {
+    data = data && typeof data === 'object' && !Array.isArray(data) ? data : {};
+    return {
+        tasitlar: Array.isArray(data.tasitlar) ? data.tasitlar : (Array.isArray(data.vehicles) ? data.vehicles : []),
+        kayitlar: Array.isArray(data.kayitlar) ? data.kayitlar : [],
+        branches: Array.isArray(data.branches) ? data.branches : [],
+        users: Array.isArray(data.users) ? data.users : [],
+        ayarlar: data.ayarlar || { sirketAdi: 'Medisa', yetkiliKisi: '', telefon: '', eposta: '' },
+        sifreler: Array.isArray(data.sifreler) ? data.sifreler : [],
+        arac_aylik_hareketler: Array.isArray(data.arac_aylik_hareketler) ? data.arac_aylik_hareketler : [],
+        duzeltme_talepleri: Array.isArray(data.duzeltme_talepleri) ? data.duzeltme_talepleri : [],
+        kaskoDegerListesi: {
+            updatedAt: String((data.kaskoDegerListesi && data.kaskoDegerListesi.updatedAt) || ''),
+            period: String((data.kaskoDegerListesi && data.kaskoDegerListesi.period) || ''),
+            sourceFileName: String((data.kaskoDegerListesi && data.kaskoDegerListesi.sourceFileName) || ''),
+            rows: []
+        },
+        notificationReadState: (data.notificationReadState && typeof data.notificationReadState === 'object' && !Array.isArray(data.notificationReadState))
+            ? data.notificationReadState
+            : {},
+        monthlyTodoWhatsAppLogs: (data.monthlyTodoWhatsAppLogs && typeof data.monthlyTodoWhatsAppLogs === 'object' && !Array.isArray(data.monthlyTodoWhatsAppLogs))
+            ? data.monthlyTodoWhatsAppLogs
+            : {}
+    };
+}
+
+function readOfflineAppDataSnapshot() {
+    var keys = ['medisa_data_v1', 'medisa_server_backup'];
+    for (var i = 0; i < keys.length; i++) {
+        try {
+            var savedData = localStorage.getItem(keys[i]);
+            if (!savedData) continue;
+            var normalized = normalizeOfflineAppDataSnapshot(JSON.parse(savedData));
+            if (hasUsableAppData(normalized)) return normalized;
+        } catch (e) {}
+    }
+    return null;
+}
+
+function persistOfflineAppDataSnapshot(data) {
+    try {
+        var snapshot = normalizeOfflineAppDataSnapshot(data);
+        if (!hasUsableAppData(snapshot)) return;
+        localStorage.setItem('medisa_data_v1', JSON.stringify(snapshot));
+    } catch (e) {}
+}
+
 function loadDataFromLocalStorage() {
+    var offlineSnapshot = readOfflineAppDataSnapshot();
+    if (offlineSnapshot) {
+        window.appData = offlineSnapshot;
+        setMedisaSession(getSessionFromToken());
+        serverDatasetTrusted = false;
+        syncDataLoadState();
+        return window.appData;
+    }
+
     try {
         var savedData = localStorage.getItem('medisa_data_v1');
         if (savedData) {
@@ -643,7 +699,9 @@ async function loadDataFromServer(forceRefresh) {
     loadPromise = (async function() {
         function finishLoadError(optionalErr) {
             serverDatasetTrusted = false;
-            window.appData = getSafeAppDataFallback();
+            window.appData = hasUsableAppData(window.appData)
+                ? getSafeAppDataFallback()
+                : (readOfflineAppDataSnapshot() || getSafeAppDataFallback());
             if (hasUsableAppData(window.appData)) {
                 showOfflineReadonlyWarning();
                 return window.appData;
@@ -667,6 +725,9 @@ async function loadDataFromServer(forceRefresh) {
             });
 
             if (!response.ok && response.status === 503) {
+                if ((typeof navigator !== 'undefined' && navigator.onLine === false) || readOfflineAppDataSnapshot()) {
+                    return finishLoadError(new Error('HTTP 503'));
+                }
                 isDataLoading = false;
                 loadPromise = null;
                 syncDataLoadState();
@@ -738,6 +799,7 @@ async function loadDataFromServer(forceRefresh) {
             setMedisaSession(data.session || getSessionFromToken());
 
             serverDatasetTrusted = true;
+            persistOfflineAppDataSnapshot(window.appData);
             return window.appData;
         } catch (error) {
             if (error && error.medisaHttpStatus) {
@@ -861,6 +923,7 @@ async function saveDataToServer(options) {
             delete autoBackup.kaskoDegerListesi;
             localStorage.setItem('medisa_server_backup', JSON.stringify(autoBackup));
         } catch (storageErr) {}
+        persistOfflineAppDataSnapshot(window.appData);
 
         medisaInvalidateVehicleDateTasksCacheIfAvailable();
         return true;
