@@ -3391,6 +3391,41 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   color: rgba(255, 255, 255, 0.44);
 }
 
+@media (min-width: 641px) {
+  #driver-documents-modal .driver-document-card:hover,
+  #driver-documents-modal .driver-document-card:focus-visible {
+    transform: none;
+    background: transparent;
+    border-color: transparent;
+    box-shadow: none;
+    filter: none;
+  }
+
+  #driver-documents-modal .driver-document-card-missing:hover,
+  #driver-documents-modal .driver-document-card-missing:focus-visible {
+    background: transparent;
+    border-color: transparent;
+    box-shadow: none;
+    filter: none;
+  }
+
+  #driver-documents-modal .driver-document-icon-wrap,
+  #driver-documents-modal .driver-document-title,
+  #driver-documents-modal .driver-document-action {
+    transition: transform .18s ease, color .18s ease, filter .18s ease;
+    transform-origin: center;
+  }
+
+  #driver-documents-modal .driver-document-card:hover .driver-document-icon-wrap,
+  #driver-documents-modal .driver-document-card:hover .driver-document-title,
+  #driver-documents-modal .driver-document-card:hover .driver-document-action,
+  #driver-documents-modal .driver-document-card:focus-visible .driver-document-icon-wrap,
+  #driver-documents-modal .driver-document-card:focus-visible .driver-document-title,
+  #driver-documents-modal .driver-document-card:focus-visible .driver-document-action {
+    transform: scale(1.04);
+  }
+}
+
 .driver-documents-message {
   min-height: 18px;
   margin-top: 12px;

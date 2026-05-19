@@ -891,13 +891,26 @@
     border-radius: 0;
     background: transparent;
     box-shadow: none;
-    transition: transform 0.15s ease;
   }
   #dinamik-olay-modal #ruhsat-modal-content .vehicle-document-card:hover,
   #dinamik-olay-modal #ruhsat-modal-content .vehicle-document-card:focus-visible {
     border: none;
     background: transparent;
     box-shadow: none;
+  }
+  #dinamik-olay-modal #ruhsat-modal-content .vehicle-document-icon-wrap,
+  #dinamik-olay-modal #ruhsat-modal-content .vehicle-document-label,
+  #dinamik-olay-modal #ruhsat-modal-content .vehicle-document-status {
+    transition: transform 0.15s ease;
+    transform-origin: center;
+  }
+  #dinamik-olay-modal #ruhsat-modal-content .vehicle-document-card:hover .vehicle-document-icon-wrap,
+  #dinamik-olay-modal #ruhsat-modal-content .vehicle-document-card:hover .vehicle-document-label,
+  #dinamik-olay-modal #ruhsat-modal-content .vehicle-document-card:hover .vehicle-document-status,
+  #dinamik-olay-modal #ruhsat-modal-content .vehicle-document-card:focus-visible .vehicle-document-icon-wrap,
+  #dinamik-olay-modal #ruhsat-modal-content .vehicle-document-card:focus-visible .vehicle-document-label,
+  #dinamik-olay-modal #ruhsat-modal-content .vehicle-document-card:focus-visible .vehicle-document-status {
+    transform: scale(1.04);
   }
 }
 #dinamik-olay-modal #ruhsat-modal-content .vehicle-document-icon-wrap {
