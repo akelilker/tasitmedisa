@@ -3422,7 +3422,7 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   #driver-documents-modal .driver-document-card:focus-visible .driver-document-icon-wrap,
   #driver-documents-modal .driver-document-card:focus-visible .driver-document-title,
   #driver-documents-modal .driver-document-card:focus-visible .driver-document-action {
-    transform: scale(1.04);
+    transform: scale(1.06);
   }
 }
 
@@ -6827,13 +6827,13 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     width: 40px !important;
     min-width: 40px !important;
     padding: 0 !important;
-    transform: translateY(-3px) !important;
+    transform: translateY(0) !important;
   }
   .dashboard-page .driver-action-btn-feedback.driver-request-fab .driver-request-fab-label {
     position: absolute !important;
     left: 50% !important;
     top: calc(100% + 7px) !important;
-    transform: translate(-50%, 4px) !important;
+    transform: translate(-50%, 0) scale(1) !important;
     opacity: 0 !important;
     max-width: none !important;
     overflow: visible !important;
@@ -6849,7 +6849,11 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     opacity: 1 !important;
     max-width: none !important;
     color: #ffffff !important;
-    transform: translate(-50%, 0) !important;
+    transform: translate(-50%, 0) scale(1.06) !important;
+  }
+  .dashboard-page .driver-action-btn-feedback.driver-request-fab:hover .driver-action-btn-feedback-icon,
+  .dashboard-page .driver-action-btn-feedback.driver-request-fab:focus-visible .driver-action-btn-feedback-icon {
+    transform: scale(1.08) !important;
   }
 }
 
