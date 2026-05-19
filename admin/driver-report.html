@@ -32,7 +32,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../style-core.css">
-  <link rel="stylesheet" href="admin-report.css?v=20260519.1">
+  <link rel="stylesheet" href="admin-report.css?v=20260519.2">
 </head>
 <body class="admin-report-page">
   <div id="pwa-install-wrapper" class="pwa-install-center"></div>
@@ -148,6 +148,12 @@
 
     <div id="tab-kullanici" class="admin-tab-panel" data-admin-panel="kullanici" style="display: none;">
       <div class="user-analytics-toolbar">
+        <button type="button" class="universal-back-btn user-analytics-toolbar-back" id="user-analytics-toolbar-back" title="Şubeler" aria-label="Şubelere dön" hidden>
+          <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 12H5M12 19l-7-7 7-7"></path>
+          </svg>
+          <span class="universal-back-label">Şubeler</span>
+        </button>
         <div class="user-analytics-toolbar-right">
           <div id="user-analytics-search-container" class="report-search-container user-search-container">
             <input
@@ -203,6 +209,6 @@
 
   <script defer src="../portal-session.js?v=20260513.2"></script>
   <script defer src="../script-core.js"></script>
-  <script defer src="admin-report.js?v=20260519.2"></script>
+  <script defer src="admin-report.js?v=20260519.3"></script>
 </body>
 </html>
