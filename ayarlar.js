@@ -1285,6 +1285,21 @@
         .trim();
     }
 
+    function focusUserManagementSearchInput(input, options = {}) {
+      if (!input) return;
+      try {
+        input.focus({ preventScroll: true });
+      } catch (e) {
+        input.focus();
+      }
+      if (options.select === true && !isUserManagementKeyboardAwareContext() && typeof input.select === 'function') {
+        input.select();
+      }
+      requestAnimationFrame(function() {
+        applyUserManagementKeyboardOffset();
+      });
+    }
+
     function syncUserManagementSearchUi(options = {}) {
       const wrap = document.getElementById('user-management-search-wrap');
       const input = document.getElementById('user-management-search-input');
@@ -1296,9 +1311,11 @@
       toggle.setAttribute('aria-expanded', userManagementSearchOpen ? 'true' : 'false');
 
       if (userManagementSearchOpen && options.focus === true) {
+        focusUserManagementSearchInput(input, { select: true });
         setTimeout(() => {
-          input.focus();
-          input.select();
+          if (document.activeElement !== input) {
+            focusUserManagementSearchInput(input, { select: true });
+          }
         }, 30);
       } else if (!userManagementSearchOpen && document.activeElement === input) {
         input.blur();

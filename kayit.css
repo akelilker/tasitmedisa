@@ -1397,26 +1397,26 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         color: var(--form-label-color) !important;
     }
     
-    .form-input,
-    select.form-input,
-    select {
+    #vehicle-modal .form-input,
+    #vehicle-modal select.form-input,
+    #vehicle-modal select {
         color: var(--data-value-color, #a0aec0) !important;
-        border-color: rgba(255, 255, 255, 0.48) !important; /* Mobil: çerçeve biraz yumuşatıldı */
-        background: rgba(255, 255, 255, 0.01) !important; /* Zemin sisi azaltilarak cerceve one cikiyor */
+        border-color: rgba(255, 255, 255, 0.34) !important; /* Mobil: çerçeve parlaması azaltıldı */
+        background: rgba(255, 255, 255, 0.008) !important; /* Zemin sisi minimal tutulur */
     }
     #vehicle-modal #vehicle-branch-select.branch-placeholder {
         color: rgba(255, 255, 255, 0.38) !important;
     }
     
     /* Input focus - kırmızı çerçeve (pasif şube tetikleyicisi hariç) */
-    .form-input:focus:not(.vehicle-branch-trigger.readonly),
-    select:focus,
-    textarea.form-input:focus {
-        border-color: var(--theme-color) !important; /* Kırmızı çerçeve */
+    #vehicle-modal .form-input:focus:not(.vehicle-branch-trigger.readonly),
+    #vehicle-modal select:focus,
+    #vehicle-modal textarea.form-input:focus {
+        border-color: rgba(var(--theme-color-rgb), 0.72) !important; /* Kırmızı çerçeve */
     }
     #vehicle-modal .vehicle-branch-dropdown-wrap.single-branch .vehicle-branch-trigger:focus,
     #vehicle-modal .vehicle-branch-dropdown-wrap.single-branch .vehicle-branch-trigger:focus-visible {
-        border-color: rgba(255, 255, 255, 0.48) !important;
+        border-color: rgba(255, 255, 255, 0.34) !important;
         box-shadow: none !important;
     }
     
@@ -1424,69 +1424,63 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         color: var(--data-value-color, #a0aec0) !important;
     }
     
-    .radio-btn {
-        border-color: rgba(255, 255, 255, 0.48) !important; /* Mobil: çerçeve biraz yumuşatıldı */
+    #vehicle-modal .radio-btn {
+        border-color: rgba(255, 255, 255, 0.34) !important; /* Mobil: çerçeve parlaması azaltıldı */
         color: rgba(255, 255, 255, 0.8) !important; /* Radio buton metni daha parlak */
-        background: rgba(255, 255, 255, 0.01) !important; /* Beyaz sis daha da azaltildi */
+        background: rgba(255, 255, 255, 0.008) !important; /* Beyaz sis minimal */
     }
     
-    .radio-btn.active:not(.green) {
-        border-color: var(--theme-color, #d40000) !important;
+    #vehicle-modal .radio-btn.active:not(.green) {
+        border-color: rgba(var(--theme-color-rgb), 0.72) !important;
         color: var(--theme-color, #d40000) !important;
-        background: rgba(212, 0, 0, 0.1) !important;
+        background: rgba(var(--theme-color-rgb), 0.075) !important;
     }
     
-    .radio-btn.active.green {
-        border-color: var(--green-success, #28a745) !important;
-        background: rgba(40, 167, 69, 0.1) !important;
+    #vehicle-modal .radio-btn.active.green {
+        border-color: rgba(var(--green-success-rgb), 0.72) !important;
+        background: rgba(var(--green-success-rgb), 0.075) !important;
         color: var(--green-success, #28a745) !important;
     }
     
     /* Şanzıman: mobilde de sadece yeşil, kırmızı yok */
-    [data-section="transmission"] .radio-btn.active,
-    [data-section="transmission"] .radio-btn.active:hover,
-    [data-section="transmission"] .radio-btn.active:focus,
-    [data-section="transmission"] .radio-btn.active:not(.green) {
-        border-color: var(--green-success, #28a745) !important;
+    #vehicle-modal [data-section="transmission"] .radio-btn.active,
+    #vehicle-modal [data-section="transmission"] .radio-btn.active:hover,
+    #vehicle-modal [data-section="transmission"] .radio-btn.active:focus,
+    #vehicle-modal [data-section="transmission"] .radio-btn.active:not(.green) {
+        border-color: rgba(var(--green-success-rgb), 0.72) !important;
         color: var(--green-success, #28a745) !important;
-        background: rgba(40, 167, 69, 0.1) !important;
+        background: rgba(var(--green-success-rgb), 0.075) !important;
     }
     
     /* Var-Yok mobil: bağlamsal renkler (Tramer/Boya/Kredi: Var=kırmızı Yok=yeşil; Anahtar: Var=yeşil Yok=kırmızı) */
-    [data-section="tramer"] .radio-btn.active[data-value="var"],
-    [data-section="tramer"] .radio-btn.active[data-value="var"]:hover,
     #vehicle-modal [data-section="tramer"] .radio-btn.active[data-value="var"],
-    [data-section="boya"] .radio-btn.active[data-value="var"],
-    [data-section="boya"] .radio-btn.active[data-value="var"]:hover,
+    #vehicle-modal [data-section="tramer"] .radio-btn.active[data-value="var"]:hover,
     #vehicle-modal [data-section="boya"] .radio-btn.active[data-value="var"],
-    [data-section="kredi"] .radio-btn.active[data-value="var"],
-    [data-section="kredi"] .radio-btn.active[data-value="var"]:hover,
+    #vehicle-modal [data-section="boya"] .radio-btn.active[data-value="var"]:hover,
+    #vehicle-modal [data-section="kredi"] .radio-btn.active[data-value="var"],
+    #vehicle-modal [data-section="kredi"] .radio-btn.active[data-value="var"]:hover,
     #vehicle-modal [data-section="kredi"] .radio-btn.active[data-value="var"] {
-        border-color: var(--theme-color, #d40000) !important;
+        border-color: rgba(var(--theme-color-rgb), 0.72) !important;
         color: var(--theme-color, #d40000) !important;
-        background: rgba(212, 0, 0, 0.1) !important;
+        background: rgba(var(--theme-color-rgb), 0.075) !important;
     }
-    [data-section="tramer"] .radio-btn.active[data-value="yok"],
-    [data-section="boya"] .radio-btn.active[data-value="yok"],
     #vehicle-modal [data-section="tramer"] .radio-btn.active[data-value="yok"],
     #vehicle-modal [data-section="boya"] .radio-btn.active[data-value="yok"],
-    [data-section="kredi"] .radio-btn.active[data-value="yok"],
+    #vehicle-modal [data-section="kredi"] .radio-btn.active[data-value="yok"],
     #vehicle-modal [data-section="kredi"] .radio-btn.active[data-value="yok"] {
-        border-color: var(--green-success, #28a745) !important;
+        border-color: rgba(var(--green-success-rgb), 0.72) !important;
         color: var(--green-success, #28a745) !important;
-        background: rgba(40, 167, 69, 0.1) !important;
+        background: rgba(var(--green-success-rgb), 0.075) !important;
     }
-    [data-section="anahtar"] .radio-btn.active[data-value="var"],
     #vehicle-modal [data-section="anahtar"] .radio-btn.active[data-value="var"] {
-        border-color: var(--green-success, #28a745) !important;
+        border-color: rgba(var(--green-success-rgb), 0.72) !important;
         color: var(--green-success, #28a745) !important;
-        background: rgba(40, 167, 69, 0.1) !important;
+        background: rgba(var(--green-success-rgb), 0.075) !important;
     }
-    [data-section="anahtar"] .radio-btn.active[data-value="yok"],
     #vehicle-modal [data-section="anahtar"] .radio-btn.active[data-value="yok"] {
-        border-color: var(--theme-color, #d40000) !important;
+        border-color: rgba(var(--theme-color-rgb), 0.72) !important;
         color: var(--theme-color, #d40000) !important;
-        background: rgba(212, 0, 0, 0.1) !important;
+        background: rgba(var(--theme-color-rgb), 0.075) !important;
     }
     
     .vehicle-type-btn {
