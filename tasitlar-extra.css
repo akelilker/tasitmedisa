@@ -877,12 +877,13 @@
   background: rgba(255, 255, 255, 0.03);
   color: #ffffff;
   cursor: pointer;
-  transition: border-color 0.2s ease, background 0.2s ease, transform 0.15s ease;
+  transition: none;
 }
 #dinamik-olay-modal #ruhsat-modal-content .vehicle-document-card:hover,
 #dinamik-olay-modal #ruhsat-modal-content .vehicle-document-card:focus-visible {
-  border-color: rgba(34, 197, 94, 0.45);
-  background: rgba(34, 197, 94, 0.06);
+  border-color: transparent;
+  background: transparent;
+  transform: none;
   outline: none;
 }
 @media (min-width: 641px) {
@@ -910,7 +911,7 @@
   #dinamik-olay-modal #ruhsat-modal-content .vehicle-document-card:focus-visible .vehicle-document-icon-wrap,
   #dinamik-olay-modal #ruhsat-modal-content .vehicle-document-card:focus-visible .vehicle-document-label,
   #dinamik-olay-modal #ruhsat-modal-content .vehicle-document-card:focus-visible .vehicle-document-status {
-    transform: scale(1.04);
+    transform: scale(1.06);
   }
 }
 #dinamik-olay-modal #ruhsat-modal-content .vehicle-document-icon-wrap {
