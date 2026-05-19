@@ -1684,8 +1684,11 @@ body.dashboard-page {
     text-align: center;
     border: 1px solid rgba(255, 255, 255, 0.25);
   }
+  .driver-action-area-inner {
+    justify-content: space-between;
+  }
   .driver-action-area-inner .driver-action-footer.driver-action-group {
-    margin-top: 18px;
+    margin-top: 0;
   }
   .driver-action-footer .status-message:empty {
     margin-top: 0;
