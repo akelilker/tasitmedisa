@@ -179,6 +179,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
         border: 0;
         box-shadow: none;
         color: var(--theme-color);
+        font-size: 12px;
         font-weight: 600;
     }
 }
