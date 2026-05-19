@@ -1647,8 +1647,22 @@
   function syncUserAnalyticsToolbar() {
     var toolbar = document.querySelector('#tab-kullanici .user-analytics-toolbar');
     var searchInput = document.getElementById('user-analytics-search');
+    var backBtn = document.getElementById('user-analytics-toolbar-back');
     var listModeActive = userAnalyticsBranchId !== null && !userAnalyticsSelectedUserId;
     if (toolbar) toolbar.classList.toggle('is-hidden', !listModeActive);
+    if (backBtn) {
+      backBtn.hidden = !listModeActive;
+      backBtn.disabled = !listModeActive;
+      if (backBtn.dataset.userAnalyticsBackBound !== '1') {
+        backBtn.addEventListener('click', function() {
+          userAnalyticsBranchId = null;
+          userAnalyticsSelectedUserId = null;
+          userAnalyticsQuery = '';
+          window.renderUserAnalytics();
+        });
+        backBtn.dataset.userAnalyticsBackBound = '1';
+      }
+    }
     if (searchInput) {
       searchInput.disabled = !listModeActive;
       searchInput.value = userAnalyticsQuery;

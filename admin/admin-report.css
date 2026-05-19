@@ -2819,6 +2819,74 @@ body.admin-report-page .main-header-user-name.is-empty {
   justify-content: flex-end;
 }
 
+.user-analytics-toolbar-back {
+  display: none;
+}
+
+@media (min-width: 769px) {
+  .user-analytics-toolbar {
+    justify-content: space-between;
+  }
+
+  .user-analytics-toolbar-back:not([hidden]) {
+    display: inline-flex;
+    flex: 0 0 auto;
+    margin: 0;
+    padding: 0;
+    color: var(--txt-gray, #b8c0ca);
+  }
+
+  .user-analytics-list-shell > .universal-back-bar {
+    display: none;
+  }
+
+  #user-analytics-search-toggle.user-analytics-view-btn {
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    color: var(--txt-gray, #b8c0ca);
+    transition: color 0.2s ease, transform 0.2s ease;
+  }
+
+  #user-analytics-search-toggle.user-analytics-view-btn:hover,
+  #user-analytics-search-toggle.user-analytics-view-btn:focus-visible {
+    color: #ffffff;
+    transform: scale(1.12);
+  }
+
+  .modern-user-list {
+    gap: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .modern-user-list .user-analytics-list-item {
+    padding: 12px 4px;
+    border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .modern-user-list .user-analytics-list-item:hover,
+  .modern-user-list .user-analytics-list-item:focus-visible {
+    border-bottom-color: rgba(255, 255, 255, 0.16);
+    transform: none;
+    box-shadow: none;
+  }
+
+  .modern-user-list .user-analytics-metric-badges {
+    display: none;
+  }
+
+  .modern-user-list .kullanici-list-item-plate {
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+  }
+}
+
 .monthly-report-content {
   min-width: 0;
   padding: 0 0 12px;
