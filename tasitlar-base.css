@@ -155,9 +155,14 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     #monthly-todo-header-btn .monthly-todo-header-badge {
         top: -1px;
         right: -3px;
-        min-width: 15px;
-        min-height: 15px;
-        padding: 0 2px;
+        min-width: 0;
+        min-height: 0;
+        padding: 0;
+        border-radius: 0;
+        background: transparent;
+        border: 0;
+        box-shadow: none;
+        color: var(--theme-color);
         font-size: 10px;
         font-weight: 800;
     }
