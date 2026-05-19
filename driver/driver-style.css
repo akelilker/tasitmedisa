@@ -5382,7 +5382,11 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
   #driver-feedback-modal #driver-feedback-type-list .vehicle-branch-option {
     padding: 12px 10px;
-    font-size: 13px !important;
+    font-size: 14px !important;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   #driver-feedback-modal .driver-feedback-actions .btn-submit,
   #driver-feedback-modal .driver-feedback-actions .universal-btn-cancel {
