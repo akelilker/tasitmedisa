@@ -815,6 +815,11 @@ body.modal-open #info-modal.open {
     overflow: hidden;
     transition: flex-basis 0.18s ease, width 0.18s ease;
 }
+#user-modal .user-management-search-wrap,
+#user-modal .user-management-search-input,
+#user-modal .user-management-search-toggle {
+    touch-action: manipulation;
+}
 #user-modal .user-management-search-input {
     flex: 1 1 0;
     width: auto;
