@@ -805,6 +805,9 @@
     if (!s) {
       return '<span>' + escapeHtmlLocal('-') + '</span>';
     }
+    if (!isMonthlyMobileViewport()) {
+      return '<span>' + escapeHtmlLocal(s) + '</span>';
+    }
     var idx = s.indexOf(' ');
     if (idx === -1) {
       return '<span>' + escapeHtmlLocal(s) + '</span>';
