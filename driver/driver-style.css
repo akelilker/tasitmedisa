@@ -3445,30 +3445,31 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
     padding-top: 10px;
     padding-bottom: 10px;
     gap: 10px;
-    border-color: rgba(255, 255, 255, 0.08);
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.015));
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
+    border-color: transparent;
+    background: transparent;
+    box-shadow: none;
   }
 
   #driver-documents-modal .driver-document-card:hover,
   #driver-documents-modal .driver-document-card:focus-visible {
     transform: none;
-    background: linear-gradient(180deg, rgba(34, 197, 94, 0.045), rgba(255, 255, 255, 0.018));
-    border-color: rgba(34, 197, 94, 0.16);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    background: rgba(34, 197, 94, 0.018);
+    border-color: transparent;
+    box-shadow: none;
     filter: none;
   }
 
   #driver-documents-modal .driver-document-card-missing {
-    border-color: rgba(255, 255, 255, 0.055);
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.024), rgba(255, 255, 255, 0.01));
+    border-color: transparent;
+    background: transparent;
+    box-shadow: none;
   }
 
   #driver-documents-modal .driver-document-card-missing:hover,
   #driver-documents-modal .driver-document-card-missing:focus-visible {
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.028), rgba(255, 255, 255, 0.012));
-    border-color: rgba(255, 255, 255, 0.075);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    background: rgba(255, 255, 255, 0.012);
+    border-color: transparent;
+    box-shadow: none;
   }
 
   #driver-documents-modal .driver-document-icon-wrap {
