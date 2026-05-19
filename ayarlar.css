@@ -2407,7 +2407,7 @@ input.settings-form-input:-moz-autofill,
     transform: none;
     display: flex;
     width: max-content;
-    margin: -6px 0 6px auto;
+    margin: -10px auto 6px auto;
   }
   #branch-form-modal .modal-body #branch-form,
   #user-form-modal .modal-body #user-form.user-form-inner {
