@@ -3171,6 +3171,30 @@
   align-self: center;
 }
 
+@media (max-width: 640px) {
+  #monthly-todo-modal .monthly-todo-middle .monthly-todo-user {
+    position: relative;
+    display: block;
+    padding: 0 20px;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  #monthly-todo-modal .monthly-todo-middle .monthly-todo-user-name {
+    width: 100%;
+    text-align: center;
+    justify-self: auto;
+  }
+
+  #monthly-todo-modal .monthly-todo-middle .monthly-todo-wa-link {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+}
+
 @media (min-width: 641px) {
   #monthly-todo-modal .monthly-todo-middle .monthly-todo-user {
     position: relative;
