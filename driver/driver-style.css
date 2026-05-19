@@ -1675,14 +1675,31 @@ body.dashboard-page {
   .driver-left-panel .driver-info-item:has(.value) .label::after {
     margin-right: 0.2em;
   }
-  /* Sağ grid butonları: mobilde dikey yükseklik +3px (6–7–8 üst/alt) */
+  /* Sağ grid butonları: mobilde footer'a taşmadan daha kompakt */
   .driver-action-btn {
-    padding: 9px 9px;
+    padding: 6px 9px;
     font-size: 13.5px;
     display: flex;
     justify-content: center;
     text-align: center;
     border: 1px solid rgba(255, 255, 255, 0.25);
+  }
+  .driver-action-footer .status-message:empty {
+    margin-top: 0;
+    padding: 0;
+    min-height: 0;
+    border: none;
+    background: transparent;
+  }
+  .driver-action-btn-feedback.driver-request-fab,
+  .driver-action-btn-feedback.driver-request-fab.driver-documents-fab {
+    width: 44px;
+    min-width: 44px;
+    height: 44px;
+  }
+  .driver-action-btn-feedback.driver-request-fab .driver-action-btn-feedback-icon {
+    width: 32px;
+    height: 32px;
   }
   .driver-action-btn.saved,
   .driver-action-btn.data-entered,
@@ -5356,6 +5373,18 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   #edit-request-modal .modal-header h2,
   #driver-feedback-modal .modal-header h2 {
     text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5), 0 4px 12px rgba(0, 0, 0, 0.3), 0 0 15px rgba(255, 255, 255, 0.08) !important;
+  }
+  #driver-feedback-modal #driver-feedback-type-list .vehicle-branch-option {
+    padding: 12px 10px;
+    font-size: 13px !important;
+  }
+  #driver-feedback-modal .driver-feedback-actions .btn-submit,
+  #driver-feedback-modal .driver-feedback-actions .universal-btn-cancel {
+    font-size: 17px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
   }
 
   /* Mobil modal container: footer arkasında kalmayacak şekilde yükseklik sınırla */
