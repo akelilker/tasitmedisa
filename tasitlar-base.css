@@ -169,7 +169,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 }
 @media (max-width: 640px) {
     #monthly-todo-header-btn .monthly-todo-header-badge {
-        top: 0;
+        top: 1px;
         right: 1px;
         min-width: 0;
         min-height: 0;
@@ -179,9 +179,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
         border: 0;
         box-shadow: none;
         color: var(--theme-color);
-        font-size: 15px;
+        font-size: 17px;
         line-height: 1;
-        font-weight: 600;
+        font-weight: 500;
     }
 }
 
