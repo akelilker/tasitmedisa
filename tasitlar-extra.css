@@ -2941,6 +2941,13 @@
   align-items: center;
 }
 
+@media (min-width: 641px) {
+  #monthly-todo-modal .monthly-todo-col-header,
+  #monthly-todo-modal .monthly-todo-task-row {
+    grid-template-columns: minmax(40px, calc(24% - 24px)) minmax(0, 1fr) minmax(146px, calc(34% + 50px));
+  }
+}
+
 #monthly-todo-modal .monthly-todo-col-header {
   flex-shrink: 0;
   box-sizing: border-box;
