@@ -592,49 +592,7 @@ function persistOfflineAppDataSnapshot(data) {
 
 function loadDataFromLocalStorage() {
     var offlineSnapshot = readOfflineAppDataSnapshot();
-    if (offlineSnapshot) {
-        window.appData = offlineSnapshot;
-        setMedisaSession(getSessionFromToken());
-        serverDatasetTrusted = false;
-        syncDataLoadState();
-        return window.appData;
-    }
-
-    try {
-        var savedData = localStorage.getItem('medisa_data_v1');
-        if (savedData) {
-            var data = JSON.parse(savedData);
-            window.appData = {
-                tasitlar: data.tasitlar || [],
-                kayitlar: data.kayitlar || [],
-                branches: data.branches || [],
-                users: data.users || [],
-                ayarlar: data.ayarlar || { sirketAdi: 'Medisa', yetkiliKisi: '', telefon: '', eposta: '' },
-                sifreler: data.sifreler || [],
-                arac_aylik_hareketler: data.arac_aylik_hareketler || [],
-                duzeltme_talepleri: data.duzeltme_talepleri || [],
-                /** Offline önbellekte ham kasko tablosu tutulmaz */
-                kaskoDegerListesi: {
-                    updatedAt: String((data.kaskoDegerListesi && data.kaskoDegerListesi.updatedAt) || ''),
-                    period: String((data.kaskoDegerListesi && data.kaskoDegerListesi.period) || ''),
-                    sourceFileName: String((data.kaskoDegerListesi && data.kaskoDegerListesi.sourceFileName) || ''),
-                    rows: []
-                },
-                notificationReadState: (data.notificationReadState && typeof data.notificationReadState === 'object' && !Array.isArray(data.notificationReadState))
-                    ? data.notificationReadState
-                    : {},
-                monthlyTodoWhatsAppLogs: (data.monthlyTodoWhatsAppLogs && typeof data.monthlyTodoWhatsAppLogs === 'object' && !Array.isArray(data.monthlyTodoWhatsAppLogs))
-                    ? data.monthlyTodoWhatsAppLogs
-                    : {}
-            };
-            setMedisaSession(getSessionFromToken());
-            serverDatasetTrusted = false;
-            syncDataLoadState();
-            return window.appData;
-        }
-    } catch (e) {}
-
-    window.appData = getDefaultAppData();
+    window.appData = offlineSnapshot || getDefaultAppData();
     setMedisaSession(getSessionFromToken());
     serverDatasetTrusted = false;
     syncDataLoadState();
