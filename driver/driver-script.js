@@ -22,7 +22,7 @@ const ICON_BASE = (APP_ROOT === '/' ? '/icon/' : APP_ROOT + 'icon/');
 const DRIVER_PAGE_BASE = API_BASE;
 const MAIN_APP_URL = (APP_ROOT === '/' ? '/index.html' : APP_ROOT + 'index.html');
 const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php');
-  
+
   // Uygulama sürümü (footer #version-display - kullanıcı girişi ve paneli 78.2)
   const APP_VERSION = 'v78.2';
   function showDriverOfflineReadonlyMessage() {
@@ -35,7 +35,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
     }
     return true;
   }
-  
+
   (function setDriverVersion() {
     function apply() {
       var el = document.getElementById('version-display');
@@ -284,7 +284,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       }
     });
   }
-  
+
   // Global değişkenler
   let currentToken = null;
   let currentUser = null;
@@ -462,7 +462,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       });
     });
   }
-  
+
   /** iOS PWA: modal içi input/textarea focus'ta sadece gerçekten görünmüyorsa en yakın konuma al */
   document.addEventListener('focusin', function(ev) {
     var el = ev.target;
@@ -487,7 +487,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       }
     }, 350);
   });
-  
+
   /** Modal açıkken body scroll kilitlensin (sadece modal içi kayar). Geçmiş Kayıt / Düzeltme Talebi açıkken footer :has() olmadan da üstte kalsın. */
   function updateDriverModalBodyClass() {
     var open = document.querySelector('.driver-modal.show');
@@ -510,11 +510,11 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       document.body.classList.remove('driver-feedback-modal-open');
     }
   }
-  
+
   /* =========================================
      LOGIN SAYFASI
      ========================================= */
-  
+
   /* Footer dimmer (sürüm metni script-core.js tarafından PWA/Mobil soneki ile yazılır) */
   (function initLoginFooterDim() {
     const footer = document.getElementById('app-footer');
@@ -525,7 +525,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       if (footer) footer.classList.add('delayed');
     }, 4000);
   })();
-  
+
   function revealDriverLoginView() {
       if (document.body) document.body.classList.remove('login-gate-active');
   }
@@ -544,10 +544,10 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           if (routedByExistingSession) return;
       }
       revealDriverLoginView();
-  
+
       var usernameInput = document.getElementById('username');
       var passwordInput = document.getElementById('password');
-  
+
       clearSavedDriverPassword();
 
       /* Beni Hatırla: checkbox + kayıtlı kullanıcı adını doldur */
@@ -557,7 +557,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           var savedUser = localStorage.getItem('driver_saved_username');
           if (usernameInput && savedUser) usernameInput.value = savedUser;
       }
-  
+
       function toggleLoginInputHasValue(el) {
           if (!el) return;
           if (el.value && el.value.trim().length > 0) el.classList.add('has-value');
@@ -569,7 +569,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           inp.addEventListener('input', function() { toggleLoginInputHasValue(inp); });
           inp.addEventListener('change', function() { toggleLoginInputHasValue(inp); });
       });
-  
+
       /* iOS PWA / mobil: login input'u sadece gerçekten keyboard altında kalıyorsa görünür alana getir */
       function scrollInputIntoView(el) {
         if (!(el && typeof el.getBoundingClientRect === 'function' && typeof el.scrollIntoView === 'function')) return;
@@ -590,26 +590,26 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       }
       if (usernameInput) usernameInput.addEventListener('focus', function() { scrollInputIntoView(this); });
       if (passwordInput) passwordInput.addEventListener('focus', function() { scrollInputIntoView(this); });
-  
+
       loginForm.addEventListener('submit', async (e) => {
           e.preventDefault();
-          
+
           const username = document.getElementById('username').value.trim();
           const password = document.getElementById('password').value;
           const remember = document.getElementById('remember').checked;
-          
+
           const errorDiv = document.getElementById('error-message');
           const loginBtn = document.getElementById('login-btn');
           const btnText = loginBtn.querySelector('.btn-text');
           const btnLoader = loginBtn.querySelector('.btn-loader');
-          
+
           errorDiv.classList.remove('show');
           loginBtn.disabled = true;
           btnText.style.display = 'none';
           btnLoader.style.display = 'inline';
-          
+
           const loginUrl = window.location.origin + API_BASE + 'driver_login.php';
-          
+
           try {
               const response = await fetch(loginUrl, {
                   method: 'POST',
@@ -617,7 +617,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
                   body: JSON.stringify({ username, password })
               });
               const data = await response.json();
-              
+
               if (data.success) {
                   if (remember) {
                       try {
@@ -677,11 +677,11 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
   } else {
       initDriverLoginPage();
   }
-  
+
   /* =========================================
      SPLASH (3 sn) + DASHBOARD / LOGIN
      ========================================= */
-  
+
   /** Splash 2 sn göster, sonra gizle ve normal akışa devam et */
   function initDriverSplash(onComplete) {
     const splash = document.getElementById('driver-splash');
@@ -701,7 +701,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       }, 400);
     }, 2000);
   }
-  
+
   if (document.getElementById('driver-two-panel')) {
     const run = () => { initDriverSplash(function() { loadDashboard(); }); };
     if (document.readyState === 'loading') {
@@ -873,7 +873,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       driverKmActionHandled = false;
     }
   }
-  
+
   async function loadDashboard() {
       const token = getStoredPortalToken();
 
@@ -890,9 +890,9 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           return;
       }
       syncDashboardHomeLinkVisibility(accessContext);
-      
+
       currentToken = token;
-      
+
       try {
           const response = await fetch(API_BASE + 'driver_data.php?_=' + Date.now(), {
               headers: { 'Authorization': 'Bearer ' + token },
@@ -909,7 +909,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           if (!data || typeof data !== 'object') data = {};
           if (!Array.isArray(data.vehicles)) data.vehicles = [];
           if (!Array.isArray(data.records)) data.records = [];
-          
+
           if (!data.success) {
               const spinner = document.getElementById('loading-spinner');
               if (spinner) spinner.style.display = 'none';
@@ -917,22 +917,22 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
               logout();
               return;
           }
-  
+
           currentUser = data.user;
           syncDriverHeaderUserName();
           allHistoryRecords = data.records || [];
           allHistoryVehicles = data.vehicles || [];
           currentPeriod = data.current_period || '';
-  
+
           const spinnerEl = document.getElementById('loading-spinner');
           if (spinnerEl) spinnerEl.style.display = 'none';
-  
+
           if (!data.vehicles || data.vehicles.length === 0) {
               const emptyEl = document.getElementById('empty-state');
               if (emptyEl) emptyEl.style.display = 'block';
               return;
           }
-  
+
           const twoPanel = document.getElementById('driver-two-panel');
           if (!twoPanel) return;
           twoPanel.style.display = 'flex';
@@ -944,14 +944,14 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           if (!getSelectedVehicle() && vehicles && vehicles.length && vehicles[0] != null) {
               selectedVehicleId = String(vehicles[0].id);
           }
-          
+
           renderLeftPanel(vehicles, records);
           renderRightPanel(vehicles, records);
           renderSlidingWarning(vehicles, records);
-  
+
           var actionArea = document.getElementById('driver-action-area');
           if (actionArea) actionArea.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-          
+
           if (vehicles.length > 1) {
               const trigger = document.getElementById('driver-plate-trigger');
               if (trigger) trigger.style.display = '';
@@ -959,7 +959,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           }
 
           tryOpenDriverFeedbackPrefillFromQuery();
-          
+
           setupEkstraNotAutoResize();
           setupKmInputs();
           tryOpenDriverKmActionFromQuery();
@@ -1108,7 +1108,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       await loadDashboard();
       return true;
   }
-  
+
   function getExistingRecord(vehicleId) {
       const period = (currentPeriod || '').toString().trim();
       const matches = (allHistoryRecords || []).filter(r =>
@@ -1140,7 +1140,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       if (state === 'FIRST_ENTRY_REQUIRED' || state === 'MONTHLY_UPDATE_DUE_HARD') return 'Kilometre bilgisi girin';
       return '';
   }
-  
+
   function checkDateWarningsDriver(dateStr) {
     if (!dateStr) return { class: '', days: null, level: '' };
     var date = new Date(dateStr + 'T00:00:00');
@@ -1177,7 +1177,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       }
       return level;
   }
-  
+
   function syncDriverHeaderUserName() {
       const nameEl = document.getElementById('main-header-user-name');
       if (!nameEl) return;
@@ -1189,25 +1189,25 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
   function renderLeftPanel(vehicles, records) {
       const vehicle = getSelectedVehicle();
       if (!vehicle) return;
-      
+
       const plakaEl = document.getElementById('driver-current-plaka');
       if (plakaEl) plakaEl.textContent = formatDriverPlaka(vehicle.plaka);
       const subtitleEl = document.getElementById('driver-plate-subtitle');
       if (subtitleEl) subtitleEl.textContent = (typeof window.formatBrandModel === 'function' ? window.formatBrandModel : (typeof window.toTitleCase === 'function' ? window.toTitleCase : function(x){ return x; }))(vehicle.brandModel || [vehicle.marka, vehicle.model].filter(Boolean).join(' ') || '') || '';
-      
+
       const existingRecord = getExistingRecord(vehicle.id);
       const kmVal = vehicle.guncelKm || (existingRecord && existingRecord.guncel_km) || '-';
       const kmFormatted = (kmVal !== '-' && kmVal != null) ? String(kmVal).replace(/\B(?=(\d{3})+(?!\d))/g, '.') : '-';
       const kmState = getVehicleKmState(vehicle);
       const kmClass = getKmInfoClassByState(kmState);
-      
+
       const sigortaW = checkDateWarningsDriver(vehicle.sigortaDate);
       const kaskoW = checkDateWarningsDriver(vehicle.kaskoDate);
       const muayeneW = checkDateWarningsDriver(vehicle.muayeneDate);
       const egzozMuayeneDate = vehicle.egzozMuayeneDate || '';
       const hasEgzozMuayeneSaved = !!(egzozMuayeneDate && String(egzozMuayeneDate).trim());
       const egzozW = checkDateWarningsDriver(hasEgzozMuayeneSaved ? egzozMuayeneDate : '');
-      
+
       const anahtarLabel = (vehicle.anahtar === 'var')
           ? ((vehicle.anahtarNerede && String(vehicle.anahtarNerede).trim()) ? capitalizeWords(String(vehicle.anahtarNerede).trim()) : 'Var')
           : 'Yoktur.';
@@ -1225,7 +1225,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       const kmSavedClass = sessionMatch('km') ? 'saved' : '';
       const anahtarSavedClass = sessionMatch('anahtar') ? 'saved' : '';
       const lastikSavedClass = sessionMatch('lastik') ? 'saved' : '';
-  
+
       const infoEl = document.getElementById('driver-vehicle-info');
       if (infoEl) {
           infoEl.innerHTML = `
@@ -1248,14 +1248,14 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           });
       }
   }
-  
+
   function escapeHtmlDriver(t) {
     if (t == null || t === '') return '';
     var d = document.createElement('div');
     d.textContent = t;
     return d.innerHTML;
   }
-  
+
   var _plateCloseBound = false;
 
   function positionPlateDropdownToTrigger(dropdown, trigger) {
@@ -1309,7 +1309,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       const currentPlakaEl = document.getElementById('driver-current-plaka');
       const trigger = document.getElementById('driver-plate-trigger');
       if (!dropdown || !currentPlakaEl || !trigger) return;
-      
+
       if (!_plateCloseBound) {
           _plateCloseBound = true;
           document.addEventListener('click', function(ev) {
@@ -1319,7 +1319,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
               }
           });
       }
-      
+
       dropdown.innerHTML = vehicles.map(v => {
           const raw = v.brandModel || [v.marka, v.model].filter(Boolean).join(' ');
           const brandModel = (typeof window.formatBrandModel === 'function' ? window.formatBrandModel : (typeof window.toTitleCase === 'function' ? window.toTitleCase : function(x){ return x; }))(raw || '') || '';
@@ -1336,7 +1336,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
                   <span class="driver-plate-dropdown-item-brand">${brandModelHtml}</span>
               </div>`;
       }).join('');
-      
+
       dropdown.querySelectorAll('.driver-plate-dropdown-item').forEach(item => {
           item.addEventListener('click', function(ev) {
               ev.preventDefault();
@@ -1350,7 +1350,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
               loadDashboard();
           });
       });
-      
+
       trigger.onclick = function(ev) {
           ev.stopPropagation();
           const isOpen = dropdown.style.display === 'block';
@@ -1358,14 +1358,14 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           if (!isOpen) positionPlateDropdownToTrigger(dropdown, trigger);
       };
   }
-  
+
   function renderRightPanel(vehicles, records) {
       const vehicle = getSelectedVehicle();
       if (!vehicle) return;
-      
+
       const areaEl = document.getElementById('driver-action-area');
       if (!areaEl) return;
-      
+
       const vid = String(vehicle.id);
       const existingRecord = getExistingRecord(vehicle.id);
       const bakimVar = existingRecord && (existingRecord.bakim_durumu || (existingRecord.bakim_aciklama || '').trim());
@@ -1389,7 +1389,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       const muayeneBtnClass = sessionMatch('muayene') ? ' saved' : (muayeneW.class ? (' warning' + (muayeneW.level === 'orange' ? ' warning-orange' : '')) : (muayeneSaved ? ' data-entered' : ''));
       const anahtarBtnClass = sessionMatch('anahtar') ? ' saved' : (anahtarSaved ? ' data-entered' : '');
       const lastikBtnClass = sessionMatch('lastik') ? ' saved' : (lastikSaved ? ' data-entered' : '');
-  
+
       areaEl.innerHTML = buildDriverActionArea(vehicle, existingRecord, bakimVar, kazaVar, {
           kmBtnClass, kazaBtnClass, bakimBtnClass, sigortaBtnClass, kaskoBtnClass, muayeneBtnClass, anahtarBtnClass, lastikBtnClass, vid
       });
@@ -1400,7 +1400,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           initKaportaForDriver(kaportaContainer, vehicle);
       }
   }
-  
+
   function buildDriverActionArea(vehicle, existingRecord, bakimVar, kazaVar, opts) {
       const vid = String(opts.vid != null ? opts.vid : (vehicle && vehicle.id != null ? vehicle.id : ''));
       const today = new Date().toISOString().split('T')[0];
@@ -1565,7 +1565,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           </div>
       `;
   }
-  
+
   window.toggleDriverActionBlock = function(type, vehicleId) {
       const vid = String(vehicleId);
       const inner = document.querySelector('.driver-action-area-inner[data-vehicle-id="' + vid + '"]');
@@ -1641,15 +1641,15 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           }
       }
   };
-  
+
   window.focusKmInput = function(vehicleId) {
       toggleDriverActionBlock('km', vehicleId);
   };
-  
+
   window.cancelKmForm = function(vid) {
       cancelDriverActionForm('km', vid);
   };
-  
+
   window.cancelDriverActionForm = function(type, vid) {
       const inner = document.querySelector('.driver-action-area-inner[data-vehicle-id="' + vid + '"]');
       const blockIds = { km: 'km-block-', kaza: 'kaza-block-', bakim: 'bakim-block-', sigorta: 'sigorta-block-', kasko: 'kasko-block-', muayene: 'muayene-block-', anahtar: 'anahtar-block-', lastik: 'lastik-block-' };
@@ -1664,7 +1664,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           }
       }
   };
-  
+
   window.submitDriverAction = async function(type, vid) {
       if (!ensureDriverOnlineForWrite()) return;
       if (type === 'km') {
@@ -1785,7 +1785,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           if (btnVazgec) btnVazgec.disabled = false;
       }
   };
-  
+
   window.submitKmOnly = async function(vid) {
       if (!ensureDriverOnlineForWrite()) return;
       const kmEl = document.getElementById('km-' + vid);
@@ -1878,13 +1878,13 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           if (btnVazgec) btnVazgec.disabled = false;
       }
   };
-  
+
   function buildSlidingWarnings(vehicles, records) {
       const warnings = [];
       const period = (currentPeriod || new Date().toISOString().slice(0, 7)).toString().trim();
       let k2WarningAdded = false;
       const userName = (currentUser && (currentUser.name || currentUser.isim || currentUser.ad_soyad)) || 'Kullanıcı';
-  
+
       for (const v of vehicles) {
           const vid = String(v.id);
           const plaka = formatDriverPlaka(v.plaka);
@@ -2025,7 +2025,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           initKaporta(container, vehicle);
       }
   }
-  
+
   window.toggleDriverPlateDropdown = function(ev) {
       ev.stopPropagation();
       const dropdown = document.getElementById('driver-plate-dropdown');
@@ -2033,7 +2033,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       const isOpen = dropdown.style.display === 'block';
       dropdown.style.display = isOpen ? 'none' : 'block';
   };
-  
+
   function formatDriverDate(val) {
       if (!val) return '-';
       if (/^\d{4}-\d{2}-\d{2}$/.test(val)) {
@@ -2042,7 +2042,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       }
       return val;
   }
-  
+
   function setupKmInputs() {
       document.querySelectorAll('.vehicle-card input.driver-km-input, #driver-input-area input.driver-km-input, .driver-action-area input.driver-km-input').forEach(input => {
           var ph = input.parentElement && input.parentElement.querySelector('.driver-km-fake-placeholder');
@@ -2067,7 +2067,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           input.addEventListener('blur', togglePlaceholder);
       });
   }
-  
+
   function setupEkstraNotAutoResize() {
       document.querySelectorAll('.vehicle-card textarea.driver-ekstra-not, #driver-input-area textarea.driver-ekstra-not, .driver-action-area textarea.driver-ekstra-not').forEach(ta => {
           function resize() {
@@ -2086,16 +2086,16 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           resize();
       });
   }
-  
+
   /* =========================================
      OLAY EKLE - Event Menu & Modals
      ========================================= */
-  
+
   function escapeDriverAttr(s) {
     if (s == null) return '';
     return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   }
-  
+
   window.openDriverEventMenu = function(vehicleId) {
       currentDriverEventVehicleId = vehicleId;
       const modal = document.getElementById('driver-event-menu-modal');
@@ -2124,14 +2124,14 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       modal.classList.add('show');
       updateDriverModalBodyClass();
   };
-  
+
   window.closeDriverEventMenu = function() {
       const modal = document.getElementById('driver-event-menu-modal');
       if (modal) modal.classList.remove('show');
       currentDriverEventVehicleId = null;
       updateDriverModalBodyClass();
   };
-  
+
   window.handleDriverEventChoice = function(type, vehicleId) {
       closeDriverEventMenu();
       if (type === 'km') {
@@ -2159,7 +2159,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           openDriverEventModal(type, vehicleId);
       }
   };
-  
+
   window.openDriverEventModal = function(type, vehicleId) {
       currentDriverEventVehicleId = vehicleId;
       const inner = document.querySelector('.driver-action-area-inner[data-vehicle-id="' + String(vehicleId) + '"]');
@@ -2226,7 +2226,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       modal.classList.add('show');
       updateDriverModalBodyClass();
   };
-  
+
   function setupDriverEventRadioHandlersForBlock(group, vid) {
       const block = document.getElementById(group + '-block-' + vid);
       if (!block) return;
@@ -2245,7 +2245,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           };
       });
   }
-  
+
   function setupDriverEventRadioHandlers(group, detailWrap, detailInput) {
       const container = document.getElementById('driver-' + group + '-modal');
       if (!container) return;
@@ -2392,7 +2392,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           hideMuayenePopoverAndRestore();
       }
   };
-  
+
   window.saveDriverEventFromBlock = async function(type, vehicleId) {
       if (!ensureDriverOnlineForWrite()) return;
       vehicleId = String(vehicleId);
@@ -2464,7 +2464,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           alert('Bağlantı hatası!');
       }
   };
-  
+
   window.saveDriverEvent = async function(type) {
       if (!ensureDriverOnlineForWrite()) return;
       const vehicleId = currentDriverEventVehicleId;
@@ -2541,18 +2541,18 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           alert('Bağlantı hatası!');
       }
   };
-  
+
   // Blok Aç/Kapa (aksiyon butonlarından çağrılır)
   window.toggleAndScrollToBlock = function(type, vehicleId) {
       toggleReportBlock(type, vehicleId);
       const block = document.getElementById(type + '-block-' + vehicleId);
       if (block) block.scrollIntoView({ behavior: 'smooth', block: 'center' });
   };
-  
+
   window.toggleReportBlock = function(type, vehicleId) {
       const block = document.getElementById(`${type}-block-${vehicleId}`);
       if (!block) return;
-      
+
       const isShown = block.classList.contains('show');
       if (isShown) {
           block.classList.remove('show');
@@ -2577,7 +2577,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           }
       }
   };
-  
+
   /**
    * Sürücü paneli kaza blokunda kaporta SVG yükler; mevcut boyaliParcalar uygulanır, parçalar tıklanarak boyasız/boyalı/değişen döngüsü
    */
@@ -2677,11 +2677,11 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           })
           .catch(function(err) { console.error('Kaporta SVG yüklenemedi:', err); });
   }
-  
+
   // Kaydetme
   window.saveVehicleData = async function(vehicleId) {
       const km = document.getElementById(`km-${vehicleId}`).value;
-      
+
       const bakimBlock = document.getElementById(`bakim-block-${vehicleId}`);
       const bakimAciklama = document.getElementById(`bakim-detay-${vehicleId}`).value.trim();
       const bakimTarih = document.getElementById(`bakim-tarih-${vehicleId}`).value;
@@ -2689,34 +2689,34 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       const bakimKisi = document.getElementById(`bakim-kisi-${vehicleId}`)?.value.trim() || '';
       const bakimKm = document.getElementById(`bakim-km-${vehicleId}`)?.value.trim() || '';
       const bakimTutar = document.getElementById(`bakim-tutar-${vehicleId}`)?.value.trim() || '';
-      
+
       const kazaBlock = document.getElementById(`kaza-block-${vehicleId}`);
       const kazaAciklama = document.getElementById(`kaza-detay-${vehicleId}`).value.trim();
       const kazaTarih = document.getElementById(`kaza-tarih-${vehicleId}`).value;
       const kazaHasarTutari = document.getElementById(`kaza-tutar-${vehicleId}`)?.value.trim() || '';
-  
+
       // Panel açık veya açıklama doluysa "Var" say
       const bakimVar = bakimBlock.classList.contains('show') || bakimAciklama.length > 0;
       const kazaVar = kazaBlock.classList.contains('show') || kazaAciklama.length > 0;
-  
+
       if (!km || km <= 0) {
           alert('Lütfen geçerli bir KM değeri girin!');
           document.getElementById(`km-${vehicleId}`).focus();
           return;
       }
-  
+
       if (bakimVar && bakimAciklama === '') {
           alert('Bakım bildirdiniz, lütfen açıklama girin veya iptal etmek için paneli kapatın.');
           bakimBlock.classList.add('show');
           return;
       }
-  
+
       if (kazaVar && kazaAciklama === '') {
           alert('Kaza bildirdiniz, lütfen açıklama girin veya iptal etmek için paneli kapatın.');
           kazaBlock.classList.add('show');
           return;
       }
-      
+
       // Kaporta: sadece boyalı/değişen parçaları topla
       let boyaParcalar = {};
       const kaportaContainer = document.getElementById('kaza-kaporta-' + vehicleId);
@@ -2729,11 +2729,11 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
               if (state === 'boyali' || state === 'degisen') boyaParcalar[partId] = state;
           });
       }
-  
+
       const btn = document.getElementById(`btn-save-${vehicleId}`);
       btn.disabled = true;
       btn.textContent = 'Kaydediliyor...';
-      
+
       try {
           const response = await fetch(API_BASE + 'driver_save.php', {
               method: 'POST',
@@ -2759,22 +2759,22 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
                   boya_parcalar: JSON.stringify(boyaParcalar)
               })
           });
-          
+
           const data = await response.json();
           if (await handleDriverConflictResponse(data)) {
               btn.textContent = 'GÜNCELLE';
               return;
           }
-          
+
           if (data.success) {
               applyVehicleVersionUpdate(vehicleId, data.vehicleVersion);
               showStatus(vehicleId, 'success', '✓ Kaydedildi!');
               btn.textContent = 'GÜNCELLE';
-  
+
               lastCompletedActionInSession = { action: 'km', vehicleId: vehicleId };
               const period = (currentPeriod || new Date().toISOString().slice(0, 7)).toString().trim();
               lastSuccessfulKmSubmissions[String(vehicleId)] = period;
-  
+
               allHistoryRecords = allHistoryRecords || [];
               allHistoryRecords.push({
                   arac_id: vehicleId,
@@ -2784,11 +2784,11 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
               });
               renderSlidingWarning(allHistoryVehicles || [], allHistoryRecords);
               setTimeout(function() { renderSlidingWarning(allHistoryVehicles || [], allHistoryRecords); }, 300);
-  
+
               setTimeout(() => {
                   loadDashboard();
               }, 4000);
-  
+
               if (data.warning) {
                   setTimeout(() => { alert(data.warning); }, 500);
               }
@@ -2796,7 +2796,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
               showStatus(vehicleId, 'error', '❌ ' + data.message);
               btn.textContent = 'KAYDET';
           }
-          
+
       } catch (error) {
           console.error('Kaydetme hatası:', error);
           showStatus(vehicleId, 'error', '❌ Bağlantı hatası!');
@@ -2805,19 +2805,19 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           btn.disabled = false;
       }
   };
-  
+
   // Durum mesajı
   function showStatus(vehicleId, type, message) {
       const statusDiv = document.getElementById(`status-${vehicleId}`);
       statusDiv.className = `status-message ${type}`;
       statusDiv.textContent = message;
-      
+
       setTimeout(() => {
           statusDiv.className = 'status-message';
           statusDiv.textContent = '';
       }, 5000);
   }
-  
+
   // Dönem formatı
   function formatPeriod(period) {
       const [year, month] = period.split('-');
@@ -2825,7 +2825,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
                       'TEMMUZ', 'AĞUSTOS', 'EYLÜL', 'EKİM', 'KASIM', 'ARALIK'];
       return `${months[parseInt(month) - 1]} ${year}`;
   }
-  
+
   function formatKm(value) {
     if (value == null || value === '') return '';
     var numStr = String(value).replace(/[^\d]/g, '');
@@ -2839,14 +2839,14 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       var brandModel = (typeof window.formatBrandModel === 'function' ? window.formatBrandModel : (typeof window.toTitleCase === 'function' ? window.toTitleCase : function(x){ return x; }))(raw || '') || '';
       return [formatDriverPlaka(v.plaka), brandModel].filter(Boolean).join(' - ');
   }
-  
+
   function updateHistoryTriggerTone(selectedValue) {
       const trigger = document.querySelector('.history-vehicle-trigger');
       if (!trigger) return;
       const isAllSelected = selectedValue === '' || selectedValue == null;
       trigger.classList.toggle('history-all-selected', isAllSelected);
   }
-  
+
   // Geçmiş kayıtlar - custom dropdown
   window.showHistory = function() {
       var modal = document.getElementById('history-modal');
@@ -2895,7 +2895,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           renderHistoryList();
       });
   };
-  
+
   window.toggleHistoryVehicleDropdown = function(ev) {
       ev.stopPropagation();
       const dropdown = document.getElementById('history-vehicle-dropdown');
@@ -2910,7 +2910,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           trigger.classList.add('history-vehicle-trigger-open');
       }
   };
-  
+
   function selectHistoryVehicle(value, text) {
       const hiddenInput = document.getElementById('history-vehicle-filter');
       const triggerText = document.querySelector('.history-vehicle-trigger-text');
@@ -2923,7 +2923,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       if (trigger) trigger.classList.remove('history-vehicle-trigger-open');
       renderHistoryList();
   }
-  
+
   document.addEventListener('click', function(ev) {
       const wrap = document.querySelector('.history-vehicle-dropdown-wrap');
       const dropdown = document.getElementById('history-vehicle-dropdown');
@@ -2976,7 +2976,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           return dayH !== '' && dayH === dayEvt;
       });
   }
-  
+
   function buildCombinedHistoryList() {
       var filterEl = document.getElementById('history-vehicle-filter');
       var vehicleFilter = (filterEl && filterEl.value) ? filterEl.value : '';
@@ -3018,7 +3018,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       combined.sort((a, b) => (sortKey(b) || '').localeCompare(sortKey(a) || ''));
       return combined;
   }
-  
+
   function parseHistoryDate(str) {
       if (!str || typeof str !== 'string') return null;
       const trimmed = str.trim();
@@ -3038,7 +3038,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       const d = new Date(trimmed);
       return isNaN(d.getTime()) ? null : d;
   }
-  
+
   function formatHistoryPeriod(item) {
       function formatDateDDMMYYYY(d) {
           if (!d || isNaN(d.getTime())) return '';
@@ -3047,28 +3047,28 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           const yyyy = String(d.getFullYear());
           return `${dd}.${mm}.${yyyy}`;
       }
-  
+
       if (item._type === 'hareket') {
           const ts = item.guncelleme_tarihi || item.kayit_tarihi || '';
           const d = ts ? (parseHistoryDate(ts) || new Date(ts)) : null;
           const f = d && !isNaN(d.getTime()) ? formatDateDDMMYYYY(d) : '';
           return f || formatPeriod(item.donem || '');
       }
-  
+
       if (item.date) {
           const d = parseHistoryDate(item.date);
           const f = d ? formatDateDDMMYYYY(d) : '';
           return f || item.date;
       }
-  
+
       if (item.timestamp) {
           const d = parseHistoryDate(item.timestamp) || new Date(item.timestamp);
           return d && !isNaN(d.getTime()) ? formatDateDDMMYYYY(d) : '';
       }
-  
+
       return '';
   }
-  
+
   function capitalizeWords(str) {
     if (!str || typeof str !== 'string') return str;
     return str.split(/\s+/).map(function(w) {
@@ -3107,7 +3107,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           });
       });
   }
-  
+
   function renderHistoryList() {
       var listEl = document.getElementById('history-list');
       if (!listEl) return;
@@ -3128,10 +3128,10 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           const vehicle = allHistoryVehicles.find(v => String(v.id) === String(item.arac_id));
           const plaka = vehicle ? formatDriverPlaka(vehicle.plaka) : item.arac_id;
           const periodLabel = formatHistoryPeriod(item);
-  
+
           let detailsHtml = '';
           let showEditBtn = false;
-  
+
           if (item._type === 'hareket') {
               window._historyRecordMap[item.id] = item;
               showEditBtn = true;
@@ -3201,7 +3201,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
                   detailsHtml = `<p>${escapeHtmlDriver(fallbackLabel)} olarak bildirildi.</p>`;
               }
           }
-  
+
           const card = document.createElement('div');
           card.className = 'history-card';
           const editId = typeof item.id === 'number' ? item.id : JSON.stringify(String(item.id));
@@ -3222,12 +3222,12 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           listEl.appendChild(card);
       });
   }
-  
+
   window.closeHistory = function() {
       document.getElementById('history-modal').classList.remove('show');
       updateDriverModalBodyClass();
   };
-  
+
   // Düzeltme talebi - kartla aynı kural: sadece ilgili bölüm gösterilir (kaza > bakım > km)
   window.showEditRequest = function(recordId) {
       const record = window._historyRecordMap && window._historyRecordMap[recordId];
@@ -3236,17 +3236,17 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       document.getElementById('current-km').textContent = formatKm(record.guncel_km) || '0';
       document.getElementById('new-km').value = '';
       document.getElementById('new-km').placeholder = formatKm(record.guncel_km) || 'Örn: 54230';
-      
+
       document.getElementById('current-bakim').textContent = record.bakim_durumu ? capitalizeWords(record.bakim_aciklama || 'Var') : 'Yok';
       document.getElementById('new-bakim').value = '';
       document.getElementById('new-bakim').placeholder = record.bakim_durumu ? capitalizeWords(record.bakim_aciklama || '') : "Boş bırakırsanız 'Yok' sayılır";
-      
+
       document.getElementById('current-kaza').textContent = record.kaza_durumu ? capitalizeWords(record.kaza_aciklama || 'Var') : 'Yok';
       document.getElementById('new-kaza').value = '';
       document.getElementById('new-kaza').placeholder = record.kaza_durumu ? capitalizeWords(record.kaza_aciklama || '') : "Boş bırakırsanız 'Yok' sayılır";
-      
+
       document.getElementById('edit-reason').value = '';
-  
+
       var sectionKm = document.getElementById('edit-section-km');
       var sectionBakim = document.getElementById('edit-section-bakim');
       var sectionKaza = document.getElementById('edit-section-kaza');
@@ -3263,20 +3263,20 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           if (sectionKm) sectionKm.style.display = 'block';
           window._editRequestVisibleSection = 'km';
       }
-  
+
       document.getElementById('edit-request-modal').classList.add('show');
       updateDriverModalBodyClass();
       var row = document.querySelector('#history-modal .history-card[data-record-id="' + String(recordId) + '"]');
       if (row) row.classList.add('history-row-editing');
   };
-  
+
   window.closeEditRequest = function() {
       document.querySelectorAll('#history-modal .history-card.history-row-editing').forEach(function(el) { el.classList.remove('history-row-editing'); });
       document.getElementById('edit-request-modal').classList.remove('show');
       currentRecordId = null;
       updateDriverModalBodyClass();
   };
-  
+
   window.submitEditRequest = async function() {
       if (!ensureDriverOnlineForWrite()) return;
       const record = window._historyRecordMap && window._historyRecordMap[currentRecordId];
@@ -3287,7 +3287,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           alert('Düzeltme sebebini yazmalısınız!');
           return;
       }
-  
+
       var kmChanged = false, bakimChanged = false, kazaChanged = false;
       var newKm = null, newBakim = '', newKaza = '';
       if (visibleSection === 'km') {
@@ -3307,12 +3307,12 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           var currentKaza = record.kaza_durumu ? (record.kaza_aciklama || '') : '';
           kazaChanged = (newKaza || '') !== (currentKaza || '');
       }
-  
+
       if (!kmChanged && !bakimChanged && !kazaChanged) {
           alert('En az bir alanda değişiklik yapmalısınız!');
           return;
       }
-  
+
       const payload = { kayit_id: currentRecordId, sebep: reason };
       if (kmChanged && newKm !== null) payload.yeni_km = newKm;
       if (bakimChanged) {
@@ -3332,9 +3332,9 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
               },
               body: JSON.stringify(payload)
           });
-          
+
           const data = await response.json();
-          
+
           if (data.success) {
               alert('✓ Düzeltme talebiniz gönderildi. Admin onayı bekleniyor.');
               closeEditRequest();
@@ -3344,7 +3344,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           } else {
               alert('❌ ' + data.message);
           }
-          
+
       } catch (error) {
           alert('❌ Bağlantı hatası!');
       }
