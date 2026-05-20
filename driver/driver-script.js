@@ -1930,7 +1930,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       }
       return warnings;
   }
-  
+
   function getDriverNotificationItemLevel(w) {
       if (!w) return 'red';
       if (typeof w.days === 'number' && !isNaN(w.days)) {
