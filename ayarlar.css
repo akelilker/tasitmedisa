@@ -782,6 +782,9 @@ body.modal-open #info-modal.open {
         margin-top: 0 !important;
         margin-left: 0 !important;
         margin-right: 0 !important;
+        border-color: rgba(255, 255, 255, 0.42) !important;
+        border-top-color: rgba(236, 242, 250, 0.50) !important;
+        border-bottom-color: rgba(184, 192, 201, 0.38) !important;
     }
 
     #required-documents-modal .modal-header {
