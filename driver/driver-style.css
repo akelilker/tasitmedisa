@@ -525,7 +525,7 @@ body.dashboard-page {
 }
 .driver-status-icon-slot-warning .driver-warning-icon-engine-red,
 .driver-status-icon-slot-warning .driver-warning-icon-engine-orange {
-  width: 24px;
+  width: 28px;
   height: 24px;
 }
 
