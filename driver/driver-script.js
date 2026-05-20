@@ -1953,54 +1953,12 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       if (belowHeroSlot) {
           belowHeroSlot.appendChild(el);
       }
+      const hasRedWarning = warnings.some(function(w) { return !w || w.warnLevel !== 'orange'; });
+      const iconClass = hasRedWarning ? 'driver-warning-icon-engine-red' : 'driver-warning-icon-engine-orange';
+      const engineIcon = '<span class="driver-warning-icon driver-warning-icon-engine ' + iconClass + '" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"></svg></span>';
       
-      let cycleCount = 0;
-      let idx = 0;
-      
-      function applyMarqueeIfOverflow(container) {
-          var textSpan = container.querySelector('.driver-warning-text');
-          if (!textSpan) return;
-          container.classList.remove('driver-warning-scroll');
-          /* Taşma kontrolü: metin genişliği mevcut alandan fazlaysa marquee yap */
-          var raw = (textSpan.textContent || '').trim();
-          if (raw.length === 0) return;
-          var measure = document.createElement('span');
-          measure.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap;font:inherit;';
-          measure.textContent = raw;
-          document.body.appendChild(measure);
-          var textW = measure.offsetWidth;
-          document.body.removeChild(measure);
-          var iconEl = container.querySelector('.driver-warning-icon');
-          var iconW = iconEl ? (iconEl.offsetWidth || 24) + 4 : 28;
-          var availW = container.clientWidth - iconW - 16;
-          var textOverflowing = textSpan.scrollWidth > (textSpan.clientWidth + 1);
-          var shouldMarquee = raw.length > 34 || textOverflowing || textW > availW;
-          if (shouldMarquee) {
-              var safe = escapeHtmlDriver(raw);
-              var marqueeHtml = '<span class="driver-warning-marquee-outer"><span class="driver-warning-marquee-inner"><span>' + safe + '</span><span aria-hidden="true">' + safe + '</span></span></span>';
-              textSpan.outerHTML = marqueeHtml;
-              container.classList.add('driver-warning-scroll');
-          }
-      }
-      
-      function showNext() {
-          const w = warnings[idx];
-          const text = w ? w.text : '';
-          const orangeBar = w && w.warnLevel === 'orange';
-          const iconClass = orangeBar ? 'driver-warning-icon-engine-orange' : 'driver-warning-icon-engine-red';
-          const engineIcon = '<span class="driver-warning-icon driver-warning-icon-engine ' + iconClass + '" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M7 7h3V5H7V3h8v2h-3v2h3.7l2 2H21v4h-2.2l-2.4 4H9.2L7 14.8H4V18H2V9h2v3.8h3.8l2.2 2.2h5.2l1.8-3V10l-2.1-2.1H7V7z"></path></svg></span>';
-          el.innerHTML = engineIcon + ' <span class="driver-warning-text">' + escapeHtmlDriver(text) + '</span>';
-          el.className = 'driver-sliding-warning' + (orangeBar ? ' driver-sliding-warning-orange' : '');
-          /* Taşma varsa sola kayan marquee uygula (requestAnimationFrame ile ölçüm doğru yapılsın) */
-          requestAnimationFrame(function() { applyMarqueeIfOverflow(el); });
-          idx = (idx + 1) % warnings.length;
-          if (idx === 0) {
-              cycleCount++;
-          }
-      }
-      
-      showNext();
-      slidingWarningInterval = setInterval(showNext, 5000);
+      el.className = 'driver-sliding-warning' + (hasRedWarning ? '' : ' driver-sliding-warning-orange');
+      el.innerHTML = engineIcon;
   }
   
   function initKaportaForDriver(container, vehicle) {
