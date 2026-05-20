@@ -979,52 +979,133 @@ body.dashboard-page {
   overflow-wrap: anywhere;
   white-space: normal;
 }
+#driver-notification-modal.driver-modal {
+  align-items: center !important;
+  justify-content: center !important;
+  padding: max(12px, env(safe-area-inset-top)) 12px max(12px, env(safe-area-inset-bottom, 0), 12px) !important;
+  overflow: visible !important;
+  background: rgba(0, 0, 0, 0.85) !important;
+  z-index: 10020;
+  pointer-events: none;
+}
+#driver-notification-modal.driver-modal.show {
+  display: flex !important;
+  pointer-events: auto !important;
+  z-index: 10020 !important;
+}
+#driver-notification-modal.driver-modal::before {
+  display: none !important;
+}
+#driver-notification-modal .driver-modal-content,
+#driver-notification-modal .modal-container {
+  width: 100%;
+  max-width: min(420px, calc(100vw - 32px));
+  height: auto !important;
+  max-height: min(70vh, calc(100vh - 96px)) !important;
+  margin: auto !important;
+  flex: 0 0 auto;
+  overflow: hidden;
+}
+#driver-notification-modal .modal-header {
+  background: var(--modal-header-red-gradient) !important;
+  background-size: 100% 100% !important;
+  padding: 2px 16px !important;
+  height: 48px !important;
+  min-height: 48px;
+  border-bottom: none !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+  position: relative;
+  border-top-left-radius: var(--modal-radius, 10px) !important;
+  border-top-right-radius: var(--modal-radius, 10px) !important;
+}
+#driver-notification-modal .modal-header h2 {
+  color: #ffffff !important;
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+#driver-notification-modal .modal-close {
+  position: absolute !important;
+  right: 12px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  width: 32px;
+  height: 32px;
+  padding: 6px !important;
+  color: #aaa !important;
+  background: transparent !important;
+  border: none !important;
+}
+#driver-notification-modal .modal-close:hover {
+  color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+}
+#driver-notification-modal .modal-body {
+  flex: 0 0 auto !important;
+  max-height: none !important;
+  overflow: visible !important;
+  padding: 8px 12px 12px !important;
+}
 #driver-notification-modal .driver-notification-modal-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 #driver-notification-modal .driver-warning-panel-item {
   display: flex;
   align-items: flex-start;
-  gap: 10px;
-  padding: 10px 11px;
-  border-radius: 8px;
+  gap: 8px;
+  padding: 7px 8px;
+  border-radius: 6px;
   border: 1px solid transparent;
   background: rgba(255, 255, 255, 0.03);
-  line-height: 1.35;
-  font-size: 13px;
+  line-height: 1.3;
+  font-size: 12px;
   text-align: left;
 }
 #driver-notification-modal .driver-warning-panel-item-red {
-  color: #ff5f7a;
-  border-color: rgba(255, 95, 122, 0.35);
-  background: rgba(159, 18, 57, 0.2);
+  color: var(--theme-color);
+  border-color: rgba(255, 95, 122, 0.28);
+  background: rgba(159, 18, 57, 0.16);
 }
 #driver-notification-modal .driver-warning-panel-item-orange {
-  color: #ff9f4a;
-  border-color: rgba(255, 159, 74, 0.35);
-  background: rgba(124, 62, 14, 0.22);
+  color: #f97316;
+  border-color: rgba(249, 115, 22, 0.28);
+  background: rgba(124, 62, 14, 0.16);
 }
 #driver-notification-modal .driver-warning-panel-item .driver-warning-icon-engine {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   flex: 0 0 auto;
+  margin-top: 1px;
 }
 #driver-notification-modal .driver-warning-panel-text {
   flex: 1;
   min-width: 0;
-  color: inherit;
+  color: #a0aec0;
   white-space: normal;
 }
+#driver-notification-modal .driver-warning-panel-item-red .driver-warning-panel-text,
+#driver-notification-modal .driver-warning-panel-item-orange .driver-warning-panel-text {
+  color: inherit;
+}
 #driver-notification-modal .driver-notification-empty {
-  padding: 14px 12px;
-  border-radius: 8px;
+  padding: 10px 8px;
+  border-radius: 6px;
   border: 1px dashed rgba(255, 255, 255, 0.2);
   background: rgba(255, 255, 255, 0.02);
   color: #a0aec0;
   text-align: center;
-  font-size: 13px;
+  font-size: 12px;
 }
 /* Tarih yaklaşıyor (turuncu): sol panel driver-warn-orange ile aynı ton */
 .driver-sliding-warning.driver-sliding-warning-orange {
@@ -3100,7 +3181,6 @@ body.dashboard-page {
 #driver-password-modal.driver-modal,
 #driver-feedback-modal.driver-modal,
 #driver-documents-modal.driver-modal,
-#driver-notification-modal.driver-modal,
 #driver-anahtar-modal.driver-modal,
 #driver-lastik-modal.driver-modal,
 #driver-utts-modal.driver-modal,
@@ -3123,7 +3203,6 @@ body.dashboard-page {
 #driver-password-modal.driver-modal.show,
 #driver-feedback-modal.driver-modal.show,
 #driver-documents-modal.driver-modal.show,
-#driver-notification-modal.driver-modal.show,
 #driver-anahtar-modal.driver-modal.show,
 #driver-lastik-modal.driver-modal.show,
 #driver-utts-modal.driver-modal.show,
@@ -3156,7 +3235,6 @@ body.dashboard-page {
   #driver-password-modal.driver-modal,
   #driver-feedback-modal.driver-modal,
   #driver-documents-modal.driver-modal,
-  #driver-notification-modal.driver-modal,
   #driver-anahtar-modal.driver-modal,
   #driver-lastik-modal.driver-modal,
   #driver-utts-modal.driver-modal,
@@ -3168,8 +3246,7 @@ body.dashboard-page {
   #history-modal.driver-modal,
   #edit-request-modal.driver-modal,
   #driver-feedback-modal.driver-modal,
-  #driver-documents-modal.driver-modal,
-  #driver-notification-modal.driver-modal {
+  #driver-documents-modal.driver-modal {
     bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
   }
 }
@@ -3180,12 +3257,10 @@ body.dashboard-page {
   body.dashboard-page #edit-request-modal.driver-modal,
   body.dashboard-page #driver-feedback-modal.driver-modal,
   body.dashboard-page #driver-documents-modal.driver-modal,
-  body.dashboard-page #driver-notification-modal.driver-modal,
   body.login-page #history-modal.driver-modal,
   body.login-page #edit-request-modal.driver-modal,
   body.login-page #driver-feedback-modal.driver-modal,
-  body.login-page #driver-documents-modal.driver-modal,
-  body.login-page #driver-notification-modal.driver-modal {
+  body.login-page #driver-documents-modal.driver-modal {
     bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
   }
 }
@@ -3218,7 +3293,6 @@ body.dashboard-page {
 #driver-event-menu-modal.driver-modal::before,
 #driver-password-modal.driver-modal::before,
 #driver-documents-modal.driver-modal::before,
-#driver-notification-modal.driver-modal::before,
 #driver-anahtar-modal.driver-modal::before,
 #driver-lastik-modal.driver-modal::before,
 #driver-utts-modal.driver-modal::before,
@@ -3246,8 +3320,7 @@ body.dashboard-page {
 #edit-request-modal.driver-modal.show::before,
 #driver-password-modal.driver-modal.show::before,
 #driver-feedback-modal.driver-modal.show::before,
-#driver-documents-modal.driver-modal.show::before,
-#driver-notification-modal.driver-modal.show::before {
+#driver-documents-modal.driver-modal.show::before {
   clip-path: inset(0 0 calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0) + 4px) 0) !important;
   -webkit-clip-path: inset(0 0 calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0) + 4px) 0) !important;
 }
