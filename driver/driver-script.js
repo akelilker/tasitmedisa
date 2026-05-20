@@ -1961,6 +1961,34 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       updateDriverModalBodyClass();
   };
 
+  const driverNotificationModalId = 'driver-notification-modal';
+  const driverNotificationModalListId = 'driver-notification-modal-list';
+  const driverNotificationEmptyStateHtml = '<div class="driver-notification-empty">Aktif bildirim bulunmuyor.</div>';
+
+  function setDriverNotificationModalContent(warningItemsHtml) {
+      const modalList = document.getElementById(driverNotificationModalListId);
+      if (!modalList) return;
+      modalList.innerHTML = warningItemsHtml && warningItemsHtml.trim() ? warningItemsHtml : driverNotificationEmptyStateHtml;
+  }
+
+  window.openDriverNotificationModal = function(warningItemsHtml) {
+      const modal = document.getElementById(driverNotificationModalId);
+      if (!modal) return;
+      setDriverNotificationModalContent(warningItemsHtml || '');
+      modal.classList.add('show');
+      const trigger = document.querySelector('#driver-sliding-warning .driver-warning-trigger');
+      if (trigger) trigger.setAttribute('aria-expanded', 'true');
+      updateDriverModalBodyClass();
+  };
+
+  window.closeDriverNotificationModal = function() {
+      const modal = document.getElementById(driverNotificationModalId);
+      if (modal) modal.classList.remove('show');
+      const trigger = document.querySelector('#driver-sliding-warning .driver-warning-trigger');
+      if (trigger) trigger.setAttribute('aria-expanded', 'false');
+      updateDriverModalBodyClass();
+  };
+
   function renderSlidingWarning(vehicles, records) {
       const el = document.getElementById('driver-sliding-warning');
       if (!el) return;
@@ -1985,7 +2013,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       const hasRedWarning = warnings.some(function(w) { return !w || w.warnLevel !== 'orange'; });
       const iconClass = hasRedWarning ? 'driver-warning-icon-engine-red' : 'driver-warning-icon-engine-orange';
       const warningItemsHtml = warnings.map(function(w) {
-          const level = w && w.warnLevel === 'orange' ? 'orange' : 'red';
+          const level = getDriverNotificationItemLevel(w);
           const itemIconClass = level === 'orange' ? 'driver-warning-icon-engine-orange' : 'driver-warning-icon-engine-red';
           return '<div class="driver-warning-panel-item driver-warning-panel-item-' + level + '">'
               + '<span class="driver-warning-icon driver-warning-icon-engine ' + itemIconClass + '" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"></svg></span>'
