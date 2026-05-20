@@ -945,12 +945,33 @@ body.dashboard-page {
 }
 .driver-warning-icon {
   color: var(--theme-color);
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
   margin-right: 0;
   vertical-align: middle;
   line-height: 1;
   overflow: visible;
+  width: 15px;
+  height: 15px;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+.driver-warning-icon svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  fill: currentColor;
+}
+.driver-warning-icon-orange {
+  color: #f97316;
+}
+.driver-warning-icon-red {
+  color: var(--theme-color);
+  width: 16px;
+  height: 16px;
 }
 
 /* --- İKİ PANELLİ LAYOUT --- */

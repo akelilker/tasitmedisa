@@ -1891,7 +1891,8 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           const kmState = getVehicleKmState(v);
           const kmMessage = getKmMessageByState(kmState);
           if (kmMessage) {
-              warnings.push({ text: plaka + ' Plakalı Taşıt İçin ' + kmMessage, plaka: plaka, type: null });
+              const kmWarnLevel = kmState === 'MONTHLY_UPDATE_DUE_SOFT' ? 'orange' : 'red';
+              warnings.push({ text: plaka + ' Plakalı Taşıt İçin ' + kmMessage, plaka: plaka, type: null, warnLevel: kmWarnLevel });
           }
           const checkDate = (dateStr, label) => {
               if (!dateStr) return;
@@ -1987,7 +1988,9 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           const text = w ? w.text : '';
           const isKaza = w && w.type === 'kaza';
           const orangeBar = w && w.warnLevel === 'orange';
-          el.innerHTML = '<span class="driver-warning-icon" aria-hidden="true">⚠️</span> <span class="driver-warning-text">' + escapeHtmlDriver(text) + '</span>';
+          const iconClass = orangeBar ? 'driver-warning-icon-orange' : 'driver-warning-icon-red';
+          const engineIcon = '<span class="driver-warning-icon ' + iconClass + '" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M7 7h3V5H7V3h8v2h-3v2h3.7l2 2H21v4h-2.2l-2.4 4H9.2L7 14.8H4V18H2V9h2v3.8h3.8l2.2 2.2h5.2l1.8-3V10l-2.1-2.1H7V7z"></path></svg></span>';
+          el.innerHTML = engineIcon + ' <span class="driver-warning-text">' + escapeHtmlDriver(text) + '</span>';
           el.className = 'driver-sliding-warning' + (orangeBar ? ' driver-sliding-warning-orange' : '') + (isKaza ? ' driver-warning-kaza-pulse' : (cycleCount >= 3 ? ' driver-warning-pulse' : ''));
           /* Taşma varsa sola kayan marquee uygula (requestAnimationFrame ile ölçüm doğru yapılsın) */
           requestAnimationFrame(function() { applyMarqueeIfOverflow(el); });
