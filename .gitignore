@@ -13,6 +13,7 @@ node_modules/
 *.zip
 outputs/
 tmp/
+tmp_doc_review/
 
 # Runtime-only data and caches
 data/.medisa_*
