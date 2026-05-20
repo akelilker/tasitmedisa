@@ -1955,10 +1955,37 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       }
       const hasRedWarning = warnings.some(function(w) { return !w || w.warnLevel !== 'orange'; });
       const iconClass = hasRedWarning ? 'driver-warning-icon-engine-red' : 'driver-warning-icon-engine-orange';
+      const panelId = 'driver-warning-panel';
+      const warningItemsHtml = warnings.map(function(w) {
+          const level = w && w.warnLevel === 'orange' ? 'orange' : 'red';
+          const itemIconClass = level === 'orange' ? 'driver-warning-icon-engine-orange' : 'driver-warning-icon-engine-red';
+          return '<div class="driver-warning-panel-item driver-warning-panel-item-' + level + '">'
+              + '<span class="driver-warning-icon driver-warning-icon-engine ' + itemIconClass + '" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"></svg></span>'
+              + '<span class="driver-warning-panel-text">' + escapeHtmlDriver((w && w.text) || '') + '</span>'
+              + '</div>';
+      }).join('');
       const engineIcon = '<span class="driver-warning-icon driver-warning-icon-engine ' + iconClass + '" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"></svg></span>';
-      
-      el.className = 'driver-sliding-warning' + (hasRedWarning ? '' : ' driver-sliding-warning-orange');
-      el.innerHTML = engineIcon;
+
+      el.className = 'driver-sliding-warning driver-warning-popover' + (hasRedWarning ? '' : ' driver-sliding-warning-orange');
+      el.innerHTML = '<button type="button" class="driver-warning-trigger" aria-label="Uyarilari goster" aria-expanded="false" aria-controls="' + panelId + '">'
+          + engineIcon
+          + '</button>'
+          + '<div id="' + panelId + '" class="driver-warning-panel" hidden>'
+          + '<div class="driver-warning-panel-list">' + warningItemsHtml + '</div>'
+          + '</div>';
+
+      const trigger = el.querySelector('.driver-warning-trigger');
+      const panel = el.querySelector('.driver-warning-panel');
+      if (trigger && panel) {
+          trigger.addEventListener('click', function(e) {
+              e.preventDefault();
+              e.stopPropagation();
+              const shouldOpen = panel.hidden;
+              panel.hidden = !shouldOpen;
+              el.classList.toggle('driver-warning-open', shouldOpen);
+              trigger.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
+          });
+      }
   }
   
   function initKaportaForDriver(container, vehicle) {
