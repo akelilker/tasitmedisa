@@ -1905,7 +1905,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
                   } else {
                       msg = plaka + ' Plakalı Taşıtın ' + label + ' Tarihine ' + w.days + ' Gün Kalmıştır';
                   }
-                  warnings.push({ text: msg, plaka: plaka, type: null, warnLevel: w.level });
+                  warnings.push({ text: msg, plaka: plaka, type: null, warnLevel: w.level, warnClass: w.class, days: w.days });
               }
           };
           checkDate(v.muayeneDate, 'Muayene');
@@ -1920,7 +1920,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
                   const k2Text = k2Warning.days <= 0
                       ? 'Taşıt Kartı / K2 Belgesi Geçerliliği Bitmiştir.'
                       : 'Taşıt Kartı / K2 Belgesi Geçerliliğine ' + k2Warning.days + ' Gün Kalmıştır';
-                  warnings.push({ text: k2Text, plaka: '', type: null, warnLevel: k2Warning.level });
+                  warnings.push({ text: k2Text, plaka: '', type: null, warnLevel: k2Warning.level, warnClass: k2Warning.class, days: k2Warning.days });
                   k2WarningAdded = true;
               }
           }
@@ -1931,35 +1931,18 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       return warnings;
   }
   
-  let slidingWarningInterval = null;
-  
-  const driverNotificationModalId = 'driver-notification-modal';
-  const driverNotificationModalListId = 'driver-notification-modal-list';
-  const driverNotificationEmptyStateHtml = '<div class="driver-notification-empty">Aktif bildirim bulunmuyor.</div>';
-
-  function setDriverNotificationModalContent(warningItemsHtml) {
-      const modalList = document.getElementById(driverNotificationModalListId);
-      if (!modalList) return;
-      modalList.innerHTML = warningItemsHtml && warningItemsHtml.trim() ? warningItemsHtml : driverNotificationEmptyStateHtml;
+  function getDriverNotificationItemLevel(w) {
+      if (!w) return 'red';
+      if (typeof w.days === 'number' && !isNaN(w.days)) {
+          if (w.days < 0 || w.days <= 7) return 'red';
+          if (w.days <= 30) return 'orange';
+      }
+      if (w.warnClass === 'driver-warn-orange') return 'orange';
+      if (w.warnClass === 'driver-warn-red') return 'red';
+      return w.warnLevel === 'orange' ? 'orange' : 'red';
   }
 
-  window.openDriverNotificationModal = function(warningItemsHtml) {
-      const modal = document.getElementById(driverNotificationModalId);
-      if (!modal) return;
-      setDriverNotificationModalContent(warningItemsHtml || '');
-      modal.classList.add('show');
-      const trigger = document.querySelector('#driver-sliding-warning .driver-warning-trigger');
-      if (trigger) trigger.setAttribute('aria-expanded', 'true');
-      updateDriverModalBodyClass();
-  };
-
-  window.closeDriverNotificationModal = function() {
-      const modal = document.getElementById(driverNotificationModalId);
-      if (modal) modal.classList.remove('show');
-      const trigger = document.querySelector('#driver-sliding-warning .driver-warning-trigger');
-      if (trigger) trigger.setAttribute('aria-expanded', 'false');
-      updateDriverModalBodyClass();
-  };
+  let slidingWarningInterval = null;
 
   const driverNotificationModalId = 'driver-notification-modal';
   const driverNotificationModalListId = 'driver-notification-modal-list';
