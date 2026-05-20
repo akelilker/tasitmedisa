@@ -3503,30 +3503,30 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
     padding-top: 10px;
     padding-bottom: 10px;
     gap: 10px;
-    border-color: rgba(255, 255, 255, 0.16);
-    background: rgba(255, 255, 255, 0.026);
+    border-color: rgba(255, 255, 255, 0.11);
+    background: rgba(255, 255, 255, 0.016);
     box-shadow: none;
   }
 
   #driver-documents-modal .driver-document-card:hover,
   #driver-documents-modal .driver-document-card:focus-visible {
     transform: none;
-    background: rgba(34, 197, 94, 0.045);
-    border-color: rgba(34, 197, 94, 0.24);
+    background: rgba(34, 197, 94, 0.028);
+    border-color: rgba(34, 197, 94, 0.18);
     box-shadow: none;
     filter: none;
   }
 
   #driver-documents-modal .driver-document-card-missing {
-    border-color: rgba(255, 255, 255, 0.11);
-    background: rgba(255, 255, 255, 0.018);
+    border-color: rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.012);
     box-shadow: none;
   }
 
   #driver-documents-modal .driver-document-card-missing:hover,
   #driver-documents-modal .driver-document-card-missing:focus-visible {
-    background: rgba(255, 255, 255, 0.028);
-    border-color: rgba(255, 255, 255, 0.16);
+    background: rgba(255, 255, 255, 0.018);
+    border-color: rgba(255, 255, 255, 0.12);
     box-shadow: none;
   }
 
