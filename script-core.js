@@ -1037,12 +1037,12 @@ var TASITLAR_MODULE_VERSION = MEDISA_MODULE_VERSIONS.tasitlar;
 })();
 
 /* =========================================
-   VERSION DISPLAY (Anasayfa - v78.1)
+   VERSION DISPLAY (Anasayfa - v78.2)
    ========================================= */
 document.addEventListener('DOMContentLoaded', function() {
     var path = (document.location.pathname || '');
     if (path.indexOf('/driver') !== -1 || path.indexOf('/admin') !== -1) return; /* Kullanıcı paneli 78.2, raporlar 78.3 kendi scriptlerinde */
-    const APP_VERSION = "v78.1";
+    const APP_VERSION = "v78.2";
     const versionEl = document.getElementById('version-display');
 
     if (versionEl) {

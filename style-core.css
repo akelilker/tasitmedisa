@@ -2774,7 +2774,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     .tasitlar-modal-overlay.modal-overlay {
         bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
     }
-    .modal-overlay .modal-body {
+    :is(#vehicle-modal, #reports-modal, #vehicles-modal, #vehicle-detail-modal, #dinamik-olay-modal, #event-menu-modal, #vehicle-history-modal).modal-overlay .modal-body {
         padding-bottom: 24px !important;
     }
 }
@@ -2986,9 +2986,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     
     .modal-overlay {
         top: 0 !important;
-        padding: 0 !important;
-        align-items: stretch !important;
-        justify-content: center !important;
         overflow: hidden !important;
         overscroll-behavior: none !important;
         bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
@@ -3000,8 +2997,15 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
     }
 
-    /* Modal container mobil: üst sıfır, overlay'ı doldur, 10px köşe, ince çerçeve */
-    .modal-overlay .modal-container {
+    /* Mobil full-screen modal opt-in: küçük/ayarlar owner'larını genel rejimle ezme */
+    :is(#vehicle-modal, #reports-modal, #vehicles-modal, #vehicle-detail-modal, #dinamik-olay-modal, #event-menu-modal, #vehicle-history-modal).modal-overlay {
+        padding: 0 !important;
+        align-items: stretch !important;
+        justify-content: center !important;
+    }
+
+    /* Modal container mobil: opt-in modallar üst sıfır, overlay'ı doldur, 10px köşe, ince çerçeve */
+    :is(#vehicle-modal, #reports-modal, #vehicles-modal, #vehicle-detail-modal, #dinamik-olay-modal, #event-menu-modal, #vehicle-history-modal).modal-overlay .modal-container {
         position: relative !important;
         max-width: 100% !important;
         width: 100% !important;
@@ -3072,8 +3076,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         background-size: 100% 100% !important;
     }
 
-    /* Mobil: modal body – dikey scroll, alt butonlar için fazladan kaydırma boşluğu */
-    .modal-overlay .modal-body {
+    /* Mobil: opt-in full-screen modal body – dikey scroll, alt butonlar için fazladan kaydırma boşluğu */
+    :is(#vehicle-modal, #reports-modal, #vehicles-modal, #vehicle-detail-modal, #dinamik-olay-modal, #event-menu-modal, #vehicle-history-modal).modal-overlay .modal-body {
         padding-bottom: 24px !important;
         overflow-x: hidden !important;
         overscroll-behavior-x: none !important;
