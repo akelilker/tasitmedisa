@@ -465,13 +465,12 @@ body.dashboard-page {
 }
 .driver-status-icon-row {
   display: grid;
-  grid-template-columns: repeat(3, minmax(36px, 1fr));
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  justify-items: center;
   flex: 1 1 auto;
   min-width: 0;
   max-width: 100%;
-  gap: 8px;
+  gap: 0;
 }
 .driver-status-icon-slot {
   display: flex;
@@ -480,8 +479,20 @@ body.dashboard-page {
   width: 100%;
   min-height: 36px;
 }
+.driver-status-icon-slot-history {
+  justify-self: start;
+  justify-content: flex-start;
+  padding-left: 6px;
+}
 .driver-status-icon-slot-warning {
+  justify-self: center;
   justify-content: center;
+  width: auto;
+}
+.driver-status-icon-slot-key {
+  justify-self: end;
+  justify-content: flex-end;
+  padding-right: 6px;
 }
 .driver-below-hero-notification-slot {
   flex: 0 0 auto;
@@ -507,13 +518,15 @@ body.dashboard-page {
   margin-right: auto;
 }
 .driver-status-icon-slot-warning .driver-warning-icon-engine {
+  width: 24px;
+  height: 24px;
   margin-left: auto;
   margin-right: auto;
 }
 .driver-status-icon-slot-warning .driver-warning-icon-engine-red,
 .driver-status-icon-slot-warning .driver-warning-icon-engine-orange {
-  width: 21px;
-  height: 21px;
+  width: 24px;
+  height: 24px;
 }
 
 .driver-below-hero-row .driver-btn-history,
@@ -5963,7 +5976,18 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .dashboard-page .driver-status-icon-row {
     width: 100% !important;
     max-width: 100% !important;
-    justify-items: center !important;
+    grid-template-columns: 1fr auto 1fr !important;
+  }
+  .dashboard-page .driver-status-icon-slot-history {
+    justify-self: start !important;
+    padding-left: 6px !important;
+  }
+  .dashboard-page .driver-status-icon-slot-warning {
+    justify-self: center !important;
+  }
+  .dashboard-page .driver-status-icon-slot-key {
+    justify-self: end !important;
+    padding-right: 6px !important;
   }
   .dashboard-page .driver-below-hero-notification-slot {
     flex: 0 0 auto !important;
