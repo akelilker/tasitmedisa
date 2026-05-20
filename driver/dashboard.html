@@ -70,32 +70,33 @@
             <div class="driver-below-hero">
                 <div class="driver-below-hero-row">
                     <div id="driver-below-hero-pwa-slot" class="driver-below-hero-pwa-slot"></div>
-                    <button type="button" onclick="showHistory()" class="driver-btn-history" title="İşlem geçmişi" aria-label="İşlem geçmişi">
-                        <svg class="driver-btn-history-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                            <path d="M5 22h14"></path>
-                            <path d="M5 2h14"></path>
-                            <path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22"></path>
-                            <path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2"></path>
-                        </svg>
-                    </button>
-                    <div id="driver-below-hero-notification-slot" class="driver-below-hero-notification-slot">
-                        <div id="driver-sliding-warning" class="driver-sliding-warning" aria-live="polite"></div>
+                    <div class="driver-status-icon-row" role="group" aria-label="Durum göstergeleri">
+                        <div class="driver-status-icon-slot driver-status-icon-slot-history">
+                            <button type="button" onclick="showHistory()" class="driver-btn-history" title="İşlem geçmişi" aria-label="İşlem geçmişi">
+                                <svg class="driver-btn-history-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <path d="M5 22h14"></path>
+                                    <path d="M5 2h14"></path>
+                                    <path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22"></path>
+                                    <path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="driver-status-icon-slot driver-status-icon-slot-warning">
+                            <div id="driver-below-hero-notification-slot" class="driver-below-hero-notification-slot">
+                                <div id="driver-sliding-warning" class="driver-sliding-warning" aria-live="polite"></div>
+                            </div>
+                        </div>
+                        <div class="driver-status-icon-slot driver-status-icon-slot-key">
+                            <button type="button" onclick="openDriverPasswordModal()" class="driver-btn-password" title="Şifre değiştir" aria-label="Şifre değiştir">
+                                <svg class="driver-btn-password-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="7" cy="15" r="4"></circle>
+                                    <path d="M11 15h9"></path>
+                                    <path d="M16 15v3"></path>
+                                    <path d="M19 15v2"></path>
+                                </svg>
+                            </button>
+                        </div>
                     </div>
-                    <button type="button" onclick="openDriverPasswordModal()" class="driver-btn-password" title="Şifre değiştir" aria-label="Şifre değiştir">
-                        <svg class="driver-btn-password-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="7" cy="15" r="4"></circle>
-                            <path d="M11 15h9"></path>
-                            <path d="M16 15v3"></path>
-                            <path d="M19 15v2"></path>
-                        </svg>
-                    </button>
-                    <button type="button" onclick="logout()" class="driver-btn-logout" title="Çıkış" aria-label="Çıkış">
-                        <svg class="driver-btn-logout-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                            <polyline points="16 17 21 12 16 7"></polyline>
-                            <line x1="21" y1="12" x2="9" y2="12"></line>
-                        </svg>
-                    </button>
                 </div>
             </div>
         </div>

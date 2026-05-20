@@ -436,7 +436,7 @@ body.dashboard-page {
   flex-shrink: 0;
 }
 
-/* --- İşlem geçmişi (sol) + Bildirimler (orta) + Çıkış (sağ) - 8px çerçeve boşluğu --- */
+/* --- Üst durum ikonları (geçmiş / motor uyarı / anahtar) - 8px çerçeve boşluğu --- */
 .driver-below-hero {
   margin-top: 0;
   margin-bottom: 1px;
@@ -449,10 +449,10 @@ body.dashboard-page {
 
 .driver-below-hero-row {
   display: flex;
-  justify-content: space-between;
+  flex-wrap: wrap;
+  justify-content: center;
   align-items: center;
   gap: 8px;
-  flex-wrap: nowrap;
 }
 .driver-below-hero-pwa-slot {
   flex: 0 0 auto;
@@ -463,8 +463,29 @@ body.dashboard-page {
 .driver-below-hero-pwa-slot:empty {
   display: none;
 }
-.driver-below-hero-notification-slot {
+.driver-status-icon-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(36px, 1fr));
+  align-items: center;
+  justify-items: center;
   flex: 1 1 auto;
+  min-width: 0;
+  max-width: 100%;
+  gap: 8px;
+}
+.driver-status-icon-slot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 36px;
+}
+.driver-status-icon-slot-warning {
+  justify-content: center;
+}
+.driver-below-hero-notification-slot {
+  flex: 0 0 auto;
+  width: 100%;
   min-width: 0;
   display: flex;
   align-items: center;
@@ -474,10 +495,25 @@ body.dashboard-page {
   display: none;
 }
 .driver-below-hero-notification-slot .driver-sliding-warning {
-  flex: 1 1 auto;
-  width: 100%;
+  flex: 0 0 auto;
+  width: auto;
   min-width: 0;
   max-width: 100%;
+  margin: 0 auto;
+  justify-content: center;
+}
+.driver-status-icon-slot-warning .driver-warning-trigger {
+  margin-left: auto;
+  margin-right: auto;
+}
+.driver-status-icon-slot-warning .driver-warning-icon-engine {
+  margin-left: auto;
+  margin-right: auto;
+}
+.driver-status-icon-slot-warning .driver-warning-icon-engine-red,
+.driver-status-icon-slot-warning .driver-warning-icon-engine-orange {
+  width: 21px;
+  height: 21px;
 }
 
 .driver-below-hero-row .driver-btn-history,
@@ -508,19 +544,12 @@ body.dashboard-page {
   outline: none !important;
 }
 
-.driver-below-hero-row .driver-btn-password,
-.driver-below-hero-row .driver-btn-logout {
-  flex: none;
-}
 .driver-below-hero-row .driver-btn-password {
   color: #3b82f6;
 }
 .driver-below-hero-row .driver-btn-password:hover,
 .driver-below-hero-row .driver-btn-password:focus {
   color: #60a5fa;
-}
-.driver-below-hero-row .driver-btn-logout {
-  color: var(--theme-color);
 }
 
 /* KULLANICI PANELİ: h1 altında, 1pt küçük, aynı renk (metalik gradient) */
@@ -628,8 +657,7 @@ body.dashboard-page {
     padding-bottom: 0 !important;
   }
   .dashboard-page .driver-below-hero-row .driver-btn-history,
-  .dashboard-page .driver-below-hero-row .driver-btn-password,
-  .dashboard-page .driver-below-hero-row .driver-btn-logout {
+  .dashboard-page .driver-below-hero-row .driver-btn-password {
     margin: 0 !important;
   }
   .dashboard-page .driver-below-hero-row .driver-btn-password {
@@ -639,11 +667,14 @@ body.dashboard-page {
   .dashboard-page .driver-below-hero-row .driver-btn-password:focus {
     color: #60a5fa !important;
   }
-  /* İşlem geçmişi / Bildirimler / Çıkış arası 8px (masaüstü) */
+  /* Üst durum ikonları arası 8px (masaüstü) */
   .dashboard-page .driver-below-hero-row {
     gap: 8px !important;
   }
-  /* Tarihçe ve Çıkış butonları masaüstü: 1px küçült */
+  .dashboard-page .driver-status-icon-row {
+    gap: 8px !important;
+  }
+  /* Tarihçe / anahtar ikonları masaüstü: 1px küçült */
   .dashboard-page .driver-below-hero-row .driver-btn-history .driver-btn-history-icon {
     width: 23px !important;
     height: 23px !important;
@@ -656,7 +687,7 @@ body.dashboard-page {
     top: 0 !important;
     transform: translateY(-3px) !important;
   }
-  .dashboard-page .driver-below-hero-row .driver-btn-logout .driver-btn-logout-icon {
+  .dashboard-page .driver-request-fab-row .driver-btn-logout .driver-btn-logout-icon {
     width: 24px !important;
     height: 24px !important;
     stroke-width: 1.7 !important;
@@ -1317,6 +1348,14 @@ body.dashboard-page {
   width: 100%;
   margin-top: 3px;
   min-height: 28px;
+}
+.driver-request-fab-row .driver-btn-logout.driver-request-fab {
+  color: var(--theme-color);
+}
+.driver-request-fab-row .driver-btn-logout.driver-request-fab:hover,
+.driver-request-fab-row .driver-btn-logout.driver-request-fab:focus-visible {
+  color: var(--theme-color);
+  width: 96px;
 }
 .driver-action-btn-feedback.driver-request-fab {
   display: inline-flex;
@@ -4745,7 +4784,7 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   .login-page .pwa-install-bar .pwa-install-close {
     margin-left: 0 !important;
   }
-  /* PWA Butonu Masaüstü: driver-below-hero-row içinde, İşlem geçmişi/Bildirimler/Çıkış ile aynı satırda */
+  /* PWA Butonu Masaüstü: driver-below-hero-row içinde, üst durum ikonları ile aynı satırda */
   .dashboard-page .driver-below-hero-pwa-slot #pwa-install-wrapper {
     display: flex !important;
     justify-content: center !important;
@@ -5915,14 +5954,22 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .login-page .hero {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), 0 2px 12px rgba(var(--theme-color-rgb), 0.08) !important;
   }
-  /* Mobil: Bildirimler, Geçmiş, Çıkış – yatayda ortalanmış */
+  /* Mobil: üst durum ikonları – üç eşit slot, yatayda ortalanmış */
   .dashboard-page .driver-below-hero-row {
     justify-content: center !important;
     align-items: center !important;
     gap: 8px !important;
   }
+  .dashboard-page .driver-status-icon-row {
+    width: 100% !important;
+    max-width: 100% !important;
+    justify-items: center !important;
+  }
   .dashboard-page .driver-below-hero-notification-slot {
-    flex: 0 0 auto !important; /* Grubu ortada tutar, bildirim alanı genişlemez */
+    flex: 0 0 auto !important;
+    justify-content: center !important;
+    margin-left: 0 !important;
+    max-width: none !important;
   }
   /* Mobil login: Kullanıcı adı etiketi ve altındakiler 8px yukarı */
   .login-page .login-form {
@@ -5971,9 +6018,9 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     transform: translateY(2px) !important;
   }
 
-  /* Çıkış butonu: kapı simgesi */
+  /* Üst anahtar + sağ alt çıkış ikonları */
   .dashboard-page .driver-btn-password .driver-btn-password-icon,
-  .dashboard-page .driver-btn-logout .driver-btn-logout-icon {
+  .dashboard-page .driver-request-fab-row .driver-btn-logout .driver-btn-logout-icon {
     width: 24px !important;
     height: 24px !important;
     stroke-width: 1.7 !important;
@@ -6844,8 +6891,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     gap: 8px !important;
   }
 
-  .dashboard-page .driver-below-hero-row .driver-btn-password,
-  .dashboard-page .driver-below-hero-row .driver-btn-logout {
+  .dashboard-page .driver-below-hero-row .driver-btn-password {
     margin-left: 0 !important;
   }
 
@@ -6968,21 +7014,23 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     padding-bottom: 12px !important;
   }
 
-  .dashboard-page .driver-below-hero-notification-slot {
-    flex: 0 1 70% !important;
+  .dashboard-page .driver-status-icon-slot-warning .driver-below-hero-notification-slot {
+    flex: 0 0 auto !important;
     min-width: 0 !important;
-    max-width: 70% !important;
-    margin-left: auto !important;
-    padding-right: 4px !important;
+    max-width: none !important;
+    margin-left: 0 !important;
+    padding-right: 0 !important;
     overflow: visible !important;
     display: flex !important;
-    justify-content: flex-end !important;
+    justify-content: center !important;
   }
-  .dashboard-page .driver-below-hero-notification-slot .driver-sliding-warning {
-    width: 100% !important;
+  .dashboard-page .driver-status-icon-slot-warning .driver-below-hero-notification-slot .driver-sliding-warning {
+    width: auto !important;
     max-width: 100% !important;
-    justify-content: flex-end !important;
+    justify-content: center !important;
     padding-right: 0 !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
   }
 }
 
