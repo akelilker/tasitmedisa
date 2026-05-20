@@ -923,17 +923,21 @@ body.dashboard-page {
 }
 .driver-warning-panel {
   position: absolute;
-  top: calc(100% + 6px);
-  right: 0;
+  top: calc(100% + 8px);
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
   z-index: 10035;
-  width: min(360px, calc(100vw - 24px));
-  max-height: min(320px, calc(100vh - 160px));
+  width: min(300px, calc(100vw - 24px));
+  max-height: min(260px, calc(100vh - 170px));
   overflow-y: auto;
-  padding: 6px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
   border-radius: 8px;
-  background: rgba(8, 13, 22, 0.98);
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.48);
+  background: #080d16;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.55);
+  text-align: left;
+  white-space: normal;
 }
 .driver-warning-panel[hidden] {
   display: none !important;
@@ -947,12 +951,21 @@ body.dashboard-page {
   display: flex;
   align-items: flex-start;
   gap: 8px;
-  padding: 7px 8px;
+  padding: 6px 7px;
   border-radius: 6px;
   color: #e8edf4;
   text-align: left;
   white-space: normal;
-  line-height: 1.25;
+  line-height: 1.3;
+  font-size: 13px;
+}
+.driver-warning-panel .driver-warning-icon-engine {
+  width: 18px;
+  height: 18px;
+}
+.driver-warning-panel .driver-warning-icon-engine-red {
+  width: 19px;
+  height: 19px;
 }
 .driver-warning-panel-item-orange {
   color: #f97316;
@@ -964,6 +977,7 @@ body.dashboard-page {
   flex: 1;
   min-width: 0;
   overflow-wrap: anywhere;
+  white-space: normal;
 }
 /* Tarih yaklaşıyor (turuncu): sol panel driver-warn-orange ile aynı ton */
 .driver-sliding-warning.driver-sliding-warning-orange {
@@ -6830,7 +6844,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     max-width: 70% !important;
     margin-left: auto !important;
     padding-right: 4px !important;
-    overflow: hidden !important;
+    overflow: visible !important;
     display: flex !important;
     justify-content: flex-end !important;
   }
