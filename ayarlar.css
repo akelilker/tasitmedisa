@@ -799,6 +799,13 @@ body.modal-open #info-modal.open {
 
     #required-documents-modal .required-k2-date-section {
         max-width: 204px;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        text-align: center;
+    }
+
+    #required-documents-modal .required-k2-date-section .form-label {
+        text-align: center;
     }
 
     #required-documents-modal .required-k2-date-picker {
