@@ -782,9 +782,14 @@ body.modal-open #info-modal.open {
         margin-top: 0 !important;
         margin-left: 0 !important;
         margin-right: 0 !important;
-        border-color: rgba(255, 255, 255, 0.42) !important;
-        border-top-color: rgba(236, 242, 250, 0.50) !important;
-        border-bottom-color: rgba(184, 192, 201, 0.38) !important;
+        border-top-width: 1px !important;
+        border-top-color: rgba(255, 255, 255, 0.38) !important;
+        border-left-width: 1px !important;
+        border-right-width: 1px !important;
+        border-left-color: rgba(255, 255, 255, 0.35) !important;
+        border-right-color: rgba(255, 255, 255, 0.35) !important;
+        border-bottom-width: 1px !important;
+        border-bottom-color: rgba(255, 255, 255, 0.32) !important;
     }
 
     #required-documents-modal .modal-header {
