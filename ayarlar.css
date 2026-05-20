@@ -770,6 +770,20 @@ body.modal-open #info-modal.open {
 }
 
 @media (max-width: 640px) {
+    #required-documents-modal.modal-overlay {
+        padding-top: 0 !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+
+    #required-documents-modal .modal-container {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-top: 0 !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+
     #required-documents-modal .modal-header {
         border-bottom: 0 !important;
         box-shadow: inset 0 1px 0 rgba(236, 242, 250, 0.22) !important;
