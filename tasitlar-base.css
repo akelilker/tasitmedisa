@@ -1175,13 +1175,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     flex-wrap: wrap;
 }
 
-#vehicle-detail-modal .detail-row.detail-section-start {
-    margin-top: 9px;
-    padding-top: 11px;
-    border-top: 1px solid rgba(var(--theme-color-rgb), 0.52);
-    box-shadow: 0 -1px 0 rgba(var(--theme-color-rgb), 0.14);
-}
-
 /* Tramer "var" çoklu kayıt: label+colon üstte, value altta */
 .detail-row-block {
     flex-direction: column !important;
