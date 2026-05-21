@@ -3,7 +3,7 @@
 
 const CACHE_VERSION = 'medisa-v2.125';
 // Raporlar modülü (raporlar.js / raporlar.css): ana shell cache'inden ayrı; MEDISA_MODULE_VERSIONS.raporlar ile senkron tut
-const CACHE_RAPORLAR_VERSION = 'medisa-raporlar-20260511.3';
+const CACHE_RAPORLAR_VERSION = 'medisa-raporlar-20260521.1';
 
 function isRaporlarModuleAssetUrl(u) {
   return /\/raporlar\.(js|css)$/i.test(u.pathname);
