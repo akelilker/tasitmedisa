@@ -1320,6 +1320,23 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   display: none !important;
 }
 
+/* Ayarlar menüsü açık (masaüstü): arka plan hafif blur/dim; menü ve sağ ikonlar net */
+@media (min-width: 641px) {
+  body:not(.modal-open):not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#settings-menu.settings-dropdown.open) .hero,
+  body:not(.modal-open):not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#settings-menu.settings-dropdown.open) #main-menu.menu-container,
+  body:not(.modal-open):not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#settings-menu.settings-dropdown.open) .icons-row-left,
+  body:not(.modal-open):not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#settings-menu.settings-dropdown.open) .pwa-install-center {
+    filter: blur(2px);
+    opacity: 0.9;
+    transition: filter 0.18s ease, opacity 0.18s ease;
+  }
+  body:not(.modal-open):not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#settings-menu.settings-dropdown.open) .icons-row-right,
+  body:not(.modal-open):not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#settings-menu.settings-dropdown.open) #settings-menu.settings-dropdown.open {
+    filter: none;
+    opacity: 1;
+  }
+}
+
 #notifications-dropdown > .notification-item {
   width: 100% !important;
   box-sizing: border-box !important;
