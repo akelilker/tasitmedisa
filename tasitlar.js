@@ -4919,7 +4919,7 @@
 
   // Tramer Kaydı
   if (vehicle.tramer === 'var' && vehicle.tramerRecords && vehicle.tramerRecords.length > 0) {
-      html += `<div class="detail-row detail-row-block"><div class="detail-row-header"><span class="detail-row-label">Tramer Kaydı</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> `;
+      html += `<div class="detail-row detail-row-block detail-section-start"><div class="detail-row-header"><span class="detail-row-label">Tramer Kaydı</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> `;
       vehicle.tramerRecords.forEach((record, index) => {
           if (index > 0) html += '<br>';
           html += `${escapeHtml(formatDateForDetailModal(record.date) || '-')} - ${escapeHtml(record.amount)}`;
@@ -4941,7 +4941,7 @@
       }
       html += `</span></div>`;
   } else {
-      html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Tramer Kaydı</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> Yoktur.</span></div>`;
+      html += `<div class="detail-row detail-row-inline detail-section-start"><div class="detail-row-header"><span class="detail-row-label">Tramer Kaydı</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> Yoktur.</span></div>`;
   }
 
   // Kaporta Durumu (Legend eklendi; açıklama metni 1.5pt küçük – CSS .detail-row-kaporta)
@@ -4951,7 +4951,7 @@
   const hasKaportaIsaretleri = !!(boyaliParcalar && Object.keys(boyaliParcalar).some(function(partId) {
     return !!boyaliParcalar[partId];
   }));
-  html += `<div class="detail-row detail-row-inline detail-row-kaporta"><div class="detail-row-header"><span class="detail-row-label">Kaporta Durumu</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> `;
+  html += `<div class="detail-row detail-row-inline detail-row-kaporta detail-section-start"><div class="detail-row-header"><span class="detail-row-label">Kaporta Durumu</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> `;
   if (hasKaportaIsaretleri) {
       html += 'Aşağıdaki şemada belirtilmiştir.';
   } else {
@@ -5163,7 +5163,7 @@
 
     if (vehicleNeedsK2Belgesi(vehicle)) {
       const tasitKartiLabel = getVehicleDocumentPath(vehicle, 'tasit_karti') ? 'Yüklü' : 'Yüklü Değil';
-      html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Taşıt Kartı</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(tasitKartiLabel)}</span></div>`;
+      html += `<div class="detail-row detail-row-inline detail-section-start"><div class="detail-row-header"><span class="detail-row-label">Taşıt Kartı</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(tasitKartiLabel)}</span></div>`;
     }
 
     if (vehicleNeedsTakograf(vehicle)) {
@@ -5190,8 +5190,9 @@
     };
 
     // Detay: yedek anahtar durumu
+    const equipmentSectionStartClass = vehicleNeedsK2Belgesi(vehicle) ? '' : ' detail-section-start';
     const anahtarLabel = detailVarYokLabel(vehicle.anahtar, vehicle.anahtarNerede);
-    html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Yedek Anahtar</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(anahtarLabel)}</span></div>`;
+    html += `<div class="detail-row detail-row-inline${equipmentSectionStartClass}"><div class="detail-row-header"><span class="detail-row-label">Yedek Anahtar</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(anahtarLabel)}</span></div>`;
     
     // Hak Mahrumiyeti
     const krediLabel = detailVarYokLabel(vehicle.kredi, vehicle.krediDetay);
@@ -5241,7 +5242,7 @@
     const kaskoDegeriStyle = isKaskoOutdated && !isPlaceholderMsg ? 'color: var(--red) !important;' : '';
     const kaskoDegeriExtra = (isKaskoOutdated && !isPlaceholderMsg) ? ' <span style="font-size: 0.8em; opacity: 0.8;">(Güncel Değil)</span>' : '';
     const kaskoDegeriDisplay = String(kaskoDegeri).trim() || '-';
-    html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Kasko Değeri</span><span class="detail-row-colon">:</span></div><span class="detail-row-value kasko-degeri-text" style="${kaskoDegeriStyle}"> ${escapeHtml(kaskoDegeriDisplay)}${kaskoDegeriExtra}</span></div>`;
+    html += `<div class="detail-row detail-row-inline detail-section-start"><div class="detail-row-header"><span class="detail-row-label">Kasko Değeri</span><span class="detail-row-colon">:</span></div><span class="detail-row-value kasko-degeri-text" style="${kaskoDegeriStyle}"> ${escapeHtml(kaskoDegeriDisplay)}${kaskoDegeriExtra}</span></div>`;
 
     // Notlar (kayıt formundan) + Kullanıcı Notu (varsa, kullanıcı panelinden)
     const notes = vehicle.notes || '';
