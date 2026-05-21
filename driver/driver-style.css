@@ -558,11 +558,11 @@ body.dashboard-page {
 }
 
 .driver-below-hero-row .driver-btn-password {
-  color: #3b82f6;
+  color: #5889b5;
 }
 .driver-below-hero-row .driver-btn-password:hover,
 .driver-below-hero-row .driver-btn-password:focus {
-  color: #60a5fa;
+  color: #6a9bc4;
 }
 
 /* KULLANICI PANELİ: h1 altında, 1pt küçük, aynı renk (metalik gradient) */
@@ -674,11 +674,11 @@ body.dashboard-page {
     margin: 0 !important;
   }
   .dashboard-page .driver-below-hero-row .driver-btn-password {
-    color: #3b82f6 !important;
+    color: #5889b5 !important;
   }
   .dashboard-page .driver-below-hero-row .driver-btn-password:hover,
   .dashboard-page .driver-below-hero-row .driver-btn-password:focus {
-    color: #60a5fa !important;
+    color: #6a9bc4 !important;
   }
   /* Üst durum ikonları arası 8px (masaüstü) */
   .dashboard-page .driver-below-hero-row {
@@ -1363,12 +1363,13 @@ body.dashboard-page {
   min-height: 28px;
 }
 .driver-request-fab-row .driver-btn-logout.driver-request-fab {
-  color: var(--theme-color);
+  color: rgba(186, 92, 92, 0.88);
 }
 .driver-request-fab-row .driver-btn-logout.driver-request-fab:hover,
 .driver-request-fab-row .driver-btn-logout.driver-request-fab:focus-visible {
-  color: var(--theme-color);
+  color: rgba(200, 108, 108, 0.95);
   width: 96px;
+  filter: drop-shadow(0 0 3px rgba(186, 92, 92, 0.18));
 }
 .driver-action-btn-feedback.driver-request-fab {
   display: inline-flex;
@@ -1383,7 +1384,7 @@ body.dashboard-page {
   border: none;
   background: transparent;
   box-shadow: none;
-  color: rgba(238, 246, 255, 0.9);
+  color: rgba(200, 210, 222, 0.74);
   cursor: pointer;
   overflow: hidden;
   white-space: nowrap;
@@ -1396,6 +1397,7 @@ body.dashboard-page {
   height: 29px;
   flex: 0 0 auto;
   color: currentColor;
+  opacity: 0.9;
   transform-origin: center center;
   animation: none;
 }
@@ -1423,7 +1425,7 @@ body.dashboard-page {
 .driver-action-btn-feedback.driver-request-fab:focus-visible {
   width: 132px;
   padding: 0 10px;
-  color: #fff;
+  color: rgba(225, 232, 242, 0.9);
   background: transparent;
   box-shadow: none;
   border-radius: 8px;
@@ -1433,7 +1435,7 @@ body.dashboard-page {
 .driver-action-btn-feedback.driver-request-fab:focus-visible .driver-action-btn-feedback-icon {
   animation: none;
   transform: scale(1.04);
-  filter: drop-shadow(0 0 6px rgba(238, 246, 255, 0.28));
+  filter: drop-shadow(0 0 3px rgba(180, 192, 210, 0.16));
 }
 .driver-action-btn-feedback.driver-request-fab:hover .driver-request-fab-label,
 .driver-action-btn-feedback.driver-request-fab:focus-visible .driver-request-fab-label {
@@ -2320,7 +2322,7 @@ body.dashboard-page {
   justify-content: center;
 }
 .driver-btn-password {
-  color: #3b82f6;
+  color: #5889b5;
 }
 .driver-btn-logout {
   color: var(--theme-color) !important;
@@ -2334,11 +2336,11 @@ body.dashboard-page {
 .driver-btn-password:hover,
 .driver-btn-password:focus,
 .driver-btn-password:active {
-  color: #60a5fa;
+  color: #6a9bc4;
   background: transparent !important;
   border: none !important;
   transform: scale(1.12);
-  filter: drop-shadow(0 0 6px rgba(96, 165, 250, 0.45));
+  filter: drop-shadow(0 0 4px rgba(106, 155, 196, 0.22));
 }
 .driver-btn-logout:hover,
 .driver-btn-logout:focus,
@@ -7202,20 +7204,21 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     white-space: nowrap !important;
     pointer-events: none !important;
     text-align: center !important;
-    color: rgba(238, 246, 255, 0.92) !important;
-    text-shadow: 0 0 5px rgba(238, 246, 255, 0.24) !important;
+    color: rgba(200, 210, 222, 0.78) !important;
+    text-shadow: 0 0 4px rgba(180, 192, 210, 0.14) !important;
     transition: opacity .18s ease, color .18s ease, transform .18s ease !important;
   }
   .dashboard-page .driver-action-btn-feedback.driver-request-fab:hover .driver-request-fab-label,
   .dashboard-page .driver-action-btn-feedback.driver-request-fab:focus-visible .driver-request-fab-label {
     opacity: 1 !important;
     max-width: none !important;
-    color: #ffffff !important;
+    color: rgba(225, 232, 242, 0.9) !important;
     transform: translate(-50%, 0) scale(1.06) !important;
   }
   .dashboard-page .driver-action-btn-feedback.driver-request-fab:hover .driver-action-btn-feedback-icon,
   .dashboard-page .driver-action-btn-feedback.driver-request-fab:focus-visible .driver-action-btn-feedback-icon {
     transform: scale(1.08) !important;
+    filter: drop-shadow(0 0 3px rgba(180, 192, 210, 0.16)) !important;
   }
 }
 
