@@ -45,7 +45,7 @@ body::-webkit-scrollbar,
   --modal-bg: #080d16;
   --modal-max-width: 500px;
   --modal-radius: 10px;
-  --modal-header-red-gradient: linear-gradient(180deg, #8f001b 0%, #720016 30%, #43000f 64%, #10070b 100%);
+  --modal-header-red-gradient: linear-gradient(180deg, #760016 0%, #5b0011 30%, #2f000a 64%, #090407 100%);
   --modal-margin-bottom-desktop: calc(var(--app-footer-height) + var(--modal-gap-above-footer));
   --modal-margin-bottom-mobile: calc(var(--modal-gap-above-footer) + var(--app-footer-height));
 
