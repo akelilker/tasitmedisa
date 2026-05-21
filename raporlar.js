@@ -1767,12 +1767,12 @@
         var t = formatDate(muRaw);
         return t || '-';
     }
-    /** Yazdırma: araç muayenesi ile aynı gün ise '-' (birleşik hücre davranışıyla uyumlu) */
+    /** Yazdırma / Excel egzoz sütunu: bitiş tarihi (genel ile aynı gün dahil; boş egzoz alanında muayene bitişi) */
     function formatStokEgzozDateOnlyForPrint(vehicle) {
         var muRaw = vehicle && vehicle.muayeneDate ? String(vehicle.muayeneDate).trim() : '';
         var egRaw = vehicle && vehicle.egzozMuayeneDate ? String(vehicle.egzozMuayeneDate).trim() : '';
+        if (!egRaw && muRaw) egRaw = muRaw;
         if (!egRaw) return '-';
-        if (stokNormalizeIsoDateKey(egRaw) === stokNormalizeIsoDateKey(muRaw)) return '-';
         var t = formatDate(egRaw);
         return t || '-';
     }
