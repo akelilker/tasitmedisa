@@ -1740,6 +1740,13 @@
         var m = s.match(/^(\d{4}-\d{2}-\d{2})/);
         return m ? m[1] : s;
     }
+    /** Egzoz bitiş ISO: kayıtta egzoz boşsa genel muayene bitişi (aynı gün dahil). */
+    function resolveStokEgzozBitisIso(vehicle) {
+        if (!vehicle) return '';
+        var muIso = vehicle.muayeneDate != null ? String(vehicle.muayeneDate).trim() : '';
+        var egIso = vehicle.egzozMuayeneDate != null ? String(vehicle.egzozMuayeneDate).trim() : '';
+        return egIso || muIso || '';
+    }
     function formatStokMuayeneCell(vehicle, options) {
         options = options || {};
         var compact = options.compact === true;
@@ -1767,13 +1774,11 @@
         var t = formatDate(muRaw);
         return t || '-';
     }
-    /** Yazdırma / Excel egzoz sütunu: bitiş tarihi (genel ile aynı gün dahil; boş egzoz alanında muayene bitişi) */
+    /** Yazdırma / Excel egzoz sütunu: bitiş tarihi (genel ile aynı gün dahil). */
     function formatStokEgzozDateOnlyForPrint(vehicle) {
-        var muRaw = vehicle && vehicle.muayeneDate ? String(vehicle.muayeneDate).trim() : '';
-        var egRaw = vehicle && vehicle.egzozMuayeneDate ? String(vehicle.egzozMuayeneDate).trim() : '';
-        if (!egRaw && muRaw) egRaw = muRaw;
-        if (!egRaw) return '-';
-        var t = formatDate(egRaw);
+        var iso = resolveStokEgzozBitisIso(vehicle);
+        if (!iso) return '-';
+        var t = formatDate(iso);
         return t || '-';
     }
     /** Yazdır + Excel: muayene sütunundan hemen sonra egzoz (Excel / yazdır ile aynı düzen) */
@@ -1931,6 +1936,15 @@
     function getStokCellValue(vehicle, col, index, opts) {
         opts = opts || {};
         let value = '-';
+        if (col.key === 'egzozMuayene') {
+            var egzIso = resolveStokEgzozBitisIso(vehicle);
+            return egzIso ? formatDate(egzIso) : '-';
+        }
+        if (col.key === 'muayene') {
+            return opts.printSeparateMuayeneColumns
+                ? formatStokMuayeneDateOnlyForPrint(vehicle)
+                : formatStokMuayeneCell(vehicle);
+        }
         if (col.isBase) {
             switch (col.key) {
                 case 'sira':
@@ -2002,14 +2016,6 @@
                         }
                         return String(kaskoDegeri).trim() || '-';
                     })() ;
-                    break;
-                case 'muayene':
-                    value = opts.printSeparateMuayeneColumns
-                        ? formatStokMuayeneDateOnlyForPrint(vehicle)
-                        : formatStokMuayeneCell(vehicle);
-                    break;
-                case 'egzozMuayene':
-                    value = formatStokEgzozDateOnlyForPrint(vehicle);
                     break;
                 case 'kredi':
                     value = vehicle.kredi === 'var' ? 'Var' : vehicle.kredi === 'yok' ? 'Yok' : '-';
