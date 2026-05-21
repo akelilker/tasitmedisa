@@ -1110,29 +1110,33 @@ body.dashboard-page {
   display: flex;
   align-items: flex-start;
   gap: 8px;
-  padding: 7px 8px;
-  border-radius: 6px;
-  border: 1px solid transparent;
-  background: rgba(255, 255, 255, 0.03);
+  padding: 5px 10px;
+  border-radius: 7px;
+  border: 1px solid rgba(130, 130, 130, 0.55);
+  background: linear-gradient(180deg, rgba(12, 18, 30, 0.94) 0%, rgba(8, 13, 22, 0.92) 100%);
   line-height: 1.3;
   font-size: 12px;
   text-align: left;
 }
 #driver-notification-modal .driver-warning-panel-item-red {
-  color: var(--theme-color);
-  border-color: rgba(200, 72, 92, 0.22);
-  background: rgba(28, 8, 14, 0.42);
+  border-color: rgba(var(--theme-color-rgb), 0.6);
+  box-shadow: 0 0 8px rgba(var(--theme-color-rgb), 0.2);
 }
 #driver-notification-modal .driver-warning-panel-item-orange {
-  color: #f59a4a;
-  border-color: rgba(245, 158, 72, 0.2);
-  background: rgba(48, 28, 10, 0.12);
+  border-color: rgba(var(--orange-warn-rgb), 0.6);
+  box-shadow: 0 0 8px rgba(var(--orange-warn-rgb), 0.2);
 }
 #driver-notification-modal .driver-warning-panel-item .driver-warning-icon-engine {
   width: 16px;
   height: 16px;
   flex: 0 0 auto;
   margin-top: 1px;
+}
+#driver-notification-modal .driver-warning-panel-item-red .driver-warning-icon-engine-red {
+  color: var(--theme-color);
+}
+#driver-notification-modal .driver-warning-panel-item-orange .driver-warning-icon-engine-orange {
+  color: var(--orange-warn);
 }
 #driver-notification-modal .driver-warning-panel-text {
   flex: 1;
@@ -1142,7 +1146,7 @@ body.dashboard-page {
 }
 #driver-notification-modal .driver-warning-panel-item-red .driver-warning-panel-text,
 #driver-notification-modal .driver-warning-panel-item-orange .driver-warning-panel-text {
-  color: inherit;
+  color: #a0aec0;
 }
 #driver-notification-modal .driver-notification-empty {
   padding: 10px 8px;
