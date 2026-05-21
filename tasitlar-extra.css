@@ -3043,7 +3043,7 @@
   padding: 6px 8px;
   border: none;
   border-radius: 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(var(--theme-color-rgb), 0.34);
   color: #a0aec0;
   cursor: pointer;
   text-align: left;
