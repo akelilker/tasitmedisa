@@ -1137,7 +1137,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
 
   function getKmMessageByState(state) {
       if (state === 'MONTHLY_UPDATE_DUE_SOFT') return 'Kilometre bilgisi güncellensin';
-      if (state === 'FIRST_ENTRY_REQUIRED' || state === 'MONTHLY_UPDATE_DUE_HARD') return 'Kilometre bilgisi girin';
+      if (state === 'FIRST_ENTRY_REQUIRED' || state === 'MONTHLY_UPDATE_DUE_HARD') return 'Kilometre Bilgisi Girin';
       return '';
   }
 
