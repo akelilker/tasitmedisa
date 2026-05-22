@@ -5117,6 +5117,10 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     box-sizing: border-box !important;
   }
   .dashboard-page #app-footer {
+    border-top-color: rgba(156, 166, 180, 0.68) !important;
+    box-shadow:
+      0 -1px 0 rgba(235, 240, 248, 0.22),
+      0 -12px 35px rgba(var(--theme-color-rgb), 0.35) !important;
     height: 42px !important;
     min-height: 42px !important;
     width: 100% !important;
