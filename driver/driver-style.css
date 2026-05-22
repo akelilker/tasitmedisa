@@ -6490,7 +6490,15 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
 
   /* Yeşil Bildir ile Talep Gönder: 6px (768px kuralını bu blokta taşıyan seçiciler ezmesin) */
+  .dashboard-page .driver-action-area-inner {
+    justify-content: flex-start !important;
+    gap: 3px !important;
+  }
+  .dashboard-page .driver-action-area-inner > .driver-action-group:not(.driver-action-feedback-slot) {
+    margin-bottom: 0 !important;
+  }
   .dashboard-page .driver-action-area-inner .driver-action-footer.driver-action-group {
+    margin-top: 5px !important;
     margin-bottom: 0 !important;
   }
   .dashboard-page .driver-action-area-inner .driver-action-feedback-slot.driver-request-fab-row {
