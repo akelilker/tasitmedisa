@@ -1558,7 +1558,7 @@ body.dashboard-page {
 }
 
 @media (max-width: 768px) {
-  /* Yeşil Bildir (footer) ile Talep Gönder arası tam 6px (margin çöküşü tek kaynak) */
+  /* Mobil aksiyon ritmi: genel 3px, Lastik -> Bildir net 8px (3px gap + 5px footer margin-top) */
   .dashboard-page .driver-action-area-inner {
     justify-content: flex-start;
     gap: 3px;
@@ -6479,7 +6479,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     font-size: 16px !important;
   }
 
-  /* Yeşil Bildir ile Talep Gönder: 6px (768px kuralını bu blokta taşıyan seçiciler ezmesin) */
   #history-modal .history-filter-label,
   #history-modal .history-vehicle-trigger {
     font-size: 15px !important;
