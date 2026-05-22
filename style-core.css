@@ -623,6 +623,10 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
     .app-container {
         border-top-width: 0.5px;
     }
+    /* Masaüstü footer reserve: fixed footer içeriğin altına girmesini önler */
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-container {
+        padding-bottom: calc(var(--app-footer-real-height, 34px) + env(safe-area-inset-bottom, 0));
+    }
     .content-wrap {
         border-left-width: 0.5px;
         border-right-width: 0.5px;
