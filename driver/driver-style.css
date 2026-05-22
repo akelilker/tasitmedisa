@@ -793,8 +793,8 @@ body.dashboard-page {
     flex: 0 0 auto;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 4px;
-    margin-top: 6px;
-    padding-top: 6px;
+    margin-top: 2px;
+    padding-top: 0;
     border-top: none;
   }
   .dashboard-page .driver-left-quick-action {
