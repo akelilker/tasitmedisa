@@ -802,8 +802,8 @@ body.dashboard-page {
     min-width: 0;
     min-height: 26px;
     padding: 0;
-    border: 1px solid rgba(238, 246, 255, 0.28);
-    border-radius: 7px;
+    border: none;
+    border-radius: 0;
     background: transparent;
     color: #a0aec0;
     font: inherit;
@@ -815,21 +815,30 @@ body.dashboard-page {
     justify-content: center;
     text-align: center;
     cursor: pointer;
-    transition: border-color 0.18s ease, color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+    box-shadow: none;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: color 0.18s ease;
   }
   .dashboard-page .driver-left-quick-action-icon {
     width: 18px;
     height: 18px;
     flex: 0 0 auto;
     color: currentColor;
+    transform-origin: center center;
+    transition: transform 0.18s ease, color 0.18s ease, filter 0.18s ease;
   }
   .dashboard-page .driver-left-quick-action:hover,
   .dashboard-page .driver-left-quick-action:focus-visible {
-    border-color: rgba(238, 246, 255, 0.56);
     color: #ffffff;
-    background: rgba(238, 246, 255, 0.035);
-    box-shadow: 0 0 6px rgba(238, 246, 255, 0.12);
+    background: transparent;
+    box-shadow: none;
     outline: none;
+  }
+  .dashboard-page .driver-left-quick-action:hover .driver-left-quick-action-icon,
+  .dashboard-page .driver-left-quick-action:focus-visible .driver-left-quick-action-icon {
+    transform: scale(1.18);
+    filter: drop-shadow(0 0 3px rgba(238, 246, 255, 0.2));
   }
   .dashboard-page .driver-status-icon-slot-history .driver-btn-history,
   .dashboard-page .driver-action-feedback-slot.driver-request-fab-row .driver-documents-fab,
