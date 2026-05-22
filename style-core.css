@@ -3854,10 +3854,10 @@ body.modal-open .app-container {
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
     border-left: 0.5px solid var(--footer-side-border) !important;
     border-right: 0.5px solid var(--footer-side-border) !important;
-    border-top-color: rgba(190, 198, 208, 0.48) !important;
+    border-top-color: rgba(156, 166, 180, 0.62) !important;
     overflow: visible !important;
     box-shadow:
-      0 -1px 0 rgba(255, 255, 255, 0.14),
+      0 -1px 0 rgba(220, 226, 235, 0.18),
       var(--footer-red-glow) !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer::before {
