@@ -7250,7 +7250,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 @media (max-width: 768px) {
     /* Mobil aksiyon ritmi tek owner: genel 5px, Lastik -> Bildir net 4px */
     .dashboard-page .driver-action-area {
-        padding-top: 3px;
+        padding-top: 8px;
     }
     .dashboard-page .driver-action-area-inner {
         justify-content: flex-start;
