@@ -2137,7 +2137,7 @@ body.dashboard-page {
   }
   /* Sağ grid butonları: mobilde footer'a taşmadan daha kompakt */
   .driver-action-btn {
-    padding: 8px 9px;
+    padding: 9px 9px;
     font-size: 13.5px;
     display: flex;
     justify-content: center;
@@ -7248,7 +7248,10 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 
 /* 2. Ortadaki kırmızı dikey çizgi footera değmeden Bildir butonu hizasında kesilsin (Mobil) */
 @media (max-width: 768px) {
-    /* Mobil aksiyon ritmi tek owner: genel 3px, Lastik -> Bildir net 8px */
+    /* Mobil aksiyon ritmi tek owner: genel 5px, Lastik -> Bildir net 4px */
+    .dashboard-page .driver-action-area {
+        padding-top: 3px;
+    }
     .dashboard-page .driver-action-area-inner {
         justify-content: flex-start;
         gap: 5px;
@@ -7257,14 +7260,18 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
         margin-bottom: 0;
     }
     .dashboard-page .driver-action-area-inner .driver-action-footer.driver-action-group {
-        margin-top: 5px;
+        margin-top: -1px;
         margin-bottom: 0;
     }
     .dashboard-page .driver-action-area-inner .driver-action-feedback-slot.driver-request-fab-row {
         margin-top: 2px;
     }
+    .dashboard-page .driver-action-area .driver-action-group > .driver-action-btn {
+        padding-top: 9px;
+        padding-bottom: 9px;
+    }
     .dashboard-page .driver-action-area .driver-action-footer .universal-btn-save {
-        height: 35px !important;
+        height: 36px !important;
     }
     .dashboard-page .driver-left-panel {
         margin-bottom: 0 !important;
