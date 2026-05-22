@@ -1229,7 +1229,6 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       const infoEl = document.getElementById('driver-vehicle-info');
       if (infoEl) {
           infoEl.innerHTML = `
-              <div class="driver-info-item"><span class="label">Şube</span><span class="value">${escapeHtmlDriver((vehicle.branchName != null && String(vehicle.branchName).trim()) ? capitalizeWords(String(vehicle.branchName).trim()) : '-')}</span></div>
               <div class="driver-info-item"><span class="label">Üretim Yılı</span><span class="value">${escapeHtmlDriver(vehicle.year || '-')}</span></div>
               <div class="driver-info-item ${kmSavedClass} ${kmClass}"><span class="label">KM</span><span class="value">${escapeHtmlDriver(kmFormatted)}</span></div>
               <div class="driver-info-item ${sigortaW.class}"><span class="label">Sigorta Bitiş</span><span class="value">${formatDriverDate(vehicle.sigortaDate) || '-'}</span></div>
