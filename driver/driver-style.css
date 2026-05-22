@@ -7267,6 +7267,12 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
         margin-top: 2px;
     }
     .dashboard-page .driver-action-area .driver-action-group > .driver-action-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 42px;
+        height: 42px;
+        line-height: 1.1;
         padding-top: 9px;
         padding-bottom: 9px;
     }

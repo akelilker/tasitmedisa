@@ -1,6 +1,219 @@
 {
     "tasitlar": [
         {
+            "id": "1778591701140",
+            "plate": "34GJD221",
+            "year": "2022",
+            "brandModel": "Fiat Egea 1.3multijet Easy",
+            "km": "38.000",
+            "vehicleType": "otomobil",
+            "transmission": "manuel",
+            "tramer": "var",
+            "tramerRecords": [
+                {
+                    "date": "16\/05\/2023",
+                    "amount": "4.262,00TL"
+                }
+            ],
+            "boya": "var",
+            "boyaliParcalar": {
+                "sag-on-camurluk": "boyali"
+            },
+            "sigortaDate": "2026-07-12",
+            "kaskoDate": "",
+            "muayeneDate": "2028-01-26",
+            "egzozMuayeneDate": "2028-01-26",
+            "anahtar": "yok",
+            "anahtarNerede": "",
+            "kredi": "yok",
+            "krediDetay": "",
+            "branchId": "1769175230543",
+            "kaskoKodu": "1001294",
+            "kaskoDegeri": "926.188 ₺",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
+            "price": "900.000 TL",
+            "notes": "Ahmet Şenay Iade",
+            "uttsTanimlandi": false,
+            "takipCihaziMontaj": false,
+            "events": [
+                {
+                    "id": "feedback-16",
+                    "type": "driver-feedback",
+                    "date": "2026-05-18",
+                    "timestamp": "2026-05-18T16:04:57+03:00",
+                    "data": {
+                        "surucu": "İlker AKEL",
+                        "kullaniciAdi": "İlker AKEL",
+                        "konuTuru": "talep",
+                        "mesaj": "Ss",
+                        "talepId": 16
+                    }
+                },
+                {
+                    "id": "feedback-15",
+                    "type": "driver-feedback",
+                    "date": "2026-05-18",
+                    "timestamp": "2026-05-18T15:56:14+03:00",
+                    "data": {
+                        "surucu": "İlker AKEL",
+                        "kullaniciAdi": "İlker AKEL",
+                        "konuTuru": "talep",
+                        "mesaj": "Son Temız",
+                        "talepId": 15
+                    }
+                },
+                {
+                    "id": "feedback-14",
+                    "type": "driver-feedback",
+                    "date": "2026-05-18",
+                    "timestamp": "2026-05-18T15:55:26+03:00",
+                    "data": {
+                        "surucu": "İlker AKEL",
+                        "kullaniciAdi": "İlker AKEL",
+                        "konuTuru": "talep",
+                        "mesaj": "Y",
+                        "talepId": 14
+                    }
+                },
+                {
+                    "id": "feedback-13",
+                    "type": "driver-feedback",
+                    "date": "2026-05-18",
+                    "timestamp": "2026-05-18T15:48:03+03:00",
+                    "data": {
+                        "surucu": "İlker AKEL",
+                        "kullaniciAdi": "İlker AKEL",
+                        "konuTuru": "talep",
+                        "mesaj": "66",
+                        "talepId": 13
+                    }
+                },
+                {
+                    "id": "feedback-12",
+                    "type": "driver-feedback",
+                    "date": "2026-05-18",
+                    "timestamp": "2026-05-18T15:31:44+03:00",
+                    "data": {
+                        "konuTuru": "talep",
+                        "mesaj": "İill",
+                        "talepId": 12
+                    }
+                },
+                {
+                    "id": "17789322930km",
+                    "type": "km-revize",
+                    "date": "2026-05-16",
+                    "timestamp": "2026-05-16T14:51:33+03:00",
+                    "data": {
+                        "eskiKm": "38000",
+                        "yeniKm": "38300",
+                        "surucu": "İlker AKEL"
+                    }
+                },
+                {
+                    "id": "feedback-11",
+                    "type": "driver-feedback",
+                    "date": "2026-05-16",
+                    "timestamp": "2026-05-16T01:22:43+03:00",
+                    "data": {
+                        "konuTuru": "talep",
+                        "mesaj": "Grgr",
+                        "talepId": 11
+                    }
+                },
+                {
+                    "id": "feedback-10",
+                    "type": "driver-feedback",
+                    "date": "2026-05-13",
+                    "timestamp": "2026-05-13T14:27:03+03:00",
+                    "data": {
+                        "konuTuru": "talep",
+                        "mesaj": "66",
+                        "talepId": 10
+                    }
+                },
+                {
+                    "id": "1778614179208",
+                    "type": "lastik-guncelle",
+                    "date": "12\/05\/2026",
+                    "timestamp": "2026-05-12T19:29:39.208Z",
+                    "data": {
+                        "durum": "yok",
+                        "adres": "",
+                        "surucu": "İlker AKEL",
+                        "kaydeden": "İlker AKEL"
+                    }
+                },
+                {
+                    "id": "1778614165364",
+                    "type": "anahtar-guncelle",
+                    "date": "12\/05\/2026",
+                    "timestamp": "2026-05-12T19:29:25.364Z",
+                    "data": {
+                        "durum": "yok",
+                        "detay": "",
+                        "surucu": "İlker AKEL"
+                    }
+                },
+                {
+                    "id": "feedback-9",
+                    "type": "driver-feedback",
+                    "date": "2026-05-12",
+                    "timestamp": "2026-05-12T17:54:49+03:00",
+                    "data": {
+                        "konuTuru": "oneri",
+                        "mesaj": "Deneme",
+                        "talepId": 9
+                    }
+                },
+                {
+                    "id": "1778591726217",
+                    "type": "kullanici-atama",
+                    "date": "12\/05\/2026",
+                    "timestamp": "2026-05-12T13:15:26.217Z",
+                    "data": {
+                        "kullaniciId": "u1769823278672",
+                        "kullaniciAdi": "İlker AKEL",
+                        "eskiKullaniciAdi": "",
+                        "kaydeden": "İlker AKEL"
+                    }
+                },
+                {
+                    "id": "1778591701140|vehicle-created",
+                    "type": "vehicle-created",
+                    "date": "12\/05\/2026",
+                    "timestamp": "2026-05-12T13:15:01.140Z",
+                    "data": {
+                        "plakaSnapshot": "34GJD221",
+                        "kaydeden": ""
+                    }
+                },
+                {
+                    "id": "1778591704919",
+                    "type": "km-revize",
+                    "date": "12\/05\/2026",
+                    "timestamp": "2026-05-12T13:15:04.919Z",
+                    "data": {
+                        "eskiKm": "-",
+                        "yeniKm": "38000",
+                        "isInitialKmEntry": true
+                    }
+                }
+            ],
+            "satildiMi": false,
+            "createdAt": "2026-05-12T13:15:01.140Z",
+            "updatedAt": "2026-05-12T13:15:26.217Z",
+            "tescilTarihi": "12\/05\/2026",
+            "guncelKm": 38300,
+            "version": 182,
+            "assignedUserId": "u1769823278672",
+            "tahsisKisi": "İlker AKEL",
+            "ruhsatPath": "ruhsat\/34GJD221_ruhsat_1778591767.pdf",
+            "sigortaPolicePath": "sigorta_police\/34GJD221_sigorta_1778614131.pdf",
+            "lastikDurumu": "yok",
+            "lastikAdres": ""
+        },
+        {
             "id": "1778262649873",
             "plate": "35LGT36",
             "year": "2017",
@@ -28,7 +241,7 @@
             "branchId": "1769175216952",
             "kaskoKodu": "532197",
             "kaskoDegeri": "754.376 ₺",
-            "kaskoDegeriYuklemeTarihi": "2026-05-09T02:54:33.514Z",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
             "price": "",
             "notes": "Ruhsat Sahibi Gizem Atasoy Tasit  Onden Kazası Var. Saseler Islemli. Airbag Acmadi. Tramer Sorgulanmasi Gerekli",
             "uttsTanimlandi": false,
@@ -96,7 +309,7 @@
             "updatedAt": "2026-05-08T17:50:49.873Z",
             "tescilTarihi": "08\/05\/2026",
             "guncelKm": "90000",
-            "version": 24,
+            "version": 237,
             "assignedUserId": "u1778262769365",
             "lastikDurumu": "yok",
             "lastikAdres": "",
@@ -106,7 +319,7 @@
             "id": "1776960228688",
             "plate": "34GT8770",
             "year": "2012",
-            "brandModel": "Hyundai Elantra 1.6 Prime Plus",
+            "brandModel": "Hyundai Elantra 1.6 D-Cvvt Prime Plus",
             "km": "188.000",
             "vehicleType": "otomobil",
             "transmission": "otomatik",
@@ -133,12 +346,45 @@
             "branchId": "1769175251066",
             "kaskoKodu": "1771011",
             "kaskoDegeri": "718.933 ₺",
-            "kaskoDegeriYuklemeTarihi": "2026-05-07T22:03:22.906Z",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
             "price": "41.500 TL",
-            "notes": "İlker Akel adına kayıtlı",
+            "notes": "Özlem Pınar Yel  adına kayıtlı",
             "uttsTanimlandi": false,
             "takipCihaziMontaj": false,
             "events": [
+                {
+                    "id": "17791016302km",
+                    "type": "km-revize",
+                    "date": "2026-05-18",
+                    "timestamp": "2026-05-18T13:53:50+03:00",
+                    "data": {
+                        "eskiKm": "190100",
+                        "yeniKm": "192000",
+                        "surucu": "İlker AKEL"
+                    }
+                },
+                {
+                    "id": "feedback-8",
+                    "type": "driver-feedback",
+                    "date": "2026-05-12",
+                    "timestamp": "2026-05-12T06:12:45+03:00",
+                    "data": {
+                        "konuTuru": "talep",
+                        "mesaj": "Güncellenen Zorunlu Trafik Sigortası Poliçesinin Gönderilmesi.",
+                        "talepId": 8
+                    }
+                },
+                {
+                    "id": "feedback-7",
+                    "type": "driver-feedback",
+                    "date": "2026-05-12",
+                    "timestamp": "2026-05-12T01:53:52+03:00",
+                    "data": {
+                        "konuTuru": "talep",
+                        "mesaj": "Güncellenen Zorunlu Trafik Sigortası Poliçesinin Gönderilmesi.",
+                        "talepId": 7
+                    }
+                },
                 {
                     "id": "17775842930km",
                     "type": "km-revize",
@@ -332,10 +578,10 @@
             ],
             "satildiMi": false,
             "createdAt": "2026-04-23T16:03:48.688Z",
-            "updatedAt": "2026-05-06T05:21:19.687Z",
+            "updatedAt": "2026-05-18T11:48:07.815Z",
             "tescilTarihi": "02\/01\/2012",
-            "guncelKm": 190100,
-            "version": 402,
+            "guncelKm": 192000,
+            "version": 616,
             "assignedUserId": "u1769823278672",
             "tahsisKisi": "İlker AKEL",
             "lastikDurumu": "var",
@@ -366,8 +612,8 @@
             "krediDetay": "",
             "branchId": "1769175251066",
             "kaskoKodu": "1531642",
-            "kaskoDegeri": "2.578.000 ₺",
-            "kaskoDegeriYuklemeTarihi": "2026-05-07T22:03:22.906Z",
+            "kaskoDegeri": "2.630.000 ₺",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
             "price": "1.760.000 TL",
             "notes": "",
             "uttsTanimlandi": false,
@@ -485,7 +731,7 @@
             "updatedAt": "2026-04-23T07:35:57.388Z",
             "tescilTarihi": "23\/04\/2026",
             "guncelKm": 850,
-            "version": 397,
+            "version": 610,
             "assignedUserId": "u1769823278672",
             "tahsisKisi": "İlker AKEL",
             "lastikDurumu": "yok",
@@ -546,13 +792,13 @@
             "createdAt": "2026-04-22T00:24:56+03:00",
             "updatedAt": "2026-04-27T19:13:42.009Z",
             "tescilTarihi": "2025-12-04",
-            "version": 401,
+            "version": 614,
             "tahsisKisi": "Kadir KAN",
             "guncelKm": 3300,
             "assignedUserId": "u202604220001",
             "egzozMuayeneDate": "2028-04-07",
             "kaskoDegeri": "Değer Yok (Excel: 0)",
-            "kaskoDegeriYuklemeTarihi": "2026-05-07T22:03:22.906Z",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
             "kaskoKodu": "532222"
         },
         {
@@ -569,7 +815,7 @@
             "boyaliParcalar": [],
             "sigortaDate": "2026-09-11",
             "kaskoDate": "2026-11-08",
-            "muayeneDate": "2026-05-22",
+            "muayeneDate": "2028-05-21",
             "anahtar": "",
             "anahtarNerede": "",
             "kredi": "var",
@@ -580,6 +826,41 @@
             "uttsTanimlandi": false,
             "takipCihaziMontaj": false,
             "events": [
+                {
+                    "id": "1779347412298",
+                    "type": "muayene-guncelle",
+                    "date": "21\/05\/2026",
+                    "timestamp": "2026-05-21T07:10:12.298Z",
+                    "data": {
+                        "bitisTarihi": "2028-05-21",
+                        "egzozMuayeneDate": "",
+                        "egzozMuayeneYapilmaDate": "",
+                        "surucu": "İlker AKEL"
+                    }
+                },
+                {
+                    "id": "1779347387480",
+                    "type": "muayene-guncelle",
+                    "date": "22\/05\/2024",
+                    "timestamp": "2026-05-21T07:09:47.480Z",
+                    "data": {
+                        "bitisTarihi": "2026-05-22",
+                        "egzozMuayeneDate": "",
+                        "egzozMuayeneYapilmaDate": "",
+                        "surucu": "İlker AKEL"
+                    }
+                },
+                {
+                    "id": "17793458805km",
+                    "type": "km-revize",
+                    "date": "2026-05-21",
+                    "timestamp": "2026-05-21T09:44:40+03:00",
+                    "data": {
+                        "eskiKm": "118021",
+                        "yeniKm": "125000",
+                        "surucu": "Sinem HAMALOĞLU"
+                    }
+                },
                 {
                     "id": "1777721060910",
                     "type": "kredi-guncelle",
@@ -596,14 +877,17 @@
             "createdAt": "2026-04-22T00:24:56+03:00",
             "updatedAt": "2026-05-06T01:27:29.280Z",
             "tescilTarihi": "2025-09-11",
-            "version": 401,
+            "version": 618,
             "tahsisKisi": "Sinem HAMALOĞLU",
-            "guncelKm": 118021,
+            "guncelKm": 125000,
             "assignedUserId": "u202604220002",
-            "kaskoDegeri": "1.338.230 ₺",
-            "kaskoDegeriYuklemeTarihi": "2026-05-07T22:03:22.906Z",
-            "egzozMuayeneDate": "2026-05-22",
-            "kaskoKodu": "91334"
+            "kaskoDegeri": "1.538.964 ₺",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
+            "egzozMuayeneDate": "2028-05-21",
+            "kaskoKodu": "91334",
+            "kaskoPolicePath": "kasko_police\/10AIZ310_kasko_1778759390.pdf",
+            "sigortaPolicePath": "sigorta_police\/10AIZ310_sigorta_1778974064.pdf",
+            "ruhsatPath": "ruhsat\/10AIZ310_ruhsat_1779121995.pdf"
         },
         {
             "id": 202604220004,
@@ -649,14 +933,15 @@
             "createdAt": "2026-04-22T00:24:56+03:00",
             "updatedAt": "2026-04-27T19:13:42.009Z",
             "tescilTarihi": "2025-06-24",
-            "version": 401,
+            "version": 615,
             "tahsisKisi": "Selçuk PARLAK",
             "guncelKm": 59947,
             "assignedUserId": "u202604220003",
             "kaskoDegeri": "661.141 ₺",
-            "kaskoDegeriYuklemeTarihi": "2026-05-07T22:03:22.906Z",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
             "egzozMuayeneDate": "2026-09-11",
-            "kaskoKodu": "531607"
+            "kaskoKodu": "531607",
+            "kaskoPolicePath": "kasko_police\/26ADK608_kasko_1778759344.pdf"
         },
         {
             "id": 202604220006,
@@ -677,12 +962,26 @@
             "anahtarNerede": "",
             "kredi": "var",
             "krediDetay": "REHİNLİ | Albaraka Türk Katılım Bankası A.Ş.-ALBARAKATURK-Karabük Şubesi | Tarih: 03\/09\/2025 | Dosya No: 1",
-            "branchId": "1769175251066",
+            "branchId": "1778022947095",
             "price": "1.099.993",
             "notes": "Arvento: VAR | En: 170 cm, Boy: 230 cm, Yükseklik: 130 cm | Kaynak kodlar: marka 53 \/ tip 1335 | Sase: NM0MXXTTGMKD88256 | Police No: 525360362\nŞase No. NM0MXXTTGMKD88256",
             "uttsTanimlandi": false,
             "takipCihaziMontaj": false,
             "events": [
+                {
+                    "id": "1779353620476",
+                    "type": "sube-degisiklik",
+                    "date": "21\/05\/2026",
+                    "timestamp": "2026-05-21T08:53:40.476Z",
+                    "data": {
+                        "eskiSubeId": "1769175251066",
+                        "yeniSubeId": "1778022947095",
+                        "eskiSubeAdi": "MEDİSA",
+                        "yeniSubeAdi": "MEDİSA Giresun",
+                        "surucu": "İlker AKEL",
+                        "kaydeden": "İlker AKEL"
+                    }
+                },
                 {
                     "id": "1778324340941",
                     "type": "kullanici-atama",
@@ -700,14 +999,15 @@
             "createdAt": "2026-04-22T00:24:56+03:00",
             "updatedAt": "2026-05-09T10:59:00.941Z",
             "tescilTarihi": "2024-01-19",
-            "version": 401,
-            "tahsisKisi": "Kaan ALSAN",
+            "version": 616,
+            "tahsisKisi": "Halil ŞENAY",
             "guncelKm": 197073,
             "kaskoDegeri": "1.136.709 ₺",
-            "kaskoDegeriYuklemeTarihi": "2026-05-07T22:03:22.906Z",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
             "egzozMuayeneDate": "2027-04-22",
             "kaskoKodu": "531335",
-            "assignedUserId": "u202604220004"
+            "assignedUserId": "u1779098268752",
+            "kaskoPolicePath": "kasko_police\/34CBS866_kasko_1778759743.pdf"
         },
         {
             "id": 202604220007,
@@ -738,12 +1038,12 @@
             "createdAt": "2026-04-22T00:24:56+03:00",
             "updatedAt": "2026-04-27T19:13:42.009Z",
             "tescilTarihi": "2025-04-08",
-            "version": 401,
+            "version": 614,
             "tahsisKisi": "Fevzi GEMİCİ",
             "guncelKm": 196160,
             "assignedUserId": "u202604220005",
             "kaskoDegeri": "1.463.689 ₺",
-            "kaskoDegeriYuklemeTarihi": "2026-05-07T22:03:22.906Z",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
             "egzozMuayeneDate": "2026-12-07",
             "kaskoKodu": "532250"
         },
@@ -799,14 +1099,15 @@
             "createdAt": "2026-04-22T00:24:56+03:00",
             "updatedAt": "2026-05-06T08:55:20.773Z",
             "tescilTarihi": "2025-10-13",
-            "version": 401,
+            "version": 615,
             "tahsisKisi": "Bora BAYAZIT",
             "guncelKm": 69082,
             "assignedUserId": "u202604220007",
             "kaskoDegeri": "Değer Yok (Excel: 0)",
-            "kaskoDegeriYuklemeTarihi": "2026-05-07T22:03:22.906Z",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
             "egzozMuayeneDate": "2027-01-06",
-            "kaskoKodu": "532250"
+            "kaskoKodu": "532250",
+            "kaskoPolicePath": "kasko_police\/34FAR944_kasko_1778759846.pdf"
         },
         {
             "id": 202604220012,
@@ -894,14 +1195,17 @@
             "createdAt": "2026-04-22T00:24:56+03:00",
             "updatedAt": "2026-05-06T10:10:33.165Z",
             "tescilTarihi": "2025-08-12",
-            "version": 401,
+            "version": 618,
             "tahsisKisi": "Kübra GÜNEŞ",
             "guncelKm": 41241,
             "assignedUserId": "u202604220008",
-            "kaskoDegeri": "1.071.228 ₺",
-            "kaskoDegeriYuklemeTarihi": "2026-05-07T22:03:22.906Z",
+            "kaskoDegeri": "1.099.330 ₺",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
             "egzozMuayeneDate": "2027-05-28",
-            "kaskoKodu": "1221236"
+            "kaskoKodu": "1221236",
+            "kaskoPolicePath": "kasko_police\/34FDZ597_kasko_1778759877.pdf",
+            "ruhsatPath": "ruhsat\/34FDZ597_ruhsat_1778760412.pdf",
+            "sigortaPolicePath": "sigorta_police\/34FDZ597_sigorta_1778759991.pdf"
         },
         {
             "id": 202604220013,
@@ -947,14 +1251,15 @@
             "createdAt": "2026-04-22T00:24:56+03:00",
             "updatedAt": "2026-04-22T00:24:56+03:00",
             "tescilTarihi": "",
-            "version": 399,
+            "version": 613,
             "tahsisKisi": "Bora BAYAZIT",
             "assignedUserId": "u202604220007",
             "kaskoDegeri": "Değer Yok (Excel: 0)",
-            "kaskoDegeriYuklemeTarihi": "2026-05-07T22:03:22.906Z",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
             "satisTarihi": "2025-08-07",
             "satisTutari": "",
-            "kaskoKodu": "532250"
+            "kaskoKodu": "532250",
+            "ruhsatPath": "ruhsat\/34FUJ951_ruhsat_1779197770.pdf"
         },
         {
             "id": 202604220015,
@@ -1000,14 +1305,15 @@
             "createdAt": "2026-04-22T00:24:56+03:00",
             "updatedAt": "2026-04-27T19:13:42.009Z",
             "tescilTarihi": "2024-06-21",
-            "version": 401,
+            "version": 615,
             "tahsisKisi": "Ümit YÜKSEL",
             "guncelKm": 109894,
             "assignedUserId": "u202604220009",
             "kaskoDegeri": "926.188 ₺",
-            "kaskoDegeriYuklemeTarihi": "2026-05-07T22:03:22.906Z",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
             "egzozMuayeneDate": "2027-12-13",
-            "kaskoKodu": "1001294"
+            "kaskoKodu": "1001294",
+            "kaskoPolicePath": "kasko_police\/34GFA491_kasko_1778760507.pdf"
         },
         {
             "id": 202604220016,
@@ -1030,10 +1336,40 @@
             "krediDetay": "REHİNLİ | Albaraka Türk Katılım Bankası A.Ş.-ALBARAKATURK-Karabük Şubesi | Tarih: 08\/09\/2025 | Dosya No: 2",
             "branchId": "1769175251066",
             "price": "952.191",
-            "notes": "Arvento: X | Kaynak kodlar: marka 100 \/ tip 1294 | Sase: NM435600006Y81414 | Police No: 599361798\nŞase No. NM435600006Y81414",
-            "uttsTanimlandi": false,
+            "notes": "Şase No. NM435600006Y81414",
+            "uttsTanimlandi": true,
             "takipCihaziMontaj": false,
             "events": [
+                {
+                    "id": "1778846988911",
+                    "type": "takip-cihaz-guncelle",
+                    "date": "15\/05\/2026",
+                    "timestamp": "2026-05-15T12:09:48.911Z",
+                    "data": {
+                        "durum": false,
+                        "surucu": "İlker AKEL"
+                    }
+                },
+                {
+                    "id": "1778846979342",
+                    "type": "takip-cihaz-guncelle",
+                    "date": "15\/05\/2026",
+                    "timestamp": "2026-05-15T12:09:39.342Z",
+                    "data": {
+                        "durum": true,
+                        "surucu": "İlker AKEL"
+                    }
+                },
+                {
+                    "id": "1778846940904",
+                    "type": "utts-guncelle",
+                    "date": "15\/05\/2026",
+                    "timestamp": "2026-05-15T12:09:00.904Z",
+                    "data": {
+                        "durum": true,
+                        "surucu": "İlker AKEL"
+                    }
+                },
                 {
                     "id": "177824282011anahtar",
                     "timestamp": "2026-05-08T15:20:20+03:00",
@@ -1093,18 +1429,19 @@
             ],
             "satildiMi": false,
             "createdAt": "2026-04-22T00:24:56+03:00",
-            "updatedAt": "2026-05-08T11:13:42.034Z",
+            "updatedAt": "2026-05-15T12:08:50.269Z",
             "tescilTarihi": "2025-08-28",
-            "version": 405,
+            "version": 619,
             "tahsisKisi": "Kaan ALSAN",
             "guncelKm": 66000,
             "assignedUserId": "u202604220004",
             "kaskoDegeri": "991.059 ₺",
-            "kaskoDegeriYuklemeTarihi": "2026-05-07T22:03:22.906Z",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
             "egzozMuayeneDate": "2028-01-17",
             "kaskoKodu": "1001294",
             "lastikDurumu": "var",
-            "lastikAdres": "Üstünde Yazlık 2 Ad Sıfır 2 Ad Orta Halden Biraz Düşük (kışlıklar Şahin Kardeşler)"
+            "lastikAdres": "Üstünde Yazlık 2 Ad Sıfır 2 Ad Orta Halden Biraz Düşük (kışlıklar Şahin Kardeşler)",
+            "kaskoPolicePath": "kasko_police\/34GGP199_kasko_1778760552.pdf"
         },
         {
             "id": 202604220017,
@@ -1150,10 +1487,10 @@
             "createdAt": "2026-04-22T00:24:56+03:00",
             "updatedAt": "2026-04-22T00:24:56+03:00",
             "tescilTarihi": "",
-            "version": 399,
+            "version": 612,
             "tahsisKisi": "",
             "kaskoDegeri": "926.188 ₺",
-            "kaskoDegeriYuklemeTarihi": "2026-05-07T22:03:22.906Z",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
             "satisTarihi": "2025-12-30",
             "satisTutari": "",
             "kaskoKodu": "1001294"
@@ -1213,14 +1550,15 @@
             "createdAt": "2026-04-22T00:24:56+03:00",
             "updatedAt": "2026-04-27T19:13:42.009Z",
             "tescilTarihi": "2025-01-02",
-            "version": 401,
+            "version": 615,
             "tahsisKisi": "Sevda İNAN",
             "guncelKm": 92330,
             "assignedUserId": "u202604220012",
-            "kaskoDegeri": "1.071.228 ₺",
-            "kaskoDegeriYuklemeTarihi": "2026-05-07T22:03:22.906Z",
+            "kaskoDegeri": "1.099.330 ₺",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
             "egzozMuayeneDate": "2027-06-25",
-            "kaskoKodu": "1221236"
+            "kaskoKodu": "1221236",
+            "kaskoPolicePath": "kasko_police\/34GUA145_kasko_1778760587.pdf"
         },
         {
             "id": 202604220019,
@@ -1276,14 +1614,15 @@
             "createdAt": "2026-04-22T00:24:56+03:00",
             "updatedAt": "2026-04-30T15:40:04.683Z",
             "tescilTarihi": "2024-02-19",
-            "version": 401,
+            "version": 615,
             "tahsisKisi": "Salih EFE",
             "guncelKm": 138670,
             "assignedUserId": "u202604220021",
             "kaskoDegeri": "991.059 ₺",
-            "kaskoDegeriYuklemeTarihi": "2026-05-07T22:03:22.906Z",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
             "egzozMuayeneDate": "2026-06-22",
-            "kaskoKodu": "1001294"
+            "kaskoKodu": "1001294",
+            "kaskoPolicePath": "kasko_police\/34HAM528_kasko_1778760619.pdf"
         },
         {
             "id": 202604220020,
@@ -1353,12 +1692,12 @@
             "createdAt": "2026-04-22T00:24:56+03:00",
             "updatedAt": "2026-05-06T10:13:23.707Z",
             "tescilTarihi": "",
-            "version": 399,
+            "version": 612,
             "tahsisKisi": "Muharrem TELLİ",
             "guncelKm": 165811,
             "assignedUserId": "u202604220014",
             "kaskoDegeri": "-",
-            "kaskoDegeriYuklemeTarihi": "2026-05-07T22:03:22.906Z",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
             "egzozMuayeneDate": "2028-01-01",
             "lastikDurumu": "var",
             "lastikAdres": ""
@@ -1407,14 +1746,15 @@
             "createdAt": "2026-04-22T00:24:56+03:00",
             "updatedAt": "2026-05-05T23:44:39.713Z",
             "tescilTarihi": "2025-03-28",
-            "version": 401,
+            "version": 615,
             "tahsisKisi": "Kürşat KEDEROĞLU",
             "guncelKm": 202000,
             "assignedUserId": "u202604220015",
-            "kaskoDegeri": "1.807.154 ₺",
-            "kaskoDegeriYuklemeTarihi": "2026-05-07T22:03:22.906Z",
+            "kaskoDegeri": "1.987.869 ₺",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
             "egzozMuayeneDate": "2026-10-08",
-            "kaskoKodu": "91252"
+            "kaskoKodu": "91252",
+            "kaskoPolicePath": "kasko_police\/34MCF184_kasko_1778760652.pdf"
         },
         {
             "id": 202604220022,
@@ -1442,6 +1782,17 @@
             "takipCihaziMontaj": false,
             "events": [
                 {
+                    "id": "1778415743399",
+                    "type": "km-revize",
+                    "date": "10\/05\/2026",
+                    "timestamp": "2026-05-10T12:22:23.407Z",
+                    "data": {
+                        "eskiKm": "",
+                        "yeniKm": "146143",
+                        "surucu": "İlker AKEL"
+                    }
+                },
+                {
                     "id": "1777563916995",
                     "type": "muayene-guncelle",
                     "date": "07\/08\/2025",
@@ -1458,13 +1809,15 @@
             "createdAt": "2026-04-22T00:24:56+03:00",
             "updatedAt": "2026-04-27T19:13:42.009Z",
             "tescilTarihi": "2023-07-12",
-            "version": 401,
+            "version": 615,
             "tahsisKisi": "Banu ŞENAY",
             "assignedUserId": "u202604220016",
             "kaskoDegeri": "3.585.676 ₺",
-            "kaskoDegeriYuklemeTarihi": "2026-05-07T22:03:22.906Z",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
             "egzozMuayeneDate": "2027-08-07",
-            "kaskoKodu": "2201099"
+            "kaskoKodu": "2201099",
+            "guncelKm": "146143",
+            "kaskoPolicePath": "kasko_police\/34NS4050_kasko_1778760678.pdf"
         },
         {
             "id": 202604220023,
@@ -1495,13 +1848,14 @@
             "createdAt": "2026-04-22T00:24:56+03:00",
             "updatedAt": "2026-04-25T23:14:08Z",
             "tescilTarihi": "",
-            "version": 400,
+            "version": 614,
             "tahsisKisi": "Sevkiyat",
             "assignedUserId": "u202604220017",
             "kaskoDegeri": "1.556.828 ₺",
-            "kaskoDegeriYuklemeTarihi": "2026-05-07T22:03:22.906Z",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
             "egzozMuayeneDate": "2026-10-08",
-            "kaskoKodu": "531790"
+            "kaskoKodu": "531790",
+            "kaskoPolicePath": "kasko_police\/37ACT466_kasko_1778760747.pdf"
         },
         {
             "id": 202604220026,
@@ -1547,12 +1901,12 @@
             "createdAt": "2026-04-22T00:24:56+03:00",
             "updatedAt": "2026-04-27T19:13:42.009Z",
             "tescilTarihi": "2023-09-28",
-            "version": 401,
+            "version": 614,
             "tahsisKisi": "Şadi SERTAŞI",
             "guncelKm": 403308,
             "assignedUserId": "u202604220018",
-            "kaskoDegeri": "1.177.845 ₺",
-            "kaskoDegeriYuklemeTarihi": "2026-05-07T22:03:22.906Z",
+            "kaskoDegeri": "1.164.962 ₺",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
             "egzozMuayeneDate": "2027-07-19",
             "kaskoKodu": "1221158"
         },
@@ -1585,14 +1939,15 @@
             "createdAt": "2026-04-22T00:24:56+03:00",
             "updatedAt": "2026-04-27T19:13:42.009Z",
             "tescilTarihi": "2023-09-28",
-            "version": 401,
+            "version": 615,
             "tahsisKisi": "Serhan KÖSE",
             "guncelKm": 200000,
             "assignedUserId": "u1769900543196",
             "kaskoDegeri": "2.049.101 ₺",
-            "kaskoDegeriYuklemeTarihi": "2026-05-07T22:03:22.906Z",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
             "egzozMuayeneDate": "2026-07-09",
-            "kaskoKodu": "532279"
+            "kaskoKodu": "532279",
+            "kaskoPolicePath": "kasko_police\/42SA027_kasko_1778761221.pdf"
         },
         {
             "id": 202604220037,
@@ -1638,14 +1993,15 @@
             "createdAt": "2026-04-22T00:24:56+03:00",
             "updatedAt": "2026-04-22T00:24:56+03:00",
             "tescilTarihi": "",
-            "version": 399,
+            "version": 613,
             "tahsisKisi": "Salih EFE",
             "assignedUserId": "u202604220021",
             "kaskoDegeri": "576.171 ₺",
-            "kaskoDegeriYuklemeTarihi": "2026-05-07T22:03:22.906Z",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
             "satisTarihi": "2025-12-19",
             "satisTutari": "",
-            "kaskoKodu": "1141038"
+            "kaskoKodu": "1141038",
+            "ruhsatPath": "ruhsat\/78AAC284_ruhsat_1779197743.pdf"
         },
         {
             "id": 202604220038,
@@ -1676,13 +2032,14 @@
             "createdAt": "2026-04-22T00:24:56+03:00",
             "updatedAt": "2026-04-25T23:14:08Z",
             "tescilTarihi": "",
-            "version": 400,
+            "version": 614,
             "tahsisKisi": "Sevkiyat",
             "assignedUserId": "u202604220017",
             "kaskoDegeri": "1.002.026 ₺",
-            "kaskoDegeriYuklemeTarihi": "2026-05-07T22:03:22.906Z",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
             "egzozMuayeneDate": "2026-12-26",
-            "kaskoKodu": "531655"
+            "kaskoKodu": "531655",
+            "kaskoPolicePath": "kasko_police\/78AAU227_kasko_1778761452.pdf"
         },
         {
             "id": 202604220039,
@@ -1763,22 +2120,23 @@
             "createdAt": "2026-04-22T00:24:56+03:00",
             "updatedAt": "2026-04-22T00:24:56+03:00",
             "tescilTarihi": "",
-            "version": 399,
+            "version": 613,
             "tahsisKisi": "Musa TAŞCI",
             "guncelKm": 313000,
             "assignedUserId": "u202604220022",
-            "kaskoDegeri": "1.227.288 ₺",
-            "kaskoDegeriYuklemeTarihi": "2026-05-07T22:03:22.906Z",
+            "kaskoDegeri": "1.229.144 ₺",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
             "egzozMuayeneDate": "2027-12-20",
-            "kaskoKodu": "1221211"
+            "kaskoKodu": "1221211",
+            "kaskoPolicePath": "kasko_police\/78AAU863_kasko_1778761496.pdf"
         },
         {
             "id": 202604220040,
             "plate": "78 AAV 277",
             "year": "2007",
-            "brandModel": "Römork Römork",
+            "brandModel": "Römork",
             "km": "",
-            "vehicleType": "kamyon",
+            "vehicleType": "romork",
             "transmission": "manuel",
             "tramer": "",
             "tramerRecords": [],
@@ -1827,13 +2185,13 @@
             "createdAt": "2026-04-22T00:24:56+03:00",
             "updatedAt": "2026-04-22T00:24:56+03:00",
             "tescilTarihi": "",
-            "version": 399,
-            "tahsisKisi": "Sevkiyat RÖMORK",
-            "assignedUserId": "u202604220023",
+            "version": 614,
+            "tahsisKisi": "",
             "kaskoDegeri": "Yıl Bulunamadı (2007)",
-            "kaskoDegeriYuklemeTarihi": "2026-05-07T22:03:22.906Z",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
             "egzozMuayeneDate": "2027-01-16",
-            "kaskoKodu": "999999"
+            "kaskoKodu": "999999",
+            "kaskoPolicePath": "kasko_police\/78AAV277_kasko_1778761525.pdf"
         },
         {
             "id": 202604220041,
@@ -1864,12 +2222,13 @@
             "createdAt": "2026-04-22T00:24:56+03:00",
             "updatedAt": "2026-04-25T23:14:08Z",
             "tescilTarihi": "",
-            "version": 400,
+            "version": 614,
             "tahsisKisi": "",
             "kaskoDegeri": "Yıl Bulunamadı (2006)",
-            "kaskoDegeriYuklemeTarihi": "2026-05-07T22:03:22.906Z",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
             "egzozMuayeneDate": "2026-11-13",
-            "kaskoKodu": "53669"
+            "kaskoKodu": "53669",
+            "kaskoPolicePath": "kasko_police\/78AB236_kasko_1778761558.pdf"
         },
         {
             "id": 202604220042,
@@ -1939,21 +2298,22 @@
             "createdAt": "2026-04-22T00:24:56+03:00",
             "updatedAt": "2026-04-22T00:24:56+03:00",
             "tescilTarihi": "",
-            "version": 399,
+            "version": 613,
             "tahsisKisi": "Zeki KATIRCI",
             "assignedUserId": "u202604220024",
             "kaskoDegeri": "3.666.326 ₺",
-            "kaskoDegeriYuklemeTarihi": "2026-05-07T22:03:22.906Z",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
             "egzozMuayeneDate": "2027-01-02",
-            "kaskoKodu": "901729"
+            "kaskoKodu": "901729",
+            "kaskoPolicePath": "kasko_police\/78ABC087_kasko_1778761602.pdf"
         },
         {
             "id": 202604220043,
             "plate": "78 ABC 862",
             "year": "2012",
-            "brandModel": "Römork Römork",
+            "brandModel": "Römork",
             "km": "",
-            "vehicleType": "kamyon",
+            "vehicleType": "romork",
             "transmission": "manuel",
             "tramer": "",
             "tramerRecords": [],
@@ -1989,13 +2349,13 @@
             "createdAt": "2026-04-22T00:24:56+03:00",
             "updatedAt": "2026-04-27T19:13:42.009Z",
             "tescilTarihi": "2022-03-07",
-            "version": 401,
-            "tahsisKisi": "Sevkiyat RÖMORK",
-            "assignedUserId": "u202604220023",
+            "version": 616,
+            "tahsisKisi": "",
             "kaskoDegeri": "Kasko Kodu Bulunamadı",
-            "kaskoDegeriYuklemeTarihi": "2026-05-07T22:03:22.906Z",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
             "egzozMuayeneDate": "2026-11-06",
-            "kaskoKodu": "999999"
+            "kaskoKodu": "999999",
+            "kaskoPolicePath": "kasko_police\/78ABC862_kasko_1778761635.pdf"
         },
         {
             "id": 202604220044,
@@ -2053,14 +2413,15 @@
             "createdAt": "2026-04-22T00:24:56+03:00",
             "updatedAt": "2026-04-27T19:13:42.009Z",
             "tescilTarihi": "2023-02-25",
-            "version": 401,
+            "version": 615,
             "tahsisKisi": "Kürşad KULUALP",
             "guncelKm": 202402,
             "assignedUserId": "u202604220025",
             "kaskoDegeri": "991.059 ₺",
-            "kaskoDegeriYuklemeTarihi": "2026-05-07T22:03:22.906Z",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
             "egzozMuayeneDate": "2028-02-02",
-            "kaskoKodu": "1001294"
+            "kaskoKodu": "1001294",
+            "kaskoPolicePath": "kasko_police\/78ABJ487_kasko_1778761660.pdf"
         },
         {
             "id": 202604220045,
@@ -2080,13 +2441,84 @@
             "anahtar": "",
             "anahtarNerede": "",
             "kredi": "var",
-            "krediDetay": "REHİNLİ | TÜRKİYE VAKIFLAR BANKASI | Tarih: 27\/11\/2023 | Dosya No: 49741049",
+            "krediDetay": "REHİNLİ | TÜRKİYE VAKIFLAR BANKASI | Tarih: 27\/11\/2023 - 49741049",
             "branchId": "1778022947095",
             "price": "3.687.639",
-            "notes": "Lastik: VAR | Arvento: VAR | En: 240, Boy: 9.70, Yükseklik: 285 | Kaynak kodlar: marka 123 \/ tip 1141 | Sase: VF640J862PB020046 | Police No: 525214674\nŞase No. VF640J862PB020046",
+            "notes": "Lastik: VAR | Arvento: VAR | En: 240, Boy: 9.70, Yükseklik: 285 |\nŞase No. VF640J862PB020046",
             "uttsTanimlandi": true,
             "takipCihaziMontaj": true,
             "events": [
+                {
+                    "id": "1779351829721",
+                    "type": "kullanici-atama",
+                    "date": "21\/05\/2026",
+                    "timestamp": "2026-05-21T08:23:49.721Z",
+                    "data": {
+                        "kullaniciId": "u202604220026",
+                        "kullaniciAdi": "Hüseyin YENİSU",
+                        "eskiKullaniciAdi": "Halil ŞENAY",
+                        "kaydeden": "İlker AKEL"
+                    }
+                },
+                {
+                    "id": "1779191415941",
+                    "type": "kullanici-atama",
+                    "date": "19\/05\/2026",
+                    "timestamp": "2026-05-19T11:50:15.941Z",
+                    "data": {
+                        "kullaniciId": "u1779098268752",
+                        "kullaniciAdi": "Halil ŞENAY",
+                        "eskiKullaniciAdi": "İlker AKEL",
+                        "kaydeden": "İlker AKEL"
+                    }
+                },
+                {
+                    "id": "1779181703068",
+                    "type": "kredi-guncelle",
+                    "date": "19\/05\/2026",
+                    "timestamp": "2026-05-19T09:08:23.074Z",
+                    "data": {
+                        "durum": "var",
+                        "detay": "REHİNLİ | TÜRKİYE VAKIFLAR BANKASI | Tarih: 27\/11\/2023 - 49741049",
+                        "surucu": "İlker AKEL"
+                    }
+                },
+                {
+                    "id": "1779144004564",
+                    "type": "kullanici-atama",
+                    "date": "19\/05\/2026",
+                    "timestamp": "2026-05-18T22:40:04.564Z",
+                    "data": {
+                        "kullaniciId": "u1769823278672",
+                        "kullaniciAdi": "İlker AKEL",
+                        "eskiKullaniciAdi": "Halil ŞENAY",
+                        "kaydeden": "İlker AKEL"
+                    }
+                },
+                {
+                    "id": "1779139706854",
+                    "type": "muayene-guncelle",
+                    "date": "25\/05\/2025",
+                    "timestamp": "2026-05-18T21:28:26.854Z",
+                    "data": {
+                        "bitisTarihi": "2026-05-25",
+                        "egzozMuayeneDate": "",
+                        "egzozMuayeneYapilmaDate": "",
+                        "surucu": "İlker AKEL"
+                    }
+                },
+                {
+                    "id": "1779139664059",
+                    "type": "muayene-guncelle",
+                    "date": "20\/05\/2025",
+                    "timestamp": "2026-05-18T21:27:44.059Z",
+                    "data": {
+                        "bitisTarihi": "2026-05-20",
+                        "egzozMuayeneDate": "",
+                        "egzozMuayeneYapilmaDate": "",
+                        "surucu": "İlker AKEL"
+                    }
+                },
                 {
                     "id": "1778030809183",
                     "type": "kredi-guncelle",
@@ -2127,16 +2559,18 @@
             ],
             "satildiMi": false,
             "createdAt": "2026-04-22T00:24:56+03:00",
-            "updatedAt": "2026-04-27T19:13:42.009Z",
+            "updatedAt": "2026-05-21T08:23:49.721Z",
             "tescilTarihi": "2023-05-31",
-            "version": 401,
+            "version": 618,
             "tahsisKisi": "Hüseyin YENİSU",
             "guncelKm": 169575,
-            "assignedUserId": "u202604220026",
             "kaskoDegeri": "2.933.646 ₺",
-            "kaskoDegeriYuklemeTarihi": "2026-05-07T22:03:22.906Z",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
             "egzozMuayeneDate": "2026-05-25",
-            "kaskoKodu": "1231141"
+            "kaskoKodu": "1231141",
+            "kaskoPolicePath": "kasko_police\/78ABL850_kasko_1778761687.pdf",
+            "assignedUserId": "u202604220026",
+            "ruhsatPath": "ruhsat\/78ABL850_ruhsat_1779191560.pdf"
         },
         {
             "id": 202604220046,
@@ -2204,15 +2638,16 @@
             "createdAt": "2026-04-22T00:24:56+03:00",
             "updatedAt": "2026-04-27T19:13:42.009Z",
             "tescilTarihi": "2023-08-07",
-            "version": 402,
+            "version": 616,
             "tahsisKisi": "Kadir KAN",
             "guncelKm": 95000,
             "assignedUserId": "u202604220001",
             "kaskoDegeri": "Değer Yok (Excel: 0)",
-            "kaskoDegeriYuklemeTarihi": "2026-05-07T22:03:22.906Z",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
             "egzozMuayeneDate": "2026-06-01",
             "ruhsatPath": "ruhsat\/78ABN372_ruhsat_1777566772.pdf",
-            "kaskoKodu": "532222"
+            "kaskoKodu": "532222",
+            "kaskoPolicePath": "kasko_police\/78ABN372_kasko_1778761719.pdf"
         },
         {
             "id": 202604220047,
@@ -2239,6 +2674,18 @@
             "uttsTanimlandi": false,
             "takipCihaziMontaj": false,
             "events": [
+                {
+                    "id": "1778761777255",
+                    "type": "kullanici-atama",
+                    "date": "14\/05\/2026",
+                    "timestamp": "2026-05-14T12:29:37.255Z",
+                    "data": {
+                        "kullaniciId": "u1778757108796",
+                        "kullaniciAdi": "İsmail ÖZCAN",
+                        "eskiKullaniciAdi": "",
+                        "kaydeden": "İlker AKEL"
+                    }
+                },
                 {
                     "id": "1777562208707",
                     "type": "kasko-guncelle",
@@ -2280,16 +2727,17 @@
             ],
             "satildiMi": false,
             "createdAt": "2026-04-22T00:24:56+03:00",
-            "updatedAt": "2026-05-09T12:36:22.516Z",
+            "updatedAt": "2026-05-14T12:29:37.255Z",
             "tescilTarihi": "2023-09-25",
-            "version": 401,
-            "tahsisKisi": "Karabük Servis Aracı",
+            "version": 615,
+            "tahsisKisi": "İsmail ÖZCAN",
             "guncelKm": 390828,
-            "assignedUserId": "u202604220027",
             "kaskoDegeri": "Yıl Bulunamadı (2007)",
-            "kaskoDegeriYuklemeTarihi": "2026-05-07T22:03:22.906Z",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
             "egzozMuayeneDate": "2026-09-19",
-            "kaskoKodu": "52343"
+            "kaskoKodu": "52343",
+            "kaskoPolicePath": "kasko_police\/78ABP527_kasko_1778761767.pdf",
+            "assignedUserId": "u1778757108796"
         },
         {
             "id": 202604220048,
@@ -2303,7 +2751,7 @@
             "tramerRecords": [],
             "boya": "",
             "boyaliParcalar": [],
-            "sigortaDate": "2026-05-17",
+            "sigortaDate": "2027-05-17",
             "kaskoDate": "2026-11-08",
             "muayeneDate": "2026-06-23",
             "anahtar": "",
@@ -2312,10 +2760,59 @@
             "krediDetay": "REHİNLİ | Vakıf Katılım-Karabük Şube | Tarih: 17\/05\/2024 | Dosya No: 720439",
             "branchId": "1778022947095",
             "price": "952.191",
-            "notes": "Lastik: VAR | Arvento: VAR | Kaynak kodlar: marka 100 \/ tip 1294 | Sase: NM435600006Z98747 | Police No: 570614188\nŞase No. NM435600006Z98747",
+            "notes": "Şase No. NM435600006Z98747",
             "uttsTanimlandi": true,
             "takipCihaziMontaj": true,
             "events": [
+                {
+                    "id": "1778918929630",
+                    "type": "sigorta-guncelle",
+                    "date": "17\/05\/2026",
+                    "timestamp": "2026-05-16T08:08:49.630Z",
+                    "data": {
+                        "firma": "Seker sigorta",
+                        "acente": "5n1k - bicer sigorta",
+                        "iletisim": "+90 555 079 78 78",
+                        "bitisTarihi": "2027-05-17",
+                        "surucu": "İlker AKEL"
+                    }
+                },
+                {
+                    "id": "1778859193592",
+                    "type": "lastik-guncelle",
+                    "date": "15\/05\/2026",
+                    "timestamp": "2026-05-15T15:33:13.592Z",
+                    "data": {
+                        "durum": "var",
+                        "adres": "",
+                        "surucu": "İlker AKEL",
+                        "kaydeden": "İlker AKEL"
+                    }
+                },
+                {
+                    "id": "1778859172432",
+                    "type": "lastik-guncelle",
+                    "date": "15\/05\/2026",
+                    "timestamp": "2026-05-15T15:32:52.432Z",
+                    "data": {
+                        "durum": "var",
+                        "adres": "Bilgisi yok",
+                        "surucu": "İlker AKEL",
+                        "kaydeden": "İlker AKEL"
+                    }
+                },
+                {
+                    "id": "1778859157144",
+                    "type": "lastik-guncelle",
+                    "date": "15\/05\/2026",
+                    "timestamp": "2026-05-15T15:32:37.151Z",
+                    "data": {
+                        "durum": "var",
+                        "adres": "Bilgisi yok",
+                        "surucu": "İlker AKEL",
+                        "kaydeden": "İlker AKEL"
+                    }
+                },
                 {
                     "id": "1778031276921",
                     "type": "sube-degisiklik",
@@ -2356,17 +2853,21 @@
             ],
             "satildiMi": false,
             "createdAt": "2026-04-22T00:24:56+03:00",
-            "updatedAt": "2026-04-27T19:13:42.009Z",
+            "updatedAt": "2026-05-15T15:32:20.571Z",
             "tescilTarihi": "2024-05-17",
-            "version": 403,
+            "version": 619,
             "tahsisKisi": "Mehmet Taner ÖZYILMAZ",
             "guncelKm": 80970,
             "assignedUserId": "u202604220028",
             "kaskoDegeri": "991.059 ₺",
-            "kaskoDegeriYuklemeTarihi": "2026-05-07T22:03:22.906Z",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
             "kaskoKodu": "1001294",
             "egzozMuayeneDate": "2026-06-23",
-            "ruhsatPath": "ruhsat\/78ABV698_ruhsat_1777786031.pdf"
+            "ruhsatPath": "ruhsat\/78ABV698_ruhsat_1778919730.pdf",
+            "kaskoPolicePath": "kasko_police\/78ABV698_kasko_1778761883.pdf",
+            "lastikDurumu": "var",
+            "lastikAdres": "",
+            "sigortaPolicePath": "sigorta_police\/78ABV698_sigorta_1778919436.pdf"
         },
         {
             "id": 202604220049,
@@ -2434,14 +2935,15 @@
             "createdAt": "2026-04-22T00:24:56+03:00",
             "updatedAt": "2026-04-27T15:25:03.765Z",
             "tescilTarihi": "2024-08-02",
-            "version": 400,
+            "version": 615,
             "tahsisKisi": "Tarık SERTAŞI",
             "guncelKm": 63000,
             "assignedUserId": "u202604220029",
             "kaskoDegeri": "991.059 ₺",
-            "kaskoDegeriYuklemeTarihi": "2026-05-07T22:03:22.906Z",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
             "egzozMuayeneDate": "2028-02-02",
-            "kaskoKodu": "1001294"
+            "kaskoKodu": "1001294",
+            "kaskoPolicePath": "kasko_police\/78ABZ653_kasko_1778761831.pdf"
         },
         {
             "id": 202604220050,
@@ -2487,14 +2989,15 @@
             "createdAt": "2026-04-22T00:24:56+03:00",
             "updatedAt": "2026-04-27T19:13:42.009Z",
             "tescilTarihi": "2024-12-06",
-            "version": 401,
+            "version": 615,
             "tahsisKisi": "Ahmet ÖZDEMİR",
             "guncelKm": 101345,
             "assignedUserId": "u202604220030",
             "kaskoDegeri": "926.188 ₺",
-            "kaskoDegeriYuklemeTarihi": "2026-05-07T22:03:22.906Z",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
             "egzozMuayeneDate": "2027-09-08",
-            "kaskoKodu": "1001294"
+            "kaskoKodu": "1001294",
+            "kaskoPolicePath": "kasko_police\/78ACC583_kasko_1778761964.pdf"
         },
         {
             "id": 202604220051,
@@ -2627,15 +3130,16 @@
             "createdAt": "2026-04-22T00:24:56+03:00",
             "updatedAt": "2026-05-07T17:43:21.134Z",
             "tescilTarihi": "2025-05-09",
-            "version": 403,
+            "version": 617,
             "tahsisKisi": "Serkan ÖZDEMİR",
             "assignedUserId": "u202604220031",
-            "kaskoDegeri": "3.719.700 ₺",
-            "kaskoDegeriYuklemeTarihi": "2026-05-07T22:03:22.906Z",
+            "kaskoDegeri": "3.352.500 ₺",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
             "egzozMuayeneDate": "2027-05-08",
             "sigortaPolicePath": "sigorta_police\/78ACF926_sigorta_1777931550.pdf",
             "kaskoKodu": "1231140",
-            "ruhsatPath": "ruhsat\/78ACF926_ruhsat_1778044169.pdf"
+            "ruhsatPath": "ruhsat\/78ACF926_ruhsat_1778044169.pdf",
+            "kaskoPolicePath": "kasko_police\/78ACF926_kasko_1778762002.pdf"
         },
         {
             "id": 202604220052,
@@ -2643,14 +3147,14 @@
             "year": "2025",
             "brandModel": "Renault Kamyon D16",
             "km": "",
-            "vehicleType": "otomobil",
+            "vehicleType": "kamyon",
             "transmission": "manuel",
             "tramer": "",
             "tramerRecords": [],
             "boya": "",
             "boyaliParcalar": [],
             "sigortaDate": "2026-07-10",
-            "kaskoDate": "2026-05-07",
+            "kaskoDate": "2027-05-11",
             "muayeneDate": "2026-07-10",
             "anahtar": "",
             "anahtarNerede": "",
@@ -2662,6 +3166,67 @@
             "uttsTanimlandi": true,
             "takipCihaziMontaj": false,
             "events": [
+                {
+                    "id": "1778510663440",
+                    "type": "muayene-guncelle",
+                    "date": "10\/07\/2025",
+                    "timestamp": "2026-05-11T14:44:23.440Z",
+                    "data": {
+                        "bitisTarihi": "2026-07-10",
+                        "egzozMuayeneDate": "2026-07-10",
+                        "egzozMuayeneYapilmaDate": "2025-07-10",
+                        "surucu": "İlker AKEL"
+                    }
+                },
+                {
+                    "id": "1778506185287",
+                    "type": "kasko-guncelle",
+                    "date": "11\/05\/2026",
+                    "timestamp": "2026-05-11T13:29:45.287Z",
+                    "data": {
+                        "firma": "Türkiye sigorta",
+                        "acente": "Hayri Çetin",
+                        "iletisim": "",
+                        "bitisTarihi": "2027-05-11",
+                        "surucu": "İlker AKEL"
+                    }
+                },
+                {
+                    "id": "1778441028708",
+                    "type": "muayene-guncelle",
+                    "date": "10\/07\/2025",
+                    "timestamp": "2026-05-10T19:23:48.708Z",
+                    "data": {
+                        "bitisTarihi": "2027-07-10",
+                        "egzozMuayeneDate": "",
+                        "egzozMuayeneYapilmaDate": "",
+                        "surucu": "İlker AKEL"
+                    }
+                },
+                {
+                    "id": "1778440905064",
+                    "type": "muayene-guncelle",
+                    "date": "10\/07\/2025",
+                    "timestamp": "2026-05-10T19:21:45.064Z",
+                    "data": {
+                        "bitisTarihi": "2027-07-10",
+                        "egzozMuayeneDate": "",
+                        "egzozMuayeneYapilmaDate": "",
+                        "surucu": "İlker AKEL"
+                    }
+                },
+                {
+                    "id": "1778440776340",
+                    "type": "muayene-guncelle",
+                    "date": "08\/05\/2026",
+                    "timestamp": "2026-05-10T19:19:36.340Z",
+                    "data": {
+                        "bitisTarihi": "2028-05-08",
+                        "egzozMuayeneDate": "",
+                        "egzozMuayeneYapilmaDate": "",
+                        "surucu": "İlker AKEL"
+                    }
+                },
                 {
                     "id": "1778191522326",
                     "type": "kasko-guncelle",
@@ -2799,13 +3364,14 @@
             "createdAt": "2026-04-22T00:24:56+03:00",
             "updatedAt": "2026-05-07T22:05:02.541Z",
             "tescilTarihi": "2025-07-11",
-            "version": 406,
+            "version": 620,
             "tahsisKisi": "Sevkiyat",
             "assignedUserId": "u202604220017",
             "kaskoDegeri": "-",
-            "kaskoDegeriYuklemeTarihi": "2026-05-07T22:03:22.906Z",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
             "egzozMuayeneDate": "2026-07-10",
-            "ruhsatPath": "ruhsat\/78ACH671_ruhsat_1778195903.pdf"
+            "ruhsatPath": "ruhsat\/78ACH671_ruhsat_1778195903.pdf",
+            "kaskoPolicePath": "kasko_police\/78ACH671_kasko_1778506220.pdf"
         },
         {
             "id": 202604220054,
@@ -2828,10 +3394,34 @@
             "krediDetay": "İŞ BANKASI",
             "branchId": "1778022947095",
             "price": "1.149.367",
-            "notes": "Lastik: VAR | En: 215, Boy: 530, Yükseklik: 275 | Kaynak kodlar: marka 94 \/ tip 1018 | Sase: NLTFECX1G01000703 | Police No: 525212131\nŞase No. NLTFECX1G01000703",
+            "notes": "Lastik: VAR | En: 215, Boy: 530, Yükseklik: 275 \nŞase No. NLTFECX1G01000703",
             "uttsTanimlandi": true,
             "takipCihaziMontaj": true,
             "events": [
+                {
+                    "id": "1779153912448",
+                    "type": "kullanici-atama",
+                    "date": "19\/05\/2026",
+                    "timestamp": "2026-05-19T01:25:12.448Z",
+                    "data": {
+                        "kullaniciId": "u1779098268752",
+                        "kullaniciAdi": "Halil ŞENAY",
+                        "eskiKullaniciAdi": "İlker AKEL",
+                        "kaydeden": "İlker AKEL"
+                    }
+                },
+                {
+                    "id": "1779153810029",
+                    "type": "kullanici-atama",
+                    "date": "19\/05\/2026",
+                    "timestamp": "2026-05-19T01:23:30.029Z",
+                    "data": {
+                        "kullaniciId": "u1769823278672",
+                        "kullaniciAdi": "İlker AKEL",
+                        "eskiKullaniciAdi": "",
+                        "kaydeden": "İlker AKEL"
+                    }
+                },
                 {
                     "id": "1778022996301",
                     "type": "sube-degisiklik",
@@ -2926,14 +3516,14 @@
             ],
             "satildiMi": false,
             "createdAt": "2026-04-22T00:24:56+03:00",
-            "updatedAt": "2026-04-22T00:24:56+03:00",
+            "updatedAt": "2026-05-19T01:25:12.448Z",
             "tescilTarihi": "",
-            "version": 399,
-            "tahsisKisi": "Genel",
+            "version": 612,
+            "tahsisKisi": "Halil ŞENAY",
             "guncelKm": 385538,
-            "assignedUserId": "u202604220032",
+            "assignedUserId": "u1779098268752",
             "kaskoDegeri": "1.150.977 ₺",
-            "kaskoDegeriYuklemeTarihi": "2026-05-07T22:03:22.906Z",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
             "egzozMuayeneDate": "2027-04-10",
             "kaskoKodu": "941018"
         },
@@ -3016,14 +3606,15 @@
             "createdAt": "2026-04-22T00:24:56+03:00",
             "updatedAt": "2026-04-22T00:24:56+03:00",
             "tescilTarihi": "",
-            "version": 399,
+            "version": 613,
             "tahsisKisi": "SSH",
             "guncelKm": 399467,
             "assignedUserId": "u202604220033",
             "kaskoDegeri": "695.320 ₺",
-            "kaskoDegeriYuklemeTarihi": "2026-05-07T22:03:22.906Z",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
             "egzozMuayeneDate": "2026-12-01",
-            "kaskoKodu": "531063"
+            "kaskoKodu": "531063",
+            "kaskoPolicePath": "kasko_police\/78DE865_kasko_1778762219.pdf"
         },
         {
             "id": 202604220057,
@@ -3093,13 +3684,14 @@
             "createdAt": "2026-04-22T00:24:56+03:00",
             "updatedAt": "2026-04-22T00:24:56+03:00",
             "tescilTarihi": "",
-            "version": 399,
+            "version": 613,
             "tahsisKisi": "Semih DEMİRCAN",
             "assignedUserId": "u202604220034",
             "kaskoDegeri": "2.959.572 ₺",
-            "kaskoDegeriYuklemeTarihi": "2026-05-07T22:03:22.906Z",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
             "egzozMuayeneDate": "2027-01-14",
-            "kaskoKodu": "901408"
+            "kaskoKodu": "901408",
+            "kaskoPolicePath": "kasko_police\/78DE897_kasko_1778762242.pdf"
         },
         {
             "id": 202604220002,
@@ -3125,17 +3717,32 @@
             "notes": "Kaynak kodlar: marka 153 \/ tip 470 | Sase: WV2ZZZ7HZ4H043032 | Police No: 525482009\nŞase No. WV2ZZZ7HZ4H043032",
             "uttsTanimlandi": false,
             "takipCihaziMontaj": false,
-            "events": [],
+            "events": [
+                {
+                    "id": "1778690306891",
+                    "type": "kullanici-atama",
+                    "date": "13\/05\/2026",
+                    "timestamp": "2026-05-13T16:38:26.891Z",
+                    "data": {
+                        "kullaniciId": "u1777565254241",
+                        "kullaniciAdi": "İrfan YAVUZER",
+                        "eskiKullaniciAdi": "",
+                        "kaydeden": "İlker AKEL"
+                    }
+                }
+            ],
             "satildiMi": false,
             "createdAt": "2026-04-22T00:24:56+03:00",
-            "updatedAt": "2026-04-25T23:14:08Z",
+            "updatedAt": "2026-05-13T16:38:26.891Z",
             "tescilTarihi": "",
-            "version": 406,
-            "tahsisKisi": "",
+            "version": 620,
+            "tahsisKisi": "İrfan YAVUZER",
             "kaskoDegeri": "Yıl Bulunamadı (2004)",
-            "kaskoDegeriYuklemeTarihi": "2026-05-07T22:03:22.906Z",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
             "egzozMuayeneDate": "2026-12-28",
-            "kaskoKodu": "153470"
+            "kaskoKodu": "153470",
+            "assignedUserId": "u1777565254241",
+            "kaskoPolicePath": "kasko_police\/06BFC110_kasko_1778759316.pdf"
         },
         {
             "id": 202604220005,
@@ -3161,17 +3768,32 @@
             "notes": "Kaynak kodlar: marka 53 \/ tip 2120 | Sase: WF04XXGCC4JT23216 | Police No: 525226442\nŞase No. WF04XXGCC4JT23216",
             "uttsTanimlandi": false,
             "takipCihaziMontaj": false,
-            "events": [],
+            "events": [
+                {
+                    "id": "1778759677428",
+                    "type": "kullanici-atama",
+                    "date": "14\/05\/2026",
+                    "timestamp": "2026-05-14T11:54:37.428Z",
+                    "data": {
+                        "kullaniciId": "u1778690638009",
+                        "kullaniciAdi": "Burak GÜLMEZ",
+                        "eskiKullaniciAdi": "",
+                        "kaydeden": "İlker AKEL"
+                    }
+                }
+            ],
             "satildiMi": false,
             "createdAt": "2026-04-22T00:24:56+03:00",
-            "updatedAt": "2026-04-25T23:14:08Z",
+            "updatedAt": "2026-05-14T11:54:37.428Z",
             "tescilTarihi": "",
-            "version": 406,
-            "tahsisKisi": "",
+            "version": 620,
+            "tahsisKisi": "Burak GÜLMEZ",
             "kaskoDegeri": "981.709 ₺",
-            "kaskoDegeriYuklemeTarihi": "2026-05-07T22:03:22.906Z",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
             "egzozMuayeneDate": "2027-06-25",
-            "kaskoKodu": "532222"
+            "kaskoKodu": "532222",
+            "assignedUserId": "u1778690638009",
+            "kaskoPolicePath": "kasko_police\/34BNL080_kasko_1778759699.pdf"
         },
         {
             "id": 202604220008,
@@ -3202,12 +3824,15 @@
             "createdAt": "2026-04-22T00:24:56+03:00",
             "updatedAt": "2026-04-25T23:14:08Z",
             "tescilTarihi": "",
-            "version": 406,
-            "tahsisKisi": "",
+            "version": 621,
+            "tahsisKisi": "Abdullah KOYUNCU",
             "kaskoDegeri": "822.834 ₺",
-            "kaskoDegeriYuklemeTarihi": "2026-05-07T22:03:22.906Z",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
             "egzozMuayeneDate": "2027-10-08",
-            "kaskoKodu": "1001294"
+            "kaskoKodu": "1001294",
+            "assignedUserId": "u1778690707219",
+            "kaskoPolicePath": "kasko_police\/34DMT319_kasko_1778759778.pdf",
+            "ruhsatPath": "ruhsat\/34DMT319_ruhsat_1778762275.pdf"
         },
         {
             "id": 202604220009,
@@ -3233,17 +3858,34 @@
             "notes": "Kaynak kodlar: marka 53 \/ tip 2252 | Sase: WF0MXXGCHMLY67956 | Police No: 525620083\nŞase No. WF0MXXGCHMLY67956",
             "uttsTanimlandi": false,
             "takipCihaziMontaj": false,
-            "events": [],
+            "events": [
+                {
+                    "id": "1779481498062",
+                    "type": "bakim",
+                    "date": "2026-05-21",
+                    "timestamp": "2026-05-22T20:24:58.062Z",
+                    "data": {
+                        "islemler": "4 lastik değişimi -delinte 205 60 16",
+                        "servis": "Yunus emre deryol",
+                        "kisi": "İlker AKEL",
+                        "km": "",
+                        "tutar": "11305"
+                    }
+                }
+            ],
             "satildiMi": false,
             "createdAt": "2026-04-22T00:24:56+03:00",
             "updatedAt": "2026-04-25T23:14:08Z",
             "tescilTarihi": "",
-            "version": 406,
-            "tahsisKisi": "",
+            "version": 622,
+            "tahsisKisi": "Taylan MERCAN",
             "kaskoDegeri": "Değer Yok (Excel: 0)",
-            "kaskoDegeriYuklemeTarihi": "2026-05-07T22:03:22.906Z",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
             "egzozMuayeneDate": "2027-10-30",
-            "kaskoKodu": "532222"
+            "kaskoKodu": "532222",
+            "assignedUserId": "u1778690795388",
+            "kaskoPolicePath": "kasko_police\/34DNH138_kasko_1778759809.pdf",
+            "ruhsatPath": "ruhsat\/34DNH138_ruhsat_1779190138.pdf"
         },
         {
             "id": 202604220010,
@@ -3274,13 +3916,14 @@
             "createdAt": "2026-04-22T00:24:56+03:00",
             "updatedAt": "2026-04-25T23:14:08Z",
             "tescilTarihi": "",
-            "version": 406,
+            "version": 620,
             "tahsisKisi": "Doğu Berkan ATMACA",
             "assignedUserId": "u202604220006",
-            "kaskoDegeri": "1.363.652 ₺",
-            "kaskoDegeriYuklemeTarihi": "2026-05-07T22:03:22.906Z",
+            "kaskoDegeri": "1.378.007 ₺",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
             "egzozMuayeneDate": "2026-06-01",
-            "kaskoKodu": "1221244"
+            "kaskoKodu": "1221244",
+            "ruhsatPath": "ruhsat\/34EGT491_ruhsat_1778759460.pdf"
         },
         {
             "id": 202604220014,
@@ -3335,13 +3978,15 @@
             "createdAt": "2026-04-22T00:24:56+03:00",
             "updatedAt": "2026-04-30T20:26:26.648Z",
             "tescilTarihi": "",
-            "version": 406,
+            "version": 622,
             "tahsisKisi": "Alper SUNGUR",
             "kaskoDegeri": "5.806.648 ₺",
-            "kaskoDegeriYuklemeTarihi": "2026-05-07T22:03:22.906Z",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
             "egzozMuayeneDate": "2026-09-23",
             "assignedUserId": "u202604220020",
-            "kaskoKodu": "902455"
+            "kaskoKodu": "902455",
+            "ruhsatPath": "ruhsat\/34GDV657_ruhsat_1778759486.pdf",
+            "kaskoPolicePath": "kasko_police\/34GDV657_kasko_1778760474.pdf"
         },
         {
             "id": 202604220024,
@@ -3372,12 +4017,14 @@
             "createdAt": "2026-04-22T00:24:56+03:00",
             "updatedAt": "2026-04-25T23:14:08Z",
             "tescilTarihi": "",
-            "version": 406,
-            "tahsisKisi": "",
+            "version": 620,
+            "tahsisKisi": "Talha BORAN",
             "kaskoDegeri": "798.932 ₺",
-            "kaskoDegeriYuklemeTarihi": "2026-05-07T22:03:22.906Z",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
             "egzozMuayeneDate": "2026-08-01",
-            "kaskoKodu": "531310"
+            "kaskoKodu": "531310",
+            "assignedUserId": "u1778689214956",
+            "kaskoPolicePath": "kasko_police\/42ABH973_kasko_1778760781.pdf"
         },
         {
             "id": 202604220025,
@@ -3403,17 +4050,31 @@
             "notes": "Kaynak kodlar: marka 123 \/ tip 552 | Sase: VF1KC1RBF36275694 | Police No: 525230602\nŞase No. VF1KC1RBF36275694",
             "uttsTanimlandi": false,
             "takipCihaziMontaj": false,
-            "events": [],
+            "events": [
+                {
+                    "id": "1778751133900",
+                    "type": "kullanici-atama",
+                    "date": "14\/05\/2026",
+                    "timestamp": "2026-05-14T09:32:13.900Z",
+                    "data": {
+                        "kullaniciId": "u1777565254241",
+                        "kullaniciAdi": "İrfan YAVUZER",
+                        "eskiKullaniciAdi": "",
+                        "kaydeden": "İlker AKEL"
+                    }
+                }
+            ],
             "satildiMi": false,
             "createdAt": "2026-04-22T00:24:56+03:00",
-            "updatedAt": "2026-04-25T23:14:08Z",
+            "updatedAt": "2026-05-14T09:32:13.899Z",
             "tescilTarihi": "",
-            "version": 406,
-            "tahsisKisi": "",
+            "version": 619,
+            "tahsisKisi": "İrfan YAVUZER",
             "kaskoDegeri": "Yıl Bulunamadı (2007)",
-            "kaskoDegeriYuklemeTarihi": "2026-05-07T22:03:22.906Z",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
             "egzozMuayeneDate": "2026-06-03",
-            "kaskoKodu": "123552"
+            "kaskoKodu": "123552",
+            "assignedUserId": "u1777565254241"
         },
         {
             "id": 202604220027,
@@ -3444,12 +4105,14 @@
             "createdAt": "2026-04-22T00:24:56+03:00",
             "updatedAt": "2026-04-25T23:14:08Z",
             "tescilTarihi": "",
-            "version": 406,
-            "tahsisKisi": "",
+            "version": 620,
+            "tahsisKisi": "Batuhan SARI",
             "kaskoDegeri": "1.222.290 ₺",
-            "kaskoDegeriYuklemeTarihi": "2026-05-07T22:03:22.906Z",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
             "egzozMuayeneDate": "2026-10-23",
-            "kaskoKodu": "531824"
+            "kaskoKodu": "531824",
+            "assignedUserId": "u1778751211879",
+            "kaskoPolicePath": "kasko_police\/42ALS178_kasko_1778761030.pdf"
         },
         {
             "id": 202604220028,
@@ -3551,11 +4214,11 @@
             "createdAt": "2026-04-22T00:24:56+03:00",
             "updatedAt": "2026-04-25T23:14:08Z",
             "tescilTarihi": "",
-            "version": 406,
+            "version": 619,
             "tahsisKisi": "Savaş ŞENAY",
             "assignedUserId": "u1770525709433",
             "kaskoDegeri": "6.806.650 ₺",
-            "kaskoDegeriYuklemeTarihi": "2026-05-07T22:03:22.906Z",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
             "egzozMuayeneDate": "2026-05-22",
             "kaskoKodu": "902509",
             "guncelKm": "168000",
@@ -3580,13 +4243,36 @@
             "anahtar": "",
             "anahtarNerede": "",
             "kredi": "var",
-            "krediDetay": "Türkiye Vakıflar Bankası T.A.O.-TÜRKİYE VAKIFLAR BANKASI T.A.O.- KARABÜK ŞUBESİ | 49741445",
+            "krediDetay": "TÜRKİYE VAKIFLAR BANKASI T.A.O.- KARABÜK ŞUBESİ | 49741445",
             "branchId": "1769175216952",
             "price": "4.610.955",
             "notes": "Sase: WAUZZZF25NN055240 Police No: 525228725\nŞase No. WAUZZZF25NN055240",
             "uttsTanimlandi": false,
             "takipCihaziMontaj": false,
             "events": [
+                {
+                    "id": "1779347466334",
+                    "type": "kredi-guncelle",
+                    "date": "21\/05\/2026",
+                    "timestamp": "2026-05-21T07:11:06.335Z",
+                    "data": {
+                        "durum": "var",
+                        "detay": "TÜRKİYE VAKIFLAR BANKASI T.A.O.- KARABÜK ŞUBESİ | 49741445",
+                        "surucu": "İlker AKEL"
+                    }
+                },
+                {
+                    "id": "1778754803231",
+                    "type": "kullanici-atama",
+                    "date": "14\/05\/2026",
+                    "timestamp": "2026-05-14T10:33:23.231Z",
+                    "data": {
+                        "kullaniciId": "u1770525709433",
+                        "kullaniciAdi": "Savaş ŞENAY",
+                        "eskiKullaniciAdi": "Ali ŞENAY",
+                        "kaydeden": "İlker AKEL"
+                    }
+                },
                 {
                     "id": "1778337656949",
                     "type": "bakim",
@@ -3647,16 +4333,17 @@
             ],
             "satildiMi": false,
             "createdAt": "2026-04-22T00:24:56+03:00",
-            "updatedAt": "2026-04-30T11:50:03.619Z",
+            "updatedAt": "2026-05-14T10:33:23.231Z",
             "tescilTarihi": "",
-            "version": 406,
-            "tahsisKisi": "Ali ŞENAY",
-            "assignedUserId": "u202604220019",
+            "version": 620,
+            "tahsisKisi": "Savaş ŞENAY",
+            "assignedUserId": "u1770525709433",
             "kaskoDegeri": "4.759.972 ₺",
-            "kaskoDegeriYuklemeTarihi": "2026-05-07T22:03:22.906Z",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
             "egzozMuayeneDate": "2027-09-15",
             "kaskoKodu": "91391",
-            "guncelKm": "115434"
+            "guncelKm": "115434",
+            "ruhsatPath": "ruhsat\/42ALS54_ruhsat_1778760878.pdf"
         },
         {
             "id": 202604220030,
@@ -3683,6 +4370,29 @@
             "uttsTanimlandi": false,
             "takipCihaziMontaj": false,
             "events": [
+                {
+                    "id": "177893234353km",
+                    "type": "km-revize",
+                    "date": "2026-05-16",
+                    "timestamp": "2026-05-16T14:52:23+03:00",
+                    "data": {
+                        "eskiKm": "19500",
+                        "yeniKm": "20613",
+                        "surucu": "İlker AKEL"
+                    }
+                },
+                {
+                    "id": "1778754823489",
+                    "type": "kullanici-atama",
+                    "date": "14\/05\/2026",
+                    "timestamp": "2026-05-14T10:33:43.489Z",
+                    "data": {
+                        "kullaniciId": "u1769823278672",
+                        "kullaniciAdi": "İlker AKEL",
+                        "eskiKullaniciAdi": "Ali ŞENAY",
+                        "kaydeden": "İlker AKEL"
+                    }
+                },
                 {
                     "id": "1778062042006",
                     "type": "kasko-guncelle",
@@ -3722,15 +4432,15 @@
             ],
             "satildiMi": false,
             "createdAt": "2026-04-22T00:24:56+03:00",
-            "updatedAt": "2026-04-25T23:14:08Z",
+            "updatedAt": "2026-05-14T10:33:43.489Z",
             "tescilTarihi": "",
-            "version": 409,
-            "tahsisKisi": "Ali ŞENAY",
-            "assignedUserId": "u202604220019",
+            "version": 623,
+            "tahsisKisi": "İlker AKEL",
+            "assignedUserId": "u1769823278672",
             "kaskoDegeri": "-",
-            "kaskoDegeriYuklemeTarihi": "2026-05-07T22:03:22.906Z",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
             "egzozMuayeneDate": "2027-03-24",
-            "guncelKm": "19500",
+            "guncelKm": 20613,
             "ruhsatPath": "ruhsat\/42ALS78_ruhsat_1778263377.pdf"
         },
         {
@@ -3757,17 +4467,32 @@
             "notes": "Kaynak kodlar: marka 100 \/ tip 1134 | Sase: NM426300006A27554 | Police No: 525481574\nŞase No. NM426300006A27554",
             "uttsTanimlandi": false,
             "takipCihaziMontaj": false,
-            "events": [],
+            "events": [
+                {
+                    "id": "1778751259111",
+                    "type": "kullanici-atama",
+                    "date": "14\/05\/2026",
+                    "timestamp": "2026-05-14T09:34:19.111Z",
+                    "data": {
+                        "kullaniciId": "u1777565254241",
+                        "kullaniciAdi": "İrfan YAVUZER",
+                        "eskiKullaniciAdi": "",
+                        "kaydeden": "İlker AKEL"
+                    }
+                }
+            ],
             "satildiMi": false,
             "createdAt": "2026-04-22T00:24:56+03:00",
-            "updatedAt": "2026-04-25T23:14:08Z",
+            "updatedAt": "2026-05-14T09:34:19.111Z",
             "tescilTarihi": "",
-            "version": 406,
-            "tahsisKisi": "",
+            "version": 620,
+            "tahsisKisi": "İrfan YAVUZER",
             "kaskoDegeri": "602.279 ₺",
-            "kaskoDegeriYuklemeTarihi": "2026-05-07T22:03:22.906Z",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
             "egzozMuayeneDate": "2026-12-03",
-            "kaskoKodu": "1001134"
+            "kaskoKodu": "1001134",
+            "assignedUserId": "u1777565254241",
+            "kaskoPolicePath": "kasko_police\/42ANB387_kasko_1778761097.pdf"
         },
         {
             "id": 202604220032,
@@ -3798,12 +4523,14 @@
             "createdAt": "2026-04-22T00:24:56+03:00",
             "updatedAt": "2026-04-25T23:14:08Z",
             "tescilTarihi": "",
-            "version": 406,
-            "tahsisKisi": "",
+            "version": 620,
+            "tahsisKisi": "Anıl TUNA",
             "kaskoDegeri": "435.184 ₺",
-            "kaskoDegeriYuklemeTarihi": "2026-05-07T22:03:22.906Z",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
             "egzozMuayeneDate": "2026-07-30",
-            "kaskoKodu": "1001086"
+            "kaskoKodu": "1001086",
+            "assignedUserId": "u1778754705081",
+            "kaskoPolicePath": "kasko_police\/42AYZ122_kasko_1778761133.pdf"
         },
         {
             "id": 202604220033,
@@ -3847,13 +4574,14 @@
             "createdAt": "2026-04-22T00:24:56+03:00",
             "updatedAt": "2026-04-25T23:14:08Z",
             "tescilTarihi": "",
-            "version": 406,
+            "version": 620,
             "tahsisKisi": "Alper SUNGUR",
             "assignedUserId": "u202604220020",
             "kaskoDegeri": "3.636.921 ₺",
-            "kaskoDegeriYuklemeTarihi": "2026-05-07T22:03:22.906Z",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
             "egzozMuayeneDate": "2027-10-25",
-            "kaskoKodu": "211996"
+            "kaskoKodu": "211996",
+            "kaskoPolicePath": "kasko_police\/42BAE374_kasko_1778761166.pdf"
         },
         {
             "id": 202604220034,
@@ -3879,17 +4607,33 @@
             "notes": "Kaynak kodlar: marka 53 \/ tip 1016 | Sase: NM0FXXTTFFCB53378 | Police No: 525774337\nŞase No. NM0FXXTTFFCB53378",
             "uttsTanimlandi": false,
             "takipCihaziMontaj": false,
-            "events": [],
+            "events": [
+                {
+                    "id": "1778754732236",
+                    "type": "kullanici-atama",
+                    "date": "14\/05\/2026",
+                    "timestamp": "2026-05-14T10:32:12.236Z",
+                    "data": {
+                        "kullaniciId": "u1777565254241",
+                        "kullaniciAdi": "İrfan YAVUZER",
+                        "eskiKullaniciAdi": "",
+                        "kaydeden": "İlker AKEL"
+                    }
+                }
+            ],
             "satildiMi": false,
             "createdAt": "2026-04-22T00:24:56+03:00",
-            "updatedAt": "2026-04-25T23:14:08Z",
+            "updatedAt": "2026-05-14T10:32:12.236Z",
             "tescilTarihi": "",
-            "version": 406,
-            "tahsisKisi": "",
+            "version": 621,
+            "tahsisKisi": "İrfan YAVUZER",
             "kaskoDegeri": "594.514 ₺",
-            "kaskoDegeriYuklemeTarihi": "2026-05-07T22:03:22.906Z",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
             "egzozMuayeneDate": "2027-04-07",
-            "kaskoKodu": "531016"
+            "kaskoKodu": "531016",
+            "assignedUserId": "u1777565254241",
+            "kaskoPolicePath": "kasko_police\/42HE312_kasko_1778761193.pdf",
+            "ruhsatPath": "ruhsat\/42HE312_ruhsat_1778762306.pdf"
         },
         {
             "id": 202604220036,
@@ -3920,13 +4664,15 @@
             "createdAt": "2026-04-22T00:24:56+03:00",
             "updatedAt": "2026-04-25T23:14:08Z",
             "tescilTarihi": "",
-            "version": 406,
+            "version": 621,
             "tahsisKisi": "Kenan MUTLU",
             "kaskoDegeri": "655.501 ₺",
-            "kaskoDegeriYuklemeTarihi": "2026-05-07T22:03:22.906Z",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
             "egzozMuayeneDate": "2027-06-19",
             "assignedUserId": "u1777597208480",
-            "kaskoKodu": "532040"
+            "kaskoKodu": "532040",
+            "kaskoPolicePath": "kasko_police\/42TC665_kasko_1778761258.pdf",
+            "ruhsatPath": "ruhsat\/42TC665_ruhsat_1778762370.pdf"
         },
         {
             "id": 202604220053,
@@ -3942,28 +4688,55 @@
             "boyaliParcalar": [],
             "sigortaDate": "2026-09-28",
             "kaskoDate": "2026-11-08",
-            "muayeneDate": "2026-05-21",
+            "muayeneDate": "2027-05-14",
             "anahtar": "",
             "anahtarNerede": "",
             "kredi": "var",
             "krediDetay": "Türkiye İş Bankası A.Ş.-Türkiye İş Bankası- 7621 | 506821397",
             "branchId": "1769175216952",
             "price": "609.539",
-            "notes": "Kaynak kodlar: marka 53 \/ tip 1096 | Sase: NM0FXXTTFFDA30473 | Police No: 525774678\nŞase No. NM0FXXTTFFDA30473",
+            "notes": "Şase No. NM0FXXTTFFDA30473",
             "uttsTanimlandi": false,
             "takipCihaziMontaj": false,
-            "events": [],
+            "events": [
+                {
+                    "id": "1778757409287",
+                    "type": "km-revize",
+                    "date": "14\/05\/2026",
+                    "timestamp": "2026-05-14T11:16:49.287Z",
+                    "data": {
+                        "eskiKm": "",
+                        "yeniKm": "249688",
+                        "surucu": "İlker AKEL"
+                    }
+                },
+                {
+                    "id": "1778757364294",
+                    "type": "muayene-guncelle",
+                    "date": "14\/05\/2026",
+                    "timestamp": "2026-05-14T11:16:04.294Z",
+                    "data": {
+                        "bitisTarihi": "2027-05-14",
+                        "egzozMuayeneDate": "",
+                        "egzozMuayeneYapilmaDate": "",
+                        "surucu": "İlker AKEL"
+                    }
+                }
+            ],
             "satildiMi": false,
             "createdAt": "2026-04-22T00:24:56+03:00",
-            "updatedAt": "2026-04-25T23:14:08Z",
+            "updatedAt": "2026-05-14T11:16:33.688Z",
             "tescilTarihi": "",
-            "version": 406,
+            "version": 622,
             "tahsisKisi": "İrfan YAVUZER",
             "kaskoDegeri": "629.886 ₺",
-            "kaskoDegeriYuklemeTarihi": "2026-05-07T22:03:22.906Z",
-            "egzozMuayeneDate": "2026-05-13",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
+            "egzozMuayeneDate": "2027-05-14",
             "assignedUserId": "u1777565254241",
-            "kaskoKodu": "531096"
+            "kaskoKodu": "531096",
+            "guncelKm": "249688",
+            "kaskoPolicePath": "kasko_police\/78BT351_kasko_1778761287.pdf",
+            "ruhsatPath": "ruhsat\/78BT351_ruhsat_1778761359.pdf"
         },
         {
             "id": 202604220055,
@@ -3994,13 +4767,15 @@
             "createdAt": "2026-04-22T00:24:56+03:00",
             "updatedAt": "2026-04-25T23:14:08Z",
             "tescilTarihi": "",
-            "version": 406,
+            "version": 621,
             "tahsisKisi": "İrfan YAVUZER",
             "kaskoDegeri": "882.872 ₺",
-            "kaskoDegeriYuklemeTarihi": "2026-05-07T22:03:22.906Z",
+            "kaskoDegeriYuklemeTarihi": "2026-05-18T11:59:45.209Z",
             "egzozMuayeneDate": "2026-10-24",
             "assignedUserId": "u1777565254241",
-            "kaskoKodu": "5201052"
+            "kaskoKodu": "5201052",
+            "ruhsatPath": "ruhsat\/78DE318_ruhsat_1778761392.pdf",
+            "kaskoPolicePath": "kasko_police\/78DE318_kasko_1778762195.pdf"
         }
     ],
     "kayitlar": [],
@@ -4061,12 +4836,14 @@
             "kullanici_paneli": true,
             "surucu_paneli": true,
             "zimmetli_araclar": [
+                1778591701140,
                 1776960228688,
-                1776929603740
+                1776929603740,
+                202604220030
             ],
             "aktif": true,
-            "kayit_tarihi": "2026-05-09T12:38:53.262Z",
-            "son_giris": "2026-05-09T23:21:17+03:00"
+            "kayit_tarihi": "2026-05-22T09:38:06.753Z",
+            "son_giris": "2026-05-23T01:11:28+03:00"
         },
         {
             "id": "u1769900543196",
@@ -4089,7 +4866,7 @@
                 202604220035
             ],
             "aktif": true,
-            "kayit_tarihi": "2026-05-09T12:38:53.262Z",
+            "kayit_tarihi": "2026-05-22T09:38:06.753Z",
             "son_giris": "2026-04-22T17:02:02+03:00"
         },
         {
@@ -4110,10 +4887,11 @@
             "kullanici_paneli": true,
             "surucu_paneli": true,
             "zimmetli_araclar": [
-                202604220028
+                202604220028,
+                202604220029
             ],
             "aktif": true,
-            "kayit_tarihi": "2026-05-09T12:38:53.262Z",
+            "kayit_tarihi": "2026-05-22T09:38:06.753Z",
             "son_giris": null
         },
         {
@@ -4138,7 +4916,7 @@
                 202604220046
             ],
             "aktif": true,
-            "kayit_tarihi": "2026-05-09T12:38:53.262Z",
+            "kayit_tarihi": "2026-05-22T09:38:06.753Z",
             "son_giris": null
         },
         {
@@ -4162,8 +4940,8 @@
                 202604220003
             ],
             "aktif": true,
-            "kayit_tarihi": "2026-05-09T12:38:53.262Z",
-            "son_giris": "2026-05-09T14:56:20+03:00"
+            "kayit_tarihi": "2026-05-22T09:38:06.753Z",
+            "son_giris": "2026-05-21T09:44:01+03:00"
         },
         {
             "id": "u202604220003",
@@ -4174,9 +4952,9 @@
             "sifre_guncellendi_at": "",
             "telefon": "905316532832",
             "email": "",
-            "sube_id": 1769175251066,
+            "sube_id": 1777889605135,
             "sube_ids": [
-                1769175251066
+                1777889605135
             ],
             "rol": "kullanici",
             "tip": "kullanici",
@@ -4186,7 +4964,7 @@
                 202604220004
             ],
             "aktif": true,
-            "kayit_tarihi": "2026-05-09T12:38:53.262Z",
+            "kayit_tarihi": "2026-05-22T09:38:06.753Z",
             "son_giris": null
         },
         {
@@ -4207,11 +4985,10 @@
             "kullanici_paneli": true,
             "surucu_paneli": true,
             "zimmetli_araclar": [
-                202604220006,
                 202604220016
             ],
             "aktif": true,
-            "kayit_tarihi": "2026-05-09T12:38:53.262Z",
+            "kayit_tarihi": "2026-05-22T09:38:06.753Z",
             "son_giris": "2026-05-08T15:16:59+03:00"
         },
         {
@@ -4227,15 +5004,15 @@
             "sube_ids": [
                 1769175251066
             ],
-            "rol": "sube_yonetici",
-            "tip": "yonetici",
+            "rol": "genel_yonetici",
+            "tip": "admin",
             "kullanici_paneli": true,
             "surucu_paneli": true,
             "zimmetli_araclar": [
                 202604220007
             ],
             "aktif": true,
-            "kayit_tarihi": "2026-05-09T12:38:53.262Z",
+            "kayit_tarihi": "2026-05-22T09:38:06.753Z",
             "son_giris": null
         },
         {
@@ -4247,9 +5024,9 @@
             "sifre_guncellendi_at": "",
             "telefon": "905322230466",
             "email": "",
-            "sube_id": 1769175251066,
+            "sube_id": 1777889605135,
             "sube_ids": [
-                1769175251066
+                1777889605135
             ],
             "rol": "kullanici",
             "tip": "kullanici",
@@ -4260,7 +5037,7 @@
                 202604220013
             ],
             "aktif": true,
-            "kayit_tarihi": "2026-05-09T12:38:53.262Z",
+            "kayit_tarihi": "2026-05-22T09:38:06.753Z",
             "son_giris": null
         },
         {
@@ -4272,9 +5049,9 @@
             "sifre_guncellendi_at": "",
             "telefon": "905444072910",
             "email": "",
-            "sube_id": 1769175251066,
+            "sube_id": 1777889605135,
             "sube_ids": [
-                1769175251066
+                1777889605135
             ],
             "rol": "kullanici",
             "tip": "kullanici",
@@ -4284,7 +5061,7 @@
                 202604220012
             ],
             "aktif": true,
-            "kayit_tarihi": "2026-05-09T12:38:53.262Z",
+            "kayit_tarihi": "2026-05-22T09:38:06.753Z",
             "son_giris": null
         },
         {
@@ -4296,9 +5073,9 @@
             "sifre_guncellendi_at": "",
             "telefon": "905336633099",
             "email": "",
-            "sube_id": 1769175251066,
+            "sube_id": 1778022947095,
             "sube_ids": [
-                1769175251066
+                1778022947095
             ],
             "rol": "kullanici",
             "tip": "kullanici",
@@ -4308,7 +5085,7 @@
                 202604220015
             ],
             "aktif": true,
-            "kayit_tarihi": "2026-05-09T12:38:53.262Z",
+            "kayit_tarihi": "2026-05-22T09:38:06.753Z",
             "son_giris": null
         },
         {
@@ -4330,7 +5107,7 @@
             "surucu_paneli": false,
             "zimmetli_araclar": [],
             "aktif": true,
-            "kayit_tarihi": "2026-05-09T12:38:53.262Z",
+            "kayit_tarihi": "2026-05-22T09:38:06.753Z",
             "son_giris": null
         },
         {
@@ -4342,9 +5119,9 @@
             "sifre_guncellendi_at": "",
             "telefon": "905339785028",
             "email": "",
-            "sube_id": 1769175251066,
+            "sube_id": 1778022947095,
             "sube_ids": [
-                1769175251066
+                1778022947095
             ],
             "rol": "kullanici",
             "tip": "kullanici",
@@ -4354,7 +5131,7 @@
                 202604220018
             ],
             "aktif": true,
-            "kayit_tarihi": "2026-05-09T12:38:53.262Z",
+            "kayit_tarihi": "2026-05-22T09:38:06.753Z",
             "son_giris": null
         },
         {
@@ -4376,7 +5153,7 @@
             "surucu_paneli": false,
             "zimmetli_araclar": [],
             "aktif": true,
-            "kayit_tarihi": "2026-05-09T12:38:53.262Z",
+            "kayit_tarihi": "2026-05-22T09:38:06.753Z",
             "son_giris": null
         },
         {
@@ -4388,9 +5165,9 @@
             "sifre_guncellendi_at": "",
             "telefon": "905359527744",
             "email": "",
-            "sube_id": 1769175251066,
+            "sube_id": 1778022947095,
             "sube_ids": [
-                1769175251066
+                1778022947095
             ],
             "rol": "kullanici",
             "tip": "kullanici",
@@ -4400,7 +5177,7 @@
                 202604220020
             ],
             "aktif": true,
-            "kayit_tarihi": "2026-05-09T12:38:53.262Z",
+            "kayit_tarihi": "2026-05-22T09:38:06.753Z",
             "son_giris": null
         },
         {
@@ -4412,9 +5189,9 @@
             "sifre_guncellendi_at": "",
             "telefon": "905388847577",
             "email": "",
-            "sube_id": 1769175251066,
+            "sube_id": 1778022947095,
             "sube_ids": [
-                1769175251066
+                1778022947095
             ],
             "rol": "kullanici",
             "tip": "kullanici",
@@ -4424,7 +5201,7 @@
                 202604220021
             ],
             "aktif": true,
-            "kayit_tarihi": "2026-05-09T12:38:53.262Z",
+            "kayit_tarihi": "2026-05-22T09:38:06.753Z",
             "son_giris": null
         },
         {
@@ -4436,9 +5213,9 @@
             "sifre_guncellendi_at": "",
             "telefon": "905364477374",
             "email": "",
-            "sube_id": 1769175251066,
+            "sube_id": 1769175273226,
             "sube_ids": [
-                1769175251066
+                1769175273226
             ],
             "rol": "kullanici",
             "tip": "kullanici",
@@ -4448,7 +5225,7 @@
                 202604220022
             ],
             "aktif": true,
-            "kayit_tarihi": "2026-05-09T12:38:53.262Z",
+            "kayit_tarihi": "2026-05-22T09:38:06.753Z",
             "son_giris": null
         },
         {
@@ -4474,7 +5251,7 @@
                 202604220052
             ],
             "aktif": true,
-            "kayit_tarihi": "2026-05-09T12:38:53.262Z",
+            "kayit_tarihi": "2026-05-22T09:38:06.753Z",
             "son_giris": null
         },
         {
@@ -4486,9 +5263,9 @@
             "sifre_guncellendi_at": "",
             "telefon": "905350436866",
             "email": "",
-            "sube_id": 1769175251066,
+            "sube_id": 1778022947095,
             "sube_ids": [
-                1769175251066
+                1778022947095
             ],
             "rol": "kullanici",
             "tip": "kullanici",
@@ -4498,7 +5275,7 @@
                 202604220026
             ],
             "aktif": true,
-            "kayit_tarihi": "2026-05-09T12:38:53.262Z",
+            "kayit_tarihi": "2026-05-22T09:38:06.753Z",
             "son_giris": null
         },
         {
@@ -4523,7 +5300,7 @@
                 202604220033
             ],
             "aktif": true,
-            "kayit_tarihi": "2026-05-09T12:38:53.262Z",
+            "kayit_tarihi": "2026-05-22T09:38:06.753Z",
             "son_giris": null
         },
         {
@@ -4548,7 +5325,7 @@
                 202604220037
             ],
             "aktif": true,
-            "kayit_tarihi": "2026-05-09T12:38:53.262Z",
+            "kayit_tarihi": "2026-05-22T09:38:06.753Z",
             "son_giris": null
         },
         {
@@ -4572,32 +5349,7 @@
                 202604220039
             ],
             "aktif": true,
-            "kayit_tarihi": "2026-05-09T12:38:53.262Z",
-            "son_giris": null
-        },
-        {
-            "id": "u202604220023",
-            "isim": "Sevkiyat RÖMORK",
-            "kullanici_adi": "sevkiyatR",
-            "sifre": "römork123",
-            "sifre_hash": "",
-            "sifre_guncellendi_at": "",
-            "telefon": "",
-            "email": "",
-            "sube_id": 1769175251066,
-            "sube_ids": [
-                1769175251066
-            ],
-            "rol": "kullanici",
-            "tip": "kullanici",
-            "kullanici_paneli": true,
-            "surucu_paneli": true,
-            "zimmetli_araclar": [
-                202604220040,
-                202604220043
-            ],
-            "aktif": true,
-            "kayit_tarihi": "2026-05-09T12:38:53.262Z",
+            "kayit_tarihi": "2026-05-22T09:38:06.753Z",
             "son_giris": null
         },
         {
@@ -4621,7 +5373,7 @@
                 202604220042
             ],
             "aktif": true,
-            "kayit_tarihi": "2026-05-09T12:38:53.262Z",
+            "kayit_tarihi": "2026-05-22T09:38:06.753Z",
             "son_giris": null
         },
         {
@@ -4633,9 +5385,9 @@
             "sifre_guncellendi_at": "",
             "telefon": "905324261747",
             "email": "",
-            "sube_id": 1769175251066,
+            "sube_id": 1778022947095,
             "sube_ids": [
-                1769175251066
+                1778022947095
             ],
             "rol": "kullanici",
             "tip": "kullanici",
@@ -4645,7 +5397,7 @@
                 202604220044
             ],
             "aktif": true,
-            "kayit_tarihi": "2026-05-09T12:38:53.262Z",
+            "kayit_tarihi": "2026-05-22T09:38:06.753Z",
             "son_giris": null
         },
         {
@@ -4669,31 +5421,7 @@
                 202604220045
             ],
             "aktif": true,
-            "kayit_tarihi": "2026-05-09T12:38:53.262Z",
-            "son_giris": null
-        },
-        {
-            "id": "u202604220027",
-            "isim": "Karabük Servis Aracı",
-            "kullanici_adi": "karabükA",
-            "sifre": "aracı123",
-            "sifre_hash": "",
-            "sifre_guncellendi_at": "",
-            "telefon": "",
-            "email": "",
-            "sube_id": 1769175251066,
-            "sube_ids": [
-                1769175251066
-            ],
-            "rol": "kullanici",
-            "tip": "kullanici",
-            "kullanici_paneli": true,
-            "surucu_paneli": true,
-            "zimmetli_araclar": [
-                202604220047
-            ],
-            "aktif": true,
-            "kayit_tarihi": "2026-05-09T12:38:53.262Z",
+            "kayit_tarihi": "2026-05-22T09:38:06.753Z",
             "son_giris": null
         },
         {
@@ -4705,9 +5433,9 @@
             "sifre_guncellendi_at": "",
             "telefon": "905316595606",
             "email": "",
-            "sube_id": 1769175251066,
+            "sube_id": 1778022947095,
             "sube_ids": [
-                1769175251066
+                1778022947095
             ],
             "rol": "kullanici",
             "tip": "kullanici",
@@ -4717,7 +5445,7 @@
                 202604220048
             ],
             "aktif": true,
-            "kayit_tarihi": "2026-05-09T12:38:53.262Z",
+            "kayit_tarihi": "2026-05-22T09:38:06.753Z",
             "son_giris": null
         },
         {
@@ -4741,7 +5469,7 @@
                 202604220049
             ],
             "aktif": true,
-            "kayit_tarihi": "2026-05-09T12:38:53.262Z",
+            "kayit_tarihi": "2026-05-22T09:38:06.753Z",
             "son_giris": null
         },
         {
@@ -4753,9 +5481,9 @@
             "sifre_guncellendi_at": "",
             "telefon": "905365116222",
             "email": "",
-            "sube_id": 1769175251066,
+            "sube_id": 1778022947095,
             "sube_ids": [
-                1769175251066
+                1778022947095
             ],
             "rol": "kullanici",
             "tip": "kullanici",
@@ -4765,7 +5493,7 @@
                 202604220050
             ],
             "aktif": true,
-            "kayit_tarihi": "2026-05-09T12:38:53.262Z",
+            "kayit_tarihi": "2026-05-22T09:38:06.753Z",
             "son_giris": null
         },
         {
@@ -4789,7 +5517,7 @@
                 202604220051
             ],
             "aktif": true,
-            "kayit_tarihi": "2026-05-09T12:38:53.262Z",
+            "kayit_tarihi": "2026-05-22T09:38:06.753Z",
             "son_giris": null
         },
         {
@@ -4807,13 +5535,11 @@
             ],
             "rol": "kullanici",
             "tip": "kullanici",
-            "kullanici_paneli": true,
-            "surucu_paneli": true,
-            "zimmetli_araclar": [
-                202604220054
-            ],
+            "kullanici_paneli": false,
+            "surucu_paneli": false,
+            "zimmetli_araclar": [],
             "aktif": true,
-            "kayit_tarihi": "2026-05-09T12:38:53.262Z",
+            "kayit_tarihi": "2026-05-22T09:38:06.753Z",
             "son_giris": null
         },
         {
@@ -4837,7 +5563,7 @@
                 202604220056
             ],
             "aktif": true,
-            "kayit_tarihi": "2026-05-09T12:38:53.262Z",
+            "kayit_tarihi": "2026-05-22T09:38:06.753Z",
             "son_giris": null
         },
         {
@@ -4861,7 +5587,7 @@
                 202604220057
             ],
             "aktif": true,
-            "kayit_tarihi": "2026-05-09T12:38:53.262Z",
+            "kayit_tarihi": "2026-05-22T09:38:06.753Z",
             "son_giris": null
         },
         {
@@ -4885,7 +5611,7 @@
                 202604220036
             ],
             "aktif": true,
-            "kayit_tarihi": "2026-05-09T12:38:53.262Z",
+            "kayit_tarihi": "2026-05-22T09:38:06.753Z",
             "son_giris": "2026-05-05T14:08:59+03:00"
         },
         {
@@ -4909,7 +5635,7 @@
                 202604220010
             ],
             "aktif": true,
-            "kayit_tarihi": "2026-05-09T12:38:53.262Z",
+            "kayit_tarihi": "2026-05-22T09:38:06.753Z",
             "son_giris": null
         },
         {
@@ -4921,20 +5647,17 @@
             "sifre_guncellendi_at": "",
             "telefon": "",
             "email": "",
-            "sube_id": 1769175216952,
+            "sube_id": 1769175251066,
             "sube_ids": [
-                1769175216952
+                1769175251066
             ],
             "rol": "kullanici",
             "tip": "kullanici",
-            "kullanici_paneli": true,
-            "surucu_paneli": true,
-            "zimmetli_araclar": [
-                202604220029,
-                202604220030
-            ],
+            "kullanici_paneli": false,
+            "surucu_paneli": false,
+            "zimmetli_araclar": [],
             "aktif": true,
-            "kayit_tarihi": "2026-05-09T12:38:53.262Z",
+            "kayit_tarihi": "2026-05-22T09:38:06.753Z",
             "son_giris": null
         },
         {
@@ -4955,11 +5678,15 @@
             "kullanici_paneli": true,
             "surucu_paneli": true,
             "zimmetli_araclar": [
+                202604220002,
+                202604220025,
+                202604220031,
+                202604220034,
                 202604220053,
                 202604220055
             ],
             "aktif": true,
-            "kayit_tarihi": "2026-05-09T12:38:53.262Z",
+            "kayit_tarihi": "2026-05-22T09:38:06.753Z",
             "son_giris": null
         },
         {
@@ -4971,14 +5698,17 @@
             "sifre_guncellendi_at": "",
             "telefon": "05316054217",
             "email": "onur.acar@medisamobilya.com",
-            "sube_ids": [],
+            "sube_id": 1769175251066,
+            "sube_ids": [
+                1769175251066
+            ],
             "rol": "genel_yonetici",
             "tip": "admin",
             "kullanici_paneli": false,
             "surucu_paneli": false,
             "zimmetli_araclar": [],
             "aktif": true,
-            "kayit_tarihi": "2026-05-09T12:38:53.262Z",
+            "kayit_tarihi": "2026-05-22T09:38:06.753Z",
             "son_giris": null
         },
         {
@@ -5002,7 +5732,219 @@
                 1778262649873
             ],
             "aktif": true,
-            "kayit_tarihi": "2026-05-09T12:38:53.262Z",
+            "kayit_tarihi": "2026-05-22T09:38:06.753Z",
+            "son_giris": null
+        },
+        {
+            "id": "u1778689214956",
+            "isim": "Talha BORAN",
+            "kullanici_adi": "talhaB",
+            "sifre": "boran123",
+            "sifre_hash": "",
+            "sifre_guncellendi_at": "",
+            "telefon": "05511951230",
+            "email": "",
+            "sube_id": 1769175216952,
+            "sube_ids": [
+                1769175216952
+            ],
+            "rol": "kullanici",
+            "tip": "kullanici",
+            "kullanici_paneli": true,
+            "surucu_paneli": true,
+            "zimmetli_araclar": [
+                202604220024
+            ],
+            "aktif": true,
+            "kayit_tarihi": "2026-05-22T09:38:06.753Z",
+            "son_giris": null
+        },
+        {
+            "id": "u1778690638009",
+            "isim": "Burak GÜLMEZ",
+            "kullanici_adi": "BurakG",
+            "sifre": "gülmez123",
+            "sifre_hash": "",
+            "sifre_guncellendi_at": "",
+            "telefon": "05313943780",
+            "email": "",
+            "sube_id": 1769175216952,
+            "sube_ids": [
+                1769175216952
+            ],
+            "rol": "kullanici",
+            "tip": "kullanici",
+            "kullanici_paneli": true,
+            "surucu_paneli": true,
+            "zimmetli_araclar": [
+                202604220005
+            ],
+            "aktif": true,
+            "kayit_tarihi": "2026-05-22T09:38:06.753Z",
+            "son_giris": null
+        },
+        {
+            "id": "u1778690707219",
+            "isim": "Abdullah KOYUNCU",
+            "kullanici_adi": "AbdullahK",
+            "sifre": "koyuncu123",
+            "sifre_hash": "",
+            "sifre_guncellendi_at": "",
+            "telefon": "05353644083",
+            "email": "",
+            "sube_id": 1769175216952,
+            "sube_ids": [
+                1769175216952
+            ],
+            "rol": "kullanici",
+            "tip": "kullanici",
+            "kullanici_paneli": true,
+            "surucu_paneli": true,
+            "zimmetli_araclar": [
+                202604220008
+            ],
+            "aktif": true,
+            "kayit_tarihi": "2026-05-22T09:38:06.753Z",
+            "son_giris": null
+        },
+        {
+            "id": "u1778690795388",
+            "isim": "Taylan MERCAN",
+            "kullanici_adi": "TaylanM",
+            "sifre": "mercan123",
+            "sifre_hash": "",
+            "sifre_guncellendi_at": "",
+            "telefon": "05533330068",
+            "email": "",
+            "sube_id": 1769175216952,
+            "sube_ids": [
+                1769175216952
+            ],
+            "rol": "kullanici",
+            "tip": "kullanici",
+            "kullanici_paneli": true,
+            "surucu_paneli": true,
+            "zimmetli_araclar": [
+                202604220009
+            ],
+            "aktif": true,
+            "kayit_tarihi": "2026-05-22T09:38:06.753Z",
+            "son_giris": null
+        },
+        {
+            "id": "u1778751211879",
+            "isim": "Batuhan SARI",
+            "kullanici_adi": "BatuhanS",
+            "sifre": "sarı123",
+            "sifre_hash": "",
+            "sifre_guncellendi_at": "",
+            "telefon": "05548988008",
+            "email": "",
+            "sube_id": 1769175216952,
+            "sube_ids": [
+                1769175216952
+            ],
+            "rol": "kullanici",
+            "tip": "kullanici",
+            "kullanici_paneli": true,
+            "surucu_paneli": true,
+            "zimmetli_araclar": [
+                202604220027
+            ],
+            "aktif": true,
+            "kayit_tarihi": "2026-05-22T09:38:06.753Z",
+            "son_giris": null
+        },
+        {
+            "id": "u1778754705081",
+            "isim": "Anıl TUNA",
+            "kullanici_adi": "AnılT",
+            "sifre": "tuna123",
+            "sifre_hash": "",
+            "sifre_guncellendi_at": "",
+            "telefon": "05075806987",
+            "email": "",
+            "sube_id": 1769175216952,
+            "sube_ids": [
+                1769175216952
+            ],
+            "rol": "kullanici",
+            "tip": "kullanici",
+            "kullanici_paneli": true,
+            "surucu_paneli": true,
+            "zimmetli_araclar": [
+                202604220032
+            ],
+            "aktif": true,
+            "kayit_tarihi": "2026-05-22T09:38:06.753Z",
+            "son_giris": null
+        },
+        {
+            "id": "u1778757108796",
+            "isim": "İsmail ÖZCAN",
+            "kullanici_adi": "İsmailO",
+            "sifre": "ozcan123",
+            "sifre_hash": "",
+            "sifre_guncellendi_at": "",
+            "telefon": "05533705431",
+            "email": "ismail.ozcan@medisamobilya.com",
+            "sube_id": 1769175251066,
+            "sube_ids": [
+                1769175251066
+            ],
+            "rol": "kullanici",
+            "tip": "kullanici",
+            "kullanici_paneli": true,
+            "surucu_paneli": true,
+            "zimmetli_araclar": [
+                202604220047
+            ],
+            "aktif": true,
+            "kayit_tarihi": "2026-05-22T09:38:06.753Z",
+            "son_giris": null
+        },
+        {
+            "id": "u1779098268752",
+            "isim": "Halil ŞENAY",
+            "kullanici_adi": "HalilS",
+            "sifre": "senay123",
+            "sifre_hash": "",
+            "sifre_guncellendi_at": "",
+            "telefon": "05336398526",
+            "email": "halil.senay@medisamobilya.com",
+            "sube_id": 1778022947095,
+            "sube_ids": [
+                1778022947095
+            ],
+            "rol": "kullanici",
+            "tip": "kullanici",
+            "kullanici_paneli": true,
+            "surucu_paneli": true,
+            "zimmetli_araclar": [
+                202604220006,
+                202604220054
+            ],
+            "aktif": true,
+            "kayit_tarihi": "2026-05-22T09:38:06.753Z",
+            "son_giris": null
+        },
+        {
+            "id": "u1779442686751",
+            "isim": "Demo",
+            "kullanici_adi": "Demo",
+            "sifre": "demo123",
+            "sifre_hash": "",
+            "sifre_guncellendi_at": "",
+            "telefon": "",
+            "email": "",
+            "sube_ids": [],
+            "rol": "genel_yonetici",
+            "tip": "admin",
+            "kullanici_paneli": false,
+            "surucu_paneli": false,
+            "zimmetli_araclar": [],
+            "aktif": true,
+            "kayit_tarihi": "2026-05-22T09:38:06.751Z",
             "son_giris": null
         }
     ],
@@ -5010,7 +5952,12 @@
         "sirketAdi": "Medisa",
         "yetkiliKisi": "İlker",
         "telefon": "905559876543",
-        "eposta": "info@medisa.com"
+        "eposta": "info@medisa.com",
+        "k2Belgesi": {
+            "expiryDate": "2027-09-14",
+            "documentPath": "k2_belgesi\/K2-BELGESI_k2_1779055483.pdf",
+            "updatedAt": "2026-05-18T01:04:43+03:00"
+        }
     },
     "sifreler": [],
     "arac_aylik_hareketler": [
@@ -5335,6 +6282,98 @@
             "kayit_tarihi": "2026-05-08T15:18:03+03:00",
             "guncelleme_tarihi": "2026-05-08T15:18:03+03:00",
             "durum": "onaylandi"
+        },
+        {
+            "id": 15,
+            "arac_id": "1778591701140",
+            "surucu_id": "u1769823278672",
+            "donem": "2026-05",
+            "guncel_km": 38300,
+            "bakim_durumu": 0,
+            "bakim_aciklama": "",
+            "bakim_tarih": "",
+            "bakim_servis": "",
+            "bakim_kisi": "",
+            "bakim_km": "",
+            "bakim_tutar": "",
+            "kaza_durumu": 0,
+            "kaza_aciklama": "",
+            "kaza_tarih": "",
+            "kaza_hasar_tutari": "",
+            "boya_parcalar": "",
+            "ekstra_not": "",
+            "kayit_tarihi": "2026-05-16T14:51:33+03:00",
+            "guncelleme_tarihi": "2026-05-16T14:51:33+03:00",
+            "durum": "onaylandi"
+        },
+        {
+            "id": 16,
+            "arac_id": "202604220030",
+            "surucu_id": "u1769823278672",
+            "donem": "2026-05",
+            "guncel_km": 20613,
+            "bakim_durumu": 0,
+            "bakim_aciklama": "",
+            "bakim_tarih": "",
+            "bakim_servis": "",
+            "bakim_kisi": "",
+            "bakim_km": "",
+            "bakim_tutar": "",
+            "kaza_durumu": 0,
+            "kaza_aciklama": "",
+            "kaza_tarih": "",
+            "kaza_hasar_tutari": "",
+            "boya_parcalar": "",
+            "ekstra_not": "",
+            "kayit_tarihi": "2026-05-16T14:52:23+03:00",
+            "guncelleme_tarihi": "2026-05-16T14:52:23+03:00",
+            "durum": "onaylandi"
+        },
+        {
+            "id": 17,
+            "arac_id": "1776960228688",
+            "surucu_id": "u1769823278672",
+            "donem": "2026-05",
+            "guncel_km": 192000,
+            "bakim_durumu": 0,
+            "bakim_aciklama": "",
+            "bakim_tarih": "",
+            "bakim_servis": "",
+            "bakim_kisi": "",
+            "bakim_km": "",
+            "bakim_tutar": "",
+            "kaza_durumu": 0,
+            "kaza_aciklama": "",
+            "kaza_tarih": "",
+            "kaza_hasar_tutari": "",
+            "boya_parcalar": "",
+            "ekstra_not": "",
+            "kayit_tarihi": "2026-05-18T13:53:50+03:00",
+            "guncelleme_tarihi": "2026-05-18T13:53:50+03:00",
+            "durum": "onaylandi"
+        },
+        {
+            "id": 18,
+            "arac_id": "202604220003",
+            "surucu_id": "u202604220002",
+            "donem": "2026-05",
+            "guncel_km": 125000,
+            "bakim_durumu": 0,
+            "bakim_aciklama": "",
+            "bakim_tarih": "",
+            "bakim_servis": "",
+            "bakim_kisi": "",
+            "bakim_km": "",
+            "bakim_tutar": "",
+            "kaza_durumu": 0,
+            "kaza_aciklama": "",
+            "kaza_tarih": "",
+            "kaza_hasar_tutari": "",
+            "boya_parcalar": "",
+            "ekstra_not": "",
+            "kayit_tarihi": "2026-05-21T09:44:40+03:00",
+            "guncelleme_tarihi": "2026-05-21T09:44:40+03:00",
+            "durum": "onaylandi"
         }
     ],
     "duzeltme_talepleri": [
@@ -5427,6 +6466,161 @@
             "admin_yanit_tarihi": "2026-05-06T17:21:49+03:00",
             "admin_notu": "",
             "admin_id": "u202604220002"
+        },
+        {
+            "id": 7,
+            "talep_tipi": "genel",
+            "arac_id": "1776960228688",
+            "kayit_id": null,
+            "surucu_id": "u1769823278672",
+            "konu_turu": "talep",
+            "mesaj": "Güncellenen Zorunlu Trafik Sigortası Poliçesinin Gönderilmesi.",
+            "sebep": "Güncellenen Zorunlu Trafik Sigortası Poliçesinin Gönderilmesi.",
+            "talep_tarihi": "2026-05-12T01:53:52+03:00",
+            "durum": "reddedildi",
+            "admin_yanit_tarihi": "2026-05-12T06:14:25+03:00",
+            "admin_notu": "",
+            "admin_id": "u1769823278672"
+        },
+        {
+            "id": 8,
+            "talep_tipi": "genel",
+            "arac_id": "1776960228688",
+            "kayit_id": null,
+            "surucu_id": "u1769823278672",
+            "konu_turu": "talep",
+            "mesaj": "Güncellenen Zorunlu Trafik Sigortası Poliçesinin Gönderilmesi.",
+            "sebep": "Güncellenen Zorunlu Trafik Sigortası Poliçesinin Gönderilmesi.",
+            "talep_tarihi": "2026-05-12T06:12:45+03:00",
+            "durum": "onaylandi",
+            "admin_yanit_tarihi": "2026-05-12T06:14:28+03:00",
+            "admin_notu": "",
+            "admin_id": "u1769823278672"
+        },
+        {
+            "id": 9,
+            "talep_tipi": "genel",
+            "arac_id": "1778591701140",
+            "kayit_id": null,
+            "surucu_id": "u1769823278672",
+            "konu_turu": "oneri",
+            "mesaj": "Deneme",
+            "sebep": "Deneme",
+            "talep_tarihi": "2026-05-12T17:54:49+03:00",
+            "durum": "reddedildi",
+            "admin_yanit_tarihi": "2026-05-12T17:55:04+03:00",
+            "admin_notu": "",
+            "admin_id": "u1769823278672"
+        },
+        {
+            "id": 10,
+            "talep_tipi": "genel",
+            "arac_id": "1778591701140",
+            "kayit_id": null,
+            "surucu_id": "u1769823278672",
+            "konu_turu": "talep",
+            "mesaj": "66",
+            "sebep": "66",
+            "talep_tarihi": "2026-05-13T14:27:03+03:00",
+            "durum": "reddedildi",
+            "admin_yanit_tarihi": "2026-05-13T14:27:18+03:00",
+            "admin_notu": "",
+            "admin_id": "u1769823278672"
+        },
+        {
+            "id": 11,
+            "talep_tipi": "genel",
+            "arac_id": "1778591701140",
+            "kayit_id": null,
+            "surucu_id": "u1769823278672",
+            "konu_turu": "talep",
+            "mesaj": "Grgr",
+            "sebep": "Grgr",
+            "talep_tarihi": "2026-05-16T01:22:43+03:00",
+            "durum": "onaylandi",
+            "admin_yanit_tarihi": "2026-05-18T02:21:45+03:00",
+            "admin_notu": "",
+            "admin_id": "u1769823278672"
+        },
+        {
+            "id": 12,
+            "talep_tipi": "genel",
+            "arac_id": "1778591701140",
+            "kayit_id": null,
+            "surucu_id": "u1769823278672",
+            "surucu_adi": "İlker AKEL",
+            "konu_turu": "talep",
+            "mesaj": "İill",
+            "sebep": "İill",
+            "talep_tarihi": "2026-05-18T15:31:44+03:00",
+            "durum": "reddedildi",
+            "admin_yanit_tarihi": "2026-05-18T15:55:36+03:00",
+            "admin_notu": "",
+            "admin_id": "u1769823278672"
+        },
+        {
+            "id": 13,
+            "talep_tipi": "genel",
+            "arac_id": "1778591701140",
+            "kayit_id": null,
+            "surucu_id": "u1769823278672",
+            "surucu_adi": "İlker AKEL",
+            "konu_turu": "talep",
+            "mesaj": "66",
+            "sebep": "66",
+            "talep_tarihi": "2026-05-18T15:48:03+03:00",
+            "durum": "reddedildi",
+            "admin_yanit_tarihi": "2026-05-18T15:55:44+03:00",
+            "admin_notu": "",
+            "admin_id": "u1769823278672"
+        },
+        {
+            "id": 14,
+            "talep_tipi": "genel",
+            "arac_id": "1778591701140",
+            "kayit_id": null,
+            "surucu_id": "u1769823278672",
+            "surucu_adi": "İlker AKEL",
+            "konu_turu": "talep",
+            "mesaj": "Y",
+            "sebep": "Y",
+            "talep_tarihi": "2026-05-18T15:55:26+03:00",
+            "durum": "onaylandi",
+            "admin_yanit_tarihi": "2026-05-18T15:55:53+03:00",
+            "admin_notu": "",
+            "admin_id": "u1769823278672"
+        },
+        {
+            "id": 15,
+            "talep_tipi": "genel",
+            "arac_id": "1778591701140",
+            "kayit_id": null,
+            "surucu_id": "u1769823278672",
+            "surucu_adi": "İlker AKEL",
+            "konu_turu": "talep",
+            "mesaj": "Son Temız",
+            "sebep": "Son Temız",
+            "talep_tarihi": "2026-05-18T15:56:14+03:00",
+            "durum": "onaylandi",
+            "admin_yanit_tarihi": "2026-05-18T16:46:53+03:00",
+            "admin_notu": "",
+            "admin_id": "u1769823278672"
+        },
+        {
+            "id": 16,
+            "talep_tipi": "genel",
+            "arac_id": "1778591701140",
+            "kayit_id": null,
+            "surucu_id": "u1769823278672",
+            "surucu_adi": "İlker AKEL",
+            "konu_turu": "talep",
+            "mesaj": "Ss",
+            "sebep": "Ss",
+            "talep_tarihi": "2026-05-18T16:04:57+03:00",
+            "durum": "reddedildi",
+            "admin_yanit_tarihi": "2026-05-18T16:46:56+03:00",
+            "admin_notu": "",
+            "admin_id": "u1769823278672"
         }
     ],
     "notificationReadState": {
@@ -5482,7 +6676,7 @@
             "dismissedKeys": [],
             "firstSeenDates": [],
             "migratedFromLocalStorage": false,
-            "updatedAt": "2026-05-09T17:40:56+03:00"
+            "updatedAt": "2026-05-23T00:01:36+03:00"
         },
         "user:u1769823278672|role:genel_yonetici|branches:1769175251066": {
             "readKeys": [
@@ -5559,9 +6753,84 @@
                 "date|202604220045|egzoz|2026-05-25|egzoz",
                 "date|202604220045|muayene|2026-05-25|muayene",
                 "event|202604220016|anahtar-guncelle|177824282011anahtar",
-                "date|1776960228688|kasko|2026-05-30|kasko"
+                "date|1776960228688|kasko|2026-05-30|kasko",
+                "date|202604220046|egzoz|2026-06-01|egzoz",
+                "date|202604220010|muayene|2026-06-01|muayene",
+                "date|202604220010|egzoz|2026-06-01|egzoz",
+                "event|202604220052|muayene-guncelle|1778441028708",
+                "event|202604220052|muayene-guncelle|1778440905064",
+                "event|202604220052|muayene-guncelle|1778440776340",
+                "event|202604220022|km-revize|1778415743399",
+                "date|202604220029|sigorta|2026-05-31|sigorta",
+                "event|202604220029|bakim|1778337656949",
+                "event|202604220029|km-revize|1778337602337",
+                "event|202604220006|kullanici-atama|1778324340941",
+                "event|1778262649873|lastik-guncelle|1778295289818",
+                "event|1778262649873|kasko-kodu-guncelle|1778295273514",
+                "event|1778262649873|muayene-guncelle|1778262679128",
+                "event|1778262649873|km-revize|1778262655492",
+                "event|1778262649873|vehicle-created|1778262649873|vehicle-created",
+                "event|202604220028|satis|1778261352012",
+                "event|202604220016|lastik-guncelle|177824277211lastik",
+                "date|202604220024|sigorta|2026-05-28|sigorta",
+                "date|202604220046|muayene|2026-06-01|muayene",
+                "date|202604220054|muayene|2026-06-01|muayene",
+                "request|general|7",
+                "request|general|8",
+                "request|general|9",
+                "request|general|10",
+                "event|202604220047|kullanici-atama|1778761777255",
+                "event|202604220005|kullanici-atama|1778759677428",
+                "event|202604220053|km-revize|1778757409287",
+                "event|202604220053|muayene-guncelle|1778757364294",
+                "event|202604220030|kullanici-atama|1778754823489",
+                "event|202604220029|kullanici-atama|1778754803231",
+                "event|202604220034|kullanici-atama|1778754732236",
+                "event|202604220031|kullanici-atama|1778751259111",
+                "event|202604220025|kullanici-atama|1778751133900",
+                "date|1778262649873|muayene|2026-06-04|muayene",
+                "date|1778262649873|egzoz|2026-06-04|egzoz",
+                "event|202604220002|kullanici-atama|1778690306891",
+                "event|1778591701140|driver-feedback|feedback-10",
+                "date|202604220025|muayene|2026-06-03|muayene",
+                "date|202604220025|egzoz|2026-06-03|egzoz",
+                "event|1778591701140|lastik-guncelle|1778614179208",
+                "event|1778591701140|anahtar-guncelle|1778614165364",
+                "event|1778591701140|driver-feedback|feedback-9",
+                "event|1778591701140|kullanici-atama|1778591726217",
+                "event|202604220016|utts-guncelle|1778846940904",
+                "event|1778591701140|km-revize|17789322930km",
+                "event|202604220030|km-revize|177893234353km",
+                "request|general|11",
+                "event|202604220048|sigorta-guncelle|1778918929630",
+                "event|1778591701140|driver-feedback|feedback-11",
+                "event|202604220048|lastik-guncelle|1778859193592",
+                "event|202604220048|lastik-guncelle|1778859172432",
+                "event|202604220048|lastik-guncelle|1778859157144",
+                "event|202604220016|takip-cihaz-guncelle|1778846988911",
+                "event|202604220016|takip-cihaz-guncelle|1778846979342",
+                "event|1776960228688|km-revize|17791016302km",
+                "request|general|12",
+                "request|general|13",
+                "request|general|14",
+                "request|general|16",
+                "event|202604220054|kullanici-atama|1779153912448",
+                "event|202604220054|kullanici-atama|1779153810029",
+                "event|202604220045|kullanici-atama|1779144004564",
+                "event|202604220045|muayene-guncelle|1779139706854",
+                "event|202604220045|muayene-guncelle|1779139664059",
+                "event|202604220045|kredi-guncelle|1779181703068",
+                "event|202604220045|kullanici-atama|1779191415941",
+                "event|202604220003|km-revize|17793458805km",
+                "event|202604220029|kredi-guncelle|1779347466334",
+                "event|202604220003|muayene-guncelle|1779347412298",
+                "event|202604220006|sube-degisiklik|1779353620476",
+                "event|202604220045|kullanici-atama|1779351829721",
+                "event|202604220003|muayene-guncelle|1779347387480"
             ],
-            "dismissedKeys": [],
+            "dismissedKeys": [
+                "special|kaskoExcel|2026|05"
+            ],
             "firstSeenDates": {
                 "date|202604220013|muayene|2025-08-29|muayene": "28\/04\/2026",
                 "date|202604220047|sigorta|2025-09-19|sigorta": "28\/04\/2026",
@@ -5771,10 +7040,90 @@
                 "event|1778262649873|lastik-guncelle|1778295289818": "09\/05\/2026",
                 "event|202604220006|kullanici-atama|1778324340941": "09\/05\/2026",
                 "event|202604220029|km-revize|1778337602337": "09\/05\/2026",
-                "event|202604220029|bakim|1778337656949": "09\/05\/2026"
+                "event|202604220029|bakim|1778337656949": "09\/05\/2026",
+                "date|202604220029|sigorta|2026-05-31|sigorta": "10\/05\/2026",
+                "event|202604220022|km-revize|1778415743399": "10\/05\/2026",
+                "event|202604220052|muayene-guncelle|1778440776340": "10\/05\/2026",
+                "event|202604220052|muayene-guncelle|1778440905064": "10\/05\/2026",
+                "event|202604220052|muayene-guncelle|1778441028708": "10\/05\/2026",
+                "date|202604220046|egzoz|2026-06-01|egzoz": "11\/05\/2026",
+                "date|202604220010|muayene|2026-06-01|muayene": "11\/05\/2026",
+                "date|202604220010|egzoz|2026-06-01|egzoz": "11\/05\/2026",
+                "event|202604220052|kasko-guncelle|1778506185287": "11\/05\/2026",
+                "event|202604220052|muayene-guncelle|1778510663440": "11\/05\/2026",
+                "date|1778537006544|egzoz|missing|egzoz": "12\/05\/2026",
+                "event|1778537006544|km-revize|1778537066138": "12\/05\/2026",
+                "event|1778537006544|vehicle-created|1778537006544|vehicle-created": "12\/05\/2026",
+                "request|general|7": "12\/05\/2026",
+                "event|1776960228688|driver-feedback|feedback-7": "12\/05\/2026",
+                "request|general|8": "12\/05\/2026",
+                "event|1776960228688|driver-feedback|feedback-8": "12\/05\/2026",
+                "event|1778591701140|km-revize|1778591704919": "12\/05\/2026",
+                "event|1778591701140|vehicle-created|1778591701140|vehicle-created": "12\/05\/2026",
+                "event|1778591701140|kullanici-atama|1778591726217": "12\/05\/2026",
+                "request|general|9": "12\/05\/2026",
+                "event|1778591701140|driver-feedback|feedback-9": "12\/05\/2026",
+                "event|1778591701140|anahtar-guncelle|1778614165364": "12\/05\/2026",
+                "event|1778591701140|lastik-guncelle|1778614179208": "12\/05\/2026",
+                "date|202604220025|muayene|2026-06-03|muayene": "13\/05\/2026",
+                "date|202604220025|egzoz|2026-06-03|egzoz": "13\/05\/2026",
+                "request|general|10": "13\/05\/2026",
+                "event|1778591701140|driver-feedback|feedback-10": "13\/05\/2026",
+                "event|202604220002|kullanici-atama|1778690306891": "13\/05\/2026",
+                "date|1778262649873|muayene|2026-06-04|muayene": "14\/05\/2026",
+                "date|1778262649873|egzoz|2026-06-04|egzoz": "14\/05\/2026",
+                "event|202604220025|kullanici-atama|1778751133900": "14\/05\/2026",
+                "event|202604220031|kullanici-atama|1778751259111": "14\/05\/2026",
+                "event|202604220034|kullanici-atama|1778754732236": "14\/05\/2026",
+                "event|202604220029|kullanici-atama|1778754803231": "14\/05\/2026",
+                "event|202604220030|kullanici-atama|1778754823489": "14\/05\/2026",
+                "event|202604220053|muayene-guncelle|1778757364294": "14\/05\/2026",
+                "event|202604220053|km-revize|1778757409287": "14\/05\/2026",
+                "event|202604220005|kullanici-atama|1778759677428": "14\/05\/2026",
+                "event|202604220047|kullanici-atama|1778761777255": "14\/05\/2026",
+                "event|202604220016|utts-guncelle|1778846940904": "15\/05\/2026",
+                "event|202604220016|takip-cihaz-guncelle|1778846979342": "15\/05\/2026",
+                "event|202604220016|takip-cihaz-guncelle|1778846988911": "15\/05\/2026",
+                "event|202604220048|lastik-guncelle|1778859157144": "15\/05\/2026",
+                "event|202604220048|lastik-guncelle|1778859172432": "15\/05\/2026",
+                "event|202604220048|lastik-guncelle|1778859193592": "15\/05\/2026",
+                "request|general|11": "16\/05\/2026",
+                "event|1778591701140|driver-feedback|feedback-11": "16\/05\/2026",
+                "event|202604220048|sigorta-guncelle|1778918929630": "16\/05\/2026",
+                "event|202604220030|km-revize|177893234353km": "16\/05\/2026",
+                "event|1778591701140|km-revize|17789322930km": "16\/05\/2026",
+                "event|1776960228688|km-revize|17791016302km": "18\/05\/2026",
+                "request|general|12": "18\/05\/2026",
+                "event|1778591701140|driver-feedback|feedback-12": "18\/05\/2026",
+                "request|general|13": "18\/05\/2026",
+                "event|1778591701140|driver-feedback|feedback-13": "18\/05\/2026",
+                "request|general|14": "18\/05\/2026",
+                "event|1778591701140|driver-feedback|feedback-14": "18\/05\/2026",
+                "request|general|15": "18\/05\/2026",
+                "event|1778591701140|driver-feedback|feedback-15": "18\/05\/2026",
+                "request|general|16": "18\/05\/2026",
+                "event|1778591701140|driver-feedback|feedback-16": "18\/05\/2026",
+                "date|202604220045|muayene|2026-05-20|muayene": "19\/05\/2026",
+                "date|202604220045|egzoz|2026-05-20|egzoz": "19\/05\/2026",
+                "event|202604220045|muayene-guncelle|1779139664059": "19\/05\/2026",
+                "event|202604220045|muayene-guncelle|1779139706854": "19\/05\/2026",
+                "event|202604220045|kullanici-atama|1779144004564": "1779144004693",
+                "event|202604220054|kullanici-atama|1779153810029": "1779153810166",
+                "event|202604220054|kullanici-atama|1779153912448": "1779153912575",
+                "event|202604220045|kredi-guncelle|1779181703068": "1779181703940",
+                "event|202604220045|kullanici-atama|1779191415941": "1779191416313",
+                "event|202604220003|km-revize|17793458805km": "1779347354009",
+                "event|202604220003|muayene-guncelle|1779347387480": "1779347387591",
+                "event|202604220003|muayene-guncelle|1779347412298": "1779347413331",
+                "event|202604220029|kredi-guncelle|1779347466334": "1779347466467",
+                "event|202604220045|kullanici-atama|1779351829721": "1779351831233",
+                "event|202604220006|sube-degisiklik|1779353620476": "1779353620601",
+                "date|202604220015|sigorta|2026-06-21|sigorta": "1779397209274",
+                "event|202604220009|bakim|1779481498062": "1779481498290",
+                "date|202604220019|egzoz|2026-06-22|egzoz": "1779483695956"
             },
             "migratedFromLocalStorage": true,
-            "updatedAt": "2026-05-09T17:40:56+03:00"
+            "updatedAt": "2026-05-23T00:01:36+03:00"
         },
         "user:u1777597208480|role:sube_yonetici|branches:1769175216952": {
             "readKeys": [],
@@ -5898,10 +7247,101 @@
                 "event|202604220016|km-revize|177824268311km": "09\/05\/2026",
                 "event|202604220016|kullanici-atama|1778238822034": "09\/05\/2026",
                 "event|202604220051|muayene-guncelle|1778238518916": "09\/05\/2026",
-                "event|202604220051|muayene-guncelle|1778238494672": "09\/05\/2026"
+                "event|202604220051|muayene-guncelle|1778238494672": "09\/05\/2026",
+                "date|202604220029|sigorta|2026-05-31|sigorta": "11\/05\/2026",
+                "date|202604220046|muayene|2026-06-01|muayene": "11\/05\/2026",
+                "date|202604220046|egzoz|2026-06-01|egzoz": "11\/05\/2026",
+                "date|202604220054|muayene|2026-06-01|muayene": "11\/05\/2026",
+                "date|202604220010|muayene|2026-06-01|muayene": "11\/05\/2026",
+                "date|202604220010|egzoz|2026-06-01|egzoz": "11\/05\/2026",
+                "event|202604220052|muayene-guncelle|1778510663440": "11\/05\/2026",
+                "event|202604220052|kasko-guncelle|1778506185287": "11\/05\/2026",
+                "event|202604220052|muayene-guncelle|1778441028708": "11\/05\/2026",
+                "event|202604220052|muayene-guncelle|1778440905064": "11\/05\/2026",
+                "event|202604220052|muayene-guncelle|1778440776340": "11\/05\/2026",
+                "event|202604220022|km-revize|1778415743399": "11\/05\/2026",
+                "event|202604220029|bakim|1778337656949": "11\/05\/2026",
+                "event|202604220029|km-revize|1778337602337": "11\/05\/2026",
+                "date|1778262649873|muayene|2026-06-04|muayene": "1779345038385",
+                "date|1778262649873|egzoz|2026-06-04|egzoz": "1779345038385",
+                "date|202604220025|muayene|2026-06-03|muayene": "1779345038387",
+                "date|202604220025|egzoz|2026-06-03|egzoz": "1779345038387",
+                "event|202604220045|kullanici-atama|1779191415941": "1779345038387",
+                "event|202604220045|kredi-guncelle|1779181703068": "1779345038388",
+                "event|202604220054|kullanici-atama|1779153912448": "1779345038388",
+                "event|202604220054|kullanici-atama|1779153810029": "1779345038388",
+                "event|202604220045|kullanici-atama|1779144004564": "1779345038388",
+                "event|202604220045|muayene-guncelle|1779139706854": "1779345038388",
+                "event|202604220045|muayene-guncelle|1779139664059": "1779345038388",
+                "event|1776960228688|km-revize|17791016302km": "1779345038388",
+                "event|202604220030|km-revize|177893234353km": "1779345038388",
+                "event|1778591701140|km-revize|17789322930km": "1779345038388",
+                "event|202604220048|sigorta-guncelle|1778918929630": "1779345038388",
+                "event|202604220048|lastik-guncelle|1778859193592": "1779345038388",
+                "event|202604220048|lastik-guncelle|1778859172432": "1779345038388",
+                "event|202604220048|lastik-guncelle|1778859157144": "1779345038388",
+                "event|202604220016|takip-cihaz-guncelle|1778846988911": "1779345038388",
+                "event|202604220003|km-revize|17793458805km": "1779345925176"
             },
             "migratedFromLocalStorage": true,
-            "updatedAt": "2026-05-09T14:56:22+03:00"
+            "updatedAt": "2026-05-21T09:45:25+03:00"
+        }
+    },
+    "monthlyTodoWhatsAppLogs": {
+        "monthlyTodo:202604220048:s:2026-05-17": {
+            "vehicleId": "202604220048",
+            "plate": "78ABV698",
+            "type": "s",
+            "field": "sigortaDate",
+            "date": "2026-05-17",
+            "firstOpenedAt": "2026-05-11T15:54:12.382Z",
+            "lastOpenedAt": "2026-05-11T15:54:12.382Z",
+            "openedCount": 1,
+            "openedBy": "İlker AKEL"
+        },
+        "monthlyTodo:202604220003:me:2026-05-22": {
+            "vehicleId": "202604220003",
+            "plate": "10AIZ310",
+            "type": "me",
+            "field": "muayeneDate+egzozMuayeneDate",
+            "date": "2026-05-22",
+            "firstOpenedAt": "2026-05-11T15:56:26.676Z",
+            "lastOpenedAt": "2026-05-12T10:23:54.647Z",
+            "openedCount": 2,
+            "openedBy": "İlker AKEL"
+        },
+        "monthlyTodo:1776960228688:s:2026-05-26": {
+            "vehicleId": "1776960228688",
+            "plate": "34GT8770",
+            "type": "s",
+            "field": "sigortaDate",
+            "date": "2026-05-26",
+            "firstOpenedAt": "2026-05-11T22:53:28.547Z",
+            "lastOpenedAt": "2026-05-11T22:53:28.547Z",
+            "openedCount": 1,
+            "openedBy": "İlker AKEL"
+        },
+        "monthlyTodo:202604220053:e:2026-05-13": {
+            "vehicleId": "202604220053",
+            "plate": "78BT351",
+            "type": "e",
+            "field": "egzozMuayeneDate",
+            "date": "2026-05-13",
+            "firstOpenedAt": "2026-05-13T11:22:03.882Z",
+            "lastOpenedAt": "2026-05-14T10:34:16.314Z",
+            "openedCount": 2,
+            "openedBy": "İlker AKEL"
+        },
+        "monthlyTodo:202604220045:s:2026-05-25": {
+            "vehicleId": "202604220045",
+            "plate": "78ABL850",
+            "type": "s",
+            "field": "sigortaDate",
+            "date": "2026-05-25",
+            "firstOpenedAt": "2026-05-19T08:38:59.661Z",
+            "lastOpenedAt": "2026-05-19T08:38:59.661Z",
+            "openedCount": 1,
+            "openedBy": "İlker AKEL"
         }
     }
 }
