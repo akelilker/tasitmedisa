@@ -733,63 +733,6 @@
     });
   }
 
-  /*
-  function isMonthlyMobileViewport() {
-    return window.matchMedia('(max-width: 640px)').matches;
-  }
-
-  function getMonthlySortableValue(record, key) {
-    if (key === 'plate') return formatPlaka(record.plaka || '-').toLocaleUpperCase('tr-TR');
-    if (key === 'brand') return capitalizeWords((record.brand_model || ((record.arac_marka || '') + ' ' + (record.arac_model || ''))).trim() || '-');
-    if (key === 'driver') return record.atama_var === false ? 'Atama bulunmuyor' : getDriverDisplayName(record.surucu_adi, 'Sürücü tanımsız');
-    if (key === 'km') return Number(record.km || 0);
-    if (key === 'branch') return toTitleCase(record.branch_name || 'Şubesiz');
-    if (key === 'status') return (getKmStateMeta(record).statusLabel || '').toLocaleLowerCase('tr-TR');
-    return '';
-  }
-
-  function applyMonthlyMobileSorting(records) {
-    if (!isMonthlyMobileViewport() || !monthlyMobileSortState.key) return records;
-
-    var sortKey = monthlyMobileSortState.key;
-    var sortDirection = monthlyMobileSortState.direction === 'desc' ? -1 : 1;
-
-    return records.slice().sort(function(a, b) {
-      var valueA = getMonthlySortableValue(a, sortKey);
-      var valueB = getMonthlySortableValue(b, sortKey);
-
-      if (sortKey === 'km') {
-        return (valueA - valueB) * sortDirection;
-      }
-      return String(valueA).localeCompare(String(valueB), 'tr', { sensitivity: 'base' }) * sortDirection;
-    });
-  }
-
-  function shouldShowMobileStatusWhatsapp(record, kmMeta) {
-    if (!isMonthlyMobileViewport()) return false;
-    if (!record || !record.telefon) return false;
-    return kmMeta.statusClass === 'is-not-reported' || kmMeta.statusClass === 'is-unassigned' || kmMeta.statusClass === 'is-alert';
-  }
-
-  function bindMonthlyMobileSorting(container) {
-    if (!container || !isMonthlyMobileViewport()) return;
-
-    Array.prototype.forEach.call(container.querySelectorAll('.monthly-sortable-header'), function(button) {
-      button.addEventListener('click', function() {
-        var sortKey = button.getAttribute('data-sort-key');
-        if (!sortKey) return;
-        if (monthlyMobileSortState.key === sortKey) {
-          monthlyMobileSortState.direction = monthlyMobileSortState.direction === 'asc' ? 'desc' : 'asc';
-        } else {
-          monthlyMobileSortState.key = sortKey;
-          monthlyMobileSortState.direction = 'asc';
-        }
-        renderMonthlyResults(monthlyReportRecords || []);
-      });
-    });
-  }
-  */
-
   function isMonthlyMobileViewport() {
     return window.matchMedia('(max-width: 640px)').matches;
   }
@@ -1045,7 +988,7 @@
     document.querySelectorAll('.admin-tab-btn').forEach(function(btn) {
       btn.classList.remove('active');
     });
-    
+
     // 2. Tüm panelleri gizle
     document.querySelectorAll('.admin-tab-panel').forEach(function(panel) {
       panel.classList.remove('active');
@@ -1053,14 +996,14 @@
     });
 
     // 3. Seçilen butonu aktif et (data-admin-tab veya onclick ile bulur)
-    var activeBtn = document.querySelector('.admin-tab-btn[data-admin-tab="' + tabId + '"]') || 
+    var activeBtn = document.querySelector('.admin-tab-btn[data-admin-tab="' + tabId + '"]') ||
                     document.querySelector('.admin-tab-btn[onclick*="' + tabId + '"]');
     if (activeBtn) {
       activeBtn.classList.add('active');
     }
 
     // 4. Seçilen paneli aktif et (id veya data-admin-panel ile bulur)
-    var activePanel = document.getElementById('tab-' + tabId) || 
+    var activePanel = document.getElementById('tab-' + tabId) ||
                       document.querySelector('.admin-tab-panel[data-admin-panel="' + tabId + '"]');
     if (activePanel) {
       activePanel.classList.add('active');
