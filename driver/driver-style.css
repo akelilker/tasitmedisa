@@ -773,7 +773,7 @@ body.dashboard-page {
   /* Sol grid: etiket + açıklama sonrası 3px boşluk (masaüstü); Şube ve altı plaka/modelden bir satır aşağı */
   .dashboard-page .driver-left-panel .driver-vehicle-info {
     gap: 6px !important;
-    margin-top: 1.25em !important;
+    margin-top: 4px !important;
   }
   .dashboard-page .driver-left-panel-content {
     overflow-y: hidden !important;
