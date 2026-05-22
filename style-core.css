@@ -85,9 +85,9 @@ body::-webkit-scrollbar,
   --shadow-dark: rgba(0, 0, 0, 0.4);
   --green-success: #28a745;
   --green-success-rgb: 40, 167, 69;
-  --orange-warn: #facc15;
-  --orange-warn-rgb: 250, 204, 21;
-  --orange-warn-hover: #fde047;
+  --orange-warn: #ff6a00;
+  --orange-warn-rgb: 255, 106, 0;
+  --orange-warn-hover: #ff8533;
   --amber-edit: #dda410;
   --link-blue: #5b9bd5;
   --link-blue-hover: #7ab3e8;
