@@ -5126,7 +5126,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     border-top-color: rgba(156, 166, 180, 0.68) !important;
     box-shadow:
       0 -1px 0 rgba(235, 240, 248, 0.22),
-      0 -7px 18px rgba(var(--theme-color-rgb), 0.24) !important;
+      0 -12px 35px rgba(var(--theme-color-rgb), 0.35) !important;
     height: 42px !important;
     min-height: 42px !important;
     width: 100% !important;
@@ -7182,7 +7182,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   /* Belgeler + Talep mini FAB: hover'da layout oynamasın; etiket kendi altında açılsın */
   .dashboard-page .driver-action-group.driver-action-feedback-slot.driver-request-fab-row {
     gap: 10px !important;
-    padding-bottom: 0;
+    padding-bottom: 18px !important;
   }
   .dashboard-page .driver-action-btn-feedback.driver-request-fab {
     position: relative !important;
