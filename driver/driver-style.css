@@ -859,6 +859,9 @@ body.dashboard-page {
   .dashboard-page .driver-action-btn {
     border-color: rgba(238, 246, 255, 0.46);
   }
+  .dashboard-page .driver-action-btn.data-entered {
+    border-color: rgba(238, 246, 255, 0.46);
+  }
   .dashboard-page .driver-action-footer {
     margin-top: auto;
     margin-bottom: 0;
