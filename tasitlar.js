@@ -1064,6 +1064,39 @@
   function formatBrandModel(str) { return (typeof window.formatBrandModel === 'function' ? window.formatBrandModel(str) : toTitleCase(str)); }
   function formatPlaka(str) { return (typeof window.formatPlaka === 'function' ? window.formatPlaka(str) : (str == null ? '-' : String(str))); }
   function formatAdSoyad(str) { return (typeof window.formatAdSoyad === 'function' ? window.formatAdSoyad(str) : str); }
+
+  function renderVehicleContextRow(modal, vehicle) {
+    if (!modal || !vehicle) return;
+    const container = modal.querySelector('.modal-container');
+    if (!container) return;
+
+    const backBar = Array.from(container.children).find(function(child) {
+      return child.classList && child.classList.contains('universal-back-bar');
+    });
+    if (!backBar) return;
+
+    let row = Array.from(container.children).find(function(child) {
+      return child.classList && child.classList.contains('vehicle-context-row');
+    });
+    if (!row) {
+      row = document.createElement('div');
+      row.className = 'vehicle-context-row';
+      row.setAttribute('aria-label', 'İşlem yapılan taşıt');
+      row.innerHTML = '<span class="vehicle-context-plate"></span><span class="vehicle-context-separator" aria-hidden="true">•</span><span class="vehicle-context-model"></span>';
+      backBar.insertAdjacentElement('afterend', row);
+    } else if (row.previousElementSibling !== backBar) {
+      backBar.insertAdjacentElement('afterend', row);
+    }
+
+    const plateEl = row.querySelector('.vehicle-context-plate');
+    const modelEl = row.querySelector('.vehicle-context-model');
+    const plate = formatPlaka(vehicle.plate || '-');
+    const model = formatBrandModel(vehicle.brandModel || '-');
+    if (plateEl) plateEl.textContent = plate;
+    if (modelEl) modelEl.textContent = model;
+    row.title = plate + ' • ' + model;
+  }
+
   function buildVehicleUserNameHtml(rawName) {
     const userName = formatAdSoyad(rawName || '-');
     const cleanName = String(userName || '-').trim();
@@ -5833,6 +5866,7 @@
       const isMobile = window.innerWidth <= 640;
       const takipLabel = isMobile ? 'Taşıt Takip Cih.Bilg. Günc.' : 'Taşıt Takip Cihaz Bilgisi Güncelle';
       const currentMenuVehicle = readVehicles().find(v => String(v.id) === String(effectiveVid));
+      renderVehicleContextRow(modal, currentMenuVehicle);
       const assignmentLocked = isArchivedVehicleAssignmentLocked(currentMenuVehicle);
       let events = [
         { id: 'ceza', label: 'Trafik Cezası Ekle' },
@@ -5897,6 +5931,7 @@
       const baslikEl = DOM.dinamikOlayBaslik;
       const kaydetBtn = DOM.dinamikOlayKaydetBtn;
       if (!modal || !formIcerik || !kaydetBtn) return;
+      const currentEventVehicle = readVehicles().find(v => String(v.id) === String(effectiveVid));
 
       const getDynamicEventCloseTarget = function() {
         const currentVehicleId = (window.currentDetailVehicleId || vehicleId || '').toString();
@@ -5955,6 +5990,7 @@
       const title = EVENT_TITLES[type] || 'OLAY EKLE';
       modal.dataset.eventType = type;
       baslikEl.textContent = title;
+      renderVehicleContextRow(modal, currentEventVehicle);
       formIcerik.innerHTML = getEventFormHtml(type);
       if (!formIcerik.innerHTML.trim()) return;
 
@@ -9408,6 +9444,8 @@
     
     const modal = DOM.vehicleHistoryModal;
     if (!modal) return;
+    const historyVehicle = readVehicles().find(v => String(v.id) === String(vid));
+    renderVehicleContextRow(modal, historyVehicle);
     
     const tab = (initialTab && /^(bakim|kaza|km|diger)$/.test(initialTab)) ? initialTab : 'bakim';
     switchHistoryTab(tab, vid);
@@ -9651,6 +9689,7 @@
     const vehicles = readVehicles();
     const vehicle = vehicles.find(v => String(v.id) === String(vid));
     if (!vehicle) return;
+    renderVehicleContextRow(DOM.vehicleHistoryModal, vehicle);
 
     const events = vehicle.events || [];
     let html = '';
