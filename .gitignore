@@ -39,3 +39,4 @@ data/sigorta_police_preview/
 *.rej
 *.swp
 *.swo
+data/data.json
