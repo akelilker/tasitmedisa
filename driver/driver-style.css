@@ -7174,9 +7174,9 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 /* Masaüstü (769px+): işlem satırı butonları kompakt dikey padding */
 @media (min-width: 769px) {
   .dashboard-page .driver-action-area .driver-action-group > .driver-action-btn {
-    padding-top: 8px !important;
-    padding-bottom: 8px !important;
-    min-height: 38px !important;
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
+    min-height: 36px !important;
   }
 
   /* Belgeler + Talep mini FAB: hover'da layout oynamasın; etiket kendi altında açılsın */
