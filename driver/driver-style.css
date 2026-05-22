@@ -856,6 +856,9 @@ body.dashboard-page {
     margin-bottom: 6px;
     gap: 4px;
   }
+  .dashboard-page .driver-action-btn {
+    border-color: rgba(238, 246, 255, 0.46);
+  }
   .dashboard-page .driver-action-footer {
     margin-top: auto;
     margin-bottom: 0;
