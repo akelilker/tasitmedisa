@@ -1109,7 +1109,7 @@ body.dashboard-page {
   height: 19px;
 }
 .driver-warning-panel-item-orange {
-  color: #f97316;
+  color: var(--orange-warn);
 }
 .driver-warning-panel-item-red {
   color: var(--theme-color);
@@ -1256,10 +1256,10 @@ body.dashboard-page {
 }
 /* Tarih yaklaşıyor (turuncu): sol panel driver-warn-orange ile aynı ton */
 .driver-sliding-warning.driver-sliding-warning-orange {
-  color: #f97316;
+  color: var(--orange-warn);
 }
 .driver-sliding-warning.driver-sliding-warning-orange .driver-warning-icon {
-  color: #f97316;
+  color: var(--orange-warn);
 }
 .driver-sliding-warning .driver-warning-text {
   overflow: hidden;
@@ -1341,7 +1341,7 @@ body.dashboard-page {
   display: none;
 }
 .driver-warning-icon-engine-orange {
-  color: #f97316;
+  color: var(--orange-warn);
 }
 .driver-warning-icon-engine-red {
   color: var(--theme-color);
@@ -1743,7 +1743,7 @@ body.dashboard-page {
 }
 .driver-info-item.driver-warn-orange .label,
 .driver-info-item.driver-warn-orange .value {
-  color: #f97316 !important;
+  color: var(--orange-warn) !important;
 }
 .driver-info-item.driver-warn-red::before,
 .driver-info-item.driver-warn-orange::before {
@@ -1809,12 +1809,12 @@ body.dashboard-page {
   color: rgba(var(--theme-color-rgb), 0.95);
 }
 .driver-action-btn.warning.warning-orange {
-  border-color: #f97316;
-  color: #f97316;
+  border-color: var(--orange-warn);
+  color: var(--orange-warn);
 }
 .driver-action-btn.warning.warning-orange:hover {
-  border-color: #fb923c;
-  color: #fb923c;
+  border-color: var(--orange-warn-hover);
+  color: var(--orange-warn-hover);
 }
 .driver-action-btn.data-entered {
   border: 1px solid rgba(255, 255, 255, 0.25); /* Aynı ince parlak gri çerçeve */
@@ -2827,7 +2827,7 @@ body.dashboard-page {
   background: var(--theme-color);
 }
 .driver-plate-warning-dot-orange {
-  background: #f97316;
+  background: var(--orange-warn);
 }
 .driver-plate-dropdown-item-plate {
   flex: 0 0 auto;
