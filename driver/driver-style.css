@@ -687,6 +687,9 @@ body.dashboard-page {
   .dashboard-page .driver-status-icon-row {
     gap: 8px !important;
   }
+  .dashboard-page .driver-status-icon-slot {
+    min-height: 32px;
+  }
   /* Tarihçe / anahtar ikonları masaüstü: 1px küçült */
   .dashboard-page .driver-below-hero-row .driver-btn-history .driver-btn-history-icon {
     width: 23px !important;
@@ -786,18 +789,19 @@ body.dashboard-page {
     line-height: 1.25;
   }
   .dashboard-page .driver-left-quick-actions {
-    display: flex;
+    display: grid;
     flex: 0 0 auto;
-    flex-direction: column;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 4px;
-    margin-top: 8px;
-    padding-top: 8px;
+    margin-top: 6px;
+    padding-top: 6px;
     border-top: 1px solid rgba(238, 246, 255, 0.16);
   }
   .dashboard-page .driver-left-quick-action {
     width: 100%;
-    min-height: 24px;
-    padding: 3px 6px;
+    min-width: 0;
+    min-height: 26px;
+    padding: 0;
     border: 1px solid rgba(238, 246, 255, 0.28);
     border-radius: 7px;
     background: transparent;
@@ -806,9 +810,18 @@ body.dashboard-page {
     font-size: 11px;
     font-weight: 600;
     line-height: 1.2;
-    text-align: left;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
     cursor: pointer;
     transition: border-color 0.18s ease, color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+  }
+  .dashboard-page .driver-left-quick-action-icon {
+    width: 18px;
+    height: 18px;
+    flex: 0 0 auto;
+    color: currentColor;
   }
   .dashboard-page .driver-left-quick-action:hover,
   .dashboard-page .driver-left-quick-action:focus-visible {
@@ -874,6 +887,7 @@ body.dashboard-page {
   /* İç dikey padding: aşağıdaki 641 + 769 bloklarında birleştirilir */
   /* Sağ grid: alt boşluk sıfır – çerçeveye tam yanaşsın */
   .dashboard-page .driver-two-panel {
+    padding-top: 5px !important;
     padding-bottom: 0 !important;
   }
   .dashboard-page .driver-right-panel {
