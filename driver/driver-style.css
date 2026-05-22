@@ -7182,7 +7182,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   /* Belgeler + Talep mini FAB: hover'da layout oynamasın; etiket kendi altında açılsın */
   .dashboard-page .driver-action-group.driver-action-feedback-slot.driver-request-fab-row {
     gap: 10px !important;
-    padding-bottom: 18px !important;
+    padding-bottom: 0 !important;
   }
   .dashboard-page .driver-action-btn-feedback.driver-request-fab {
     position: relative !important;
@@ -7190,7 +7190,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     min-width: 40px !important;
     padding: 0 !important;
     justify-content: center !important;
-    flex-direction: row !important;
+    flex-direction: column !important;
     gap: 0 !important;
     overflow: visible !important;
     transform: translateY(0) !important;
@@ -7208,10 +7208,11 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     transform: translateY(0) !important;
   }
   .dashboard-page .driver-action-btn-feedback.driver-request-fab .driver-request-fab-label {
-    position: absolute !important;
+    position: static !important;
     left: 50% !important;
-    top: calc(100% + 7px) !important;
-    transform: translate(-50%, 0) scale(1) !important;
+    top: auto !important;
+    margin-top: 4px !important;
+    transform: scale(1) !important;
     opacity: 0 !important;
     max-width: none !important;
     overflow: visible !important;
@@ -7227,7 +7228,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     opacity: 1 !important;
     max-width: none !important;
     color: rgba(225, 232, 242, 0.9) !important;
-    transform: translate(-50%, 0) scale(1.06) !important;
+    transform: scale(1.06) !important;
   }
   .dashboard-page .driver-action-btn-feedback.driver-request-fab:hover .driver-action-btn-feedback-icon,
   .dashboard-page .driver-action-btn-feedback.driver-request-fab:focus-visible .driver-action-btn-feedback-icon {
