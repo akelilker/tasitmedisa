@@ -1568,10 +1568,10 @@ body.dashboard-page {
   }
   .dashboard-page .driver-action-area-inner .driver-action-footer.driver-action-group {
     margin-top: 5px;
-    margin-bottom: 0 !important;
+    margin-bottom: 0;
   }
   .dashboard-page .driver-action-area-inner .driver-action-feedback-slot.driver-request-fab-row {
-    margin-top: 2px !important;
+    margin-top: 2px;
   }
   .dashboard-page .driver-request-fab-row {
     justify-content: flex-end !important;
@@ -2158,16 +2158,6 @@ body.dashboard-page {
     justify-content: center;
     text-align: center;
     border: 1px solid rgba(255, 255, 255, 0.25);
-  }
-  .dashboard-page .driver-action-area-inner {
-    justify-content: flex-start;
-    gap: 3px;
-  }
-  .dashboard-page .driver-action-area-inner > .driver-action-group:not(.driver-action-feedback-slot) {
-    margin-bottom: 0;
-  }
-  .dashboard-page .driver-action-area-inner .driver-action-footer.driver-action-group {
-    margin-top: 5px;
   }
   .driver-action-footer .status-message:empty {
     margin-top: 0;
@@ -6490,20 +6480,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
 
   /* Yeşil Bildir ile Talep Gönder: 6px (768px kuralını bu blokta taşıyan seçiciler ezmesin) */
-  .dashboard-page .driver-action-area-inner {
-    justify-content: flex-start !important;
-    gap: 3px !important;
-  }
-  .dashboard-page .driver-action-area-inner > .driver-action-group:not(.driver-action-feedback-slot) {
-    margin-bottom: 0 !important;
-  }
-  .dashboard-page .driver-action-area-inner .driver-action-footer.driver-action-group {
-    margin-top: 5px !important;
-    margin-bottom: 0 !important;
-  }
-  .dashboard-page .driver-action-area-inner .driver-action-feedback-slot.driver-request-fab-row {
-    margin-top: 2px !important;
-  }
   #history-modal .history-filter-label,
   #history-modal .history-vehicle-trigger {
     font-size: 15px !important;
