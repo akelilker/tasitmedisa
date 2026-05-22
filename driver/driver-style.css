@@ -1600,8 +1600,8 @@ body.dashboard-page {
   }
   .dashboard-page .driver-left-quick-action-documents .driver-left-quick-action-icon,
   .dashboard-page .driver-left-quick-action-feedback .driver-left-quick-action-icon {
-    width: 21px;
-    height: 21px;
+    width: 23px;
+    height: 23px;
   }
   .dashboard-page .driver-left-quick-action:hover,
   .dashboard-page .driver-left-quick-action:focus-visible {
