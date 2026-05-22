@@ -492,6 +492,7 @@ body.dashboard-page {
 .driver-status-icon-slot-key {
   justify-self: end;
   justify-content: flex-end;
+  gap: 8px;
   padding-right: 6px;
 }
 .driver-below-hero-notification-slot {
@@ -530,7 +531,8 @@ body.dashboard-page {
 }
 
 .driver-below-hero-row .driver-btn-history,
-.driver-below-hero-row .driver-btn-password {
+.driver-below-hero-row .driver-btn-password,
+.driver-below-hero-row .driver-btn-header-logout {
   width: auto;
   flex: none;
   margin: 0;
@@ -549,7 +551,10 @@ body.dashboard-page {
 .driver-below-hero-row .driver-btn-history:active,
 .driver-below-hero-row .driver-btn-password:hover,
 .driver-below-hero-row .driver-btn-password:focus,
-.driver-below-hero-row .driver-btn-password:active {
+.driver-below-hero-row .driver-btn-password:active,
+.driver-below-hero-row .driver-btn-header-logout:hover,
+.driver-below-hero-row .driver-btn-header-logout:focus,
+.driver-below-hero-row .driver-btn-header-logout:active {
   background: transparent !important;
   background-color: transparent !important;
   border: none !important;
@@ -563,6 +568,18 @@ body.dashboard-page {
 .driver-below-hero-row .driver-btn-password:hover,
 .driver-below-hero-row .driver-btn-password:focus {
   color: #6a9bc4;
+}
+.driver-below-hero-row .driver-btn-header-logout {
+  color: rgba(236, 46, 46, 0.9);
+}
+.driver-below-hero-row .driver-btn-header-logout:hover,
+.driver-below-hero-row .driver-btn-header-logout:focus {
+  color: #ff2b2b;
+}
+.driver-below-hero-row .driver-btn-header-logout-icon {
+  width: 22px;
+  height: 22px;
+  stroke-width: 1.8;
 }
 
 /* KULLANICI PANELİ: h1 altında, 1pt küçük, aynı renk (metalik gradient) */
@@ -670,7 +687,8 @@ body.dashboard-page {
     padding-bottom: 0 !important;
   }
   .dashboard-page .driver-below-hero-row .driver-btn-history,
-  .dashboard-page .driver-below-hero-row .driver-btn-password {
+  .dashboard-page .driver-below-hero-row .driver-btn-password,
+  .dashboard-page .driver-below-hero-row .driver-btn-header-logout {
     margin: 0 !important;
   }
   .dashboard-page .driver-below-hero-row .driver-btn-password {
@@ -679,6 +697,13 @@ body.dashboard-page {
   .dashboard-page .driver-below-hero-row .driver-btn-password:hover,
   .dashboard-page .driver-below-hero-row .driver-btn-password:focus {
     color: #6a9bc4 !important;
+  }
+  .dashboard-page .driver-below-hero-row .driver-btn-header-logout {
+    color: rgba(236, 46, 46, 0.9) !important;
+  }
+  .dashboard-page .driver-below-hero-row .driver-btn-header-logout:hover,
+  .dashboard-page .driver-below-hero-row .driver-btn-header-logout:focus {
+    color: #ff2b2b !important;
   }
   /* Üst durum ikonları arası 8px (masaüstü) */
   .dashboard-page .driver-below-hero-row {
@@ -703,7 +728,7 @@ body.dashboard-page {
     top: 0 !important;
     transform: translateY(-3px) !important;
   }
-  .dashboard-page .driver-request-fab-row .driver-btn-logout .driver-btn-logout-icon {
+  .dashboard-page .driver-below-hero-row .driver-btn-header-logout .driver-btn-header-logout-icon {
     width: 24px !important;
     height: 24px !important;
     stroke-width: 1.7 !important;
@@ -1431,6 +1456,9 @@ body.dashboard-page {
 .driver-left-quick-actions {
   display: none;
 }
+.dashboard-page .driver-status-icon-slot-history .driver-btn-history {
+  display: none !important;
+}
 /* Sağ kolon: Belgeler + Talep Gönder mini FAB satırı (Bildir altında sağda) */
 .driver-request-fab-row {
   display: flex;
@@ -1440,6 +1468,9 @@ body.dashboard-page {
   width: 100%;
   margin-top: 3px;
   min-height: 28px;
+}
+.dashboard-page .driver-action-group.driver-action-feedback-slot.driver-request-fab-row {
+  display: none !important;
 }
 .driver-request-fab-row .driver-btn-logout.driver-request-fab {
   color: rgba(186, 92, 92, 0.88);
@@ -1538,6 +1569,58 @@ body.dashboard-page {
     justify-content: flex-end !important;
     padding-right: 3px !important;
     box-sizing: border-box !important;
+  }
+  .dashboard-page .driver-left-quick-actions {
+    display: grid;
+    flex: 0 0 auto;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 3px;
+    margin-top: 2px;
+    padding-top: 0;
+    border-top: none;
+  }
+  .dashboard-page .driver-left-quick-action {
+    width: 100%;
+    min-width: 0;
+    min-height: 24px;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    color: #a0aec0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: none;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: color 0.18s ease;
+  }
+  .dashboard-page .driver-left-quick-action-icon {
+    width: 17px;
+    height: 17px;
+    flex: 0 0 auto;
+    color: currentColor;
+    transform-origin: center center;
+    transition: transform 0.18s ease, color 0.18s ease, filter 0.18s ease;
+  }
+  .dashboard-page .driver-left-quick-action-documents .driver-left-quick-action-icon,
+  .dashboard-page .driver-left-quick-action-feedback .driver-left-quick-action-icon {
+    width: 21px;
+    height: 21px;
+  }
+  .dashboard-page .driver-left-quick-action:hover,
+  .dashboard-page .driver-left-quick-action:focus-visible {
+    color: #ffffff;
+    background: transparent;
+    box-shadow: none;
+    outline: none;
+  }
+  .dashboard-page .driver-left-quick-action:hover .driver-left-quick-action-icon,
+  .dashboard-page .driver-left-quick-action:focus-visible .driver-left-quick-action-icon {
+    transform: scale(1.14);
+    filter: drop-shadow(0 0 3px rgba(238, 246, 255, 0.18));
   }
   .dashboard-page .driver-action-btn-feedback.driver-request-fab {
     margin-left: 0 !important;
@@ -6072,6 +6155,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
   .dashboard-page .driver-status-icon-slot-key {
     justify-self: end !important;
+    gap: 6px !important;
     padding-right: 6px !important;
   }
   .dashboard-page .driver-below-hero-notification-slot {
@@ -6127,9 +6211,9 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     transform: translateY(2px) !important;
   }
 
-  /* Üst anahtar + sağ alt çıkış ikonları */
+  /* Üst anahtar + çıkış ikonları */
   .dashboard-page .driver-btn-password .driver-btn-password-icon,
-  .dashboard-page .driver-request-fab-row .driver-btn-logout .driver-btn-logout-icon {
+  .dashboard-page .driver-below-hero-row .driver-btn-header-logout .driver-btn-header-logout-icon {
     width: 24px !important;
     height: 24px !important;
     stroke-width: 1.7 !important;
