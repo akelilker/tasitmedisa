@@ -2480,7 +2480,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
     opacity: 1;
   }
   .user-panel-link {
-    bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0));
+    bottom: calc(var(--app-footer-real-height, 34px) + var(--app-footer-gap, 6px) + 4px + env(safe-area-inset-bottom, 0));
     font-size: 13px;
     padding: 2px 12px;
     transform: translateX(calc(-50% + 5px));
@@ -3852,6 +3852,7 @@ body.modal-open .app-container {
 /* Masaüstü: glow footer genişliği içinde üretilir; sağ-sol taşma olmaz */
 @media (min-width: 769px) {
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
+    bottom: 4px !important;
     border-left: 0.5px solid var(--footer-side-border) !important;
     border-right: 0.5px solid var(--footer-side-border) !important;
     border-top: 1px solid var(--footer-top-border) !important;
