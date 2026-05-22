@@ -790,21 +790,33 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 
 .vehicle-context-row {
     flex: 0 0 auto;
+    position: absolute;
+    left: 50%;
+    top: 6px;
+    transform: translateX(-50%);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 2px;
     min-width: 0;
-    max-width: calc(100% - 24px);
-    margin: 0 auto 6px;
-    padding: 1px 8px 3px;
+    max-width: calc(100% - 180px);
+    margin: 0;
+    padding: 0;
     box-sizing: border-box;
-    color: rgba(238, 246, 255, 0.86);
+    color: #ffffff;
     font-weight: 600;
     line-height: 1.15;
     overflow: hidden;
-    background: transparent;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+}
+
+#event-menu-modal .universal-back-bar,
+#dinamik-olay-modal .universal-back-bar,
+#vehicle-history-modal .universal-back-bar {
+    position: relative !important;
 }
 
 .vehicle-context-plate,
@@ -829,7 +841,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 .vehicle-context-model {
     flex: 0 1 auto;
     max-width: 100%;
-    color: rgba(238, 246, 255, 0.82);
+    color: #ffffff;
     font-size: 13px;
 }
 

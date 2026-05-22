@@ -1075,17 +1075,22 @@
     });
     if (!backBar) return;
 
-    let row = Array.from(container.children).find(function(child) {
-      return child.classList && child.classList.contains('vehicle-context-row');
+    const existingRows = Array.from(container.querySelectorAll('.vehicle-context-row'));
+    let row = existingRows[0] || null;
+    existingRows.slice(1).forEach(function(extraRow) {
+      if (extraRow && extraRow.parentNode) extraRow.parentNode.removeChild(extraRow);
     });
     if (!row) {
       row = document.createElement('div');
       row.className = 'vehicle-context-row';
       row.setAttribute('aria-label', 'İşlem yapılan taşıt');
       row.innerHTML = '<span class="vehicle-context-plate"></span><span class="vehicle-context-separator" aria-hidden="true">•</span><span class="vehicle-context-model"></span>';
-      backBar.insertAdjacentElement('afterend', row);
-    } else if (row.previousElementSibling !== backBar) {
-      backBar.insertAdjacentElement('afterend', row);
+    }
+    const backBtn = backBar.querySelector('.universal-back-btn');
+    if (backBtn && row.previousElementSibling !== backBtn) {
+      backBtn.insertAdjacentElement('afterend', row);
+    } else if (!backBtn && row.parentElement !== backBar) {
+      backBar.appendChild(row);
     }
 
     const plateEl = row.querySelector('.vehicle-context-plate');
