@@ -1567,6 +1567,7 @@ body.dashboard-page {
     margin-bottom: 0;
   }
   .dashboard-page .driver-action-area-inner .driver-action-footer.driver-action-group {
+    margin-top: 5px;
     margin-bottom: 0 !important;
   }
   .dashboard-page .driver-action-area-inner .driver-action-feedback-slot.driver-request-fab-row {
@@ -2165,8 +2166,8 @@ body.dashboard-page {
   .dashboard-page .driver-action-area-inner > .driver-action-group:not(.driver-action-feedback-slot) {
     margin-bottom: 0;
   }
-  .driver-action-area-inner .driver-action-footer.driver-action-group {
-    margin-top: 0;
+  .dashboard-page .driver-action-area-inner .driver-action-footer.driver-action-group {
+    margin-top: 5px;
   }
   .driver-action-footer .status-message:empty {
     margin-top: 0;
