@@ -797,16 +797,14 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     gap: 2px;
     min-width: 0;
     max-width: calc(100% - 24px);
-    margin: -22px auto 8px;
-    padding: 4px 12px 5px;
+    margin: 0 auto 6px;
+    padding: 1px 8px 3px;
     box-sizing: border-box;
-    color: #a0aec0;
+    color: rgba(238, 246, 255, 0.86);
     font-weight: 600;
     line-height: 1.15;
     overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    border-radius: 12px;
-    background: rgba(5, 10, 18, 0.36);
+    background: transparent;
 }
 
 .vehicle-context-plate,
@@ -831,6 +829,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 .vehicle-context-model {
     flex: 0 1 auto;
     max-width: 100%;
+    color: rgba(238, 246, 255, 0.82);
     font-size: 13px;
 }
 
