@@ -7821,6 +7821,7 @@
     if (!modal || !content || !saveBtn) return;
     modal.dataset.eventType = 'documents';
     if (DOM.dinamikOlayBaslik) DOM.dinamikOlayBaslik.textContent = 'BELGELER';
+    renderVehicleContextRow(modal, vehicle);
     content.id = 'ruhsat-modal-content';
     content.classList.add('vehicle-documents-picker-mode');
     var backBarBtn = modal ? modal.querySelector('.universal-back-btn') : null;
@@ -7895,6 +7896,7 @@
     if (!modal || !content || !saveBtn) return;
     modal.dataset.eventType = 'documents';
     if (DOM.dinamikOlayBaslik) DOM.dinamikOlayBaslik.textContent = cfg.title + ' YÜKLEME';
+    renderVehicleContextRow(modal, vehicle);
     content.id = 'ruhsat-modal-content';
     content.classList.remove('vehicle-documents-picker-mode');
     var backBarBtn = modal ? modal.querySelector('.universal-back-btn') : null;
