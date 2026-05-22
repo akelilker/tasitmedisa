@@ -7182,6 +7182,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   /* Belgeler + Talep mini FAB: hover'da layout oynamasın; etiket kendi altında açılsın */
   .dashboard-page .driver-action-group.driver-action-feedback-slot.driver-request-fab-row {
     gap: 10px !important;
+    margin-top: 8px !important;
     padding-bottom: 0 !important;
   }
   .dashboard-page .driver-action-btn-feedback.driver-request-fab {
