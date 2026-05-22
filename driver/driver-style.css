@@ -800,7 +800,7 @@ body.dashboard-page {
   .dashboard-page .driver-left-quick-action {
     width: 100%;
     min-width: 0;
-    min-height: 26px;
+    min-height: 28px;
     padding: 0;
     border: none;
     border-radius: 0;
@@ -830,8 +830,8 @@ body.dashboard-page {
   }
   .dashboard-page .driver-left-quick-action-documents .driver-left-quick-action-icon,
   .dashboard-page .driver-left-quick-action-feedback .driver-left-quick-action-icon {
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
   }
   .dashboard-page .driver-left-quick-action:hover,
   .dashboard-page .driver-left-quick-action:focus-visible {
