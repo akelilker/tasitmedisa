@@ -1,4 +1,4 @@
-/* --- Scrollbuser-panel-linkar Gizleme --- */
+/* --- Scrollbar Gizleme --- */
 html, body, .modal-body, .modal-container, .content-wrap {
   scrollbar-width: none !important;
   -ms-overflow-style: none !important;
