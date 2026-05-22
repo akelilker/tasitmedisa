@@ -1559,6 +1559,9 @@ body.dashboard-page {
 
 @media (max-width: 768px) {
   /* Yeşil Bildir (footer) ile Talep Gönder arası tam 6px (margin çöküşü tek kaynak) */
+  .dashboard-page .driver-action-area-inner > .driver-action-group:not(.driver-action-footer):not(.driver-action-feedback-slot) {
+    margin-bottom: 8px;
+  }
   .dashboard-page .driver-action-area-inner .driver-action-footer.driver-action-group {
     margin-bottom: 0 !important;
   }
