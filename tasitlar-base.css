@@ -153,8 +153,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 }
 @media (min-width: 641px) {
     #monthly-todo-header-btn .monthly-todo-header-badge {
-        top: -1px;
-        right: -2px;
+        top: 1px;
+        right: 0;
         min-width: 0;
         min-height: 0;
         padding: 0;
