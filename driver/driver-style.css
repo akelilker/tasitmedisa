@@ -2137,7 +2137,7 @@ body.dashboard-page {
   }
   /* Sağ grid butonları: mobilde footer'a taşmadan daha kompakt */
   .driver-action-btn {
-    padding: 7px 9px;
+    padding: 8px 9px;
     font-size: 13.5px;
     display: flex;
     justify-content: center;
@@ -7264,7 +7264,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
         margin-top: 2px;
     }
     .dashboard-page .driver-action-area .driver-action-footer .universal-btn-save {
-        height: 34px !important;
+        height: 35px !important;
     }
     .dashboard-page .driver-left-panel {
         margin-bottom: 0 !important;
