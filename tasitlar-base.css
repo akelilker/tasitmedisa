@@ -791,23 +791,21 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 .vehicle-context-row {
     flex: 0 0 auto;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 6px;
+    gap: 2px;
     min-width: 0;
     max-width: calc(100% - 24px);
-    margin: -2px auto 8px;
-    padding: 3px 10px;
+    margin: -22px auto 8px;
+    padding: 4px 12px 5px;
     box-sizing: border-box;
     color: #a0aec0;
-    font-size: 12px;
     font-weight: 600;
-    line-height: 1.25;
-    white-space: nowrap;
+    line-height: 1.15;
     overflow: hidden;
-    text-overflow: ellipsis;
     border: 1px solid rgba(255, 255, 255, 0.14);
-    border-radius: 999px;
+    border-radius: 12px;
     background: rgba(5, 10, 18, 0.36);
 }
 
@@ -821,16 +819,19 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 
 .vehicle-context-plate {
     flex: 0 1 auto;
+    max-width: 100%;
     color: #ffffff;
+    font-size: 15px;
 }
 
 .vehicle-context-separator {
-    flex: 0 0 auto;
-    color: rgba(var(--theme-color-rgb), 0.78);
+    display: none;
 }
 
 .vehicle-context-model {
-    flex: 1 1 auto;
+    flex: 0 1 auto;
+    max-width: 100%;
+    font-size: 13px;
 }
 
 /* Olay Ekle (Kaza, Bakım vb.): modal gövdesi mutlaka kayar, üst görünsün */
