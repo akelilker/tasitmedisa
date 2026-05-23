@@ -829,7 +829,7 @@ body.dashboard-page {
   /* Büyük ticari/kamyon: sol panel yoğun mod (masaüstü, class ile) */
   .dashboard-page .driver-dashboard-container.driver-heavy-commercial-active .driver-left-panel-content {
     gap: 4px;
-    padding-bottom: 8px;
+    padding-bottom: 2px;
   }
   .dashboard-page .driver-dashboard-container.driver-heavy-commercial-active .driver-user-plate-row.driver-user-plate-in-panel {
     gap: 0;
@@ -845,9 +845,9 @@ body.dashboard-page {
   }
   .dashboard-page .driver-dashboard-container.driver-heavy-commercial-active .driver-left-quick-actions {
     margin-top: 0;
-    margin-bottom: 6px;
+    margin-bottom: 2px;
     gap: 3px;
-    transform: translateY(-3px);
+    transform: none;
   }
   .dashboard-page .driver-dashboard-container.driver-heavy-commercial-active .driver-left-quick-action {
     min-height: 24px;
