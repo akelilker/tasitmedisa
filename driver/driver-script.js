@@ -1040,13 +1040,32 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       return String((vehicle && (vehicle.vehicleType || vehicle.tip)) || '').trim().toLowerCase();
   }
 
+  function normalizeDriverVehicleTypeKey(typeKey) {
+      return String(typeKey || '')
+          .toLowerCase()
+          .replace(/ğ/g, 'g')
+          .replace(/ü/g, 'u')
+          .replace(/ş/g, 's')
+          .replace(/ı/g, 'i')
+          .replace(/ö/g, 'o')
+          .replace(/ç/g, 'c')
+          .replace(/\s+/g, '_')
+          .trim();
+  }
+
   function driverVehicleNeedsK2(vehicle) {
       var typeKey = getDriverVehicleTypeKey(vehicle);
-      return typeKey === 'minivan' || typeKey === 'kamyon' || typeKey === 'romork';
+      var normalizedType = normalizeDriverVehicleTypeKey(typeKey);
+      return normalizedType === 'minivan'
+          || normalizedType === 'kucuk_ticari'
+          || normalizedType === 'kamyon'
+          || normalizedType === 'buyuk_ticari'
+          || normalizedType === 'romork';
   }
 
   function driverVehicleNeedsTakograf(vehicle) {
-      return getDriverVehicleTypeKey(vehicle) === 'kamyon';
+      var normalizedType = normalizeDriverVehicleTypeKey(getDriverVehicleTypeKey(vehicle));
+      return normalizedType === 'kamyon' || normalizedType === 'buyuk_ticari';
   }
 
   function getDriverDocumentTypeConfig(key) {
@@ -1247,6 +1266,14 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       const egzozMuayeneDate = vehicle.egzozMuayeneDate || '';
       const hasEgzozMuayeneSaved = !!(egzozMuayeneDate && String(egzozMuayeneDate).trim());
       const egzozW = checkDateWarningsDriver(hasEgzozMuayeneSaved ? egzozMuayeneDate : '');
+      const showTasitKartiInfo = driverVehicleNeedsK2(vehicle);
+      const showTakografInfo = driverVehicleNeedsTakograf(vehicle);
+      const tasitKartiDate = (vehicle.k2BelgesiExpiryDate && String(vehicle.k2BelgesiExpiryDate).trim()) ? String(vehicle.k2BelgesiExpiryDate).trim() : '';
+      const takografDate = (vehicle.takografExpiryDate && String(vehicle.takografExpiryDate).trim())
+          ? String(vehicle.takografExpiryDate).trim()
+          : ((vehicle.takografKalibrasyonDate && String(vehicle.takografKalibrasyonDate).trim()) ? String(vehicle.takografKalibrasyonDate).trim() : '');
+      const tasitKartiW = checkDateWarningsDriver(tasitKartiDate);
+      const takografW = checkDateWarningsDriver(takografDate);
 
       const anahtarLabel = (vehicle.anahtar === 'var')
           ? ((vehicle.anahtarNerede && String(vehicle.anahtarNerede).trim()) ? capitalizeWords(String(vehicle.anahtarNerede).trim()) : 'Var')
@@ -1275,6 +1302,8 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
               <div class="driver-info-item ${kaskoW.class}"><span class="label">Kasko Bitiş</span><span class="value">${formatDriverDate(vehicle.kaskoDate) || '-'}</span></div>
               <div class="driver-info-item ${muayeneW.class}"><span class="label">Muayene Bitiş</span><span class="value">${formatDriverDate(vehicle.muayeneDate) || '-'}</span></div>
               ${hasEgzozMuayeneSaved ? `<div class="driver-info-item ${egzozW.class}"><span class="label">Egzoz Muayene Bitiş</span><span class="value">${formatDriverDate(egzozMuayeneDate) || '-'}</span></div>` : ''}
+              ${showTasitKartiInfo ? `<div class="driver-info-item ${tasitKartiW.class}"><span class="label">Taşıt Kartı Bitiş</span><span class="value">${formatDriverDate(tasitKartiDate) || '-'}</span></div>` : ''}
+              ${showTakografInfo ? `<div class="driver-info-item ${takografW.class}"><span class="label">Takograf Kalibrasyon Bitiş</span><span class="value">${formatDriverDate(takografDate) || '-'}</span></div>` : ''}
               <div class="driver-info-item ${anahtarSavedClass}"><span class="label">Yedek Anahtar</span><span class="value">${escapeHtmlDriver(anahtarLabel)}</span></div>
               <div class="driver-info-item ${lastikSavedClass}"><span class="label">Lastik Durumu</span><span class="value">${escapeHtmlDriver(lastikLabel)}</span></div>
               <div class="driver-info-item"><span class="label">UTTS</span><span class="value">${escapeHtmlDriver(uttsLabel)}</span></div>
