@@ -619,6 +619,9 @@
   transform: translateY(0px);
   margin-bottom: -8px;
 }
+#dinamik-olay-modal[data-event-type="documents"] .vehicle-context-model {
+  color: #a0aec0;
+}
 #dinamik-olay-modal #ruhsat-modal-content .universal-btn-group {
   justify-content: center;
   margin-left: auto;
