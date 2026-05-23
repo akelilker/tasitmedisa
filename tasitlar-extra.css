@@ -616,7 +616,7 @@
 
 /* Ruhsat (#dinamik-olay-modal + #ruhsat-modal-content): Görüntüle / yükle — çerçevesiz, arka plansız, beyaz metin */
 #dinamik-olay-modal .universal-back-bar:not(:has(.vehicle-context-row)) {
-  transform: translateY(-8px);
+  transform: translateY(0px);
   margin-bottom: -8px;
 }
 #dinamik-olay-modal #ruhsat-modal-content .universal-btn-group {
