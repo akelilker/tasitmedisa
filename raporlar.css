@@ -1242,8 +1242,28 @@ white-space: normal;
     font-size: 12px;
   }
 
+  #stok-list-container .stok-list-header-cell[data-col="sira"] {
+    text-transform: none;
+  }
+
   #stok-list-container .stok-list-header-cell[data-col="sira"] .stok-header-text {
+    display: block;
     font-size: 10px !important;
+    white-space: nowrap;
+    word-break: normal;
+    overflow-wrap: normal;
+    -webkit-line-clamp: unset;
+    line-clamp: unset;
+  }
+
+  #stok-list-container .stok-list-cell[data-col="sube"],
+  #stok-list-container .stok-list-header-cell[data-col="sube"] {
+    word-break: normal;
+    overflow-wrap: normal;
+  }
+
+  #stok-list-container .stok-list-cell[data-col="sube"] {
+    font-size: 11.5px;
   }
 
   /* line-clamp th yerine .stok-header-text üzerinde (flex hücrede geçerli olsun) */

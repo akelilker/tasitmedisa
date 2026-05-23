@@ -223,7 +223,7 @@
         const isDesktop = full ? true : window.innerWidth >= 641;
         
         const headers = {
-            'sira': 'No.',
+            'sira': 'No',
             'sube': 'Şube',
             'yil': 'Yıl',
             'marka': isTiny ? 'Mrk' : isVerySmall ? 'Marka' : isDesktop ? 'Marka / Model' : 'Marka/Model',
