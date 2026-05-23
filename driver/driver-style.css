@@ -1722,6 +1722,20 @@ body.dashboard-page {
   .dashboard-page .driver-below-hero {
     overflow: visible;
   }
+  /* Blur overlay — açık durumda tam ekran karartma */
+  .dashboard-page .driver-shortcuts-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(3, 7, 14, 0.60);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    z-index: 10042;
+    cursor: default;
+  }
+  .dashboard-page .driver-vehicle-shortcuts.is-open .driver-shortcuts-overlay {
+    display: block;
+  }
   .dashboard-page .driver-vehicle-shortcuts {
     display: block;
     position: relative;
@@ -1746,6 +1760,8 @@ body.dashboard-page {
     -webkit-tap-highlight-color: transparent;
     -webkit-appearance: none;
     appearance: none;
+    position: relative;
+    z-index: 10044;
   }
   .dashboard-page .driver-vehicle-shortcuts-toggle:hover,
   .dashboard-page .driver-vehicle-shortcuts-toggle:focus,
@@ -1768,22 +1784,22 @@ body.dashboard-page {
   .dashboard-page .driver-vehicle-shortcuts-panel {
     display: none;
     position: fixed;
-    top: 205px;
-    left: 18px;
+    top: 190px;
+    left: 50%;
+    transform: translateX(-50%);
     z-index: 10050;
-    min-width: 132px;
-    padding: 4px 0;
+    width: min(320px, calc(100vw - 40px));
+    padding: 8px 0;
     margin: 0;
     background: var(--bg);
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    border-radius: 8px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55), 0 2px 8px rgba(var(--theme-color-rgb), 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.65), 0 2px 8px rgba(var(--theme-color-rgb), 0.10);
     flex-direction: column;
     gap: 0;
     visibility: hidden;
     opacity: 0;
     pointer-events: none;
-    transform: none;
   }
   .dashboard-page .driver-vehicle-shortcuts.is-open .driver-vehicle-shortcuts-panel {
     display: flex;
@@ -1792,18 +1808,19 @@ body.dashboard-page {
     pointer-events: auto;
   }
   .dashboard-page .driver-vehicle-shortcuts-item {
-    display: flex;
+    display: grid;
+    grid-template-columns: 34px 1fr;
     align-items: center;
-    gap: 8px;
+    column-gap: 12px;
     width: 100%;
-    min-height: 36px;
-    padding: 6px 12px;
+    min-height: 56px;
+    padding: 0 16px;
     border: none;
     border-radius: 0;
     background: transparent;
     color: #a0aec0;
     font: inherit;
-    font-size: 13px;
+    font-size: 15px;
     font-weight: 600;
     line-height: 1.2;
     text-align: left;
@@ -1812,24 +1829,30 @@ body.dashboard-page {
     outline: none;
     -webkit-tap-highlight-color: transparent;
   }
+  .dashboard-page .driver-vehicle-shortcuts-item + .driver-vehicle-shortcuts-item {
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+  }
   .dashboard-page .driver-vehicle-shortcuts-item-label {
     color: #ffffff;
+    text-align: left;
+    line-height: 1.15;
   }
   .dashboard-page .driver-vehicle-shortcuts-item-icon {
-    width: 18px;
-    height: 18px;
-    flex: 0 0 auto;
+    width: 26px;
+    height: 26px;
+    justify-self: center;
+    flex: none;
     color: currentColor;
   }
   .dashboard-page .driver-vehicle-shortcuts-item-documents .driver-vehicle-shortcuts-item-icon,
   .dashboard-page .driver-vehicle-shortcuts-item-feedback .driver-vehicle-shortcuts-item-icon {
-    width: 20px;
-    height: 20px;
+    width: 26px;
+    height: 26px;
   }
   .dashboard-page .driver-vehicle-shortcuts-item:hover,
   .dashboard-page .driver-vehicle-shortcuts-item:focus-visible {
     color: #ffffff;
-    background: rgba(255, 255, 255, 0.04);
+    background: rgba(255, 255, 255, 0.06);
   }
 }
 .driver-plate-dropdown-row {
