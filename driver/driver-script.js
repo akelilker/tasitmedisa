@@ -365,6 +365,46 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
     });
   })();
 
+  (function initDriverVehicleShortcuts() {
+    function bind() {
+      if (!document.body.classList.contains('dashboard-page')) return;
+      var wrap = document.getElementById('driver-vehicle-shortcuts');
+      var toggle = document.getElementById('driver-vehicle-shortcuts-toggle');
+      var panel = document.getElementById('driver-vehicle-shortcuts-panel');
+      if (!wrap || !toggle || !panel || wrap.dataset.shortcutsBound === '1') return;
+      wrap.dataset.shortcutsBound = '1';
+
+      function setOpen(open) {
+        wrap.classList.toggle('is-open', open);
+        toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        panel.setAttribute('aria-hidden', open ? 'false' : 'true');
+      }
+
+      toggle.addEventListener('click', function(e) {
+        e.stopPropagation();
+        setOpen(!wrap.classList.contains('is-open'));
+      });
+
+      panel.addEventListener('click', function() {
+        setOpen(false);
+      });
+
+      document.addEventListener('click', function(e) {
+        if (!wrap.classList.contains('is-open')) return;
+        if (!wrap.contains(e.target)) setOpen(false);
+      });
+
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && wrap.classList.contains('is-open')) setOpen(false);
+      });
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', bind);
+    } else {
+      bind();
+    }
+  })();
+
   /** Tarih input değerini DD/MM/YYYY olarak göster (örn. 2025-12-01 -> 01/12/2025) */
   function formatDateDDMMYYYY(isoDate) {
     if (!isoDate || typeof isoDate !== 'string') return '';
