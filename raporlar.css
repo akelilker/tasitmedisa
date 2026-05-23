@@ -1256,6 +1256,21 @@ white-space: normal;
     line-clamp: unset !important;
   }
 
+  #stok-list-container .stok-list-header-cell[data-col="sanziman"] .stok-header-text,
+  #stok-list-container .stok-list-header-cell[data-col="yil"] .stok-header-text,
+  #stok-list-container .stok-list-header-cell[data-col="km"] .stok-header-text {
+    display: block !important;
+    -webkit-box-orient: unset !important;
+    -webkit-line-clamp: unset !important;
+    line-clamp: unset !important;
+    white-space: nowrap !important;
+    word-break: normal !important;
+    overflow-wrap: normal !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    line-height: 1.15 !important;
+  }
+
   #stok-list-container .stok-list-header-cell[data-col="sube"] .stok-header-text {
     word-break: normal !important;
     overflow-wrap: normal !important;
