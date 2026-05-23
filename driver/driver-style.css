@@ -826,6 +826,26 @@ body.dashboard-page {
     padding-top: 0;
     border-top: none;
   }
+  /* Büyük ticari/kamyon: sol panel yoğun mod (masaüstü, class ile) */
+  .dashboard-page .driver-dashboard-container.driver-heavy-commercial-active .driver-left-panel-content {
+    gap: 4px;
+  }
+  .dashboard-page .driver-dashboard-container.driver-heavy-commercial-active .driver-user-plate-row.driver-user-plate-in-panel {
+    gap: 0;
+    margin-top: -2px;
+    margin-bottom: 1px;
+  }
+  .dashboard-page .driver-dashboard-container.driver-heavy-commercial-active .driver-left-panel .driver-vehicle-info {
+    gap: 3px !important;
+    margin-top: 2px !important;
+  }
+  .dashboard-page .driver-dashboard-container.driver-heavy-commercial-active .driver-left-panel .driver-info-item:has(.value) .value {
+    line-height: 1.18;
+  }
+  .dashboard-page .driver-dashboard-container.driver-heavy-commercial-active .driver-left-quick-actions {
+    margin-top: 1px;
+    gap: 3px;
+  }
   .dashboard-page .driver-left-quick-action {
     width: 100%;
     min-width: 0;

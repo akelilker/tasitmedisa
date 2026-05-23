@@ -1068,6 +1068,11 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       return normalizedType === 'kamyon' || normalizedType === 'buyuk_ticari';
   }
 
+  function driverVehicleIsHeavyCommercial(vehicle) {
+      var normalized = normalizeDriverVehicleTypeKey(getDriverVehicleTypeKey(vehicle));
+      return normalized === 'kamyon' || normalized === 'buyuk_ticari';
+  }
+
   function getDriverDocumentTypeConfig(key) {
       return DRIVER_DOCUMENT_TYPES.find(function(item) { return item.key === key; });
   }
@@ -1315,6 +1320,11 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
               valueEl.classList.add('driver-value-pending');
               valueEl.innerHTML = '<span class="driver-pending-indicator" title="Bekleniyor" aria-label="Bekleniyor"></span>';
           });
+      }
+
+      const dashboardContainer = document.querySelector('.driver-dashboard-container');
+      if (dashboardContainer) {
+          dashboardContainer.classList.toggle('driver-heavy-commercial-active', driverVehicleIsHeavyCommercial(vehicle));
       }
   }
 
