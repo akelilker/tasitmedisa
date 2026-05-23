@@ -72,6 +72,45 @@
                     <div id="driver-below-hero-pwa-slot" class="driver-below-hero-pwa-slot"></div>
                     <div class="driver-status-icon-row" role="group" aria-label="Durum göstergeleri">
                         <div class="driver-status-icon-slot driver-status-icon-slot-history">
+                            <div id="driver-vehicle-shortcuts" class="driver-vehicle-shortcuts">
+                                <button type="button" id="driver-vehicle-shortcuts-toggle" class="driver-vehicle-shortcuts-toggle" title="Araç Kısayolları" aria-label="Araç Kısayolları" aria-expanded="false" aria-haspopup="true" aria-controls="driver-vehicle-shortcuts-panel">
+                                    <svg class="driver-vehicle-shortcuts-toggle-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                        <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+                                        <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+                                        <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+                                        <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+                                    </svg>
+                                </button>
+                                <div id="driver-vehicle-shortcuts-panel" class="driver-vehicle-shortcuts-panel" role="menu" aria-label="Araç kısayolları" aria-hidden="true">
+                                    <button type="button" role="menuitem" class="driver-vehicle-shortcuts-item driver-vehicle-shortcuts-item-documents" onclick="openDriverDocumentsModal()" title="Belgeler" aria-label="Belgeler">
+                                        <svg class="driver-vehicle-shortcuts-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.05" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                            <path d="M7 3h7l5 5v13H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"></path>
+                                            <path d="M14 3v5h5"></path>
+                                            <line x1="8" y1="13" x2="16" y2="13"></line>
+                                            <line x1="8" y1="17" x2="14" y2="17"></line>
+                                        </svg>
+                                        <span class="driver-vehicle-shortcuts-item-label">Belgeler</span>
+                                    </button>
+                                    <button type="button" role="menuitem" class="driver-vehicle-shortcuts-item driver-vehicle-shortcuts-item-feedback" onclick="openDriverFeedbackModal()" title="Talep" aria-label="Talep">
+                                        <svg class="driver-vehicle-shortcuts-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.05" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                            <path d="M7.5 5.5h9a4.5 4.5 0 0 1 0 9h-3.2L9 18.5v-4H7.5a4.5 4.5 0 0 1 0-9z"></path>
+                                            <circle cx="9" cy="10" r="0.7" fill="currentColor" stroke="none"></circle>
+                                            <circle cx="12" cy="10" r="0.7" fill="currentColor" stroke="none"></circle>
+                                            <circle cx="15" cy="10" r="0.7" fill="currentColor" stroke="none"></circle>
+                                        </svg>
+                                        <span class="driver-vehicle-shortcuts-item-label">Talep</span>
+                                    </button>
+                                    <button type="button" role="menuitem" class="driver-vehicle-shortcuts-item driver-vehicle-shortcuts-item-history" onclick="showHistory()" title="Geçmiş" aria-label="Geçmiş">
+                                        <svg class="driver-vehicle-shortcuts-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                            <path d="M5 22h14"></path>
+                                            <path d="M5 2h14"></path>
+                                            <path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22"></path>
+                                            <path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2"></path>
+                                        </svg>
+                                        <span class="driver-vehicle-shortcuts-item-label">Geçmiş</span>
+                                    </button>
+                                </div>
+                            </div>
                             <button type="button" onclick="showHistory()" class="driver-btn-history" title="İşlem geçmişi" aria-label="İşlem geçmişi">
                                 <svg class="driver-btn-history-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                     <path d="M5 22h14"></path>
