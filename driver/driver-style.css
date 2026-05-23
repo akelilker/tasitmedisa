@@ -1840,6 +1840,9 @@ body.dashboard-page {
 .driver-info-item.driver-warn-red .value {
   color: var(--theme-color) !important;
 }
+.driver-info-item .value .driver-info-missing-value {
+  color: var(--theme-color, #e00000);
+}
 .driver-info-item.driver-warn-orange .label,
 .driver-info-item.driver-warn-orange .value {
   color: var(--orange-warn) !important;
