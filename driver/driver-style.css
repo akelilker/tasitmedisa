@@ -1705,6 +1705,11 @@ body.dashboard-page {
     display: none;
   }
   /* Tablet/mobil: üst satır Araç Kısayolları (grid/apps) + açılır panel */
+  /* style-core .app-container>* z-index:1 override'ını geri al (2-sınıf specificity ile eşitle, cascade kazanır) */
+  .dashboard-page .driver-header-fixed {
+    position: relative;
+    z-index: 10006;
+  }
   .dashboard-page .driver-status-icon-slot-history {
     overflow: visible;
   }
