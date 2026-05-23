@@ -1810,13 +1810,13 @@ body.dashboard-page {
     pointer-events: auto;
   }
   .dashboard-page .driver-vehicle-shortcuts-item {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-rows: 46px 34px;
     align-items: center;
-    justify-content: center;
-    gap: 10px;
+    justify-items: center;
+    gap: 6px;
     min-height: 112px;
-    padding: 14px 8px;
+    padding: 12px 6px;
     border: none;
     border-radius: 8px;
     background: transparent;
@@ -1833,24 +1833,37 @@ body.dashboard-page {
   }
   .dashboard-page .driver-vehicle-shortcuts-item-label {
     color: #ffffff;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
     font-size: 12px;
     font-weight: 700;
-    line-height: 1.15;
-    max-width: 74px;
+    line-height: 1.08;
+    min-height: 28px;
+    max-width: 82px;
     text-align: center;
     white-space: normal;
   }
   .dashboard-page .driver-vehicle-shortcuts-item-icon {
-    width: 38px;
-    height: 38px;
+    width: 36px;
+    height: 36px;
+    max-width: 36px;
+    max-height: 36px;
     flex: none;
     color: currentColor;
   }
   .dashboard-page .driver-vehicle-shortcuts-item-documents .driver-vehicle-shortcuts-item-icon,
-  .dashboard-page .driver-vehicle-shortcuts-item-feedback .driver-vehicle-shortcuts-item-icon,
+  .dashboard-page .driver-vehicle-shortcuts-item-feedback .driver-vehicle-shortcuts-item-icon {
+    width: 36px;
+    height: 36px;
+    max-width: 36px;
+    max-height: 36px;
+  }
   .dashboard-page .driver-vehicle-shortcuts-item-history .driver-vehicle-shortcuts-item-icon {
-    width: 38px;
-    height: 38px;
+    width: 34px;
+    height: 34px;
+    max-width: 34px;
+    max-height: 34px;
   }
   .dashboard-page .driver-vehicle-shortcuts-item:hover,
   .dashboard-page .driver-vehicle-shortcuts-item:focus-visible {
