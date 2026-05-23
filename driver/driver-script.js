@@ -1098,8 +1098,8 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
 
   function getDriverDocumentTypesForVehicle(vehicle) {
       var keys = ['ruhsat', 'sigorta', 'kasko'];
-      if (driverVehicleNeedsK2(vehicle) || hasDriverDocument(vehicle, getDriverDocumentTypeConfig('tasit_karti'))) keys.push('tasit_karti');
-      if (driverVehicleNeedsTakograf(vehicle) || hasDriverDocument(vehicle, getDriverDocumentTypeConfig('takograf'))) keys.push('takograf');
+      if (driverVehicleNeedsK2(vehicle)) keys.push('tasit_karti');
+      if (driverVehicleNeedsTakograf(vehicle)) keys.push('takograf');
       return keys.map(function(key) {
           return getDriverDocumentTypeConfig(key);
       }).filter(Boolean);
@@ -1134,20 +1134,42 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           : '<svg class="driver-document-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><path d="M14 2v6h6"></path><path d="M16 13H8"></path><path d="M16 17H8"></path><path d="M10 9H8"></path></svg>';
   }
 
+  function buildDriverDocumentCardHtml(vehicle, config) {
+      const hasDocument = hasDriverDocument(vehicle, config);
+      const actionText = hasDocument ? 'Görüntüle' : 'Yüklü Değil';
+      const disabledAttr = hasDocument ? '' : ' aria-disabled="true"';
+      return '<button type="button" class="driver-document-card' + (hasDocument ? '' : ' driver-document-card-missing') + '" data-document-type="' + config.key + '"' + disabledAttr + '>' +
+          '<span class="driver-document-icon-wrap">' + getDriverDocumentIconSvg(config) + '</span>' +
+          '<span class="driver-document-title">' + config.title + '</span>' +
+          '<span class="driver-document-action">' + actionText + '</span>' +
+      '</button>';
+  }
+
   function renderDriverDocumentsModal(vehicle) {
       const listEl = document.getElementById('driver-documents-list');
       if (!listEl) return;
       const vehicleId = vehicle && vehicle.id != null ? String(vehicle.id) : '';
       const documentTypes = getDriverDocumentTypesForVehicle(vehicle);
-      listEl.innerHTML = documentTypes.map(function(config) {
-          const hasDocument = hasDriverDocument(vehicle, config);
-          const actionText = hasDocument ? 'Görüntüle' : 'Yüklü Değil';
-          const disabledAttr = hasDocument ? '' : ' aria-disabled="true"';
-          return '<button type="button" class="driver-document-card' + (hasDocument ? '' : ' driver-document-card-missing') + '" data-document-type="' + config.key + '"' + disabledAttr + '>' +
-              '<span class="driver-document-icon-wrap">' + getDriverDocumentIconSvg(config) + '</span>' +
-              '<span class="driver-document-title">' + config.title + '</span>' +
-              '<span class="driver-document-action">' + actionText + '</span>' +
-          '</button>';
+      const typeByKey = {};
+      documentTypes.forEach(function(config) {
+          typeByKey[config.key] = config;
+      });
+      const documentRows = [
+          { rowClass: 'driver-documents-row driver-documents-row-single', keys: ['ruhsat'] },
+          { rowClass: 'driver-documents-row driver-documents-row-pair', keys: ['sigorta', 'kasko'] },
+          { rowClass: 'driver-documents-row driver-documents-row-pair driver-documents-row-optional', keys: ['tasit_karti', 'takograf'] }
+      ];
+      listEl.innerHTML = documentRows.map(function(row) {
+          const cards = row.keys
+              .map(function(key) { return typeByKey[key]; })
+              .filter(Boolean)
+              .map(function(config) { return buildDriverDocumentCardHtml(vehicle, config); });
+          if (!cards.length) return '';
+          var rowClass = row.rowClass;
+          if (cards.length === 1) {
+              rowClass += ' driver-documents-row-one';
+          }
+          return '<div class="' + rowClass + '">' + cards.join('') + '</div>';
       }).join('');
       listEl.querySelectorAll('.driver-document-card').forEach(function(card) {
           card.addEventListener('click', function() {

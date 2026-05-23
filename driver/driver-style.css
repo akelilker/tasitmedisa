@@ -3961,32 +3961,56 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 
 .driver-documents-list {
   display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  align-items: stretch;
-  gap: 12px;
+  gap: 20px;
   width: 100%;
   box-sizing: border-box;
 }
 
+.driver-documents-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  gap: 28px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.driver-documents-row-single {
+  gap: 0;
+}
+
+.driver-documents-row-pair {
+  gap: 32px;
+}
+
+.driver-documents-row-optional {
+  min-height: 0;
+}
+
+.driver-documents-row-one {
+  justify-content: center;
+}
+
 .driver-document-card {
-  flex: 1 1 140px;
+  flex: 0 1 140px;
   min-width: 0;
   max-width: 168px;
   width: auto;
   appearance: none;
   -webkit-appearance: none;
-  border: 0;
+  border: none;
   border-radius: 0;
   background: transparent;
   box-shadow: none;
   color: var(--txt-white, #fff);
   font: inherit;
   margin: 0;
-  padding: 12px 8px;
-  border: 1px solid transparent;
-  border-radius: 12px;
+  padding: 8px 6px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -3994,17 +4018,17 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   gap: 8px;
   cursor: pointer;
   text-align: center;
-  transition: color .18s ease, transform .18s ease, filter .18s ease, background .18s ease, border-color .18s ease, box-shadow .18s ease;
+  transition: color .18s ease, transform .18s ease, filter .18s ease;
 }
 
-.driver-document-card:hover,
-.driver-document-card:focus-visible {
+#driver-documents-modal .driver-document-card:hover,
+#driver-documents-modal .driver-document-card:focus-visible {
   outline: none;
-  transform: translateY(-2px);
-  background: rgba(34, 197, 94, 0.06);
-  border-color: rgba(34, 197, 94, 0.34);
-  box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.08), 0 10px 24px rgba(0, 0, 0, 0.18);
-  filter: drop-shadow(0 0 10px rgba(34, 197, 94, 0.2));
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  transform: none;
+  filter: none;
 }
 
 .driver-document-card-missing {
@@ -4012,11 +4036,11 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   cursor: default;
 }
 
-.driver-document-card-missing:hover,
-.driver-document-card-missing:focus-visible {
-  background: rgba(255, 255, 255, 0.035);
-  border-color: rgba(255, 255, 255, 0.14);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.14);
+#driver-documents-modal .driver-document-card-missing:hover,
+#driver-documents-modal .driver-document-card-missing:focus-visible {
+  background: transparent;
+  border: none;
+  box-shadow: none;
   filter: none;
 }
 
@@ -4031,10 +4055,10 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   transition: color .18s ease, filter .18s ease, transform .18s ease;
 }
 
-.driver-document-card:hover .driver-document-icon-wrap,
-.driver-document-card:focus-visible .driver-document-icon-wrap {
+#driver-documents-modal .driver-document-card:not(.driver-document-card-missing):hover .driver-document-icon-wrap,
+#driver-documents-modal .driver-document-card:not(.driver-document-card-missing):focus-visible .driver-document-icon-wrap {
   color: #4ade80;
-  filter: drop-shadow(0 0 8px rgba(34, 197, 94, 0.28));
+  filter: drop-shadow(0 0 6px rgba(34, 197, 94, 0.22));
   transform: scale(1.04);
 }
 
@@ -4066,23 +4090,6 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 }
 
 @media (min-width: 641px) {
-  #driver-documents-modal .driver-document-card:hover,
-  #driver-documents-modal .driver-document-card:focus-visible {
-    transform: none;
-    background: transparent;
-    border-color: transparent;
-    box-shadow: none;
-    filter: none;
-  }
-
-  #driver-documents-modal .driver-document-card-missing:hover,
-  #driver-documents-modal .driver-document-card-missing:focus-visible {
-    background: transparent;
-    border-color: transparent;
-    box-shadow: none;
-    filter: none;
-  }
-
   #driver-documents-modal .driver-document-icon-wrap,
   #driver-documents-modal .driver-document-title,
   #driver-documents-modal .driver-document-action {
@@ -4090,13 +4097,11 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
     transform-origin: center;
   }
 
-  #driver-documents-modal .driver-document-card:hover .driver-document-icon-wrap,
-  #driver-documents-modal .driver-document-card:hover .driver-document-title,
-  #driver-documents-modal .driver-document-card:hover .driver-document-action,
-  #driver-documents-modal .driver-document-card:focus-visible .driver-document-icon-wrap,
-  #driver-documents-modal .driver-document-card:focus-visible .driver-document-title,
-  #driver-documents-modal .driver-document-card:focus-visible .driver-document-action {
-    transform: scale(1.06);
+  #driver-documents-modal .driver-document-card:not(.driver-document-card-missing):hover .driver-document-icon-wrap,
+  #driver-documents-modal .driver-document-card:not(.driver-document-card-missing):focus-visible .driver-document-icon-wrap,
+  #driver-documents-modal .driver-document-card:not(.driver-document-card-missing):hover .driver-document-title,
+  #driver-documents-modal .driver-document-card:not(.driver-document-card-missing):focus-visible .driver-document-title {
+    transform: scale(1.05);
   }
 }
 
@@ -4142,42 +4147,24 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   }
 
   #driver-documents-modal .driver-documents-list {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 16px;
+    gap: 18px;
+  }
+
+  #driver-documents-modal .driver-documents-row {
+    gap: 20px;
+  }
+
+  #driver-documents-modal .driver-documents-row-pair {
+    gap: 22px;
   }
 
   #driver-documents-modal .driver-document-card {
-    flex: 0 0 auto;
-    max-width: none;
-    width: 100%;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    gap: 10px;
-    border-color: rgba(255, 255, 255, 0.11);
-    background: rgba(255, 255, 255, 0.016);
-    box-shadow: none;
-  }
-
-  #driver-documents-modal .driver-document-card:hover,
-  #driver-documents-modal .driver-document-card:focus-visible {
-    transform: none;
-    background: rgba(34, 197, 94, 0.028);
-    border-color: rgba(34, 197, 94, 0.18);
-    box-shadow: none;
-    filter: none;
-  }
-
-  #driver-documents-modal .driver-document-card-missing {
-    border-color: rgba(255, 255, 255, 0.08);
-    background: rgba(255, 255, 255, 0.012);
-    box-shadow: none;
-  }
-
-  #driver-documents-modal .driver-document-card-missing:hover,
-  #driver-documents-modal .driver-document-card-missing:focus-visible {
-    background: rgba(255, 255, 255, 0.018);
-    border-color: rgba(255, 255, 255, 0.12);
+    flex: 0 1 118px;
+    max-width: 148px;
+    padding: 6px 4px;
+    gap: 8px;
+    background: transparent;
+    border: none;
     box-shadow: none;
   }
 
@@ -4187,10 +4174,9 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
     color: rgba(74, 222, 128, 0.82);
   }
 
-  #driver-documents-modal .driver-document-card:hover .driver-document-icon-wrap,
-  #driver-documents-modal .driver-document-card:focus-visible .driver-document-icon-wrap {
-    filter: none;
-    transform: none;
+  #driver-documents-modal .driver-document-card:not(.driver-document-card-missing):hover .driver-document-icon-wrap,
+  #driver-documents-modal .driver-document-card:not(.driver-document-card-missing):focus-visible .driver-document-icon-wrap {
+    transform: scale(1.04);
   }
 
   #driver-documents-modal .driver-document-icon {
