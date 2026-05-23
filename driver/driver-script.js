@@ -374,6 +374,11 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       if (!wrap || !toggle || !panel || wrap.dataset.shortcutsBound === '1') return;
       wrap.dataset.shortcutsBound = '1';
 
+      var overlay = wrap.querySelector('.driver-shortcuts-overlay');
+      if (overlay) {
+        overlay.addEventListener('click', function() { setOpen(false); });
+      }
+
       var outsideCloseUnlockTimer = null;
 
       function setOpen(open) {
