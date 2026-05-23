@@ -841,7 +841,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 .vehicle-context-model {
     flex: 0 1 auto;
     max-width: 100%;
-    color: #ffffff;
+    color: #a0aec0;
     font-size: 13px;
 }
 
