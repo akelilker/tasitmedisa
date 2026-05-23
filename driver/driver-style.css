@@ -1575,7 +1575,7 @@ body.dashboard-page {
   .dashboard-page .driver-left-quick-action {
     width: 100%;
     min-width: 0;
-    min-height: 24px;
+    min-height: 28px;
     padding: 0;
     border: none;
     border-radius: 0;
@@ -1591,8 +1591,8 @@ body.dashboard-page {
     transition: color 0.18s ease;
   }
   .dashboard-page .driver-left-quick-action-icon {
-    width: 17px;
-    height: 17px;
+    width: 18px;
+    height: 18px;
     flex: 0 0 auto;
     color: currentColor;
     transform-origin: center center;
@@ -1600,8 +1600,8 @@ body.dashboard-page {
   }
   .dashboard-page .driver-left-quick-action-documents .driver-left-quick-action-icon,
   .dashboard-page .driver-left-quick-action-feedback .driver-left-quick-action-icon {
-    width: 23px;
-    height: 23px;
+    width: 25px;
+    height: 25px;
   }
   .dashboard-page .driver-left-quick-action:hover,
   .dashboard-page .driver-left-quick-action:focus-visible {
@@ -7260,7 +7260,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
         margin-bottom: 0;
     }
     .dashboard-page .driver-action-area-inner .driver-action-footer.driver-action-group {
-        margin-top: -1px;
+        margin-top: auto;
         margin-bottom: 0;
     }
     .dashboard-page .driver-action-area-inner .driver-action-feedback-slot.driver-request-fab-row {
