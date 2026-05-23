@@ -802,6 +802,8 @@ body.dashboard-page {
     margin-top: 4px !important;
   }
   .dashboard-page .driver-left-panel-content {
+    flex: 1 1 0;
+    min-height: 0;
     overflow-y: auto !important;
     overflow-x: hidden !important;
   }
@@ -6151,7 +6153,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     pointer-events: none;
     z-index: 2;
   }
-  .dashboard-page .driver-left-panel,
   .dashboard-page .driver-plate-dropdown-row {
     overflow: visible !important;
   }
@@ -6159,6 +6160,8 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .dashboard-page .driver-left-panel {
     position: relative;
     z-index: 3;
+    min-height: 0;
+    overflow: hidden;
     border-right: none !important;
   }
   .dashboard-page .driver-right-panel {
@@ -7119,10 +7122,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     overflow: visible !important;
   }
 
-  .dashboard-page .driver-left-panel-content {
-    overflow-x: visible !important;
-  }
-
   .dashboard-page .driver-left-panel .driver-plate-dropdown,
   body.dashboard-page #driver-plate-dropdown.driver-plate-dropdown {
     position: fixed !important;
@@ -7521,6 +7520,11 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     overflow-y: auto !important;
   }
 
+  .dashboard-page .driver-left-quick-actions,
+  .dashboard-page .driver-left-panel .driver-footer-back-wrap {
+    flex-shrink: 0;
+  }
+
   .dashboard-page .driver-left-panel .driver-user-plate-row.driver-user-plate-in-panel {
     gap: 0;
     margin-bottom: 1px;
@@ -7585,6 +7589,8 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 @media (min-width: 769px) {
     .dashboard-page .driver-left-panel {
         position: relative;
+        min-height: 0;
+        overflow: hidden;
         border-right: none !important;
     }
     .dashboard-page .driver-left-panel::after {
