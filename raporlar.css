@@ -841,6 +841,11 @@ max-width: none !important;
  * içinde olduğu için yalnız dikey mod açılıyordu; yatay üst .stok-list-scroll-x’e geçmiyordu.
  * Masaüstünde dikey kaydırmayı .stok-list-scroll-x’e alıp başlığı sticky yapıyoruz (mobil dokunuş yolu aynı).
  */
+#reports-modal #stok-list-container:has(.stok-list-top-controls) > .stok-list-container:not([data-has-detail-columns="true"]) .stok-list-scroll-x,
+#reports-modal.reports-modal--stok-list #stok-list-container.stok-list-root > .stok-list-container:not([data-has-detail-columns="true"]) .stok-list-scroll-x {
+overflow-x: auto;
+touch-action: pan-x pan-y;
+}
 #reports-modal #stok-list-container.stok-list-root > .stok-list-container .stok-list-scroll-x,
 #reports-modal.reports-modal--stok-list #stok-list-container.stok-list-root > .stok-list-container .stok-list-scroll-x {
 overflow-y: auto;
