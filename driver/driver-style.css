@@ -1734,6 +1734,9 @@ body.dashboard-page {
     outline: none;
     color: #ffffff;
   }
+  .dashboard-page .driver-vehicle-shortcuts.is-open .driver-vehicle-shortcuts-toggle {
+    color: #ffffff;
+  }
   .dashboard-page .driver-vehicle-shortcuts-toggle-icon {
     width: 22px;
     height: 22px;
@@ -1745,7 +1748,7 @@ body.dashboard-page {
     position: absolute;
     top: calc(100% + 6px);
     left: 0;
-    z-index: 20;
+    z-index: 10040;
     min-width: 152px;
     padding: 4px 0;
     margin: 0;
