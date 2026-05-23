@@ -1302,13 +1302,14 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
               <div class="driver-info-item ${kaskoW.class}"><span class="label">Kasko Bitiş</span><span class="value">${formatDriverDate(vehicle.kaskoDate) || '-'}</span></div>
               <div class="driver-info-item ${muayeneW.class}"><span class="label">Muayene Bitiş</span><span class="value">${formatDriverDate(vehicle.muayeneDate) || '-'}</span></div>
               ${hasEgzozMuayeneSaved ? `<div class="driver-info-item ${egzozW.class}"><span class="label">Egzoz Muayene Bitiş</span><span class="value">${formatDriverDate(egzozMuayeneDate) || '-'}</span></div>` : ''}
-              ${showTasitKartiInfo ? `<div class="driver-info-item ${tasitKartiW.class}"><span class="label">Taşıt Kartı Bitiş</span><span class="value">${formatDriverDate(tasitKartiDate) || '-'}</span></div>` : ''}
-              ${showTakografInfo ? `<div class="driver-info-item ${takografW.class}"><span class="label">Takograf Kalibrasyon Bitiş</span><span class="value">${formatDriverDate(takografDate) || '-'}</span></div>` : ''}
+              ${showTasitKartiInfo ? `<div class="driver-info-item ${tasitKartiW.class}"><span class="label">Taşıt Kartı Bitiş</span><span class="value">${renderDriverRequiredExpiryValue(tasitKartiDate)}</span></div>` : ''}
+              ${showTakografInfo ? `<div class="driver-info-item ${takografW.class}"><span class="label">Takograf Kalibrasyon Bitiş</span><span class="value">${renderDriverRequiredExpiryValue(takografDate)}</span></div>` : ''}
               <div class="driver-info-item ${anahtarSavedClass}"><span class="label">Yedek Anahtar</span><span class="value">${escapeHtmlDriver(anahtarLabel)}</span></div>
               <div class="driver-info-item ${lastikSavedClass}"><span class="label">Lastik Durumu</span><span class="value">${escapeHtmlDriver(lastikLabel)}</span></div>
               <div class="driver-info-item"><span class="label">UTTS</span><span class="value">${escapeHtmlDriver(uttsLabel)}</span></div>
           `;
           infoEl.querySelectorAll('.driver-info-item .value').forEach(function(valueEl) {
+              if (valueEl.querySelector('.driver-info-missing-value')) return;
               var txt = (valueEl.textContent || '').trim();
               if (txt !== '-') return;
               valueEl.classList.add('driver-value-pending');
@@ -2109,6 +2110,12 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           return d + '.' + m + '.' + y;
       }
       return val;
+  }
+
+  function renderDriverRequiredExpiryValue(dateStr) {
+      var trimmed = (dateStr && String(dateStr).trim()) ? String(dateStr).trim() : '';
+      if (trimmed) return formatDriverDate(trimmed);
+      return '<span class="driver-info-missing-value">-</span>';
   }
 
   function setupKmInputs() {
