@@ -1456,6 +1456,9 @@ body.dashboard-page {
 .driver-left-quick-actions {
   display: none;
 }
+.driver-vehicle-shortcuts {
+  display: none;
+}
 /* Mobil kopya (.driver-left-quick-actions-mobile) masaüstünde gizli — min-width bloğuna dokunulmadan spesificity ile */
 .dashboard-page .driver-left-panel > .driver-left-quick-actions-mobile {
   display: none;
@@ -6187,6 +6190,103 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     justify-content: center !important;
     align-items: center !important;
     gap: 8px !important;
+  }
+  .dashboard-page .driver-vehicle-shortcuts {
+    display: block;
+    position: relative;
+    flex: 0 0 auto;
+  }
+  .dashboard-page .driver-vehicle-shortcuts-toggle {
+    width: auto;
+    flex: none;
+    margin: 0;
+    padding: 2px;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    outline: none;
+    color: #a0aec0;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .dashboard-page .driver-vehicle-shortcuts-toggle:hover,
+  .dashboard-page .driver-vehicle-shortcuts-toggle:focus,
+  .dashboard-page .driver-vehicle-shortcuts-toggle:active {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    outline: none;
+    color: #ffffff;
+  }
+  .dashboard-page .driver-vehicle-shortcuts-toggle-icon {
+    width: 22px;
+    height: 22px;
+    display: block;
+    color: currentColor;
+  }
+  .dashboard-page .driver-vehicle-shortcuts-panel {
+    display: none;
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    z-index: 20;
+    min-width: 152px;
+    padding: 4px 0;
+    margin: 0;
+    background: var(--bg);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55), 0 2px 8px rgba(var(--theme-color-rgb), 0.12);
+    flex-direction: column;
+    gap: 0;
+  }
+  .dashboard-page .driver-vehicle-shortcuts.is-open .driver-vehicle-shortcuts-panel {
+    display: flex;
+  }
+  .dashboard-page .driver-vehicle-shortcuts-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    min-height: 36px;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    color: #a0aec0;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.2;
+    text-align: left;
+    cursor: pointer;
+    box-shadow: none;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .dashboard-page .driver-vehicle-shortcuts-item-label {
+    color: #ffffff;
+  }
+  .dashboard-page .driver-vehicle-shortcuts-item-icon {
+    width: 18px;
+    height: 18px;
+    flex: 0 0 auto;
+    color: currentColor;
+  }
+  .dashboard-page .driver-vehicle-shortcuts-item-documents .driver-vehicle-shortcuts-item-icon,
+  .dashboard-page .driver-vehicle-shortcuts-item-feedback .driver-vehicle-shortcuts-item-icon {
+    width: 20px;
+    height: 20px;
+  }
+  .dashboard-page .driver-vehicle-shortcuts-item:hover,
+  .dashboard-page .driver-vehicle-shortcuts-item:focus-visible {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.04);
+  }
+  .dashboard-page .driver-left-panel > .driver-left-quick-actions-mobile {
+    display: none;
   }
   .dashboard-page .driver-status-icon-row {
     width: 100% !important;
