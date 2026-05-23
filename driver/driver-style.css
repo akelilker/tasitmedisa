@@ -1456,6 +1456,10 @@ body.dashboard-page {
 .driver-left-quick-actions {
   display: none;
 }
+/* Mobil kopya (.driver-left-quick-actions-mobile) masaüstünde gizli — min-width bloğuna dokunulmadan spesificity ile */
+.dashboard-page .driver-left-panel > .driver-left-quick-actions-mobile {
+  display: none;
+}
 .dashboard-page .driver-status-icon-slot-history .driver-btn-history {
   display: none !important;
 }
@@ -1631,6 +1635,62 @@ body.dashboard-page {
   .driver-action-btn-feedback.driver-request-fab:active .driver-request-fab-label {
     opacity: 1;
     max-width: 96px;
+  }
+  /* Mobil: orijinal ikonu (driver-left-panel-content içindeki) gizle */
+  .dashboard-page .driver-left-panel-content .driver-left-quick-actions {
+    display: none;
+  }
+  /* Mobil: sol panel direct child kopya — Yönetim Sistemi linkinin üstünde sabit şerit */
+  .dashboard-page .driver-left-panel > .driver-left-quick-actions-mobile {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    width: 100%;
+    gap: 4px;
+    flex-shrink: 0;
+    padding: 3px 0 2px;
+  }
+  .dashboard-page .driver-left-panel > .driver-left-quick-actions-mobile .driver-left-quick-action {
+    min-height: 28px;
+    width: 100%;
+    min-width: 0;
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    color: #a0aec0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: none;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: color 0.18s ease;
+  }
+  .dashboard-page .driver-left-panel > .driver-left-quick-actions-mobile .driver-left-quick-action-icon {
+    width: 19px;
+    height: 19px;
+    flex: 0 0 auto;
+    color: currentColor;
+    transform-origin: center center;
+    transition: transform 0.18s ease, color 0.18s ease, filter 0.18s ease;
+  }
+  .dashboard-page .driver-left-panel > .driver-left-quick-actions-mobile .driver-left-quick-action-documents .driver-left-quick-action-icon,
+  .dashboard-page .driver-left-panel > .driver-left-quick-actions-mobile .driver-left-quick-action-feedback .driver-left-quick-action-icon {
+    width: 26px;
+    height: 26px;
+  }
+  .dashboard-page .driver-left-panel > .driver-left-quick-actions-mobile .driver-left-quick-action:hover,
+  .dashboard-page .driver-left-panel > .driver-left-quick-actions-mobile .driver-left-quick-action:focus-visible {
+    color: #ffffff;
+    background: transparent;
+    box-shadow: none;
+    outline: none;
+  }
+  .dashboard-page .driver-left-panel > .driver-left-quick-actions-mobile .driver-left-quick-action:hover .driver-left-quick-action-icon,
+  .dashboard-page .driver-left-panel > .driver-left-quick-actions-mobile .driver-left-quick-action:focus-visible .driver-left-quick-action-icon {
+    transform: scale(1.14);
+    filter: drop-shadow(0 0 3px rgba(238, 246, 255, 0.18));
   }
 }
 .driver-plate-dropdown-row {
