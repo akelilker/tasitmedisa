@@ -34,8 +34,9 @@
     function formatAdSoyad(str) { return (typeof window.formatAdSoyad === 'function' ? window.formatAdSoyad(str) : str); }
 
     /** Stok listesi / Excel: şanzıman sütunu — dar alan için Otm. */
-    function formatStokTransmissionLabel(transmission) {
-        if (transmission === 'manuel') return 'Manuel';
+    function formatStokTransmissionLabel(transmission, options) {
+        var compact = options && options.compact === true;
+        if (transmission === 'manuel') return compact ? 'Man.' : 'Manuel';
         if (transmission === 'otomatik') return 'Otm.';
         return '-';
     }
@@ -817,14 +818,14 @@
                 'sira': 22, 'sube': 54, 'yil': 34, 'marka': 108, 'plaka': 72, 'sanziman': 48, 'km': 58
             }
             : {
-                'sira': 22,
-                'sube': 76,
-                'yil': 38,
-                'marka': 132,
-                'tasitTipi': 64,
-                'plaka': 74,
-                'sanziman': 60,
-                'km': 69
+                'sira': 20,
+                'sube': 60,
+                'yil': 34,
+                'marka': 120,
+                'tasitTipi': 54,
+                'plaka': 68,
+                'sanziman': 44,
+                'km': 62
             };
 
         if (hasDetail) {
@@ -1030,7 +1031,7 @@
             'marka': formatBrandModel(vehicle.brandModel || '-'),
             'tasitTipi': getStokTasitTipiDisplayLabel(vehicle),
             'plaka': formatPlaka(vehicle.plate || '-'),
-            'sanziman': formatStokTransmissionLabel(vehicle.transmission),
+            'sanziman': formatStokTransmissionLabel(vehicle.transmission, { compact: true }),
             'km': (function() {
                 var kmRaw = getVehicleReportKmRaw(vehicle);
                 return kmRaw !== '' ? formatNumber(kmRaw) : '-';

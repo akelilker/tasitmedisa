@@ -852,6 +852,33 @@ body.dashboard-page {
   .dashboard-page .driver-dashboard-container.driver-heavy-commercial-active .driver-left-quick-action {
     min-height: 24px;
   }
+  .dashboard-page .driver-dashboard-container.driver-heavy-commercial-active .driver-left-panel .driver-footer-back-wrap {
+    flex: 0 0 auto;
+    align-self: flex-start;
+    align-items: center;
+    gap: 0 !important;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    min-height: 0;
+    height: auto;
+    width: auto !important;
+    max-width: none !important;
+    padding: 0 !important;
+    margin-top: auto !important;
+    margin-bottom: 0 !important;
+    overflow: visible !important;
+  }
+  .dashboard-page .driver-dashboard-container.driver-heavy-commercial-active .driver-left-panel .driver-footer-back-wrap .universal-back-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 4px 0 !important;
+    line-height: 1.1;
+    min-height: 0;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+  }
   .dashboard-page .driver-left-quick-action {
     width: 100%;
     min-width: 0;
