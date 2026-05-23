@@ -610,7 +610,7 @@ window.__loadedAppModules = window.__loadedAppModules || Object.create(null);
 window.__medisaModuleInflight = window.__medisaModuleInflight || Object.create(null);
 window.__medisaScriptInflightByPath = window.__medisaScriptInflightByPath || Object.create(null);
 
-/** pathname eşlemesi; farklı ?v= aynı betik olarak sayılır (çift yükleme / yarış önler). */
+/** pathname eşlemesi; versiyonsuz çağrılarda çift yükleme / yarış önler. */
 window.__medisaScriptCanonicalPath = function(srcAttr) {
   try {
     return new URL(String(srcAttr || ''), document.baseURI || window.location.href).pathname.replace(/\\/g, '/');
@@ -621,16 +621,27 @@ window.__medisaScriptCanonicalPath = function(srcAttr) {
   }
 };
 
+window.__medisaScriptNormalizedUrl = function(srcAttr) {
+  try {
+    return new URL(String(srcAttr || ''), document.baseURI || window.location.href);
+  } catch (e) {
+    return null;
+  }
+};
+
 /**
- * Tekil dinamik betik: tam src veya pathname eşleşmesinde tekrar <script> eklemez;
- * eşanlamlı src için paralel çağrılar tek Promise paylaşır.
+ * Tekil dinamik betik: tam src eşleşmesinde tekrar <script> eklemez.
+ * Sürüm query'si varsa aynı pathname ama farklı ?v= yeni betik olarak yüklenir.
  * loadAppModule / tasitlar-yazici / CDN lazy load ile paylaşılır.
  */
 window.__medisaLoadScriptOnce = function(src) {
   if (!src) return Promise.resolve();
 
   var pathKey = window.__medisaScriptCanonicalPath(src);
-  var inflightKey = pathKey || String(src).split(/[?#]/)[0] || src;
+  var srcUrl = window.__medisaScriptNormalizedUrl(src);
+  var srcKey = srcUrl ? srcUrl.href : '';
+  var srcHasVersion = !!(srcUrl && srcUrl.search);
+  var inflightKey = srcKey || pathKey || String(src).split(/[?#]/)[0] || src;
   var inflight = window.__medisaScriptInflightByPath;
   var existingFlight = inflight[inflightKey];
   if (existingFlight) return existingFlight;
@@ -641,7 +652,12 @@ window.__medisaLoadScriptOnce = function(src) {
     for (var i = 0; i < list.length; i++) {
       var raw = list[i].getAttribute('src');
       if (!raw) continue;
-      if (raw === src || (wanted && window.__medisaScriptCanonicalPath(raw) === wanted)) {
+      var rawUrl = window.__medisaScriptNormalizedUrl(raw);
+      if (raw === src || (srcUrl && rawUrl && rawUrl.href === srcUrl.href)) {
+        resolve();
+        return;
+      }
+      if (!srcHasVersion && wanted && window.__medisaScriptCanonicalPath(raw) === wanted) {
         resolve();
         return;
       }
