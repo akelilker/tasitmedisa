@@ -6690,6 +6690,64 @@
     return keys;
   }
 
+  function buildVehicleDocumentCardElement(vehicle, docKey, vehicleId) {
+    const cfg = VEHICLE_DOCUMENT_TYPES[docKey];
+    if (!cfg) return null;
+    const vid = String(vehicleId || (vehicle && vehicle.id != null ? vehicle.id : '') || '');
+    const docPath = getVehicleDocumentPath(vehicle, docKey);
+    const hasDoc = !!docPath;
+    if (hasDoc) preloadIosPwaPrintDocument(vid, docPath, docKey);
+    const card = document.createElement('button');
+    card.type = 'button';
+    card.className = 'vehicle-document-card' + (hasDoc ? '' : ' vehicle-document-card-missing');
+    card.setAttribute('aria-label', cfg.label);
+    const iconWrap = document.createElement('div');
+    iconWrap.className = 'vehicle-document-icon-wrap';
+    iconWrap.innerHTML = cfg.icon === 'shield'
+      ? '<svg class="vehicle-document-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>'
+      : '<svg class="vehicle-document-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg>';
+    const labelEl = document.createElement('div');
+    labelEl.className = 'vehicle-document-label';
+    labelEl.textContent = cfg.label;
+    const statusEl = document.createElement('div');
+    statusEl.className = 'vehicle-document-status';
+    statusEl.textContent = hasDoc ? 'Görüntüle / Değiştir' : 'Yükle';
+    card.appendChild(iconWrap);
+    card.appendChild(labelEl);
+    card.appendChild(statusEl);
+    card.onclick = function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      window.openVehicleDocumentModal(vid, docKey);
+    };
+    return card;
+  }
+
+  function renderVehicleDocumentsPicker(vehicle, container) {
+    if (!container || !vehicle) return;
+    const vid = String(vehicle.id != null ? vehicle.id : '');
+    const allowedKeys = new Set(getVehicleDocumentKeysForVehicle(vehicle));
+    const documentRows = [
+      { rowClass: 'vehicle-documents-row vehicle-documents-row-single', keys: ['ruhsat'] },
+      { rowClass: 'vehicle-documents-row vehicle-documents-row-pair', keys: ['sigorta', 'kasko'] },
+      { rowClass: 'vehicle-documents-row vehicle-documents-row-pair vehicle-documents-row-optional', keys: ['tasit_karti', 'takograf'] }
+    ];
+    const picker = document.createElement('div');
+    picker.className = 'vehicle-document-picker';
+    documentRows.forEach(function(row) {
+      const cards = row.keys
+        .filter(function(key) { return allowedKeys.has(key); })
+        .map(function(key) { return buildVehicleDocumentCardElement(vehicle, key, vid); })
+        .filter(Boolean);
+      if (!cards.length) return;
+      const rowEl = document.createElement('div');
+      rowEl.className = row.rowClass + (cards.length === 1 ? ' vehicle-documents-row-one' : '');
+      cards.forEach(function(card) { rowEl.appendChild(card); });
+      picker.appendChild(rowEl);
+    });
+    container.appendChild(picker);
+  }
+
   /**
    * Ruhsat Yükleme modalını açar; vehicle.ruhsatPath varsa görüntüleme/yenileme, yoksa yükleme UI gösterir
    */
@@ -7846,39 +7904,7 @@
     if (ruhsatGrp) ruhsatGrp.classList.remove('olay-form-buttons');
     setRuhsatSaveBtnVisibility(saveBtn, false);
 
-    const picker = document.createElement('div');
-    picker.className = 'vehicle-document-picker';
-    getVehicleDocumentKeysForVehicle(vehicle).forEach(function(docKey) {
-      const cfg = VEHICLE_DOCUMENT_TYPES[docKey];
-      const docPath = getVehicleDocumentPath(vehicle, docKey);
-      const hasDoc = !!docPath;
-      if (hasDoc) preloadIosPwaPrintDocument(vid, docPath, docKey);
-      const card = document.createElement('button');
-      card.type = 'button';
-      card.className = 'vehicle-document-card';
-      card.setAttribute('aria-label', cfg.label);
-      const iconWrap = document.createElement('div');
-      iconWrap.className = 'vehicle-document-icon-wrap';
-      iconWrap.innerHTML = cfg.icon === 'shield'
-        ? '<svg class="vehicle-document-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>'
-        : '<svg class="vehicle-document-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg>';
-      const labelEl = document.createElement('div');
-      labelEl.className = 'vehicle-document-label';
-      labelEl.textContent = cfg.label;
-      const statusEl = document.createElement('div');
-      statusEl.className = 'vehicle-document-status';
-      statusEl.textContent = hasDoc ? 'Görüntüle / Değiştir' : 'Yükle';
-      card.appendChild(iconWrap);
-      card.appendChild(labelEl);
-      card.appendChild(statusEl);
-      card.onclick = function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        window.openVehicleDocumentModal(vid, docKey);
-      };
-      picker.appendChild(card);
-    });
-    content.appendChild(picker);
+    renderVehicleDocumentsPicker(vehicle, content);
 
     modal.style.display = 'flex';
     requestAnimationFrame(function() { modal.classList.add('active'); });
