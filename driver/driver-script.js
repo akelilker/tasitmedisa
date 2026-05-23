@@ -374,15 +374,31 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       if (!wrap || !toggle || !panel || wrap.dataset.shortcutsBound === '1') return;
       wrap.dataset.shortcutsBound = '1';
 
+      var outsideCloseUnlockTimer = null;
+
       function setOpen(open) {
         wrap.classList.toggle('is-open', open);
         toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
         panel.setAttribute('aria-hidden', open ? 'false' : 'true');
+        if (!open) wrap.dataset.shortcutsOutsideGuard = '0';
+      }
+
+      function armOutsideCloseGuard() {
+        if (outsideCloseUnlockTimer) clearTimeout(outsideCloseUnlockTimer);
+        wrap.dataset.shortcutsOutsideGuard = '1';
+        outsideCloseUnlockTimer = setTimeout(function() {
+          wrap.dataset.shortcutsOutsideGuard = '0';
+          outsideCloseUnlockTimer = null;
+        }, 350);
       }
 
       toggle.addEventListener('click', function(e) {
+        e.preventDefault();
         e.stopPropagation();
-        setOpen(!wrap.classList.contains('is-open'));
+        if (typeof e.stopImmediatePropagation === 'function') e.stopImmediatePropagation();
+        var willOpen = !wrap.classList.contains('is-open');
+        setOpen(willOpen);
+        if (willOpen) armOutsideCloseGuard();
       });
 
       panel.addEventListener('click', function() {
@@ -391,7 +407,9 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
 
       document.addEventListener('click', function(e) {
         if (!wrap.classList.contains('is-open')) return;
-        if (!wrap.contains(e.target)) setOpen(false);
+        if (wrap.dataset.shortcutsOutsideGuard === '1') return;
+        if (wrap.contains(e.target)) return;
+        setOpen(false);
       });
 
       document.addEventListener('keydown', function(e) {
