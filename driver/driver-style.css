@@ -202,10 +202,11 @@ body.dashboard-page {
 .driver-header-fixed {
   flex-shrink: 0;
   background: var(--bg);
-  z-index: 5;
+  z-index: 10006;
   padding: max(12px, env(safe-area-inset-top)) 4px 4px 4px;
   box-sizing: border-box;
   border-top: none !important;
+  overflow: visible;
 }
 
 /* Ortadaki bölüm: sol grid sabit, sadece sağ grid kendi içinde kayar; barın üstüne binmemesi için z-index */
@@ -801,7 +802,8 @@ body.dashboard-page {
     margin-top: 4px !important;
   }
   .dashboard-page .driver-left-panel-content {
-    overflow-y: hidden !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
   }
   /* Açıklama alt satıra inince etiket–açıklama arası 0; etiket+açıklama arası 1.6px (masaüstü) */
   .dashboard-page .driver-left-panel .driver-info-item:has(.value) {
