@@ -1784,12 +1784,13 @@ body.dashboard-page {
   .dashboard-page .driver-vehicle-shortcuts-panel {
     display: none;
     position: fixed;
-    top: 190px;
+    top: 50%;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translate(-50%, -50%);
     z-index: 10050;
-    width: min(320px, calc(100vw - 40px));
-    padding: 12px;
+    width: min(340px, calc(100vw - 32px));
+    min-height: 150px;
+    padding: 18px 14px;
     margin: 0;
     background: var(--bg);
     border: 1px solid rgba(255, 255, 255, 0.15);
@@ -1797,6 +1798,7 @@ body.dashboard-page {
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.65), 0 2px 8px rgba(var(--theme-color-rgb), 0.10);
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 8px;
+    align-items: center;
     visibility: hidden;
     opacity: 0;
     pointer-events: none;
@@ -1812,9 +1814,9 @@ body.dashboard-page {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 7px;
-    min-height: 88px;
-    padding: 10px 6px;
+    gap: 10px;
+    min-height: 112px;
+    padding: 14px 8px;
     border: none;
     border-radius: 8px;
     background: transparent;
@@ -1833,19 +1835,22 @@ body.dashboard-page {
     color: #ffffff;
     font-size: 12px;
     font-weight: 700;
-    line-height: 1.1;
+    line-height: 1.15;
+    max-width: 74px;
     text-align: center;
+    white-space: normal;
   }
   .dashboard-page .driver-vehicle-shortcuts-item-icon {
-    width: 30px;
-    height: 30px;
+    width: 38px;
+    height: 38px;
     flex: none;
     color: currentColor;
   }
   .dashboard-page .driver-vehicle-shortcuts-item-documents .driver-vehicle-shortcuts-item-icon,
-  .dashboard-page .driver-vehicle-shortcuts-item-feedback .driver-vehicle-shortcuts-item-icon {
-    width: 30px;
-    height: 30px;
+  .dashboard-page .driver-vehicle-shortcuts-item-feedback .driver-vehicle-shortcuts-item-icon,
+  .dashboard-page .driver-vehicle-shortcuts-item-history .driver-vehicle-shortcuts-item-icon {
+    width: 38px;
+    height: 38px;
   }
   .dashboard-page .driver-vehicle-shortcuts-item:hover,
   .dashboard-page .driver-vehicle-shortcuts-item:focus-visible {
