@@ -933,6 +933,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
   }
 
   async function loadDashboard() {
+      setDriverPlateListOpenState(false);
       const token = getStoredPortalToken();
 
       if (!token) {
@@ -1355,6 +1356,17 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
 
   var _plateCloseBound = false;
 
+  function setDriverPlateListOpenState(isOpen) {
+      if (!document.body) return;
+      document.body.classList.toggle('driver-plate-list-open', !!isOpen && document.body.classList.contains('dashboard-page'));
+  }
+
+  function setDriverPlateDropdownVisibility(dropdown, isOpen) {
+      if (!dropdown) return;
+      dropdown.style.display = isOpen ? 'block' : 'none';
+      setDriverPlateListOpenState(!!isOpen);
+  }
+
   function positionPlateDropdownToTrigger(dropdown, trigger) {
       if (!dropdown || !trigger) return;
       const row = trigger.closest('.driver-plate-dropdown-row');
@@ -1412,7 +1424,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           document.addEventListener('click', function(ev) {
               if (!ev.target.closest('.driver-plate-dropdown-row')) {
                   const d = document.getElementById('driver-plate-dropdown');
-                  if (d) d.style.display = 'none';
+                  if (d) setDriverPlateDropdownVisibility(d, false);
               }
           });
       }
@@ -1443,7 +1455,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
               selectedVehicleId = vid;
               const sel = getSelectedVehicle();
               if (sel) currentPlakaEl.textContent = formatDriverPlaka(sel.plaka);
-              dropdown.style.display = 'none';
+              setDriverPlateDropdownVisibility(dropdown, false);
               loadDashboard();
           });
       });
@@ -1451,7 +1463,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       trigger.onclick = function(ev) {
           ev.stopPropagation();
           const isOpen = dropdown.style.display === 'block';
-          dropdown.style.display = isOpen ? 'none' : 'block';
+          setDriverPlateDropdownVisibility(dropdown, !isOpen);
           if (!isOpen) positionPlateDropdownToTrigger(dropdown, trigger);
       };
   }
