@@ -7260,7 +7260,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
         margin-bottom: 0;
     }
     .dashboard-page .driver-action-area-inner .driver-action-footer.driver-action-group {
-        margin-top: auto;
+        margin-top: 8px;
         margin-bottom: 0;
     }
     .dashboard-page .driver-action-area-inner .driver-action-feedback-slot.driver-request-fab-row {
