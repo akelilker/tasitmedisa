@@ -7108,9 +7108,12 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .login-page .driver-dashboard-container::before {
     border-top-width: 1.2px !important;
   }
-  /* PWA: login eski kaydırma; kullanıcı paneli logo+isim ~8px sağa (sol çerçeveye yapışmasın) */
+  /* PWA: kullanıcı paneli logo çerçeveyi ezmesin; login eski kaydırma korunur */
+  .dashboard-page .hero {
+    padding-left: max(10px, env(safe-area-inset-left, 0px)) !important;
+  }
   .dashboard-page .hero.hero-two-rows .hero-logo {
-    transform: translate(-11px, 9px) scale(0.97) !important;
+    transform: translate(0, 9px) scale(0.97) !important;
   }
   .login-page .hero.hero-two-rows .hero-logo {
     transform: translate(-19px, 9px) scale(0.97) !important;
