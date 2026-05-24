@@ -771,7 +771,6 @@ body.modal-open #info-modal.open {
 
 @media (max-width: 640px) {
     #required-documents-modal.modal-overlay {
-        padding-top: 0 !important;
         padding-left: 0 !important;
         padding-right: 0 !important;
     }
@@ -3157,5 +3156,35 @@ input.settings-form-input:-moz-autofill,
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #branch-form-modal.modal-overlay,
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #user-form-modal.modal-overlay {
         bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0) - 3px) !important;
+    }
+}
+
+/* iOS/Android PWA: ayar full-screen modalları çentik altında kalmasın */
+@media (max-width: 768px) and (display-mode: standalone) {
+    :is(#required-documents-modal, #branch-modal, #user-modal, #data-management-modal, #dis-veri-panel, #branch-form-modal, #user-form-modal).ayarlar-modal-overlay.modal-overlay {
+        padding-top: env(safe-area-inset-top) !important;
+        padding-right: 0 !important;
+        padding-bottom: 0 !important;
+        padding-left: 0 !important;
+    }
+
+    /* Önbellek / bilgi onayı: ekranda ortala + arka plan blur (masaüstü davranışı) */
+    body.modal-open #cache-confirm-modal.modal-overlay.active,
+    body.modal-open #cache-confirm-modal.modal-overlay.open,
+    body.modal-open #info-modal.modal-overlay.active,
+    body.modal-open #info-modal.modal-overlay.open {
+        align-items: center !important;
+        justify-content: center !important;
+        padding: env(safe-area-inset-top) 12px env(safe-area-inset-bottom) !important;
+        background: rgba(8, 13, 22, 0.55) !important;
+        backdrop-filter: blur(8px) !important;
+        -webkit-backdrop-filter: blur(8px) !important;
+    }
+
+    body.modal-open #cache-confirm-modal .modal-container,
+    body.modal-open #info-modal .modal-container {
+        margin: auto !important;
+        height: auto !important;
+        max-height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 80px) !important;
     }
 }
