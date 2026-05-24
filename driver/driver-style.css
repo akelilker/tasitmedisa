@@ -7108,8 +7108,10 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .login-page .driver-dashboard-container::before {
     border-top-width: 1.2px !important;
   }
-  /* PWA: login başlık hizası eski kaydırma; kullanıcı paneli tarayıcı ile aynı (yatay zıplama yok) */
-  .dashboard-page .hero.hero-two-rows .hero-logo,
+  /* PWA: login eski kaydırma; kullanıcı paneli logo+isim ~8px sağa (sol çerçeveye yapışmasın) */
+  .dashboard-page .hero.hero-two-rows .hero-logo {
+    transform: translate(-11px, 9px) scale(0.97) !important;
+  }
   .login-page .hero.hero-two-rows .hero-logo {
     transform: translate(-19px, 9px) scale(0.97) !important;
   }
@@ -7509,6 +7511,21 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     }
     .dashboard-page .driver-left-panel-content {
         margin-bottom: 10px !important;
+    }
+}
+
+/* iOS/Android PWA mobil: Bildir footer'a yaklaşsın (üstteki margin-top:8px yerine auto) */
+@media (max-width: 768px) and (display-mode: standalone) {
+    .dashboard-page .driver-action-area {
+        min-height: 100%;
+        box-sizing: border-box;
+    }
+    .dashboard-page .driver-action-area-inner {
+        min-height: 100%;
+    }
+    .dashboard-page .driver-action-area-inner .driver-action-footer.driver-action-group {
+        margin-top: auto !important;
+        margin-bottom: 0;
     }
 }
 

@@ -3386,8 +3386,12 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         padding-top: env(safe-area-inset-top) !important;
         bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
     }
-    #vehicle-modal.modal-overlay,
-    #reports-modal.modal-overlay {
+    /* ≤768 padding:0 !important ezmesin: kayıt/rapor modalı çentik altında kalmasın */
+    :is(#vehicle-modal, #reports-modal).modal-overlay {
+        padding-top: env(safe-area-inset-top) !important;
+        padding-right: 0 !important;
+        padding-bottom: 0 !important;
+        padding-left: 0 !important;
         bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
     }
     .tasitlar-modal-overlay {
@@ -3678,6 +3682,13 @@ body.modal-open .app-container {
 
 /* iOS PWA: ana panel footer ve header dengesi (safe-area tek katman) */
 @media (max-width: 768px) and (display-mode: standalone) {
+  /* Kayıt/Raporlar: ≤768 padding:0 ezmesine karşı çentik boşluğu (641–768 PWA) */
+  :is(#vehicle-modal, #reports-modal).modal-overlay {
+    padding-top: env(safe-area-inset-top) !important;
+    padding-right: 0 !important;
+    padding-bottom: 0 !important;
+    padding-left: 0 !important;
+  }
   /* PWA standalone: Şube/Kullanıcı form modal zinciri (Android + genel) */
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #branch-form-modal.modal-overlay,
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #user-form-modal.modal-overlay {
