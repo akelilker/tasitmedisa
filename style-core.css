@@ -1351,15 +1351,10 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#settings-menu.settings-dropdown.open) #main-menu.menu-container,
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#settings-menu.settings-dropdown.open) .icons-row-left,
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#settings-menu.settings-dropdown.open) .pwa-install-center,
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#settings-menu.settings-dropdown.open) .content-wrap,
   body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero,
   body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu.menu-container,
   body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .icons-row-left,
-  body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .pwa-install-center,
-  body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap,
-  body.modal-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero,
-  body.modal-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu.menu-container,
-  body.modal-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap {
+  body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .pwa-install-center {
     filter: blur(2px);
     opacity: 0.9;
     transition: filter 0.18s ease, opacity 0.18s ease;
@@ -1367,9 +1362,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#settings-menu.settings-dropdown.open) .icons-row-right,
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#settings-menu.settings-dropdown.open) #settings-menu.settings-dropdown.open,
   body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .icons-row-right,
-  body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) #notifications-dropdown.settings-dropdown.open,
-  body.modal-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .modal-overlay.active,
-  body.modal-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .modal-overlay.open {
+  body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) #notifications-dropdown.settings-dropdown.open {
     filter: none;
     opacity: 1;
   }

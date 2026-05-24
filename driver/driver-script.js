@@ -1153,6 +1153,11 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
   function renderDriverDocumentsModal(vehicle) {
       const listEl = document.getElementById('driver-documents-list');
       if (!listEl) return;
+      const plateEl = document.getElementById('driver-documents-vehicle-plate');
+      const modelEl = document.getElementById('driver-documents-vehicle-model');
+      const brandModelFormatter = (typeof window.formatBrandModel === 'function' ? window.formatBrandModel : (typeof window.toTitleCase === 'function' ? window.toTitleCase : function(x){ return x; }));
+      if (plateEl) plateEl.textContent = formatDriverPlaka(vehicle && vehicle.plaka);
+      if (modelEl) modelEl.textContent = brandModelFormatter((vehicle && (vehicle.brandModel || [vehicle.marka, vehicle.model].filter(Boolean).join(' '))) || '') || '';
       const vehicleId = vehicle && vehicle.id != null ? String(vehicle.id) : '';
       const documentTypes = getDriverDocumentTypesForVehicle(vehicle);
       const typeByKey = {};
