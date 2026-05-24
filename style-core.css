@@ -1345,6 +1345,36 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   }
 }
 
+/* Ayarlar/Bildirim açık (mobil iOS PWA): masaüstü ile aynı arka plan blur/dim */
+@media (max-width: 768px) and (display-mode: standalone) {
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#settings-menu.settings-dropdown.open) .hero,
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#settings-menu.settings-dropdown.open) #main-menu.menu-container,
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#settings-menu.settings-dropdown.open) .icons-row-left,
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#settings-menu.settings-dropdown.open) .pwa-install-center,
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#settings-menu.settings-dropdown.open) .content-wrap,
+  body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero,
+  body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu.menu-container,
+  body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .icons-row-left,
+  body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .pwa-install-center,
+  body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap,
+  body.modal-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero,
+  body.modal-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu.menu-container,
+  body.modal-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap {
+    filter: blur(2px);
+    opacity: 0.9;
+    transition: filter 0.18s ease, opacity 0.18s ease;
+  }
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#settings-menu.settings-dropdown.open) .icons-row-right,
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#settings-menu.settings-dropdown.open) #settings-menu.settings-dropdown.open,
+  body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .icons-row-right,
+  body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) #notifications-dropdown.settings-dropdown.open,
+  body.modal-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .modal-overlay.active,
+  body.modal-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .modal-overlay.open {
+    filter: none;
+    opacity: 1;
+  }
+}
+
 #notifications-dropdown > .notification-item {
   width: 100% !important;
   box-sizing: border-box !important;
@@ -3386,8 +3416,15 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         padding-top: env(safe-area-inset-top) !important;
         bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
     }
-    /* ≤768 padding:0 !important ezmesin: kayıt/rapor modalı çentik altında kalmasın */
+    /* ≤768 padding:0 !important ezmesin: kayıt/rapor + taşıt zinciri çentik altında kalmasın */
     :is(#vehicle-modal, #reports-modal).modal-overlay {
+        padding-top: env(safe-area-inset-top) !important;
+        padding-right: 0 !important;
+        padding-bottom: 0 !important;
+        padding-left: 0 !important;
+        bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
+    }
+    :is(#vehicles-modal, #vehicle-detail-modal, #dinamik-olay-modal, #event-menu-modal, #vehicle-history-modal).tasitlar-modal-overlay.modal-overlay {
         padding-top: env(safe-area-inset-top) !important;
         padding-right: 0 !important;
         padding-bottom: 0 !important;
@@ -3400,8 +3437,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
     }
     .tasitlar-modal-overlay::before {
-        top: 0 !important;
-        height: 100% !important;
+        top: env(safe-area-inset-top) !important;
+        height: calc(100% - env(safe-area-inset-top)) !important;
     }
     .modal-overlay .modal-container {
         margin-top: 0 !important;
@@ -3682,8 +3719,14 @@ body.modal-open .app-container {
 
 /* iOS PWA: ana panel footer ve header dengesi (safe-area tek katman) */
 @media (max-width: 768px) and (display-mode: standalone) {
-  /* Kayıt/Raporlar: ≤768 padding:0 ezmesine karşı çentik boşluğu (641–768 PWA) */
+  /* Kayıt/Raporlar + taşıt zinciri: ≤768 padding:0 ezmesine karşı çentik boşluğu (641–768 PWA) */
   :is(#vehicle-modal, #reports-modal).modal-overlay {
+    padding-top: env(safe-area-inset-top) !important;
+    padding-right: 0 !important;
+    padding-bottom: 0 !important;
+    padding-left: 0 !important;
+  }
+  :is(#vehicles-modal, #vehicle-detail-modal, #dinamik-olay-modal, #event-menu-modal, #vehicle-history-modal).tasitlar-modal-overlay.modal-overlay {
     padding-top: env(safe-area-inset-top) !important;
     padding-right: 0 !important;
     padding-bottom: 0 !important;

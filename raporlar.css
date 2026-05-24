@@ -1391,8 +1391,16 @@ justify-content: center;
 }
 /* Masaüstü: Şanzıman başlığı — stok listesinde sabit punto (vw yok) */
 @media (min-width: 641px) {
+#stok-list-container .stok-list-header-cell[data-col="sanziman"] {
+padding-left: 1px !important;
+padding-right: 1px !important;
+gap: 1px !important;
+}
 #stok-list-container .stok-list-header-cell[data-col="sanziman"] .stok-header-text {
-font-size: 11px !important;
+font-size: 10px !important;
+letter-spacing: 0 !important;
+overflow: hidden !important;
+text-overflow: clip !important;
 }
 }
 
