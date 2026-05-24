@@ -4003,6 +4003,51 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   box-sizing: border-box !important;
 }
 
+#driver-documents-modal .driver-documents-vehicle-heading {
+  flex: 0 0 auto;
+  width: 100%;
+  margin: 0 0 18px;
+  text-align: center;
+  color: var(--txt-white, #fff);
+}
+
+#driver-documents-modal .driver-documents-vehicle-heading-top {
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 10px;
+  max-width: 100%;
+  min-width: 0;
+}
+
+#driver-documents-modal .driver-documents-vehicle-heading-label {
+  color: var(--txt-muted, #a0aec0);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.15;
+  white-space: nowrap;
+}
+
+#driver-documents-modal .driver-documents-vehicle-heading-plate {
+  color: var(--txt-white, #fff);
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+#driver-documents-modal .driver-documents-vehicle-heading-model {
+  margin-top: 3px;
+  color: var(--txt-muted, #a0aec0);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .driver-documents-list {
   display: flex;
   flex-direction: column;
@@ -4186,8 +4231,29 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
     flex: 1 1 auto !important;
     min-height: 0 !important;
     overflow-y: auto !important;
-    padding-top: 16px !important;
+    padding-top: 12px !important;
     padding-bottom: 16px !important;
+    background: var(--modal-bg) !important;
+  }
+
+  #driver-documents-modal .driver-documents-vehicle-heading {
+    margin-bottom: 16px;
+  }
+
+  #driver-documents-modal .driver-documents-vehicle-heading-top {
+    gap: 8px;
+  }
+
+  #driver-documents-modal .driver-documents-vehicle-heading-label {
+    font-size: 15px;
+  }
+
+  #driver-documents-modal .driver-documents-vehicle-heading-plate {
+    font-size: 20px;
+  }
+
+  #driver-documents-modal .driver-documents-vehicle-heading-model {
+    font-size: 13px;
   }
 
   #driver-documents-modal .driver-documents-list {
@@ -7740,6 +7806,28 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 }
 
 @media (min-width: 641px) {
+  body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-header-fixed,
+  body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-right-panel,
+  body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-vehicle-info,
+  body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-left-quick-actions,
+  body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-footer-back-wrap {
+    filter: blur(2px);
+    opacity: 0.9;
+    transition: filter 0.18s ease, opacity 0.18s ease;
+  }
+
+  body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-user-plate-row,
+  body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-plate-dropdown-row,
+  body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-plate-trigger,
+  body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-current-plaka,
+  body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-plate-subtitle,
+  body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-plate-dropdown {
+    filter: none;
+    opacity: 1;
+  }
+}
+
+@media (max-width: 640px) {
   body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-header-fixed,
   body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-right-panel,
   body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-vehicle-info,
