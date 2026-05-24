@@ -845,6 +845,59 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     font-size: 13px;
 }
 
+@media (max-width: 640px) {
+    #dinamik-olay-modal[data-event-type="documents"] .universal-back-bar {
+        display: grid !important;
+        grid-template-columns: minmax(0, auto) minmax(0, 1fr);
+        align-items: start !important;
+        column-gap: 10px;
+        min-height: 46px;
+        margin-bottom: 8px !important;
+        padding: 8px 48px 4px 16px !important;
+        box-sizing: border-box !important;
+    }
+
+    #dinamik-olay-modal[data-event-type="documents"] .universal-back-btn {
+        position: relative !important;
+        z-index: 2;
+        min-width: 0 !important;
+        max-width: 118px !important;
+        justify-self: start;
+        align-self: start;
+    }
+
+    #dinamik-olay-modal[data-event-type="documents"] .universal-back-btn .universal-back-label {
+        font-size: 14px !important;
+        line-height: 1.1 !important;
+        white-space: nowrap !important;
+    }
+
+    #dinamik-olay-modal[data-event-type="documents"] .vehicle-context-row {
+        position: static !important;
+        left: auto !important;
+        top: auto !important;
+        transform: none !important;
+        width: 100%;
+        max-width: 100%;
+        margin: 0 !important;
+        padding: 0 !important;
+        justify-self: center;
+        align-self: start;
+    }
+
+    #dinamik-olay-modal[data-event-type="documents"] .vehicle-context-plate {
+        font-size: 18px;
+        line-height: 1.05;
+        letter-spacing: 0.08em;
+    }
+
+    #dinamik-olay-modal[data-event-type="documents"] .vehicle-context-model {
+        margin-top: 2px;
+        font-size: 12.5px;
+        line-height: 1.15;
+    }
+}
+
 /* Olay Ekle (Kaza, Bakım vb.): modal gövdesi mutlaka kayar, üst görünsün */
 .olay-ekle-modal .modal-body {
     flex: 1 1 auto !important;
