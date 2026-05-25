@@ -5200,7 +5200,8 @@
     }
 
     if (vehicleNeedsK2Belgesi(vehicle)) {
-      const tasitKartiLabel = getVehicleDocumentPath(vehicle, 'tasit_karti') ? 'Yüklü' : 'Yüklü Değil';
+      const tasitKartiExpiryDisplay = formatDateForDetailModal(getTasitKartiExpiryDate(vehicle));
+      const tasitKartiLabel = getVehicleDocumentPath(vehicle, 'tasit_karti') ? ('Yüklü' + (tasitKartiExpiryDisplay ? ' - ' + tasitKartiExpiryDisplay : '')) : 'Yüklü Değil';
       html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Taşıt Kartı</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(tasitKartiLabel)}</span></div>`;
     }
 
@@ -6679,6 +6680,38 @@
     return vehicle ? String(vehicle[config.pathField] || '') : '';
   }
 
+  function parseVehicleDocumentExpiryDate(rawDate) {
+    const value = String(rawDate || '').trim();
+    if (!value) return '';
+    if (typeof window.parseVehicleDateRawToIso === 'function') return window.parseVehicleDateRawToIso(value) || '';
+    const digits = value.replace(/\D/g, '');
+    if (digits.length === 8) return digits.slice(4, 8) + '-' + digits.slice(2, 4) + '-' + digits.slice(0, 2);
+    return /^\d{4}-\d{2}-\d{2}$/.test(value) ? value : '';
+  }
+
+  function formatVehicleDocumentExpiryDate(isoDate) {
+    if (!isoDate) return '';
+    const s = formatDateForDisplay(isoDate);
+    return s || '';
+  }
+
+  function getTasitKartiExpiryDate(vehicle) {
+    return String((vehicle && vehicle.tasitKartiExpiryDate) || '').trim();
+  }
+
+  function buildTasitKartiK2LimitMessage(k2IsoDate) {
+    return "K Belgesinin Geçerlilik Tarihi " + formatVehicleDocumentExpiryDate(k2IsoDate) + " 'dır. Taşıt Belgesi Geçerlilik Tarihi Bu Tarihten Sonrası Olamaz.";
+  }
+
+  function validateTasitKartiExpiryDate(expiryIsoDate) {
+    if (!expiryIsoDate) return { valid: false, message: 'Taşıt Belgesi Geçerlilik tarihi geçerli olmalıdır. Örnek: 17/05/2027' };
+    const k2IsoDate = parseVehicleDocumentExpiryDate(getK2BelgesiExpiryDate());
+    if (k2IsoDate && expiryIsoDate > k2IsoDate) {
+      return { valid: false, message: buildTasitKartiK2LimitMessage(k2IsoDate) };
+    }
+    return { valid: true };
+  }
+
   function getVehicleDocumentKeysForVehicle(vehicle) {
     var keys = ['ruhsat', 'sigorta', 'kasko'];
     if (vehicleNeedsK2Belgesi(vehicle)) {
@@ -8080,6 +8113,26 @@
         }
       }
     };
+    if (cfg.key === 'tasit_karti') {
+      const expiryWrap = document.createElement('div');
+      expiryWrap.className = 'tasit-karti-expiry-field';
+      const expiryLabel = document.createElement('label');
+      expiryLabel.className = 'form-label';
+      expiryLabel.setAttribute('for', 'tasit-karti-expiry-date');
+      expiryLabel.textContent = 'Geçerlilik Süresi';
+      const expiryInput = document.createElement('input');
+      expiryInput.type = 'text';
+      expiryInput.id = 'tasit-karti-expiry-date';
+      expiryInput.className = 'form-input';
+      expiryInput.placeholder = 'gg/aa/yyyy';
+      expiryInput.inputMode = 'numeric';
+      const vehicles = window.appData?.tasitlar || [];
+      const vehicle = vehicles.find(function(x) { return String(x.id) === String(window.currentDetailVehicleId || ''); });
+      expiryInput.value = formatVehicleDocumentExpiryDate(getTasitKartiExpiryDate(vehicle));
+      expiryWrap.appendChild(expiryLabel);
+      expiryWrap.appendChild(expiryInput);
+      content.appendChild(expiryWrap);
+    }
     setRuhsatSaveBtnVisibility(saveBtn, input.files.length > 0);
   }
 
@@ -8190,6 +8243,17 @@
     formData.append('vehicleId', vehicleId);
     formData.append('vehicleVersion', String(Number(vehicle.version) || 1));
     formData.append('documentType', cfg.key);
+    if (cfg.key === 'tasit_karti') {
+      const expiryInput = document.getElementById('tasit-karti-expiry-date');
+      const expiryIsoDate = parseVehicleDocumentExpiryDate(expiryInput ? expiryInput.value : '');
+      const expiryValidation = validateTasitKartiExpiryDate(expiryIsoDate);
+      if (!expiryValidation.valid) {
+        alert(expiryValidation.message);
+        if (expiryInput) expiryInput.focus();
+        return;
+      }
+      formData.append('tasitKartiExpiryDate', expiryIsoDate);
+    }
     formData.append('document', input.files[0]);
     setRuhsatUploadProgressVisible(true, 0, true);
     setRuhsatUploadUiLocked(true);
@@ -8223,6 +8287,9 @@
           if (v) {
             if (newPath) {
               v[cfg.pathField] = newPath;
+            }
+            if (cfg.key === 'tasit_karti' && data.tasitKartiExpiryDate) {
+              v.tasitKartiExpiryDate = data.tasitKartiExpiryDate;
             }
             if (data.vehicleVersion != null) {
               v.version = Number(data.vehicleVersion) || v.version;
