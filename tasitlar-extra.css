@@ -3409,3 +3409,68 @@
   color: rgba(var(--theme-color-rgb), 1);
 }
 
+#monthly-todo-modal .monthly-todo-empty--muted {
+  color: #a0aec0;
+  font-size: 13px;
+  padding: 0.5rem 0 0.75rem;
+}
+
+#monthly-todo-modal .monthly-todo-next-month-preview {
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+#monthly-todo-modal .monthly-todo-next-month-preview__title {
+  margin: 0 0 0.5rem;
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+#monthly-todo-modal .monthly-todo-next-month-preview__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+#monthly-todo-modal .monthly-todo-next-month-preview__item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 0.5rem;
+  padding: 0.4rem 0;
+  font-size: 12px;
+  line-height: 1.35;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+#monthly-todo-modal .monthly-todo-next-month-preview__item:last-child {
+  border-bottom: none;
+}
+
+#monthly-todo-modal .monthly-todo-next-month-preview__plate {
+  flex: 0 0 auto;
+  font-weight: 600;
+  color: #e2e8f0;
+  min-width: 5.5rem;
+}
+
+#monthly-todo-modal .monthly-todo-next-month-preview__text {
+  flex: 1 1 12rem;
+  color: #a0aec0;
+}
+
+#monthly-todo-modal .monthly-todo-next-month-preview__meta {
+  color: #a0aec0;
+  white-space: nowrap;
+}
+
+#monthly-todo-modal .monthly-todo-next-month-preview__item--red .monthly-todo-next-month-preview__text {
+  color: rgba(var(--theme-color-rgb), 0.95);
+}
+
+#monthly-todo-modal .monthly-todo-next-month-preview__item--orange .monthly-todo-next-month-preview__text {
+  color: #f6ad55;
+}
+
