@@ -1319,7 +1319,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       const egzozW = checkDateWarningsDriver(hasEgzozMuayeneSaved ? egzozMuayeneDate : '');
       const showTasitKartiInfo = driverVehicleNeedsK2(vehicle);
       const showTakografInfo = driverVehicleNeedsTakograf(vehicle);
-      const tasitKartiDate = (vehicle.k2BelgesiExpiryDate && String(vehicle.k2BelgesiExpiryDate).trim()) ? String(vehicle.k2BelgesiExpiryDate).trim() : '';
+      const tasitKartiDate = (vehicle.tasitKartiExpiryDate && String(vehicle.tasitKartiExpiryDate).trim()) ? String(vehicle.tasitKartiExpiryDate).trim() : '';
       const takografDate = (vehicle.takografExpiryDate && String(vehicle.takografExpiryDate).trim())
           ? String(vehicle.takografExpiryDate).trim()
           : ((vehicle.takografKalibrasyonDate && String(vehicle.takografKalibrasyonDate).trim()) ? String(vehicle.takografKalibrasyonDate).trim() : '');
