@@ -4218,7 +4218,8 @@
     var badge = btn ? btn.querySelector('.monthly-todo-header-badge') : null;
     if (!btn || !badge) return;
     var list = (typeof window.getVehicleDateTasks === 'function') ? window.getVehicleDateTasks() : [];
-    var n = list.length;
+    var merged = buildMonthlyTodoMergedDisplayTasks(list);
+    var n = merged.length;
     if (n <= 0) {
       badge.textContent = '';
       badge.setAttribute('hidden', 'hidden');
