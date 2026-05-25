@@ -1363,30 +1363,7 @@ body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-
   opacity: 1 !important;
 }
 
-/* Ayarlar/Bildirim açık (mobil tüm tarayıcılar): PWA dışındaki mobilde de blur/dim uygula */
-@media (max-width: 768px) {
-  body.settings-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero,
-  body.settings-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu.menu-container,
-  body.settings-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .icons-row-left,
-  body.settings-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .pwa-install-center,
-  body.settings-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap,
-  body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero,
-  body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu.menu-container,
-  body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .icons-row-left,
-  body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .pwa-install-center,
-  body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap {
-    filter: blur(2px);
-    opacity: 0.9;
-    transition: filter 0.18s ease, opacity 0.18s ease;
-  }
-  body.settings-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .icons-row-right,
-  body.settings-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) #settings-menu.settings-dropdown.open,
-  body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .icons-row-right,
-  body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) #notifications-dropdown.settings-dropdown.open {
-    filter: none;
-    opacity: 1;
-  }
-}
+/* Mobil: content-wrap üzerinde filter:blur kullanma — üst elemana filtre uygulanınca çocuklar (ikon satırı) bulanık kalır; flu sadece body::before backdrop-filter ile */
 
 #notifications-dropdown > .notification-item {
   width: 100% !important;
