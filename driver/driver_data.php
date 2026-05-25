@@ -65,6 +65,7 @@ function buildVehicleForDriver($tasit, $branches = [], $k2Belgesi = []) {
         'k2BelgesiPath' => $k2Required && is_array($k2Belgesi) ? ($k2Belgesi['documentPath'] ?? '') : '',
         'k2BelgesiExpiryDate' => $k2Required && is_array($k2Belgesi) ? ($k2Belgesi['expiryDate'] ?? '') : '',
         'tasitKartiPath' => $k2Required ? ($tasit['tasitKartiPath'] ?? '') : '',
+        'tasitKartiExpiryDate' => $k2Required ? ($tasit['tasitKartiExpiryDate'] ?? '') : '',
         'takografBelgesiPath' => $takografRequired ? ($tasit['takografBelgesiPath'] ?? '') : '',
         'takografKalibrasyonDate' => $takografRequired ? ($tasit['takografKalibrasyonDate'] ?? '') : '',
         'takografExpiryDate' => $takografRequired ? ($tasit['takografExpiryDate'] ?? '') : '',

@@ -25,6 +25,28 @@ if (!$config) {
 }
 $isSettingsDocument = !empty($config['settingsKey']);
 
+function medisaNormalizeUploadDocumentDateToIso($rawDate) {
+    $value = trim((string)$rawDate);
+    if ($value === '') {
+        return '';
+    }
+    if (preg_match('/^(\d{4})-(\d{2})-(\d{2})$/', $value, $m)) {
+        return checkdate((int)$m[2], (int)$m[3], (int)$m[1]) ? sprintf('%04d-%02d-%02d', (int)$m[1], (int)$m[2], (int)$m[3]) : '';
+    }
+    if (preg_match('/^(\d{1,2})[.\/-](\d{1,2})[.\/-](\d{4})$/', $value, $m)) {
+        return checkdate((int)$m[2], (int)$m[1], (int)$m[3]) ? sprintf('%04d-%02d-%02d', (int)$m[3], (int)$m[2], (int)$m[1]) : '';
+    }
+    if (preg_match('/^(\d{2})(\d{2})(\d{4})$/', $value, $m)) {
+        return checkdate((int)$m[2], (int)$m[1], (int)$m[3]) ? sprintf('%04d-%02d-%02d', (int)$m[3], (int)$m[2], (int)$m[1]) : '';
+    }
+    return '';
+}
+
+function medisaFormatUploadDocumentDate($isoDate) {
+    $parts = explode('-', (string)$isoDate);
+    return count($parts) === 3 ? ($parts[2] . '/' . $parts[1] . '/' . $parts[0]) : (string)$isoDate;
+}
+
 $vehicleId = trim((string)($_POST['vehicleId'] ?? ''));
 $vehicleVersion = isset($_POST['vehicleVersion']) ? (int)$_POST['vehicleVersion'] : null;
 if (!$isSettingsDocument && $vehicleId === '') {
@@ -37,6 +59,17 @@ if (!$isSettingsDocument && ($vehicleVersion === null || $vehicleVersion <= 0)) 
     http_response_code(400);
     echo json_encode(['error' => 'vehicleVersion gerekli'], JSON_UNESCAPED_UNICODE);
     exit;
+}
+
+$tasitKartiExpiryDate = '';
+if ($documentType === 'tasit_karti') {
+    $rawTasitKartiExpiryDate = trim((string)($_POST['tasitKartiExpiryDate'] ?? ''));
+    $tasitKartiExpiryDate = medisaNormalizeUploadDocumentDateToIso($rawTasitKartiExpiryDate);
+    if ($tasitKartiExpiryDate === '') {
+        http_response_code(400);
+        echo json_encode(['error' => 'Taşıt Belgesi Geçerlilik tarihi geçerli olmalıdır. Örnek: 17/05/2027'], JSON_UNESCAPED_UNICODE);
+        exit;
+    }
 }
 
 $preloadData = loadData();
@@ -71,6 +104,15 @@ if (!$isSettingsDocument) {
         http_response_code(403);
         echo json_encode(['error' => 'Bu taşıtı güncelleme yetkiniz yok.'], JSON_UNESCAPED_UNICODE);
         exit;
+    }
+    if ($documentType === 'tasit_karti') {
+        $k2ExpiryDate = medisaNormalizeUploadDocumentDateToIso($preloadData['ayarlar']['k2Belgesi']['expiryDate'] ?? '');
+        if ($k2ExpiryDate !== '' && $tasitKartiExpiryDate > $k2ExpiryDate) {
+            $k2DisplayDate = medisaFormatUploadDocumentDate($k2ExpiryDate);
+            http_response_code(400);
+            echo json_encode(['error' => "K Belgesinin Geçerlilik Tarihi {$k2DisplayDate} 'dır. Taşıt Belgesi Geçerlilik Tarihi Bu Tarihten Sonrası Olamaz."], JSON_UNESCAPED_UNICODE);
+            exit;
+        }
     }
 } elseif (($context['role'] ?? '') !== 'genel_yonetici') {
     http_response_code(403);
@@ -144,7 +186,7 @@ if (is_file($previewPath)) {
 }
 
 $documentPath = $config['dir'] . '/' . $filename;
-$result = medisaMutateData(function (&$data) use ($vehicleId, $vehicleVersion, $documentPath, $config, $isSettingsDocument) {
+$result = medisaMutateData(function (&$data) use ($vehicleId, $vehicleVersion, $documentPath, $config, $isSettingsDocument, $documentType, $tasitKartiExpiryDate) {
     $auth = medisaResolveAuthorizedContext($data, 'view_main_app');
     if (($auth['success'] ?? false) !== true) {
         return medisaBuildErrorResult($auth['message'] ?? 'Bu işlem için yetkiniz yok.', (int)($auth['status'] ?? 403));
@@ -192,6 +234,14 @@ $result = medisaMutateData(function (&$data) use ($vehicleId, $vehicleVersion, $
     }
 
     $vehicle[$config['pathField']] = $documentPath;
+    if ($documentType === 'tasit_karti') {
+        $k2ExpiryDate = medisaNormalizeUploadDocumentDateToIso($data['ayarlar']['k2Belgesi']['expiryDate'] ?? '');
+        if ($k2ExpiryDate !== '' && $tasitKartiExpiryDate > $k2ExpiryDate) {
+            $k2DisplayDate = medisaFormatUploadDocumentDate($k2ExpiryDate);
+            return medisaBuildErrorResult("K Belgesinin Geçerlilik Tarihi {$k2DisplayDate} 'dır. Taşıt Belgesi Geçerlilik Tarihi Bu Tarihten Sonrası Olamaz.", 400);
+        }
+        $vehicle['tasitKartiExpiryDate'] = $tasitKartiExpiryDate;
+    }
     $newVehicleVersion = medisaBumpVehicleVersion($vehicle);
 
     $payload = [
@@ -213,6 +263,9 @@ if (($result['success'] ?? false) === true) {
     $result['documentType'] = $documentType;
     $result['documentPath'] = $documentPath;
     $result['ruhsatPath'] = $documentType === 'ruhsat' ? $documentPath : null;
+    if ($documentType === 'tasit_karti') {
+        $result['tasitKartiExpiryDate'] = $tasitKartiExpiryDate;
+    }
 }
 
 if (($result['success'] ?? false) !== true) {
