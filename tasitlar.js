@@ -3835,12 +3835,22 @@
    */
   function rawVehicleDateExpiryInCurrentCalendarMonth(rawDate) {
     if (rawDate == null || String(rawDate).trim() === '') return false;
-    if (typeof window.parseVehicleDateRawToIso !== 'function') return false;
-    var iso = window.parseVehicleDateRawToIso(rawDate);
-    if (!iso || !/^\d{4}-\d{2}-\d{2}$/.test(iso)) return false;
-    var p = iso.split('-');
-    var y = parseInt(p[0], 10);
-    var moZero = parseInt(p[1], 10) - 1;
+    var y = NaN;
+    var moZero = NaN;
+    if (typeof window.parseVehicleDateRawToIso === 'function') {
+      var iso = window.parseVehicleDateRawToIso(rawDate);
+      if (iso && /^\d{4}-\d{2}-\d{2}$/.test(iso)) {
+        var p = iso.split('-');
+        y = parseInt(p[0], 10);
+        moZero = parseInt(p[1], 10) - 1;
+      }
+    }
+    if (isNaN(y) || isNaN(moZero)) {
+      var fallbackDate = new Date(String(rawDate).trim());
+      if (isNaN(fallbackDate.getTime())) return false;
+      y = fallbackDate.getFullYear();
+      moZero = fallbackDate.getMonth();
+    }
     var now = new Date();
     return moZero === now.getMonth() && y === now.getFullYear();
   }
@@ -3857,12 +3867,22 @@
   /** Vade tarihi bir sonraki takvim ayına düşüyor mu (ISO ay/yıl). */
   function rawVehicleDateExpiryInNextCalendarMonth(rawDate) {
     if (rawDate == null || String(rawDate).trim() === '') return false;
-    if (typeof window.parseVehicleDateRawToIso !== 'function') return false;
-    var iso = window.parseVehicleDateRawToIso(rawDate);
-    if (!iso || !/^\d{4}-\d{2}-\d{2}$/.test(iso)) return false;
-    var p = iso.split('-');
-    var y = parseInt(p[0], 10);
-    var moZero = parseInt(p[1], 10) - 1;
+    var y = NaN;
+    var moZero = NaN;
+    if (typeof window.parseVehicleDateRawToIso === 'function') {
+      var iso = window.parseVehicleDateRawToIso(rawDate);
+      if (iso && /^\d{4}-\d{2}-\d{2}$/.test(iso)) {
+        var p = iso.split('-');
+        y = parseInt(p[0], 10);
+        moZero = parseInt(p[1], 10) - 1;
+      }
+    }
+    if (isNaN(y) || isNaN(moZero)) {
+      var fallbackDate = new Date(String(rawDate).trim());
+      if (isNaN(fallbackDate.getTime())) return false;
+      y = fallbackDate.getFullYear();
+      moZero = fallbackDate.getMonth();
+    }
     var now = new Date();
     var nm = now.getMonth() + 1;
     var ny = now.getFullYear();
