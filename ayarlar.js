@@ -2988,6 +2988,7 @@
     // ÖNBELLEK TEMİZLEME ONAY MODALI
     let cacheClearConfirmed = false;
     let allowCacheClearWithLocalBackupOnly = false;
+    let allowCacheClearWithoutBackup = false;
   
     window.openCacheConfirmModal = function openCacheConfirmModal(message, options = {}) {
       const modal = document.getElementById('cache-confirm-modal');
@@ -2999,6 +3000,7 @@
       messageEl.innerHTML = safeMsg.replace(/\n/g, '<br>');
       cacheClearConfirmed = false;
       allowCacheClearWithLocalBackupOnly = options && options.allowLocalBackupOnly === true;
+      allowCacheClearWithoutBackup = options && options.allowClearWithoutBackup === true;
   
       // Body'ye modal-open class'ı ekle
       document.body.classList.add('modal-open');
@@ -3031,11 +3033,17 @@
         const result = await uploadToServer();
 
         if (!result.success && !result.localBackup) {
-          window.showInfoModal('Yedekleme başarısız! Tarayıcı Belleği Temizlenmedi.');
-          return;
+          if (!allowCacheClearWithoutBackup) {
+            const noBackupMessage = 'Yedekleme başarısız oldu!\n\nTarayıcı Belleği Yine De Temizlensin mi?\n(Bu işlem geri alınamaz.)';
+            if (typeof window.closeInfoModal === 'function') {
+              window.closeInfoModal();
+            }
+            window.openCacheConfirmModal(noBackupMessage, { allowClearWithoutBackup: true });
+            return;
+          }
         }
 
-        if (!result.success && !allowCacheClearWithLocalBackupOnly) {
+        if (!result.success && !allowCacheClearWithLocalBackupOnly && !allowCacheClearWithoutBackup) {
           // Sunucu yedeği başarısız: Kullanıcıya yerel yedekle devam etme seçeneği ver
           const retryMessage = 'Veriler Sunucuya Yüklenemedi!\nYerel Yedek Oluşturuldu.\n\nYine De Temizlemek İstiyor Musunuz?';
           if (typeof window.closeInfoModal === 'function') {
