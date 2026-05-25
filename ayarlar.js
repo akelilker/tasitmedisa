@@ -1979,6 +1979,7 @@
         const users = cloneStorageState(previousUsers);
         const vehicles = cloneStorageState(previousVehicles);
         const existingUser = id ? users.find(function(user) { return String(user.id) === String(id); }) : null;
+        const selectedVehicleSet = new Set(selectedVehicleIds.map(function(vehicleId) { return String(vehicleId); }));
 
         if (id && !existingUser) {
           alert('Kullanıcı bulunamadı.');
@@ -2003,6 +2004,39 @@
           alert('Taşıt atanan kullanıcı veya yönetici için "Kullanıcı Adı (portal girişi)" ve "Şifre (portal girişi)" zorunludur. Bu bilgilerle kullanıcı paneline girilebilir.');
           if (usernameInput) usernameInput.focus();
           return;
+        }
+
+        const reassignedVehicles = vehicles
+          .filter(function(v) {
+            if (scope.isBranchManager && !isWithinUserManagementBranch(v && v.branchId, scope)) return false;
+            const vehicleId = String(v && v.id != null ? v.id : '');
+            const assignedUserId = String(v && v.assignedUserId ? v.assignedUserId : '');
+            return selectedVehicleSet.has(vehicleId) && assignedUserId && assignedUserId !== String(savedUserId || '');
+          })
+          .map(function(v) {
+            const assignedUser = users.find(function(u) { return String(u.id) === String(v.assignedUserId || ''); });
+            const assignedName = formatUserFullName(
+              (assignedUser && assignedUser.name) ||
+              (typeof v.tahsisKisi === 'string' ? v.tahsisKisi : '')
+            ) || 'Bilinmeyen Kullanıcı';
+            return {
+              id: String(v.id || ''),
+              plaka: String(v.plaka || v.plate || '-'),
+              assignedName: assignedName
+            };
+          });
+        if (reassignedVehicles.length > 0) {
+          const first = reassignedVehicles[0];
+          const isMultiple = reassignedVehicles.length > 1;
+          const confirmMessage = isMultiple
+            ? 'Seçtiğiniz taşıtlardan en az biri başka kullanıcıya tahsis edilmiş.\n\n'
+              + 'Taşıt "' + first.plaka + '" "' + first.assignedName + '" adlı kullanıcıya tahsis edilmiş.\n'
+              + 'Bu tahsis silinecektir. Emin misiniz?'
+            : 'Taşıt "' + first.plaka + '" "' + first.assignedName + '" adlı kullanıcıya tahsis edilmiş.\n'
+              + 'Tahsis silinecektir. Emin misiniz?';
+          if (!window.confirm(confirmMessage)) {
+            return;
+          }
         }
   
         let savedUserId = id;
