@@ -114,9 +114,16 @@ body.modal-open #cache-confirm-modal.active,
 body.modal-open #cache-confirm-modal.open,
 body.modal-open #info-modal.active,
 body.modal-open #info-modal.open {
-    background: rgba(0, 0, 0, 0.4) !important;
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: rgba(8, 13, 22, 0.55) !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+}
+
+body.modal-open #cache-confirm-modal .modal-container,
+body.modal-open #info-modal .modal-container {
+    margin: auto !important;
 }
 
 /* Önbellek modalı butonları: Evet=kırmızı, Hayır=yeşil */
