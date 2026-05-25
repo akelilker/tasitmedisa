@@ -847,27 +847,28 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 
 @media (max-width: 640px) {
     #dinamik-olay-modal[data-event-type="documents"] .universal-back-bar {
-        display: grid !important;
-        grid-template-columns: minmax(0, auto) minmax(0, 1fr);
-        align-items: start !important;
-        column-gap: 10px;
-        min-height: 46px;
-        margin-bottom: 8px !important;
-        padding: 8px 48px 4px 16px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 2px !important;
+        min-height: 0;
+        margin-bottom: 10px !important;
+        padding: 8px 48px 2px 16px !important;
         box-sizing: border-box !important;
     }
 
     #dinamik-olay-modal[data-event-type="documents"] .universal-back-btn {
         position: relative !important;
         z-index: 2;
+        width: max-content !important;
         min-width: 0 !important;
-        max-width: 118px !important;
-        justify-self: start;
-        align-self: start;
+        max-width: 132px !important;
+        padding: 0 !important;
+        align-self: flex-start !important;
     }
 
     #dinamik-olay-modal[data-event-type="documents"] .universal-back-btn .universal-back-label {
-        font-size: 14px !important;
+        font-size: 13px !important;
         line-height: 1.1 !important;
         white-space: nowrap !important;
     }
@@ -881,12 +882,11 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
         max-width: 100%;
         margin: 0 !important;
         padding: 0 !important;
-        justify-self: center;
-        align-self: start;
+        align-self: center !important;
     }
 
     #dinamik-olay-modal[data-event-type="documents"] .vehicle-context-plate {
-        font-size: 18px;
+        font-size: 20px;
         line-height: 1.05;
         letter-spacing: 0.08em;
     }
