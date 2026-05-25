@@ -3845,12 +3845,19 @@
     return moZero === now.getMonth() && y === now.getFullYear();
   }
 
-  /** Geçmiş (checkDateWarnings.days < 0) veya vade tarihi bu takvim ayı içinde. */
+  /**
+   * Aylık özet filtresi:
+   * - Geçmişe düşenler (days < 0) her zaman listelenir.
+   * - Yaklaşanlarda takvim ayı kısıtı yerine aktif hatırlatma penceresi kullanılır
+   *   (checkDateWarnings sınıf üretiyorsa: bugün/çok yakın/yaklaşıyor).
+   * Böylece ay sonundaki kayıtlar, bir sonraki ayın ilk günlerine taşsa bile özetten kaçmaz.
+   */
   function monthlyOperationalDateTaskFilterPasses(rawDate, warning) {
     if (rawDate == null || String(rawDate).trim() === '') return false;
     if (!warning || typeof warning !== 'object') return false;
     if (typeof warning.days === 'number' && warning.days < 0) return true;
-    if (typeof warning.days === 'number' && warning.days >= 0 && rawVehicleDateExpiryInCurrentCalendarMonth(rawDate)) return true;
+    if (typeof warning.days === 'number' && warning.days >= 0 && !!warning.class) return true;
+    if (rawVehicleDateExpiryInCurrentCalendarMonth(rawDate)) return true;
     return false;
   }
 
