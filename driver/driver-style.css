@@ -7762,6 +7762,28 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
 }
 
+@media (max-width: 640px) {
+  body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-header-fixed,
+  body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-right-panel,
+  body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-vehicle-info,
+  body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-left-quick-actions,
+  body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-footer-back-wrap {
+    filter: blur(2px);
+    opacity: 0.9;
+    transition: filter 0.18s ease, opacity 0.18s ease;
+  }
+
+  body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-user-plate-row,
+  body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-plate-dropdown-row,
+  body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-plate-trigger,
+  body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-current-plaka,
+  body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-plate-subtitle,
+  body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-plate-dropdown {
+    filter: none;
+    opacity: 1;
+  }
+}
+
 body.dashboard-page:has(#history-modal.driver-modal.show) .driver-left-panel,
 body.dashboard-page:has(#edit-request-modal.driver-modal.show) .driver-left-panel,
 body.dashboard-page:has(#driver-documents-modal.driver-modal.show) .driver-left-panel,
