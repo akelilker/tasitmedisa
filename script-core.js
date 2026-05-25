@@ -22,7 +22,10 @@ function toggleSettingsMenu(e) {
   if (e && typeof e.stopPropagation === 'function') e.stopPropagation();
   const menu = getMenu();
   setNotificationsOpenState(false);
-  if (menu) menu.classList.toggle('open');
+  if (menu) {
+    menu.classList.toggle('open');
+    document.body.classList.toggle('settings-open', menu.classList.contains('open'));
+  }
 }
 window.toggleSettingsMenu = toggleSettingsMenu;
 
@@ -30,7 +33,10 @@ function toggleNotifications(e) {
   if (e && typeof e.stopPropagation === 'function') e.stopPropagation();
   const notif = getNotif();
   const menu = getMenu();
-  if (menu) menu.classList.remove('open');
+  if (menu) {
+    menu.classList.remove('open');
+    document.body.classList.remove('settings-open');
+  }
   if (notif) {
     var willOpen = !notif.classList.contains('open');
     setNotificationsOpenState(willOpen);
@@ -84,6 +90,7 @@ document.addEventListener('click', (e) => {
   // Dışarı tıklandığında menüleri kapat
   if (menu && menu.classList.contains('open')) {
     menu.classList.remove('open');
+    document.body.classList.remove('settings-open');
   }
   if (notif && notif.classList.contains('open')) {
     setNotificationsOpenState(false);

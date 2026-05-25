@@ -1370,6 +1370,31 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   }
 }
 
+/* Ayarlar/Bildirim açık (mobil tüm tarayıcılar): PWA dışındaki mobilde de blur/dim uygula */
+@media (max-width: 768px) {
+  body.settings-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero,
+  body.settings-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu.menu-container,
+  body.settings-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .icons-row-left,
+  body.settings-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .pwa-install-center,
+  body.settings-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap,
+  body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero,
+  body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu.menu-container,
+  body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .icons-row-left,
+  body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .pwa-install-center,
+  body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap {
+    filter: blur(2px);
+    opacity: 0.9;
+    transition: filter 0.18s ease, opacity 0.18s ease;
+  }
+  body.settings-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .icons-row-right,
+  body.settings-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) #settings-menu.settings-dropdown.open,
+  body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .icons-row-right,
+  body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) #notifications-dropdown.settings-dropdown.open {
+    filter: none;
+    opacity: 1;
+  }
+}
+
 #notifications-dropdown > .notification-item {
   width: 100% !important;
   box-sizing: border-box !important;
@@ -3938,4 +3963,3 @@ body.modal-open .app-container {
     box-shadow: 0 2px 16px rgba(0, 0, 0, 0.32);
   }
 }
-
