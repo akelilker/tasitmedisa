@@ -1370,45 +1370,29 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   }
 }
 
-/* Ayarlar/Bildirim açıkken: blur'u elemanların kendisine değil, arka plan katmanına uygula (panel/butonlar net kalsın) */
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page)::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0;
-  z-index: 10040;
-  transition: opacity 0.18s ease;
-}
-
-body.settings-open:not(.dashboard-page):not(.login-page):not(.admin-report-page)::before,
-body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-page)::before {
-  opacity: 1;
-  background: rgba(5, 10, 18, 0.18);
-  backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
-}
-
-body.settings-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) #settings-menu.settings-dropdown.open,
-body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) #notifications-dropdown.settings-dropdown.open,
-body.settings-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .icons-row-right,
-body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .icons-row-right {
-  position: relative;
-  z-index: 10070;
-}
-
-body.settings-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero,
-body.settings-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu.menu-container,
-body.settings-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .icons-row-left,
-body.settings-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .pwa-install-center,
-body.settings-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap,
-body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero,
-body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu.menu-container,
-body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .icons-row-left,
-body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .pwa-install-center,
-body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap {
-  filter: none !important;
-  opacity: 1 !important;
+/* Ayarlar/Bildirim açık (mobil tüm tarayıcılar): PWA dışındaki mobilde de blur/dim uygula */
+@media (max-width: 768px) {
+  body.settings-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero,
+  body.settings-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu.menu-container,
+  body.settings-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .icons-row-left,
+  body.settings-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .pwa-install-center,
+  body.settings-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap,
+  body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero,
+  body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu.menu-container,
+  body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .icons-row-left,
+  body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .pwa-install-center,
+  body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap {
+    filter: blur(2px);
+    opacity: 0.9;
+    transition: filter 0.18s ease, opacity 0.18s ease;
+  }
+  body.settings-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .icons-row-right,
+  body.settings-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) #settings-menu.settings-dropdown.open,
+  body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .icons-row-right,
+  body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) #notifications-dropdown.settings-dropdown.open {
+    filter: none;
+    opacity: 1;
+  }
 }
 
 #notifications-dropdown > .notification-item {
