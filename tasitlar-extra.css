@@ -3014,8 +3014,8 @@
 
   #monthly-todo-modal .monthly-todo-col-header,
   #monthly-todo-modal .monthly-todo-task-row {
-    /* Dar ekran: plaka/marka dar, açıklama kalan genişliği (yatay taşma yok) */
-    grid-template-columns: minmax(36px, 17.5%) minmax(54px, 32.5%) minmax(0, 50%);
+    /* Dar ekran: plaka sütunu geniş (TR plaka), açıklama payından oran kaydırılır */
+    grid-template-columns: minmax(52px, 26%) minmax(52px, 30%) minmax(0, 44%);
     column-gap: 6px;
     align-items: center;
   }
@@ -3025,7 +3025,7 @@
   }
 
   #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h {
-    font-size: 10px;
+    font-size: 11px;
     letter-spacing: 0.03em;
   }
 
@@ -3034,7 +3034,7 @@
   }
 
   #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h-line--sub {
-    font-size: 9px;
+    font-size: 10px;
   }
 
   #monthly-todo-modal .monthly-todo-task-row {
@@ -3045,12 +3045,12 @@
   #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-brand,
   #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-user,
   #monthly-todo-modal .monthly-todo-desc-col .monthly-todo-type {
-    font-size: 11px;
+    font-size: 12px;
     line-height: 1.28;
   }
 
   #monthly-todo-modal .monthly-todo-plate-col .monthly-todo-plate {
-    font-size: 11px;
+    font-size: 12px;
     letter-spacing: 0.01em;
   }
 
@@ -3069,7 +3069,7 @@
   }
 
   #monthly-todo-modal .monthly-todo-type .monthly-todo-description-meta {
-    font-size: 10px;
+    font-size: 11px;
   }
 }
 
