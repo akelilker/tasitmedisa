@@ -4795,11 +4795,7 @@
     if (displayTasks.length) {
       html += '<div class="monthly-todo-table-outer">';
       html += '<div class="monthly-todo-table-inner">';
-      html += '<div class="monthly-todo-col-header" aria-hidden="true">';
-      html += '<span class="monthly-todo-col-h">PLAKA / MODEL</span>';
-      html += '<span class="monthly-todo-col-h">KULLANICI</span>';
-      html += '<span class="monthly-todo-col-h">Açıklamalar</span>';
-      html += '</div>';
+      html += monthlyTodoTableColHeaderHtml();
       html += '<div class="monthly-todo-list-scroll" role="list">';
       displayTasks.forEach(function(t) {
         html += buildMonthlyTodoTaskRowHtml(t, userMap, typeDescriptionMap);
