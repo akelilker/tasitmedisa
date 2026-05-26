@@ -3900,8 +3900,22 @@
     return moZero === nm && y === ny;
   }
 
+  function rawVehicleDateDayOfMonth(rawDate) {
+    if (rawDate == null || String(rawDate).trim() === '') return NaN;
+    if (typeof window.parseVehicleDateRawToIso === 'function') {
+      var iso = window.parseVehicleDateRawToIso(rawDate);
+      if (iso && /^\d{4}-\d{2}-\d{2}$/.test(iso)) {
+        return parseInt(iso.slice(8, 10), 10);
+      }
+    }
+    var fallbackDate = new Date(String(rawDate).trim());
+    if (isNaN(fallbackDate.getTime())) return NaN;
+    return fallbackDate.getDate();
+  }
+
   /**
-   * Ana aylık listede olmayan (vade bu ay değil) fakat turuncu/kırmızı uyarılı ve vadesi gelecek ay olan işler — modal özet önizlemesi.
+   * Ana aylık listede olmayan (vade bu ay değil) fakat turuncu/kırmızı uyarılı ve vadesi gelecek ay olan işler —
+   * yalnızca takip eden ayın ilk yarısı (1-15) için modal özet önizlemesi.
    */
   function monthlyOperationalDateTaskNextMonthSummaryPasses(rawDate, warning) {
     if (rawDate == null || String(rawDate).trim() === '') return false;
@@ -3909,7 +3923,9 @@
     if (!warning.class) return false;
     if (typeof warning.days !== 'number' || warning.days < 0) return false;
     if (rawVehicleDateExpiryInCurrentCalendarMonth(rawDate)) return false;
-    return rawVehicleDateExpiryInNextCalendarMonth(rawDate);
+    if (!rawVehicleDateExpiryInNextCalendarMonth(rawDate)) return false;
+    var dayOfMonth = rawVehicleDateDayOfMonth(rawDate);
+    return !isNaN(dayOfMonth) && dayOfMonth >= 1 && dayOfMonth <= 15;
   }
 
   var _vehicleDateTasksCache = null;
@@ -4761,11 +4777,9 @@
 
   function buildMonthlyTodoNextMonthSummaryHtml(mergedTasks, typeDescriptionMap, userMap) {
     if (!mergedTasks || !mergedTasks.length) return '';
-    var html = '<div class="monthly-todo-next-month-preview" role="region" aria-labelledby="monthly-todo-next-month-heading">';
-    html += '<h3 id="monthly-todo-next-month-heading" class="monthly-todo-next-month-preview__title">Sonraki ayda yaklaşan bildirimler</h3>';
+    var html = '<div class="monthly-todo-next-month-preview" role="region" aria-label="Takip eden ay erken dönem bildirimleri">';
     html += '<div class="monthly-todo-table-outer monthly-todo-table-outer--next-month">';
     html += '<div class="monthly-todo-table-inner">';
-    html += monthlyTodoTableColHeaderHtml();
     html += '<div class="monthly-todo-list-scroll monthly-todo-list-scroll--next-month" role="list">';
     mergedTasks.forEach(function(t) {
       html += buildMonthlyTodoTaskRowHtml(t, userMap, typeDescriptionMap);
