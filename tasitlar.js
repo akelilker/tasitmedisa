@@ -4673,45 +4673,104 @@
     }, true);
   }
 
-  function buildMonthlyTodoNextMonthSummaryHtml(mergedTasks, typeDescriptionMap) {
+  function monthlyTodoTableColHeaderHtml() {
+    var html = '<div class="monthly-todo-col-header" aria-hidden="true">';
+    html += '<span class="monthly-todo-col-h">Plaka</span>';
+    html += '<span class="monthly-todo-col-h monthly-todo-col-h--middle">';
+    html += '<span class="monthly-todo-col-h-line">Marka/Model</span>';
+    html += '<span class="monthly-todo-col-h-line monthly-todo-col-h-line--sub">+ Kullanıcı</span>';
+    html += '</span>';
+    html += '<span class="monthly-todo-col-h monthly-todo-col-h--desc">Açıklama</span>';
+    html += '</div>';
+    return html;
+  }
+
+  function buildMonthlyTodoDescriptionHtml(descriptionPrefix, daysVal, dateRaw, dateShown) {
+    var kindHtml = '<span class="monthly-todo-type-kind">' + escapeHtml(descriptionPrefix) + '</span>';
+    if (!dateRaw || daysVal === null) {
+      return '<span class="monthly-todo-type">' + kindHtml + '<span class="monthly-todo-type-detail"> Geçerlilik Süresi Eksiktir.</span></span>';
+    }
+    var detailText = '';
+    if (daysVal < 0) {
+      detailText = ' Geçerlilik Süresi ' + Math.abs(daysVal) + ' Gün Önce Bitmiştir.';
+    } else if (daysVal === 0) {
+      detailText = ' Geçerlilik Süresi Bugün Bitecektir.';
+    } else {
+      detailText = ' Geçerlilik Süresi ' + daysVal + ' Gün Sonra Bitecektir.';
+    }
+    return '<span class="monthly-todo-type">' + kindHtml +
+      '<span class="monthly-todo-type-detail">' + escapeHtml(detailText) + '</span>' +
+      '<br><span class="monthly-todo-description-meta">Bitiş Tarihi: <span class="monthly-todo-description-date">' + dateShown + '</span></span></span>';
+  }
+
+  function buildMonthlyTodoTaskRowHtml(t, userMap, typeDescriptionMap) {
+    var v = t.vehicle || {};
+    var vid = v.id != null ? String(v.id) : '';
+    var plate = escapeHtml(v.plate || '-');
+    var bm = escapeHtml(formatBrandModel(v.brandModel || '-'));
+    var userLabelRaw = getMonthlyTodoKullaniciLabel(v, userMap);
+    var kul = escapeHtml(userLabelRaw);
+    var phone = getMonthlyTodoAssignedUserPhone(v, userMap);
+    var waUrl = buildMonthlyTodoWhatsAppUrl(phone, buildMonthlyTodoWhatsAppMessage(t, v, userLabelRaw));
+    var waLogs = ensureMonthlyTodoWhatsAppLogs();
+    var reminderKey = buildMonthlyTodoWhatsAppReminderKey(t, v);
+    var reminderOpened = !!(waLogs && waLogs[reminderKey]);
+    var logShortCode = getMonthlyTodoReminderShortCodeForLog(t);
+    var logIsoDate = getMonthlyTodoLogIsoDateString(t);
+    var plateCompact = String(v.plate != null ? v.plate : '').trim().replace(/\s+/g, '');
+    var waBtnClass = 'monthly-todo-wa-link monthly-todo-whatsapp-btn' + (reminderOpened ? ' is-reminder-opened' : '');
+    var waAria = reminderOpened ? 'WhatsApp bildirimi daha önce başlatılmış olabilir' : 'WhatsApp bildirimi başlat';
+    var ariaRow = 'Taşıt detayı: ' + (v.plate || '-') + ', ' + formatBrandModel(v.brandModel || '-');
+    var typeText = String(t.type || '').trim();
+    var dateRaw = t.date != null ? String(t.date).trim() : '';
+    var dateShown = '—';
+    if (dateRaw) {
+      if (typeof window.formatDateShort === 'function') dateShown = escapeHtml(window.formatDateShort(dateRaw));
+      else dateShown = escapeHtml(dateRaw);
+    }
+    var warningClass = String(t.warningClass || '');
+    var past = String(t.status) === 'past' || (typeof t.days === 'number' && t.days < 0);
+    var daysVal = typeof t.days === 'number' ? t.days : null;
+    var descriptionPrefix = typeDescriptionMap[typeText] || typeText || 'İlgili İşlemin';
+    var rowTone = '';
+    if (past || warningClass === 'date-warning-red') {
+      rowTone = ' monthly-todo-task-row--past';
+    } else if (warningClass === 'date-warning-orange') {
+      rowTone = ' monthly-todo-task-row--upcoming';
+    }
+    var rowHtml = '';
+    rowHtml += '<div class="monthly-todo-task-row' + rowTone + '" data-vehicle-id="' + escapeAttr(vid) + '" role="listitem" tabindex="0" aria-label="' + escapeAttr(ariaRow) + '">';
+    rowHtml += '<span class="monthly-todo-cell monthly-todo-plate-col">';
+    rowHtml += '<span class="monthly-todo-plate">' + plate + '</span>';
+    rowHtml += '</span>';
+    rowHtml += '<span class="monthly-todo-cell monthly-todo-middle-col">';
+    rowHtml += '<span class="monthly-todo-brand">' + bm + '</span>';
+    rowHtml += '<span class="monthly-todo-user">';
+    rowHtml += '<span class="monthly-todo-user-name">' + kul + '</span>';
+    if (waUrl) {
+      rowHtml += '<a class="' + waBtnClass + '" href="#" role="button" rel="noopener noreferrer" data-wa-url="' + escapeAttr(waUrl) + '" data-reminder-key="' + escapeAttr(reminderKey) + '" data-mtw-vid="' + escapeAttr(vid) + '" data-mtw-plate="' + escapeAttr(plateCompact) + '" data-mtw-type="' + escapeAttr(logShortCode) + '" data-mtw-field="' + escapeAttr(String(t.field != null ? t.field : '').trim()) + '" data-mtw-date="' + escapeAttr(logIsoDate) + '" aria-label="' + escapeAttr(waAria) + '" title="' + escapeAttr(waAria) + '">' + MONTHLY_TODO_WA_INLINE_SVG + '</a>';
+    }
+    rowHtml += '</span>';
+    rowHtml += '</span>';
+    rowHtml += '<span class="monthly-todo-cell monthly-todo-desc-col">';
+    rowHtml += buildMonthlyTodoDescriptionHtml(descriptionPrefix, daysVal, dateRaw, dateShown);
+    rowHtml += '</span>';
+    rowHtml += '</div>';
+    return rowHtml;
+  }
+
+  function buildMonthlyTodoNextMonthSummaryHtml(mergedTasks, typeDescriptionMap, userMap) {
     if (!mergedTasks || !mergedTasks.length) return '';
     var html = '<div class="monthly-todo-next-month-preview" role="region" aria-labelledby="monthly-todo-next-month-heading">';
     html += '<h3 id="monthly-todo-next-month-heading" class="monthly-todo-next-month-preview__title">Sonraki ayda yaklaşan bildirimler</h3>';
-    html += '<ul class="monthly-todo-next-month-preview__list">';
+    html += '<div class="monthly-todo-table-outer monthly-todo-table-outer--next-month">';
+    html += '<div class="monthly-todo-table-inner">';
+    html += monthlyTodoTableColHeaderHtml();
+    html += '<div class="monthly-todo-list-scroll monthly-todo-list-scroll--next-month" role="list">';
     mergedTasks.forEach(function(t) {
-      var v = t.vehicle || {};
-      var plate = escapeHtml(v.plate || '-');
-      var typeText = String(t.type || '').trim();
-      var dateRaw = t.date != null ? String(t.date).trim() : '';
-      var dateShown = '—';
-      if (dateRaw) {
-        if (typeof window.formatDateShort === 'function') dateShown = escapeHtml(window.formatDateShort(dateRaw));
-        else dateShown = escapeHtml(dateRaw);
-      }
-      var daysVal = typeof t.days === 'number' ? t.days : null;
-      var descriptionPrefix = typeDescriptionMap[typeText] || typeText || 'İlgili İşlemin';
-      var lineMain = '';
-      if (!dateRaw || daysVal === null) {
-        lineMain = descriptionPrefix + ' Geçerlilik Süresi Eksiktir.';
-      } else if (daysVal < 0) {
-        lineMain = descriptionPrefix + ' Geçerlilik Süresi ' + Math.abs(daysVal) + ' Gün Önce Bitmiştir.';
-      } else if (daysVal === 0) {
-        lineMain = descriptionPrefix + ' Geçerlilik Süresi Bugün Bitecektir.';
-      } else {
-        lineMain = descriptionPrefix + ' Geçerlilik Süresi ' + daysVal + ' Gün Sonra Bitecektir.';
-      }
-      var toneClass = ' monthly-todo-next-month-preview__item--neutral';
-      if (t.warningClass === 'date-warning-red') toneClass = ' monthly-todo-next-month-preview__item--red';
-      else if (t.warningClass === 'date-warning-orange') toneClass = ' monthly-todo-next-month-preview__item--orange';
-      html += '<li class="monthly-todo-next-month-preview__item' + toneClass + '">';
-      html += '<span class="monthly-todo-next-month-preview__plate">' + plate + '</span>';
-      html += '<span class="monthly-todo-next-month-preview__text">' + escapeHtml(lineMain);
-      if (dateRaw && daysVal !== null) {
-        html += ' <span class="monthly-todo-next-month-preview__meta">Bitiş: ' + dateShown + '</span>';
-      }
-      html += '</span></li>';
+      html += buildMonthlyTodoTaskRowHtml(t, userMap, typeDescriptionMap);
     });
-    html += '</ul></div>';
+    html += '</div></div></div></div>';
     return html;
   }
 
@@ -4734,7 +4793,7 @@
     });
     var displayTasks = buildMonthlyTodoMergedDisplayTasks(tasksArray || []);
     var nextMerged = buildMonthlyTodoMergedDisplayTasks(nextPreviewRaw);
-    var nextSummaryHtml = buildMonthlyTodoNextMonthSummaryHtml(nextMerged, typeDescriptionMap);
+    var nextSummaryHtml = buildMonthlyTodoNextMonthSummaryHtml(nextMerged, typeDescriptionMap, userMap);
     if (!displayTasks.length && !nextSummaryHtml) {
       bodyEl.innerHTML = '<div class="monthly-todo-empty">Bu dönem için listelenecek tarih işlemi yok.</div>';
       return;
@@ -4743,83 +4802,10 @@
     if (displayTasks.length) {
       html += '<div class="monthly-todo-table-outer">';
       html += '<div class="monthly-todo-table-inner">';
-      html += '<div class="monthly-todo-col-header" aria-hidden="true">';
-      html += '<span class="monthly-todo-col-h">PLAKA / MODEL</span>';
-      html += '<span class="monthly-todo-col-h">KULLANICI</span>';
-      html += '<span class="monthly-todo-col-h">Açıklamalar</span>';
-      html += '</div>';
+      html += monthlyTodoTableColHeaderHtml();
       html += '<div class="monthly-todo-list-scroll" role="list">';
       displayTasks.forEach(function(t) {
-        var v = t.vehicle || {};
-        var vid = v.id != null ? String(v.id) : '';
-        var plate = escapeHtml(v.plate || '-');
-        var bm = escapeHtml(formatBrandModel(v.brandModel || '-'));
-        var userLabelRaw = getMonthlyTodoKullaniciLabel(v, userMap);
-        var kul = escapeHtml(userLabelRaw);
-        var phone = getMonthlyTodoAssignedUserPhone(v, userMap);
-        var waUrl = buildMonthlyTodoWhatsAppUrl(phone, buildMonthlyTodoWhatsAppMessage(t, v, userLabelRaw));
-        var waLogs = ensureMonthlyTodoWhatsAppLogs();
-        var reminderKey = buildMonthlyTodoWhatsAppReminderKey(t, v);
-        var reminderOpened = !!(waLogs && waLogs[reminderKey]);
-        var logShortCode = getMonthlyTodoReminderShortCodeForLog(t);
-        var logIsoDate = getMonthlyTodoLogIsoDateString(t);
-        var plateCompact = String(v.plate != null ? v.plate : '').trim().replace(/\s+/g, '');
-        var waBtnClass = 'monthly-todo-wa-link monthly-todo-whatsapp-btn' + (reminderOpened ? ' is-reminder-opened' : '');
-        var waAria = reminderOpened ? 'WhatsApp bildirimi daha önce başlatılmış olabilir' : 'WhatsApp bildirimi başlat';
-        var ariaRow = 'Taşıt detayı: ' + (v.plate || '-') + ', ' + formatBrandModel(v.brandModel || '-');
-        var typeText = String(t.type || '').trim();
-        var dateRaw = t.date != null ? String(t.date).trim() : '';
-        var dateShown = '—';
-        if (dateRaw) {
-          if (typeof window.formatDateShort === 'function') dateShown = escapeHtml(window.formatDateShort(dateRaw));
-          else dateShown = escapeHtml(dateRaw);
-        }
-        var warningClass = String(t.warningClass || '');
-        var past = String(t.status) === 'past' || (typeof t.days === 'number' && t.days < 0);
-        var daysVal = typeof t.days === 'number' ? t.days : null;
-        var descriptionPrefix = typeDescriptionMap[typeText] || typeText || 'İlgili İşlemin';
-        var descriptionText = '';
-        var lineMain = '';
-        var hasDateLine = false;
-        if (!dateRaw || daysVal === null) {
-          descriptionText = descriptionPrefix + ' Geçerlilik Süresi Eksiktir.';
-        } else if (daysVal < 0) {
-          lineMain = descriptionPrefix + ' Geçerlilik Süresi ' + Math.abs(daysVal) + ' Gün Önce Bitmiştir.';
-          hasDateLine = true;
-        } else if (daysVal === 0) {
-          lineMain = descriptionPrefix + ' Geçerlilik Süresi Bugün Bitecektir.';
-          hasDateLine = true;
-        } else {
-          lineMain = descriptionPrefix + ' Geçerlilik Süresi ' + daysVal + ' Gün Sonra Bitecektir.';
-          hasDateLine = true;
-        }
-        var rowTone = '';
-        if (past || warningClass === 'date-warning-red') {
-          rowTone = ' monthly-todo-task-row--past';
-        } else if (warningClass === 'date-warning-orange') {
-          rowTone = ' monthly-todo-task-row--upcoming';
-        }
-        html += '<div class="monthly-todo-task-row' + rowTone + '" data-vehicle-id="' + escapeAttr(vid) + '" role="listitem" tabindex="0" aria-label="' + escapeAttr(ariaRow) + '">';
-        html += '<span class="monthly-todo-cell monthly-todo-vehicle-col">';
-        html += '<span class="monthly-todo-plate">' + plate + '</span>';
-        html += '<span class="monthly-todo-brand">' + bm + '</span>';
-        html += '</span>';
-        html += '<span class="monthly-todo-cell monthly-todo-user-col">';
-        html += '<span class="monthly-todo-user">';
-        html += '<span class="monthly-todo-user-name">' + kul + '</span>';
-        if (waUrl) {
-          html += '<a class="' + waBtnClass + '" href="#" role="button" rel="noopener noreferrer" data-wa-url="' + escapeAttr(waUrl) + '" data-reminder-key="' + escapeAttr(reminderKey) + '" data-mtw-vid="' + escapeAttr(vid) + '" data-mtw-plate="' + escapeAttr(plateCompact) + '" data-mtw-type="' + escapeAttr(logShortCode) + '" data-mtw-field="' + escapeAttr(String(t.field != null ? t.field : '').trim()) + '" data-mtw-date="' + escapeAttr(logIsoDate) + '" aria-label="' + escapeAttr(waAria) + '" title="' + escapeAttr(waAria) + '">' + MONTHLY_TODO_WA_INLINE_SVG + '</a>';
-        }
-        html += '</span>';
-        html += '</span>';
-        html += '<span class="monthly-todo-right">';
-        if (hasDateLine) {
-          html += '<span class="monthly-todo-type">' + escapeHtml(lineMain) + '<br><span class="monthly-todo-description-meta">Bitiş Tarihi: <span class="monthly-todo-description-date">' + dateShown + '</span></span></span>';
-        } else {
-          html += '<span class="monthly-todo-type">' + escapeHtml(descriptionText) + '</span>';
-        }
-        html += '</span>';
-        html += '</div>';
+        html += buildMonthlyTodoTaskRowHtml(t, userMap, typeDescriptionMap);
       });
       html += '</div>';
       html += '</div></div></div>';
