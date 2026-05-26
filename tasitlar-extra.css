@@ -3002,7 +3002,7 @@
 #monthly-todo-modal .monthly-todo-col-header,
 #monthly-todo-modal .monthly-todo-task-row {
   display: grid;
-  grid-template-columns: minmax(44px, 16%) minmax(68px, 28%) minmax(0, 1fr);
+  grid-template-columns: minmax(44px, 17.5%) minmax(68px, 32.5%) minmax(0, 50%);
   column-gap: 8px;
   align-items: center;
 }
@@ -3015,7 +3015,7 @@
   #monthly-todo-modal .monthly-todo-col-header,
   #monthly-todo-modal .monthly-todo-task-row {
     /* Dar ekran: plaka/marka dar, açıklama kalan genişliği (yatay taşma yok) */
-    grid-template-columns: minmax(36px, 12%) minmax(54px, 22%) minmax(0, 1fr);
+    grid-template-columns: minmax(36px, 17.5%) minmax(54px, 32.5%) minmax(0, 50%);
     column-gap: 6px;
     align-items: center;
   }
@@ -3080,7 +3080,7 @@
 @media (min-width: 641px) {
   #monthly-todo-modal .monthly-todo-col-header,
   #monthly-todo-modal .monthly-todo-task-row {
-    grid-template-columns: minmax(52px, 14%) minmax(88px, 26%) minmax(0, 1fr);
+    grid-template-columns: minmax(52px, 17.5%) minmax(88px, 32.5%) minmax(0, 50%);
     column-gap: 10px;
   }
 }
