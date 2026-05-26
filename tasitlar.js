@@ -4245,7 +4245,8 @@
     var badge = btn ? btn.querySelector('.monthly-todo-header-badge') : null;
     if (!btn || !badge) return;
     var list = (typeof window.getVehicleDateTasks === 'function') ? window.getVehicleDateTasks() : [];
-    var merged = buildMonthlyTodoMergedDisplayTasks(list);
+    var nextList = peekVehicleDateNextMonthPreviewCache();
+    var merged = buildMonthlyTodoCombinedDisplayTasks(list, Array.isArray(nextList) ? nextList : []);
     var n = merged.length;
     if (n <= 0) {
       badge.textContent = '';
@@ -4519,6 +4520,42 @@
     };
   }
 
+  function monthlyTodoTaskStableKey(t) {
+    var v = (t && t.vehicle) ? t.vehicle : {};
+    var vid = v.id != null ? String(v.id).trim() : '';
+    var plate = v.plate != null ? String(v.plate).trim() : '';
+    return (vid || plate || '_') + '|' + String(t.field != null ? t.field : '').trim() + '|' + String(t.type != null ? t.type : '').trim();
+  }
+
+  function sortMonthlyTodoTasksForDisplay(tasks) {
+    return (tasks || []).slice().sort(function(a, b) {
+      var da = typeof a.days === 'number' ? a.days : 9999;
+      var db = typeof b.days === 'number' ? b.days : 9999;
+      var aPast = da < 0;
+      var bPast = db < 0;
+      if (aPast !== bPast) return aPast ? -1 : 1;
+      return da - db;
+    });
+  }
+
+  /** Ana liste + sonraki ay önizlemesi: tek tabloda, çift kayıt yok. */
+  function buildMonthlyTodoCombinedDisplayTasks(mainTasks, nextTasks) {
+    var combined = [];
+    var seen = {};
+    function pushUnique(list) {
+      (list || []).forEach(function(t) {
+        if (!t) return;
+        var key = monthlyTodoTaskStableKey(t);
+        if (seen[key]) return;
+        seen[key] = true;
+        combined.push(t);
+      });
+    }
+    pushUnique(mainTasks);
+    pushUnique(nextTasks);
+    return buildMonthlyTodoMergedDisplayTasks(sortMonthlyTodoTasksForDisplay(combined));
+  }
+
   function buildMonthlyTodoMergedDisplayTasks(tasks) {
     var used = tasks.map(function() { return false; });
     var out = [];
@@ -4759,21 +4796,6 @@
     return rowHtml;
   }
 
-  function buildMonthlyTodoNextMonthSummaryHtml(mergedTasks, typeDescriptionMap, userMap) {
-    if (!mergedTasks || !mergedTasks.length) return '';
-    var html = '<div class="monthly-todo-next-month-preview" role="region" aria-labelledby="monthly-todo-next-month-heading">';
-    html += '<h3 id="monthly-todo-next-month-heading" class="monthly-todo-next-month-preview__title">Sonraki ayda yaklaşan bildirimler</h3>';
-    html += '<div class="monthly-todo-table-outer monthly-todo-table-outer--next-month">';
-    html += '<div class="monthly-todo-table-inner">';
-    html += monthlyTodoTableColHeaderHtml();
-    html += '<div class="monthly-todo-list-scroll monthly-todo-list-scroll--next-month" role="list">';
-    mergedTasks.forEach(function(t) {
-      html += buildMonthlyTodoTaskRowHtml(t, userMap, typeDescriptionMap);
-    });
-    html += '</div></div></div></div>';
-    return html;
-  }
-
   function fillMonthlyTodoModalBody(bodyEl, tasksArray, nextPreviewTasks) {
     var nextPreviewRaw = Array.isArray(nextPreviewTasks) ? nextPreviewTasks : [];
     var typeDescriptionMap = {
@@ -4791,31 +4813,20 @@
     users.forEach(function(u) {
       if (u && u.id != null) userMap[String(u.id)] = u;
     });
-    var displayTasks = buildMonthlyTodoMergedDisplayTasks(tasksArray || []);
-    var nextMerged = buildMonthlyTodoMergedDisplayTasks(nextPreviewRaw);
-    var nextSummaryHtml = buildMonthlyTodoNextMonthSummaryHtml(nextMerged, typeDescriptionMap, userMap);
-    if (!displayTasks.length && !nextSummaryHtml) {
+    var displayTasks = buildMonthlyTodoCombinedDisplayTasks(tasksArray || [], nextPreviewRaw);
+    if (!displayTasks.length) {
       bodyEl.innerHTML = '<div class="monthly-todo-empty">Bu dönem için listelenecek tarih işlemi yok.</div>';
       return;
     }
     var html = '<div class="monthly-todo-sheet">';
-    if (displayTasks.length) {
-      html += '<div class="monthly-todo-table-outer">';
-      html += '<div class="monthly-todo-table-inner">';
-      html += monthlyTodoTableColHeaderHtml();
-      html += '<div class="monthly-todo-list-scroll" role="list">';
-      displayTasks.forEach(function(t) {
-        html += buildMonthlyTodoTaskRowHtml(t, userMap, typeDescriptionMap);
-      });
-      html += '</div>';
-      html += '</div></div></div>';
-    } else {
-      html += '<div class="monthly-todo-empty monthly-todo-empty--muted">Bu dönem için listelenecek tarih işlemi yok.</div>';
-    }
-    if (nextSummaryHtml) {
-      html += nextSummaryHtml;
-    }
-    html += '</div>';
+    html += '<div class="monthly-todo-table-outer">';
+    html += '<div class="monthly-todo-table-inner">';
+    html += monthlyTodoTableColHeaderHtml();
+    html += '<div class="monthly-todo-list-scroll" role="list">';
+    displayTasks.forEach(function(t) {
+      html += buildMonthlyTodoTaskRowHtml(t, userMap, typeDescriptionMap);
+    });
+    html += '</div></div></div></div>';
     bodyEl.innerHTML = html;
   }
 
