@@ -3071,10 +3071,6 @@
   #monthly-todo-modal .monthly-todo-type .monthly-todo-description-meta {
     font-size: 10px;
   }
-
-  #monthly-todo-modal .monthly-todo-list-scroll--next-month {
-    max-height: min(38vh, 240px);
-  }
 }
 
 @media (min-width: 641px) {
@@ -3495,28 +3491,5 @@
   color: #a0aec0;
   font-size: 13px;
   padding: 0.5rem 0 0.75rem;
-}
-
-#monthly-todo-modal .monthly-todo-next-month-preview {
-  margin-top: 1rem;
-  padding-top: 0.75rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-#monthly-todo-modal .monthly-todo-next-month-preview__title {
-  margin: 0 0 0.5rem;
-  font-size: 14px;
-  font-weight: 600;
-  color: #ffffff;
-}
-
-#monthly-todo-modal .monthly-todo-table-outer--next-month {
-  flex: 0 0 auto;
-  min-height: 0;
-}
-
-#monthly-todo-modal .monthly-todo-list-scroll--next-month {
-  flex: 0 1 auto;
-  max-height: min(42vh, 280px);
 }
 
