@@ -4673,6 +4673,36 @@
     }, true);
   }
 
+  function monthlyTodoTableColHeaderHtml() {
+    var html = '<div class="monthly-todo-col-header" aria-hidden="true">';
+    html += '<span class="monthly-todo-col-h">Plaka</span>';
+    html += '<span class="monthly-todo-col-h monthly-todo-col-h--middle">';
+    html += '<span class="monthly-todo-col-h-line">Marka/Model</span>';
+    html += '<span class="monthly-todo-col-h-line monthly-todo-col-h-line--sub">+ Kullanıcı</span>';
+    html += '</span>';
+    html += '<span class="monthly-todo-col-h monthly-todo-col-h--desc">Açıklama</span>';
+    html += '</div>';
+    return html;
+  }
+
+  function buildMonthlyTodoDescriptionHtml(descriptionPrefix, daysVal, dateRaw, dateShown) {
+    var kindHtml = '<span class="monthly-todo-type-kind">' + escapeHtml(descriptionPrefix) + '</span>';
+    if (!dateRaw || daysVal === null) {
+      return '<span class="monthly-todo-type">' + kindHtml + '<span class="monthly-todo-type-detail"> Geçerlilik Süresi Eksiktir.</span></span>';
+    }
+    var detailText = '';
+    if (daysVal < 0) {
+      detailText = ' Geçerlilik Süresi ' + Math.abs(daysVal) + ' Gün Önce Bitmiştir.';
+    } else if (daysVal === 0) {
+      detailText = ' Geçerlilik Süresi Bugün Bitecektir.';
+    } else {
+      detailText = ' Geçerlilik Süresi ' + daysVal + ' Gün Sonra Bitecektir.';
+    }
+    return '<span class="monthly-todo-type">' + kindHtml +
+      '<span class="monthly-todo-type-detail">' + escapeHtml(detailText) + '</span>' +
+      '<br><span class="monthly-todo-description-meta">Bitiş Tarihi: <span class="monthly-todo-description-date">' + dateShown + '</span></span></span>';
+  }
+
   function buildMonthlyTodoTaskRowHtml(t, userMap, typeDescriptionMap) {
     var v = t.vehicle || {};
     var vid = v.id != null ? String(v.id) : '';
@@ -4702,21 +4732,6 @@
     var past = String(t.status) === 'past' || (typeof t.days === 'number' && t.days < 0);
     var daysVal = typeof t.days === 'number' ? t.days : null;
     var descriptionPrefix = typeDescriptionMap[typeText] || typeText || 'İlgili İşlemin';
-    var descriptionText = '';
-    var lineMain = '';
-    var hasDateLine = false;
-    if (!dateRaw || daysVal === null) {
-      descriptionText = descriptionPrefix + ' Geçerlilik Süresi Eksiktir.';
-    } else if (daysVal < 0) {
-      lineMain = descriptionPrefix + ' Geçerlilik Süresi ' + Math.abs(daysVal) + ' Gün Önce Bitmiştir.';
-      hasDateLine = true;
-    } else if (daysVal === 0) {
-      lineMain = descriptionPrefix + ' Geçerlilik Süresi Bugün Bitecektir.';
-      hasDateLine = true;
-    } else {
-      lineMain = descriptionPrefix + ' Geçerlilik Süresi ' + daysVal + ' Gün Sonra Bitecektir.';
-      hasDateLine = true;
-    }
     var rowTone = '';
     if (past || warningClass === 'date-warning-red') {
       rowTone = ' monthly-todo-task-row--past';
@@ -4725,11 +4740,11 @@
     }
     var rowHtml = '';
     rowHtml += '<div class="monthly-todo-task-row' + rowTone + '" data-vehicle-id="' + escapeAttr(vid) + '" role="listitem" tabindex="0" aria-label="' + escapeAttr(ariaRow) + '">';
-    rowHtml += '<span class="monthly-todo-cell monthly-todo-vehicle-col">';
+    rowHtml += '<span class="monthly-todo-cell monthly-todo-plate-col">';
     rowHtml += '<span class="monthly-todo-plate">' + plate + '</span>';
-    rowHtml += '<span class="monthly-todo-brand">' + bm + '</span>';
     rowHtml += '</span>';
-    rowHtml += '<span class="monthly-todo-cell monthly-todo-user-col">';
+    rowHtml += '<span class="monthly-todo-cell monthly-todo-middle-col">';
+    rowHtml += '<span class="monthly-todo-brand">' + bm + '</span>';
     rowHtml += '<span class="monthly-todo-user">';
     rowHtml += '<span class="monthly-todo-user-name">' + kul + '</span>';
     if (waUrl) {
@@ -4737,12 +4752,8 @@
     }
     rowHtml += '</span>';
     rowHtml += '</span>';
-    rowHtml += '<span class="monthly-todo-right">';
-    if (hasDateLine) {
-      rowHtml += '<span class="monthly-todo-type">' + escapeHtml(lineMain) + '<br><span class="monthly-todo-description-meta">Bitiş Tarihi: <span class="monthly-todo-description-date">' + dateShown + '</span></span></span>';
-    } else {
-      rowHtml += '<span class="monthly-todo-type">' + escapeHtml(descriptionText) + '</span>';
-    }
+    rowHtml += '<span class="monthly-todo-cell monthly-todo-desc-col">';
+    rowHtml += buildMonthlyTodoDescriptionHtml(descriptionPrefix, daysVal, dateRaw, dateShown);
     rowHtml += '</span>';
     rowHtml += '</div>';
     return rowHtml;
@@ -4754,11 +4765,7 @@
     html += '<h3 id="monthly-todo-next-month-heading" class="monthly-todo-next-month-preview__title">Sonraki ayda yaklaşan bildirimler</h3>';
     html += '<div class="monthly-todo-table-outer monthly-todo-table-outer--next-month">';
     html += '<div class="monthly-todo-table-inner">';
-    html += '<div class="monthly-todo-col-header" aria-hidden="true">';
-    html += '<span class="monthly-todo-col-h">PLAKA / MODEL</span>';
-    html += '<span class="monthly-todo-col-h">KULLANICI</span>';
-    html += '<span class="monthly-todo-col-h">Açıklamalar</span>';
-    html += '</div>';
+    html += monthlyTodoTableColHeaderHtml();
     html += '<div class="monthly-todo-list-scroll monthly-todo-list-scroll--next-month" role="list">';
     mergedTasks.forEach(function(t) {
       html += buildMonthlyTodoTaskRowHtml(t, userMap, typeDescriptionMap);
@@ -4795,11 +4802,7 @@
     if (displayTasks.length) {
       html += '<div class="monthly-todo-table-outer">';
       html += '<div class="monthly-todo-table-inner">';
-      html += '<div class="monthly-todo-col-header" aria-hidden="true">';
-      html += '<span class="monthly-todo-col-h">PLAKA / MODEL</span>';
-      html += '<span class="monthly-todo-col-h">KULLANICI</span>';
-      html += '<span class="monthly-todo-col-h">Açıklamalar</span>';
-      html += '</div>';
+      html += monthlyTodoTableColHeaderHtml();
       html += '<div class="monthly-todo-list-scroll" role="list">';
       displayTasks.forEach(function(t) {
         html += buildMonthlyTodoTaskRowHtml(t, userMap, typeDescriptionMap);
