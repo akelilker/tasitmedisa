@@ -4744,8 +4744,8 @@
       html += '<div class="monthly-todo-table-outer">';
       html += '<div class="monthly-todo-table-inner">';
       html += '<div class="monthly-todo-col-header" aria-hidden="true">';
-      html += '<span class="monthly-todo-col-h">PLAKA</span>';
-      html += '<span class="monthly-todo-col-h">TAŞIT / KULLANICI</span>';
+      html += '<span class="monthly-todo-col-h">PLAKA / MODEL</span>';
+      html += '<span class="monthly-todo-col-h">KULLANICI</span>';
       html += '<span class="monthly-todo-col-h">Açıklamalar</span>';
       html += '</div>';
       html += '<div class="monthly-todo-list-scroll" role="list">';
@@ -4800,9 +4800,11 @@
           rowTone = ' monthly-todo-task-row--upcoming';
         }
         html += '<div class="monthly-todo-task-row' + rowTone + '" data-vehicle-id="' + escapeAttr(vid) + '" role="listitem" tabindex="0" aria-label="' + escapeAttr(ariaRow) + '">';
-        html += '<span class="monthly-todo-cell monthly-todo-plate">' + plate + '</span>';
-        html += '<span class="monthly-todo-middle">';
+        html += '<span class="monthly-todo-cell monthly-todo-vehicle-col">';
+        html += '<span class="monthly-todo-plate">' + plate + '</span>';
         html += '<span class="monthly-todo-brand">' + bm + '</span>';
+        html += '</span>';
+        html += '<span class="monthly-todo-cell monthly-todo-user-col">';
         html += '<span class="monthly-todo-user">';
         html += '<span class="monthly-todo-user-name">' + kul + '</span>';
         if (waUrl) {
