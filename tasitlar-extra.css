@@ -3007,6 +3007,76 @@
   align-items: center;
 }
 
+@media (max-width: 640px) {
+  #monthly-todo-modal .monthly-todo-modal-body:has(.monthly-todo-sheet) {
+    padding: 10px 8px calc(14px + env(safe-area-inset-bottom, 0)) !important;
+  }
+
+  #monthly-todo-modal .monthly-todo-col-header,
+  #monthly-todo-modal .monthly-todo-task-row {
+    /* Dar ekran: plaka/marka dar, açıklama kalan genişliği (yatay taşma yok) */
+    grid-template-columns: minmax(36px, 12%) minmax(54px, 22%) minmax(0, 1fr);
+    column-gap: 6px;
+    align-items: center;
+  }
+
+  #monthly-todo-modal .monthly-todo-col-header {
+    padding: 2px 0 6px;
+  }
+
+  #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h {
+    font-size: 10px;
+    letter-spacing: 0.03em;
+  }
+
+  #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h--middle {
+    gap: 1px;
+  }
+
+  #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h-line--sub {
+    font-size: 9px;
+  }
+
+  #monthly-todo-modal .monthly-todo-task-row {
+    padding: 7px 5px 7px 8px;
+  }
+
+  #monthly-todo-modal .monthly-todo-cell,
+  #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-brand,
+  #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-user,
+  #monthly-todo-modal .monthly-todo-desc-col .monthly-todo-type {
+    font-size: 11px;
+    line-height: 1.28;
+  }
+
+  #monthly-todo-modal .monthly-todo-plate-col .monthly-todo-plate {
+    font-size: 11px;
+    letter-spacing: 0.01em;
+  }
+
+  #monthly-todo-modal .monthly-todo-middle-col {
+    gap: 3px;
+  }
+
+  #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-user {
+    gap: 3px;
+    max-width: 100%;
+  }
+
+  #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-wa-link svg {
+    width: 15px;
+    height: 15px;
+  }
+
+  #monthly-todo-modal .monthly-todo-type .monthly-todo-description-meta {
+    font-size: 10px;
+  }
+
+  #monthly-todo-modal .monthly-todo-list-scroll--next-month {
+    max-height: min(38vh, 240px);
+  }
+}
+
 @media (min-width: 641px) {
   #monthly-todo-modal .monthly-todo-col-header,
   #monthly-todo-modal .monthly-todo-task-row {
