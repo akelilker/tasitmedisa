@@ -4568,6 +4568,32 @@
     return out;
   }
 
+  /**
+   * Aynı tarih işi hem ana aylık önbellekte hem takip ayı (1–15) önbelleğinde yer alıyorsa
+   * tek satırda göstermek için yinelenenleri ayıklar.
+   */
+  function dedupeMonthlyTodoOperationalTasks(tasks) {
+    if (!tasks || !tasks.length) return [];
+    var seen = Object.create(null);
+    var out = [];
+    for (var i = 0; i < tasks.length; i++) {
+      var t = tasks[i];
+      if (!t) continue;
+      var v = t.vehicle || {};
+      var vid = v.id != null && String(v.id).trim() !== ''
+        ? String(v.id).trim()
+        : 'plate:' + String(v.plate || '').trim().replace(/\s+/g, '');
+      var field = String(t.field != null ? t.field : '').trim();
+      var typ = String(t.type != null ? t.type : '').trim();
+      var iso = monthlyTodoTaskIsoNormalized(t) || String(t.date != null ? t.date : '').trim() || 'nodate';
+      var key = vid + '|' + field + '|' + typ + '|' + iso;
+      if (seen[key]) continue;
+      seen[key] = true;
+      out.push(t);
+    }
+    return out;
+  }
+
   function ensureMonthlyTodoWhatsAppLogs() {
     if (!window.appData || typeof window.appData !== 'object') window.appData = {};
     var raw = window.appData.monthlyTodoWhatsAppLogs;
@@ -4775,19 +4801,6 @@
     return rowHtml;
   }
 
-  function buildMonthlyTodoNextMonthSummaryHtml(mergedTasks, typeDescriptionMap, userMap) {
-    if (!mergedTasks || !mergedTasks.length) return '';
-    var html = '<div class="monthly-todo-next-month-preview" role="region" aria-label="Takip eden ay erken dönem bildirimleri">';
-    html += '<div class="monthly-todo-table-outer monthly-todo-table-outer--next-month">';
-    html += '<div class="monthly-todo-table-inner">';
-    html += '<div class="monthly-todo-list-scroll monthly-todo-list-scroll--next-month" role="list">';
-    mergedTasks.forEach(function(t) {
-      html += buildMonthlyTodoTaskRowHtml(t, userMap, typeDescriptionMap);
-    });
-    html += '</div></div></div></div>';
-    return html;
-  }
-
   function fillMonthlyTodoModalBody(bodyEl, tasksArray, nextPreviewTasks) {
     var nextPreviewRaw = Array.isArray(nextPreviewTasks) ? nextPreviewTasks : [];
     var typeDescriptionMap = {
@@ -4805,31 +4818,29 @@
     users.forEach(function(u) {
       if (u && u.id != null) userMap[String(u.id)] = u;
     });
-    var displayTasks = buildMonthlyTodoMergedDisplayTasks(tasksArray || []);
-    var nextMerged = buildMonthlyTodoMergedDisplayTasks(nextPreviewRaw);
-    var nextSummaryHtml = buildMonthlyTodoNextMonthSummaryHtml(nextMerged, typeDescriptionMap, userMap);
-    if (!displayTasks.length && !nextSummaryHtml) {
+    var combinedRaw = dedupeMonthlyTodoOperationalTasks((tasksArray || []).concat(nextPreviewRaw));
+    var displayTasks = buildMonthlyTodoMergedDisplayTasks(combinedRaw);
+    displayTasks.sort(function(a, b) {
+      var da = typeof a.days === 'number' ? a.days : 9999;
+      var db = typeof b.days === 'number' ? b.days : 9999;
+      var aPast = da < 0;
+      var bPast = db < 0;
+      if (aPast !== bPast) return aPast ? -1 : 1;
+      return da - db;
+    });
+    if (!displayTasks.length) {
       bodyEl.innerHTML = '<div class="monthly-todo-empty">Bu dönem için listelenecek tarih işlemi yok.</div>';
       return;
     }
     var html = '<div class="monthly-todo-sheet">';
-    if (displayTasks.length) {
-      html += '<div class="monthly-todo-table-outer">';
-      html += '<div class="monthly-todo-table-inner">';
-      html += monthlyTodoTableColHeaderHtml();
-      html += '<div class="monthly-todo-list-scroll" role="list">';
-      displayTasks.forEach(function(t) {
-        html += buildMonthlyTodoTaskRowHtml(t, userMap, typeDescriptionMap);
-      });
-      html += '</div>';
-      html += '</div></div></div>';
-    } else {
-      html += '<div class="monthly-todo-empty monthly-todo-empty--muted">Bu dönem için listelenecek tarih işlemi yok.</div>';
-    }
-    if (nextSummaryHtml) {
-      html += nextSummaryHtml;
-    }
-    html += '</div>';
+    html += '<div class="monthly-todo-table-outer">';
+    html += '<div class="monthly-todo-table-inner">';
+    html += monthlyTodoTableColHeaderHtml();
+    html += '<div class="monthly-todo-list-scroll" role="list">';
+    displayTasks.forEach(function(t) {
+      html += buildMonthlyTodoTaskRowHtml(t, userMap, typeDescriptionMap);
+    });
+    html += '</div></div></div></div>';
     bodyEl.innerHTML = html;
   }
 
