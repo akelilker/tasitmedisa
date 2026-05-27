@@ -3871,98 +3871,16 @@
     return false;
   }
 
-  /** Vade tarihi bir sonraki takvim ayına düşüyor mu (ISO ay/yıl). */
-  function rawVehicleDateExpiryInNextCalendarMonth(rawDate) {
-    if (rawDate == null || String(rawDate).trim() === '') return false;
-    var y = NaN;
-    var moZero = NaN;
-    if (typeof window.parseVehicleDateRawToIso === 'function') {
-      var iso = window.parseVehicleDateRawToIso(rawDate);
-      if (iso && /^\d{4}-\d{2}-\d{2}$/.test(iso)) {
-        var p = iso.split('-');
-        y = parseInt(p[0], 10);
-        moZero = parseInt(p[1], 10) - 1;
-      }
-    }
-    if (isNaN(y) || isNaN(moZero)) {
-      var fallbackDate = new Date(String(rawDate).trim());
-      if (isNaN(fallbackDate.getTime())) return false;
-      y = fallbackDate.getFullYear();
-      moZero = fallbackDate.getMonth();
-    }
-    var now = new Date();
-    var nm = now.getMonth() + 1;
-    var ny = now.getFullYear();
-    if (nm > 11) {
-      nm = 0;
-      ny++;
-    }
-    return moZero === nm && y === ny;
-  }
-
-  function rawVehicleDateDayOfMonth(rawDate) {
-    if (rawDate == null || String(rawDate).trim() === '') return NaN;
-    if (typeof window.parseVehicleDateRawToIso === 'function') {
-      var iso = window.parseVehicleDateRawToIso(rawDate);
-      if (iso && /^\d{4}-\d{2}-\d{2}$/.test(iso)) {
-        return parseInt(iso.slice(8, 10), 10);
-      }
-    }
-    var fallbackDate = new Date(String(rawDate).trim());
-    if (isNaN(fallbackDate.getTime())) return NaN;
-    return fallbackDate.getDate();
-  }
-
-  /**
-   * Ana aylık listede olmayan (vade bu ay değil) fakat turuncu/kırmızı uyarılı ve vadesi gelecek ay olan işler —
-   * bugünden itibaren 15 gün içindeyse modal özet önizlemesi.
-   */
-  function monthlyOperationalDateTaskNextMonthSummaryPasses(rawDate, warning) {
-    const NEXT_MONTH_PREVIEW_DAYS = 15;
-    if (rawDate == null || String(rawDate).trim() === '') return false;
-    if (!warning || typeof warning !== 'object') return false;
-    if (!warning.class) return false;
-    if (typeof warning.days !== 'number' || warning.days < 0) return false;
-    if (rawVehicleDateExpiryInCurrentCalendarMonth(rawDate)) return false;
-    if (!rawVehicleDateExpiryInNextCalendarMonth(rawDate)) return false;
-    var targetDate = null;
-    if (typeof window.parseVehicleDateRawToIso === 'function') {
-      var iso = window.parseVehicleDateRawToIso(rawDate);
-      if (iso && /^\d{4}-\d{2}-\d{2}$/.test(iso)) {
-        var p = iso.split('-');
-        targetDate = new Date(parseInt(p[0], 10), parseInt(p[1], 10) - 1, parseInt(p[2], 10));
-      }
-    }
-    if (!targetDate) {
-      targetDate = new Date(String(rawDate).trim());
-    }
-    if (isNaN(targetDate.getTime())) return false;
-
-    var today = new Date();
-    var remainingDays = Math.round(
-      (
-        Date.UTC(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate()) -
-        Date.UTC(today.getFullYear(), today.getMonth(), today.getDate())
-      ) / (1000 * 60 * 60 * 24)
-    );
-    return remainingDays >= 0 && remainingDays <= NEXT_MONTH_PREVIEW_DAYS;
-  }
-
   var _vehicleDateTasksCache = null;
-  var _vehicleDateNextMonthPreviewCache = null;
   /** Aylık modal: ana iş parçacığında tam tarama yapmadan önbelleği okumak için (null = henüz doldurulmadı). */
   function peekVehicleDateTasksCache() {
     return _vehicleDateTasksCache;
   }
 
-  function peekVehicleDateNextMonthPreviewCache() {
-    return _vehicleDateNextMonthPreviewCache;
-  }
   var _monthlyTodoModalBodyFillScheduled = false;
 
   function invalidateVehicleDateTasksCache() {
     _vehicleDateTasksCache = null;
-    _vehicleDateNextMonthPreviewCache = null;
   }
   window.invalidateVehicleDateTasksCache = invalidateVehicleDateTasksCache;
 
