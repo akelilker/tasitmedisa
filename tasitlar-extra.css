@@ -3146,8 +3146,10 @@
 
 #monthly-todo-modal .monthly-todo-plate-col {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 4px;
   min-width: 0;
   width: 100%;
   text-align: center;
@@ -3286,7 +3288,7 @@
   }
 }
 
-#monthly-todo-modal .monthly-todo-middle-col .monthly-todo-brand,
+#monthly-todo-modal .monthly-todo-plate-col .monthly-todo-brand,
 #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-user,
 #monthly-todo-modal .monthly-todo-desc-col .monthly-todo-type {
   font-size: 12px;
@@ -3294,7 +3296,7 @@
 }
 
 @media (min-width: 641px) {
-  #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-brand,
+  #monthly-todo-modal .monthly-todo-plate-col .monthly-todo-brand,
   #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-user,
   #monthly-todo-modal .monthly-todo-desc-col .monthly-todo-type {
     font-size: 13px;
@@ -3316,7 +3318,7 @@
   white-space: nowrap;
 }
 
-#monthly-todo-modal .monthly-todo-middle-col .monthly-todo-brand {
+#monthly-todo-modal .monthly-todo-plate-col .monthly-todo-brand {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
