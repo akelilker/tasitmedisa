@@ -4208,32 +4208,6 @@
     return type;
   }
 
-  function getMonthlyTodoDriverFeedbackMessage(task) {
-    var type = resolveMonthlyTodoTaskKind(task);
-    switch (type) {
-      case 'Sigorta':
-        return 'Güncellenen Zorunlu Trafik Sigortası Poliçesinin Gönderilmesi.';
-      case 'Kasko':
-        return 'Güncellenen Kasko Poliçesinin Gönderilmesi.';
-      case 'Muayene':
-        return 'Genel Muayene Randevusu Konusunda Destek İhtiyacı';
-      case 'Egzoz Muayene':
-        return 'Genel Egzoz Muayenesi Randevusu Konusunda Destek İhtiyacı';
-      case 'Muayene + Egzoz':
-        return 'Genel Muayene / Egzoz Muayenesi Randevusu Konusunda Destek İhtiyacı';
-      case 'Sigorta + Kasko':
-        return 'Güncellenen Zorunlu Trafik Sigortası / Kasko Poliçesinin Gönderilmesi.';
-      case 'K2 Belgesi':
-        return 'K2 belgesi geçerlilik durumunun kontrol edilmesi.';
-      case 'Takograf':
-        return 'Takograf kalibrasyon süresinin kontrol edilmesi.';
-      case 'KM':
-        return 'Güncel Kilometre Bilgisinin Kullanıcı Paneli Üzerinden Bildirilmesi.';
-      default:
-        return 'Genel Destek Talebi';
-    }
-  }
-
   /** Aylık özet WhatsApp kısa link (/t/...) için görev tipi → kod. */
   function getMonthlyTodoDriverFeedbackShortCode(task) {
     var type = resolveMonthlyTodoTaskKind(task);
