@@ -3342,7 +3342,9 @@
 
 #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-user {
   position: relative;
-  display: block;
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) 28px;
+  align-items: center;
   width: 100%;
   min-width: 0;
   max-width: 100%;
@@ -3361,19 +3363,20 @@
   min-width: 0;
   width: 100%;
   box-sizing: border-box;
+  grid-column: 2;
   color: #a0aec0;
   text-align: center;
 }
 
 #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-user:has(.monthly-todo-wa-link) .monthly-todo-user-name {
-  padding-inline-end: 28px;
+  padding-inline-end: 0;
 }
 
 #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-wa-link {
-  position: absolute;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
+  position: static;
+  grid-column: 3;
+  justify-self: end;
+  transform: none;
   z-index: 1;
   display: inline-flex;
   align-items: center;
