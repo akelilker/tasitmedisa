@@ -3060,6 +3060,15 @@
     gap: 3px;
   }
 
+  #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-user-branch {
+    grid-column: 1;
+    grid-row: 2;
+    justify-self: stretch;
+    width: 100%;
+    min-width: 0;
+    text-align: center;
+  }
+
   #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-wa-link svg {
     width: 15px;
     height: 15px;
