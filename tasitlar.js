@@ -3871,78 +3871,16 @@
     return false;
   }
 
-  /** Vade tarihi bir sonraki takvim ayına düşüyor mu (ISO ay/yıl). */
-  function rawVehicleDateExpiryInNextCalendarMonth(rawDate) {
-    if (rawDate == null || String(rawDate).trim() === '') return false;
-    var y = NaN;
-    var moZero = NaN;
-    if (typeof window.parseVehicleDateRawToIso === 'function') {
-      var iso = window.parseVehicleDateRawToIso(rawDate);
-      if (iso && /^\d{4}-\d{2}-\d{2}$/.test(iso)) {
-        var p = iso.split('-');
-        y = parseInt(p[0], 10);
-        moZero = parseInt(p[1], 10) - 1;
-      }
-    }
-    if (isNaN(y) || isNaN(moZero)) {
-      var fallbackDate = new Date(String(rawDate).trim());
-      if (isNaN(fallbackDate.getTime())) return false;
-      y = fallbackDate.getFullYear();
-      moZero = fallbackDate.getMonth();
-    }
-    var now = new Date();
-    var nm = now.getMonth() + 1;
-    var ny = now.getFullYear();
-    if (nm > 11) {
-      nm = 0;
-      ny++;
-    }
-    return moZero === nm && y === ny;
-  }
-
-  function rawVehicleDateDayOfMonth(rawDate) {
-    if (rawDate == null || String(rawDate).trim() === '') return NaN;
-    if (typeof window.parseVehicleDateRawToIso === 'function') {
-      var iso = window.parseVehicleDateRawToIso(rawDate);
-      if (iso && /^\d{4}-\d{2}-\d{2}$/.test(iso)) {
-        return parseInt(iso.slice(8, 10), 10);
-      }
-    }
-    var fallbackDate = new Date(String(rawDate).trim());
-    if (isNaN(fallbackDate.getTime())) return NaN;
-    return fallbackDate.getDate();
-  }
-
-  /**
-   * Ana aylık listede olmayan (vade bu ay değil) fakat turuncu/kırmızı uyarılı ve vadesi gelecek ay olan işler —
-   * yalnızca takip eden ayın ilk yarısı (1-15) için modal özet önizlemesi.
-   */
-  function monthlyOperationalDateTaskNextMonthSummaryPasses(rawDate, warning) {
-    if (rawDate == null || String(rawDate).trim() === '') return false;
-    if (!warning || typeof warning !== 'object') return false;
-    if (!warning.class) return false;
-    if (typeof warning.days !== 'number' || warning.days < 0) return false;
-    if (rawVehicleDateExpiryInCurrentCalendarMonth(rawDate)) return false;
-    if (!rawVehicleDateExpiryInNextCalendarMonth(rawDate)) return false;
-    var dayOfMonth = rawVehicleDateDayOfMonth(rawDate);
-    return !isNaN(dayOfMonth) && dayOfMonth >= 1 && dayOfMonth <= 15;
-  }
-
   var _vehicleDateTasksCache = null;
-  var _vehicleDateNextMonthPreviewCache = null;
   /** Aylık modal: ana iş parçacığında tam tarama yapmadan önbelleği okumak için (null = henüz doldurulmadı). */
   function peekVehicleDateTasksCache() {
     return _vehicleDateTasksCache;
   }
 
-  function peekVehicleDateNextMonthPreviewCache() {
-    return _vehicleDateNextMonthPreviewCache;
-  }
   var _monthlyTodoModalBodyFillScheduled = false;
 
   function invalidateVehicleDateTasksCache() {
     _vehicleDateTasksCache = null;
-    _vehicleDateNextMonthPreviewCache = null;
   }
   window.invalidateVehicleDateTasksCache = invalidateVehicleDateTasksCache;
 
@@ -3966,7 +3904,6 @@
     var attachNotif = mode === 'full' && Array.isArray(notificationsArray);
 
     var monthly = [];
-    var nextMonthPreview = [];
     var vehicles = readVehicles();
 
     vehicles.forEach(function(vehicle) {
@@ -3985,17 +3922,6 @@
             date: vehicle.sigortaDate,
             days: wSig.days,
             status: (typeof wSig.days === 'number' && wSig.days < 0) ? 'past' : 'upcoming',
-            warningClass: wSig.class
-          });
-        }
-        if (monthlyOperationalDateTaskNextMonthSummaryPasses(vehicle.sigortaDate, wSig)) {
-          nextMonthPreview.push({
-            vehicle: vehicle,
-            type: 'Sigorta',
-            field: 'sigortaDate',
-            date: vehicle.sigortaDate,
-            days: wSig.days,
-            status: 'upcoming',
             warningClass: wSig.class
           });
         }
@@ -4027,17 +3953,6 @@
             warningClass: wKas.class
           });
         }
-        if (monthlyOperationalDateTaskNextMonthSummaryPasses(vehicle.kaskoDate, wKas)) {
-          nextMonthPreview.push({
-            vehicle: vehicle,
-            type: 'Kasko',
-            field: 'kaskoDate',
-            date: vehicle.kaskoDate,
-            days: wKas.days,
-            status: 'upcoming',
-            warningClass: wKas.class
-          });
-        }
         if (attachNotif && wKas.class) {
           var dk = wKas.days;
           notificationsArray.push({
@@ -4066,17 +3981,6 @@
             warningClass: wTak.class
           });
         }
-        if (monthlyOperationalDateTaskNextMonthSummaryPasses(vehicle.takografExpiryDate, wTak)) {
-          nextMonthPreview.push({
-            vehicle: vehicle,
-            type: 'Takograf',
-            field: 'takografExpiryDate',
-            date: vehicle.takografExpiryDate,
-            days: wTak.days,
-            status: 'upcoming',
-            warningClass: wTak.class
-          });
-        }
         if (attachNotif && wTak.class) {
           var dtak = wTak.days;
           notificationsArray.push({
@@ -4102,17 +4006,6 @@
             date: vehicle.muayeneDate,
             days: wM.days,
             status: (typeof wM.days === 'number' && wM.days < 0) ? 'past' : 'upcoming',
-            warningClass: wM.class
-          });
-        }
-        if (wM && monthlyOperationalDateTaskNextMonthSummaryPasses(vehicle.muayeneDate, wM)) {
-          nextMonthPreview.push({
-            vehicle: vehicle,
-            type: 'Muayene',
-            field: 'muayeneDate',
-            date: vehicle.muayeneDate,
-            days: wM.days,
-            status: 'upcoming',
             warningClass: wM.class
           });
         }
@@ -4155,17 +4048,6 @@
             warningClass: wEgz.class
           });
         }
-        if (monthlyOperationalDateTaskNextMonthSummaryPasses(egzozState.date, wEgz)) {
-          nextMonthPreview.push({
-            vehicle: vehicle,
-            type: 'Egzoz Muayene',
-            field: 'egzozMuayeneDate',
-            date: egzozState.date,
-            days: wEgz.days,
-            status: 'upcoming',
-            warningClass: wEgz.class
-          });
-        }
       }
 
       if (attachNotif && egzozState.warningClass) {
@@ -4204,17 +4086,6 @@
           warningClass: wK2.class
         });
       }
-      if (monthlyOperationalDateTaskNextMonthSummaryPasses(k2Date, wK2)) {
-        nextMonthPreview.push({
-          vehicle: { id: '', plate: 'Şirket Evrakı', brandModel: 'K2 Belgesi' },
-          type: 'K2 Belgesi',
-          field: 'k2BelgesiExpiryDate',
-          date: k2Date,
-          days: wK2.days,
-          status: 'upcoming',
-          warningClass: wK2.class
-        });
-      }
       if (attachNotif && wK2.class) {
         var dk2 = wK2.days;
         notificationsArray.push({
@@ -4239,14 +4110,7 @@
       return da - db;
     });
 
-    nextMonthPreview.sort(function(a, b) {
-      var da = typeof a.days === 'number' ? a.days : 9999;
-      var db = typeof b.days === 'number' ? b.days : 9999;
-      return da - db;
-    });
-
     _vehicleDateTasksCache = monthly;
-    _vehicleDateNextMonthPreviewCache = nextMonthPreview;
   }
 
   window.getVehicleDateTasks = function() {
