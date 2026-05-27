@@ -3904,7 +3904,6 @@
     var attachNotif = mode === 'full' && Array.isArray(notificationsArray);
 
     var monthly = [];
-    var nextMonthPreview = [];
     var vehicles = readVehicles();
 
     vehicles.forEach(function(vehicle) {
@@ -3923,17 +3922,6 @@
             date: vehicle.sigortaDate,
             days: wSig.days,
             status: (typeof wSig.days === 'number' && wSig.days < 0) ? 'past' : 'upcoming',
-            warningClass: wSig.class
-          });
-        }
-        if (monthlyOperationalDateTaskNextMonthSummaryPasses(vehicle.sigortaDate, wSig)) {
-          nextMonthPreview.push({
-            vehicle: vehicle,
-            type: 'Sigorta',
-            field: 'sigortaDate',
-            date: vehicle.sigortaDate,
-            days: wSig.days,
-            status: 'upcoming',
             warningClass: wSig.class
           });
         }
@@ -3965,17 +3953,6 @@
             warningClass: wKas.class
           });
         }
-        if (monthlyOperationalDateTaskNextMonthSummaryPasses(vehicle.kaskoDate, wKas)) {
-          nextMonthPreview.push({
-            vehicle: vehicle,
-            type: 'Kasko',
-            field: 'kaskoDate',
-            date: vehicle.kaskoDate,
-            days: wKas.days,
-            status: 'upcoming',
-            warningClass: wKas.class
-          });
-        }
         if (attachNotif && wKas.class) {
           var dk = wKas.days;
           notificationsArray.push({
@@ -4004,17 +3981,6 @@
             warningClass: wTak.class
           });
         }
-        if (monthlyOperationalDateTaskNextMonthSummaryPasses(vehicle.takografExpiryDate, wTak)) {
-          nextMonthPreview.push({
-            vehicle: vehicle,
-            type: 'Takograf',
-            field: 'takografExpiryDate',
-            date: vehicle.takografExpiryDate,
-            days: wTak.days,
-            status: 'upcoming',
-            warningClass: wTak.class
-          });
-        }
         if (attachNotif && wTak.class) {
           var dtak = wTak.days;
           notificationsArray.push({
@@ -4040,17 +4006,6 @@
             date: vehicle.muayeneDate,
             days: wM.days,
             status: (typeof wM.days === 'number' && wM.days < 0) ? 'past' : 'upcoming',
-            warningClass: wM.class
-          });
-        }
-        if (wM && monthlyOperationalDateTaskNextMonthSummaryPasses(vehicle.muayeneDate, wM)) {
-          nextMonthPreview.push({
-            vehicle: vehicle,
-            type: 'Muayene',
-            field: 'muayeneDate',
-            date: vehicle.muayeneDate,
-            days: wM.days,
-            status: 'upcoming',
             warningClass: wM.class
           });
         }
@@ -4093,17 +4048,6 @@
             warningClass: wEgz.class
           });
         }
-        if (monthlyOperationalDateTaskNextMonthSummaryPasses(egzozState.date, wEgz)) {
-          nextMonthPreview.push({
-            vehicle: vehicle,
-            type: 'Egzoz Muayene',
-            field: 'egzozMuayeneDate',
-            date: egzozState.date,
-            days: wEgz.days,
-            status: 'upcoming',
-            warningClass: wEgz.class
-          });
-        }
       }
 
       if (attachNotif && egzozState.warningClass) {
@@ -4142,17 +4086,6 @@
           warningClass: wK2.class
         });
       }
-      if (monthlyOperationalDateTaskNextMonthSummaryPasses(k2Date, wK2)) {
-        nextMonthPreview.push({
-          vehicle: { id: '', plate: 'Şirket Evrakı', brandModel: 'K2 Belgesi' },
-          type: 'K2 Belgesi',
-          field: 'k2BelgesiExpiryDate',
-          date: k2Date,
-          days: wK2.days,
-          status: 'upcoming',
-          warningClass: wK2.class
-        });
-      }
       if (attachNotif && wK2.class) {
         var dk2 = wK2.days;
         notificationsArray.push({
@@ -4177,14 +4110,7 @@
       return da - db;
     });
 
-    nextMonthPreview.sort(function(a, b) {
-      var da = typeof a.days === 'number' ? a.days : 9999;
-      var db = typeof b.days === 'number' ? b.days : 9999;
-      return da - db;
-    });
-
     _vehicleDateTasksCache = monthly;
-    _vehicleDateNextMonthPreviewCache = nextMonthPreview;
   }
 
   window.getVehicleDateTasks = function() {
@@ -4740,8 +4666,7 @@
     return rowHtml;
   }
 
-  function fillMonthlyTodoModalBody(bodyEl, tasksArray, nextPreviewTasks) {
-    var nextPreviewRaw = Array.isArray(nextPreviewTasks) ? nextPreviewTasks : [];
+  function fillMonthlyTodoModalBody(bodyEl, tasksArray) {
     var typeDescriptionMap = {
       'Sigorta': 'Trafik Sigortasının',
       'Kasko': 'Kasko Poliçesinin',
@@ -4757,7 +4682,7 @@
     users.forEach(function(u) {
       if (u && u.id != null) userMap[String(u.id)] = u;
     });
-    var combinedRaw = dedupeMonthlyTodoOperationalTasks((tasksArray || []).concat(nextPreviewRaw));
+    var combinedRaw = dedupeMonthlyTodoOperationalTasks(tasksArray || []);
     var displayTasks = buildMonthlyTodoMergedDisplayTasks(combinedRaw);
     displayTasks.sort(function(a, b) {
       var da = typeof a.days === 'number' ? a.days : 9999;
@@ -4788,10 +4713,8 @@
     var bodyEl = root ? root.querySelector('.monthly-todo-modal-body') : null;
     if (!bodyEl) return;
     var cached = peekVehicleDateTasksCache();
-    var nextPreview = peekVehicleDateNextMonthPreviewCache();
-    var nextArr = Array.isArray(nextPreview) ? nextPreview : [];
     if (cached !== null) {
-      fillMonthlyTodoModalBody(bodyEl, cached, nextArr);
+      fillMonthlyTodoModalBody(bodyEl, cached);
       return;
     }
     bodyEl.innerHTML = '<div class="monthly-todo-empty">Yükleniyor…</div>';
@@ -4804,9 +4727,7 @@
       var be = modal.querySelector('.monthly-todo-modal-body');
       if (!be) return;
       var tasks = window.getVehicleDateTasks();
-      var nextAfter = peekVehicleDateNextMonthPreviewCache();
-      var nextAfterArr = Array.isArray(nextAfter) ? nextAfter : [];
-      fillMonthlyTodoModalBody(be, tasks, nextAfterArr);
+      fillMonthlyTodoModalBody(be, tasks);
     });
   }
 
