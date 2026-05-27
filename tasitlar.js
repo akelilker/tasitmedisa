@@ -4591,7 +4591,7 @@
     return html;
   }
 
-  function buildMonthlyTodoDescriptionHtml(descriptionPrefix, daysVal, dateRaw, dateShown) {
+  function buildMonthlyTodoDescriptionHtml(descriptionPrefix, daysVal, dateRaw, dateShown, isPast) {
     var kindHtml = '<span class="monthly-todo-type-kind">' + escapeHtml(descriptionPrefix) + '</span>';
     if (!dateRaw || daysVal === null) {
       return '<span class="monthly-todo-type">' + kindHtml + '<span class="monthly-todo-type-detail"> Geçerlilik Süresi Eksiktir.</span></span>';
@@ -4604,9 +4604,10 @@
     } else {
       detailText = ' Geçerlilik Süresi ' + daysVal + ' Gün Sonra Bitecektir.';
     }
+    var metaPastClass = isPast ? ' monthly-todo-description-meta--past' : '';
     return '<span class="monthly-todo-type">' + kindHtml +
       '<span class="monthly-todo-type-detail">' + escapeHtml(detailText) + '</span>' +
-      '<br><span class="monthly-todo-description-meta">Bitiş Tarihi: <span class="monthly-todo-description-date">' + dateShown + '</span></span></span>';
+      '<br><span class="monthly-todo-description-meta' + metaPastClass + '">Bitiş Tarihi: <span class="monthly-todo-description-date">' + dateShown + '</span></span></span>';
   }
 
   function buildMonthlyTodoTaskRowHtml(t, userMap, typeDescriptionMap) {
@@ -4659,7 +4660,7 @@
     rowHtml += '</span>';
     rowHtml += '</span>';
     rowHtml += '<span class="monthly-todo-cell monthly-todo-desc-col">';
-    rowHtml += buildMonthlyTodoDescriptionHtml(descriptionPrefix, daysVal, dateRaw, dateShown);
+    rowHtml += buildMonthlyTodoDescriptionHtml(descriptionPrefix, daysVal, dateRaw, dateShown, past);
     rowHtml += '</span>';
     rowHtml += '</div>';
     return rowHtml;
