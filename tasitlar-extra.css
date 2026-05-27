@@ -3060,10 +3060,20 @@
     gap: 3px;
   }
 
+  #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-user {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+    align-items: center;
+    justify-items: center;
+    justify-content: center;
+    row-gap: 4px;
+  }
+
   #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-user-branch {
-    grid-column: 1;
-    grid-row: 2;
-    justify-self: stretch;
+    grid-column: 1 / -1;
+    grid-row: 3;
+    justify-self: center;
     width: 100%;
     min-width: 0;
     text-align: center;
@@ -3076,25 +3086,6 @@
 
   #monthly-todo-modal .monthly-todo-type .monthly-todo-description-meta {
     font-size: 11px;
-  }
-
-  #monthly-todo-modal .monthly-todo-task-row .monthly-todo-middle-col .monthly-todo-user {
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: auto auto auto;
-    align-items: center;
-    justify-items: center;
-    justify-content: center;
-    row-gap: 4px;
-  }
-
-  #monthly-todo-modal .monthly-todo-task-row .monthly-todo-middle-col .monthly-todo-user-branch {
-    grid-column: 1 / -1;
-    grid-row: 3;
-    justify-self: center;
-    width: 100%;
-    min-width: 0;
-    text-align: center;
   }
 }
 
