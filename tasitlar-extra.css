@@ -3014,7 +3014,8 @@
 
   #monthly-todo-modal .monthly-todo-col-header,
   #monthly-todo-modal .monthly-todo-task-row {
-    grid-template-columns: minmax(40px, 20fr) minmax(56px, 37fr) minmax(0, 46fr);
+    /* Dar ekran: plaka sütunu geniş (TR plaka), açıklama payından oran kaydırılır */
+    grid-template-columns: minmax(52px, 26%) minmax(52px, 30%) minmax(0, 44%);
     column-gap: 6px;
     align-items: center;
   }
