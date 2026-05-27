@@ -4651,7 +4651,8 @@
     rowHtml += '</span>';
     rowHtml += '<span class="monthly-todo-cell monthly-todo-middle-col">';
     rowHtml += '<span class="monthly-todo-brand">' + bm + '</span>';
-    rowHtml += '<span class="monthly-todo-user">';
+    var userClass = 'monthly-todo-user' + (waUrl ? ' monthly-todo-user--has-wa' : '');
+    rowHtml += '<span class="' + userClass + '">';
     rowHtml += '<span class="monthly-todo-user-name">' + kul + '</span>';
     if (waUrl) {
       rowHtml += '<a class="' + waBtnClass + '" href="#" role="button" rel="noopener noreferrer" data-wa-url="' + escapeAttr(waUrl) + '" data-reminder-key="' + escapeAttr(reminderKey) + '" data-mtw-vid="' + escapeAttr(vid) + '" data-mtw-plate="' + escapeAttr(plateCompact) + '" data-mtw-type="' + escapeAttr(logShortCode) + '" data-mtw-field="' + escapeAttr(String(t.field != null ? t.field : '').trim()) + '" data-mtw-date="' + escapeAttr(logIsoDate) + '" aria-label="' + escapeAttr(waAria) + '" title="' + escapeAttr(waAria) + '">' + MONTHLY_TODO_WA_INLINE_SVG + '</a>';
