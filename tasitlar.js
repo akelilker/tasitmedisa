@@ -4581,11 +4581,11 @@
 
   function monthlyTodoTableColHeaderHtml() {
     var html = '<div class="monthly-todo-col-header" aria-hidden="true">';
-    html += '<span class="monthly-todo-col-h">Plaka</span>';
     html += '<span class="monthly-todo-col-h monthly-todo-col-h--middle">';
-    html += '<span class="monthly-todo-col-h-line">Marka/Model</span>';
-    html += '<span class="monthly-todo-col-h-line monthly-todo-col-h-line--sub">+ Kullanıcı</span>';
+    html += '<span class="monthly-todo-col-h-line">Plaka</span>';
+    html += '<span class="monthly-todo-col-h-line monthly-todo-col-h-line--sub">Marka/Model</span>';
     html += '</span>';
+    html += '<span class="monthly-todo-col-h">Kullanıcı</span>';
     html += '<span class="monthly-todo-col-h monthly-todo-col-h--desc">Açıklama</span>';
     html += '</div>';
     return html;
@@ -4648,9 +4648,9 @@
     rowHtml += '<div class="monthly-todo-task-row' + rowTone + '" data-vehicle-id="' + escapeAttr(vid) + '" role="listitem" tabindex="0" aria-label="' + escapeAttr(ariaRow) + '">';
     rowHtml += '<span class="monthly-todo-cell monthly-todo-plate-col">';
     rowHtml += '<span class="monthly-todo-plate">' + plate + '</span>';
+    rowHtml += '<span class="monthly-todo-brand">' + bm + '</span>';
     rowHtml += '</span>';
     rowHtml += '<span class="monthly-todo-cell monthly-todo-middle-col">';
-    rowHtml += '<span class="monthly-todo-brand">' + bm + '</span>';
     var userClass = 'monthly-todo-user' + (waUrl ? ' monthly-todo-user--has-wa' : '');
     rowHtml += '<span class="' + userClass + '">';
     rowHtml += '<span class="monthly-todo-user-name">' + kul + '</span>';
