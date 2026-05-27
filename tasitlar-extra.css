@@ -3070,6 +3070,19 @@
     row-gap: 4px;
   }
 
+  #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-user-name {
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: center;
+    text-align: center;
+  }
+
+  #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-wa-link {
+    grid-column: 1;
+    grid-row: 2;
+    justify-self: center;
+  }
+
   #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-user-branch {
     grid-column: 1 / -1;
     grid-row: 3;
