@@ -3159,7 +3159,7 @@
 #monthly-todo-modal .monthly-todo-middle-col {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
   gap: 4px;
   min-width: 0;
@@ -3352,6 +3352,7 @@
   width: 100%;
   min-width: 0;
   max-width: 100%;
+  justify-self: stretch;
   color: #a0aec0;
 }
 
@@ -3380,6 +3381,7 @@
   width: 100%;
   min-width: 0;
   max-width: 100%;
+  justify-self: stretch;
   box-sizing: border-box;
   font-size: 11px;
   line-height: 1.12;
