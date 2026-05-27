@@ -3345,7 +3345,9 @@
   position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr) 24px;
+  grid-template-rows: auto auto;
   column-gap: 6px;
+  row-gap: 1px;
   align-items: center;
   width: 100%;
   min-width: 0;
@@ -3353,19 +3355,9 @@
   color: #a0aec0;
 }
 
-#monthly-todo-modal .monthly-todo-middle-col .monthly-todo-user-text {
-  grid-column: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-width: 0;
-  max-width: 100%;
-  width: 100%;
-  box-sizing: border-box;
-}
-
 #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-user-name {
+  grid-column: 1;
+  grid-row: 1;
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
@@ -3382,11 +3374,13 @@
 }
 
 #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-user-branch {
+  grid-column: 1 / -1;
+  grid-row: 2;
   display: block;
   width: 100%;
+  min-width: 0;
   max-width: 100%;
   box-sizing: border-box;
-  margin-top: 2px;
   font-size: 11px;
   line-height: 1.12;
   font-weight: 400;
@@ -3406,7 +3400,9 @@
 #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-wa-link {
   position: static;
   grid-column: 2;
+  grid-row: 1;
   justify-self: center;
+  align-self: center;
   transform: none;
   z-index: 1;
   display: inline-flex;
