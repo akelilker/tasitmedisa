@@ -3023,7 +3023,7 @@
   }
 
   #monthly-todo-modal .monthly-todo-col-header {
-    padding: 2px 0 6px;
+    padding: 2px 5px 6px 8px;
   }
 
   #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h {
@@ -3081,7 +3081,7 @@
 #monthly-todo-modal .monthly-todo-col-header {
   flex-shrink: 0;
   box-sizing: border-box;
-  padding: 4px 0 8px;
+  padding: 4px 8px 8px 10px;
   margin-bottom: 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
@@ -3375,7 +3375,7 @@
 }
 
 #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-user-branch {
-  grid-column: 1;
+  grid-column: 1 / -1;
   grid-row: 2;
   display: block;
   width: 100%;
