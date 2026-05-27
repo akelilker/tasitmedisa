@@ -3461,3 +3461,8 @@
   color: #a0aec0;
 }
 
+#monthly-todo-modal .monthly-todo-type .monthly-todo-description-meta.monthly-todo-description-meta--past,
+#monthly-todo-modal .monthly-todo-type .monthly-todo-description-meta.monthly-todo-description-meta--past .monthly-todo-description-date {
+  color: var(--theme-color, #ff4d5f);
+}
+
