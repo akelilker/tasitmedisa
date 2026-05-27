@@ -4150,6 +4150,15 @@
     return formatAdSoyad(String(raw));
   }
 
+  function getMonthlyTodoVehicleBranchLabel(vehicle, branchNameMap) {
+    if (!vehicle) return '';
+    var branchId = vehicle.branchId;
+    if (branchId === undefined || branchId === null || String(branchId).trim() === '') return '';
+    var raw = branchNameMap && branchNameMap[String(branchId)];
+    if (!raw || !String(raw).trim()) return '';
+    return String(raw).trim();
+  }
+
   function getMonthlyTodoAssignedUserPhone(vehicle, userMap) {
     if (!vehicle || vehicle.assignedUserId == null || String(vehicle.assignedUserId).trim() === '') return '';
     var user = userMap[String(vehicle.assignedUserId)];
@@ -4610,13 +4619,15 @@
       '<br><span class="monthly-todo-description-meta' + metaPastClass + '">Bitiş Tarihi: <span class="monthly-todo-description-date">' + dateShown + '</span></span></span>';
   }
 
-  function buildMonthlyTodoTaskRowHtml(t, userMap, typeDescriptionMap) {
+  function buildMonthlyTodoTaskRowHtml(t, userMap, typeDescriptionMap, branchNameMap) {
     var v = t.vehicle || {};
     var vid = v.id != null ? String(v.id) : '';
     var plate = escapeHtml(v.plate || '-');
     var bm = escapeHtml(formatBrandModel(v.brandModel || '-'));
     var userLabelRaw = getMonthlyTodoKullaniciLabel(v, userMap);
     var kul = escapeHtml(userLabelRaw);
+    var branchLabelRaw = getMonthlyTodoVehicleBranchLabel(v, branchNameMap);
+    var branchHtml = branchLabelRaw ? '<span class="monthly-todo-user-branch">' + escapeHtml(toTitleCase(branchLabelRaw)) + '</span>' : '';
     var phone = getMonthlyTodoAssignedUserPhone(v, userMap);
     var waUrl = buildMonthlyTodoWhatsAppUrl(phone, buildMonthlyTodoWhatsAppMessage(t, v, userLabelRaw));
     var waLogs = ensureMonthlyTodoWhatsAppLogs();
@@ -4653,7 +4664,10 @@
     rowHtml += '</span>';
     rowHtml += '<span class="monthly-todo-cell monthly-todo-middle-col">';
     rowHtml += '<span class="monthly-todo-user">';
+    rowHtml += '<span class="monthly-todo-user-text">';
     rowHtml += '<span class="monthly-todo-user-name">' + kul + '</span>';
+    rowHtml += branchHtml;
+    rowHtml += '</span>';
     if (waUrl) {
       rowHtml += '<a class="' + waBtnClass + '" href="#" role="button" rel="noopener noreferrer" data-wa-url="' + escapeAttr(waUrl) + '" data-reminder-key="' + escapeAttr(reminderKey) + '" data-mtw-vid="' + escapeAttr(vid) + '" data-mtw-plate="' + escapeAttr(plateCompact) + '" data-mtw-type="' + escapeAttr(logShortCode) + '" data-mtw-field="' + escapeAttr(String(t.field != null ? t.field : '').trim()) + '" data-mtw-date="' + escapeAttr(logIsoDate) + '" aria-label="' + escapeAttr(waAria) + '" title="' + escapeAttr(waAria) + '">' + MONTHLY_TODO_WA_INLINE_SVG + '</a>';
     }
@@ -4682,6 +4696,11 @@
     users.forEach(function(u) {
       if (u && u.id != null) userMap[String(u.id)] = u;
     });
+    var branchNameMap = {};
+    var branches = readBranches() || [];
+    branches.forEach(function(b) {
+      if (b && b.id != null) branchNameMap[String(b.id)] = String(b.name || '').trim();
+    });
     var combinedRaw = dedupeMonthlyTodoOperationalTasks(tasksArray || []);
     var displayTasks = buildMonthlyTodoMergedDisplayTasks(combinedRaw);
     displayTasks.sort(function(a, b) {
@@ -4702,7 +4721,7 @@
     html += monthlyTodoTableColHeaderHtml();
     html += '<div class="monthly-todo-list-scroll" role="list">';
     displayTasks.forEach(function(t) {
-      html += buildMonthlyTodoTaskRowHtml(t, userMap, typeDescriptionMap);
+      html += buildMonthlyTodoTaskRowHtml(t, userMap, typeDescriptionMap, branchNameMap);
     });
     html += '</div></div></div></div>';
     bodyEl.innerHTML = html;
