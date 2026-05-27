@@ -4807,7 +4807,8 @@
     rowHtml += '</span>';
     rowHtml += '<span class="monthly-todo-cell monthly-todo-middle-col">';
     rowHtml += '<span class="monthly-todo-brand">' + bm + '</span>';
-    rowHtml += '<span class="monthly-todo-user">';
+    var userClass = 'monthly-todo-user' + (waUrl ? ' monthly-todo-user--has-wa' : '');
+    rowHtml += '<span class="' + userClass + '">';
     rowHtml += '<span class="monthly-todo-user-name">' + kul + '</span>';
     if (waUrl) {
       rowHtml += '<a class="' + waBtnClass + '" href="#" role="button" rel="noopener noreferrer" data-wa-url="' + escapeAttr(waUrl) + '" data-reminder-key="' + escapeAttr(reminderKey) + '" data-mtw-vid="' + escapeAttr(vid) + '" data-mtw-plate="' + escapeAttr(plateCompact) + '" data-mtw-type="' + escapeAttr(logShortCode) + '" data-mtw-field="' + escapeAttr(String(t.field != null ? t.field : '').trim()) + '" data-mtw-date="' + escapeAttr(logIsoDate) + '" aria-label="' + escapeAttr(waAria) + '" title="' + escapeAttr(waAria) + '">' + MONTHLY_TODO_WA_INLINE_SVG + '</a>';
@@ -4821,22 +4822,6 @@
     return rowHtml;
   }
 
-<<<<<<< ours
-=======
-  function buildMonthlyTodoNextMonthSummaryHtml(mergedTasks, typeDescriptionMap, userMap) {
-    if (!mergedTasks || !mergedTasks.length) return '';
-    var html = '<div class="monthly-todo-next-month-preview" role="region" aria-label="Takip eden ay erken dönem bildirimleri">';
-    html += '<div class="monthly-todo-table-outer monthly-todo-table-outer--next-month">';
-    html += '<div class="monthly-todo-table-inner">';
-    html += '<div class="monthly-todo-list-scroll monthly-todo-list-scroll--next-month" role="list">';
-    mergedTasks.forEach(function(t) {
-      html += buildMonthlyTodoTaskRowHtml(t, userMap, typeDescriptionMap);
-    });
-    html += '</div></div></div></div>';
-    return html;
-  }
-
->>>>>>> theirs
   function fillMonthlyTodoModalBody(bodyEl, tasksArray, nextPreviewTasks) {
     var nextPreviewRaw = Array.isArray(nextPreviewTasks) ? nextPreviewTasks : [];
     var typeDescriptionMap = {
