@@ -3375,7 +3375,7 @@
 }
 
 #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-user-branch {
-  grid-column: 1 / -1;
+  grid-column: 1;
   grid-row: 2;
   display: block;
   width: 100%;
