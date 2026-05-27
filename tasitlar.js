@@ -3915,15 +3915,7 @@
 
   /**
    * Ana aylık listede olmayan (vade bu ay değil) fakat turuncu/kırmızı uyarılı ve vadesi gelecek ay olan işler —
-<<<<<<< ours
-<<<<<<< ours
    * bugünden itibaren 15 gün içindeyse modal özet önizlemesi.
-=======
-   * yalnızca takip eden ayın ilk yarısı (1-15) için modal özet önizlemesi.
->>>>>>> theirs
-=======
-   * yalnızca takip eden ayın ilk yarısı (1-15) için modal özet önizlemesi.
->>>>>>> theirs
    */
   function monthlyOperationalDateTaskNextMonthSummaryPasses(rawDate, warning) {
     const NEXT_MONTH_PREVIEW_DAYS = 15;
@@ -3933,8 +3925,6 @@
     if (typeof warning.days !== 'number' || warning.days < 0) return false;
     if (rawVehicleDateExpiryInCurrentCalendarMonth(rawDate)) return false;
     if (!rawVehicleDateExpiryInNextCalendarMonth(rawDate)) return false;
-<<<<<<< ours
-<<<<<<< ours
     var targetDate = null;
     if (typeof window.parseVehicleDateRawToIso === 'function') {
       var iso = window.parseVehicleDateRawToIso(rawDate);
@@ -3949,18 +3939,13 @@
     if (isNaN(targetDate.getTime())) return false;
 
     var today = new Date();
-    today.setHours(0, 0, 0, 0);
-    targetDate.setHours(0, 0, 0, 0);
-    var remainingDays = Math.ceil((targetDate - today) / (1000 * 60 * 60 * 24));
+    var remainingDays = Math.round(
+      (
+        Date.UTC(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate()) -
+        Date.UTC(today.getFullYear(), today.getMonth(), today.getDate())
+      ) / (1000 * 60 * 60 * 24)
+    );
     return remainingDays >= 0 && remainingDays <= NEXT_MONTH_PREVIEW_DAYS;
-=======
-    var dayOfMonth = rawVehicleDateDayOfMonth(rawDate);
-    return !isNaN(dayOfMonth) && dayOfMonth >= 1 && dayOfMonth <= 15;
->>>>>>> theirs
-=======
-    var dayOfMonth = rawVehicleDateDayOfMonth(rawDate);
-    return !isNaN(dayOfMonth) && dayOfMonth >= 1 && dayOfMonth <= 15;
->>>>>>> theirs
   }
 
   var _vehicleDateTasksCache = null;
