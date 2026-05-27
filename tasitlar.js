@@ -4638,13 +4638,11 @@
     rowHtml += '</span>';
     rowHtml += '<span class="monthly-todo-cell monthly-todo-middle-col">';
     rowHtml += '<span class="monthly-todo-user">';
-    rowHtml += '<span class="monthly-todo-user-text">';
     rowHtml += '<span class="monthly-todo-user-name">' + kul + '</span>';
-    rowHtml += branchHtml;
-    rowHtml += '</span>';
     if (waUrl) {
       rowHtml += '<a class="' + waBtnClass + '" href="#" role="button" rel="noopener noreferrer" data-wa-url="' + escapeAttr(waUrl) + '" data-reminder-key="' + escapeAttr(reminderKey) + '" data-mtw-vid="' + escapeAttr(vid) + '" data-mtw-plate="' + escapeAttr(plateCompact) + '" data-mtw-type="' + escapeAttr(logShortCode) + '" data-mtw-field="' + escapeAttr(String(t.field != null ? t.field : '').trim()) + '" data-mtw-date="' + escapeAttr(logIsoDate) + '" aria-label="' + escapeAttr(waAria) + '" title="' + escapeAttr(waAria) + '">' + MONTHLY_TODO_WA_INLINE_SVG + '</a>';
     }
+    rowHtml += branchHtml;
     rowHtml += '</span>';
     rowHtml += '</span>';
     rowHtml += '<span class="monthly-todo-cell monthly-todo-desc-col">';
