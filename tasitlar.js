@@ -3915,17 +3915,52 @@
 
   /**
    * Ana aylık listede olmayan (vade bu ay değil) fakat turuncu/kırmızı uyarılı ve vadesi gelecek ay olan işler —
+<<<<<<< ours
+<<<<<<< ours
+   * bugünden itibaren 15 gün içindeyse modal özet önizlemesi.
+=======
    * yalnızca takip eden ayın ilk yarısı (1-15) için modal özet önizlemesi.
+>>>>>>> theirs
+=======
+   * yalnızca takip eden ayın ilk yarısı (1-15) için modal özet önizlemesi.
+>>>>>>> theirs
    */
   function monthlyOperationalDateTaskNextMonthSummaryPasses(rawDate, warning) {
+    const NEXT_MONTH_PREVIEW_DAYS = 15;
     if (rawDate == null || String(rawDate).trim() === '') return false;
     if (!warning || typeof warning !== 'object') return false;
     if (!warning.class) return false;
     if (typeof warning.days !== 'number' || warning.days < 0) return false;
     if (rawVehicleDateExpiryInCurrentCalendarMonth(rawDate)) return false;
     if (!rawVehicleDateExpiryInNextCalendarMonth(rawDate)) return false;
+<<<<<<< ours
+<<<<<<< ours
+    var targetDate = null;
+    if (typeof window.parseVehicleDateRawToIso === 'function') {
+      var iso = window.parseVehicleDateRawToIso(rawDate);
+      if (iso && /^\d{4}-\d{2}-\d{2}$/.test(iso)) {
+        var p = iso.split('-');
+        targetDate = new Date(parseInt(p[0], 10), parseInt(p[1], 10) - 1, parseInt(p[2], 10));
+      }
+    }
+    if (!targetDate) {
+      targetDate = new Date(String(rawDate).trim());
+    }
+    if (isNaN(targetDate.getTime())) return false;
+
+    var today = new Date();
+    today.setHours(0, 0, 0, 0);
+    targetDate.setHours(0, 0, 0, 0);
+    var remainingDays = Math.ceil((targetDate - today) / (1000 * 60 * 60 * 24));
+    return remainingDays >= 0 && remainingDays <= NEXT_MONTH_PREVIEW_DAYS;
+=======
     var dayOfMonth = rawVehicleDateDayOfMonth(rawDate);
     return !isNaN(dayOfMonth) && dayOfMonth >= 1 && dayOfMonth <= 15;
+>>>>>>> theirs
+=======
+    var dayOfMonth = rawVehicleDateDayOfMonth(rawDate);
+    return !isNaN(dayOfMonth) && dayOfMonth >= 1 && dayOfMonth <= 15;
+>>>>>>> theirs
   }
 
   var _vehicleDateTasksCache = null;
@@ -4801,6 +4836,22 @@
     return rowHtml;
   }
 
+<<<<<<< ours
+=======
+  function buildMonthlyTodoNextMonthSummaryHtml(mergedTasks, typeDescriptionMap, userMap) {
+    if (!mergedTasks || !mergedTasks.length) return '';
+    var html = '<div class="monthly-todo-next-month-preview" role="region" aria-label="Takip eden ay erken dönem bildirimleri">';
+    html += '<div class="monthly-todo-table-outer monthly-todo-table-outer--next-month">';
+    html += '<div class="monthly-todo-table-inner">';
+    html += '<div class="monthly-todo-list-scroll monthly-todo-list-scroll--next-month" role="list">';
+    mergedTasks.forEach(function(t) {
+      html += buildMonthlyTodoTaskRowHtml(t, userMap, typeDescriptionMap);
+    });
+    html += '</div></div></div></div>';
+    return html;
+  }
+
+>>>>>>> theirs
   function fillMonthlyTodoModalBody(bodyEl, tasksArray, nextPreviewTasks) {
     var nextPreviewRaw = Array.isArray(nextPreviewTasks) ? nextPreviewTasks : [];
     var typeDescriptionMap = {
