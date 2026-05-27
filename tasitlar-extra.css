@@ -3027,7 +3027,7 @@
   }
 
   #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h {
-    font-size: 11px;
+    font-size: 12px;
     letter-spacing: 0.03em;
   }
 
@@ -3036,7 +3036,7 @@
   }
 
   #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h-line--sub {
-    font-size: 10px;
+    font-size: 11px;
   }
 
   #monthly-todo-modal .monthly-todo-task-row {
@@ -3089,11 +3089,13 @@
 #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h {
   margin: 0;
   padding: 0;
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
   box-sizing: border-box;
   text-align: center;
-  justify-self: center;
+  justify-self: stretch;
   font-size: 11px;
   font-weight: 700;
   line-height: 1.25;
@@ -3131,7 +3133,7 @@
 
 #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h--desc {
   text-align: center;
-  justify-self: center;
+  justify-self: stretch;
 }
 
 @media (min-width: 641px) {
@@ -3351,6 +3353,18 @@
   color: #a0aec0;
 }
 
+#monthly-todo-modal .monthly-todo-middle-col .monthly-todo-user-text {
+  grid-column: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  max-width: 100%;
+  width: 100%;
+  box-sizing: border-box;
+}
+
 #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-user-name {
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -3361,11 +3375,32 @@
   word-break: normal;
   overflow-wrap: break-word;
   min-width: 0;
-  max-width: none;
+  max-width: 100%;
   box-sizing: border-box;
-  grid-column: 1;
   color: #a0aec0;
   text-align: center;
+}
+
+#monthly-todo-modal .monthly-todo-middle-col .monthly-todo-user-branch {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin-top: 2px;
+  font-size: 11px;
+  line-height: 1.12;
+  font-weight: 400;
+  color: #a0aec0;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (min-width: 641px) {
+  #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-user-branch {
+    font-size: 12px;
+  }
 }
 
 #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-wa-link {
