@@ -3002,7 +3002,7 @@
 #monthly-todo-modal .monthly-todo-col-header,
 #monthly-todo-modal .monthly-todo-task-row {
   display: grid;
-  grid-template-columns: minmax(44px, 17.5%) minmax(68px, 32.5%) minmax(0, 50%);
+  grid-template-columns: minmax(44px, 20fr) minmax(68px, 37fr) minmax(0, 46fr);
   column-gap: 8px;
   align-items: center;
 }
@@ -3058,11 +3058,6 @@
     gap: 3px;
   }
 
-  #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-user {
-    gap: 3px;
-    max-width: 100%;
-  }
-
   #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-wa-link svg {
     width: 15px;
     height: 15px;
@@ -3076,7 +3071,7 @@
 @media (min-width: 641px) {
   #monthly-todo-modal .monthly-todo-col-header,
   #monthly-todo-modal .monthly-todo-task-row {
-    grid-template-columns: minmax(52px, 17.5%) minmax(88px, 32.5%) minmax(0, 50%);
+    grid-template-columns: minmax(52px, 20fr) minmax(88px, 37fr) minmax(0, 46fr);
     column-gap: 10px;
   }
 }
@@ -3133,8 +3128,8 @@
 }
 
 #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h--desc {
-  text-align: left;
-  justify-self: stretch;
+  text-align: center;
+  justify-self: center;
 }
 
 @media (min-width: 641px) {
@@ -3346,11 +3341,9 @@
 }
 
 #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-user {
-  display: inline-flex;
-  flex-wrap: nowrap;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
+  position: relative;
+  display: block;
+  width: 100%;
   min-width: 0;
   max-width: 100%;
   color: #a0aec0;
@@ -3366,18 +3359,27 @@
   word-break: normal;
   overflow-wrap: break-word;
   min-width: 0;
-  flex: 0 1 auto;
+  width: 100%;
+  box-sizing: border-box;
   color: #a0aec0;
   text-align: center;
 }
 
+#monthly-todo-modal .monthly-todo-middle-col .monthly-todo-user:has(.monthly-todo-wa-link) .monthly-todo-user-name {
+  padding-inline-end: 28px;
+}
+
 #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-wa-link {
-  flex-shrink: 0;
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   margin: 0;
-  padding: 0;
+  padding: 6px;
   border: none;
   background: none;
   color: #25d366;
