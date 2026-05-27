@@ -4583,9 +4583,9 @@
     var html = '<div class="monthly-todo-col-header" aria-hidden="true">';
     html += '<span class="monthly-todo-col-h monthly-todo-col-h--middle">';
     html += '<span class="monthly-todo-col-h-line">Plaka</span>';
-    html += '<span class="monthly-todo-col-h-line monthly-todo-col-h-line--sub">Kullanıcı</span>';
+    html += '<span class="monthly-todo-col-h-line monthly-todo-col-h-line--sub">Marka-Model</span>';
     html += '</span>';
-    html += '<span class="monthly-todo-col-h">Marka/Model</span>';
+    html += '<span class="monthly-todo-col-h">Kullanıcı</span>';
     html += '<span class="monthly-todo-col-h monthly-todo-col-h--desc">Açıklama</span>';
     html += '</div>';
     return html;
@@ -4648,16 +4648,15 @@
     rowHtml += '<div class="monthly-todo-task-row' + rowTone + '" data-vehicle-id="' + escapeAttr(vid) + '" role="listitem" tabindex="0" aria-label="' + escapeAttr(ariaRow) + '">';
     rowHtml += '<span class="monthly-todo-cell monthly-todo-plate-col">';
     rowHtml += '<span class="monthly-todo-plate">' + plate + '</span>';
-    var userClass = 'monthly-todo-user' + (waUrl ? ' monthly-todo-user--has-wa' : '');
-    rowHtml += '<span class="' + userClass + '">';
+    rowHtml += '<span class="monthly-todo-brand">' + bm + '</span>';
+    rowHtml += '</span>';
+    rowHtml += '<span class="monthly-todo-cell monthly-todo-middle-col">';
+    rowHtml += '<span class="monthly-todo-user">';
     rowHtml += '<span class="monthly-todo-user-name">' + kul + '</span>';
     if (waUrl) {
       rowHtml += '<a class="' + waBtnClass + '" href="#" role="button" rel="noopener noreferrer" data-wa-url="' + escapeAttr(waUrl) + '" data-reminder-key="' + escapeAttr(reminderKey) + '" data-mtw-vid="' + escapeAttr(vid) + '" data-mtw-plate="' + escapeAttr(plateCompact) + '" data-mtw-type="' + escapeAttr(logShortCode) + '" data-mtw-field="' + escapeAttr(String(t.field != null ? t.field : '').trim()) + '" data-mtw-date="' + escapeAttr(logIsoDate) + '" aria-label="' + escapeAttr(waAria) + '" title="' + escapeAttr(waAria) + '">' + MONTHLY_TODO_WA_INLINE_SVG + '</a>';
     }
     rowHtml += '</span>';
-    rowHtml += '</span>';
-    rowHtml += '<span class="monthly-todo-cell monthly-todo-middle-col">';
-    rowHtml += '<span class="monthly-todo-brand">' + bm + '</span>';
     rowHtml += '</span>';
     rowHtml += '<span class="monthly-todo-cell monthly-todo-desc-col">';
     rowHtml += buildMonthlyTodoDescriptionHtml(descriptionPrefix, daysVal, dateRaw, dateShown);

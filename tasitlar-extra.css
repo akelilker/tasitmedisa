@@ -3005,7 +3005,7 @@
 #monthly-todo-modal .monthly-todo-col-header,
 #monthly-todo-modal .monthly-todo-task-row {
   display: grid;
-  grid-template-columns: minmax(44px, 20fr) minmax(68px, 37fr) minmax(0, 46fr);
+  grid-template-columns: minmax(52px, 28fr) minmax(72px, 34fr) minmax(0, 38fr);
   column-gap: 8px;
   align-items: center;
 }
@@ -3017,8 +3017,7 @@
 
   #monthly-todo-modal .monthly-todo-col-header,
   #monthly-todo-modal .monthly-todo-task-row {
-    /* Dar ekran: plaka sütunu geniş (TR plaka), açıklama payından oran kaydırılır */
-    grid-template-columns: minmax(52px, 26%) minmax(52px, 30%) minmax(0, 44%);
+    grid-template-columns: minmax(0, 30%) minmax(0, 32%) minmax(0, 38%);
     column-gap: 6px;
     align-items: center;
   }
@@ -3045,8 +3044,8 @@
   }
 
   #monthly-todo-modal .monthly-todo-cell,
-  #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-brand,
-  #monthly-todo-modal .monthly-todo-plate-col .monthly-todo-user,
+  #monthly-todo-modal .monthly-todo-plate-col .monthly-todo-brand,
+  #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-user,
   #monthly-todo-modal .monthly-todo-desc-col .monthly-todo-type {
     font-size: 12px;
     line-height: 1.28;
@@ -3061,7 +3060,7 @@
     gap: 3px;
   }
 
-  #monthly-todo-modal .monthly-todo-plate-col .monthly-todo-wa-link svg {
+  #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-wa-link svg {
     width: 15px;
     height: 15px;
   }
@@ -3074,7 +3073,7 @@
 @media (min-width: 641px) {
   #monthly-todo-modal .monthly-todo-col-header,
   #monthly-todo-modal .monthly-todo-task-row {
-    grid-template-columns: minmax(52px, 20fr) minmax(88px, 37fr) minmax(0, 46fr);
+    grid-template-columns: minmax(64px, 28fr) minmax(80px, 34fr) minmax(0, 38fr);
     column-gap: 10px;
   }
 }
@@ -3288,16 +3287,16 @@
   }
 }
 
-#monthly-todo-modal .monthly-todo-middle-col .monthly-todo-brand,
-#monthly-todo-modal .monthly-todo-plate-col .monthly-todo-user,
+#monthly-todo-modal .monthly-todo-plate-col .monthly-todo-brand,
+#monthly-todo-modal .monthly-todo-middle-col .monthly-todo-user,
 #monthly-todo-modal .monthly-todo-desc-col .monthly-todo-type {
   font-size: 12px;
   line-height: 1.3;
 }
 
 @media (min-width: 641px) {
-  #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-brand,
-  #monthly-todo-modal .monthly-todo-plate-col .monthly-todo-user,
+  #monthly-todo-modal .monthly-todo-plate-col .monthly-todo-brand,
+  #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-user,
   #monthly-todo-modal .monthly-todo-desc-col .monthly-todo-type {
     font-size: 13px;
     line-height: 1.35;
@@ -3318,7 +3317,7 @@
   white-space: nowrap;
 }
 
-#monthly-todo-modal .monthly-todo-middle-col .monthly-todo-brand {
+#monthly-todo-modal .monthly-todo-plate-col .monthly-todo-brand {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
@@ -3333,7 +3332,7 @@
   max-width: 100%;
 }
 
-#monthly-todo-modal .monthly-todo-plate-col .monthly-todo-user {
+#monthly-todo-modal .monthly-todo-middle-col .monthly-todo-user {
   position: relative;
   display: grid;
   grid-template-columns: 28px minmax(0, 1fr) 28px;
@@ -3344,7 +3343,7 @@
   color: #a0aec0;
 }
 
-#monthly-todo-modal .monthly-todo-plate-col .monthly-todo-user-name {
+#monthly-todo-modal .monthly-todo-middle-col .monthly-todo-user-name {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
@@ -3361,11 +3360,11 @@
   text-align: center;
 }
 
-#monthly-todo-modal .monthly-todo-plate-col .monthly-todo-user:has(.monthly-todo-wa-link) .monthly-todo-user-name {
+#monthly-todo-modal .monthly-todo-middle-col .monthly-todo-user:has(.monthly-todo-wa-link) .monthly-todo-user-name {
   padding-inline-end: 0;
 }
 
-#monthly-todo-modal .monthly-todo-plate-col .monthly-todo-wa-link {
+#monthly-todo-modal .monthly-todo-middle-col .monthly-todo-wa-link {
   position: static;
   grid-column: 3;
   justify-self: end;
@@ -3383,32 +3382,32 @@
   text-decoration: none;
 }
 
-#monthly-todo-modal .monthly-todo-plate-col .monthly-todo-wa-link svg {
+#monthly-todo-modal .monthly-todo-middle-col .monthly-todo-wa-link svg {
   display: block;
   width: 16px;
   height: 16px;
 }
 
-#monthly-todo-modal .monthly-todo-plate-col .monthly-todo-wa-link:focus {
+#monthly-todo-modal .monthly-todo-middle-col .monthly-todo-wa-link:focus {
   outline: none;
 }
 
-#monthly-todo-modal .monthly-todo-plate-col .monthly-todo-wa-link:focus-visible {
+#monthly-todo-modal .monthly-todo-middle-col .monthly-todo-wa-link:focus-visible {
   outline: 2px solid rgba(37, 211, 102, 0.85);
   outline-offset: 2px;
   border-radius: 2px;
 }
 
 /* Aylık özet: WhatsApp daha önce başlatılmış (sunucu log’u); genel .whatsapp-btn’lere dokunma */
-#monthly-todo-modal .monthly-todo-plate-col .monthly-todo-whatsapp-btn.is-reminder-opened {
+#monthly-todo-modal .monthly-todo-middle-col .monthly-todo-whatsapp-btn.is-reminder-opened {
   color: #718096;
   opacity: 0.92;
 }
-#monthly-todo-modal .monthly-todo-plate-col .monthly-todo-whatsapp-btn.is-reminder-opened:hover {
+#monthly-todo-modal .monthly-todo-middle-col .monthly-todo-whatsapp-btn.is-reminder-opened:hover {
   color: #94a3b8;
   opacity: 1;
 }
-#monthly-todo-modal .monthly-todo-plate-col .monthly-todo-whatsapp-btn.is-reminder-opened:focus-visible {
+#monthly-todo-modal .monthly-todo-middle-col .monthly-todo-whatsapp-btn.is-reminder-opened:focus-visible {
   outline-color: rgba(148, 163, 184, 0.9);
 }
 
