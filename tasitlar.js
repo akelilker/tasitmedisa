@@ -4801,8 +4801,7 @@
     return rowHtml;
   }
 
-  function fillMonthlyTodoModalBody(bodyEl, tasksArray, nextPreviewTasks) {
-    var nextPreviewRaw = Array.isArray(nextPreviewTasks) ? nextPreviewTasks : [];
+  function fillMonthlyTodoModalBody(bodyEl, tasksArray) {
     var typeDescriptionMap = {
       'Sigorta': 'Trafik Sigortasının',
       'Kasko': 'Kasko Poliçesinin',
@@ -4818,7 +4817,7 @@
     users.forEach(function(u) {
       if (u && u.id != null) userMap[String(u.id)] = u;
     });
-    var combinedRaw = dedupeMonthlyTodoOperationalTasks((tasksArray || []).concat(nextPreviewRaw));
+    var combinedRaw = dedupeMonthlyTodoOperationalTasks(tasksArray || []);
     var displayTasks = buildMonthlyTodoMergedDisplayTasks(combinedRaw);
     displayTasks.sort(function(a, b) {
       var da = typeof a.days === 'number' ? a.days : 9999;
@@ -4849,10 +4848,8 @@
     var bodyEl = root ? root.querySelector('.monthly-todo-modal-body') : null;
     if (!bodyEl) return;
     var cached = peekVehicleDateTasksCache();
-    var nextPreview = peekVehicleDateNextMonthPreviewCache();
-    var nextArr = Array.isArray(nextPreview) ? nextPreview : [];
     if (cached !== null) {
-      fillMonthlyTodoModalBody(bodyEl, cached, nextArr);
+      fillMonthlyTodoModalBody(bodyEl, cached);
       return;
     }
     bodyEl.innerHTML = '<div class="monthly-todo-empty">Yükleniyor…</div>';
@@ -4865,9 +4862,7 @@
       var be = modal.querySelector('.monthly-todo-modal-body');
       if (!be) return;
       var tasks = window.getVehicleDateTasks();
-      var nextAfter = peekVehicleDateNextMonthPreviewCache();
-      var nextAfterArr = Array.isArray(nextAfter) ? nextAfter : [];
-      fillMonthlyTodoModalBody(be, tasks, nextAfterArr);
+      fillMonthlyTodoModalBody(be, tasks);
     });
   }
 
