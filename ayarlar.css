@@ -583,7 +583,7 @@ body.modal-open #info-modal .modal-container {
     flex: 0 0 120px;
     padding-left: 8px;
     padding-right: 30px;
-    text-align: right;
+    text-align: center;
     font-size: 13px;
     font-weight: 700;
 }
@@ -660,10 +660,10 @@ body.modal-open #info-modal .modal-container {
 
 #required-documents-modal .required-k2-preview-row {
     display: grid;
-    grid-template-columns: 34px 120px 34px;
+    grid-template-columns: 120px 34px;
     align-items: center;
     justify-content: center;
-    column-gap: 10px;
+    column-gap: 8px;
     width: 100%;
     max-width: 100%;
     margin: 0 auto 4px auto;
@@ -672,7 +672,7 @@ body.modal-open #info-modal .modal-container {
 #required-documents-modal .required-k2-preview-link {
     width: 120px;
     height: 72px;
-    grid-column: 2;
+    grid-column: 1;
     border-radius: 8px;
     border: 1px solid rgba(255, 255, 255, 0.28);
     overflow: hidden;
@@ -726,7 +726,8 @@ body.modal-open #info-modal .modal-container {
     cursor: pointer;
     box-shadow: none;
     transition: color 0.2s ease, transform 0.2s ease;
-    grid-column: 3;
+    grid-column: 2;
+    justify-self: center;
 }
 
 #required-documents-modal .required-k2-add-btn:hover,
@@ -829,7 +830,7 @@ body.modal-open #info-modal .modal-container {
         max-width: 158px !important;
         flex-basis: 158px;
         padding-right: 27px !important;
-        text-align: right;
+        text-align: center;
     }
 
     #required-documents-modal .required-k2-date-picker-btn {
