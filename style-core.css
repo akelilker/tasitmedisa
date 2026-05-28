@@ -2368,6 +2368,17 @@ body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-
   box-shadow: inset 0 1px 0 rgba(236, 242, 250, 0.28), inset 0 -1px 0 rgba(0, 0, 0, 0.16) !important;
 }
 
+/* Küçük bilgi/onay modalları: genel 60px kilidinin üstünde kompakt başlık */
+#cache-confirm-modal .modal-header,
+#info-modal .modal-header,
+#tescil-tarih-confirm-modal .modal-header,
+#tescil-tarih-input-modal .modal-header {
+  height: 48px !important;
+  min-height: 48px !important;
+  max-height: 48px !important;
+  padding: 0 16px !important;
+}
+
 /* TÜM MODAL BAŞLIKLARI (H2) MUTLAK MERKEZE SABİTLEME – X butonu ile itişmesin */
 .modal-overlay .modal-header h2 {
   position: absolute !important;
@@ -2954,11 +2965,11 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     /* Hero mobilde havada + kırmızı (anasayfa ile eşit), dikey yükseklik +5px */
     .hero {
         min-height: 65px !important;
-        border-color: rgba(190, 198, 208, 0.82) !important;
+        border-color: rgba(148, 162, 178, 0.60) !important;
         box-shadow:
-            0 4px 16px rgba(0, 0, 0, 0.45),
-            0 4px 18px rgba(var(--theme-color-rgb), 0.06),
-            inset 0 1px 0 rgba(255, 255, 255, 0.20),
+            0 4px 16px rgba(0, 0, 0, 0.40),
+            0 4px 18px rgba(var(--theme-color-rgb), 0.045),
+            inset 0 1px 0 rgba(184, 198, 212, 0.20),
             inset 0 -1px 0 rgba(88, 97, 108, 0.32) !important;
     }
     
@@ -2967,7 +2978,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         letter-spacing: 2.5px;  /* Mobilde harfler arası boşluk 2.5px */
         font-size: clamp(calc(19px - 0.5pt), 5.5vw, calc(23px - 0.5pt)); /* Uzun başlıkta minimum düzeyde küçülebilir */
         /* Mobilde de krom görünüm korunsun; blur yok, metin keskin */
-        background: linear-gradient(to bottom, #c2d4df 0%, #ffffff 40%, #9aadba 52%, #d6e0e8 100%) !important;
+        background: linear-gradient(to bottom, #c2d4df 0%, #e4ecf2 38%, #9aadba 52%, #d6e0e8 100%) !important;
         -webkit-background-clip: text !important;
         background-clip: text !important;
         -webkit-text-fill-color: transparent !important;
@@ -2989,12 +3000,12 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         margin-right: -2px !important;
         padding: 12px 12px 12px 3px !important;
         box-sizing: border-box !important;
-        /* Mobil ana sayfa: metalik parlak gri (hafif krom; beyaz değil) */
-        border: 1px solid rgba(132, 150, 173, 0.78) !important;
+        /* Mobil ana sayfa: cold silver krom (bloom azaltılmış) */
+        border: 1px solid rgba(140, 158, 176, 0.60) !important;
         box-shadow:
-            0 4px 16px rgba(0, 0, 0, 0.45),
-            0 4px 18px rgba(var(--theme-color-rgb), 0.06),
-            inset 0 1px 0 rgba(196, 210, 228, 0.32),
+            0 4px 16px rgba(0, 0, 0, 0.40),
+            0 4px 18px rgba(var(--theme-color-rgb), 0.045),
+            inset 0 1px 0 rgba(184, 198, 212, 0.20),
             inset 0 -1px 0 rgba(28, 36, 50, 0.52) !important;
     }
     /* Anasayfa mobil header: logo+isim satırın altına (h1 ortada kalır); sol köşe için hafif içe */
@@ -3056,9 +3067,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         bottom: 19px; /* Mobil ana sayfa: kırmızı çizgi eski konumu */
         width: 88% !important;
         height: 2.7px !important;
-        opacity: 0.76 !important;
+        opacity: 0.72 !important;
         background: linear-gradient(90deg, rgba(var(--theme-color-rgb), 0.06), rgba(var(--theme-color-rgb), 0.9) 50%, rgba(var(--theme-color-rgb), 0.06)) !important;
-        box-shadow: 0 2px 12px rgba(var(--theme-color-rgb), 0.36) !important;
+        box-shadow: 0 2px 10px rgba(var(--theme-color-rgb), 0.30) !important;
     }
     /* Ayarlar/bildirim satırı: sağ kenara yapışmayı önle (safe-area + nefes) */
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .icons-row {
@@ -3193,16 +3204,16 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         min-height: 44px !important;
     }
     
-    /* Ana sayfa butonları mobilde: başlık çerçevesinden ağır görünmesin */
+    /* Ana sayfa butonları mobilde: hero ile aynı cold silver çerçeve */
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .menu-btn {
         height: auto; /* 54px sabitini bırak */
         min-height: 62px;
         padding: 14px 18px;
         overflow: visible;
         box-shadow:
-            0 4px 14px rgba(0, 0, 0, 0.25),
-            inset 0 1px 0 rgba(196, 210, 228, 0.22);
-        border: 1px solid rgba(132, 150, 173, 0.78) !important;
+            0 4px 14px rgba(0, 0, 0, 0.22),
+            inset 0 1px 0 rgba(184, 198, 212, 0.20);
+        border: 1px solid rgba(140, 158, 176, 0.60) !important;
     }
     
     /* Menü butonları arası dikey boşluk mobilde kompakt */
@@ -3268,7 +3279,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     .menu-btn .ttl {
         font-size: clamp(16px, 3.35vw, 18px) !important;
         letter-spacing: 1.5px;
-        text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);  /* Havada, metin berrak */
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.22);  /* Havada, bloom azaltılmış */
     }
     
     /* Mobil: Kullanıcı paneli giriş butonu 2px aşağı */
@@ -3308,6 +3319,42 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         width: 100% !important;
         max-width: 100% !important;
         box-sizing: border-box !important;
+    }
+
+    /* Mobil notification soften — 769+ ile aynı yoğunluk bandı (yalnızca mevcut !important border/glow ile çakışan özellikler) */
+    #notifications-dropdown .notification-item.date-warning-red-border {
+        border-color: rgba(var(--theme-color-rgb), 0.52) !important;
+        box-shadow: 0 0 10px rgba(var(--theme-color-rgb), 0.16) !important;
+    }
+    #notifications-dropdown .notification-item.date-warning-orange-border {
+        border-color: rgba(var(--orange-warn-rgb), 0.38) !important;
+        box-shadow: none !important;
+    }
+    #notifications-dropdown .kasko-excel-notification {
+        border-color: rgba(var(--theme-color-rgb), 0.48) !important;
+        box-shadow: 0 0 9px rgba(var(--theme-color-rgb), 0.14) !important;
+    }
+    #notifications-dropdown.settings-dropdown > .notification-item.date-warning-red-border:not(.kasko-excel-notification):is(:hover, :focus, :active, :focus-visible),
+    #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border:is(:hover, :focus, :active, :focus-visible) {
+        border-color: rgba(var(--theme-color-rgb), 0.82) !important;
+        background: rgba(var(--theme-color-rgb), 0.10) !important;
+        box-shadow: 0 0 8px rgba(var(--theme-color-rgb), 0.16) !important;
+        transform: scale(1.006) !important;
+    }
+    #notifications-dropdown.settings-dropdown > .notification-item.date-warning-orange-border:not(.mtv-notification):is(:hover, :focus, :active, :focus-visible),
+    #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible) {
+        border-color: rgba(var(--orange-warn-rgb), 0.72) !important;
+        background: rgba(var(--orange-warn-rgb), 0.10) !important;
+        box-shadow: none !important;
+        transform: scale(1.006) !important;
+    }
+    #notifications-dropdown.settings-dropdown > .notification-item.date-warning-red-border:is(:hover, :focus, :active, :focus-visible),
+    #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border:is(:hover, :focus, :active, :focus-visible) {
+        transform: scale(1.006) !important;
+    }
+    #notifications-dropdown.settings-dropdown > .notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible),
+    #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible) {
+        transform: scale(1.006) !important;
     }
     
     /* Mobil bildirimlerde metin boyutları 1 punto büyütüldü */
@@ -3557,8 +3604,10 @@ body.modal-open .app-container {
 #tescil-tarih-confirm-modal .modal-header,
 #tescil-tarih-input-modal .modal-header {
     background: var(--modal-header-red-gradient);
-    padding: 8px 20px;
-    height: 60px;
+    padding: 0 16px;
+    height: 48px;
+    min-height: 48px;
+    max-height: 48px;
     display: flex;
     justify-content: center;
     align-items: center;
