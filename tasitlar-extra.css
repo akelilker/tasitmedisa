@@ -3347,6 +3347,11 @@
   color: #a0aec0;
 }
 
+#monthly-todo-modal .monthly-todo-middle-col .monthly-todo-user:not(:has(.monthly-todo-wa-link)) {
+  grid-template-columns: minmax(0, 1fr);
+  column-gap: 0;
+}
+
 #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-user-name {
   grid-column: 1;
   grid-row: 1;
@@ -3366,7 +3371,7 @@
 }
 
 #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-user-branch {
-  grid-column: 1 / -1;
+  grid-column: 1;
   grid-row: 2;
   display: block;
   width: 100%;
