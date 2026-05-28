@@ -937,7 +937,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
 
 /* Bildirim simgesi renkleri */
 .icon-btn.notification-red {
-  color: #e0445e !important;
+  color: var(--theme-color) !important;
 }
 .icon-btn.notification-orange {
   color: #f2b13f !important;
@@ -3189,10 +3189,13 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         width: 24px !important;
         height: 24px !important;
     }
+    .icons-row-right {
+        gap: 8px;
+    }
     #notifications-toggle-btn.notification-red .notifications-engine-icon,
     #notifications-toggle-btn.notification-orange .notifications-engine-icon {
-        width: 24px !important;
-        height: 24px !important;
+        width: 28px !important;
+        height: 28px !important;
     }
     .icons-row .icon-btn {
         padding: 8px !important;
