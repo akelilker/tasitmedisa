@@ -569,33 +569,20 @@ body.modal-open #info-modal .modal-container {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 4px;
     max-width: 120px;
     width: 120px;
-    height: 34px;
-    min-height: 34px;
     margin: 0 auto;
     position: relative;
-    box-sizing: border-box;
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    border-radius: 6px;
-    background-color: var(--bg-content, #0d131f);
-}
-
-#required-documents-modal .required-k2-date-picker:focus-within {
-    border-color: var(--theme-color, #d40000);
 }
 
 #required-documents-modal #required-k2-expiry-date {
-    width: auto;
-    max-width: none;
-    height: auto;
-    min-height: 0;
-    flex: 0 1 auto;
-    padding: 0;
-    border: 0 !important;
-    background: transparent !important;
-    box-shadow: none !important;
+    width: 120px;
+    max-width: 120px;
+    height: 34px;
+    min-height: 34px;
+    flex: 0 0 120px;
+    padding-left: 8px;
+    padding-right: 30px;
     font-size: 13px;
     font-weight: 700;
 }
@@ -750,18 +737,20 @@ body.modal-open #info-modal .modal-container {
 }
 
 #required-documents-modal .required-k2-date-picker-btn {
-    width: 18px;
-    height: 18px;
-    flex: 0 0 18px;
+    width: 34px;
+    height: 34px;
+    flex: 0 0 34px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     border: 0;
-    border-radius: 0;
+    border-radius: 8px;
     background: transparent;
     color: #8f98a6;
     cursor: pointer;
-    padding: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
 }
 
 #required-documents-modal .required-k2-date-picker-btn:hover,
@@ -834,10 +823,22 @@ body.modal-open #info-modal .modal-container {
         max-width: 158px;
     }
 
+    #required-documents-modal #required-k2-expiry-date {
+        width: 158px !important;
+        max-width: 158px !important;
+        flex-basis: 158px;
+        padding-right: 28px;
+    }
+
+    #required-documents-modal #required-k2-expiry-date::-webkit-calendar-picker-indicator {
+        margin-left: 4px;
+        padding: 0;
+    }
+
     #required-documents-modal .required-k2-date-picker-btn {
-        width: 18px;
-        height: 18px;
-        flex-basis: 18px;
+        width: 28px;
+        height: 28px;
+        flex-basis: 28px;
     }
 }
 
