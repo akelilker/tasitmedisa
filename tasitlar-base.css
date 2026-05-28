@@ -158,9 +158,11 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 }
 @media (max-width: 640px) {
     #monthly-todo-header-btn .monthly-todo-header-badge {
-        top: -2px;
-        right: -6px;
-        font-size: 10px;
+        top: -3px;
+        right: -7px;
+        font-size: 12px;
+        font-weight: 700;
+        line-height: 1;
     }
 }
 
