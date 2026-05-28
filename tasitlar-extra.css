@@ -2999,6 +2999,14 @@
     align-items: center;
   }
 
+  #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h {
+    font-size: 12px;
+  }
+
+  #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h-line--sub {
+    font-size: 11px;
+  }
+
   #monthly-todo-modal .monthly-todo-task-row .monthly-todo-middle-col .monthly-todo-user {
     display: grid;
     --monthly-todo-wa-track: 18px;
