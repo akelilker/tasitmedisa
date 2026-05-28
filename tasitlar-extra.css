@@ -3000,11 +3000,11 @@
   }
 
   #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h {
-    font-size: 12px;
+    font-size: 13px;
   }
 
   #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h-line--sub {
-    font-size: 11px;
+    font-size: 12px;
   }
 
   #monthly-todo-modal .monthly-todo-task-row .monthly-todo-middle-col .monthly-todo-user {
@@ -3065,7 +3065,7 @@
   box-sizing: border-box;
   padding: 4px 8px 8px 10px;
   margin-bottom: 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(var(--theme-color-rgb), 0.46);
 }
 
 #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h {
@@ -3078,7 +3078,7 @@
   box-sizing: border-box;
   text-align: center;
   justify-self: stretch;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   line-height: 1.25;
   color: #ffffff;
@@ -3108,7 +3108,7 @@
 }
 
 #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h-line--sub {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.03em;
 }
@@ -3126,10 +3126,10 @@
     padding-bottom: 2px;
   }
   #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h {
-    font-size: 12px;
+    font-size: 13px;
   }
   #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h-line--sub {
-    font-size: 11px;
+    font-size: 12px;
   }
 }
 
@@ -3194,7 +3194,7 @@
   padding: 6px 8px 6px 10px;
   border: none;
   border-radius: 0;
-  border-bottom: 1px solid rgba(var(--theme-color-rgb), 0.34);
+  border-bottom: 1px solid rgba(var(--theme-color-rgb), 0.46);
   color: #a0aec0;
   cursor: pointer;
   text-align: left;
