@@ -1256,10 +1256,10 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
 
 /* Bildirim dropdown: kaydırılabilir, scrollbar gizli; kartlar arası dikey 6px (çifte margin yok) */
 #notifications-dropdown {
-  --notif-red: #e0445e;
-  --notif-red-rgb: 224, 68, 94;
-  --notif-amber: #f2b13f;
-  --notif-amber-rgb: 242, 177, 63;
+  --notif-red: var(--theme-color);
+  --notif-red-rgb: var(--theme-color-rgb);
+  --notif-amber: var(--orange-warn);
+  --notif-amber-rgb: var(--orange-warn-rgb);
   overflow-y: auto !important;
   overflow-x: hidden !important;
   -webkit-overflow-scrolling: touch;
