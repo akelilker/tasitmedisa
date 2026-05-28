@@ -548,12 +548,12 @@ body.modal-open #info-modal .modal-container {
 
     #required-documents-modal .modal-body > .u-p-16:has(> .required-k2-section-title) > .required-k2-date-section .form-label {
         display: block;
-        width: 120px !important;
-        max-width: 120px !important;
+        width: 158px !important;
+        max-width: 158px !important;
         margin-left: 0 !important;
         margin-right: 0 !important;
         align-self: stretch;
-        text-align: left;
+        text-align: center;
         margin-bottom: 6px;
     }
 
@@ -814,8 +814,8 @@ body.modal-open #info-modal .modal-container {
     }
 
     #required-documents-modal .required-k2-date-section .form-label {
-        width: 100% !important;
-        text-align: left !important;
+        width: 158px !important;
+        text-align: center !important;
     }
 
     #required-documents-modal .required-k2-date-picker {
