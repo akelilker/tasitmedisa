@@ -3112,6 +3112,12 @@
 }
 
 @media (min-width: 641px) {
+  #monthly-todo-modal .monthly-todo-modal-body:has(.monthly-todo-sheet) {
+    padding-top: 0 !important;
+  }
+  #monthly-todo-modal .monthly-todo-col-header {
+    padding-bottom: 2px;
+  }
   #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h {
     font-size: 12px;
   }
