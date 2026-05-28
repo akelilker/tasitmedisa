@@ -1560,8 +1560,12 @@
   function formatNotificationFirstSeenDisplay(value) {
     const raw = String(value || '').trim();
     const ms = parseNotificationFirstSeenMs(raw);
-    if (/^\d+$/.test(raw) && ms > 0) {
-      return formatDateForDisplay(new Date(ms).toISOString()) || raw;
+    if (ms > 0) {
+      const parsedDate = new Date(ms);
+      const d = String(parsedDate.getDate()).padStart(2, '0');
+      const m = String(parsedDate.getMonth() + 1).padStart(2, '0');
+      const y = String(parsedDate.getFullYear());
+      return d + '/' + m + '/' + y;
     }
     return raw || '-';
   }
