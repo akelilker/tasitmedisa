@@ -3022,44 +3022,6 @@
     align-items: center;
   }
 
-  #monthly-todo-modal .monthly-todo-col-header {
-    padding: 2px 5px 6px 8px;
-  }
-
-  #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h {
-    font-size: 12px;
-    letter-spacing: 0.03em;
-  }
-
-  #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h--middle {
-    gap: 1px;
-  }
-
-  #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h-line--sub {
-    font-size: 11px;
-  }
-
-  #monthly-todo-modal .monthly-todo-task-row {
-    padding: 7px 5px 7px 8px;
-  }
-
-  #monthly-todo-modal .monthly-todo-cell,
-  #monthly-todo-modal .monthly-todo-plate-col .monthly-todo-brand,
-  #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-user,
-  #monthly-todo-modal .monthly-todo-desc-col .monthly-todo-type {
-    font-size: 12px;
-    line-height: 1.28;
-  }
-
-  #monthly-todo-modal .monthly-todo-plate-col .monthly-todo-plate {
-    font-size: 13px;
-    letter-spacing: 0.01em;
-  }
-
-  #monthly-todo-modal .monthly-todo-middle-col {
-    gap: 3px;
-  }
-
   #monthly-todo-modal .monthly-todo-task-row .monthly-todo-middle-col .monthly-todo-user {
     display: grid;
     grid-template-columns: minmax(0, 1fr) 18px;
@@ -3101,21 +3063,11 @@
     font-size: 11px;
     text-align: center;
   }
-
-  #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-wa-link svg {
-    width: 16px;
-    height: 16px;
-  }
-
-  #monthly-todo-modal .monthly-todo-type .monthly-todo-description-meta {
-    font-size: 11px;
-  }
 }
 
 @media (min-width: 641px) {
   #monthly-todo-modal .monthly-todo-col-header,
   #monthly-todo-modal .monthly-todo-task-row {
-    grid-template-columns: minmax(0, 30%) minmax(0, 25%) minmax(0, 45%);
     column-gap: 10px;
   }
 }
@@ -3231,9 +3183,6 @@
   touch-action: pan-y !important;
   padding-bottom: 16px;
   box-sizing: border-box;
-}
-
-#monthly-todo-modal .monthly-todo-list-scroll {
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
