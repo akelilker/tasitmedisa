@@ -4657,7 +4657,7 @@
       'Sigorta': 'Trafik Sigortasının',
       'Kasko': 'Kasko Poliçesinin',
       'Sigorta + Kasko': 'Trafik Sigortası ve Kasko Poliçesinin',
-      'Muayene': 'Genel Muayenenin',
+      'Muayene': 'Genel Muayenesinin',
       'Egzoz Muayene': 'Egzoz Muayenesinin',
       'Muayene + Egzoz': 'Genel Muayene ve Egzoz Muayenesinin',
       'K2 Belgesi': 'K2 Belgesinin',
