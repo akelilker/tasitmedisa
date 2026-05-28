@@ -2237,6 +2237,7 @@
         if (wrap && e.target && typeof e.target.closest === 'function' && wrap.contains(e.target)) {
             return;
         }
+        const input = container.querySelector('.stok-search-input');
         closeStokSearch(container, input, true);
         removeStokSearchOutsideListener();
     }
