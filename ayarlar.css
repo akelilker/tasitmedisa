@@ -804,26 +804,26 @@ body.modal-open #info-modal .modal-container {
     }
 
     #required-documents-modal .required-k2-date-section {
-        width: min(100%, 280px) !important;
-        max-width: 280px !important;
+        width: 158px !important;
+        max-width: 158px !important;
         margin-left: auto !important;
         margin-right: auto !important;
-        flex-direction: row !important;
+        flex-direction: column !important;
         align-items: center !important;
-        justify-content: center;
-        gap: 12px;
-        text-align: left;
+        justify-content: flex-start;
+        gap: 0;
+        text-align: center;
     }
 
     #required-documents-modal .required-k2-date-section .form-label {
-        width: auto !important;
-        margin-bottom: 0 !important;
-        white-space: nowrap;
-        text-align: left !important;
+        width: 100% !important;
+        max-width: 158px !important;
+        margin-bottom: 6px !important;
+        text-align: center !important;
     }
 
     #required-documents-modal .required-k2-date-picker {
-        flex: 0 0 158px;
+        flex: 0 0 auto;
         width: 158px;
         max-width: 158px;
     }
