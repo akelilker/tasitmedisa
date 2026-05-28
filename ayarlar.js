@@ -3059,8 +3059,8 @@
         ['vehicle_column_order', 'stok_active_columns', 'stok_column_order', 'stok_base_column_order'].forEach(k => localStorage.removeItem(k));
         
         const backupResultMessage = result.serverBackup
-          ? 'Veriler Sunucuya Yedeklendi Ve Tarayıcı Belleği Temizlendi!\n\nYedek korundu. Geri yüklemek için Ayarlar > Veri Yedekleme > Son Yedekten Geri Yükle kullanın.\n\nSayfa Yenilenecek.'
-          : 'Sunucuya Yedekleme Yapılamadı Ancak Yerel Yedek Korunarak Tarayıcı Belleği Temizlendi!\n\nGeri yüklemek için Ayarlar > Veri Yedekleme > Son Yedekten Geri Yükle kullanın.\n\nSayfa Yenilenecek.';
+          ? 'Veriler sunucuya yedeklendi ve tarayıcı belleği temizlendi.'
+          : 'Yerel yedek korunarak tarayıcı belleği temizlendi.';
         window.showInfoModal(backupResultMessage);
         
         // 3. Sayfayı yenile
