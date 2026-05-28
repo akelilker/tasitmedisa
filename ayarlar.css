@@ -808,22 +808,16 @@ body.modal-open #info-modal .modal-container {
         max-width: 158px !important;
         margin-left: auto !important;
         margin-right: auto !important;
-        flex-direction: column !important;
-        align-items: center !important;
-        justify-content: flex-start;
-        gap: 0;
-        text-align: center;
+        align-items: stretch !important;
+        text-align: left;
     }
 
     #required-documents-modal .required-k2-date-section .form-label {
         width: 100% !important;
-        max-width: 158px !important;
-        margin-bottom: 6px !important;
-        text-align: center !important;
+        text-align: left !important;
     }
 
     #required-documents-modal .required-k2-date-picker {
-        flex: 0 0 auto;
         width: 158px;
         max-width: 158px;
     }
