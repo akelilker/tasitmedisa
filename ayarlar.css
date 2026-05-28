@@ -515,7 +515,8 @@ body.modal-open #info-modal .modal-container {
 }
 
 #required-documents-modal .required-k2-date-section .form-label {
-    text-align: left;
+    width: 158px;
+    text-align: center;
     font-size: 12px;
     line-height: 1.25;
     margin-bottom: 8px;
