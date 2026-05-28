@@ -917,7 +917,7 @@ document.addEventListener('DOMContentLoaded', () => {
 var MEDISA_MODULE_VERSIONS = {
   tasitlar: '20260528.2',
   raporlar: '20260523.4',
-  kayitJs: '20260518.1',
+  kayitJs: '20260528.1',
   kayitCss: '20260519.1',
   ayarlarJs: '20260519.1',
   ayarlarCss: '20260524.1'

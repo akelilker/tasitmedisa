@@ -409,6 +409,7 @@
       var nativeInput = document.createElement('input');
       nativeInput.type = 'date';
       nativeInput.className = 'vehicle-date-picker-native';
+      nativeInput.setAttribute('autocomplete', 'off');
 
       var label = input.id ? document.querySelector('label[for="' + input.id + '"]') : null;
       var labelText = label ? String(label.textContent || '').trim() : '';
