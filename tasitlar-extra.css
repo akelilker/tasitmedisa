@@ -3017,7 +3017,7 @@
 
   #monthly-todo-modal .monthly-todo-col-header,
   #monthly-todo-modal .monthly-todo-task-row {
-    grid-template-columns: minmax(0, 30%) minmax(0, 25%) minmax(0, 45%);
+    grid-template-columns: minmax(0, 29%) minmax(0, 28%) minmax(0, 43%);
     column-gap: 6px;
     align-items: center;
   }
@@ -3062,9 +3062,9 @@
 
   #monthly-todo-modal .monthly-todo-task-row .monthly-todo-middle-col .monthly-todo-user {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 20px;
+    grid-template-columns: minmax(0, 1fr) 18px;
     grid-template-rows: auto auto;
-    column-gap: 3px;
+    column-gap: 2px;
     row-gap: 2px;
     align-items: center;
     justify-content: center;
@@ -3103,8 +3103,8 @@
   }
 
   #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-wa-link svg {
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
   }
 
   #monthly-todo-modal .monthly-todo-type .monthly-todo-description-meta {
