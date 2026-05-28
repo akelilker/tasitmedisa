@@ -804,18 +804,22 @@ body.modal-open #info-modal .modal-container {
     }
 
     #required-documents-modal .required-k2-date-section {
-        max-width: 204px;
+        width: 158px !important;
+        max-width: 158px !important;
         margin-left: auto !important;
         margin-right: auto !important;
-        text-align: center;
+        align-items: stretch !important;
+        text-align: left;
     }
 
     #required-documents-modal .required-k2-date-section .form-label {
-        text-align: center;
+        width: 100% !important;
+        text-align: left !important;
     }
 
     #required-documents-modal .required-k2-date-picker {
-        max-width: 204px;
+        width: 158px;
+        max-width: 158px;
     }
 
     #required-documents-modal #required-k2-expiry-date {
