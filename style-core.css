@@ -3321,10 +3321,19 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         box-sizing: border-box !important;
     }
 
-    /* Mobil notification soften — 769+ ile aynı yoğunluk bandı (yalnızca mevcut !important border/glow ile çakışan özellikler) */
+    /* Mobil notification soften — border + metin (glow değerleri aynı) */
     #notifications-dropdown .notification-item.date-warning-red-border {
-        border-color: rgba(var(--theme-color-rgb), 0.52) !important;
+        border-color: rgba(var(--theme-color-rgb), 0.43) !important;
         box-shadow: 0 0 10px rgba(var(--theme-color-rgb), 0.16) !important;
+    }
+    #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border .notif-line1,
+    #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border .notif-title,
+    #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border .notif-line1 .date-warning-red {
+        color: #c43a52 !important;
+    }
+    #notifications-dropdown .notification-item.date-warning-red-border .notif-line2,
+    #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border .notif-line2.notif-meta-date {
+        color: rgba(194, 52, 68, 0.76) !important;
     }
     #notifications-dropdown .notification-item.date-warning-orange-border {
         border-color: rgba(var(--orange-warn-rgb), 0.38) !important;
