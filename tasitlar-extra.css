@@ -3024,9 +3024,11 @@
 
   #monthly-todo-modal .monthly-todo-task-row .monthly-todo-middle-col .monthly-todo-user {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 18px;
+    --monthly-todo-wa-track: 18px;
+    --monthly-todo-wa-gap: 2px;
+    grid-template-columns: minmax(0, 1fr) var(--monthly-todo-wa-track);
     grid-template-rows: auto auto;
-    column-gap: 2px;
+    column-gap: var(--monthly-todo-wa-gap);
     row-gap: 2px;
     align-items: center;
     justify-content: center;
@@ -3034,6 +3036,8 @@
   }
 
   #monthly-todo-modal .monthly-todo-task-row .monthly-todo-middle-col .monthly-todo-user:not(:has(.monthly-todo-wa-link)) {
+    --monthly-todo-wa-track: 0px;
+    --monthly-todo-wa-gap: 0px;
     grid-template-columns: minmax(0, 1fr);
     column-gap: 0;
   }
@@ -3055,7 +3059,7 @@
   }
 
   #monthly-todo-modal .monthly-todo-task-row .monthly-todo-middle-col .monthly-todo-user-branch {
-    grid-column: 1;
+    grid-column: 1 / -1;
     grid-row: 2;
     justify-self: stretch;
     width: 100%;
@@ -3335,9 +3339,11 @@
 #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-user {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 24px;
+  --monthly-todo-wa-track: 24px;
+  --monthly-todo-wa-gap: 6px;
+  grid-template-columns: minmax(0, 1fr) var(--monthly-todo-wa-track);
   grid-template-rows: auto auto;
-  column-gap: 6px;
+  column-gap: var(--monthly-todo-wa-gap);
   row-gap: 1px;
   align-items: center;
   width: 100%;
@@ -3348,6 +3354,8 @@
 }
 
 #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-user:not(:has(.monthly-todo-wa-link)) {
+  --monthly-todo-wa-track: 0px;
+  --monthly-todo-wa-gap: 0px;
   grid-template-columns: minmax(0, 1fr);
   column-gap: 0;
 }
@@ -3371,7 +3379,7 @@
 }
 
 #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-user-branch {
-  grid-column: 1;
+  grid-column: 1 / -1;
   grid-row: 2;
   display: block;
   width: 100%;
@@ -3384,6 +3392,7 @@
   font-weight: 400;
   color: #a0aec0;
   text-align: center;
+  transform: translateX(calc((var(--monthly-todo-wa-track, 0px) + var(--monthly-todo-wa-gap, 0px)) / -2));
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
