@@ -19,6 +19,11 @@
       return !(isiOS && (isStandalone || window.navigator.standalone === true));
     }
 
+    function syncSettingsOpenState() {
+      const settingsMenu = document.getElementById('settings-menu');
+      document.body.classList.toggle('settings-open', !!(settingsMenu && settingsMenu.classList.contains('open')));
+    }
+
     let activeUserFormCustomSelect = null;
     let userFormSelectedVehicleIds = [];
 
@@ -505,6 +510,7 @@
     window.openZorunluEvraklar = function openZorunluEvraklar() {
       const settingsMenu = document.getElementById('settings-menu');
       if (settingsMenu) settingsMenu.classList.remove('open');
+      syncSettingsOpenState();
       const modal = document.getElementById('required-documents-modal');
       if (!modal) return;
       refreshZorunluEvraklarK2View();
@@ -518,7 +524,10 @@
       const modal = document.getElementById('required-documents-modal');
       if (!modal) return;
       modal.classList.remove('active');
-      setTimeout(() => modal.style.display = 'none', 300);
+      setTimeout(() => {
+        modal.style.display = 'none';
+        syncSettingsOpenState();
+      }, 300);
     };
 
     window.viewZorunluEvrakK2 = function viewZorunluEvrakK2() {
