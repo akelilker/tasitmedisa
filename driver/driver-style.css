@@ -7256,8 +7256,12 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     min-width: 12ch !important;
     max-width: 12ch !important;
     white-space: nowrap !important;
-    text-align: left !important;
-    justify-self: start !important;
+    text-align: right !important;
+    justify-self: stretch !important;
+  }
+
+  .dashboard-page .driver-plate-dropdown-item-separator {
+    margin-left: -4px !important;
   }
 
   .dashboard-page .driver-plate-dropdown-item-separator,
