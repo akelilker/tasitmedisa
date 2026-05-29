@@ -695,11 +695,7 @@ body.dashboard-page {
     margin: 0 !important;
   }
   .dashboard-page .driver-below-hero-row .driver-btn-password {
-    color: #5889b5 !important;
-  }
-  .dashboard-page .driver-below-hero-row .driver-btn-password:hover,
-  .dashboard-page .driver-below-hero-row .driver-btn-password:focus {
-    color: #6a9bc4 !important;
+    display: none !important;
   }
   .dashboard-page .driver-below-hero-row .driver-btn-header-logout {
     color: rgba(236, 46, 46, 0.9) !important;
@@ -722,14 +718,6 @@ body.dashboard-page {
   .dashboard-page .driver-below-hero-row .driver-btn-history .driver-btn-history-icon {
     width: 23px !important;
     height: 23px !important;
-  }
-  .dashboard-page .driver-below-hero-row .driver-btn-password .driver-btn-password-icon {
-    width: 26px !important;
-    height: 26px !important;
-    stroke-width: 2 !important;
-    position: relative !important;
-    top: 0 !important;
-    transform: translateY(-3px) !important;
   }
   .dashboard-page .driver-below-hero-row .driver-btn-header-logout .driver-btn-header-logout-icon {
     width: 24px !important;
@@ -808,6 +796,8 @@ body.dashboard-page {
     min-height: 0;
     overflow-y: auto !important;
     overflow-x: hidden !important;
+    display: flex;
+    flex-direction: column;
   }
   /* Açıklama alt satıra inince etiket–açıklama arası 0; etiket+açıklama arası 1.6px (masaüstü) */
   .dashboard-page .driver-left-panel .driver-info-item:has(.value) {
@@ -822,10 +812,10 @@ body.dashboard-page {
   .dashboard-page .driver-left-quick-actions {
     display: grid;
     flex: 0 0 auto;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 4px;
-    margin-top: 2px;
-    padding-top: 0;
+    margin-top: auto;
+    padding-top: 2px;
     border-top: none;
   }
   /* Büyük ticari/kamyon: sol panel yoğun mod (masaüstü, class ile) */
@@ -846,9 +836,10 @@ body.dashboard-page {
     line-height: 1.18;
   }
   .dashboard-page .driver-dashboard-container.driver-heavy-commercial-active .driver-left-quick-actions {
-    margin-top: 0;
+    margin-top: auto;
     margin-bottom: 2px;
     gap: 3px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     transform: none;
   }
   .dashboard-page .driver-dashboard-container.driver-heavy-commercial-active .driver-left-quick-action {
@@ -913,9 +904,17 @@ body.dashboard-page {
     transition: transform 0.18s ease, color 0.18s ease, filter 0.18s ease;
   }
   .dashboard-page .driver-left-quick-action-documents .driver-left-quick-action-icon,
-  .dashboard-page .driver-left-quick-action-feedback .driver-left-quick-action-icon {
+  .dashboard-page .driver-left-quick-action-feedback .driver-left-quick-action-icon,
+  .dashboard-page .driver-left-quick-action-password .driver-left-quick-action-icon {
     width: 24px;
     height: 24px;
+  }
+  .dashboard-page .driver-left-quick-action-password .driver-left-quick-action-icon {
+    transform: translateY(-5px);
+  }
+  .dashboard-page .driver-left-quick-action-password:hover .driver-left-quick-action-icon,
+  .dashboard-page .driver-left-quick-action-password:focus-visible .driver-left-quick-action-icon {
+    transform: translateY(-5px) scale(1.18);
   }
   .dashboard-page .driver-left-quick-action:hover,
   .dashboard-page .driver-left-quick-action:focus-visible {
@@ -1746,16 +1745,16 @@ body.dashboard-page:has(#driver-notifications-dropdown.open) .driver-header-fixe
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 10050;
-    width: min(340px, calc(100vw - 32px));
-    min-height: 150px;
-    padding: 18px 14px;
+    width: min(380px, calc(100vw - 24px));
+    min-height: 0;
+    padding: 0;
     margin: 0;
-    background: var(--bg);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 12px;
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.65), 0 2px 8px rgba(var(--theme-color-rgb), 0.10);
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 8px;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
     align-items: center;
     visibility: hidden;
     opacity: 0;
@@ -1769,18 +1768,18 @@ body.dashboard-page:has(#driver-notifications-dropdown.open) .driver-header-fixe
   }
   .dashboard-page .driver-vehicle-shortcuts-item {
     display: grid;
-    grid-template-rows: 46px 34px;
+    grid-template-rows: 52px 38px;
     align-items: center;
     justify-items: center;
-    gap: 6px;
-    min-height: 112px;
-    padding: 12px 6px;
+    gap: 8px;
+    min-height: 128px;
+    padding: 14px 8px;
     border: none;
     border-radius: 8px;
     background: transparent;
     color: #a0aec0;
     font: inherit;
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 600;
     line-height: 1.2;
     text-align: center;
@@ -1794,34 +1793,41 @@ body.dashboard-page:has(#driver-notifications-dropdown.open) .driver-header-fixe
     display: flex;
     align-items: flex-start;
     justify-content: center;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 700;
-    line-height: 1.08;
-    min-height: 28px;
-    max-width: 82px;
+    line-height: 1.1;
+    min-height: 32px;
+    max-width: 118px;
     text-align: center;
     white-space: normal;
   }
   .dashboard-page .driver-vehicle-shortcuts-item-icon {
-    width: 36px;
-    height: 36px;
-    max-width: 36px;
-    max-height: 36px;
+    width: 44px;
+    height: 44px;
+    max-width: 44px;
+    max-height: 44px;
     flex: none;
     color: currentColor;
   }
   .dashboard-page .driver-vehicle-shortcuts-item-documents .driver-vehicle-shortcuts-item-icon,
   .dashboard-page .driver-vehicle-shortcuts-item-feedback .driver-vehicle-shortcuts-item-icon {
-    width: 36px;
-    height: 36px;
-    max-width: 36px;
-    max-height: 36px;
+    width: 44px;
+    height: 44px;
+    max-width: 44px;
+    max-height: 44px;
   }
   .dashboard-page .driver-vehicle-shortcuts-item-history .driver-vehicle-shortcuts-item-icon {
-    width: 34px;
-    height: 34px;
-    max-width: 34px;
-    max-height: 34px;
+    width: 42px;
+    height: 42px;
+    max-width: 42px;
+    max-height: 42px;
+  }
+  .dashboard-page .driver-vehicle-shortcuts-item-password .driver-vehicle-shortcuts-item-icon {
+    width: 52px;
+    height: 52px;
+    max-width: 52px;
+    max-height: 52px;
+    transform: translateY(-4px);
   }
   .dashboard-page .driver-vehicle-shortcuts-item:hover,
   .dashboard-page .driver-vehicle-shortcuts-item:focus-visible {
@@ -7257,7 +7263,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
 
   .dashboard-page .driver-below-hero-row .driver-btn-password {
-    margin-left: 0 !important;
+    display: none !important;
   }
 
   .dashboard-page .driver-dashboard-container::before,
