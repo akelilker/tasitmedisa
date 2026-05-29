@@ -6291,10 +6291,31 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(var(--theme-color-rgb), 0.08) !important;
   }
   .dashboard-page .driver-plate-dropdown-item {
+    display: grid !important;
+    grid-template-columns: 8px 12ch max-content minmax(0, 1fr) !important;
+    column-gap: 0.35em !important;
+    align-items: start !important;
     color: var(--txt) !important;
     text-align: left !important;
+    justify-items: start !important;
     padding-top: 8.5px !important;
     padding-bottom: 8.5px !important;
+  }
+  .dashboard-page .driver-plate-dropdown-item-plate {
+    width: 12ch !important;
+    min-width: 12ch !important;
+    max-width: 12ch !important;
+    white-space: nowrap !important;
+    text-align: left !important;
+    justify-self: start !important;
+  }
+  .dashboard-page .driver-plate-dropdown-item-separator,
+  .dashboard-page .driver-plate-dropdown-item-brand {
+    text-align: left !important;
+    justify-self: start !important;
+  }
+  .dashboard-page .driver-plate-dropdown-item-brand {
+    min-width: 0 !important;
   }
 
   /* Ana başlık: yan çizgiler sadece container'da (çift border olmasın) */
