@@ -5611,6 +5611,13 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     margin-left: 0 !important;
     padding-left: 0 !important;
   }
+  /* Mobil sol grid: uzun etiketler (%30 kolon) kesilmesin, satır kırılsın */
+  .dashboard-page .driver-left-panel .driver-info-item .label {
+    white-space: normal !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    overflow-wrap: break-word;
+  }
   /* Tarih uyarı çerçevesi kalsın; sola itmeyi kaldırdık, hiza için negatif margin */
 }
 
