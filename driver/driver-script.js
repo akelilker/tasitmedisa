@@ -570,10 +570,14 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       } else {
         document.body.classList.remove('driver-feedback-modal-open');
       }
+      if (id !== 'history-modal') {
+        document.body.classList.remove('driver-history-vehicle-dropdown-open');
+      }
     } else {
       document.body.classList.remove('driver-modal-open');
       document.body.classList.remove('driver-history-or-edit-modal-open');
       document.body.classList.remove('driver-feedback-modal-open');
+      document.body.classList.remove('driver-history-vehicle-dropdown-open');
     }
   }
 
@@ -3055,13 +3059,27 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       trigger.classList.toggle('history-all-selected', isAllSelected);
   }
 
+  function setHistoryVehicleDropdownOpen(isOpen) {
+      const dropdown = document.getElementById('history-vehicle-dropdown');
+      const trigger = document.querySelector('.history-vehicle-trigger');
+      const nextOpen = !!isOpen;
+      if (dropdown) dropdown.style.display = nextOpen ? 'block' : 'none';
+      if (trigger) {
+          trigger.classList.toggle('history-vehicle-trigger-open', nextOpen);
+          trigger.setAttribute('aria-expanded', nextOpen ? 'true' : 'false');
+      }
+      document.body.classList.toggle(
+          'driver-history-vehicle-dropdown-open',
+          nextOpen && document.body.classList.contains('dashboard-page')
+      );
+  }
+
   // Geçmiş kayıtlar - custom dropdown
   window.showHistory = function() {
       var modal = document.getElementById('history-modal');
       var hiddenInput = document.getElementById('history-vehicle-filter');
       var triggerText = document.querySelector('.history-vehicle-trigger-text');
       var dropdown = document.getElementById('history-vehicle-dropdown');
-      var trigger = document.querySelector('.history-vehicle-trigger');
       if (!modal || !hiddenInput || !dropdown) return;
       dropdown.innerHTML = '';
       var optAll = document.createElement('div');
@@ -3095,8 +3113,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       hiddenInput.value = defaultVal;
       if (triggerText) triggerText.textContent = defaultText;
       updateHistoryTriggerTone(defaultVal);
-      dropdown.style.display = 'none';
-      if (trigger) trigger.classList.remove('history-vehicle-trigger-open');
+      setHistoryVehicleDropdownOpen(false);
       modal.classList.add('show');
       updateDriverModalBodyClass();
       requestAnimationFrame(function() {
@@ -3107,28 +3124,18 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
   window.toggleHistoryVehicleDropdown = function(ev) {
       ev.stopPropagation();
       const dropdown = document.getElementById('history-vehicle-dropdown');
-      const trigger = document.querySelector('.history-vehicle-trigger');
-      if (!dropdown || !trigger) return;
+      if (!dropdown) return;
       const isOpen = dropdown.style.display !== 'none';
-      if (isOpen) {
-          dropdown.style.display = 'none';
-          trigger.classList.remove('history-vehicle-trigger-open');
-      } else {
-          dropdown.style.display = 'block';
-          trigger.classList.add('history-vehicle-trigger-open');
-      }
+      setHistoryVehicleDropdownOpen(!isOpen);
   };
 
   function selectHistoryVehicle(value, text) {
       const hiddenInput = document.getElementById('history-vehicle-filter');
       const triggerText = document.querySelector('.history-vehicle-trigger-text');
-      const dropdown = document.getElementById('history-vehicle-dropdown');
-      const trigger = document.querySelector('.history-vehicle-trigger');
       if (hiddenInput) hiddenInput.value = value;
       if (triggerText) triggerText.textContent = text;
       updateHistoryTriggerTone(value);
-      if (dropdown) dropdown.style.display = 'none';
-      if (trigger) trigger.classList.remove('history-vehicle-trigger-open');
+      setHistoryVehicleDropdownOpen(false);
       renderHistoryList();
   }
 
@@ -3136,9 +3143,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       const wrap = document.querySelector('.history-vehicle-dropdown-wrap');
       const dropdown = document.getElementById('history-vehicle-dropdown');
       if (wrap && dropdown && dropdown.style.display !== 'none' && !wrap.contains(ev.target)) {
-          dropdown.style.display = 'none';
-          const trigger = document.querySelector('.history-vehicle-trigger');
-          if (trigger) trigger.classList.remove('history-vehicle-trigger-open');
+          setHistoryVehicleDropdownOpen(false);
       }
   });
 
@@ -3432,6 +3437,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
   }
 
   window.closeHistory = function() {
+      setHistoryVehicleDropdownOpen(false);
       document.getElementById('history-modal').classList.remove('show');
       updateDriverModalBodyClass();
   };

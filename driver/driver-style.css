@@ -4774,6 +4774,7 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   align-items: center;
   gap: 8px;
   position: relative;
+  z-index: 2;
 }
 
 .history-filter-label {
@@ -4874,6 +4875,21 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 }
 .history-vehicle-option:last-child {
   border-radius: 0 0 8px 8px;
+}
+
+body.dashboard-page.driver-history-vehicle-dropdown-open #history-modal .universal-back-bar,
+body.dashboard-page.driver-history-vehicle-dropdown-open #history-modal .history-container {
+  filter: blur(2px);
+  opacity: 0.9;
+  transition: filter 0.18s ease, opacity 0.18s ease;
+}
+
+body.dashboard-page.driver-history-vehicle-dropdown-open #history-modal .history-filters,
+body.dashboard-page.driver-history-vehicle-dropdown-open #history-modal .history-vehicle-dropdown-wrap,
+body.dashboard-page.driver-history-vehicle-dropdown-open #history-modal .history-vehicle-trigger,
+body.dashboard-page.driver-history-vehicle-dropdown-open #history-modal .history-vehicle-dropdown {
+  filter: none !important;
+  opacity: 1 !important;
 }
 
 .history-empty {
