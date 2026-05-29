@@ -2441,12 +2441,6 @@ input.settings-form-input:-moz-autofill,
   #branch-modal .modal-body > div {
     padding-top: 0;
   }
-  #branch-modal .modal-body .settings-add-text-btn {
-    padding-top: 0;
-    padding-bottom: 0;
-    margin-top: -4px;
-    margin-bottom: 10px;
-  }
   #user-modal .modal-body > .user-management-list-inner {
     padding-top: 0;
   }
