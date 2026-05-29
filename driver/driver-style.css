@@ -2987,7 +2987,7 @@ body.dashboard-page:has(#driver-notifications-dropdown.open) .driver-header-fixe
   font-size: 12px;
   color: var(--txt);
   display: grid;
-  grid-template-columns: 8px max-content max-content minmax(0, 1fr);
+  grid-template-columns: 8px max-content 0.75em minmax(0, 1fr);
   align-items: start;
   column-gap: 0.35em;
   cursor: pointer;
@@ -3019,10 +3019,13 @@ body.dashboard-page:has(#driver-notifications-dropdown.open) .driver-header-fixe
   justify-self: start;
   text-align: left;
   white-space: nowrap;
+  padding-right: 0.25em;
+  box-sizing: border-box;
 }
 .driver-plate-dropdown-item-separator {
   grid-column: 3;
-  opacity: 0.9;
+  justify-self: center;
+  opacity: 0.75;
 }
 .driver-plate-dropdown-item-separator.is-hidden {
   visibility: hidden;
@@ -3034,8 +3037,11 @@ body.dashboard-page:has(#driver-notifications-dropdown.open) .driver-header-fixe
   text-align: left;
   white-space: normal;
   overflow: hidden;
-  overflow-wrap: break-word;
-  line-height: 1.22;
+  overflow-wrap: normal;
+  word-break: normal;
+  line-height: 1.3;
+  padding-left: 0.35em;
+  box-sizing: border-box;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -6293,8 +6299,8 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(var(--theme-color-rgb), 0.08) !important;
   }
   .dashboard-page .driver-plate-dropdown-item {
-    padding-top: 8.5px !important;
-    padding-bottom: 8.5px !important;
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
   }
 
   /* Ana başlık: yan çizgiler sadece container'da (çift border olmasın) */
