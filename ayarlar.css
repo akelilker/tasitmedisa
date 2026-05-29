@@ -2438,6 +2438,9 @@ input.settings-form-input:-moz-autofill,
   #user-modal .modal-body > .user-management-list-inner {
     margin-top: 0 !important;
   }
+  #branch-modal .modal-body > div {
+    padding-top: 0;
+  }
   #user-modal .modal-body > .user-management-list-inner {
     padding-top: 0;
   }
