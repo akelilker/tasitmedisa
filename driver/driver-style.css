@@ -1005,6 +1005,10 @@ body.dashboard-page {
     margin-bottom: 6px;
     gap: 4px;
   }
+  /* Bildir öncesi: Lastik satırı ile footer arası +8px */
+  .dashboard-page .driver-action-area-inner > .driver-action-group:has(.driver-action-btn[data-action="lastik"]) {
+    margin-bottom: 14px;
+  }
   .dashboard-page .driver-action-btn {
     border-color: rgba(238, 246, 255, 0.46);
   }
@@ -5611,13 +5615,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     margin-left: 0 !important;
     padding-left: 0 !important;
   }
-  /* Mobil sol grid: uzun etiketler (%30 kolon) kesilmesin, satır kırılsın */
-  .dashboard-page .driver-left-panel .driver-info-item .label {
-    white-space: normal !important;
-    min-width: 0 !important;
-    max-width: 100% !important;
-    overflow-wrap: break-word;
-  }
   /* Tarih uyarı çerçevesi kalsın; sola itmeyi kaldırdık, hiza için negatif margin */
 }
 
@@ -7180,6 +7177,25 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     overscroll-behavior-y: none !important;
     -webkit-overflow-scrolling: touch !important;
     touch-action: pan-y !important;
+  }
+
+  /* Büyük ticari/kamyon: sol panel yoğun mod (mobil, class ile) */
+  .dashboard-page .driver-dashboard-container.driver-heavy-commercial-active .driver-left-panel-content {
+    gap: 4px;
+    padding-bottom: 2px;
+  }
+  .dashboard-page .driver-dashboard-container.driver-heavy-commercial-active .driver-user-plate-row.driver-user-plate-in-panel {
+    gap: 0;
+    margin-top: -2px;
+    margin-bottom: 1px;
+  }
+  .dashboard-page .driver-dashboard-container.driver-heavy-commercial-active .driver-left-panel .driver-vehicle-info {
+    gap: 3px !important;
+    margin-top: 2px !important;
+  }
+  .dashboard-page .driver-dashboard-container.driver-heavy-commercial-active .driver-left-panel .driver-info-item:has(.value) .label,
+  .dashboard-page .driver-dashboard-container.driver-heavy-commercial-active .driver-left-panel .driver-info-item:has(.value) .value {
+    line-height: 1.18;
   }
 
   .dashboard-page .driver-plate-dropdown-row {

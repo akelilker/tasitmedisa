@@ -1361,7 +1361,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
               <div class="driver-info-item ${muayeneW.class}"><span class="label">Muayene Bitiş</span><span class="value">${formatDriverDate(vehicle.muayeneDate) || '-'}</span></div>
               ${hasEgzozMuayeneSaved ? `<div class="driver-info-item ${egzozW.class}"><span class="label">Egzoz Muayene Bitiş</span><span class="value">${formatDriverDate(egzozMuayeneDate) || '-'}</span></div>` : ''}
               ${showTasitKartiInfo ? `<div class="driver-info-item ${tasitKartiW.class}"><span class="label">Taşıt Kartı Bitiş</span><span class="value">${renderDriverRequiredExpiryValue(tasitKartiDate)}</span></div>` : ''}
-              ${showTakografInfo ? `<div class="driver-info-item ${takografW.class}"><span class="label">Takograf Kalib. Bitiş</span><span class="value">${renderDriverRequiredExpiryValue(takografDate)}</span></div>` : ''}
+              ${showTakografInfo ? `<div class="driver-info-item ${takografW.class}"><span class="label">Takograf B. T.</span><span class="value">${renderDriverRequiredExpiryValue(takografDate)}</span></div>` : ''}
               <div class="driver-info-item ${anahtarSavedClass}"><span class="label">Yedek Anahtar</span><span class="value">${escapeHtmlDriver(anahtarLabel)}</span></div>
               <div class="driver-info-item ${lastikSavedClass}"><span class="label">Lastik Durumu</span><span class="value">${escapeHtmlDriver(lastikLabel)}</span></div>
               <div class="driver-info-item"><span class="label">UTTS</span><span class="value">${escapeHtmlDriver(uttsLabel)}</span></div>
