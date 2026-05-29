@@ -1736,6 +1736,23 @@ body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-
   }
 }
 
+/* Ana sayfa menü: masaüstü hover belirgin (tüm buton scale; mobil/tablet dokunulmaz) */
+@media (hover: hover) and (min-width: 769px) {
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu .menu-btn {
+    overflow: visible;
+  }
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu .menu-btn:hover {
+    transform: scale(1.04);
+    box-shadow:
+      0 6px 16px rgba(0, 0, 0, 0.28),
+      0 8px 22px rgba(var(--theme-color-rgb), 0.10);
+  }
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu .menu-btn:hover .ttl {
+    transform: none;
+    color: var(--txt-white);
+  }
+}
+
 /* Menü metinleri - taşma yok, uzun metin sığsın veya ellipsis */
 .menu-btn .ttl {
   font-size: clamp(12.5px, 2.8vw, 14.5px);
