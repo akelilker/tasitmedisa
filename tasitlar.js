@@ -4658,12 +4658,12 @@
 
   function fillMonthlyTodoModalBody(bodyEl, tasksArray) {
     var typeDescriptionMap = {
-      'Sigorta': 'Trafik Sigortasının',
+      'Sigorta': 'Trafik Sigortası',
       'Kasko': 'Kasko Poliçesinin',
       'Sigorta + Kasko': 'Trafik Sigortası ve Kasko Poliçesinin',
-      'Muayene': 'Genel Muayenesinin',
-      'Egzoz Muayene': 'Egzoz Muayenesinin',
-      'Muayene + Egzoz': 'Genel Muayene ve Egzoz Muayenesinin',
+      'Muayene': 'Genel Muayenesi',
+      'Egzoz Muayene': 'Egzoz Muayenesi',
+      'Muayene + Egzoz': 'Genel Muayene ve Egzoz Muayenesi',
       'K2 Belgesi': 'K2 Belgesinin',
       'Takograf': 'Takograf Kalibrasyonunun'
     };
