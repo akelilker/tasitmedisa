@@ -2447,13 +2447,23 @@ input.settings-form-input:-moz-autofill,
   #user-modal .modal-body > .user-management-list-inner {
     padding-top: 0;
   }
+  #user-modal .user-management-back-bar {
+    padding-bottom: 2px !important;
+  }
+  #user-modal .modal-body {
+    padding-top: 0;
+  }
+  #user-modal .modal-body .settings-add-text-btn.user-add-btn {
+    margin-top: -8px;
+    padding-top: 0;
+  }
   #user-modal .user-management-search-wrap {
     position: relative;
     z-index: 5;
     flex-basis: 40px;
     width: 40px;
     overflow: visible;
-    transform: translateY(8px);
+    transform: translateY(2px);
   }
   #user-modal .user-management-search-wrap.open {
     flex-basis: 203px;
