@@ -567,10 +567,16 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       } else {
         document.body.classList.remove('driver-feedback-modal-open');
       }
+      if (id === 'driver-notification-modal') {
+        document.body.classList.add('driver-notification-modal-open');
+      } else {
+        document.body.classList.remove('driver-notification-modal-open');
+      }
     } else {
       document.body.classList.remove('driver-modal-open');
       document.body.classList.remove('driver-history-or-edit-modal-open');
       document.body.classList.remove('driver-feedback-modal-open');
+      document.body.classList.remove('driver-notification-modal-open');
     }
   }
 
