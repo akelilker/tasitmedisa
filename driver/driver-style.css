@@ -1238,10 +1238,13 @@ body.dashboard-page:has(#driver-notifications-dropdown.open) .driver-header-fixe
 }
 @media (max-width: 768px) {
   .driver-notifications-dropdown {
-    width: min(82vw, 420px) !important;
+    position: fixed;
+    top: calc(max(12px, env(safe-area-inset-top, 0px)) + 102px);
+    left: max(14px, env(safe-area-inset-left, 0px));
+    right: max(14px, env(safe-area-inset-right, 0px));
+    width: auto;
+    max-width: none;
     max-height: min(64vh, calc(100dvh - 230px)) !important;
-    right: max(8px, env(safe-area-inset-right, 0));
-    left: auto;
     transform: translateY(-12px);
   }
   .driver-notifications-dropdown.open {
