@@ -586,6 +586,18 @@ body.modal-open #info-modal .modal-container {
     text-align: center;
     font-size: 13px;
     font-weight: 700;
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    outline: none !important;
+    border-radius: 0;
+}
+
+#required-documents-modal #required-k2-expiry-date:focus {
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    outline: none !important;
 }
 
 #required-documents-modal #required-k2-document-status,
