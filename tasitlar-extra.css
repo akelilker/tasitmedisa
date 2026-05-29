@@ -3125,6 +3125,9 @@
   #monthly-todo-modal .monthly-todo-col-header {
     padding-bottom: 2px;
   }
+  #monthly-todo-modal .monthly-todo-list-scroll {
+    padding-top: 2px;
+  }
   #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h {
     font-size: 13px;
   }
