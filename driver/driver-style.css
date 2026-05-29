@@ -1477,10 +1477,6 @@ body.dashboard-page:has(#driver-notifications-dropdown.open) .driver-header-fixe
 .driver-vehicle-shortcuts {
   display: none;
 }
-/* Mobil kopya (.driver-left-quick-actions-mobile) masaüstünde gizli — min-width bloğuna dokunulmadan spesificity ile */
-.dashboard-page .driver-left-panel > .driver-left-quick-actions-mobile {
-  display: none;
-}
 .dashboard-page .driver-status-icon-slot-history .driver-btn-history {
   display: none !important;
 }
@@ -1659,10 +1655,6 @@ body.dashboard-page:has(#driver-notifications-dropdown.open) .driver-header-fixe
   }
   /* Mobil: orijinal ikonu (driver-left-panel-content içindeki) gizle */
   .dashboard-page .driver-left-panel-content .driver-left-quick-actions {
-    display: none;
-  }
-  /* Mobil: sol panel alt kopya — grid/apps kısayol sonrası görünmez (global display:none ile uyumlu) */
-  .dashboard-page .driver-left-panel > .driver-left-quick-actions-mobile {
     display: none;
   }
   /* Tablet/mobil: üst satır Araç Kısayolları (grid/apps) + açılır panel */
@@ -6252,18 +6244,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     position: relative;
     isolation: isolate;
   }
-  /* Kırmızı dikey ayırıcı: sol panel border yerine içeride çizilir; yükseklik panels-inner ile biter (footer/ışık bandının altına sarkmaz) */
-  .dashboard-page .driver-panels-inner::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: calc(30% + 4px);
-    width: 1.2px;
-    background: var(--border-red-tech);
-    pointer-events: none;
-    z-index: 2;
-  }
   .dashboard-page .driver-plate-dropdown-row {
     overflow: visible !important;
   }
@@ -7027,7 +7007,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     min-height: calc(0.9cm - 3px) !important;
     height: calc(0.9cm - 3px) !important;
   }
-  /* Bildir butonu: masaüstü bir satır kadar aşağı */
 }
 
 /* --- Sadece iOS/Android PWA: ana uygulama ile aynı yapı – ilk boyamada çerçeve yerinde --- */
@@ -7707,10 +7686,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
 }
 
-/* Dashboard: paneller arası kırmızı ayırıcı tek çizgi olsun (çift görünüm önleme) */
-.dashboard-page .driver-panels-inner::after {
-    display: none !important;
-}
 @media (min-width: 769px) {
     .dashboard-page .driver-left-panel {
         position: relative;
