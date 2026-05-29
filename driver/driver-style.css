@@ -489,6 +489,7 @@ body.dashboard-page {
   justify-self: center;
   justify-content: center;
   width: auto;
+  overflow: visible;
 }
 .driver-status-icon-slot-key {
   justify-self: end;
@@ -503,6 +504,7 @@ body.dashboard-page {
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: visible;
 }
 .driver-below-hero-notification-slot:empty {
   display: none;
@@ -1159,63 +1161,48 @@ body.dashboard-page {
   overflow-wrap: anywhere;
   white-space: normal;
 }
-#driver-notification-modal.driver-modal {
-  align-items: center !important;
-  justify-content: center !important;
-  padding: max(12px, env(safe-area-inset-top)) 12px max(12px, env(safe-area-inset-bottom, 0), 12px) !important;
-  overflow: visible !important;
-  background: transparent !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  z-index: 10030;
+/* Bildirim dropdown — ana sayfa #notifications-dropdown mantığı; üstten aşağı slide */
+.driver-notifications-dropdown {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 50%;
+  right: auto;
+  width: min(360px, calc(100vw - 32px));
+  max-width: calc(100vw - 32px);
+  max-height: min(64vh, calc(100dvh - 230px));
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  z-index: 10060;
+  box-sizing: border-box;
+  opacity: 0;
+  transform: translateX(-50%) translateY(-12px);
   pointer-events: none;
+  transition: opacity 0.18s ease, transform 0.18s ease;
 }
-#driver-notification-modal.driver-modal.show {
-  display: flex !important;
-  pointer-events: auto !important;
+.driver-notifications-dropdown[hidden] {
+  display: none !important;
 }
-/* Ayarlar menüsü gibi: tam ekran karartma yok; yalnızca içerik flu — kırmızı çerçeve net kalır */
-body.dashboard-page:has(#driver-notification-modal.driver-modal.show) .driver-header-fixed,
-body.dashboard-page:has(#driver-notification-modal.driver-modal.show) .driver-scroll-area,
-body.dashboard-page.driver-notification-modal-open .driver-header-fixed,
-body.dashboard-page.driver-notification-modal-open .driver-scroll-area {
-  filter: blur(2px);
-  opacity: 0.92;
-  transition: filter 0.18s ease, opacity 0.18s ease;
+.driver-notifications-dropdown.open {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  pointer-events: auto;
 }
-body.dashboard-page:has(#driver-notification-modal.driver-modal.show) .driver-dashboard-container::before,
-body.dashboard-page.driver-notification-modal-open .driver-dashboard-container::before {
-  filter: none !important;
-  opacity: 1 !important;
-  z-index: 10025 !important;
+.driver-notifications-dropdown::-webkit-scrollbar {
+  display: none;
 }
-body.dashboard-page:has(#driver-notification-modal.driver-modal.show) #app-footer,
-body.dashboard-page.driver-notification-modal-open #app-footer {
-  filter: none !important;
-  opacity: 1 !important;
-}
-#driver-notification-modal .driver-modal-content,
-#driver-notification-modal .modal-container {
-  width: 100%;
-  max-width: min(420px, calc(100vw - 32px));
-  height: auto !important;
-  max-height: min(70vh, calc(100vh - 96px)) !important;
-  margin: auto !important;
-  flex: 0 0 auto;
-  overflow: hidden;
-}
-#driver-notification-modal .modal-body {
-  flex: 0 0 auto !important;
-  max-height: none !important;
-  overflow: visible !important;
-  padding: 8px 12px 12px !important;
-}
-#driver-notification-modal .driver-notification-modal-list {
+.driver-notifications-dropdown-list {
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
-#driver-notification-modal .driver-notification-empty {
+.driver-notification-empty {
   padding: 10px 8px;
   border-radius: 6px;
   border: 1px dashed rgba(255, 255, 255, 0.2);
@@ -1223,6 +1210,61 @@ body.dashboard-page.driver-notification-modal-open #app-footer {
   color: #a0aec0;
   text-align: center;
   font-size: 12px;
+}
+body.dashboard-page.driver-notifications-open .driver-scroll-area,
+body.dashboard-page:has(#driver-notifications-dropdown.open) .driver-scroll-area {
+  filter: blur(2px);
+  opacity: 0.92;
+  transition: filter 0.18s ease, opacity 0.18s ease;
+}
+body.dashboard-page.driver-notifications-open .hero-title-block,
+body.dashboard-page:has(#driver-notifications-dropdown.open) .hero-title-block {
+  filter: blur(2px);
+  opacity: 0.92;
+  transition: filter 0.18s ease, opacity 0.18s ease;
+}
+body.dashboard-page.driver-notifications-open .driver-status-icon-row,
+body.dashboard-page:has(#driver-notifications-dropdown.open) .driver-status-icon-row,
+body.dashboard-page.driver-notifications-open .driver-dashboard-container::before,
+body.dashboard-page:has(#driver-notifications-dropdown.open) .driver-dashboard-container::before,
+body.dashboard-page.driver-notifications-open #app-footer,
+body.dashboard-page:has(#driver-notifications-dropdown.open) #app-footer {
+  filter: none !important;
+  opacity: 1 !important;
+}
+body.dashboard-page.driver-notifications-open .driver-header-fixed,
+body.dashboard-page:has(#driver-notifications-dropdown.open) .driver-header-fixed {
+  z-index: 10070;
+}
+@media (max-width: 768px) {
+  .driver-notifications-dropdown {
+    width: min(82vw, 420px) !important;
+    max-height: min(64vh, calc(100dvh - 230px)) !important;
+    right: max(8px, env(safe-area-inset-right, 0));
+    left: auto;
+    transform: translateY(-12px);
+  }
+  .driver-notifications-dropdown.open {
+    transform: translateY(0);
+  }
+  .dashboard-page .driver-status-icon-row,
+  .dashboard-page .driver-below-hero-row,
+  .dashboard-page .driver-below-hero {
+    overflow: visible;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .driver-notifications-dropdown {
+    transition: none;
+  }
+  .driver-notifications-dropdown.open {
+    transform: translateX(-50%) translateY(0);
+  }
+  @media (max-width: 768px) {
+    .driver-notifications-dropdown.open {
+      transform: translateY(0);
+    }
+  }
 }
 /* Tarih yaklaşıyor (turuncu): sol panel driver-warn-orange ile aynı ton */
 .driver-sliding-warning.driver-sliding-warning-orange {
@@ -3640,8 +3682,7 @@ body.dashboard-page.driver-notification-modal-open #app-footer {
   }
 
   #driver-feedback-modal .modal-header,
-  #driver-documents-modal .modal-header,
-  #driver-notification-modal .modal-header {
+  #driver-documents-modal .modal-header {
     border-top-left-radius: var(--modal-radius, 10px) !important;
     border-top-right-radius: var(--modal-radius, 10px) !important;
     box-shadow: inset 0 1px 0 rgba(200, 208, 216, 0.46) !important;
@@ -3788,7 +3829,6 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 #driver-event-menu-modal .modal-header,
 #driver-feedback-modal .modal-header,
 #driver-documents-modal .modal-header,
-#driver-notification-modal .modal-header,
 #driver-anahtar-modal .modal-header,
 #driver-lastik-modal .modal-header,
 #driver-utts-modal .modal-header,
@@ -3828,7 +3868,6 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 #driver-password-modal .modal-header h2,
 #driver-feedback-modal .modal-header h2,
 #driver-documents-modal .modal-header h2,
-#driver-notification-modal .modal-header h2,
 #driver-anahtar-modal .modal-header h2,
 #driver-lastik-modal .modal-header h2,
 #driver-utts-modal .modal-header h2,
@@ -3852,7 +3891,6 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 #driver-password-modal .modal-close,
 #driver-feedback-modal .modal-close,
 #driver-documents-modal .modal-close,
-#driver-notification-modal .modal-close,
 #driver-anahtar-modal .modal-close,
 #driver-lastik-modal .modal-close,
 #driver-utts-modal .modal-close,
@@ -3880,7 +3918,6 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 #driver-password-modal .modal-close:hover,
 #driver-feedback-modal .modal-close:hover,
 #driver-documents-modal .modal-close:hover,
-#driver-notification-modal .modal-close:hover,
 #driver-anahtar-modal .modal-close:hover,
 #driver-lastik-modal .modal-close:hover,
 #driver-utts-modal .modal-close:hover,
