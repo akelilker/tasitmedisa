@@ -2232,14 +2232,6 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       }
   }
 
-  window.toggleDriverPlateDropdown = function(ev) {
-      ev.stopPropagation();
-      const dropdown = document.getElementById('driver-plate-dropdown');
-      if (!dropdown) return;
-      const isOpen = dropdown.style.display === 'block';
-      dropdown.style.display = isOpen ? 'none' : 'block';
-  };
-
   function formatDriverDate(val) {
       if (!val) return '-';
       if (/^\d{4}-\d{2}-\d{2}$/.test(val)) {
