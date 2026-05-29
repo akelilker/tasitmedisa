@@ -7215,7 +7215,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 
   .dashboard-page .driver-plate-dropdown-item {
     display: grid !important;
-    grid-template-columns: 8px max-content max-content minmax(0, 1fr) !important;
+    grid-template-columns: 8px 12ch max-content minmax(0, 1fr) !important;
     column-gap: 0.35em !important;
     align-items: center !important;
     text-align: left !important;
@@ -7230,7 +7230,15 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     visibility: hidden;
   }
 
-  .dashboard-page .driver-plate-dropdown-item-plate,
+  .dashboard-page .driver-plate-dropdown-item-plate {
+    width: 12ch !important;
+    min-width: 12ch !important;
+    max-width: 12ch !important;
+    white-space: nowrap !important;
+    text-align: left !important;
+    justify-self: start !important;
+  }
+
   .dashboard-page .driver-plate-dropdown-item-separator,
   .dashboard-page .driver-plate-dropdown-item-brand {
     text-align: left !important;
@@ -7720,7 +7728,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-header-fixed,
   body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-right-panel,
   body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-vehicle-info,
@@ -7731,14 +7739,25 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     transition: filter 0.18s ease, opacity 0.18s ease;
   }
 
+  body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel,
+  body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel-content {
+    overflow: visible !important;
+  }
+
   body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-user-plate-row,
   body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-plate-dropdown-row,
   body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-plate-trigger,
   body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-current-plaka,
   body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-plate-subtitle,
-  body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-plate-dropdown {
-    filter: none;
-    opacity: 1;
+  body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-plate-dropdown,
+  body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) #driver-plate-dropdown.driver-plate-dropdown {
+    filter: none !important;
+    -webkit-filter: none !important;
+    opacity: 1 !important;
+  }
+
+  body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) #driver-plate-dropdown.driver-plate-dropdown {
+    z-index: 10060 !important;
   }
 }
 

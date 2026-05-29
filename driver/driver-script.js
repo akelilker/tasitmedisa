@@ -1402,7 +1402,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       const row = trigger.closest('.driver-plate-dropdown-row');
       if (!row) return;
 
-      if (window.innerWidth <= 640) {
+      if (window.innerWidth <= 768) {
           const rowRect = row.getBoundingClientRect();
           const viewportPadding = 8;
           const desiredWidth = Math.floor(window.innerWidth * 0.8);
