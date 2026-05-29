@@ -1182,7 +1182,9 @@ body.dashboard-page {
   justify-content: center !important;
   padding: max(12px, env(safe-area-inset-top)) 12px max(12px, env(safe-area-inset-bottom, 0), 12px) !important;
   overflow: visible !important;
-  background: rgba(0, 0, 0, 0.85) !important;
+  background: rgba(3, 7, 14, 0.60) !important;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
   z-index: 10020;
   pointer-events: none;
 }
@@ -1190,9 +1192,6 @@ body.dashboard-page {
   display: flex !important;
   pointer-events: auto !important;
   z-index: 10020 !important;
-}
-#driver-notification-modal.driver-modal::before {
-  display: none !important;
 }
 #driver-notification-modal .driver-modal-content,
 #driver-notification-modal .modal-container {
