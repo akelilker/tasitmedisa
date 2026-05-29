@@ -497,7 +497,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
   }
   function formatDriverPlaka(plaka) {
     if (!plaka) return '';
-    return window.innerWidth <= 768 ? String(plaka).replace(/\s+/g, '') : plaka;
+    return String(plaka).replace(/\s+/g, '');
   }
   function syncDriverDateDisplay(inputEl) {
     if (!inputEl || inputEl.type !== 'date') return;
