@@ -1182,16 +1182,36 @@ body.dashboard-page {
   justify-content: center !important;
   padding: max(12px, env(safe-area-inset-top)) 12px max(12px, env(safe-area-inset-bottom, 0), 12px) !important;
   overflow: visible !important;
-  background: rgba(3, 7, 14, 0.60) !important;
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
-  z-index: 10020;
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  z-index: 10030;
   pointer-events: none;
 }
 #driver-notification-modal.driver-modal.show {
   display: flex !important;
   pointer-events: auto !important;
-  z-index: 10020 !important;
+  z-index: 10030 !important;
+}
+/* Ayarlar menüsü gibi: tam ekran karartma yok; yalnızca içerik flu — kırmızı çerçeve net kalır */
+body.dashboard-page:has(#driver-notification-modal.driver-modal.show) .driver-header-fixed,
+body.dashboard-page:has(#driver-notification-modal.driver-modal.show) .driver-scroll-area,
+body.dashboard-page.driver-notification-modal-open .driver-header-fixed,
+body.dashboard-page.driver-notification-modal-open .driver-scroll-area {
+  filter: blur(2px);
+  opacity: 0.92;
+  transition: filter 0.18s ease, opacity 0.18s ease;
+}
+body.dashboard-page:has(#driver-notification-modal.driver-modal.show) .driver-dashboard-container::before,
+body.dashboard-page.driver-notification-modal-open .driver-dashboard-container::before {
+  filter: none !important;
+  opacity: 1 !important;
+  z-index: 10025 !important;
+}
+body.dashboard-page:has(#driver-notification-modal.driver-modal.show) #app-footer,
+body.dashboard-page.driver-notification-modal-open #app-footer {
+  filter: none !important;
+  opacity: 1 !important;
 }
 #driver-notification-modal .driver-modal-content,
 #driver-notification-modal .modal-container {
