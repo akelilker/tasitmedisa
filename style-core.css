@@ -1736,20 +1736,25 @@ body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-
   }
 }
 
-/* Ana sayfa menü: masaüstü hover belirgin (tüm buton scale; mobil/tablet dokunulmaz) */
+/* Ana sayfa menü: masaüstü hover belirgin; kutu scale yok (çerçeve/footer taşması önlenir) */
 @media (hover: hover) and (min-width: 769px) {
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu .menu-btn {
-    overflow: visible;
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu.menu-container {
+    padding-bottom: 4px;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu .menu-btn:hover {
-    transform: scale(1.04);
+    position: relative;
+    z-index: 2;
+    transform: none;
+    border-color: var(--border-light);
     box-shadow:
-      0 6px 16px rgba(0, 0, 0, 0.28),
-      0 8px 22px rgba(var(--theme-color-rgb), 0.10);
+      0 6px 16px rgba(0, 0, 0, 0.30),
+      0 8px 24px rgba(var(--theme-color-rgb), 0.14),
+      inset 0 1px 0 rgba(255, 255, 255, 0.12);
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu .menu-btn:hover .ttl {
-    transform: none;
+    transform: scale(1.06);
     color: var(--txt-white);
+    letter-spacing: 0.1em;
   }
 }
 
