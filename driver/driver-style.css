@@ -1826,7 +1826,10 @@ body.dashboard-page:has(#driver-notifications-dropdown.open) .driver-header-fixe
   .dashboard-page .driver-vehicle-shortcuts-item:hover,
   .dashboard-page .driver-vehicle-shortcuts-item:focus-visible {
     color: #ffffff;
-    background: rgba(255, 255, 255, 0.06);
+    border: none;
+    background: transparent;
+    box-shadow: none;
+    outline: none;
   }
 }
 .driver-plate-dropdown-row {
