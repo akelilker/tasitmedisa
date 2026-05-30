@@ -915,6 +915,7 @@ body.dashboard-page {
   .dashboard-page .driver-left-quick-action-password:hover .driver-left-quick-action-icon,
   .dashboard-page .driver-left-quick-action-password:focus-visible .driver-left-quick-action-icon {
     transform: translateY(-5px) scale(1.18);
+    filter: drop-shadow(0 0 3px rgba(238, 246, 255, 0.2));
   }
   .dashboard-page .driver-left-quick-action:hover,
   .dashboard-page .driver-left-quick-action:focus-visible {
@@ -923,8 +924,8 @@ body.dashboard-page {
     box-shadow: none;
     outline: none;
   }
-  .dashboard-page .driver-left-quick-action:hover .driver-left-quick-action-icon,
-  .dashboard-page .driver-left-quick-action:focus-visible .driver-left-quick-action-icon {
+  .dashboard-page .driver-left-quick-action:not(.driver-left-quick-action-password):hover .driver-left-quick-action-icon,
+  .dashboard-page .driver-left-quick-action:not(.driver-left-quick-action-password):focus-visible .driver-left-quick-action-icon {
     transform: scale(1.18);
     filter: drop-shadow(0 0 3px rgba(238, 246, 255, 0.2));
   }
