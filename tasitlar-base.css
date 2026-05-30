@@ -557,6 +557,17 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
   border: 1.1px solid rgba(255, 255, 255, 0.40) !important;
   color: var(--data-value-color, #f8f9fa) !important;
 }
+/* Input focus: ince kırmızı çerçeve (mobil + masaüstü; textarea dahil) */
+.olay-ekle-modal .modal-body .form-input:focus,
+.olay-ekle-modal .modal-body select:focus,
+.olay-ekle-modal .modal-body textarea.form-input:focus,
+#dinamik-olay-modal .medisa-owner-select-trigger:focus,
+#dinamik-olay-modal .medisa-owner-select-trigger.is-open {
+  border: 1px solid var(--theme-color) !important;
+  outline: none !important;
+  box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+}
 #dinamik-olay-modal .medisa-owner-select {
   position: relative;
   width: 100%;
@@ -2083,17 +2094,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
   .olay-ekle-modal .modal-body > div > div:has(.radio-group) label {
     margin-bottom: 0 !important;
     flex-shrink: 0 !important;
-  }
-  /* Input focus: ince kırmızı çerçeve (kayıt modalı gibi) */
-  .olay-ekle-modal .modal-body .form-input:focus,
-  .olay-ekle-modal .modal-body select:focus,
-  .olay-ekle-modal .modal-body textarea.form-input:focus,
-  #dinamik-olay-modal .medisa-owner-select-trigger:focus,
-  #dinamik-olay-modal .medisa-owner-select-trigger.is-open {
-    border: 1px solid var(--theme-color) !important;
-    outline: none !important;
-    box-shadow: none !important;
-    -webkit-box-shadow: none !important;
   }
   .olay-ekle-modal .universal-back-bar {
     margin-top: -6px !important;
