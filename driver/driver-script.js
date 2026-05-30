@@ -1343,7 +1343,6 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       const sigortaSaved = !!(vehicle.sigortaDate && vehicle.sigortaDate.trim());
       const kaskoSaved = !!(vehicle.kaskoDate && vehicle.kaskoDate.trim());
       const muayeneSaved = !!(vehicle.muayeneDate && vehicle.muayeneDate.trim());
-      const uttsSaved = vehicle.uttsTanimlandi === true || vehicle.uttsTanimlandi === false;
       /* Yeşil (saved) sadece bu oturumda bildirim yapıldıysa; pencere kapanınca lastCompletedActionInSession temizlenir, orijinal görünüme döner */
       const vid = String(vehicle.id);
       const sessionMatch = (action) => lastCompletedActionInSession && lastCompletedActionInSession.action === action && String(lastCompletedActionInSession.vehicleId) === vid;
@@ -2311,7 +2310,6 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           { id: 'kaza', label: 'Kaza Bilgisi Ekle' },
           { id: 'anahtar', label: 'Yedek Anahtar Bilgisi Güncelle' },
           { id: 'lastik', label: 'Yazlık/Kışlık Lastik Durumu Güncelle' },
-          { id: 'utts', label: 'UTTS Bilgisi Güncelle' },
           { id: 'muayene', label: 'Muayene Bilgisi Güncelle' },
           { id: 'sigorta', label: 'Trafik Sigortası Yenileme' },
           { id: 'kasko', label: 'Kasko Yenileme' }
@@ -2399,13 +2397,6 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
               adres.value = (vehicle && vehicle.lastikAdres) || '';
           }
           setupDriverEventRadioHandlers('lastik', wrap, adres);
-      } else if (type === 'utts') {
-          const vehicle = allHistoryVehicles.find(function(v) { return String(v.id) === String(vehicleId); });
-          const btns = document.querySelectorAll('#driver-utts-modal .driver-radio-btn');
-          const evet = vehicle && vehicle.uttsTanimlandi;
-          btns.forEach(function(b) {
-              b.classList.toggle('active', (b.dataset.value === 'evet') === evet);
-          });
       } else if (type === 'muayene') {
           const input = document.getElementById('driver-muayene-tarih');
           if (input) input.value = new Date().toISOString().split('T')[0];
@@ -2684,9 +2675,6 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           if (!active) { alert('Lütfen Durum seçiniz!'); return; }
           const durum = active.dataset.value;
           data = { durum: durum, adres: durum === 'var' ? capitalizeWords(document.getElementById('driver-lastik-adres')?.value.trim() || '') : '' };
-      } else if (type === 'utts') {
-          const active = document.querySelector('#driver-utts-modal .driver-radio-btn.active');
-          data = { durum: active && active.dataset.value === 'evet' };
       } else if (type === 'muayene') {
           const payload = getDriverMuayenePayload();
           if (!payload) return;
