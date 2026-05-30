@@ -402,9 +402,6 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
         e.stopPropagation();
         if (typeof e.stopImmediatePropagation === 'function') e.stopImmediatePropagation();
         var willOpen = !wrap.classList.contains('is-open');
-        if (willOpen && typeof window.closeDriverNotificationModal === 'function') {
-          window.closeDriverNotificationModal();
-        }
         setOpen(willOpen);
         if (willOpen) armOutsideCloseGuard();
       });
@@ -497,7 +494,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
   }
   function formatDriverPlaka(plaka) {
     if (!plaka) return '';
-    return String(plaka).replace(/\s+/g, '');
+    return window.innerWidth <= 768 ? String(plaka).replace(/\s+/g, '') : plaka;
   }
   function syncDriverDateDisplay(inputEl) {
     if (!inputEl || inputEl.type !== 'date') return;
@@ -1160,6 +1157,11 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
   function renderDriverDocumentsModal(vehicle) {
       const listEl = document.getElementById('driver-documents-list');
       if (!listEl) return;
+      const plateEl = document.getElementById('driver-documents-vehicle-plate');
+      const modelEl = document.getElementById('driver-documents-vehicle-model');
+      const brandModelFormatter = (typeof window.formatBrandModel === 'function' ? window.formatBrandModel : (typeof window.toTitleCase === 'function' ? window.toTitleCase : function(x){ return x; }));
+      if (plateEl) plateEl.textContent = formatDriverPlaka(vehicle && vehicle.plaka);
+      if (modelEl) modelEl.textContent = brandModelFormatter((vehicle && (vehicle.brandModel || [vehicle.marka, vehicle.model].filter(Boolean).join(' '))) || '') || '';
       const vehicleId = vehicle && vehicle.id != null ? String(vehicle.id) : '';
       const documentTypes = getDriverDocumentTypesForVehicle(vehicle);
       const typeByKey = {};
@@ -1326,7 +1328,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       const egzozW = checkDateWarningsDriver(hasEgzozMuayeneSaved ? egzozMuayeneDate : '');
       const showTasitKartiInfo = driverVehicleNeedsK2(vehicle);
       const showTakografInfo = driverVehicleNeedsTakograf(vehicle);
-      const tasitKartiDate = (vehicle.tasitKartiExpiryDate && String(vehicle.tasitKartiExpiryDate).trim()) ? String(vehicle.tasitKartiExpiryDate).trim() : '';
+      const tasitKartiDate = (vehicle.k2BelgesiExpiryDate && String(vehicle.k2BelgesiExpiryDate).trim()) ? String(vehicle.k2BelgesiExpiryDate).trim() : '';
       const takografDate = (vehicle.takografExpiryDate && String(vehicle.takografExpiryDate).trim())
           ? String(vehicle.takografExpiryDate).trim()
           : ((vehicle.takografKalibrasyonDate && String(vehicle.takografKalibrasyonDate).trim()) ? String(vehicle.takografKalibrasyonDate).trim() : '');
@@ -1343,6 +1345,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       const sigortaSaved = !!(vehicle.sigortaDate && vehicle.sigortaDate.trim());
       const kaskoSaved = !!(vehicle.kaskoDate && vehicle.kaskoDate.trim());
       const muayeneSaved = !!(vehicle.muayeneDate && vehicle.muayeneDate.trim());
+      const uttsSaved = vehicle.uttsTanimlandi === true || vehicle.uttsTanimlandi === false;
       /* Yeşil (saved) sadece bu oturumda bildirim yapıldıysa; pencere kapanınca lastCompletedActionInSession temizlenir, orijinal görünüme döner */
       const vid = String(vehicle.id);
       const sessionMatch = (action) => lastCompletedActionInSession && lastCompletedActionInSession.action === action && String(lastCompletedActionInSession.vehicleId) === vid;
@@ -1360,7 +1363,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
               <div class="driver-info-item ${muayeneW.class}"><span class="label">Muayene Bitiş</span><span class="value">${formatDriverDate(vehicle.muayeneDate) || '-'}</span></div>
               ${hasEgzozMuayeneSaved ? `<div class="driver-info-item ${egzozW.class}"><span class="label">Egzoz Muayene Bitiş</span><span class="value">${formatDriverDate(egzozMuayeneDate) || '-'}</span></div>` : ''}
               ${showTasitKartiInfo ? `<div class="driver-info-item ${tasitKartiW.class}"><span class="label">Taşıt Kartı Bitiş</span><span class="value">${renderDriverRequiredExpiryValue(tasitKartiDate)}</span></div>` : ''}
-              ${showTakografInfo ? `<div class="driver-info-item ${takografW.class}"><span class="label">Takograf B. T.</span><span class="value">${renderDriverRequiredExpiryValue(takografDate)}</span></div>` : ''}
+              ${showTakografInfo ? `<div class="driver-info-item ${takografW.class}"><span class="label">Takograf Kalibrasyon Bitiş</span><span class="value">${renderDriverRequiredExpiryValue(takografDate)}</span></div>` : ''}
               <div class="driver-info-item ${anahtarSavedClass}"><span class="label">Yedek Anahtar</span><span class="value">${escapeHtmlDriver(anahtarLabel)}</span></div>
               <div class="driver-info-item ${lastikSavedClass}"><span class="label">Lastik Durumu</span><span class="value">${escapeHtmlDriver(lastikLabel)}</span></div>
               <div class="driver-info-item"><span class="label">UTTS</span><span class="value">${escapeHtmlDriver(uttsLabel)}</span></div>
@@ -1405,7 +1408,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       const row = trigger.closest('.driver-plate-dropdown-row');
       if (!row) return;
 
-      if (window.innerWidth <= 768) {
+      if (window.innerWidth <= 640) {
           const rowRect = row.getBoundingClientRect();
           const viewportPadding = 8;
           const desiredWidth = Math.floor(window.innerWidth * 0.8);
@@ -2086,97 +2089,33 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
 
   let slidingWarningInterval = null;
 
-  const driverNotificationsDropdownId = 'driver-notifications-dropdown';
-  const driverNotificationsDropdownListId = 'driver-notifications-dropdown-list';
+  const driverNotificationModalId = 'driver-notification-modal';
+  const driverNotificationModalListId = 'driver-notification-modal-list';
   const driverNotificationEmptyStateHtml = '<div class="driver-notification-empty">Aktif bildirim bulunmuyor.</div>';
-  let driverNotificationsItemsHtml = '';
-  let driverNotificationsOutsideGuardTimer = null;
 
-  function setDriverNotificationsDropdownContent(warningItemsHtml) {
-      const list = document.getElementById(driverNotificationsDropdownListId);
-      if (!list) return;
-      list.innerHTML = warningItemsHtml && warningItemsHtml.trim() ? warningItemsHtml : driverNotificationEmptyStateHtml;
-  }
-
-  function closeDriverVehicleShortcutsIfOpen() {
-      const wrap = document.getElementById('driver-vehicle-shortcuts');
-      const toggle = document.getElementById('driver-vehicle-shortcuts-toggle');
-      const panel = document.getElementById('driver-vehicle-shortcuts-panel');
-      if (!wrap || !wrap.classList.contains('is-open')) return;
-      wrap.classList.remove('is-open');
-      if (toggle) toggle.setAttribute('aria-expanded', 'false');
-      if (panel) panel.setAttribute('aria-hidden', 'true');
-      wrap.dataset.shortcutsOutsideGuard = '0';
-  }
-
-  function setDriverNotificationsDropdownOpen(open) {
-      const dropdown = document.getElementById(driverNotificationsDropdownId);
-      const trigger = document.querySelector('#driver-sliding-warning .driver-warning-trigger');
-      if (!dropdown) return;
-      dropdown.classList.toggle('open', open);
-      if (open) dropdown.removeAttribute('hidden');
-      else dropdown.setAttribute('hidden', '');
-      if (trigger) trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
-      document.body.classList.toggle('driver-notifications-open', open);
-  }
-
-  function armDriverNotificationsOutsideGuard() {
-      if (driverNotificationsOutsideGuardTimer) clearTimeout(driverNotificationsOutsideGuardTimer);
-      document.body.dataset.driverNotificationsOutsideGuard = '1';
-      driverNotificationsOutsideGuardTimer = setTimeout(function() {
-          document.body.dataset.driverNotificationsOutsideGuard = '0';
-          driverNotificationsOutsideGuardTimer = null;
-      }, 350);
+  function setDriverNotificationModalContent(warningItemsHtml) {
+      const modalList = document.getElementById(driverNotificationModalListId);
+      if (!modalList) return;
+      modalList.innerHTML = warningItemsHtml && warningItemsHtml.trim() ? warningItemsHtml : driverNotificationEmptyStateHtml;
   }
 
   window.openDriverNotificationModal = function(warningItemsHtml) {
-      if (typeof warningItemsHtml === 'string') driverNotificationsItemsHtml = warningItemsHtml;
-      setDriverNotificationsDropdownContent(driverNotificationsItemsHtml);
-      closeDriverVehicleShortcutsIfOpen();
-      setDriverNotificationsDropdownOpen(true);
-      armDriverNotificationsOutsideGuard();
+      const modal = document.getElementById(driverNotificationModalId);
+      if (!modal) return;
+      setDriverNotificationModalContent(warningItemsHtml || '');
+      modal.classList.add('show');
+      const trigger = document.querySelector('#driver-sliding-warning .driver-warning-trigger');
+      if (trigger) trigger.setAttribute('aria-expanded', 'true');
+      updateDriverModalBodyClass();
   };
 
   window.closeDriverNotificationModal = function() {
-      setDriverNotificationsDropdownOpen(false);
+      const modal = document.getElementById(driverNotificationModalId);
+      if (modal) modal.classList.remove('show');
+      const trigger = document.querySelector('#driver-sliding-warning .driver-warning-trigger');
+      if (trigger) trigger.setAttribute('aria-expanded', 'false');
+      updateDriverModalBodyClass();
   };
-
-  function bindDriverNotificationsDropdown(wrap) {
-      if (!wrap || wrap.dataset.notificationsBound === '1') return;
-      wrap.dataset.notificationsBound = '1';
-      wrap.addEventListener('click', function(e) {
-          const trigger = e.target.closest('.driver-warning-trigger');
-          if (!trigger || !wrap.contains(trigger)) return;
-          e.preventDefault();
-          e.stopPropagation();
-          if (typeof e.stopImmediatePropagation === 'function') e.stopImmediatePropagation();
-          const dropdown = document.getElementById(driverNotificationsDropdownId);
-          const willOpen = !(dropdown && dropdown.classList.contains('open'));
-          if (willOpen) {
-              setDriverNotificationsDropdownContent(driverNotificationsItemsHtml);
-              closeDriverVehicleShortcutsIfOpen();
-              setDriverNotificationsDropdownOpen(true);
-              armDriverNotificationsOutsideGuard();
-          } else {
-              setDriverNotificationsDropdownOpen(false);
-          }
-      });
-  }
-
-  if (!window.__driverNotificationsGlobalBound) {
-      window.__driverNotificationsGlobalBound = true;
-      document.addEventListener('click', function(e) {
-          const dropdown = document.getElementById(driverNotificationsDropdownId);
-          if (!dropdown || !dropdown.classList.contains('open')) return;
-          if (document.body.dataset.driverNotificationsOutsideGuard === '1') return;
-          const wrap = document.getElementById('driver-sliding-warning');
-          if (wrap && wrap.contains(e.target)) return;
-          setDriverNotificationsDropdownOpen(false);
-      });
-      document.addEventListener('keydown', function(e) {
-          if (e.key === 'Escape') window.closeDriverNotificationModal();
-      });
-  }
 
   function renderSlidingWarning(vehicles, records) {
       const el = document.getElementById('driver-sliding-warning');
@@ -2211,18 +2150,19 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       }).join('');
       const engineIcon = '<span class="driver-warning-icon driver-warning-icon-engine ' + iconClass + '" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"></svg></span>';
 
-      driverNotificationsItemsHtml = warningItemsHtml;
-      window.closeDriverNotificationModal();
       el.className = 'driver-sliding-warning driver-warning-popover' + (hasRedWarning ? '' : ' driver-sliding-warning-orange');
-      el.innerHTML = '<button type="button" class="driver-warning-trigger" aria-label="Uyarilari goster" aria-expanded="false" aria-haspopup="true" aria-controls="' + driverNotificationsDropdownId + '">'
+      el.innerHTML = '<button type="button" class="driver-warning-trigger" aria-label="Uyarilari goster" aria-expanded="false" aria-haspopup="dialog" aria-controls="' + driverNotificationModalId + '">'
           + engineIcon
-          + '</button>'
-          + '<div id="' + driverNotificationsDropdownId + '" class="driver-notifications-dropdown" role="dialog" aria-label="Aktif Bildirimler" hidden>'
-          + '<div id="' + driverNotificationsDropdownListId + '" class="driver-notifications-dropdown-list" aria-live="polite"></div>'
-          + '</div>';
+          + '</button>';
 
-      setDriverNotificationsDropdownContent(warningItemsHtml);
-      bindDriverNotificationsDropdown(el);
+      const trigger = el.querySelector('.driver-warning-trigger');
+      if (trigger) {
+          trigger.addEventListener('click', function(e) {
+              e.preventDefault();
+              e.stopPropagation();
+              window.openDriverNotificationModal(warningItemsHtml);
+          });
+      }
   }
 
   function initKaportaForDriver(container, vehicle) {
@@ -2230,6 +2170,14 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           initKaporta(container, vehicle);
       }
   }
+
+  window.toggleDriverPlateDropdown = function(ev) {
+      ev.stopPropagation();
+      const dropdown = document.getElementById('driver-plate-dropdown');
+      if (!dropdown) return;
+      const isOpen = dropdown.style.display === 'block';
+      dropdown.style.display = isOpen ? 'none' : 'block';
+  };
 
   function formatDriverDate(val) {
       if (!val) return '-';
@@ -2310,6 +2258,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           { id: 'kaza', label: 'Kaza Bilgisi Ekle' },
           { id: 'anahtar', label: 'Yedek Anahtar Bilgisi Güncelle' },
           { id: 'lastik', label: 'Yazlık/Kışlık Lastik Durumu Güncelle' },
+          { id: 'utts', label: 'UTTS Bilgisi Güncelle' },
           { id: 'muayene', label: 'Muayene Bilgisi Güncelle' },
           { id: 'sigorta', label: 'Trafik Sigortası Yenileme' },
           { id: 'kasko', label: 'Kasko Yenileme' }
@@ -2397,6 +2346,13 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
               adres.value = (vehicle && vehicle.lastikAdres) || '';
           }
           setupDriverEventRadioHandlers('lastik', wrap, adres);
+      } else if (type === 'utts') {
+          const vehicle = allHistoryVehicles.find(function(v) { return String(v.id) === String(vehicleId); });
+          const btns = document.querySelectorAll('#driver-utts-modal .driver-radio-btn');
+          const evet = vehicle && vehicle.uttsTanimlandi;
+          btns.forEach(function(b) {
+              b.classList.toggle('active', (b.dataset.value === 'evet') === evet);
+          });
       } else if (type === 'muayene') {
           const input = document.getElementById('driver-muayene-tarih');
           if (input) input.value = new Date().toISOString().split('T')[0];
@@ -2675,6 +2631,9 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           if (!active) { alert('Lütfen Durum seçiniz!'); return; }
           const durum = active.dataset.value;
           data = { durum: durum, adres: durum === 'var' ? capitalizeWords(document.getElementById('driver-lastik-adres')?.value.trim() || '') : '' };
+      } else if (type === 'utts') {
+          const active = document.querySelector('#driver-utts-modal .driver-radio-btn.active');
+          data = { durum: active && active.dataset.value === 'evet' };
       } else if (type === 'muayene') {
           const payload = getDriverMuayenePayload();
           if (!payload) return;
