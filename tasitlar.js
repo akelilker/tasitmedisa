@@ -5820,6 +5820,7 @@
           section('Tramer Tarih', 'kaza-tramer-tarih', 'input', [['type', 'date'], ['class', 'olay-tarih-input']]) +
           section('Tramer Tutar', 'kaza-tramer-tutar', 'input', [['type', 'text'], ['placeholder', 'Tutar']]) +
           '</div>' +
+          section('Açıklama', 'kaza-aciklama', 'textarea', [['rows', '2'], ['placeholder', 'Kaza ile ilgili açıklama girin']]) +
           '<div class="kaza-kaporta-block"><span class="' + labelCls + ' kaza-kaporta-section-label">Kaporta / Hasar</span><div id="kaza-kaporta-container"></div></div></div>';
       case 'ceza':
         return '<div style="display:flex;flex-direction:column;gap:12px;">' +
@@ -8674,6 +8675,7 @@
     const tarih = document.getElementById('kaza-tarih')?.value.trim() || '';
     const surucu = document.getElementById('kaza-surucu')?.value.trim() || '';
     const hasarTutari = document.getElementById('kaza-tutar')?.value.trim() || '';
+    const aciklama = document.getElementById('kaza-aciklama')?.value.trim() || '';
     
     if (!tarih) {
       alert('Tarih zorunludur!');
@@ -8723,6 +8725,7 @@
         surucu: surucu || getEventPerformerName(vehicle),
         hasarParcalari: newDamages,
         hasarTutari: hasarTutari,
+        aciklama: aciklama,
         tramerKaydi: tramerKaydi || undefined,
         tramerTarih: tramerKaydi === 'evet' ? tramerTarih : undefined,
         tramerTutar: tramerKaydi === 'evet' ? tramerTutar : undefined
