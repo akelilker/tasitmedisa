@@ -789,15 +789,14 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     position: relative !important;
 }
 
-/* Taşıt bağlamı: satır 1 = geri + plaka, satır 2 = marka/model (uzun metin sol oku ezmesin) */
+/* Taşıt bağlamı: geri solda; plaka + marka/model yatayda ortalı (alt satırda, sol oku ezmesin) */
 #event-menu-modal .universal-back-bar:has(.vehicle-context-row),
 #dinamik-olay-modal .universal-back-bar:has(.vehicle-context-row),
 #vehicle-history-modal .universal-back-bar:has(.vehicle-context-row) {
     display: grid !important;
-    grid-template-columns: minmax(0, max-content) minmax(0, 1fr);
+    grid-template-columns: 1fr;
     grid-template-rows: auto auto;
     align-items: center;
-    column-gap: 10px;
     row-gap: 3px;
     width: 100% !important;
     box-sizing: border-box !important;
@@ -816,25 +815,36 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     grid-row: 1;
     justify-self: start;
     align-self: center;
-    max-width: 100%;
+    position: relative;
+    z-index: 1;
+    max-width: 46%;
 }
 
 #event-menu-modal .universal-back-bar:has(.vehicle-context-row) .vehicle-context-plate,
 #dinamik-olay-modal .universal-back-bar:has(.vehicle-context-row) .vehicle-context-plate,
 #vehicle-history-modal .universal-back-bar:has(.vehicle-context-row) .vehicle-context-plate {
-    grid-column: 2;
+    grid-column: 1;
     grid-row: 1;
-    justify-self: end;
-    text-align: right;
+    justify-self: center;
+    align-self: center;
+    text-align: center;
+    width: 100%;
+    max-width: calc(100% - 24px);
+    padding: 0 12px;
+    box-sizing: border-box;
 }
 
 #event-menu-modal .universal-back-bar:has(.vehicle-context-row) .vehicle-context-model,
 #dinamik-olay-modal .universal-back-bar:has(.vehicle-context-row) .vehicle-context-model,
 #vehicle-history-modal .universal-back-bar:has(.vehicle-context-row) .vehicle-context-model {
-    grid-column: 1 / -1;
+    grid-column: 1;
     grid-row: 2;
-    justify-self: stretch;
-    text-align: left;
+    justify-self: center;
+    text-align: center;
+    width: 100%;
+    max-width: calc(100% - 24px);
+    padding: 0 12px;
+    box-sizing: border-box;
 }
 
 .vehicle-context-plate,
