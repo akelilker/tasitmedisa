@@ -2377,7 +2377,7 @@ body.dashboard-page:has(#driver-notifications-dropdown.open) .driver-header-fixe
   .driver-current-plaka { font-size: 13.5px; } /* 14.5 - 1pt */
   .driver-plate-subtitle { font-size: 14.5px; }
   .driver-user-plate-in-panel .driver-plate-subtitle { font-size: calc(15.5px + 0.67px); }
-  .driver-user-plate-in-panel { gap: 3px; margin-bottom: 3px; }
+  .driver-user-plate-in-panel { gap: 1px; margin-bottom: 3px; }
   .driver-radio-label.driver-radio-label-multiline {
     display: inline-flex;
     align-self: center;
@@ -3855,6 +3855,80 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   box-sizing: border-box !important;
 }
 
+#driver-documents-modal .driver-documents-vehicle-heading {
+  position: relative;
+  width: 100%;
+  margin: 0 0 16px;
+  text-align: center;
+  color: var(--txt-white, #fff);
+}
+
+#driver-documents-modal .driver-documents-vehicle-heading-top {
+  position: relative;
+  display: block;
+  width: 100%;
+  min-height: 28px;
+}
+
+#driver-documents-modal .driver-documents-vehicle-heading-top .universal-back-bar {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  margin: 0;
+  padding: 0;
+  z-index: 2;
+}
+
+#driver-documents-modal .driver-documents-vehicle-heading-label {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  color: var(--txt-muted, #a0aec0);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.15;
+  white-space: nowrap;
+  max-width: 42%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#driver-documents-modal .driver-documents-vehicle-heading-top:has(.universal-back-bar) .driver-documents-vehicle-heading-label {
+  left: 22px;
+  max-width: calc(42% - 10px);
+}
+
+#driver-documents-modal .driver-documents-vehicle-heading-plate {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0 6px;
+  box-sizing: border-box;
+  text-align: center;
+  color: var(--txt-white, #fff);
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  line-height: 1.1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#driver-documents-modal .driver-documents-vehicle-heading-model {
+  margin-top: 2px;
+  color: var(--txt-muted, #a0aec0);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.15;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .driver-documents-list {
   display: flex;
   flex-direction: column;
@@ -4043,6 +4117,29 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
     background: var(--modal-bg) !important;
   }
 
+  #driver-documents-modal .driver-documents-vehicle-heading {
+    margin-bottom: 14px;
+  }
+
+  #driver-documents-modal .driver-documents-vehicle-heading-top {
+    min-height: 30px;
+  }
+
+  #driver-documents-modal .driver-documents-vehicle-heading-label {
+    font-size: 13px;
+  }
+
+  #driver-documents-modal .driver-documents-vehicle-heading-plate {
+    font-size: 18px;
+    letter-spacing: 0.06em;
+  }
+
+  #driver-documents-modal .driver-documents-vehicle-heading-model {
+    margin-top: 1px;
+    font-size: 12px;
+    line-height: 1.12;
+  }
+
   #driver-documents-modal .driver-documents-list {
     gap: 18px;
   }
@@ -4066,8 +4163,8 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   }
 
   #driver-documents-modal .driver-document-icon-wrap {
-    width: 52px;
-    height: 52px;
+    width: 56px;
+    height: 56px;
     color: rgba(74, 222, 128, 0.82);
   }
 
@@ -4077,8 +4174,8 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   }
 
   #driver-documents-modal .driver-document-icon {
-    width: 34px;
-    height: 34px;
+    width: 36px;
+    height: 36px;
   }
 
   #driver-documents-modal .driver-document-title {
@@ -6116,7 +6213,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     white-space: nowrap !important;
     overflow: hidden !important;
     text-overflow: clip !important;
-    padding-left: 8px !important;
+    padding-left: 18px !important;
     padding-right: 18px !important;
     font-size: calc(13px - 1pt) !important; /* 14px - 2pt */
   }
@@ -6493,6 +6590,37 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
   .dashboard-page .driver-left-panel .driver-plate-subtitle {
     font-size: calc(16px - 1pt) !important; /* Marka/model 1pt küçük */
+  }
+  body.driver-action-block-open.dashboard-page .driver-left-panel .driver-user-plate-row.driver-user-plate-in-panel {
+    gap: 2px !important;
+  }
+  body.driver-action-block-open.dashboard-page .driver-left-panel .driver-plate-dropdown-row {
+    display: block;
+    line-height: 1;
+    min-height: 0;
+    height: auto;
+    padding: 0;
+    margin: 0;
+  }
+  body.driver-action-block-open.dashboard-page .driver-left-panel .driver-plate-dropdown-row .driver-current-plaka {
+    display: inline-block !important;
+    width: 100% !important;
+    line-height: 1 !important;
+    margin: 0 !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    vertical-align: top;
+  }
+  body.driver-action-block-open.dashboard-page .driver-left-panel .driver-current-plaka {
+    font-size: calc(15px - 1pt + 1px) !important;
+    line-height: 1 !important;
+    margin-bottom: 0 !important;
+  }
+  body.driver-action-block-open.dashboard-page .driver-left-panel .driver-plate-subtitle,
+  body.driver-action-block-open.dashboard-page .driver-left-panel .driver-user-plate-in-panel .driver-plate-subtitle {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+    line-height: 1.05 !important;
   }
   .dashboard-page .driver-sliding-warning {
     font-size: 15px !important;
