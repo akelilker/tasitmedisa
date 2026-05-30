@@ -2492,13 +2492,12 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
 
   window.confirmMuayeneSubmit = async function() {
       if (!ensureDriverOnlineForWrite()) return;
-      isMuayeneConfirmed = true;
       hideMuayenePopoverAndRestore();
       if (pendingMuayeneVehicleId) {
           const vid = pendingMuayeneVehicleId;
           pendingMuayeneVehicleId = null;
           const payload = getDriverMuayenePayload(vid);
-          if (!payload) { isMuayeneConfirmed = false; return; }
+          if (!payload) return;
           try {
               const res = await fetch(API_BASE + 'driver_event.php', {
                   method: 'POST',
@@ -2518,10 +2517,9 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           } catch (err) {
               console.error(err);
               alert('Bağlantı hatası!');
-          } finally {
-              isMuayeneConfirmed = false;
           }
       } else {
+          isMuayeneConfirmed = true;
           await saveDriverEvent('muayene');
           isMuayeneConfirmed = false;
       }
@@ -2564,17 +2562,14 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       } else if (type === 'muayene') {
           const payload = getDriverMuayenePayload(vehicleId);
           if (!payload) return;
-          if (!isMuayeneConfirmed) {
-              const vehicle = allHistoryVehicles && allHistoryVehicles.find(function(v) { return String(v.id) === String(vehicleId); });
-              const bitisStr = calculateNextMuayeneDate(payload.tarih, vehicle);
-              const dateEl = document.getElementById('muayene-calc-date');
-              if (dateEl) dateEl.textContent = bitisStr ? formatDateDDMMYYYY(bitisStr) : '--/--/----';
-              pendingMuayeneVehicleId = vehicleId;
-              var dateInput = document.getElementById('driver-muayene-tarih-' + vehicleId);
-              positionAndShowMuayenePopover(dateInput, 'block');
-              return;
-          }
-          data = payload;
+          const vehicle = allHistoryVehicles && allHistoryVehicles.find(function(v) { return String(v.id) === String(vehicleId); });
+          const bitisStr = calculateNextMuayeneDate(payload.tarih, vehicle);
+          const dateEl = document.getElementById('muayene-calc-date');
+          if (dateEl) dateEl.textContent = bitisStr ? formatDateDDMMYYYY(bitisStr) : '--/--/----';
+          pendingMuayeneVehicleId = vehicleId;
+          var dateInput = document.getElementById('driver-muayene-tarih-' + vehicleId);
+          positionAndShowMuayenePopover(dateInput, 'block');
+          return;
       } else if (type === 'sigorta') {
           const tarih = document.getElementById('driver-sigorta-tarih-' + vehicleId)?.value.trim() || '';
           if (!tarih) { alert('Tarih zorunludur!'); return; }
