@@ -874,6 +874,16 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 }
 
 @media (max-width: 640px) {
+    #event-menu-modal .universal-back-bar:has(.vehicle-context-row) {
+        row-gap: 0 !important;
+        padding-bottom: 3px !important;
+    }
+
+    #event-menu-modal .universal-back-bar:has(.vehicle-context-row) .vehicle-context-plate {
+        align-self: end;
+        transform: translateY(-2px);
+    }
+
     #dinamik-olay-modal[data-event-type="documents"] .universal-back-bar:has(.vehicle-context-row) {
         margin-bottom: 10px !important;
         padding: 8px 48px 2px 16px !important;
