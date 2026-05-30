@@ -24,6 +24,18 @@
       document.body.classList.toggle('settings-open', !!(settingsMenu && settingsMenu.classList.contains('open')));
     }
 
+    function closeSettingsDropdown() {
+      const settingsMenu = document.getElementById('settings-menu');
+      if (settingsMenu) settingsMenu.classList.remove('open');
+      syncSettingsOpenState();
+    }
+
+    window.reopenSettingsMenu = function reopenSettingsMenu() {
+      const settingsMenu = document.getElementById('settings-menu');
+      if (settingsMenu) settingsMenu.classList.add('open');
+      syncSettingsOpenState();
+    };
+
     let activeUserFormCustomSelect = null;
     let userFormSelectedVehicleIds = [];
 
@@ -508,9 +520,7 @@
     }
 
     window.openZorunluEvraklar = function openZorunluEvraklar() {
-      const settingsMenu = document.getElementById('settings-menu');
-      if (settingsMenu) settingsMenu.classList.remove('open');
-      syncSettingsOpenState();
+      closeSettingsDropdown();
       const modal = document.getElementById('required-documents-modal');
       if (!modal) return;
       refreshZorunluEvraklarK2View();
@@ -524,9 +534,9 @@
       const modal = document.getElementById('required-documents-modal');
       if (!modal) return;
       modal.classList.remove('active');
+      closeSettingsDropdown();
       setTimeout(() => {
         modal.style.display = 'none';
-        syncSettingsOpenState();
       }, 300);
     };
 
@@ -574,6 +584,7 @@
   
     // Modal Kontrolü (Ana Liste)
     window.openBranchManagement = function openBranchManagement() {
+      closeSettingsDropdown();
       const modal = document.getElementById('branch-modal');
       if (!modal) return;
   
@@ -589,6 +600,7 @@
       const modal = document.getElementById('branch-modal');
       if (!modal) return;
       modal.classList.remove('active');
+      closeSettingsDropdown();
       setTimeout(() => modal.style.display = 'none', 300);
     };
 
@@ -1173,6 +1185,7 @@
   
     // Modal Kontrolü (Ana Liste)
     window.openUserManagement = function openUserManagement() {
+      closeSettingsDropdown();
       const modal = document.getElementById('user-modal');
       if (!modal) return;
 
@@ -1199,6 +1212,7 @@
       syncUserManagementSearchUi();
       clearUserManagementKeyboardOffset();
       modal.classList.remove('active');
+      closeSettingsDropdown();
       setTimeout(() => modal.style.display = 'none', 300);
     };
 
@@ -2434,10 +2448,7 @@
         event.preventDefault();
       }
   
-      const settingsMenu = document.getElementById('settings-menu');
-      if (settingsMenu) {
-        settingsMenu.classList.remove('open');
-      }
+      closeSettingsDropdown();
       const dataSubmenu = document.getElementById('data-submenu');
       if (dataSubmenu) {
         dataSubmenu.classList.remove('open');
@@ -2456,6 +2467,7 @@
       const modal = document.getElementById('data-management-modal');
       if (!modal) return;
       modal.classList.remove('active');
+      closeSettingsDropdown();
       setTimeout(() => modal.style.display = 'none', 300);
     };
 
@@ -2480,8 +2492,7 @@
 
     window.openDisVeriPanel = function openDisVeriPanel() {
       if (isDisVeriPanelUnavailableOnCurrentDevice()) return;
-      const settingsMenu = document.getElementById('settings-menu');
-      if (settingsMenu) settingsMenu.classList.remove('open');
+      closeSettingsDropdown();
       const dataSubmenu = document.getElementById('data-submenu');
       if (dataSubmenu) dataSubmenu.classList.remove('open');
       const panel = document.getElementById('dis-veri-panel');
@@ -2494,6 +2505,7 @@
       const panel = document.getElementById('dis-veri-panel');
       if (!panel) return;
       panel.classList.remove('active');
+      closeSettingsDropdown();
       setTimeout(() => { panel.style.display = 'none'; }, 300);
     };
     window.tsbKaskoListesiIndir = function tsbKaskoListesiIndir() {
