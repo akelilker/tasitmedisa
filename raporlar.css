@@ -2805,15 +2805,27 @@ line-clamp: 2 !important;
 }
 #reports-modal.reports-modal--stok-list #stok-list-container .stok-list-cell[data-col="marka"] {
 align-items: center !important;
+overflow: visible !important;
 }
 #reports-modal.reports-modal--stok-list #stok-list-container .stok-list-cell[data-col="marka"] .stok-marka-cell-inner {
-display: -webkit-box !important;
--webkit-box-orient: vertical !important;
--webkit-line-clamp: 2 !important;
-line-clamp: 2 !important;
+display: block !important;
+-webkit-box-orient: unset !important;
+-webkit-line-clamp: unset !important;
+line-clamp: unset !important;
 max-height: none !important;
 line-height: 1.2 !important;
-overflow: hidden !important;
+overflow: visible !important;
+text-overflow: clip !important;
+white-space: normal !important;
+word-break: break-word !important;
+overflow-wrap: break-word !important;
+}
+#reports-modal.reports-modal--stok-list #stok-list-container .stok-list-cell[data-col="marka"] .stok-marka-line {
+display: block !important;
+white-space: normal !important;
+overflow: visible !important;
+text-overflow: clip !important;
+line-height: 1.2 !important;
 }
 #reports-modal.reports-modal--stok-list #stok-list-container .stok-list-header-cell:not(.stok-sortable-header) {
 padding: 2px 2px !important;
