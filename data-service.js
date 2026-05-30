@@ -18,12 +18,23 @@
         kayitlar: [],
         branches: [],
         users: [],
-        ayarlar: { sirketAdi: 'Medisa', yetkiliKisi: '', telefon: '', eposta: '' },
+        ayarlar: {
+          sirketAdi: 'Medisa',
+          yetkiliKisi: '',
+          telefon: '',
+          eposta: '',
+          k2Belgesi: {
+            expiryDate: '',
+            documentPath: '',
+            updatedAt: ''
+          }
+        },
         sifreler: [],
         arac_aylik_hareketler: [],
         duzeltme_talepleri: [],
         kaskoDegerListesi: { updatedAt: '', period: '', sourceFileName: '', rows: [] },
-        notificationReadState: {}
+        notificationReadState: {},
+        monthlyTodoWhatsAppLogs: {}
       };
     }
     if (!Array.isArray(window.appData.tasitlar)) window.appData.tasitlar = [];
