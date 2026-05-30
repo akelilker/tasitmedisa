@@ -81,7 +81,7 @@ body.login-page.login-gate-active #pwa-install-wrapper {
   filter: brightness(0.88);
 }
 .driver-splash-title {
-  font-size: clamp(calc(16px - 0.5pt), 4.5vw, calc(24px - 0.5pt));
+  font-size: clamp(calc(17px - 0.5pt), 4.5vw, calc(25px - 0.5pt));
   font-weight: 800;
   letter-spacing: clamp(1px, 0.5vw, 4px);
   text-transform: uppercase;
