@@ -37,7 +37,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../style-core.css?v=20260524.2">
-<link rel="stylesheet" href="driver-style.css?v=20260530.13">
+<link rel="stylesheet" href="driver-style.css?v=20260530.14">
 <script defer src="../portal-session.js?v=20260513.2"></script>
 <script defer src="../script-core.js?v=20260519.3"></script>
 </head>
@@ -432,166 +432,6 @@
         </div>
         </div>
 
-        <!-- Olay Ekle Menü Modal -->
-        <div id="driver-event-menu-modal" class="driver-modal modal-overlay" onclick="if(event.target === this) closeDriverEventMenu();">
-            <div class="driver-modal-content modal-container" onclick="event.stopPropagation();">
-                <div class="modal-header">
-                    <h2>OLAY EKLE</h2>
-                    <button type="button" onclick="closeDriverEventMenu()" class="modal-close" aria-label="Kapat">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div id="driver-event-menu-list" class="driver-event-menu-list"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Anahtar Güncelle Modal -->
-        <div id="driver-anahtar-modal" class="driver-modal modal-overlay" onclick="if(event.target === this) closeDriverEventModal('anahtar');">
-            <div class="driver-modal-content modal-container" onclick="event.stopPropagation();">
-                <div class="modal-header">
-                    <h2>YEDEK ANAHTAR BİLGİSİ GÜNCELLE</h2>
-                    <button type="button" onclick="closeDriverEventModal('anahtar')" class="modal-close" aria-label="Kapat"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group driver-radio-row" role="group" aria-labelledby="driver-anahtar-durum-label">
-                        <span id="driver-anahtar-durum-label" class="driver-radio-label driver-radio-label-multiline">Yedek Anahtar</span>
-                        <div class="driver-radio-group">
-                            <button type="button" class="driver-radio-btn active" data-value="var" data-group="anahtar">Var</button>
-                            <button type="button" class="driver-radio-btn" data-value="yok" data-group="anahtar">Yok</button>
-                        </div>
-                    </div>
-                    <div id="driver-anahtar-detay-wrap" class="form-group" style="display: none;">
-                        <label for="driver-anahtar-detay" style="color: var(--form-label-color); font-size: 15px;">Açıklama:</label>
-                        <input type="text" id="driver-anahtar-detay" class="form-input" placeholder="Anahtar nerede?" style="width: 100%;">
-                    </div>
-                    <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
-                        <button type="button" class="btn-submit" onclick="saveDriverEvent('anahtar')">Bildir</button>
-                        <button type="button" class="universal-btn-cancel" onclick="closeDriverEventModal('anahtar')">Vazgeç</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Lastik Güncelle Modal -->
-        <div id="driver-lastik-modal" class="driver-modal modal-overlay" onclick="if(event.target === this) closeDriverEventModal('lastik');">
-            <div class="driver-modal-content modal-container" onclick="event.stopPropagation();">
-                <div class="modal-header">
-                    <h2>YAZLIK/KIŞLIK LASTİK DURUMU GÜNCELLE</h2>
-                    <button type="button" onclick="closeDriverEventModal('lastik')" class="modal-close" aria-label="Kapat"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group driver-radio-row" role="group" aria-labelledby="driver-lastik-durum-label">
-                        <span id="driver-lastik-durum-label" class="driver-radio-label driver-radio-label-multiline">Yazlık/ Kışlık</span>
-                        <div class="driver-radio-group">
-                            <button type="button" class="driver-radio-btn" data-value="var" data-group="lastik">Var</button>
-                            <button type="button" class="driver-radio-btn active" data-value="yok" data-group="lastik">Yok</button>
-                        </div>
-                    </div>
-                    <div id="driver-lastik-adres-wrap" class="form-group" style="display: none;">
-                        <label for="driver-lastik-adres" style="color: var(--form-label-color); font-size: 15px;">Adres:</label>
-                        <input type="text" id="driver-lastik-adres" class="form-input" placeholder="Lastik adresi" style="width: 100%;">
-                    </div>
-                    <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
-                        <button type="button" class="btn-submit" onclick="saveDriverEvent('lastik')">Bildir</button>
-                        <button type="button" class="universal-btn-cancel" onclick="closeDriverEventModal('lastik')">Vazgeç</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Muayene Güncelle Modal -->
-        <div id="driver-muayene-modal" class="driver-modal modal-overlay" onclick="if(event.target === this) closeDriverEventModal('muayene');">
-            <div class="driver-modal-content modal-container" onclick="event.stopPropagation();">
-                <div class="modal-header">
-                    <h2>MUAYENE BİLGİSİ GÜNCELLE</h2>
-                    <button type="button" onclick="closeDriverEventModal('muayene')" class="modal-close" aria-label="Kapat"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="driver-muayene-tarih" style="color: var(--form-label-color); font-size: 15px;">Muayene Tarihi</label>
-                        <input type="date" id="driver-muayene-tarih" class="form-input" style="width: 100%;">
-                    </div>
-                    <label class="driver-egzoz-muayene-check" for="driver-muayene-egzoz-different">
-                        <input type="checkbox" id="driver-muayene-egzoz-different" onchange="syncDriverEgzozMuayeneFields()">
-                        <span>Egzoz Muayenesi Farklı Tarih İse İşaretleyin..</span>
-                    </label>
-                    <div id="driver-muayene-egzoz-date-wrap" class="form-group driver-egzoz-date-wrap">
-                        <label for="driver-muayene-egzoz-tarih" style="color: var(--form-label-color); font-size: 15px;">Egzoz Muayene Tarihi</label>
-                        <input type="date" id="driver-muayene-egzoz-tarih" class="form-input" style="width: 100%;" disabled>
-                    </div>
-                    <div class="muayene-submit-wrap" style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
-                        <button type="button" class="btn-submit" onclick="saveDriverEvent('muayene')">Bildir</button>
-                        <button type="button" class="universal-btn-cancel" onclick="closeDriverEventModal('muayene')">Vazgeç</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Sigorta Yenileme Modal -->
-        <div id="driver-sigorta-modal" class="driver-modal modal-overlay" onclick="if(event.target === this) closeDriverEventModal('sigorta');">
-            <div class="driver-modal-content modal-container" onclick="event.stopPropagation();">
-                <div class="modal-header">
-                    <h2>TRAFİK SİGORTASI YENİLEME</h2>
-                    <button type="button" onclick="closeDriverEventModal('sigorta')" class="modal-close" aria-label="Kapat"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="driver-sigorta-tarih" style="color: var(--form-label-color); font-size: 15px;">Yenileme / Başlangıç Tarihi:</label>
-                        <input type="date" id="driver-sigorta-tarih" class="form-input" style="width: 100%;">
-                    </div>
-                    <div class="form-group">
-                        <label for="driver-sigorta-firma" style="color: var(--form-label-color); font-size: 15px;">Firma (isteğe bağlı):</label>
-                        <input type="text" id="driver-sigorta-firma" class="form-input" placeholder="Sigorta firması" style="width: 100%;">
-                    </div>
-                    <div class="form-group">
-                        <label for="driver-sigorta-acente" style="color: var(--form-label-color); font-size: 15px;">Acente (isteğe bağlı):</label>
-                        <input type="text" id="driver-sigorta-acente" class="form-input" placeholder="Acente adı" style="width: 100%;">
-                    </div>
-                    <div class="form-group">
-                        <label for="driver-sigorta-iletisim" style="color: var(--form-label-color); font-size: 15px;">İletişim (isteğe bağlı):</label>
-                        <input type="text" id="driver-sigorta-iletisim" class="form-input" placeholder="Telefon / e-posta" inputmode="tel" style="width: 100%;">
-                    </div>
-                    <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
-                        <button type="button" class="btn-submit" onclick="saveDriverEvent('sigorta')">Bildir</button>
-                        <button type="button" class="universal-btn-cancel" onclick="closeDriverEventModal('sigorta')">Vazgeç</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Kasko Yenileme Modal -->
-        <div id="driver-kasko-modal" class="driver-modal modal-overlay" onclick="if(event.target === this) closeDriverEventModal('kasko');">
-            <div class="driver-modal-content modal-container" onclick="event.stopPropagation();">
-                <div class="modal-header">
-                    <h2>KASKO YENİLEME</h2>
-                    <button type="button" onclick="closeDriverEventModal('kasko')" class="modal-close" aria-label="Kapat"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="driver-kasko-tarih" style="color: var(--form-label-color); font-size: 15px;">Yenileme / Başlangıç Tarihi:</label>
-                        <input type="date" id="driver-kasko-tarih" class="form-input" style="width: 100%;">
-                    </div>
-                    <div class="form-group">
-                        <label for="driver-kasko-firma" style="color: var(--form-label-color); font-size: 15px;">Firma (isteğe bağlı):</label>
-                        <input type="text" id="driver-kasko-firma" class="form-input" placeholder="Kasko firması" style="width: 100%;">
-                    </div>
-                    <div class="form-group">
-                        <label for="driver-kasko-acente" style="color: var(--form-label-color); font-size: 15px;">Acente (isteğe bağlı):</label>
-                        <input type="text" id="driver-kasko-acente" class="form-input" placeholder="Acente adı" style="width: 100%;">
-                    </div>
-                    <div class="form-group">
-                        <label for="driver-kasko-iletisim" style="color: var(--form-label-color); font-size: 15px;">İletişim (isteğe bağlı):</label>
-                        <input type="text" id="driver-kasko-iletisim" class="form-input" placeholder="Telefon / e-posta" inputmode="tel" style="width: 100%;">
-                    </div>
-                    <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
-                        <button type="button" class="btn-submit" onclick="saveDriverEvent('kasko')">Bildir</button>
-                        <button type="button" class="universal-btn-cancel" onclick="closeDriverEventModal('kasko')">Vazgeç</button>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
     <!-- Muayene teyit popover: body seviyesinde, overflow'dan etkilenmez -->
     <div id="muayene-confirm-popover" class="muayene-confirm-popover" style="display: none;">
@@ -601,6 +441,6 @@
             <button type="button" class="btn-confirm-yes" onclick="confirmMuayeneSubmit()">Evet</button>
         </div>
     </div>
-<script defer src="driver-script.js?v=20260530.3"></script>
+<script defer src="driver-script.js?v=20260530.4"></script>
 </body>
 </html>
