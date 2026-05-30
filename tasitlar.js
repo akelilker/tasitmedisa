@@ -27,6 +27,11 @@
     });
   }
 
+  function getTasitlarYaziciScriptSrc() {
+    var v = (window.MEDISA_MODULE_VERSIONS && window.MEDISA_MODULE_VERSIONS.tasitlarYazici) || '20260517.5';
+    return 'tasitlar-yazici.js?v=' + v;
+  }
+
   function readBranches() { return (typeof window.getMedisaBranches === 'function' ? window.getMedisaBranches() : null) || []; }
   function readVehicles() { return (typeof window.getMedisaVehicles === 'function' ? window.getMedisaVehicles() : null) || []; }
   function readUsers() { return (typeof window.getMedisaUsers === 'function' ? window.getMedisaUsers() : null) || []; }
@@ -2966,7 +2971,7 @@
 
       // iOS yazıcı izin prompt'unu azaltmak için yazdırma script'ini önceden yükle
       if (!window._printScriptPromise) {
-        window._printScriptPromise = loadScript('tasitlar-yazici.js?v=20260517.5');
+        window._printScriptPromise = loadScript(getTasitlarYaziciScriptSrc());
       }
 
     const modal = DOM.vehicleDetailModal || document.getElementById('vehicle-detail-modal');
@@ -3187,7 +3192,7 @@
         const originalText = printBtn.innerHTML;
         printBtn.innerHTML = '<span class="spin-animation" style="display:inline-block; width:16px; height:16px; border:2px solid currentColor; border-right-color:transparent; border-radius:50%; margin-right:4px;"></span> Yükleniyor...';
         printBtn.disabled = true;
-        (window._printScriptPromise || loadScript('tasitlar-yazici.js?v=20260517.5')).then(function() {
+        (window._printScriptPromise || loadScript(getTasitlarYaziciScriptSrc())).then(function() {
           printBtn.innerHTML = originalText;
           printBtn.disabled = false;
           if (typeof window.printVehicleCard === 'function') {
