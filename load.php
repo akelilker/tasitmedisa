@@ -20,22 +20,7 @@ if (!$tokenData) {
 
 $data = loadData();
 if (!$data) {
-    $data = [
-        'tasitlar' => [],
-        'kayitlar' => [],
-        'branches' => [],
-        'users' => [],
-        'ayarlar' => [
-            'sirketAdi' => 'Medisa',
-            'yetkiliKisi' => '',
-            'telefon' => '',
-            'eposta' => '',
-        ],
-        'sifreler' => [],
-        'arac_aylik_hareketler' => [],
-        'duzeltme_talepleri' => [],
-        'notificationReadState' => [],
-    ];
+    $data = medisaDefaultData();
 }
 
 $context = medisaBuildAccessContext($data, $tokenData);
