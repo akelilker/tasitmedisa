@@ -2024,6 +2024,9 @@ body.dashboard-page:has(#driver-notifications-dropdown.open) .driver-header-fixe
 /* Sigorta/Kasko/Muayene: sadece uyarı çerçevesi */
 
 /* Tarih alanı: takvim simgesi WebKit’te koyu kutu/çerçeve vermesin (modal + sağ panel blokları) */
+#driver-sigorta-modal input[type="date"].form-input::-webkit-calendar-picker-indicator,
+#driver-kasko-modal input[type="date"].form-input::-webkit-calendar-picker-indicator,
+#driver-muayene-modal input[type="date"].form-input::-webkit-calendar-picker-indicator,
 .dashboard-page .driver-modal input[type="date"].form-input::-webkit-calendar-picker-indicator,
 .dashboard-page .driver-action-area input[type="date"]::-webkit-calendar-picker-indicator {
   background-color: transparent !important;
@@ -2815,10 +2818,12 @@ body.dashboard-page:has(#driver-notifications-dropdown.open) .driver-header-fixe
 }
 
 /* Olay Ekle menü modal */
+.driver-event-menu-list {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
+.driver-event-menu-btn {
   width: 100%;
   padding: 12px 16px;
   background: transparent;
@@ -2831,12 +2836,15 @@ body.dashboard-page:has(#driver-notifications-dropdown.open) .driver-header-fixe
   text-align: left;
   transition: border-color 0.2s, background 0.2s;
 }
+.driver-event-menu-btn:hover {
   background: rgba(255, 255, 255, 0.05);
   border-color: rgba(255, 255, 255, 0.5);
 }
+.driver-event-menu-btn-kaza {
   border-color: var(--theme-color);
   color: var(--theme-color);
 }
+.driver-event-menu-btn-kaza:hover {
   background: rgba(var(--theme-color-rgb), 0.1);
 }
 
@@ -3566,9 +3574,15 @@ body.dashboard-page:has(#driver-notifications-dropdown.open) .driver-header-fixe
 /* #history-modal, #edit-request-modal, Olay Ekle modalları: Taşıtlar modalı ile aynı ayarlar */
 #history-modal.driver-modal,
 #edit-request-modal.driver-modal,
+#driver-event-menu-modal.driver-modal,
 #driver-password-modal.driver-modal,
 #driver-feedback-modal.driver-modal,
 #driver-documents-modal.driver-modal,
+#driver-anahtar-modal.driver-modal,
+#driver-lastik-modal.driver-modal,
+#driver-muayene-modal.driver-modal,
+#driver-sigorta-modal.driver-modal,
+#driver-kasko-modal.driver-modal {
   background: transparent !important;
   padding: max(12px, env(safe-area-inset-top)) 0 0 0 !important; /* Çentik/notch altında kalmaması için */
   z-index: 10020;
@@ -3581,9 +3595,15 @@ body.dashboard-page:has(#driver-notifications-dropdown.open) .driver-header-fixe
 }
 #history-modal.driver-modal.show,
 #edit-request-modal.driver-modal.show,
+#driver-event-menu-modal.driver-modal.show,
 #driver-password-modal.driver-modal.show,
 #driver-feedback-modal.driver-modal.show,
 #driver-documents-modal.driver-modal.show,
+#driver-anahtar-modal.driver-modal.show,
+#driver-lastik-modal.driver-modal.show,
+#driver-muayene-modal.driver-modal.show,
+#driver-sigorta-modal.driver-modal.show,
+#driver-kasko-modal.driver-modal.show {
   display: flex !important;
   pointer-events: auto !important;
   z-index: 10020 !important;
@@ -3606,9 +3626,15 @@ body.dashboard-page:has(#driver-notifications-dropdown.open) .driver-header-fixe
 @media (min-width: 641px) {
   #history-modal.driver-modal,
   #edit-request-modal.driver-modal,
+  #driver-event-menu-modal.driver-modal,
   #driver-password-modal.driver-modal,
   #driver-feedback-modal.driver-modal,
   #driver-documents-modal.driver-modal,
+  #driver-anahtar-modal.driver-modal,
+  #driver-lastik-modal.driver-modal,
+  #driver-muayene-modal.driver-modal,
+  #driver-sigorta-modal.driver-modal,
+  #driver-kasko-modal.driver-modal {
     padding: 0 !important;
   }
   #history-modal.driver-modal,
@@ -3658,8 +3684,14 @@ body.dashboard-page:has(#driver-notifications-dropdown.open) .driver-header-fixe
 
 #history-modal.driver-modal::before,
 #edit-request-modal.driver-modal::before,
+#driver-event-menu-modal.driver-modal::before,
 #driver-password-modal.driver-modal::before,
 #driver-documents-modal.driver-modal::before,
+#driver-anahtar-modal.driver-modal::before,
+#driver-lastik-modal.driver-modal::before,
+#driver-muayene-modal.driver-modal::before,
+#driver-sigorta-modal.driver-modal::before,
+#driver-kasko-modal.driver-modal::before,
 #driver-feedback-modal.driver-modal::before {
   content: '';
   position: absolute;
@@ -3718,12 +3750,24 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 #history-modal .modal-container,
 #edit-request-modal .driver-modal-content,
 #edit-request-modal .modal-container,
+#driver-event-menu-modal .driver-modal-content,
+#driver-event-menu-modal .modal-container,
 #driver-password-modal .driver-modal-content,
 #driver-password-modal .modal-container,
 #driver-feedback-modal .driver-modal-content,
 #driver-feedback-modal .modal-container,
 #driver-documents-modal .driver-modal-content,
 #driver-documents-modal .modal-container,
+#driver-anahtar-modal .driver-modal-content,
+#driver-anahtar-modal .modal-container,
+#driver-lastik-modal .driver-modal-content,
+#driver-lastik-modal .modal-container,
+#driver-muayene-modal .driver-modal-content,
+#driver-muayene-modal .modal-container,
+#driver-sigorta-modal .driver-modal-content,
+#driver-sigorta-modal .modal-container,
+#driver-kasko-modal .driver-modal-content,
+#driver-kasko-modal .modal-container {
   background: var(--modal-bg) !important;
   background-color: var(--modal-bg) !important;
   border-bottom: 1px solid var(--border-medium) !important;
@@ -3772,8 +3816,14 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 
 #history-modal .modal-header,
 #edit-request-modal .modal-header,
+#driver-event-menu-modal .modal-header,
 #driver-feedback-modal .modal-header,
 #driver-documents-modal .modal-header,
+#driver-anahtar-modal .modal-header,
+#driver-lastik-modal .modal-header,
+#driver-muayene-modal .modal-header,
+#driver-sigorta-modal .modal-header,
+#driver-kasko-modal .modal-header {
   background: var(--modal-header-red-gradient) !important;
   background-size: 100% 100% !important;
   padding: 2px 20px !important;
@@ -3803,9 +3853,15 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 
 #history-modal .modal-header h2,
 #edit-request-modal .modal-header h2,
+#driver-event-menu-modal .modal-header h2,
 #driver-password-modal .modal-header h2,
 #driver-feedback-modal .modal-header h2,
 #driver-documents-modal .modal-header h2,
+#driver-anahtar-modal .modal-header h2,
+#driver-lastik-modal .modal-header h2,
+#driver-muayene-modal .modal-header h2,
+#driver-sigorta-modal .modal-header h2,
+#driver-kasko-modal .modal-header h2 {
   color: #ffffff !important;
   text-shadow: none !important;
   opacity: 1 !important;
@@ -3819,9 +3875,15 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 
 #history-modal .modal-close,
 #edit-request-modal .modal-close,
+#driver-event-menu-modal .modal-close,
 #driver-password-modal .modal-close,
 #driver-feedback-modal .modal-close,
 #driver-documents-modal .modal-close,
+#driver-anahtar-modal .modal-close,
+#driver-lastik-modal .modal-close,
+#driver-muayene-modal .modal-close,
+#driver-sigorta-modal .modal-close,
+#driver-kasko-modal .modal-close {
   background: none !important;
   border: none !important;
   color: #aaa !important;
@@ -3839,18 +3901,30 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 }
 #history-modal .modal-close:hover,
 #edit-request-modal .modal-close:hover,
+#driver-event-menu-modal .modal-close:hover,
 #driver-password-modal .modal-close:hover,
 #driver-feedback-modal .modal-close:hover,
 #driver-documents-modal .modal-close:hover,
+#driver-anahtar-modal .modal-close:hover,
+#driver-lastik-modal .modal-close:hover,
+#driver-muayene-modal .modal-close:hover,
+#driver-sigorta-modal .modal-close:hover,
+#driver-kasko-modal .modal-close:hover {
   color: var(--txt-white, #fff) !important;
   background: transparent !important;
 }
 
 #history-modal .modal-body,
 #edit-request-modal .modal-body,
+#driver-event-menu-modal .modal-body,
 #driver-password-modal .modal-body,
 #driver-feedback-modal .modal-body,
 #driver-documents-modal .modal-body,
+#driver-anahtar-modal .modal-body,
+#driver-lastik-modal .modal-body,
+#driver-muayene-modal .modal-body,
+#driver-sigorta-modal .modal-body,
+#driver-kasko-modal .modal-body {
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
@@ -4158,9 +4232,15 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 }
 #history-modal .modal-body::-webkit-scrollbar,
 #edit-request-modal .modal-body::-webkit-scrollbar,
+#driver-event-menu-modal .modal-body::-webkit-scrollbar,
 #driver-password-modal .modal-body::-webkit-scrollbar,
 #driver-feedback-modal .modal-body::-webkit-scrollbar,
 #driver-documents-modal .modal-body::-webkit-scrollbar,
+#driver-anahtar-modal .modal-body::-webkit-scrollbar,
+#driver-lastik-modal .modal-body::-webkit-scrollbar,
+#driver-muayene-modal .modal-body::-webkit-scrollbar,
+#driver-sigorta-modal .modal-body::-webkit-scrollbar,
+#driver-kasko-modal .modal-body::-webkit-scrollbar,
 #history-modal .modal-container::-webkit-scrollbar,
 #edit-request-modal .modal-container::-webkit-scrollbar,
 .driver-modal-content::-webkit-scrollbar {
@@ -5819,8 +5899,14 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   /* Taşıtlar modalı ile aynı: overlay alt boşluk = footer + gap (style-core değişkenleri). Üst: Çentik altında kalmaması için safe-area. */
   #history-modal.driver-modal,
   #edit-request-modal.driver-modal,
+  #driver-event-menu-modal.driver-modal,
   #driver-password-modal.driver-modal,
   #driver-documents-modal.driver-modal,
+  #driver-anahtar-modal.driver-modal,
+  #driver-lastik-modal.driver-modal,
+  #driver-muayene-modal.driver-modal,
+  #driver-sigorta-modal.driver-modal,
+  #driver-kasko-modal.driver-modal,
   #driver-feedback-modal.driver-modal {
     padding: max(12px, env(safe-area-inset-top)) 0 0 0 !important;
     align-items: stretch !important;
@@ -5918,7 +6004,13 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
   #history-modal.driver-modal::before,
   #edit-request-modal.driver-modal::before,
+  #driver-event-menu-modal.driver-modal::before,
   #driver-password-modal.driver-modal::before,
+  #driver-anahtar-modal.driver-modal::before,
+  #driver-lastik-modal.driver-modal::before,
+  #driver-muayene-modal.driver-modal::before,
+  #driver-sigorta-modal.driver-modal::before,
+  #driver-kasko-modal.driver-modal::before,
   #driver-feedback-modal.driver-modal::before {
     max-width: 100% !important;
     width: 100%;
@@ -5955,8 +6047,20 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   #history-modal .modal-container,
   #edit-request-modal .driver-modal-content,
   #edit-request-modal .modal-container,
+  #driver-event-menu-modal .driver-modal-content,
+  #driver-event-menu-modal .modal-container,
   #driver-password-modal .driver-modal-content,
   #driver-password-modal .modal-container,
+  #driver-anahtar-modal .driver-modal-content,
+  #driver-anahtar-modal .modal-container,
+  #driver-lastik-modal .driver-modal-content,
+  #driver-lastik-modal .modal-container,
+  #driver-muayene-modal .driver-modal-content,
+  #driver-muayene-modal .modal-container,
+  #driver-sigorta-modal .driver-modal-content,
+  #driver-sigorta-modal .modal-container,
+  #driver-kasko-modal .driver-modal-content,
+  #driver-kasko-modal .modal-container,
   #driver-documents-modal .driver-modal-content,
   #driver-documents-modal .modal-container,
   #driver-feedback-modal .driver-modal-content,
@@ -6004,7 +6108,13 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   /* Modal header: Üst köşe radius container ile aynı (10px) – kırmızı çerçeve üstü ezilmesin */
   #history-modal .modal-header,
   #edit-request-modal .modal-header,
+  #driver-event-menu-modal .modal-header,
   #driver-password-modal .modal-header,
+  #driver-anahtar-modal .modal-header,
+  #driver-lastik-modal .modal-header,
+  #driver-muayene-modal .modal-header,
+  #driver-sigorta-modal .modal-header,
+  #driver-kasko-modal .modal-header,
   #driver-documents-modal .modal-header,
   #driver-feedback-modal .modal-header {
     padding-top: 12px !important;
@@ -6013,6 +6123,8 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
 
   /* Anahtar/Lastik modal: Var/Yok dikey yükseklik −4px (padding 5px → 3px) */
+  #driver-anahtar-modal .driver-radio-btn[data-group="anahtar"],
+  #driver-lastik-modal .driver-radio-btn[data-group="lastik"] {
     padding-top: 3px !important;
     padding-bottom: 3px !important;
   }
@@ -6026,8 +6138,14 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   /* modal-body: dikey scroll, alt içerik footer'a yapışmasın */
   #history-modal .modal-body,
   #edit-request-modal .modal-body,
+  #driver-event-menu-modal .modal-body,
   #driver-password-modal .modal-body,
   #driver-feedback-modal .modal-body,
+  #driver-anahtar-modal .modal-body,
+  #driver-lastik-modal .modal-body,
+  #driver-muayene-modal .modal-body,
+  #driver-sigorta-modal .modal-body,
+  #driver-kasko-modal .modal-body {
     overflow-x: hidden !important;
     touch-action: pan-y !important;
     overscroll-behavior: none !important;
@@ -7273,6 +7391,12 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
   #history-modal .modal-header,
   #edit-request-modal .modal-header,
+  #driver-event-menu-modal .modal-header,
+  #driver-anahtar-modal .modal-header,
+  #driver-lastik-modal .modal-header,
+  #driver-muayene-modal .modal-header,
+  #driver-sigorta-modal .modal-header,
+  #driver-kasko-modal .modal-header,
   #driver-documents-modal .modal-header,
   #driver-feedback-modal .modal-header {
     background: var(--modal-header-red-gradient) !important;
