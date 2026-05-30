@@ -6591,37 +6591,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .dashboard-page .driver-left-panel .driver-plate-subtitle {
     font-size: calc(16px - 1pt) !important; /* Marka/model 1pt küçük */
   }
-  body.driver-action-block-open.dashboard-page .driver-left-panel .driver-user-plate-row.driver-user-plate-in-panel {
-    gap: 2px !important;
-  }
-  body.driver-action-block-open.dashboard-page .driver-left-panel .driver-plate-dropdown-row {
-    display: block;
-    line-height: 1;
-    min-height: 0;
-    height: auto;
-    padding: 0;
-    margin: 0;
-  }
-  body.driver-action-block-open.dashboard-page .driver-left-panel .driver-plate-dropdown-row .driver-current-plaka {
-    display: inline-block !important;
-    width: 100% !important;
-    line-height: 1 !important;
-    margin: 0 !important;
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
-    vertical-align: top;
-  }
-  body.driver-action-block-open.dashboard-page .driver-left-panel .driver-current-plaka {
-    font-size: calc(15px - 1pt + 1px) !important;
-    line-height: 1 !important;
-    margin-bottom: 0 !important;
-  }
-  body.driver-action-block-open.dashboard-page .driver-left-panel .driver-plate-subtitle,
-  body.driver-action-block-open.dashboard-page .driver-left-panel .driver-user-plate-in-panel .driver-plate-subtitle {
-    margin-top: 0 !important;
-    padding-top: 0 !important;
-    line-height: 1.05 !important;
-  }
   .dashboard-page .driver-sliding-warning {
     font-size: 15px !important;
   }
