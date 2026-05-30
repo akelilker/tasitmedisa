@@ -3481,7 +3481,25 @@ word-break: normal;
 overflow-wrap: break-word;
 overflow: visible;
 text-overflow: clip;
+height: auto;
+max-height: none;
+line-height: 1.35;
 vertical-align: middle;
+}
+/* iOS Safari print: satır yüksekliği içeriğe göre büyüsün; middle + overflow hidden dikey kırpma yapabiliyor */
+#stok-print-area .stok-print-table tbody tr {
+height: auto;
+max-height: none;
+break-inside: avoid;
+page-break-inside: avoid;
+}
+#stok-print-area .stok-print-table tbody td {
+height: auto;
+max-height: none;
+line-height: 1.35;
+vertical-align: top;
+-webkit-line-clamp: unset;
+line-clamp: unset;
 }
 /* Başlık: kelime ortasından bölünmesin (Takip → Taki|p gibi); önce boşlukta kır */
 #stok-print-area .stok-print-table thead th {
@@ -3571,6 +3589,8 @@ color: #fff;
 white-space: normal;
 word-break: normal;
 overflow-wrap: break-word;
+overflow: visible;
+vertical-align: top;
 }
 /* Mobil / dar print: yatay sayfa + plaka kendi hücresinde (taşma yok); pay marka/taş.tip. */
 @media (max-width: 640px) {
@@ -3600,14 +3620,17 @@ box-sizing: border-box;
 #stok-print-area .stok-print-table td[data-col="tasitTipi"] {
 min-width: 0;
 max-width: 8ch;
-white-space: nowrap;
-overflow: hidden;
+white-space: normal;
+overflow: visible;
 text-overflow: clip;
+vertical-align: top;
 }
 #stok-print-area .stok-print-table th[data-col="marka"],
 #stok-print-area .stok-print-table td[data-col="marka"] {
 min-width: 0;
 max-width: 22%;
+overflow: visible;
+vertical-align: top;
 }
 #stok-print-area .stok-print-table th[data-col="sube"],
 #stok-print-area .stok-print-table td[data-col="sube"],
