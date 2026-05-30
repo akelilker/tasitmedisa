@@ -99,7 +99,12 @@ function getDefaultAppData() {
             sirketAdi: 'Medisa',
             yetkiliKisi: '',
             telefon: '',
-            eposta: ''
+            eposta: '',
+            k2Belgesi: {
+                expiryDate: '',
+                documentPath: '',
+                updatedAt: ''
+            }
         },
         sifreler: [],
         arac_aylik_hareketler: [],
@@ -550,7 +555,17 @@ function normalizeOfflineAppDataSnapshot(data) {
         kayitlar: Array.isArray(data.kayitlar) ? data.kayitlar : [],
         branches: Array.isArray(data.branches) ? data.branches : [],
         users: Array.isArray(data.users) ? data.users : [],
-        ayarlar: data.ayarlar || { sirketAdi: 'Medisa', yetkiliKisi: '', telefon: '', eposta: '' },
+        ayarlar: data.ayarlar || {
+            sirketAdi: 'Medisa',
+            yetkiliKisi: '',
+            telefon: '',
+            eposta: '',
+            k2Belgesi: {
+                expiryDate: '',
+                documentPath: '',
+                updatedAt: ''
+            }
+        },
         sifreler: Array.isArray(data.sifreler) ? data.sifreler : [],
         arac_aylik_hareketler: Array.isArray(data.arac_aylik_hareketler) ? data.arac_aylik_hareketler : [],
         duzeltme_talepleri: Array.isArray(data.duzeltme_talepleri) ? data.duzeltme_talepleri : [],
@@ -735,7 +750,12 @@ async function loadDataFromServer(forceRefresh) {
                     sirketAdi: 'Medisa',
                     yetkiliKisi: '',
                     telefon: '',
-                    eposta: ''
+                    eposta: '',
+                    k2Belgesi: {
+                        expiryDate: '',
+                        documentPath: '',
+                        updatedAt: ''
+                    }
                 },
                 sifreler: data.sifreler || [],
                 arac_aylik_hareketler: data.arac_aylik_hareketler || [],
