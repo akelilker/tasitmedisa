@@ -2492,12 +2492,13 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
 
   window.confirmMuayeneSubmit = async function() {
       if (!ensureDriverOnlineForWrite()) return;
+      isMuayeneConfirmed = true;
       hideMuayenePopoverAndRestore();
       if (pendingMuayeneVehicleId) {
           const vid = pendingMuayeneVehicleId;
           pendingMuayeneVehicleId = null;
           const payload = getDriverMuayenePayload(vid);
-          if (!payload) return;
+          if (!payload) { isMuayeneConfirmed = false; return; }
           try {
               const res = await fetch(API_BASE + 'driver_event.php', {
                   method: 'POST',
@@ -2517,9 +2518,10 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           } catch (err) {
               console.error(err);
               alert('Bağlantı hatası!');
+          } finally {
+              isMuayeneConfirmed = false;
           }
       } else {
-          isMuayeneConfirmed = true;
           await saveDriverEvent('muayene');
           isMuayeneConfirmed = false;
       }
@@ -2562,14 +2564,17 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       } else if (type === 'muayene') {
           const payload = getDriverMuayenePayload(vehicleId);
           if (!payload) return;
-          const vehicle = allHistoryVehicles && allHistoryVehicles.find(function(v) { return String(v.id) === String(vehicleId); });
-          const bitisStr = calculateNextMuayeneDate(payload.tarih, vehicle);
-          const dateEl = document.getElementById('muayene-calc-date');
-          if (dateEl) dateEl.textContent = bitisStr ? formatDateDDMMYYYY(bitisStr) : '--/--/----';
-          pendingMuayeneVehicleId = vehicleId;
-          var dateInput = document.getElementById('driver-muayene-tarih-' + vehicleId);
-          positionAndShowMuayenePopover(dateInput, 'block');
-          return;
+          if (!isMuayeneConfirmed) {
+              const vehicle = allHistoryVehicles && allHistoryVehicles.find(function(v) { return String(v.id) === String(vehicleId); });
+              const bitisStr = calculateNextMuayeneDate(payload.tarih, vehicle);
+              const dateEl = document.getElementById('muayene-calc-date');
+              if (dateEl) dateEl.textContent = bitisStr ? formatDateDDMMYYYY(bitisStr) : '--/--/----';
+              pendingMuayeneVehicleId = vehicleId;
+              var dateInput = document.getElementById('driver-muayene-tarih-' + vehicleId);
+              positionAndShowMuayenePopover(dateInput, 'block');
+              return;
+          }
+          data = payload;
       } else if (type === 'sigorta') {
           const tarih = document.getElementById('driver-sigorta-tarih-' + vehicleId)?.value.trim() || '';
           if (!tarih) { alert('Tarih zorunludur!'); return; }
@@ -3223,12 +3228,11 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
     }).join(' ');
   }
 
-  function getDriverFeedbackHistoryTypeLabel(type) {
+  function getDriverFeedbackHistoryActionLabel(type) {
       var t = String(type || '').toLocaleLowerCase('tr-TR');
-      if (t === 'sikayet' || t === 'şikayet') return 'Şikayet';
-      if (t === 'oneri' || t === 'öneri') return 'Öneri';
-      if (t === 'diger' || t === 'diğer') return 'Diğer';
-      return 'Talep';
+      if (t === 'sikayet' || t === 'şikayet') return 'Şikayet Edildi.';
+      if (t === 'oneri' || t === 'öneri') return 'Önerildi.';
+      return 'Talep Edildi.';
   }
 
   /** Dashboard aksiyon alanı: odaktan çıkınca metni kelime başı büyük yap (tr-TR). KM/tutar/sayı ve iletişim satırı hariç. */
@@ -3339,9 +3343,11 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
               } else if (item.eventType === 'kullanici-atama') {
                   detailsHtml = '<p>Kullan\u0131c\u0131 atamas\u0131 yap\u0131ld\u0131 olarak bildirildi.</p>';
               } else if (item.eventType === 'driver-feedback') {
-                  const konu = getDriverFeedbackHistoryTypeLabel(d.konuTuru || d.konu_turu || d.type);
-                  detailsHtml = `<p>${escapeHtmlDriver(konu)} yöneticiye gönderildi.</p>`;
-                  if (d.mesaj) detailsHtml += `<p>Mesaj: ${escapeHtmlDriver(d.mesaj)}.</p>`;
+                  const typeRaw = d.konuTuru || d.konu_turu || d.type;
+                  const mesaj = String(d.mesaj || '').trim();
+                  const actionLabel = getDriverFeedbackHistoryActionLabel(typeRaw);
+                  const mesajQuoted = mesaj ? '"' + escapeHtmlDriver(mesaj) + '"' : '—';
+                  detailsHtml = `<p>${mesajQuoted} Konusu ${escapeHtmlDriver(actionLabel)}</p>`;
               } else {
                   let fallbackLabel = item.eventType || 'G\u00fcncelleme';
                   fallbackLabel = fallbackLabel.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
