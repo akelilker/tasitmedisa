@@ -2757,6 +2757,7 @@ background: rgba(255, 255, 255, 0.06) !important;
 #reports-modal.reports-modal--stok-list #stok-list-container > .stok-list-container .stok-list-row {
 gap: 1px !important;
 padding: 1px 0 !important;
+align-items: stretch !important;
 }
 #reports-modal.reports-modal--stok-list #stok-list-container .stok-list-header-cell.stok-sortable-header {
 position: relative !important;
@@ -2802,10 +2803,17 @@ line-height: 1.15 !important;
 -webkit-line-clamp: 2 !important;
 line-clamp: 2 !important;
 }
+#reports-modal.reports-modal--stok-list #stok-list-container .stok-list-cell[data-col="marka"] {
+align-items: center !important;
+}
 #reports-modal.reports-modal--stok-list #stok-list-container .stok-list-cell[data-col="marka"] .stok-marka-cell-inner {
+display: -webkit-box !important;
+-webkit-box-orient: vertical !important;
 -webkit-line-clamp: 2 !important;
 line-clamp: 2 !important;
-max-height: 2.75em !important;
+max-height: none !important;
+line-height: 1.2 !important;
+overflow: hidden !important;
 }
 #reports-modal.reports-modal--stok-list #stok-list-container .stok-list-header-cell:not(.stok-sortable-header) {
 padding: 2px 2px !important;
