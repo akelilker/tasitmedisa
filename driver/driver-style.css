@@ -2904,27 +2904,10 @@ body.dashboard-page:has(#driver-notifications-dropdown.open) .driver-header-fixe
   color: var(--theme-color, #d40000);
   background: rgba(212, 0, 0, 0.2);
 }
-/* UTTS Evet/Hayır: çerçevesiz, sadece renk; yükseklik Bildir/Vazgeç ile aynı */
-.driver-radio-btn[data-group="utts"] {
-  border: none;
-  padding: 0 10px;
-}
-.driver-radio-btn[data-value="evet"],
-.driver-radio-btn[data-group="utts"].active[data-value="evet"] {
-  color: #28a745;
-}
-.driver-radio-btn[data-value="hayir"],
-.driver-radio-btn[data-group="utts"].active[data-value="hayir"] {
-  color: var(--theme-color);
-}
 .driver-radio-btn[data-group="anahtar"].active,
 .driver-radio-btn[data-group="lastik"].active {
   text-decoration: none; /* Var/Yok: border+arka plan yeterli */
 }
-.driver-radio-btn[data-group="utts"].active {
-  text-decoration: underline;
-}
-
 /* Birden fazla araç: plaka satırı + sağda işaret (dropdown), liste plaka altında/ortada */
 .driver-multi-vehicle-wrap {
   position: relative;
@@ -3596,7 +3579,6 @@ body.dashboard-page:has(#driver-notifications-dropdown.open) .driver-header-fixe
 #driver-documents-modal.driver-modal,
 #driver-anahtar-modal.driver-modal,
 #driver-lastik-modal.driver-modal,
-#driver-utts-modal.driver-modal,
 #driver-muayene-modal.driver-modal,
 #driver-sigorta-modal.driver-modal,
 #driver-kasko-modal.driver-modal {
@@ -3618,7 +3600,6 @@ body.dashboard-page:has(#driver-notifications-dropdown.open) .driver-header-fixe
 #driver-documents-modal.driver-modal.show,
 #driver-anahtar-modal.driver-modal.show,
 #driver-lastik-modal.driver-modal.show,
-#driver-utts-modal.driver-modal.show,
 #driver-muayene-modal.driver-modal.show,
 #driver-sigorta-modal.driver-modal.show,
 #driver-kasko-modal.driver-modal.show {
@@ -3650,7 +3631,6 @@ body.dashboard-page:has(#driver-notifications-dropdown.open) .driver-header-fixe
   #driver-documents-modal.driver-modal,
   #driver-anahtar-modal.driver-modal,
   #driver-lastik-modal.driver-modal,
-  #driver-utts-modal.driver-modal,
   #driver-muayene-modal.driver-modal,
   #driver-sigorta-modal.driver-modal,
   #driver-kasko-modal.driver-modal {
@@ -3708,7 +3688,6 @@ body.dashboard-page:has(#driver-notifications-dropdown.open) .driver-header-fixe
 #driver-documents-modal.driver-modal::before,
 #driver-anahtar-modal.driver-modal::before,
 #driver-lastik-modal.driver-modal::before,
-#driver-utts-modal.driver-modal::before,
 #driver-muayene-modal.driver-modal::before,
 #driver-sigorta-modal.driver-modal::before,
 #driver-kasko-modal.driver-modal::before,
@@ -3782,8 +3761,6 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 #driver-anahtar-modal .modal-container,
 #driver-lastik-modal .driver-modal-content,
 #driver-lastik-modal .modal-container,
-#driver-utts-modal .driver-modal-content,
-#driver-utts-modal .modal-container,
 #driver-muayene-modal .driver-modal-content,
 #driver-muayene-modal .modal-container,
 #driver-sigorta-modal .driver-modal-content,
@@ -3843,7 +3820,6 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 #driver-documents-modal .modal-header,
 #driver-anahtar-modal .modal-header,
 #driver-lastik-modal .modal-header,
-#driver-utts-modal .modal-header,
 #driver-muayene-modal .modal-header,
 #driver-sigorta-modal .modal-header,
 #driver-kasko-modal .modal-header {
@@ -3882,7 +3858,6 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 #driver-documents-modal .modal-header h2,
 #driver-anahtar-modal .modal-header h2,
 #driver-lastik-modal .modal-header h2,
-#driver-utts-modal .modal-header h2,
 #driver-muayene-modal .modal-header h2,
 #driver-sigorta-modal .modal-header h2,
 #driver-kasko-modal .modal-header h2 {
@@ -3905,7 +3880,6 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 #driver-documents-modal .modal-close,
 #driver-anahtar-modal .modal-close,
 #driver-lastik-modal .modal-close,
-#driver-utts-modal .modal-close,
 #driver-muayene-modal .modal-close,
 #driver-sigorta-modal .modal-close,
 #driver-kasko-modal .modal-close {
@@ -3932,7 +3906,6 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 #driver-documents-modal .modal-close:hover,
 #driver-anahtar-modal .modal-close:hover,
 #driver-lastik-modal .modal-close:hover,
-#driver-utts-modal .modal-close:hover,
 #driver-muayene-modal .modal-close:hover,
 #driver-sigorta-modal .modal-close:hover,
 #driver-kasko-modal .modal-close:hover {
@@ -3948,7 +3921,6 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 #driver-documents-modal .modal-body,
 #driver-anahtar-modal .modal-body,
 #driver-lastik-modal .modal-body,
-#driver-utts-modal .modal-body,
 #driver-muayene-modal .modal-body,
 #driver-sigorta-modal .modal-body,
 #driver-kasko-modal .modal-body {
@@ -4265,7 +4237,6 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 #driver-documents-modal .modal-body::-webkit-scrollbar,
 #driver-anahtar-modal .modal-body::-webkit-scrollbar,
 #driver-lastik-modal .modal-body::-webkit-scrollbar,
-#driver-utts-modal .modal-body::-webkit-scrollbar,
 #driver-muayene-modal .modal-body::-webkit-scrollbar,
 #driver-sigorta-modal .modal-body::-webkit-scrollbar,
 #driver-kasko-modal .modal-body::-webkit-scrollbar,
@@ -5932,7 +5903,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   #driver-documents-modal.driver-modal,
   #driver-anahtar-modal.driver-modal,
   #driver-lastik-modal.driver-modal,
-  #driver-utts-modal.driver-modal,
   #driver-muayene-modal.driver-modal,
   #driver-sigorta-modal.driver-modal,
   #driver-kasko-modal.driver-modal,
@@ -6037,7 +6007,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   #driver-password-modal.driver-modal::before,
   #driver-anahtar-modal.driver-modal::before,
   #driver-lastik-modal.driver-modal::before,
-  #driver-utts-modal.driver-modal::before,
   #driver-muayene-modal.driver-modal::before,
   #driver-sigorta-modal.driver-modal::before,
   #driver-kasko-modal.driver-modal::before,
@@ -6085,8 +6054,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   #driver-anahtar-modal .modal-container,
   #driver-lastik-modal .driver-modal-content,
   #driver-lastik-modal .modal-container,
-  #driver-utts-modal .driver-modal-content,
-  #driver-utts-modal .modal-container,
   #driver-muayene-modal .driver-modal-content,
   #driver-muayene-modal .modal-container,
   #driver-sigorta-modal .driver-modal-content,
@@ -6144,7 +6111,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   #driver-password-modal .modal-header,
   #driver-anahtar-modal .modal-header,
   #driver-lastik-modal .modal-header,
-  #driver-utts-modal .modal-header,
   #driver-muayene-modal .modal-header,
   #driver-sigorta-modal .modal-header,
   #driver-kasko-modal .modal-header,
@@ -6176,7 +6142,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   #driver-feedback-modal .modal-body,
   #driver-anahtar-modal .modal-body,
   #driver-lastik-modal .modal-body,
-  #driver-utts-modal .modal-body,
   #driver-muayene-modal .modal-body,
   #driver-sigorta-modal .modal-body,
   #driver-kasko-modal .modal-body {
@@ -7428,7 +7393,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   #driver-event-menu-modal .modal-header,
   #driver-anahtar-modal .modal-header,
   #driver-lastik-modal .modal-header,
-  #driver-utts-modal .modal-header,
   #driver-muayene-modal .modal-header,
   #driver-sigorta-modal .modal-header,
   #driver-kasko-modal .modal-header,
