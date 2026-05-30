@@ -911,6 +911,17 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     }
 }
 
+@media (min-width: 641px) {
+    #event-menu-modal .universal-back-bar:has(.vehicle-context-row) {
+        row-gap: 3px;
+        padding-bottom: 8px !important;
+    }
+
+    #event-menu-modal .universal-back-bar:has(.vehicle-context-row) .vehicle-context-plate {
+        align-self: end;
+    }
+}
+
 /* Olay Ekle (Kaza, Bakım vb.): modal gövdesi mutlaka kayar, üst görünsün */
 .olay-ekle-modal .modal-body {
     flex: 1 1 auto !important;
