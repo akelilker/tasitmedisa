@@ -919,7 +919,7 @@ var MEDISA_MODULE_VERSIONS = {
   raporlar: '20260523.4',
   kayitJs: '20260528.1',
   kayitCss: '20260519.1',
-  ayarlarJs: '20260519.1',
+  ayarlarJs: '20260530.1',
   ayarlarCss: '20260529.1',
   tasitlarYazici: '20260517.5'
 };
