@@ -4533,6 +4533,20 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 #driver-feedback-modal:has(#driver-feedback-type-list.open) .driver-feedback-actions {
   pointer-events: none !important;
 }
+/* Talep modalı: tip dropdown açıkken arka plan flu (ana uygulama dropdown pattern) */
+#driver-feedback-modal:has(#driver-feedback-type-list.open) .modal-header,
+#driver-feedback-modal:has(#driver-feedback-type-list.open) .modal-body .form-group:not(:has(#driver-feedback-type-list.open)),
+#driver-feedback-modal:has(#driver-feedback-type-list.open) .driver-feedback-message-status,
+#driver-feedback-modal:has(#driver-feedback-type-list.open) .driver-feedback-actions {
+  filter: blur(2px);
+  opacity: 0.92;
+  transition: filter 0.18s ease, opacity 0.18s ease;
+}
+#driver-feedback-modal:has(#driver-feedback-type-list.open) .driver-feedback-type-dropdown-wrap,
+#driver-feedback-modal:has(#driver-feedback-type-list.open) #driver-feedback-type-list.open {
+  filter: none !important;
+  opacity: 1 !important;
+}
 
 #driver-feedback-modal .form-group textarea.driver-feedback-message {
   min-height: 112px;
