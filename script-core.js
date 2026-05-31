@@ -23,6 +23,16 @@ function toggleSettingsMenu(e) {
   const menu = getMenu();
   setNotificationsOpenState(false);
   if (menu) {
+    var willOpen = !menu.classList.contains('open');
+    if (willOpen && typeof window.loadAppModule === 'function') {
+      var modVer = window.MEDISA_MODULE_VERSIONS;
+      if (modVer) {
+        window.loadAppModule(
+          'ayarlar.js?v=' + modVer.ayarlarJs,
+          'ayarlar.css?v=' + modVer.ayarlarCss
+        ).catch(function() {});
+      }
+    }
     menu.classList.toggle('open');
     document.body.classList.toggle('settings-open', menu.classList.contains('open'));
   }
