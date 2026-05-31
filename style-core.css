@@ -1750,8 +1750,9 @@ body.modal-open:has(#info-modal.active) .app-container::after {
     color: var(--txt-white);
     transform: scale(1.02); /* Hafif büyüme (buton içinde, kesilmez) */
     text-shadow:
-      0 0 2px rgba(255, 255, 255, 0.52),
-      0 0 9px rgba(214, 224, 232, 0.24);
+      0 0 3px rgba(255, 255, 255, 0.68),
+      0 0 12px rgba(214, 224, 232, 0.42),
+      0 0 18px rgba(214, 188, 132, 0.20);
   }
 }
 
@@ -1775,9 +1776,9 @@ body.modal-open:has(#info-modal.active) .app-container::after {
     color: var(--txt-white);
     letter-spacing: 0.1em;
     text-shadow:
-      0 0 2px rgba(255, 255, 255, 0.58),
-      0 0 10px rgba(214, 224, 232, 0.30),
-      0 0 16px rgba(214, 188, 132, 0.15);
+      0 0 3px rgba(255, 255, 255, 0.72),
+      0 0 14px rgba(214, 224, 232, 0.50),
+      0 0 24px rgba(214, 188, 132, 0.28);
   }
 }
 
@@ -1789,8 +1790,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu .m
   letter-spacing: 0.085em;
   transition: color 0.2s, transform 0.2s, text-shadow 0.2s;
   text-shadow:
-    0 1px 1px rgba(0, 0, 0, 0.28),
-    0 0 6px rgba(214, 224, 232, 0.10);
+    0 1px 1px rgba(0, 0, 0, 0.30),
+    0 0 10px rgba(214, 224, 232, 0.24),
+    0 0 14px rgba(214, 188, 132, 0.12);
   transform-origin: center;
   max-width: 100%;
   min-width: 0;
@@ -3330,9 +3332,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         font-size: clamp(16px, 3.35vw, 18px) !important;
         letter-spacing: 1.5px;
         text-shadow:
-            0 1px 2px rgba(0, 0, 0, 0.24),
-            0 0 6px rgba(214, 224, 232, 0.16),
-            0 0 10px rgba(214, 188, 132, 0.10);
+            0 1px 2px rgba(0, 0, 0, 0.26),
+            0 0 8px rgba(214, 224, 232, 0.30),
+            0 0 13px rgba(214, 188, 132, 0.18);
     }
     
     /* Mobil: Kullanıcı paneli giriş butonu 2px aşağı */
