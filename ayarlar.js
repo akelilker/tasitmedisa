@@ -2858,21 +2858,55 @@
       });
     })();
 
+    function getDefaultAyarlarBackup() {
+      return { sirketAdi: 'Medisa', yetkiliKisi: '', telefon: '', eposta: '' };
+    }
+
+    /** PC indirme, önbellek öncesi yedek ve geri yükleme — tek tam yedek formatı (kasko Excel hariç). */
+    function buildFullBackupPayload(meta) {
+      const opts = meta && typeof meta === 'object' ? meta : {};
+      const branches = readBranches();
+      const users = readUsers();
+      const vehicles = readVehicles();
+      const existingApp = window.appData && typeof window.appData === 'object' ? window.appData : {};
+
+      const payload = {
+        branches: branches,
+        users: users,
+        vehicles: vehicles,
+        kayitlar: Array.isArray(existingApp.kayitlar) ? existingApp.kayitlar : [],
+        ayarlar: existingApp.ayarlar && typeof existingApp.ayarlar === 'object' ? existingApp.ayarlar : getDefaultAyarlarBackup(),
+        sifreler: Array.isArray(existingApp.sifreler) ? existingApp.sifreler : [],
+        arac_aylik_hareketler: Array.isArray(existingApp.arac_aylik_hareketler) ? existingApp.arac_aylik_hareketler : [],
+        duzeltme_talepleri: Array.isArray(existingApp.duzeltme_talepleri) ? existingApp.duzeltme_talepleri : [],
+        backup_date: opts.backup_date || new Date().toISOString(),
+        version: '2.0'
+      };
+
+      if (
+        existingApp.notificationReadState
+        && typeof existingApp.notificationReadState === 'object'
+        && !Array.isArray(existingApp.notificationReadState)
+      ) {
+        payload.notificationReadState = existingApp.notificationReadState;
+      }
+      if (
+        existingApp.monthlyTodoWhatsAppLogs
+        && typeof existingApp.monthlyTodoWhatsAppLogs === 'object'
+        && !Array.isArray(existingApp.monthlyTodoWhatsAppLogs)
+      ) {
+        payload.monthlyTodoWhatsAppLogs = existingApp.monthlyTodoWhatsAppLogs;
+      }
+      if (opts.source) payload.source = opts.source;
+      if (opts.upload_date) payload.upload_date = opts.upload_date;
+
+      return payload;
+    }
+
     // Veri dışa aktar (JSON indir)
     window.exportData = function exportData() {
       try {
-        const branches = readBranches();
-        const users = readUsers();
-        const vehicles = readVehicles();
-  
-        const backup = {
-          branches: branches,
-          users: users,
-          vehicles: vehicles,
-          backup_date: new Date().toISOString(),
-          version: "1.0"
-        };
-  
+        const backup = buildFullBackupPayload();
         const dataStr = JSON.stringify(backup, null, 2);
         const dataBlob = new Blob([dataStr], { type: 'application/json' });
         
@@ -2892,10 +2926,10 @@
     // Son yedekten geri yükle: önce sunucu (restore.php), yoksa yerel medisa_server_backup.
     function normalizeBackupPayload(raw, source) {
       if (!raw || typeof raw !== "object") return null;
-      const vehicles = Array.isArray(raw.vehicles) ? raw.vehicles : (Array.isArray(raw.tasitlar) ? raw.tasitlar : []);
-      const branches = Array.isArray(raw.branches) ? raw.branches : [];
-      const users = Array.isArray(raw.users) ? raw.users : [];
-      if (!Array.isArray(vehicles) || !Array.isArray(branches) || !Array.isArray(users)) return null;
+      const vehicles = Array.isArray(raw.vehicles) ? raw.vehicles : (Array.isArray(raw.tasitlar) ? raw.tasitlar : null);
+      const branches = Array.isArray(raw.branches) ? raw.branches : null;
+      const users = Array.isArray(raw.users) ? raw.users : null;
+      if (vehicles == null || branches == null || users == null) return null;
       return {
         source: source || "unknown",
         upload_date: raw.upload_date || raw.backup_date || raw._backup_file_mtime || null,
@@ -2906,7 +2940,17 @@
         ayarlar: raw.ayarlar && typeof raw.ayarlar === "object" ? raw.ayarlar : null,
         sifreler: Array.isArray(raw.sifreler) ? raw.sifreler : null,
         arac_aylik_hareketler: Array.isArray(raw.arac_aylik_hareketler) ? raw.arac_aylik_hareketler : null,
-        duzeltme_talepleri: Array.isArray(raw.duzeltme_talepleri) ? raw.duzeltme_talepleri : null
+        duzeltme_talepleri: Array.isArray(raw.duzeltme_talepleri) ? raw.duzeltme_talepleri : null,
+        notificationReadState: (
+          raw.notificationReadState
+          && typeof raw.notificationReadState === 'object'
+          && !Array.isArray(raw.notificationReadState)
+        ) ? raw.notificationReadState : null,
+        monthlyTodoWhatsAppLogs: (
+          raw.monthlyTodoWhatsAppLogs
+          && typeof raw.monthlyTodoWhatsAppLogs === 'object'
+          && !Array.isArray(raw.monthlyTodoWhatsAppLogs)
+        ) ? raw.monthlyTodoWhatsAppLogs : null
       };
     }
 
@@ -2937,10 +2981,24 @@
         kayitlar: backup.kayitlar != null ? backup.kayitlar : (existingApp.kayitlar || []),
         branches: backup.branches,
         users: normalizedUsers,
-        ayarlar: backup.ayarlar || existingApp.ayarlar || { sirketAdi: 'Medisa', yetkiliKisi: '', telefon: '', eposta: '' },
+        ayarlar: backup.ayarlar || existingApp.ayarlar || getDefaultAyarlarBackup(),
         sifreler: backup.sifreler != null ? backup.sifreler : (existingApp.sifreler || []),
         arac_aylik_hareketler: backup.arac_aylik_hareketler != null ? backup.arac_aylik_hareketler : (existingApp.arac_aylik_hareketler || []),
-        duzeltme_talepleri: backup.duzeltme_talepleri != null ? backup.duzeltme_talepleri : (existingApp.duzeltme_talepleri || [])
+        duzeltme_talepleri: backup.duzeltme_talepleri != null ? backup.duzeltme_talepleri : (existingApp.duzeltme_talepleri || []),
+        notificationReadState: backup.notificationReadState != null
+          ? backup.notificationReadState
+          : (
+            existingApp.notificationReadState
+            && typeof existingApp.notificationReadState === 'object'
+            && !Array.isArray(existingApp.notificationReadState)
+          ) ? existingApp.notificationReadState : {},
+        monthlyTodoWhatsAppLogs: backup.monthlyTodoWhatsAppLogs != null
+          ? backup.monthlyTodoWhatsAppLogs
+          : (
+            existingApp.monthlyTodoWhatsAppLogs
+            && typeof existingApp.monthlyTodoWhatsAppLogs === 'object'
+            && !Array.isArray(existingApp.monthlyTodoWhatsAppLogs)
+          ) ? existingApp.monthlyTodoWhatsAppLogs : {}
       };
 
       localStorage.setItem("medisa_data_v1", JSON.stringify(restoredBlob));
@@ -2996,6 +3054,25 @@
       }
     };
 
+    function finishImportedBackupSync() {
+      if (typeof window.saveDataToServer === 'function') {
+        window.showCenteredInfoBox('Yedek sunucuya yükleniyor, lütfen bekleyin...');
+        window.saveDataToServer().then(function() {
+          window.closeCenteredInfoBox();
+          alert('Yedek başarıyla Geri Yüklendi ve Sunucuya Kaydedildi!\n\nSayfa Yenilenecek.');
+          setTimeout(function() { window.location.reload(); }, 500);
+        }).catch(function(err) {
+          window.closeCenteredInfoBox();
+          console.error("Yedek sunucuya yazılamadı:", err);
+          alert('Uyarı: Yedek cihazınıza yüklendi ancak sunucuya gönderilirken bir hata oluştu. İnternet bağlantınızı kontrol edin.\n\nSayfa Yenilenecek.');
+          setTimeout(function() { window.location.reload(); }, 500);
+        });
+      } else {
+        alert('Yedek başarıyla Geri Yüklendi!\n\nSayfa Yenilenecek.');
+        setTimeout(function() { window.location.reload(); }, 500);
+      }
+    }
+
     // Dosyadan içe aktar (JSON seç)
     window.importData = function importData() {
       try {
@@ -3014,55 +3091,29 @@
           const reader = new FileReader();
           reader.onload = function(event) {
             try {
-              const backup = JSON.parse(event.target.result);
-  
-              if (!backup.branches || !backup.users || !backup.vehicles) {
+              const parsed = JSON.parse(event.target.result);
+              const backup = normalizeBackupPayload(parsed, 'file');
+
+              if (!backup) {
                 alert('Geçersiz Yedek Dosyası!');
                 return;
               }
-  
-              const message = `Yedek Tarih: ${new Date(backup.backup_date).toLocaleString('tr-TR')}\n\n` +
-                            `ŞUBEler: ${backup.branches.length}\n` +
+
+              const dateRaw = backup.upload_date || parsed.backup_date;
+              const dateStr = dateRaw ? new Date(dateRaw).toLocaleString('tr-TR') : 'Bilinmiyor';
+              const kayitCount = backup.kayitlar != null ? backup.kayitlar.length : null;
+              const kayitLine = kayitCount != null ? `\nKayıtlar: ${kayitCount}` : '';
+              const message = `Yedek Tarih: ${dateStr}\n\n` +
+                            `Şubeler: ${backup.branches.length}\n` +
                             `Kullanıcılar: ${backup.users.length}\n` +
-                            `Taşıtlar: ${backup.vehicles.length}\n\n` +
-                            `Mevcut veriler silinecek! Emin misiniz?`;
+                            `Taşıtlar: ${backup.vehicles.length}` +
+                            kayitLine +
+                            `\n\nMevcut veriler silinecek! Emin misiniz?`;
   
               if (!confirm(message)) return;
-  
-              writeBranches(backup.branches);
-              writeUsers(backup.users);
-              localStorage.setItem(VEHICLES_KEY, JSON.stringify(backup.vehicles));
-  
-              const existingApp = window.appData || {};
-              const restoredBlob = {
-                tasitlar: backup.vehicles,
-                kayitlar: backup.kayitlar != null ? backup.kayitlar : (existingApp.kayitlar || []),
-                branches: backup.branches,
-                users: backup.users,
-                ayarlar: backup.ayarlar || existingApp.ayarlar || { sirketAdi: 'Medisa', yetkiliKisi: '', telefon: '', eposta: '' },
-                sifreler: backup.sifreler != null ? backup.sifreler : (existingApp.sifreler || [])
-              };
-              localStorage.setItem('medisa_data_v1', JSON.stringify(restoredBlob));
-              sessionStorage.setItem('medisa_just_restored', '1');
-  
-              window.appData = restoredBlob;
-  
-              if (typeof window.saveDataToServer === 'function') {
-                window.showCenteredInfoBox('Yedek sunucuya yükleniyor, lütfen bekleyin...'); // Kullanıcıyı tut
-                window.saveDataToServer().then(function() {
-                  window.closeCenteredInfoBox();
-                  alert('Yedek başarıyla Geri Yüklendi ve Sunucuya Kaydedildi!\n\nSayfa Yenilenecek.');
-                  setTimeout(function() { window.location.reload(); }, 500);
-                }).catch(function(err) {
-                  window.closeCenteredInfoBox();
-                  console.error("Yedek sunucuya yazılamadı:", err);
-                  alert('Uyarı: Yedek cihazınıza yüklendi ancak sunucuya gönderilirken bir hata oluştu. İnternet bağlantınızı kontrol edin.\n\nSayfa Yenilenecek.');
-                  setTimeout(function() { window.location.reload(); }, 500);
-                });
-              } else {
-                alert('Yedek başarıyla Geri Yüklendi!\n\nSayfa Yenilenecek.');
-                setTimeout(function() { window.location.reload(); }, 500);
-              }
+
+              applyRestoredBackup(backup);
+              finishImportedBackupSync();
             } catch (error) {
               alert('Yedek Dosyası Okunamadı!');
             }
@@ -3085,23 +3136,10 @@
     // Önbellek temizliğinden önce çağrılır: sunucu ve/veya yerel yedek.
     async function uploadToServer() {
       try {
-        const branches = readBranches();
-        const users = readUsers();
-        const vehicles = readVehicles();
-        const existingApp = window.appData || {};
-
-        const backup = {
-          branches: branches,
-          users: users,
-          vehicles: vehicles,
-          kayitlar: Array.isArray(existingApp.kayitlar) ? existingApp.kayitlar : [],
-          ayarlar: existingApp.ayarlar || { sirketAdi: 'Medisa', yetkiliKisi: '', telefon: '', eposta: '' },
-          sifreler: Array.isArray(existingApp.sifreler) ? existingApp.sifreler : [],
-          arac_aylik_hareketler: Array.isArray(existingApp.arac_aylik_hareketler) ? existingApp.arac_aylik_hareketler : [],
-          duzeltme_talepleri: Array.isArray(existingApp.duzeltme_talepleri) ? existingApp.duzeltme_talepleri : [],
-          upload_date: new Date().toISOString(),
-          version: "1.1"
-        };
+        const backup = buildFullBackupPayload({ upload_date: new Date().toISOString() });
+        const branches = backup.branches;
+        const users = backup.users;
+        const vehicles = backup.vehicles;
 
         function storeLocalBackup(payload) {
           try {
