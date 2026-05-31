@@ -35,17 +35,44 @@ function toggleSettingsMenu(e) {
     }
     menu.classList.toggle('open');
     document.body.classList.toggle('settings-open', menu.classList.contains('open'));
+    if (willOpen) {
+      if (typeof window.medisaSettingsPushLayer === 'function') {
+        window.medisaSettingsPushLayer('settings-menu');
+      } else {
+        try { history.pushState({ __medisa: true, layer: 'settings-menu' }, ''); } catch (err) {}
+      }
+    } else if (typeof window.medisaOnSettingsMenuDismissed === 'function') {
+      window.medisaOnSettingsMenuDismissed();
+    } else {
+      try {
+        if (history.state && history.state.__medisa && history.state.layer === 'settings-menu') {
+          history.back();
+        }
+      } catch (err) {}
+    }
   }
 }
 window.toggleSettingsMenu = toggleSettingsMenu;
+
+window.medisaSettingsHistoryBack = window.medisaSettingsHistoryBack || function medisaSettingsHistoryBack(e) {
+  if (e && typeof e.stopPropagation === 'function') e.stopPropagation();
+  if (e && typeof e.preventDefault === 'function') e.preventDefault();
+  try { history.back(); } catch (err) {}
+};
 
 function toggleNotifications(e) {
   if (e && typeof e.stopPropagation === 'function') e.stopPropagation();
   const notif = getNotif();
   const menu = getMenu();
   if (menu) {
-    menu.classList.remove('open');
-    document.body.classList.remove('settings-open');
+    if (menu.classList.contains('open') && typeof window.medisaOnSettingsMenuDismissed === 'function') {
+      menu.classList.remove('open');
+      document.body.classList.remove('settings-open');
+      window.medisaOnSettingsMenuDismissed();
+    } else {
+      menu.classList.remove('open');
+      document.body.classList.remove('settings-open');
+    }
   }
   if (notif) {
     var willOpen = !notif.classList.contains('open');
@@ -96,11 +123,19 @@ document.addEventListener('click', (e) => {
   if (notif && notif.contains(e.target)) {
     return;
   }
+
+  // Ayarlar modalları içindeki tıklamalar (geri ok vb.) settings dropdown'ını kapatmasın
+  if (e.target && e.target.closest && e.target.closest('.ayarlar-modal-overlay')) {
+    return;
+  }
   
   // Dışarı tıklandığında menüleri kapat
   if (menu && menu.classList.contains('open')) {
     menu.classList.remove('open');
     document.body.classList.remove('settings-open');
+    if (typeof window.medisaOnSettingsMenuDismissed === 'function') {
+      window.medisaOnSettingsMenuDismissed();
+    }
   }
   if (notif && notif.classList.contains('open')) {
     setNotificationsOpenState(false);
@@ -901,6 +936,12 @@ document.addEventListener('keydown', function(e) {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
+  try {
+    if (!history.state || !history.state.__medisa) {
+      history.replaceState({ __medisa: true, layer: 'home' }, '');
+    }
+  } catch (e) {}
+
   // Sayfa yüklendiğinde footer animasyonunu başlat
   startFooterAnimation();
 
@@ -929,7 +970,7 @@ var MEDISA_MODULE_VERSIONS = {
   raporlar: '20260531.3',
   kayitJs: '20260528.1',
   kayitCss: '20260531.1',
-  ayarlarJs: '20260530.1',
+  ayarlarJs: '20260531.1',
   ayarlarCss: '20260531.4',
   tasitlarYazici: '20260517.5'
 };
