@@ -1747,14 +1747,14 @@ body.modal-open:has(#info-modal.active) .app-container::after {
     box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
   }
   #main-menu .menu-btn:hover .ttl {
-    color: #e4ebf1;
-    transform: scale(1.02); /* Hafif büyüme (buton içinde, kesilmez) */
-    background: linear-gradient(to bottom, #d7e1e9 0%, #f6fafd 40%, #b9c7d3 58%, #e6edf3 100%);
-    background-position: 50% 44%;
-    filter: brightness(1.03);
+    color: #d1dbe4;
+    transform: none;
+    background-position: 50% 52%;
+    filter: brightness(1);
+    -webkit-text-fill-color: transparent;
     text-shadow:
-      0 0 2px rgba(255, 255, 255, 0.56),
-      0 0 8px rgba(214, 224, 232, 0.24);
+      0 1px 1px rgba(0, 0, 0, 0.28),
+      0 0 6px rgba(214, 224, 232, 0.14);
   }
 }
 
@@ -1774,36 +1774,36 @@ body.modal-open:has(#info-modal.active) .app-container::after {
       inset 0 1px 0 rgba(255, 255, 255, 0.12);
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu .menu-btn:hover .ttl {
-    transform: scale(1.06);
-    color: #ebf0f5;
-    letter-spacing: 0.1em;
-    background: linear-gradient(to bottom, #dde6ed 0%, #ffffff 40%, #c0ccd8 58%, #edf3f7 100%);
-    background-position: 50% 40%;
-    filter: brightness(1.06);
+    transform: none;
+    color: #d1dbe4;
+    letter-spacing: 0.085em;
+    background-position: 50% 52%;
+    filter: brightness(1);
+    -webkit-text-fill-color: transparent;
     text-shadow:
-      0 0 2px rgba(255, 255, 255, 0.60),
-      0 0 10px rgba(214, 224, 232, 0.30),
-      0 0 15px rgba(214, 188, 132, 0.14);
+      0 1px 1px rgba(0, 0, 0, 0.28),
+      0 0 6px rgba(214, 224, 232, 0.14),
+      0 0 8px rgba(214, 188, 132, 0.08);
   }
 }
 
 /* Menü metinleri - taşma yok, uzun metin sığsın veya ellipsis */
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu .menu-btn .ttl {
-  font-size: clamp(12.5px, 2.8vw, 14.5px);
+  font-size: clamp(13px, 2.8vw, 15px);
   font-weight: 700;
   color: #d1dbe4;
   letter-spacing: 0.085em;
   transition: color 0.2s, transform 0.2s, text-shadow 0.24s ease, background-position 0.32s ease, filter 0.32s ease;
-  background: linear-gradient(to bottom, #c3d0db 0%, #eef4f9 38%, #a8b8c6 56%, #dbe4ec 100%);
+  background: linear-gradient(to bottom, #ccd7e1 0%, #f4f8fb 38%, #adbdca 56%, #e2ebf2 100%);
   background-size: 100% 180%;
   background-position: 50% 54%;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  filter: brightness(0.98);
+  filter: brightness(1.01);
   text-shadow:
-    0 1px 1px rgba(0, 0, 0, 0.28),
-    0 0 6px rgba(214, 224, 232, 0.12);
+    0 1px 1px rgba(0, 0, 0, 0.26),
+    0 0 7px rgba(214, 224, 232, 0.16);
   transform-origin: center;
   max-width: 100%;
   min-width: 0;
@@ -3340,12 +3340,14 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         border-top: 1px solid var(--footer-top-border) !important;
     }
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu .menu-btn .ttl {
-        font-size: clamp(16px, 3.35vw, 18px) !important;
+        font-size: clamp(16.5px, 3.35vw, 18.5px) !important;
         letter-spacing: 1.5px;
+        color: #d1dbe4;
+        -webkit-text-fill-color: transparent;
         text-shadow:
-            0 1px 2px rgba(0, 0, 0, 0.24),
-            0 0 6px rgba(214, 224, 232, 0.20),
-            0 0 9px rgba(214, 188, 132, 0.10);
+            0 1px 2px rgba(0, 0, 0, 0.22),
+            0 0 7px rgba(214, 224, 232, 0.24),
+            0 0 9px rgba(214, 188, 132, 0.12);
     }
     
     /* Mobil: Kullanıcı paneli giriş butonu 2px aşağı */
