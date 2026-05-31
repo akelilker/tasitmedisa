@@ -1215,28 +1215,22 @@ body.dashboard-page {
   text-align: center;
   font-size: 12px;
 }
-body.dashboard-page.driver-notifications-open .driver-scroll-area,
 body.dashboard-page:has(#driver-notifications-dropdown.open) .driver-scroll-area {
   filter: blur(2px);
   opacity: 0.92;
   transition: filter 0.18s ease, opacity 0.18s ease;
 }
-body.dashboard-page.driver-notifications-open .hero-title-block,
 body.dashboard-page:has(#driver-notifications-dropdown.open) .hero-title-block {
   filter: blur(2px);
   opacity: 0.92;
   transition: filter 0.18s ease, opacity 0.18s ease;
 }
-body.dashboard-page.driver-notifications-open .driver-status-icon-row,
 body.dashboard-page:has(#driver-notifications-dropdown.open) .driver-status-icon-row,
-body.dashboard-page.driver-notifications-open .driver-dashboard-container::before,
 body.dashboard-page:has(#driver-notifications-dropdown.open) .driver-dashboard-container::before,
-body.dashboard-page.driver-notifications-open #app-footer,
 body.dashboard-page:has(#driver-notifications-dropdown.open) #app-footer {
   filter: none !important;
   opacity: 1 !important;
 }
-body.dashboard-page.driver-notifications-open .driver-header-fixed,
 body.dashboard-page:has(#driver-notifications-dropdown.open) .driver-header-fixed {
   z-index: 10070;
 }
@@ -2795,24 +2789,6 @@ body.dashboard-page:has(#driver-notifications-dropdown.open) .driver-header-fixe
 }
 .driver-info-value {
   color: rgba(255, 255, 255, 0.5);
-}
-
-/* Olay Ekle butonu */
-.driver-olay-ekle-btn {
-  width: 100%;
-  padding: 10px 16px;
-  margin-bottom: 12px;
-  background: transparent !important;
-  border: 1px solid rgba(var(--theme-color-rgb), 0.6);
-  border-radius: 8px;
-  color: var(--theme-color);
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s, border-color 0.2s;
-}
-.driver-olay-ekle-btn:hover {
-  background: rgba(var(--theme-color-rgb), 0.15) !important;
 }
 
 /* Event modalleri: radio butonları */
