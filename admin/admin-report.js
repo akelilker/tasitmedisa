@@ -225,7 +225,6 @@
 
   function renderStats(stats) {
     var totalEl = document.getElementById('stat-total');
-    var trackedEl = document.getElementById('stat-tracked');
     var enteredEl = document.getElementById('stat-entered');
     var pendingEl = document.getElementById('stat-pending');
     var unassignedEl = document.getElementById('stat-unassigned');
@@ -237,7 +236,6 @@
     var atamasiYok = stats.unassigned != null ? Number(stats.unassigned) : Math.max(0, toplamTasit - takiptekiTasit);
 
     if (totalEl) totalEl.textContent = String(toplamTasit || 0);
-    if (trackedEl) trackedEl.textContent = String(takiptekiTasit || 0);
     if (enteredEl) enteredEl.textContent = String(toplamYapilan || 0);
     if (pendingEl) pendingEl.textContent = String(toplamBekleyen || 0);
     if (unassignedEl) unassignedEl.textContent = String(atamasiYok || 0);
@@ -442,6 +440,14 @@
     return match ? toTitleCase(match.name || match.id || 'Tümü') : 'Tümü';
   }
 
+  function syncMonthlySelectionBarVisibility() {
+    var bar = document.getElementById('report-selection-bar');
+    if (!bar) return;
+    var aylikPanel = document.getElementById('tab-aylik');
+    var aylikActive = !!(aylikPanel && aylikPanel.classList.contains('active'));
+    bar.hidden = !(monthlyBranchSelectionMade && aylikActive);
+  }
+
   function syncMonthlyDetailStage() {
     var branchGrid = document.getElementById('report-branch-grid');
     var emptyState = document.getElementById('monthly-stage-empty');
@@ -451,6 +457,7 @@
     if (branchGrid) branchGrid.hidden = shouldShowDetail;
     if (emptyState) emptyState.hidden = shouldShowDetail;
     if (detailState) detailState.hidden = !shouldShowDetail;
+    syncMonthlySelectionBarVisibility();
   }
 
   function getMonthlyFilteredRecords(records) {
@@ -477,6 +484,7 @@
     if (!bar) return;
     if (!monthlyBranchSelectionMade) {
       bar.innerHTML = '';
+      syncMonthlySelectionBarVisibility();
       return;
     }
 
@@ -505,6 +513,7 @@
         syncMonthlyDetailStage();
       });
     }
+    syncMonthlySelectionBarVisibility();
   }
 
   function renderMonthlyBranchGrid() {
@@ -1014,6 +1023,8 @@
     if (tabId === 'kullanici' && typeof window.loadUserAnalytics === 'function') {
       window.loadUserAnalytics();
     }
+
+    syncMonthlySelectionBarVisibility();
   };
 
   // Eğer HTML tarafındaki onclick özellikleri tamamen silindiyse, butonların çalışması için global dinleyici:
@@ -1945,6 +1956,149 @@
       });
   }
 
+  var activeReportPeriodDropdown = null;
+
+  function closeReportPeriodDropdown(options) {
+    var shell = activeReportPeriodDropdown;
+    if (!shell) return;
+    var trigger = shell.querySelector('.report-period-trigger');
+    var menu = shell.querySelector('.report-period-menu');
+    shell.classList.remove('is-open');
+    if (trigger) {
+      trigger.classList.remove('is-open');
+      trigger.setAttribute('aria-expanded', 'false');
+      if (options && options.focusTrigger) trigger.focus();
+    }
+    if (menu) {
+      menu.classList.remove('open');
+      menu.setAttribute('aria-hidden', 'true');
+    }
+    activeReportPeriodDropdown = null;
+  }
+
+  function refreshReportPeriodDropdown(shell) {
+    if (!shell) return;
+    var select = shell.querySelector('select');
+    var trigger = shell.querySelector('.report-period-trigger');
+    var triggerText = shell.querySelector('.report-period-trigger-text');
+    var menu = shell.querySelector('.report-period-menu');
+    if (!select || !trigger || !triggerText || !menu) return;
+
+    var options = Array.prototype.slice.call(select.options || []);
+    var selectedValue = String(select.value || '');
+    var selectedOption = options.find(function(option) {
+      return String(option.value || '') === selectedValue;
+    }) || options[select.selectedIndex] || options[0] || null;
+
+    triggerText.textContent = selectedOption ? String(selectedOption.textContent || '').trim() : '';
+    trigger.disabled = !!select.disabled;
+    trigger.setAttribute('aria-disabled', select.disabled ? 'true' : 'false');
+
+    menu.innerHTML = '';
+    options.forEach(function(option) {
+      var value = String(option.value || '');
+      var text = String(option.textContent || '').trim();
+      var item = document.createElement('button');
+      item.type = 'button';
+      item.className = 'report-period-option';
+      item.textContent = text;
+      item.dataset.value = value;
+      item.setAttribute('role', 'option');
+      item.setAttribute('aria-selected', value === selectedValue ? 'true' : 'false');
+      if (value === selectedValue) item.classList.add('selected');
+      if (option.disabled) {
+        item.disabled = true;
+        item.classList.add('is-disabled');
+      }
+      menu.appendChild(item);
+    });
+  }
+
+  function openReportPeriodDropdown(shell) {
+    if (!shell) return;
+    if (activeReportPeriodDropdown && activeReportPeriodDropdown !== shell) {
+      closeReportPeriodDropdown();
+    }
+    var trigger = shell.querySelector('.report-period-trigger');
+    var menu = shell.querySelector('.report-period-menu');
+    if (!trigger || !menu || trigger.disabled) return;
+
+    activeReportPeriodDropdown = shell;
+    shell.classList.add('is-open');
+    trigger.classList.add('is-open');
+    trigger.setAttribute('aria-expanded', 'true');
+    menu.classList.add('open');
+    menu.setAttribute('aria-hidden', 'false');
+  }
+
+  function ensureReportPeriodDropdown(select) {
+    if (!select || select.dataset.reportPeriodDropdownBound === '1') {
+      refreshReportPeriodDropdown(select ? select.closest('.report-period-select') : null);
+      return;
+    }
+
+    var shell = document.createElement('div');
+    shell.className = 'report-period-select';
+    select.parentNode.insertBefore(shell, select);
+    shell.appendChild(select);
+    select.classList.add('report-period-select-native');
+
+    var trigger = document.createElement('button');
+    trigger.type = 'button';
+    trigger.className = 'report-period-trigger';
+    trigger.setAttribute('aria-haspopup', 'listbox');
+    trigger.setAttribute('aria-expanded', 'false');
+    trigger.setAttribute('aria-label', select.getAttribute('aria-label') || 'Dönem seçimi');
+    trigger.innerHTML = '<span class="report-period-trigger-text"></span><svg class="report-period-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
+
+    var menu = document.createElement('div');
+    menu.className = 'report-period-menu';
+    menu.setAttribute('role', 'listbox');
+    menu.setAttribute('aria-hidden', 'true');
+
+    shell.appendChild(trigger);
+    shell.appendChild(menu);
+
+    trigger.addEventListener('click', function(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      if (activeReportPeriodDropdown === shell) closeReportPeriodDropdown({ focusTrigger: true });
+      else openReportPeriodDropdown(shell);
+    });
+
+    trigger.addEventListener('keydown', function(event) {
+      if (event.key === 'Escape') {
+        closeReportPeriodDropdown({ focusTrigger: true });
+      } else if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        if (activeReportPeriodDropdown === shell) closeReportPeriodDropdown({ focusTrigger: true });
+        else openReportPeriodDropdown(shell);
+      }
+    });
+
+    menu.addEventListener('click', function(event) {
+      var optionBtn = event.target.closest('.report-period-option');
+      if (!optionBtn || optionBtn.disabled) return;
+      event.preventDefault();
+      select.value = optionBtn.dataset.value || '';
+      refreshReportPeriodDropdown(shell);
+      closeReportPeriodDropdown();
+      select.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+
+    if (!document.documentElement.dataset.reportPeriodDropdownOutsideBound) {
+      document.documentElement.dataset.reportPeriodDropdownOutsideBound = '1';
+      document.addEventListener('pointerdown', function(event) {
+        if (!activeReportPeriodDropdown) return;
+        if (activeReportPeriodDropdown.contains(event.target)) return;
+        closeReportPeriodDropdown();
+      }, true);
+    }
+
+    select.dataset.reportPeriodDropdownBound = '1';
+    refreshReportPeriodDropdown(shell);
+  }
+
   function initPeriodSelect() {
     var sel = document.getElementById('report-period');
     if (!sel) return;
@@ -1956,6 +2110,7 @@
       if (o.value === new Date().toISOString().slice(0, 7)) opt.selected = true;
       sel.appendChild(opt);
     });
+    ensureReportPeriodDropdown(sel);
   }
 
   function initFooterDim() {
