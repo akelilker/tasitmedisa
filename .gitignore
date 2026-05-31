@@ -34,6 +34,9 @@ data/sigorta_police_preview/
 
 # Patch / merge leftovers
 *.tmp
+.tmp/
+.tmp-playwright/
+.tmp-chrome-k2-profile/
 *.bak
 *.orig
 *.rej
