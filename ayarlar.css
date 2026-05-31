@@ -2312,12 +2312,12 @@ input.settings-form-input:-moz-autofill,
     #settings-menu.settings-dropdown button { text-align: center; }
     /* #settings-menu: ana sayfa .menu-btn ile aynı kutu dili (bildirim listesi hariç) */
     #settings-menu.settings-dropdown.open {
-        gap: 5px !important;
+        gap: 3px !important;
     }
     #settings-menu > button,
     #settings-menu .has-submenu-wrapper .has-submenu {
         height: 43px !important;
-        padding: 17px !important;
+        padding: 11px 16px !important;
         border-radius: 12px !important;
         background: linear-gradient(180deg, var(--hero-gradient-start), var(--hero-gradient-end)) !important;
         border: 1px solid var(--border-subtle) !important;
