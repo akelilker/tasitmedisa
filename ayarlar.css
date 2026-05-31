@@ -1510,6 +1510,22 @@ select.settings-form-select option,
 #user-form-modal:has(.medisa-owner-select-menu.open) .universal-btn-group {
     pointer-events: none !important;
 }
+/* Kullanıcı Düzenle: şube / tip / taşıt dropdown açıkken arka plan flu (ayarlar menüsü ile aynı) */
+#user-form-modal:has(.medisa-owner-select-menu.open, .user-vehicles-trigger-open) .modal-header,
+#user-form-modal:has(.medisa-owner-select-menu.open, .user-vehicles-trigger-open) .universal-back-bar,
+#user-form-modal:has(.medisa-owner-select-menu.open) .modal-body .form-section:not(:has(.medisa-owner-select-menu.open)),
+#user-form-modal:has(.user-vehicles-trigger-open) .modal-body .form-section:not(.form-section-vehicles),
+#user-form-modal:has(.medisa-owner-select-menu.open, .user-vehicles-trigger-open) .universal-btn-group {
+    filter: blur(2px);
+    opacity: 0.92;
+    transition: filter 0.18s ease, opacity 0.18s ease;
+}
+#user-form-modal:has(.medisa-owner-select-menu.open) .form-section:has(.medisa-owner-select-menu.open),
+#user-form-modal:has(.user-vehicles-trigger-open) .form-section-vehicles,
+#user-form-modal:has(.user-vehicles-trigger-open) .user-vehicles-dropdown {
+    filter: none !important;
+    opacity: 1 !important;
+}
 #user-form-modal .user-form-locked-input,
 #user-form-modal #user-role:disabled {
     color: var(--txt-white, #ffffff) !important;
