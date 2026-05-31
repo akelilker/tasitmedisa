@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Finans ve Taşıt Yönetim Sistemi</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css?v=30"> </head>
+<body>
+
+<main class="main-layout">
+<div class="wrap">
+    <div class="hero">
+    <h1>FİNANS VE TAŞIT <span class="no-wrap">YÖNETİM SISTEMİ</span></h1>
+    <div class="animated-line"></div>
+</div>
+    <div class="hero-icons">
+        <svg id="notification-bell" onclick="toggleNotificationsDropdown()" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hero-icon"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <div id="notifications-dropdown" class="settings-dropdown">
+        </div>
+        <svg id="settings-btn" onclick="toggleSettingsMenu(); event.stopPropagation();" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hero-icon"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0
+2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2 2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2
+2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06-.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        <div id="settings-menu" class="settings-dropdown">
+            <button onclick="openCariModal()">Cari Yönetimi</button>
+            <button onclick="openCategoryManagementModal()">Kategori Yönetimi</button>
+            <button onclick="openAuditModal()">Düzenleme Geçmişi</button>
+            <div class="divider"></div>
+            <button onclick="openDataManagementModal()">Veri Yönetimi</button>
+            <button class="danger" onclick="clearCacheAndReload()">Ön Bellek Temizleme</button>
+        </div>
+    </div>
+    <div class="grid-4" id="main-menu">
+        <button class="menu-btn veri" onclick="openModal('veri')"><div class="ttl">İŞLEM GİRİŞİ</div></button>
+        <button class="menu-btn tasitlar" onclick="openModal('tasitlar')"><div class="ttl">TAŞITLAR</div></button>
+        <button class="menu-btn fin" onclick="openModal('fin')"><div class="ttl">FİNANSAL DURUM</div></button>
+        <button class="menu-btn rapor" onclick="openModal('rapor')"><div class="ttl">RAPORLAR</div></button>
+    </div>
+</div>
+<footer class="status-bar">
+<div class="status-bar-content">
+<span id="status-version">Karmotors v28.0</span>
+<span id="status-message"></span>
+<span id="status-indicator"></span>
+</div>
+</footer>
+</main>
+
+<div class="modal" id="modal-tasitlar">
+    <div class="m-wrap">
+        <div class="modal-header">
+            <div class="m-title">TAŞITLAR</div>
+            <div class="x" onclick="closeModal('tasitlar')">✕</div>
+        </div>
+        <div class="m-content">
+            <div class="detail-tabs">
+                <button class="tab" data-view="taşıtlarımız" onclick="showTasitlarDetail('taşıtlarımız')">Taşıtlarımız</button>
+                <button class="tab" data-view="konsinye" onclick="showTasitlarDetail('konsinye')">Konsinye</button>
+            </div> 
+            <div class="tasitlar-controls">
+                <div class="search-wrapper" id="tasitlar-search-wrapper">
+                    <input type="text" id="tasitlar-search-input" placeholder="Ara...">
+                </div>
+                <button id="tasitlar-search-toggle-btn" class="tasitlar-action-btn" title="Ara" style="display: none;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                </button>
+                <button id="tasitlar-archive-btn" class="tasitlar-action-btn" title="Arşiv" style="display: none;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8v13H3V8"/><path d="M1 3h22v5H1z"/><path d="M10 12h4"/></svg>
+                </button>
+            </div>
+
+<div id="vehicle-detail-view" class="view-mode" style="display: none; width: 100%; padding: 0 20px 20px 20px;">
+    
+              <div style="max-width: 900px; margin: 0 auto;">
+
+                <div class="vehicle-detail-header">
+                  <div id="vehicle-detail-plate"></div>
+                  <div id="vehicle-detail-brand-model"></div>
+                </div>
+
+                <div class="vehicle-detail-content" style="margin-bottom: 30px;">
+
+                  <div class="vehicle-detail-info-section">
+                    
+                    <div class="vehicle-detail-info-item">
+                      <div class="vehicle-detail-info-label">Model Yılı</div>
+                      <input type="number"
+                             id="vehicle-detail-year-input"
+                             class="vehicle-detail-textarea"
+                             placeholder="Örn: 2019"
+                             min="1950"
+                             max="2099">
+                    </div>
+                    
+                    <div class="vehicle-detail-info-item">
+                      <div class="vehicle-detail-info-label">Km</div>
+                      <input type="text"
+                             id="vehicle-detail-km-input"
+                             class="vehicle-detail-textarea"
+                             placeholder="Örn: 45000"
+                             inputmode="numeric">
+                    </div>
+
+                    <div class="vehicle-detail-info-item item-stacked">
+                      <div class="vehicle-detail-info-label">Tramer Kaydı</div>
+                      
+                      <div class="vehicle-yesno-container" id="tramer-edit-container">
+                        <button class="vehicle-yesno-btn btn-no" 
+                                data-field="tramer"
+                                onclick="toggleDynamicTramer(this, false)">
+                            Hayır
+                        </button>
+                        <button class="vehicle-yesno-btn btn-yes" 
+                                data-field="tramer"
+                                onclick="toggleDynamicTramer(this, true)">
+                            Evet
+                        </button>
+                      </div>
+                      
+                      <div id="tramer-dynamic-content" style="display: none; margin-top: 12px;">
+                         <div id="tramer-records-list" style="display: flex; flex-direction: column; gap: 8px;">
+                            </div>
+                         <button class="vehicle-add-part-btn" onclick="addTramerRecordRow()" style="margin-top: 8px;">
+                            <span class="icon">+</span>
+                            <span>Tramer Kaydı Ekle</span>
+                         </button>
+                      </div>
+            
+                      <div id="tramer-passive-content" class="vehicle-detail-textarea">
+                         </div>
+                    </div>
+
+                    <div class="vehicle-detail-info-item">
+                      <div class="vehicle-detail-info-label">Sigorta Bitiş Tarihi</div>
+                      <div class="vehicle-detail-date-field" onclick="document.getElementById('vehicle-detail-insurance-input').click()">
+                        <div id="vehicle-detail-insurance" class="vehicle-detail-date-value">-</div>
+                        <svg class="vehicle-detail-calendar-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                      </div>
+                      <input type="date" id="vehicle-detail-insurance-input" class="vehicle-detail-date-input">
+                    </div>
+
+                    <div class="vehicle-detail-info-item">
+                      <div class="vehicle-detail-info-label">Muayene Bitiş Tarihi</div>
+                      <div class="vehicle-detail-date-field" onclick="document.getElementById('vehicle-detail-inspection-input').click()">
+                        <div id="vehicle-detail-inspection" class="vehicle-detail-date-value">-</div>
+                        <svg class="vehicle-detail-calendar-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                      </div>
+                      <input type="date" id="vehicle-detail-inspection-input" class="vehicle-detail-date-input">
+                    </div>
+
+                    <div class="vehicle-detail-info-item item-stacked">
+                      <div class="vehicle-detail-info-label">Boyalı ve Değişen Parçalar</div>
+                      <textarea id="vehicle-detail-painted-parts-input"
+                                class="vehicle-detail-textarea"
+                                placeholder="Örn: Ön kapı, Sol taraf, Çatı&#10;Her parça ayrı satırda"></textarea>
+                    </div>
+
+                  </div>
+
+                  <div class="vehicle-detail-right-section">
+
+                    <div id="garage-status-container" class="vehicle-detail-garage-section vehicle-detail-info-item">
+                      <div class="vehicle-detail-garage-label vehicle-detail-info-label">
+                        Taşıt Galeride mi?
+                      </div>
+
+                      <div id="vehicle-detail-garage-passive-text" class="vehicle-detail-textarea"></div>
+
+                      <div class="vehicle-detail-garage-buttons">
+                        <button
+                          id="vehicle-detail-garage-yes"
+                          class="vehicle-detail-garage-btn"
+                          onclick="toggleGarageStatus(true)">
+                          Evet
+                        </button>
+
+                        <button
+                          id="vehicle-detail-garage-no"
+                          class="vehicle-detail-garage-btn"
+                          onclick="toggleGarageStatus(false)">
+                          Hayır
+                        </button>
+                      </div>
+                    </div>
+
+                    <div id="vehicle-detail-location-section"
+                         class="vehicle-detail-location-section vehicle-detail-info-item item-stacked" style="display: none;">
+                      <div class="vehicle-detail-location-label vehicle-detail-info-label">
+                        Konum
+                      </div>
+                      <textarea
+                        id="vehicle-detail-location"
+                        class="vehicle-detail-textarea"
+                        placeholder="Taşıtın konumunu yazınız..."></textarea>
+                    </div>
+
+                    <div class="vehicle-detail-notes-section vehicle-detail-info-item item-stacked">
+                      <div class="vehicle-detail-notes-label vehicle-detail-info-label">
+                        Notlar
+                      </div>
+
+                      <textarea
+                        id="vehicle-detail-notes"
+                        class="vehicle-detail-textarea"
+                        placeholder="Araç hakkında notlar yazınız..."></textarea>
+                    </div>
+
+                  </div>
+
+                </div>
+
+                <div class="vehicle-detail-buttons">
+                  <button
+                    id="vehicle-detail-btn-edit"
+                    class="vehicle-detail-btn btn sec" 
+                    onclick="toggleVehicleEditMode(true)">
+                    Düzenle
+                  </button>
+                  
+                  <button
+                    id="vehicle-detail-btn-update"
+                    class="vehicle-detail-btn btn"
+                    onclick="updateVehicleDetailAdvanced()">
+                    Güncelle
+                  </button>
+
+                  <button
+                    id="vehicle-detail-btn-done"
+                    class="vehicle-detail-btn btn sec"
+                    onclick="closeVehicleDetailView()">
+                    Tamam
+                  </button>
+                </div>
+                </div>
+
+            </div>
+<div id="tasitlar-detail" style="margin-top:10px"></div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="modal-data-management">
+<div class="m-wrap" style="max-width: 400px;
+height: auto;">
+<div class="modal-header">
+<div class="m-title">Veri Yönetimi</div>
+<div class="x" onclick="closeDataManagementModal()">✕</div>
+</div>
+<div class="card" style="border:0; background: transparent;
+padding: 20px 0;">
+<div style="display: flex; flex-direction: column; gap: 12px;">
+<button class="btn" onclick="backupData()" style="width: 100%;
+padding: 14px;">
+<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle;
+margin-right: 8px;">
+<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+<polyline points="7 10 12 15 17 10"></polyline>
+<line x1="12" y1="15" x2="12" y2="3"></line>
+</svg>
+Yedekleme Al (Yerel)
+</button>
+<button class="btn sec" onclick="document.getElementById('restore-file-input').click()" style="width: 100%;
+padding: 14px;">
+<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle;
+margin-right: 8px;">
+<polyline points="17 14 12 9 7 14"></polyline>
+<line x1="12" y1="9" x2="12" y2="21"></line>
+<path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"></path>
+</svg>
+Yedekten Geri Yükle
+</button>
+<input type="file" id="restore-file-input" accept=".json" style="display: none;" onchange="restoreData(event)">
+<p style="font-size: 12px;
+color: var(--muted); text-align: center; margin-top: 8px;">
+Veriler sunucuda saklanmaktadır. Yedekleme/Geri yükleme yerel kopyalar içindir.
+</p>
+</div>
+</div>
+</div>
+</div>
+<div class="modal" id="modal-vehicle-select" style="z-index: 52;">
+<div class="m-wrap">
+<div class="modal-header"><div class="m-title">Taşıt Seçiniz</div></div>
+<div class="card" style="border:0;
+background: transparent; padding: 5px 0;">
+<div style="margin-bottom: 15px;">
+<label for="vehicle-expense-select">Stoktaki Taşıtlar</label>
+<select id="vehicle-expense-select"><option value="">Taşıt seçiniz...</option></select>
+</div>
+<div style="display:flex; justify-content:flex-end;
+gap:8px;">
+<button class="btn sec" type="button" id="cancel-vehicle-link">İptal</button>
+<button class="btn" type="button" id="confirm-vehicle-link">Onayla</button>
+</div>
+</div>
+</div>
+</div>
+
+<div class="modal" id="modal-confirm">
+<div class="m-wrap" style="max-width: 400px;
+height: auto;">
+<div class="modal-header">
+<div id="confirm-title" class="m-title"></div>
+</div>
+<div id="confirm-message" style="text-align: center; padding: 0 20px 12px; color: var(--text-light-gray);"></div>
+<div style="display: flex; justify-content: center; gap: 12px;
+margin-top: 0;">
+<button id="confirm-yes" class="form-button">Evet</button>
+<button id="confirm-no" class="form-button">Hayır</button>
+</div>
+</div>
+</div>
+
+<div id="category-overlay" onclick="handleOverlayClick(event)">
+<span id="category-close-btn">✕</span>
+<div id="category-modal">
+<div id="cat-main-groups">
+<div class="cat-group-row">
+<button type="button" class="cat-group-btn-new menu-btn" data-group="gider"><div class="ttl">Giderler</div></button>
+<button type="button" class="cat-group-btn-new menu-btn" data-group="gelir"><div class="ttl">Gelirler</div></button>
+</div>
+<div class="cat-group-row">
+<button type="button" class="cat-group-btn-new menu-btn" data-group="stok"><div class="ttl">Taşıtlar</div></button>
+<button type="button" class="cat-group-btn-new menu-btn" data-group="cari"><div class="ttl">Cariler</div></button>
+<button type="button" class="cat-group-btn-new menu-btn" data-group="transfer"><div class="ttl">Kasa/Banka</div></button>
+</div>
+
+<div class="cat-sub-groups-container">
+<div id="cat-group-new-gelir" class="cat-sub-group-new">
+<button type="button" class="cat-btn" data-value="gelen-tl" data-type="gelir">Gelen TL</button>
+<button type="button" class="cat-btn" data-value="faiz-geliri" data-type="gelir">Faiz Geliri</button>
+<button type="button" class="cat-btn" data-value="kredi-karti-iadesi" data-type="gelir">KK İadesi</button>
+<button type="button" class="cat-btn" data-value="komisyon" data-type="gelir">Komisyon</button>
+</div>
+<div id="cat-group-new-gider" class="cat-sub-group-new">
+<button type="button" class="cat-btn" data-value="isyeri-kira" data-type="gider">İşyeri Kira</button>
+<button type="button" class="cat-btn" data-value="isyeri-aidat" data-type="gider">İşyeri Aidat</button>
+<button type="button" class="cat-btn" data-value="calisan-maaslari" data-type="gider">Çalışan Maaşları</button>
+<button type="button" class="cat-btn" data-value="sahibinden-com" data-type="gider">Sahibinden.com</button>
+<button type="button" class="cat-btn" data-value="akaryakit" data-type="gider">Akaryakıt</button>
+<button type="button" class="cat-btn" data-value="noter" data-type="gider">Noter</button>
+<button type="button" class="cat-btn" data-value="yemek" data-type="gider">Yemek</button>
+<button
+type="button" class="cat-btn" data-value="sair-giderler" data-type="gider">Sair Giderler</button>
+<button type="button" class="cat-btn" data-value="ekspertiz" data-type="gider">Ekspertiz</button>
+<button type="button" class="cat-btn" data-value="bakim-oto-yikama" data-type="gider">Bakım+Oto Yıkama</button>
+<button type="button" class="cat-btn" data-value="mtv" data-type="gider">MTV</button>
+<button type="button" class="cat-btn" data-value="kdv" data-type="gider">KDV</button>
+<button type="button" class="cat-btn" data-value="muhtasar-vergisi" data-type="gider">Muhtasar V.</button>
+<button type="button" class="cat-btn" data-value="gecici-vergi" data-type="gider">Geçici Vergi</button>
+<button type="button" class="cat-btn" data-value="elektrik" data-type="gider">Elektrik</button>
+<button type="button" class="cat-btn" data-value="su" data-type="gider">Su</button>
+<button type="button" class="cat-btn" data-value="gsm-internet" data-type="gider">GSM+İnternet</button>
+<button type="button" class="cat-btn" data-value="trafik-sigortasi-kasko" data-type="gider">Trafik S.+Kasko</button>
+</div>
+<div id="cat-group-new-sermaye" class="cat-sub-group-new">
+<button type="button" class="cat-btn" data-value="asli-ortak-sermaye-giris" data-type="sermaye">Sermaye Ekleme</button>
+<button type="button" class="cat-btn" data-value="asli-ortak-sermaye-cikis" data-type="sermaye">Sermaye Çekme</button>
+</div>
+<div id="cat-group-new-stok" class="cat-sub-group-new">
+<button type="button" class="cat-btn" data-value="tasit-alimi" data-type="stok">Taşıt Alımı</button>
+<button type="button" class="cat-btn" data-value="tasit-satisi" data-type="stok">Taşıt Satışı</button>
+</div>
+<div id="cat-group-new-cari" class="cat-sub-group-new">
+<button type="button" class="cat-btn" data-value="alinan-borc" data-type="cari">Alınan Borç</button>
+<button type="button" class="cat-btn" data-value="verilen-borc" data-type="cari">Verilen Borç</button>
+</div>
+<div id="cat-group-new-transfer" class="cat-sub-group-new">
+<button type="button" class="cat-btn" data-value="kasa-banka-virman" data-type="transfer">Kasa-Banka Virman</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="modal" id="modal-fin">
+<div class="m-wrap">
+<div class="modal-header">
+<div class="m-title">FİNANSAL DURUM</div>
+<div class="x" onclick="closeModal('fin')">✕</div>
+</div>
+<div class="m-content">
+<div style="margin-bottom: 12px;">
+<div class="stats stats-5col">
+    <div class="stat"><div id="total-cash-balance" class="sv">₺0</div><div class="sl">Kasa/Banka</div></div>
+    <div class="stat"><div id="stock-value" class="sv">₺0</div><div class="sl">Taşıtlar</div></div>
+    <div class="stat"><div id="expected" class="sv">₺0</div><div class="sl">Alacaklar</div></div>
+    <div class="stat"><div id="payables" class="sv">₺0</div><div class="sl">Borçlar</div></div>
+    <div class="stat"><div id="partner-balance" class="sv">₺0</div><div class="sl">Cari H.</div></div>
+</div>
+</div>
+<div class="card">
+<div class="detail-tabs">
+<button class="tab" data-view="cash" onclick="showFinanceDetail('cash')">Kasa/Banka</button>
+<button class="tab" data-view="tasitlar" onclick="showFinanceDetail('tasitlar')">Taşıtlar</button>
+<button class="tab" data-view="receivables" onclick="showFinanceDetail('receivables')">Alacaklar</button>
+<button class="tab" data-view="payables" onclick="showFinanceDetail('payables')">Borçlar</button>
+<button class="tab" data-view="cari" onclick="showFinanceDetail('cari')">Cari Hesaplar</button>
+</div>
+<div id="fin-detail" style="margin-top:10px"></div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="modal" id="modal-veri">
+<div class="m-wrap">
+<div class="modal-header">
+<div class="m-title">İşlem Girişi</div>
+<div class="x" onclick="closeModal('veri')">✕</div>
+</div>
+<div class="m-content">
+<div class="detail-tabs">
+<button class="tab" data-view="kayit" onclick="showVeriDetail('kayit')">İşlem Girişi</button>
+<button class="tab" data-view="hareketler" onclick="showVeriDetail('hareketler')">İşlem Geçmişi</button>
+</div>
+<div id="veri-kayit-view">
+<div class="card">
+<form id="tx-form">
+<div id="tx-form-fields-wrapper">
+    <div id="category-selector-container" style="position: relative; z-index: 56; padding-left: 0; margin-left: 0; box-sizing: border-box;">
+        <div id="category-trigger" style="padding: 0; display: flex; align-items: center; gap: 8px; cursor: pointer;" onclick="toggleCategorySelector(true)">
+            <span id="category-trigger-icon" style="font-size: 12px;">▲</span>
+            <span id="category-trigger-value" style="font-size: 15px; color: #ccc;">İşlem Türü Seç</span>
+        </div>
+        <input type="hidden" id="selected-category" value="">
+    </div>
+    <div id="account-selector-wrap">
+        <label for="account_kasa" style="margin: 0; font-size: 15px;">Hesap</label>
+      <div class="styled-radio-group" style="display: flex; gap: 12px;">
+        <input type="radio" id="account_kasa" name="account_type" value="kasa" checked>
+        <label for="account_kasa">Kasa</label>
+        <input type="radio" id="account_banka" name="account_type" value="banka">
+        <label for="account_banka">Banka</label>
+      </div>
+    </div>
+
+    <div id="purchase-method-wrap">
+    <div class="styled-radio-group">
+    <input type="radio" id="purchase_pesin" name="purchase_method" value="pesin" checked>
+    <label for="purchase_pesin">Peşin</label>
+    <input type="radio" id="purchase_vadeli" name="purchase_method" value="vadeli">
+    <label for="purchase_vadeli">Vadeli</label>
+    <input type="radio"
+    id="purchase_ortakli" name="purchase_method" value="ortakli">
+    <label for="purchase_ortakli">Ortaklı</label>
+    </div>
+    </div>
+
+    <div id="purchase-amount-row-wrap" class="row">
+        <div id="purchase-amount-wrap" style="display:block; flex-grow: 1; margin-bottom: 0;">
+            <label for="purchase_amount">Alış Fiyatı *</label>
+            <input id="purchase_amount" type="text" inputmode="decimal" />
+        </div>
+        <div id="joint-total-check" class="joint-total-check" style="color:var(--muted);"></div>
+    </div>
+    <div id="purchase-installments-wrap" style="display:none; margin-bottom: 3px;" class="row">
+        <div>
+            <label for="purchase_down_payment">Peşinat</label>
+            <div class="input-with-adornment">
+                <input id="purchase_down_payment" type="text" inputmode="decimal">
+            </div>
+        </div>
+        <div>
+            <label for="purchase_installments_count">Taksit</label>
+            <input id="purchase_installments_count" type="number" min="1" step="1">
+        </div>
+        <div style="grid-column: span 2; display: flex; align-items: center; gap: 8px; margin-top: 2px;">
+            <label for="purchase_first_payment_date" style="flex-shrink: 0; white-space: nowrap; margin-bottom: 0; font-size: smaller;">İlk Ödeme Tarihi (Ops.)</label>
+            <div class="date-input-container" style="flex-grow: 1; margin-top: 0;">
+                <input id="purchase_first_payment_date" type="date" class="borderless" />
+            </div>
+        </div>
+    </div>
+
+    <div id="joint-purchase-wrap" style="display:none;">
+    <div id="joint-partners-inputs" style="margin-top:10px; display:flex; flex-direction:column; gap:10px;">
+    </div>
+    </div>
+
+    <div id="person-wrap" style="display:none;"><label for="person">Cari Kişi *</label><div style="display:flex;gap:8px;align-items:center"><select id="person"><option value="">Kişi seçin...</option></select></div></div>
+
+    <div id="new-vehicle-wrap" style="display:none;" class="row">
+        <div><label for="new_vehicle_plate">Plaka *</label><input id="new_vehicle_plate" type="text" placeholder="34 ABC 123"></div>
+        <div><label for="new_vehicle_name">Marka/Model *</label><input id="new_vehicle_name" type="text" placeholder="Taşıt Bilgileri"></div>
+    </div>
+
+    <div id="note-wrap" style="display:none; margin-bottom: 2px;">
+        <label for="note">Açıklama</label>
+        <textarea id="note" rows="1" oninput="this.style.height = 'auto'; this.style.height = (this.scrollHeight) + 'px';"></textarea>
+    </div>
+
+    <div id="date-wrap" style="display:none;">
+        <div style="display: flex; gap: 4px; align-items: center;">
+<input id="date" type="date" required style="background: transparent; border: none; color: #fff; flex: 1; text-align: left; padding-left: 0;" />
+    </div>
+    </div>
+    <div id="amount-wrap" style="display:none;"><label for="amount">Tutar *</label><input id="amount" name="amount" type="text" inputmode="decimal" /></div>
+
+    <div id="virman-direction-wrap" style="display:none;">
+        <label for="virman-direction-toggle">Transfer Yönü</label>
+        <button type="button" class="btn sec" id="virman-direction-toggle">Bankadan Kasaya Aktar</button>
+    </div>
+    <div id="vehicle-expense-link-wrap" style="display:none;">
+    <label for="is-vehicle-expense-check">İşlem, Stoktaki Bir Taşıtla Mı İlgili?</label>
+    <input type="checkbox" id="is-vehicle-expense-check">
+    <span id="linked-vehicle-info"></span>
+    </div>
+    <div id="pending-schedules-row" style="display:none;"><div><label for="pending-schedule-select">Bu ödeme, beklenen hangi alacağa aittir?</label><select id="pending-schedule-select"><option value="">Bekleyen bir alacak seçiniz...</option></select><div style="font-size:12px;color:#9ca3af;margin-top:6px" id="pending-sel-hint"></div></div></div>
+    <div id="sale-type-wrap" style="display:none;"><label>Satış Tipi</label><div style="display:flex;gap:12px"><label><input type="radio" name="sale_type" value="pesin" checked> Peşin</label><label><input type="radio" name="sale_type" value="vadeli"> Vadeli</label></div></div>
+    <div id="buyer-info-wrap" style="display:none;"><label for="buyer_person_id">Alıcı Bilgisi</label><div style="display:flex;gap:8px;align-items:center"><select id="buyer_person_id"><option value="">Kişi seçin...</option></select></div></div>
+    <div id="installments-wrap" style="display:none;"
+    class="row"><div><label for="down_payment">Peşinat Tutarı</label><input id="down_payment" type="text" inputmode="decimal"></div><div><label for="installments_count">Taksit Sayısı</label><input id="installments_count" type="number" min="1" step="1"></div>
+    <div style="display: flex; gap: 8px; align-items: center; grid-column: span 2;"><label for="sale_first_payment_date" style="white-space: nowrap; margin: 0;">İlk Taksit Tarihi</label><input id="sale_first_payment_date" type="date" style="background: transparent; border: none; color: #fff; flex: 1; min-width: 120px;" /></div></div>
+
+    <div id="vehicle-wrap" style="display:none;"><label for="vehicle">Araç/Plaka *</label><select id="vehicle"><option value="">Araç seçin...</option></select></div>
+
+</div>
+<div class="modal-footer" style="margin-top: 2px;">
+    <div style="display:flex; align-items:center; gap: 8px; justify-content: flex-start;">
+            <button class="form-button primary" type="submit" id="submit-btn">Kaydet</button>
+            <button class="form-button secondary" type="button" onclick="resetForm()">Temizle</button>
+            <button class="form-button secondary" type="button" style="display:none" id="cancel-edit" onclick="cancelEdit()">İptal</button>
+    </div>
+</div>
+</form>
+</div>
+</div>
+<div id="veri-hareketler-view" style="display:none;">
+<div class="card">
+<div class="list-controls">
+<div id="filter-container">
+<button class="filter-btn" onclick="toggleFilterMenu()">Filtrele ▼</button>
+<div id="filter-menu" class="filter-dropdown">
+<form id="filter-form">
+<div class="filter-date-group">
+<div class="filter-date-display">
+<label>Başlangıç Tarihi</label>
+<span class="filter-date-text" id="filter-start-date-text"></span>
+<input type="date" id="filter-start-date">
+</div>
+<div class="filter-date-display">
+<label>Bitiş Tarihi</label>
+<span class="filter-date-text" id="filter-end-date-text"></span>
+<input type="date" id="filter-end-date">
+</div>
+</div>
+<div id="filter-category-trigger" class="filter-category-trigger">
+<span>İşlem Tipi</span>
+</div>
+<div class="filter-actions">
+<button class="form-button primary" type="submit">Filtrele</button>
+<button class="form-button secondary" type="button" onclick="clearFilter()">Temizle</button>
+</div>
+</form>
+</div>
+<div id="filter-category-list" class="filter-category-dropdown"></div>
+</div>
+</div>
+<div id="tx-list" class="records-list"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="modal" id="modal-rapor">
+<div class="m-wrap">
+<div class="modal-header">
+<div class="m-title">RAPORLAR</div>
+<div class="x" onclick="closeModal('rapor')">✕</div>
+</div>
+<div class="m-content">
+<div class="tabs" id="tabbar">
+<button class="tab on" data-t="aylik">Aylık Durum</button>
+<button class="tab" data-t="tasit-karlilik">Araç Bazında Kârlılık</button>
+<button class="tab" data-t="ciro">Ciro Takip</button>
+<button class="tab" data-t="tasitlar">Taşıtlar</button>
+<button class="tab" data-t="ortaklar">Ortaklar</button>
+<button class="tab" data-t="net">Net Sermaye</button>
+</div>
+<div class="report on" id="report-aylik">
+<div class="card">
+<input type="date" id="pl-start" style="display:none;"><input type="date" id="pl-end" style="display:none;">
+<label>Tarih Aralığı Seçin</label>
+<div id="report-date-display" class="date-range-display">
+<span id="report-start-date-text" class="date-text"></span><span>
+- </span><span id="report-end-date-text" class="date-text"></span>
+</div>
+<button class="form-button primary white-glow" style="width:100%;" onclick="renderAylikDurum()">Hesapla</button>
+</div>
+<div class="card"><h3>Sonuç</h3><div id="pl-result"></div></div>
+</div>
+<div class="report" id="report-tasit-karlilik">
+<div class="card">
+<h3>Araç Bazında Kârlılık (Bilgi Amaçlı)</h3>
+<div id="tasit-karlilik-result"></div>
+</div>
+</div>
+<div class="report" id="report-ciro"><div class="card"><h3>Brüt Satış & Komisyon</h3><div id="ciro-result"></div></div></div>
+<div class="report" id="report-tasitlar"><div class="card"><h3 id="tasitlar-report-title">Taşıtlar Genel Bakış</h3><div id="stok-result"></div></div></div>
+<div class="report" id="report-ortaklar"><div class="card"><h3>Ortak Bakiyeleri</h3><div id="cari-result"></div></div></div>
+<div class="report" id="report-net"><div class="card"><h3>Net Sermaye</h3><div id="net-result"></div></div></div>
+</div>
+</div>
+</div>
+
+<div class="modal" id="modal-category">
+    <div class="m-wrap">
+        <div class="modal-header">
+            <div class="m-title">Kategori Yönetimi</div>
+            <div class="x" onclick="closeCategoryManagementModal()">✕</div>
+        </div>
+
+  <div class="m-content">
+            <div id="category-management-controls">
+                <div class="row">
+                    <button id="add-category-btn" class="category-action-btn" onclick="toggleCategoryActionPanel('add')">
+                        + İşlem Türü Ekle
+                    </button>
+                    <button id="delete-category-btn" class="category-action-btn" onclick="toggleCategoryActionPanel('delete')">
+                        - İşlem Türü Sil
+                    </button>
+                </div>
+            </div>
+
+            <div id="add-category-panel" class="hidden" style="margin-top: 20px;">
+                <div id="add-category-group-selection" class="row" style="display: none;">
+                    <button class="form-button" onclick="showCategoryNameInput('gider')">Giderler</button>
+                    <button class="form-button" onclick="showCategoryNameInput('gelir')">Gelirler</button>
+                </div>
+                <div id="add-category-name-wrapper" class="hidden">
+                    <label for="new-category-name">İşlem Türü</label>
+                    <input type="text" id="new-category-name" placeholder="Yeni kategori adı">
+                    <input type="hidden" id="new-category-group" value="">
+                    <button class="form-button" style="width: 100%; margin-top: 20px;" onclick="saveNewCategory()">Kaydet</button>
+                </div>
+            </div>
+
+            <div id="delete-category-flow" class="hidden" style="margin-top: 20px;">
+                <div id="category-group-selection" class="row">
+                    <button class="form-button" onclick="showDeletableSubcategories('gider')">Giderler</button>
+                    <button class="form-button" onclick="showDeletableSubcategories('gelir')">Gelirler</button>
+                </div>
+                <div id="category-item-list" style="margin-top: 15px;">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="modal-cari">
+<div class="m-wrap">
+<div class="modal-header">
+<div class="m-title">Cari Yönetimi</div>
+<button class="btn-text top-btn" onclick="openCariEditModal()" style="font-size: 24px; padding: 0 10px; line-height: 1;">+</button>
+<div class="x" onclick="closeCariModal()">✕</div>
+</div>
+<div class="card m-content" style="padding-bottom: 0; border: none; background: transparent;">
+    <div id="cari-list-container" class="cari-list" style="flex-grow: 1; overflow-y: auto;">
+      </div>
+    </div>
+</div>
+</div>
+
+<div class="modal" id="modal-cari-edit">
+<div class="m-wrap" style="max-width: 400px; height: auto;"> <div class="modal-header">
+<div id="cari-edit-title" class="m-title"></div>
+<div class="x" onclick="closeCariEditModal()">✕</div>
+</div>
+<div class="card" style="border:0; background: transparent; padding: 15px 5px 5px 5px;"> <form id="cari-edit-form">
+<input type="hidden" id="cari-edit-id">
+<div style="margin-bottom:15px;"><label for="cari-edit-name">Cari Adı *</label><input id="cari-edit-name" type="text" required /></div>
+<div style="margin-bottom:20px; display:flex; align-items:center; gap:8px;">
+<input id="cari-edit-type" type="checkbox" style="width:auto; height: auto;">
+<label for="cari-edit-type" style="margin-bottom:0; font-size: 14px; cursor: pointer;">Asli Ortak Olarak Belirle</label>
+</div>
+<div style="display:flex; justify-content:flex-end; gap:15px; margin-top: 16px;"> <button class="form-button secondary" type="button" onclick="closeCariEditModal()" id="cancel-cari-edit">İptal</button>
+<button class="form-button primary" type="submit">Kaydet</button>
+</div>
+</form>
+</div>
+</div>
+</div>
+
+
+<div class="modal" id="modal-konsinye-add">
+<div class="m-wrap" style="max-width: 400px;
+height: auto;">
+<div class="modal-header">
+<div class="m-title">Konsinye Araç Ekle</div>
+<div class="x" onclick="closeKonsinyeModal()">✕</div>
+</div>
+<div class="card" style="border:0; background: transparent;
+padding: 5px 0;">
+<form id="konsinye-add-form">
+<div style="margin-bottom:10px;"><label for="konsinye-plate">Araç Plakası *</label><input id="konsinye-plate" type="text" required /></div>
+<div style="margin-bottom:10px;"><label for="konsinye-name">Araç Modeli *</label><input id="konsinye-name" type="text" required /></div>
+<div style="margin-bottom:10px;"><label for="konsinye-person-id">Araç Sahibi (Cari) *</label><select id="konsinye-person-id" required></select></div>
+<div style="display:flex;
+justify-content:flex-end; gap:8px; margin-top: 16px;">
+<button class="btn sec" type="button" onclick="closeKonsinyeModal()">İptal</button> <button class="btn" type="submit">Kaydet</button>
+</div>
+</form>
+</div>
+</div>
+</div>
+
+<div class="modal" id="modal-audit">
+<div class="m-wrap">
+<div class="modal-header">
+<div class="m-title">Düzenleme Geçmişi</div>
+<div class="x" onclick="closeModal('audit')">✕</div>
+</div>
+<div class="card m-content">
+<p style="font-size: 13px;
+color: var(--muted); margin-bottom: 12px;">Düzenleme Yapılan Veya İptal Edilen İşlem Kayıtları</p>
+<div id="audit-result" style="max-height: 400px; overflow-y: auto;
+padding-right: 5px;"></div>
+</div>
+</div>
+</div>
+
+<script src="script-core.js?v=25"></script>
+<!-- Modüler UI Scripts (v33 - Modülerization) -->
+<script src="script-ui-utilities.js?v=33"></script>
+<script src="script-ui-common.js?v=33"></script>
+<script src="script-ui-modals.js?v=33"></script>
+<script src="script-ui-transactions.js?v=33"></script>
+<script src="script-ui-reports.js?v=33"></script>
+<script src="script-ui-vehicle.js?v=33"></script>
+<script src="script-main.js?v=29"></script></body>
+</html>

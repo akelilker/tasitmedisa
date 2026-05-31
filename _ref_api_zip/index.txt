@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Finans ve Taşıt Yönetim Sistemi</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style-core.css?v=61">
+<link rel="stylesheet" href="style-components.css?v=63">
+<link rel="stylesheet" href="style-vehicle.css?v=62">
+<link rel="stylesheet" href="style-reports.css?v=34">
+<link rel="stylesheet" href="style-modals.css?v=10">
+<link rel="icon" href="https://karmotors.com.tr/karmotors/favicon.ico" type="image/x-icon">
+</head>
+<body>
+
+<main class="main-layout">
+<div class="wrap">
+    <div class="hero">
+    <h1>FİNANS VE TAŞIT <span class="no-wrap">YÖNETİM SİSTEMİ</span></h1>
+    <div class="animated-line"></div>
+    
+    <div class="hero-logo">
+        <svg version="1.1" id="svg1" viewBox="0 0 761.58588 684.62164" xmlns="http://www.w3.org/2000/svg">
+            <g id="g1" transform="translate(5.1866135,-21.802198)">
+                <path id="aa1" style="fill:#ff0000;stroke-width:1" d="m 133.54102,651.9082 c -11.5451,-0.0459 -24.46676,1.32121 -28.59375,3.3711 -4.63225,2.30085 -8.528141,7.50111 -8.123051,10.84375 l 0.296875,2.43945 9.425786,-0.34375 c 7.95541,-0.29033 9.67986,-0.64506 11.04492,-2.26758 1.45403,-1.72828 2.76673,-1.91318 12.98047,-1.83398 12.78144,0.0991 14.53587,0.83626 15.65429,6.57422 0.86176,4.42125 -0.67662,5.89052 -4.24804,4.05859 -1.98186,-1.01657 -6.49374,-1.36796 -17.26954,-1.34766 -16.81193,0.0317 -23.33519,1.5402 -27.558589,6.3711 -2.22679,2.5471 -2.529297,3.77989 -2.529297,10.30468 0,5.15867 0.474287,8.06398 1.560547,9.55665 1.88218,2.58635 6.676939,5.12 11.439449,6.04492 5.15989,1.00213 23.89399,0.98867 28.41016,-0.0195 2.15108,-0.48021 5.16512,-1.76521 6.69727,-2.85547 2.62623,-1.8688 4.80868,-1.3186 3.41015,0.85937 -0.92252,1.43667 3.25256,2.0761 11.49414,1.75977 l 7.48828,-0.28711 0.3086,-14.91797 c 0.65042,-31.46475 -1.65108,-35.56808 -21.17969,-37.76758 -3.16582,-0.35656 -6.86062,-0.52767 -10.70898,-0.54297 z m -1.41602,30.78907 c 5.59329,0.21292 10.86498,0.84218 11.99414,1.74414 0.99506,0.79485 1.48948,2.40779 1.30274,4.24804 -0.23367,2.30232 -1.08449,3.33392 -3.80079,4.60743 -4.00021,1.87544 -22.24009,2.3824 -25.23828,0.70117 -5.08743,-2.85275 -4.08465,-8.66789 1.81836,-10.54297 2.41479,-0.76705 8.33054,-0.97074 13.92383,-0.75781 z" />
+                <path style="fill:#d40000;stroke-width:1" d="M 320.62373,412.54844 167.12676,264.82848 291.29997,145.29148 C 402.31161,38.42463 415.64917,25.89505 417.13356,27.080756 c 0.91321,0.729462 4.8839,5.46499 8.82375,10.52341 14.40028,18.488638 47.64706,48.834057 73.16338,66.778594 27.28692,19.18973 55.84656,35.9777 85,49.9648 30.52541,14.64534 58.65163,24.81114 98,35.4206 37.96405,10.23622 51.97505,19.75334 64.41389,43.75381 7.49369,14.45892 11.38079,35.98223 9.31339,51.5691 l -1.0523,7.93366 -138.83615,133.62935 c -76.35987,73.49614 -139.51174,133.62596 -140.33748,133.62183 -0.82574,-0.004 -70.57498,-66.4815 -154.99831,-147.72747 z" id="elmas" />
+                <path style="fill:#d40000;stroke-width:1" d="M 149.57655,415.421 C 64.625829,333.62921 -5.0174014,266.31419 -5.1861714,265.83207 -5.5695514,264.73688 243.52456,24.183042 245.042,24.183042 c 1.38196,0 27.57869,25.174051 27.57869,26.502059 0,0.533816 -49.725,48.781523 -110.5,107.217129 -60.775,58.43561 -110.500001,106.51479 -110.500001,106.84263 0,0.53809 40.966921,40.22543 223.369341,216.39246 l 58.0671,56.08209 -13.95483,13.45696 c -7.67515,7.40134 -14.20571,13.45697 -14.51235,13.45697 -0.30665,0 -70.06268,-66.92055 -155.0134,-148.71234 z" id="solok" />
+                <path style="fill:#ffffff;stroke-width:1" d="M 232.63801,415.4379 76.177018,264.81994 188.71696,156.77309 C 250.61392,97.347323 307.63885,42.668331 315.43902,35.264217 l 14.18213,-13.462019 14.49977,13.930814 c 7.97487,7.661942 14.49977,14.334727 14.49977,14.828406 0,0.493679 -49.95633,48.960962 -111.01406,107.705072 L 136.59257,265.07397 277.34743,400.62114 c 77.41517,74.55094 140.8729,135.88804 141.01718,136.30465 0.14428,0.41659 -6.38145,7.14129 -14.50164,14.94377 l -14.76396,14.18631 z" id="ortaok" />
+                <path style="fill:#ffffff;stroke-width:1" d="m 671.36121,704.24194 c -6.56474,-2.25466 -9.74052,-6.34072 -9.74052,-12.53246 0,-3.4075 0.0118,-3.41647 4.5,-3.41647 4.27164,0 4.5,0.13801 4.5,2.71967 0,1.67823 0.98746,3.61315 2.57875,5.05301 2.45326,2.2198 3.31111,2.34947 17.62838,2.66472 17.96107,0.39548 23.13171,-0.21005 25.85982,-3.02847 3.01543,-3.11523 2.31451,-8.99136 -1.38892,-11.64386 -2.58687,-1.85279 -4.50299,-2.06126 -23,-2.50241 -17.93018,-0.42763 -20.56793,-0.69933 -23.67803,-2.43894 -5.01823,-2.80691 -7.25355,-7.43578 -6.49123,-13.44195 0.80273,-6.32459 2.6722,-8.88422 8.32557,-11.39915 4.28637,-1.90682 6.25089,-2.07216 24.16566,-2.03388 15.798,0.0338 20.16446,0.33756 23,1.60029 4.96059,2.20907 7.8867,5.57599 8.21614,9.45388 0.28329,3.3346 0.27455,3.34191 -4.33128,3.62938 -4.38625,0.27377 -4.64397,0.14935 -5.19629,-2.50863 -0.94716,-4.55808 -4.8111,-5.48116 -22.88287,-5.46658 -14.3383,0.0115 -15.93671,0.18623 -18.5,2.02153 -2.9559,2.11639 -3.86384,4.83796 -2.87677,8.62319 1.07969,4.14043 3.80723,4.7107 25.07107,5.24181 21.33434,0.53285 24.65177,1.2374 28.72776,6.1011 1.82199,2.17409 2.58207,13.13016 0.91091,13.13016 -0.47373,0 -0.66454,0.99082 -0.42401,2.20182 0.6094,3.06826 -3.69282,6.9468 -9.18107,8.2769 -6.43717,1.56008 -41.03379,1.32991 -45.79307,-0.30466 z" id="s" />
+                        <path style="fill:#ffffff;stroke-width:1" d="m 595.62069,679.09413 v -26.5235 l 4.25,0.29597 c 3.77,0.26253 4.28489,0.58642 4.5589,2.86778 l 0.30891,2.57182 5.0874,-3.04384 c 4.97663,-2.97757 5.35093,-3.04405 17.19109,-3.05306 11.05374,-0.009 12.49406,0.19951 16.6037,2.39698 5.53614,2.96022 7.8419,7.14894 8.22011,14.93289 l 0.27989,5.76039 -4.10474,0.28913 -4.10474,0.28912 -0.61313,-4.98263 c -1.1992,-9.74546 -4.39059,-11.89991 -17.67739,-11.93363 -11.52535,-0.0293 -15.31277,1.61545 -18.75,8.14228 -2.08264,3.95466 -2.25,5.54592 -2.25,21.39312 v 17.12067 h -4.5 -4.5 z" id="path11" />
+                        <path id="o2" style="fill:#ffffff;stroke-width:1" d="m 547.12109,652.20508 c -16.65388,-0.006 -21.17761,0.76206 -26.77343,4.54101 -6.16265,4.16175 -9.14755,15.25467 -7.63477,28.36524 1.24461,10.78649 5.40697,16.51766 13.80664,19.00781 6.59449,1.95496 34.02457,1.98788 40.80859,0.0488 5.58858,-1.59736 11.6594,-7.08103 13.01758,-11.75977 0.42646,-1.46909 0.76496,-7.86834 0.75196,-14.2207 -0.0205,-10.02435 -0.31579,-12.0806 -2.22852,-15.56055 -4.65258,-8.46472 -10.59363,-10.41487 -31.74805,-10.42187 z m -1,6.74804 c 22.68439,-0.029 25.93042,2.50833 25.94922,20.26758 0.0127,11.9408 -0.95766,14.46673 -6.70898,17.45313 -2.55037,1.3243 -6.1156,1.72959 -16.74024,1.90625 -23.30125,0.38742 -26.46152,-1.98843 -26.48632,-19.91211 -0.0236,-17.08126 3.14764,-19.68814 23.98632,-19.71485 z" />
+                        <path id="o" style="opacity:1;fill:#ffffff;stroke-width:1" d="m 397.62109,652.19922 c -15.61362,0 -16.76615,0.12931 -21.44921,2.40625 -7.84738,3.81543 -10.41427,7.71188 -11.57813,17.57031 -2.05942,17.44419 1.70418,27.18834 12.07031,31.2461 4.84595,1.89691 7.27219,2.13971 21.66992,2.16601 13.96074,0.0254 16.97437,-0.24494 21.70704,-1.94922 9.89285,-3.56251 12.56836,-8.77418 12.56836,-24.48828 -10e-6,-11.4746 -1.0884,-15.79134 -5.08985,-20.17773 -4.99866,-5.47955 -10.70985,-6.77344 -29.89844,-6.77344 z m 0.5,6.73828 c 21.80286,-0.002 24.78539,2.21211 25.29688,18.76367 0.34854,11.27845 -0.8673,14.99453 -6.11914,18.70508 -2.48898,1.75851 -4.433,2.01619 -16.5,2.19141 -23.56772,0.34221 -27.17878,-2.33428 -27.17578,-20.13868 0.003,-16.57469 3.69734,-19.51948 24.49804,-19.52148 z" />
+                        <path style="fill:#ffffff;stroke-width:1" d="m 241.09419,704.4545 c -0.27952,-0.70108 -0.3879,-12.52856 -0.24086,-26.28331 l 0.26736,-25.00863 4.25,-0.29596 c 3.9723,-0.27662 4.25,-0.13513 4.25,2.16557 0,2.47687 2.25863,3.43228 3.50936,1.48448 1.87759,-2.924 8.17229,-4.19517 20.99064,-4.2389 11.39062,-0.0389 13.49519,0.209 17,2.00215 2.2,1.12557 4.86721,2.96942 5.92714,4.09743 l 1.92714,2.05093 3.07286,-2.75934 c 5.12408,-4.60127 8.78432,-5.46884 23.07286,-5.46884 12,0 13.34615,0.18509 17.5,2.4062 3.22418,1.724 5.11927,3.63414 6.68424,6.73734 1.9887,3.94342 2.21251,6.09751 2.5,24.06196 l 0.31576,19.7308 h -4.5 -4.5 l -0.5,-19.24956 c -0.54451,-20.96306 -0.9164,-22.45664 -6.27964,-25.22013 -4.60445,-2.37251 -22.84896,-2.36582 -27.46094,0.0101 -6.24905,3.21923 -6.70642,4.83491 -7.25942,25.64448 l -0.5,18.81514 -4.75,0.29336 -4.75,0.29335 v -19.25698 c 0,-12.35041 -0.40835,-20.11961 -1.13856,-21.66212 -1.94844,-4.1159 -7.14017,-5.76056 -18.36144,-5.8166 -11.53043,-0.0576 -15.87244,1.41583 -19.04394,6.46235 -1.70236,2.70878 -2.02091,5.48425 -2.45606,21.39955 l -0.5,18.28708 -4.25915,0.29639 c -2.84599,0.19806 -4.42777,-0.12654 -4.76735,-0.97827 z" id="m" />
+                        <path style="fill:#ff0000;stroke-width:1" d="m 175.5126,704.93189 c -0.0594,-0.41689 -0.0543,-10.71963 0.0113,-22.89498 0.0657,-12.17535 0.11433,-23.76119 0.10809,-25.7463 l -0.0113,-3.60929 h 9 9 v 3.84991 c 0,2.11745 0.25962,3.84992 0.57692,3.84992 0.31731,0 1.91675,-1.28955 3.55431,-2.86568 2.90108,-2.79222 10.93531,-5.79663 15.50105,-5.79663 6.24844,0 12.82475,2.26574 16.71583,5.75912 3.47236,3.11744 4.09381,4.30879 4.58466,8.78898 1.05398,9.61996 1.14908,9.51386 -8.52732,9.51386 h -8.45545 l -0.60611,-2.91684 c -1.45291,-6.99197 -12.32449,-9.27525 -18.57811,-3.90182 l -3.26578,2.80611 -0.5,16.68407 -0.5,16.68406 -9.25,0.27674 c -5.0875,0.15221 -9.29864,-0.0644 -9.35809,-0.48123 z" id="r" />
+                        <path style="fill:#ff0000;stroke-width:1" d="m 21.287359,704.97599 c -0.36667,-0.35291 -0.66667,-16.59473 -0.66667,-36.09294 v -35.45128 l 8,-0.14437 c 4.4,-0.0794 8.5625,-0.18768 9.25,-0.24062 0.94507,-0.0728 1.37197,4.48218 1.75,18.67208 l 0.5,18.76833 2.35564,0.32088 c 1.84205,0.25093 4.48231,-1.69012 12.10992,-8.90293 l 9.75429,-9.2238 h 11.723409 c 6.44787,0 11.57341,0.37968 11.39007,0.84374 -0.18333,0.46406 -5.73333,5.71487 -12.33333,11.66848 -6.599999,5.95361 -12.148179,11.19916 -12.329279,11.65678 -0.30048,0.75925 5.42513,6.21464 22.579279,21.51364 3.4375,3.06576 6.250002,5.952 6.250002,6.41388 0,0.46188 -5.531922,0.83978 -12.293152,0.83978 H 67.034379 l -10.27873,-10.58726 c -9.21527,-9.49188 -10.63341,-10.58726 -13.70685,-10.58726 h -3.42811 v 10.58726 10.58726 h -8.83333 c -4.85834,0 -9.13334,-0.28874 -9.5,-0.64165 z" id="k" />
+                        <path style="fill:#ffffff;stroke-width:1" d="m 474.12069,705.5299 c -16.16917,-1.39183 -18.38798,-4.99169 -18.45611,-29.94377 l -0.0439,-16.07559 -6.25,-0.28654 c -6.2497,-0.28654 -6.25002,-0.28671 -6.56336,-3.41461 l -0.31336,-3.12805 h 6.51346 6.51345 l 0.29991,-5.53425 0.2999,-5.53425 4.19846,-0.29354 4.19845,-0.29353 0.30155,5.58716 0.30154,5.58717 17.73673,0.26278 17.73672,0.26277 0.60742,2.32933 c 0.33408,1.28114 0.31349,2.78708 -0.0457,3.34652 -0.41977,0.65366 -7.08817,1.01719 -18.65865,1.01719 h -18.00543 l 0.31446,16.92451 0.31446,16.92453 3.26578,2.80628 c 2.98701,2.56674 3.90059,2.80628 10.70294,2.80628 11.65263,0 14.24608,-1.94481 14.76014,-11.06849 l 0.27114,-4.8124 4.25,-0.29596 4.25,-0.29596 v 6.08585 c 0,13.88244 -8.19969,18.784 -28.5,17.03657 z" id="t" />
+                        <path style="display:inline;fill:#ffffff;stroke-width:1" d="m 519.62082,297.98054 c 26.08963,-2.20496 35.11304,-3.15459 50.49987,-5.31464 15.64762,-2.19666 46.8277,-8.04297 50.5689,-9.48174 3.69617,-1.42144 -9.57972,-1.29271 -36.5689,0.3546 -54.83712,3.34702 -144.88569,3.70861 -257.5,1.03399 -18.08905,-0.42962 -20.02859,-0.33417 -16.49166,0.81154 5.64315,1.82799 43.10555,7.18258 68.49166,9.78968 32.78276,3.36672 45.7084,4.00316 84.0458,4.13838 28.30467,0.0998 44.49428,-0.27874 56.95433,-1.33181 z" id="siluetorta" />
+                        <path style="display:inline;fill:#ffffff;stroke-width:1" d="m 589.12069,337.89007 c 1.65,-0.46242 8.64118,-2.15755 15.53595,-3.76695 16.52045,-3.85624 35.41296,-9.78962 43.65251,-13.7095 7.36445,-3.50356 11.60268,-8.11635 13.41755,-14.60336 0.97637,-3.48992 0.79974,-11.58236 -0.2754,-12.61716 -0.38059,-0.36631 -11.98193,3.35987 -16.33061,5.24515 -14.50665,6.28907 -22.63608,10.32415 -30.89544,15.33506 -10.54068,6.39498 -25.51794,16.97376 -32.10456,22.67616 l -4,3.46303 4,-0.59083 c 2.2,-0.32495 5.35,-0.96918 7,-1.4316 z" id="sag_far" />
+                        <path style="display:inline;fill:#ffffff;stroke-width:1" d="m 300.40053,272.43208 c 1.81422,-0.60871 6.90581,-5.03091 12.39922,-10.76911 20.08835,-20.98348 45.75481,-36.8117 65.22201,-40.22167 13.78798,-2.41518 59.89461,-4.76181 93.0215,-4.73442 59.84759,0.0495 77.68068,2.72662 102.21765,15.34513 13.51412,6.94984 23.84609,14.7331 38.56593,29.05246 12.19248,11.86074 12.87274,12.36044 16.82692,12.36044 4.44687,0 7.43024,-2.25989 11.46693,-8.68617 4.17834,-6.65177 5.91337,-7.19472 22.99129,-7.19472 8.43317,0 15.63074,-0.28458 15.99461,-0.63241 0.36386,-0.34783 -0.0246,-1.90957 -0.86329,-3.47054 -2.98044,-5.54728 -17.89693,-9.50155 -30.36139,-8.04862 -7.28406,0.84907 -10.36627,3.07498 -12.13768,8.76556 -1.37235,4.40863 -5.27418,7.71716 -9.10102,7.71716 -2.17491,0 -4.26386,-1.74351 -10.61514,-8.85973 -22.09774,-24.7592 -49.43348,-40.49433 -78.90738,-45.42107 -4.95,-0.82743 -14.625,-2.05447 -21.5,-2.72676 -16.42528,-1.60622 -80.0792,-1.54776 -97.5,0.0895 -29.96275,2.81605 -39.3845,4.04758 -45.52078,5.95013 -7.34573,2.27754 -24.10227,10.23858 -31.10769,14.77929 -9.14644,5.92845 -24.16841,18.48771 -30.62148,25.60136 -12.64852,13.94332 -15.74,14.1551 -23.44169,1.60589 -1.4804,-2.41219 -4.13592,-5.10464 -5.90115,-5.98323 -8.78639,-4.37312 -34.25466,0.73717 -36.4215,7.30811 -1.63322,4.95274 5.73436,7.25845 14.13856,4.42472 6.16514,-2.07876 12.761,-2.72005 15.96347,-1.55206 3.78096,1.37897 7.41226,4.68425 7.41226,6.74677 0,2.41959 3.90497,6.74772 7.41519,8.21873 3.79688,1.59113 6.37319,1.67446 10.36465,0.33524 z" id="siluetust" />
+            </g>
+        </svg>
+    </div>
+    </div>
+    <div class="hero-icons">
+        <svg id="notification-bell" onclick="toggleNotificationsDropdown()" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hero-icon"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <div id="notifications-dropdown" class="settings-dropdown">
+        </div>
+        <svg id="settings-btn" onclick="toggleSettingsMenu(); event.stopPropagation();" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hero-icon">
+            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+        </svg>
+        <div id="settings-menu" class="settings-dropdown">
+            <button onclick="openCariModal()">Cari Yönetimi</button>
+            <button onclick="openCategoryManagementModal()">Kategori Yönetimi</button>
+            <button onclick="openAuditModal()">Düzenleme Geçmişi</button>
+            <div class="divider"></div>
+            <button onclick="openDataManagementModal()">Veri Yönetimi</button>
+            <button class="danger" onclick="clearCacheRequest()">Ön Bellek Temizleme</button>
+        </div>
+    </div>
+    <div class="grid-4" id="main-menu">
+        <button class="menu-btn veri" onclick="openModal('veri')"><div class="ttl">İŞLEM GİRİŞİ</div></button>
+        <button class="menu-btn tasitlar" onclick="openModal('tasitlar')"><div class="ttl">TAŞITLAR</div></button>
+        <button class="menu-btn fin" onclick="openModal('fin')"><div class="ttl">FİNANSAL DURUM</div></button>
+        <button class="menu-btn rapor" onclick="openModal('rapor')"><div class="ttl">RAPORLAR</div></button>
+    </div>
+</div>
+<footer class="status-bar">
+<div class="status-bar-content">
+<span id="status-version">Karmotors v30.2</span>
+<span id="status-message"></span>
+<span id="status-indicator"></span>
+</div>
+</footer>
+</main>
+
+<div class="modal" id="modal-tasitlar">
+    <div class="m-wrap">
+        <div class="modal-header">
+            <div class="m-title">TAŞITLAR</div>
+            <div class="x" onclick="closeModal('tasitlar')">x</div>
+        </div>
+        <div class="m-content">
+            <div class="detail-tabs">
+                <button class="tab" data-view="taşıtlarımız" onclick="showTasitlarDetail('taşıtlarımız')">Taşıtlarımız</button>
+                <button class="tab" data-view="konsinye" onclick="showTasitlarDetail('konsinye')">Konsinye</button>
+            </div> 
+            <div class="tasitlar-controls">
+                <div class="search-wrapper" id="tasitlar-search-wrapper">
+                    <input type="text" id="tasitlar-search-input" placeholder="Ara...">
+                </div>
+                
+                <button id="btn-add-konsinye" class="btn sec" onclick="openKonsinyeModal()" style="display:none;">+ Konsinye Araç Ekle</button>
+                
+                <button id="tasitlar-search-toggle-btn" class="tasitlar-action-btn" title="Ara">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                </button>
+                <button id="tasitlar-archive-btn" class="tasitlar-action-btn" title="Arşiv">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8v13H3V8"/><path d="M1 3h22v5H1z"/><path d="M10 12h4"/></svg>
+                </button>
+            </div>
+
+<div id="vehicle-detail-view" class="view-mode" style="display: none; width: 100%; padding: 0 20px 20px 20px;">
+    
+              <div style="max-width: 900px; margin: 0 auto;">
+
+                <div class="vehicle-detail-header">
+                  <div id="vehicle-detail-plate"></div>
+                  <div id="vehicle-detail-brand-model"></div>
+                </div>
+
+                <div class="vehicle-detail-content" style="margin-bottom: 30px;">
+
+                  <div class="vehicle-detail-info-section">
+                    
+                    <div class="vehicle-detail-info-item">
+                      <div class="vehicle-detail-info-label">Model Yılı</div>
+                      <input type="number"
+                             id="vehicle-detail-year-input"
+                             class="vehicle-detail-textarea"
+                             placeholder="Örn: 2019"
+                             min="1950"
+                             max="2099">
+                    </div>
+                    
+                    <div class="vehicle-detail-info-item">
+                      <div class="vehicle-detail-info-label">Km</div>
+                      <input type="text"
+                             id="vehicle-detail-km-input"
+                             class="vehicle-detail-textarea"
+                             placeholder="Örn: 45000"
+                             inputmode="numeric">
+                    </div>
+
+                    <div class="vehicle-detail-info-item item-stacked">
+                      <div class="vehicle-detail-info-label">Tramer Kaydı</div>
+                      
+                      <div class="vehicle-yesno-container" id="tramer-edit-container">
+                        <button class="vehicle-yesno-btn btn-no" 
+                                data-field="tramer"
+                                onclick="toggleDynamicTramer(this, false)">
+                            Hayır
+                        </button>
+                        <button class="vehicle-yesno-btn btn-yes" 
+                                data-field="tramer"
+                                onclick="toggleDynamicTramer(this, true)">
+                            Evet
+                        </button>
+                      </div>
+                      
+                      <div id="tramer-dynamic-content" style="display: none; margin-top: 12px;">
+                         <div id="tramer-records-list" style="display: flex; flex-direction: column; gap: 8px;">
+                            </div>
+                         <button class="vehicle-add-part-btn" onclick="addTramerRecordRow()" style="margin-top: 8px;">
+                            <span class="icon">+</span>
+                            <span>Tramer Kaydı Ekle</span>
+                         </button>
+                      </div>
+            
+                      <div id="tramer-passive-content" class="vehicle-detail-textarea">
+                         </div>
+                    </div>
+
+                    <div class="vehicle-detail-info-item">
+                      <div class="vehicle-detail-info-label">Sigorta Bitiş Tarihi</div>
+                      <div class="vehicle-detail-date-field" onclick="document.getElementById('vehicle-detail-insurance-input').click()">
+                        <div id="vehicle-detail-insurance" class="vehicle-detail-date-value">-</div>
+                        <svg class="vehicle-detail-calendar-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                      </div>
+                      <input type="date" id="vehicle-detail-insurance-input" class="vehicle-detail-date-input">
+                    </div>
+
+                    <div class="vehicle-detail-info-item">
+                      <div class="vehicle-detail-info-label">Muayene Bitiş Tarihi</div>
+                      <div class="vehicle-detail-date-field" onclick="document.getElementById('vehicle-detail-inspection-input').click()">
+                        <div id="vehicle-detail-inspection" class="vehicle-detail-date-value">-</div>
+                        <svg class="vehicle-detail-calendar-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                      </div>
+                      <input type="date" id="vehicle-detail-inspection-input" class="vehicle-detail-date-input">
+                    </div>
+
+                    <div class="vehicle-detail-info-item item-stacked">
+                      <div class="vehicle-detail-info-label">Boyalı ve Değişen Parçalar</div>
+                      <textarea id="vehicle-detail-painted-parts-input"
+                                class="vehicle-detail-textarea"
+                                placeholder="Örn: Ön kapı, Sol taraf, Çatı&#10;Her parça ayrı satırda"
+                                onblur="autoTitleCase(event)"></textarea>
+                    </div>
+
+                  </div>
+
+                  <div class="vehicle-detail-right-section">
+                    
+                    <div class="vehicle-detail-info-item">
+                        <div class="vehicle-detail-info-label">Taşıt Galeride mi?</div>
+                        
+                        <select id="galeride-mi" onchange="updateGalerideMi(this.value)">
+                            <option value="evet">Evet</option>
+                            <option value="hayir">Hayır</option>
+                        </select>
+
+                        <span id="galeride-mi-text" class="vehicle-detail-info-value">Evet</span>
+                    </div>
+                    
+                    <div id="galeride-mi-konum-wrap" style="display:none; margin-top:6px;" class="item-stacked">
+                        <input id="galeride-konum" class="vehicle-detail-textarea" placeholder="Konum giriniz..." oninput="updateGalerideKonum()">
+                        <div id="galeride-konum-text" class="vehicle-detail-info-value" style="margin-top:4px;"></div>
+                    </div>
+                    <div class="vehicle-detail-notes-section vehicle-detail-info-item item-stacked">
+                      <div class="vehicle-detail-notes-label vehicle-detail-info-label">
+                        Notlar
+                      </div>
+                      <textarea
+                        id="vehicle-detail-notes"
+                        class="vehicle-detail-textarea"
+                        placeholder="Araç hakkında notlar yazınız..."
+                        onblur="autoTitleCase(event)"></textarea>
+                    </div>
+                    
+                    <div class="vehicle-detail-cost-section">
+                      
+                      <div class="vehicle-detail-cost-title">
+                        Maliyet Bilgileri
+                      </div>
+                      
+                      <div class="vehicle-detail-cost-item">
+                        <div class="vehicle-detail-cost-label">
+                          Taşıt Alım Fiyatı
+                        </div>
+                        <div id="vehicle-detail-purchase-price" class="vehicle-detail-cost-value">
+                          -
+                        </div>
+                      </div>
+                      
+                      <div class="vehicle-detail-cost-item cost-item-expandable">
+                        <div class="vehicle-detail-cost-expenses-header" 
+                             onclick="toggleExpensesList()">
+                          <div class="vehicle-detail-cost-label">
+                            Yapılan Masraflar
+                          </div>
+                          <div style="display: flex; align-items: center; gap: 8px;">
+                            <span id="vehicle-detail-expenses-total" class="vehicle-detail-cost-value">-</span>
+                            <svg id="vehicle-detail-expenses-arrow" 
+                                 xmlns="http://www.w3.org/2000/svg" 
+                                 width="16" height="16" 
+                                 viewBox="0 0 24 24" 
+                                 fill="none" 
+                                 stroke="currentColor" 
+                                 stroke-width="2" 
+                                 stroke-linecap="round" 
+                                 stroke-linejoin="round">
+                              <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                          </div>
+                        </div>
+                        
+                        <div id="vehicle-detail-expenses-list" style="display: none; margin-top: 12px; overflow-x: auto;">
+                          <table class="vehicle-expenses-table">
+                            <thead>
+                              <tr>
+                                <th>Tarih</th>
+                                <th>Açıklama</th>
+                                <th>Tutar</th>
+                              </tr>
+                            </thead>
+                            <tbody id="vehicle-detail-expenses-tbody">
+                              </tbody>
+                            <tfoot>
+                              <tr>
+                                <td colspan="2" style="text-align: right;">TOPLAM:</td>
+                                <td id="vehicle-detail-expenses-table-total">-</td>
+                              </tr>
+                            </tfoot>
+                          </table>
+                          
+                          <div id="vehicle-detail-expenses-empty" style="display: none; text-align: center; padding: 20px; color: var(--muted); font-size: 14px;">
+                            Bu araca ait masraf kaydı bulunmuyor.
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div class="vehicle-detail-cost-item" style="padding-top: 8px; border-top: 1px solid var(--br); margin-top: 4px;">
+                        <div class="vehicle-detail-cost-label">
+                          Toplam Maliyet
+                        </div>
+                        <div id="vehicle-detail-total-cost" class="vehicle-detail-cost-value">
+                          -
+                        </div>
+                      </div>
+                      
+                    </div>
+                    </div>
+
+                </div>
+                
+                <div class="vehicle-detail-buttons">
+                  <button
+                    id="vehicle-detail-btn-edit"
+                    class="vehicle-detail-btn btn sec" 
+                    onclick="toggleVehicleEditMode(true)">
+                    Düzenle
+                  </button>
+                  
+                  <button
+                    id="vehicle-detail-btn-update"
+                    class="vehicle-detail-btn btn"
+                    onclick="updateVehicleDetailAdvanced()">
+                    Güncelle
+                  </button>
+
+                  <button
+                    id="vehicle-detail-btn-done"
+                    class="vehicle-detail-btn btn sec"
+                    onclick="closeVehicleDetailView()">
+                    Tamam
+                  </button>
+                </div>
+                </div>
+
+            </div>
+<div id="tasitlar-detail" style="margin-top:10px"></div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="modal-data-management">
+<div class="m-wrap" style="max-width: 400px;
+height: auto;">
+<div class="modal-header">
+<div class="m-title">Veri Yönetimi</div>
+<div class="x" onclick="closeDataManagementModal()">x</div>
+</div>
+<div class="card" style="border:0; background: transparent;
+padding: 20px 0;">
+<div style="display: flex; flex-direction: column; gap: 12px;">
+<button class="btn" onclick="backupData()" style="width: 100%;
+padding: 14px;">
+<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle;
+margin-right: 8px;">
+<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+<polyline points="7 10 12 15 17 10"></polyline>
+<line x1="12" y1="15" x2="12" y2="3"></line>
+</svg>
+Yedekleme Al (Yerel)
+</button>
+<button class="btn sec" onclick="document.getElementById('restore-file-input').click()" style="width: 100%;
+padding: 14px;">
+<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle;
+margin-right: 8px;">
+<polyline points="17 14 12 9 7 14"></polyline>
+<line x1="12" y1="9" x2="12" y2="21"></line>
+<path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"></path>
+</svg>
+Yedekten Geri Yükle
+</button>
+<input type="file" id="restore-file-input" accept=".json" style="display: none;" onchange="restoreData(event)">
+<p style="font-size: 12px;
+color: var(--muted); text-align: center; margin-top: 8px;">
+Veriler sunucuda saklanmaktadır. Yedekleme/Geri yükleme yerel kopyalar içindir.
+</p>
+</div>
+</div>
+</div>
+</div>
+<div class="modal" id="modal-vehicle-select" style="z-index: 52;">
+<div class="m-wrap">
+<div class="modal-header"><div class="m-title">Taşıt Seçiniz</div></div>
+<div class="card" style="border:0;
+background: transparent; padding: 5px 0;">
+<div style="margin-bottom: 15px;">
+<label for="vehicle-expense-select">Stoktaki Taşıtlar</label>
+<select id="vehicle-expense-select"><option value="">Taşıt seçiniz...</option></select>
+</div>
+<div style="display:flex; justify-content:flex-end;
+gap:8px;">
+<button class="btn sec" type="button" id="cancel-vehicle-link">İptal</button>
+<button class="btn" type="button" id="confirm-vehicle-link">Onayla</button>
+</div>
+</div>
+</div>
+</div>
+
+<div class="modal" id="modal-confirm">
+<div class="m-wrap" style="max-width: 400px;
+height: auto;">
+<div class="modal-header">
+<div id="confirm-title" class="m-title"></div>
+</div>
+<div id="confirm-message" style="text-align: center; padding: 0 20px 12px; color: var(--text-light-gray);"></div>
+<div style="display: flex; justify-content: center; gap: 12px;
+margin-top: 0;">
+<button id="confirm-yes" class="form-button">Evet</button>
+<button id="confirm-no" class="form-button">Hayır</button>
+</div>
+</div>
+</div>
+
+<div id="category-overlay" onclick="handleOverlayClick(event)">
+<span id="category-close-btn">x</span>
+<div id="category-modal">
+<div id="cat-main-groups">
+<div class="cat-group-row">
+<button type="button" class="cat-group-btn-new menu-btn" data-group="gider"><div class="ttl">Giderler</div></button>
+<button type="button" class="cat-group-btn-new menu-btn" data-group="gelir"><div class="ttl">Gelirler</div></button>
+</div>
+<div class="cat-group-row">
+<button type="button" class="cat-group-btn-new menu-btn" data-group="stok"><div class="ttl">Taşıtlar</div></button>
+<button type="button" class="cat-group-btn-new menu-btn" data-group="cari"><div class="ttl">Cariler</div></button>
+</div>
+<div class="cat-group-row">
+<button type="button" class="cat-group-btn-new menu-btn" data-group="transfer"><div class="ttl">Kasa/Banka</div></button>
+<button type="button" class="cat-group-btn-new menu-btn" data-group="sermaye"><div class="ttl">Sermaye</div></button>
+</div>
+
+<div class="cat-sub-groups-container">
+<div id="cat-group-new-gelir" class="cat-sub-group-new">
+<button type="button" class="cat-btn" data-value="gelen-tl" data-type="gelir">Gelen TL</button>
+<button type="button" class="cat-btn" data-value="faiz-geliri" data-type="gelir">Faiz Geliri</button>
+<button type="button" class="cat-btn" data-value="kredi-karti-iadesi" data-type="gelir">KK İadesi</button>
+<button type="button" class="cat-btn" data-value="komisyon" data-type="gelir">Komisyon</button>
+</div>
+<div id="cat-group-new-gider" class="cat-sub-group-new">
+<button type="button" class="cat-btn" data-value="isyeri-kira" data-type="gider">İşyeri Kira</button>
+<button type="button" class="cat-btn" data-value="isyeri-aidat" data-type="gider">İşyeri Aidat</button>
+<button type="button" class="cat-btn" data-value="calisan-maaslari" data-type="gider">Çalışan Maaşları</button>
+<button type="button" class="cat-btn" data-value="sahibinden-com" data-type="gider">Sahibinden.com</button>
+<button type="button" class="cat-btn" data-value="akaryakit" data-type="gider">Akaryakıt</button>
+<button type="button" class="cat-btn" data-value="noter" data-type="gider">Noter</button>
+<button type="button" class="cat-btn" data-value="yemek" data-type="gider">Yemek</button>
+<button
+type="button" class="cat-btn" data-value="sair-giderler" data-type="gider">Sair Giderler</button>
+<button type="button" class="cat-btn" data-value="ekspertiz" data-type="gider">Ekspertiz</button>
+<button type="button" class="cat-btn" data-value="bakim-oto-yikama" data-type="gider">Bakım+Oto Yıkama</button>
+<button type="button" class="cat-btn" data-value="mtv" data-type="gider">MTV</button>
+<button type="button" class="cat-btn" data-value="kdv" data-type="gider">KDV</button>
+<button type="button" class="cat-btn" data-value="muhtasar-vergisi" data-type="gider">Muhtasar V.</button>
+<button type="button" class="cat-btn" data-value="gecici-vergi" data-type="gider">Geçici Vergi</button>
+<button type="button" class="cat-btn" data-value="elektrik" data-type="gider">Elektrik</button>
+<button type="button" class="cat-btn" data-value="su" data-type="gider">Su</button>
+<button type="button" class="cat-btn" data-value="gsm-internet" data-type="gider">GSM+İnternet</button>
+<button type="button" class="cat-btn" data-value="trafik-sigortasi-kasko" data-type="gider">Trafik S.+Kasko</button>
+</div>
+<div id="cat-group-new-sermaye" class="cat-sub-group-new">
+<button type="button" class="cat-btn" data-value="asli-ortak-sermaye-giris" data-type="sermaye">Sermaye Ekleme</button>
+<button type="button" class="cat-btn" data-value="asli-ortak-sermaye-cikis" data-type="sermaye">Sermaye Çıkarma</button>
+</div>
+<div id="cat-group-new-stok" class="cat-sub-group-new">
+<button type="button" class="cat-btn" data-value="tasit-alimi" data-type="stok">Taşıt Alımı</button>
+<button type="button" class="cat-btn" data-value="tasit-satisi" data-type="stok">Taşıt Satışı</button>
+</div>
+<div id="cat-group-new-cari" class="cat-sub-group-new">
+<button type="button" class="cat-btn" data-value="alinan-borc" data-type="cari">Alınan Borç</button>
+<button type="button" class="cat-btn" data-value="verilen-borc" data-type="cari">Verilen Borç</button>
+</div>
+<div id="cat-group-new-transfer" class="cat-sub-group-new">
+<button type="button" class="cat-btn" data-value="kasa-banka-virman" data-type="transfer">Kasa-Banka Virman</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="modal" id="modal-fin">
+<div class="m-wrap">
+<div class="modal-header">
+<div class="m-title">FİNANSAL DURUM</div>
+<div class="x" onclick="closeModal('fin')">x</div>
+</div>
+<div class="m-content">
+<div style="margin-bottom: 12px;">
+<div class="stats stats-5col">
+    <div class="stat"><div id="total-cash-balance" class="sv">₺0</div><div class="sl">Kasa/Banka</div></div>
+    <div class="stat"><div id="stock-value" class="sv">₺0</div><div class="sl">Taşıtlar</div></div>
+    <div class="stat"><div id="expected" class="sv">₺0</div><div class="sl">Alacaklar</div></div>
+    <div class="stat"><div id="payables" class="sv">₺0</div><div class="sl">Borçlar</div></div>
+    <div class="stat"><div id="partner-balance" class="sv">₺0</div><div class="sl">Cari H.</div></div>
+</div>
+</div>
+<div class="card">
+<div class="detail-tabs">
+<button class="tab" data-view="cash" onclick="showFinanceDetail('cash')">Kasa/Banka</button>
+<button class="tab" data-view="tasitlar" onclick="showFinanceDetail('tasitlar')">Taşıtlar</button>
+<button class="tab" data-view="receivables" onclick="showFinanceDetail('receivables')">Alacaklar</button>
+<button class="tab" data-view="payables" onclick="showFinanceDetail('payables')">Borçlar</button>
+<button class="tab" data-view="cari" onclick="showFinanceDetail('cari')">Cari Hesaplar</button>
+</div>
+<div id="fin-detail" style="margin-top:10px"></div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="modal" id="modal-veri">
+<div class="m-wrap">
+<div class="modal-header">
+<div class="m-title">İşlem Girişi</div>
+<div class="x" onclick="closeModal('veri')">x</div>
+</div>
+<div class="m-content">
+<div class="detail-tabs">
+<button class="tab on" data-view="kayit" onclick="showVeriDetail('kayit')">İşlem Girişi</button>
+<button class="tab" data-view="hareketler" onclick="showVeriDetail('hareketler')">İşlem Geçmişi</button>
+</div>
+<div id="veri-kayit-view" style="display: flex; flex-direction: column;">
+<div class="card">
+<form id="tx-form">
+<div id="tx-form-fields-wrapper">
+    <div id="category-selector-container" style="position: relative; z-index: 56; padding-left: 0; margin-left: 0; box-sizing: border-box;">
+        <div id="category-trigger" style="padding: 0; display: flex; align-items: center; gap: 8px; cursor: pointer;" onclick="toggleCategorySelector(true)">
+            <span id="category-trigger-icon" style="font-size: 12px;">▲</span>
+            <span id="category-trigger-value" style="font-size: 15px; color: #ccc;">İşlem Türü Seç</span>
+        </div>
+        <input type="hidden" id="selected-category" value="">
+    </div>
+    <div id="account-selector-wrap">
+        <label for="account_kasa" style="margin: 0; font-size: 15px;">Hesap</label>
+      <div class="styled-radio-group" style="display: flex; gap: 12px;">
+        <input type="radio" id="account_kasa" name="account_type" value="kasa" checked>
+        <label for="account_kasa">Kasa</label>
+        <input type="radio" id="account_banka" name="account_type" value="banka">
+        <label for="account_banka">Banka</label>
+      </div>
+    </div>
+
+    <div id="purchase-method-wrap" style="display:none;">
+    <div class="styled-radio-group">
+    <input type="radio" id="purchase_pesin" name="purchase_method" value="pesin" checked>
+    <label for="purchase_pesin">Peşin</label>
+    <input type="radio" id="purchase_vadeli" name="purchase_method" value="vadeli">
+    <label for="purchase_vadeli">Vadeli</label>
+    <input type="radio"
+    id="purchase_ortakli" name="purchase_method" value="ortakli">
+    <label for="purchase_ortakli">Ortaklı</label>
+    </div>
+    </div>
+
+    <div id="purchase-amount-row-wrap" class="row" style="display:none;">
+        <div id="purchase-amount-wrap" style="display:block; flex-grow: 1; margin-bottom: 0;">
+            <label for="purchase_amount">Alış Fiyatı *</label>
+            <input id="purchase_amount" type="text" inputmode="decimal" />
+        </div>
+        <div id="joint-total-check" class="joint-total-check" style="color:var(--muted);"></div>
+    </div>
+
+    <div id="new-vehicle-wrap" style="display:none;" class="row">
+        <div><label for="new_vehicle_plate">Plaka *</label><input id="new_vehicle_plate" type="text" placeholder="34 ABC 123"></div>
+        <div><label for="new_vehicle_name">Marka/Model *</label><input id="new_vehicle_name" type="text" placeholder="Taşıt Bilgileri"></div>
+    </div>
+    
+    <div id="purchase-installments-wrap" style="display:none; margin-bottom: 3px;" class="row">
+        <div>
+            <label for="purchase_down_payment">Peşinat</label>
+            <div class="input-with-adornment">
+                <input id="purchase_down_payment" type="text" inputmode="decimal">
+            </div>
+        </div>
+        <div>
+            <label for="purchase_installments_count">Taksit</label>
+            <input id="purchase_installments_count" type="number" min="1" step="1">
+        </div>
+        <div style="grid-column: span 2; display: flex; align-items: center; gap: 8px; margin-top: 2px;">
+            <label for="purchase_first_payment_date" style="flex-shrink: 0; white-space: nowrap; margin-bottom: 0; font-size: smaller;">İlk Ödeme Tarihi (Ops.)</label>
+            <div class="date-input-container" style="flex-grow: 1; margin-top: 0;">
+                <input id="purchase_first_payment_date" type="date" class="borderless" />
+            </div>
+        </div>
+    </div>
+
+    <div id="joint-purchase-wrap" style="display:none;">
+    <div id="joint-partners-inputs" style="margin-top:10px; display:flex; flex-direction:column; gap:10px;">
+    </div>
+    </div>
+
+    <div id="person-wrap" style="display:none;"><label for="person">Cari Kişi *</label><div style="display:flex;gap:8px;align-items:center"><select id="person"><option value="">Kişi seçin...</option></select></div></div>
+
+    <div id="amount-wrap" style="display:none;"><label for="amount">Tutar *</label><input id="amount" name="amount" type="text" inputmode="decimal" /></div>
+
+    <div id="due-date-wrap" style="display:none; margin-bottom: 8px;">
+        <label for="due-date">Vade Tarihi (Opsiyonel)</label>
+        <input id="due-date" type="date" style="background: var(--bg-2); border: 1px solid var(--br); color: var(--txt); width: 100%; padding: 8px 12px; border-radius: 8px;" />
+    </div>
+    <div id="sale-type-wrap" style="display:none;">
+        <label style="margin: 0; font-size: 15px;">Satış Tipi</label>
+        <div class="styled-radio-group" style="display: flex; gap: 12px;">
+            <input type="radio" id="sale_pesin" name="sale_type" value="pesin" checked>
+            <label for="sale_pesin">Peşin</label>
+            <input type="radio" id="sale_vadeli" name="sale_type" value="vadeli">
+            <label for="sale_vadeli">Vadeli</label>
+        </div>
+    </div>
+    <div id="buyer-info-wrap" style="display:none;"><label for="buyer_person_id">Alıcı Bilgisi</label><div style="display:flex;gap:8px;align-items:center"><select id="buyer_person_id"><option value="">Kişi seçin...</option></select></div></div>
+    
+    <div id="vehicle-wrap" style="display:none;"><label for="vehicle">Araç/Plaka *</label><select id="vehicle"><option value="">Araç seçin...</option></select></div>
+    
+    <div id="installments-wrap" style="display:none;"
+    class="row"><div><label for="down_payment">Peşinat Tutarı</label><input id="down_payment" type="text" inputmode="decimal"></div><div><label for="installments_count">Taksit Sayısı</label><input id="installments_count" type="number" min="1" step="1"></div>
+    <div style="display: flex; gap: 8px; align-items: center; grid-column: span 2;"><label for="sale_first_payment_date" style="white-space: nowrap; margin: 0;">İlk Taksit Tarihi</label><input id="sale_first_payment_date" type="date" style="background: transparent; border: none; color: #fff; flex: 1; min-width: 120px;" /></div></div>
+    
+    <div id="virman-direction-wrap" style="display:none;">
+        <label for="virman-direction-toggle">Transfer Yönü</label>
+        <button type="button" class="btn sec" id="virman-direction-toggle">Bankadan Kasaya Aktar</button>
+    </div>
+    
+    <div id="vehicle-expense-link-wrap" style="display:none;">
+    <label for="is-vehicle-expense-check">İşlem, Stoktaki Bir Taşıtla Mı İlgili?</label>
+    <input type="checkbox" id="is-vehicle-expense-check">
+    <span id="linked-vehicle-info"></span>
+    </div>
+    
+    <div id="pending-schedules-row" style="display:none;"><div><label for="pending-schedule-select">Bu ödeme, beklenen hangi alacağa aittir?</label><select id="pending-schedule-select"><option value="">Bekleyen bir alacak seçiniz...</option></select><div style="font-size:12px;color:#9ca3af;margin-top:6px" id="pending-sel-hint"></div></div></div>
+
+    <div id="note-wrap" style="display:none; margin-bottom: 2px;">
+        <label for="note">Açıklama</label>
+        <textarea id="note" rows="1" oninput="this.style.height = 'auto'; this.style.height = (this.scrollHeight) + 'px';" onblur="autoTitleCase(event)"></textarea>
+    </div>
+
+    <div id="date-wrap" style="display:none;">
+        <div style="display: flex; gap: 4px; align-items: center;">
+<input id="date" type="date" required style="background: transparent; border: none; color: #fff; flex: 1; text-align: left; padding-left: 0;" />
+    </div>
+    </div>
+    </div>
+<div class="modal-footer" style="margin-top: 2px;">
+    <div style="display:flex; align-items:center; gap: 8px; justify-content: flex-start;">
+            <button class="form-button primary" type="submit" id="submit-btn">Kaydet</button>
+            <button class="form-button secondary" type="button" onclick="resetForm()">Temizle</button>
+            <button class="form-button secondary" type="button" style="display:none" id="cancel-edit" onclick="cancelEdit()">İptal</button>
+    </div>
+</div>
+</form>
+</div>
+</div>
+<div id="veri-hareketler-view" style="display:none; flex-direction:column;">
+<div class="card">
+<div class="list-controls">
+<div id="filter-container">
+<button class="filter-btn" onclick="toggleFilterMenu()">Filtrele ▼</button>
+<div id="filter-menu" class="filter-dropdown">
+<form id="filter-form">
+<div class="filter-date-group">
+<div class="filter-date-display">
+<label>Başlangıç Tarihi</label>
+<span class="filter-date-text" id="filter-start-date-text"></span>
+<input type="date" id="filter-start-date">
+</div>
+<div class="filter-date-display">
+<label>Bitiş Tarihi</label>
+<span class="filter-date-text" id="filter-end-date-text"></span>
+<input type="date" id="filter-end-date">
+</div>
+</div>
+<div id="filter-category-trigger" class="filter-category-trigger">
+<span>İşlem Tipi</span>
+</div>
+<div class="filter-actions">
+<button class="form-button primary" type="submit">Filtrele</button>
+<button class="form-button secondary" type="button" onclick="clearFilter()">Temizle</button>
+</div>
+</form>
+</div>
+<div id="filter-category-list" class="filter-category-dropdown"></div>
+</div>
+</div>
+<div id="tx-list" class="records-list"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="modal" id="modal-rapor">
+<div class="m-wrap">
+<div class="modal-header">
+<div class="m-title">RAPORLAR</div>
+<div class="x" onclick="closeModal('rapor')">x</div>
+</div>
+<div class="m-content">
+<div class="tabs" id="tabbar">
+<button class="tab on" data-t="aylik">Aylık Durum</button>
+<button class="tab" data-t="tasit-karlilik">Araç Bazında Kâr/Zarar</button>
+<button class="tab" data-t="ciro">Ciro Takip</button>
+<button class="tab" data-t="tasitlar">Taşıtlar</button>
+<button class="tab" data-t="ortaklar">Ortaklar</button>
+<button class="tab" data-t="net">Net Sermaye</button>
+</div>
+<div class="report on" id="report-aylik">
+<div class="card">
+<input type="date" id="pl-start" style="display:none;"><input type="date" id="pl-end" style="display:none;">
+<label>Tarih Aralığı Seçin</label>
+<div id="report-date-display" class="date-range-display">
+<span id="report-start-date-text" class="date-text"></span><span>
+- </span><span id="report-end-date-text" class="date-text"></span>
+</div>
+<button class="form-button primary white-glow" style="width:100%;" onclick="renderAylikDurum()">Hesapla</button>
+</div>
+<div class="card"><h3>Sonuç</h3><div id="pl-result"></div></div>
+</div>
+<div class="report" id="report-tasit-karlilik">
+<div class="card">
+<h3>Araç Bazında Kâr/Zarar (Bilgi Amaçlı)</h3>
+<div id="tasit-karlilik-result"></div>
+</div>
+</div>
+<div class="report" id="report-ciro"><div class="card"><h3>Brüt Satış & Komisyon</h3><div id="ciro-result"></div></div></div>
+<div class="report" id="report-tasitlar"><div class="card"><h3 id="tasitlar-report-title">Taşıtlar Genel Bakış</h3><div id="stok-result"></div></div></div>
+<div class="report" id="report-ortaklar"><div class="card"><h3>Ortak Bakiyeleri</h3><div id="cari-result"></div></div></div>
+<div class="report" id="report-net"><div class="card"><h3>Net Sermaye</h3><div id="net-result"></div></div></div>
+</div>
+</div>
+</div>
+
+<div class="modal" id="modal-category">
+    <div class="m-wrap">
+        <div class="modal-header">
+            <div class="m-title">Kategori Yönetimi</div>
+            <div class="x" onclick="closeCategoryManagementModal()">x</div>
+        </div>
+
+  <div class="m-content">
+            <div id="category-management-controls">
+                <div class="row">
+                    <button id="add-category-btn" class="category-action-btn" onclick="toggleCategoryActionPanel('add')">
+                        + İşlem Türü Ekle
+                    </button>
+                    <button id="delete-category-btn" class="category-action-btn" onclick="toggleCategoryActionPanel('delete')">
+                        - İşlem Türü Sil
+                    </button>
+                </div>
+            </div>
+
+            <div id="add-category-panel" class="hidden" style="margin-top: 20px;">
+                <div id="add-category-group-selection" class="row" style="display: none;">
+                    <button class="form-button" onclick="showCategoryNameInput('gider')">Giderler</button>
+                    <button class="form-button" onclick="showCategoryNameInput('gelir')">Gelirler</button>
+                </div>
+                <div id="add-category-name-wrapper" class="hidden">
+                    <label for="new-category-name">İşlem Türü</label>
+                    <input type="text" id="new-category-name" placeholder="Yeni kategori adı">
+                    <input type="hidden" id="new-category-group" value="">
+                    <button class="form-button" style="width: 100%; margin-top: 20px;" onclick="saveNewCategory()">Kaydet</button>
+                </div>
+            </div>
+
+            <div id="delete-category-flow" class="hidden" style="margin-top: 20px;">
+                <div id="category-group-selection" class="row">
+                    <button class="form-button" onclick="showDeletableSubcategories('gider')">Giderler</button>
+                    <button class="form-button" onclick="showDeletableSubcategories('gelir')">Gelirler</button>
+                </div>
+                <div id="category-item-list" style="margin-top: 15px;">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="modal-cari">
+    <div class="m-wrap" style="max-height: 85vh; display: flex; flex-direction: column;">
+        <div class="modal-header" style="flex-shrink: 0;">
+            <div class="m-title">Cari Yönetimi</div>
+            <div class="x" onclick="closeCariModal()">x</div>
+        </div>
+        <div class="card m-content" style="padding-bottom: 10px; border: none; background: transparent; flex-grow: 1; overflow: hidden; display: flex; flex-direction: column;">
+            <div id="cari-list-container" class="cari-list" style="flex-grow: 1; overflow-y: auto; padding-right: 5px;"></div>
+        </div>
+        <div style="padding: 0 16px 16px 16px; flex-shrink: 0;">
+            <button class="btn-text" onclick="openCariEditModal()" style="width: 100%; font-size: 16px; border: 1px solid var(--br); color: var(--txt); background: rgba(255,255,255,0.05); margin-top:0;">+ Yeni Cari Ekle</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="modal-cari-edit">
+<div class="m-wrap" style="max-width: 400px; height: auto;"> <div class="modal-header">
+<div id="cari-edit-title" class="m-title"></div>
+<div class="x" onclick="closeCariEditModal()">x</div>
+</div>
+<div class="card" style="border:0; background: transparent; padding: 15px 5px 5px 5px;"> <form id="cari-edit-form">
+<input type="hidden" id="cari-edit-id">
+<div style="margin-bottom:15px;"><label for="cari-edit-name">Cari Adı *</label><input id="cari-edit-name" type="text" required /></div>
+<div style="margin-bottom:20px; display:flex; align-items:center; gap:8px;">
+<input id="cari-edit-type" type="checkbox" style="width:auto; height: auto;">
+<label for="cari-edit-type" style="margin-bottom:0; font-size: 14px; cursor: pointer;">Asli Ortak Olarak Belirle</label>
+</div>
+<div style="display:flex; justify-content:flex-end; gap:15px; margin-top: 16px;"> <button class="form-button secondary" type="button" onclick="closeCariEditModal()" id="cancel-cari-edit">İptal</button>
+<button class="form-button primary" type="submit">Kaydet</button>
+</div>
+</form>
+</div>
+</div>
+</div>
+
+
+<div class="modal" id="modal-konsinye-add">
+<div class="m-wrap" style="max-width: 400px;
+height: auto;">
+<div class="modal-header">
+<div class="m-title">Konsinye Araç Ekle</div>
+<div class="x" onclick="closeKonsinyeModal()">x</div>
+</div>
+<div class="card" style="border:0; background: transparent;
+padding: 5px 0;">
+<form id="konsinye-add-form">
+<div style="margin-bottom:10px;"><label for="konsinye-plate">Araç Plakası *</label><input id="konsinye-plate" type="text" required /></div>
+<div style="margin-bottom:10px;"><label for="konsinye-name">Araç Modeli *</label><input id="konsinye-name" type="text" required /></div>
+<div style="margin-bottom:10px;"><label for="konsinye-person-id">Araç Sahibi (Cari) *</label><select id="konsinye-person-id" required></select></div>
+<div style="display:flex;
+justify-content:flex-end; gap:8px; margin-top: 16px;">
+<button class="btn sec" type="button" onclick="closeKonsinyeModal()">İptal</button> <button class="btn" type="submit">Kaydet</button>
+</div> 
+</form>
+</div> 
+</div>
+</div>
+
+<div class="modal" id="modal-audit">
+<div class="m-wrap">
+<div class="modal-header">
+<div class="m-title">Düzenleme Geçmişi</div>
+<div class="x" onclick="closeModal('audit')">x</div>
+</div>
+<div class="card m-content">
+<p style="font-size: 13px;
+color: var(--muted); margin-bottom: 12px;">Düzenleme Yapılan Veya İptal Edilen İşlem Kayıtları</p>
+<div id="audit-result" style="max-height: 400px; overflow-y: auto;
+padding-right: 5px;"></div>
+</div>
+</div> 
+</div>
+
+<script src="script-core.js?v=40"></script>
+<script src="script-ui-utilities.js?v=45"></script>
+<script src="script-ui-common.js?v=44"></script>
+<script src="script-ui-modals.js?v=45"></script>
+<script src="script-ui-transactions.js?v=61"></script>
+<script src="script-ui-reports.js?v=44"></script>
+<script src="script-ui-vehicle.js?v=66"></script>
+<script src="script-main.js?v=44"></script>
+</body>
+</html>

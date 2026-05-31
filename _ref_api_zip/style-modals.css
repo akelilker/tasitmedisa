@@ -1,0 +1,962 @@
+/* ====================================================================
+   DOSYA: style-modals.css (v33 - Tablo Başlıkları Soluklaştırıldı)
+   Açıklama: Tüm modal, filtre, kategori ve onay pencerelerinin 
+   stillerini içerir.
+   ==================================================================== */
+
+/* ====================================================================
+   MODAL TEMEL YERLEŞİMİ
+   ==================================================================== */
+
+.modal { 
+    display: none !important; /* GÜVENLİK: Kesinlikle gizli başla */
+    position: fixed !important; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%; 
+    background: var(--bg); 
+    z-index: 50; 
+    align-items: flex-start; 
+    justify-content: center; 
+    padding: 10px; 
+    padding-top: 20px; 
+    opacity: 0; 
+    transition: opacity 0.3s ease; 
+    overflow-y: auto; 
+    -webkit-overflow-scrolling: touch; 
+}
+.modal.on { 
+    display: flex !important; /* GÜVENLİK: .on olunca kesinlikle aç */
+    opacity: 1; 
+}
+
+.modal .m-wrap { 
+    position: relative; 
+    width: 550px; 
+    max-width: 550px; 
+    height: 85vh; 
+    max-height: 85vh; 
+    min-height: 85vh; 
+    margin: 0 auto; 
+    background: linear-gradient(to bottom, var(--theme-color-glow), transparent 90px), var(--bg); 
+    border: 1px solid #888; 
+    border-radius: 14px; 
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.7); 
+    padding: 8px 12px 16px 12px; 
+    display: flex; 
+    flex-direction: column; 
+    overflow-y: auto; 
+}
+.modal.on .m-wrap { 
+    transform: scale(1); 
+}
+
+.modal-header { 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    position: relative; 
+    padding-bottom: 12px; 
+    margin-bottom: 24px; 
+    flex-shrink: 0; 
+    padding-top: 4px; 
+    min-height: 40px; 
+    border-bottom: none !important;
+}
+
+
+
+/* === MODAL LOGO (sol üst) === */
+.modal-header {
+  /* logo için sol boşluk */
+  padding-left: 44px;
+}
+
+.modal-header::before {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 36%;
+  transform: translateY(-50%);
+  width: 34px;
+  height: 34px;
+  background: url('karsvg_Image.svg') no-repeat center/contain;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.55));
+  opacity: 0.95;
+  pointer-events: none;
+}
+
+@media (max-width: 640px) {
+  .modal-header { padding-left: 48px; }
+  .modal-header::before { width: 30px; height: 30px; left: 14px; }
+}
+
+.m-title { 
+    font-weight: 800; 
+    font-size: 26px; 
+    background: linear-gradient(180deg, hsl(0, 0%, 100%) 0%, hsl(0, 0%, 95%) 30%, hsl(0, 0%, 75%) 50%, hsl(0, 0%, 85%) 70%, hsl(0, 0%, 100%) 100%); 
+    -webkit-background-clip: text; 
+    -webkit-text-fill-color: transparent; 
+    filter: brightness(1) contrast(2); 
+    text-align: center; 
+    letter-spacing: 1px; 
+    padding: 0 16px; 
+    text-shadow: none; 
+    border-bottom: none !important;
+}
+.m-title::before, 
+.m-title::after { 
+    display: none !important; 
+}
+
+.x { 
+    position: absolute; 
+    top: 16px; 
+    right: 10px; 
+    font-size: 24px; 
+    color: var(--muted); 
+    cursor: pointer; 
+    padding: 4px; 
+    line-height: 1; 
+}
+
+.modal .m-content { 
+    display: flex; 
+    flex-direction: column; 
+    flex: 1; 
+    min-height: 0; 
+    overflow-y: auto; 
+}
+
+/* Modal Scrollbar Gizleme */
+.modal ::-webkit-scrollbar { display: none !important; }
+.modal .m-content::-webkit-scrollbar, .modal .m-wrap::-webkit-scrollbar { display: none !important; }
+.modal * { scrollbar-width: none !important; -ms-overflow-style: none !important; }
+
+
+/* ====================================================================
+   MODAL SEKMELERİ (TABS)
+   ==================================================================== */
+
+.detail-tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+    padding: 0;
+    flex-shrink: 0;
+    justify-content: flex-start;
+    align-items: flex-start;
+    border-bottom: none !important; 
+    border-top: none !important;
+}
+.detail-tabs::before, 
+.detail-tabs::after { 
+    display: none !important; 
+}
+
+.detail-tabs .tab { 
+    border: 1px solid transparent; 
+    background: transparent; 
+    font-weight: 600; 
+    text-align: center; 
+    justify-self: center; 
+    background: linear-gradient(180deg, hsl(0, 0%, 100%) 0%, hsl(0, 0%, 95%) 30%, hsl(0, 0%, 75%) 50%, hsl(0, 0%, 85%) 70%, hsl(0, 0%, 100%) 100%); 
+    -webkit-background-clip: text; 
+    -webkit-text-fill-color: transparent; 
+    text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3); 
+    filter: brightness(1.2) contrast(1.1); 
+    transition: all 0.2s ease; 
+    font-size: 15px; 
+    font-family: inherit; 
+}
+.detail-tabs .tab:hover, 
+.detail-tabs .tab.on { 
+    background: none; 
+    -webkit-background-clip: unset; 
+    -webkit-text-fill-color: unset; 
+    color: #fff; 
+    text-shadow: 0 0 4px rgba(255, 255, 255, 0.6), 0 0 10px rgba(255, 255, 255, 0.2); 
+    background-color: transparent; 
+    border-color: transparent; 
+    filter: none; 
+}
+.detail-tabs .tab::before,
+.detail-tabs .tab::after {
+    display: none !important;
+}
+
+/* Sekme Blur Efekti */
+.modal .detail-tabs .tab:not(.on) { 
+    filter: blur(1.5px) !important; 
+    opacity: 0.6 !important; 
+    transition: all 0.2s ease; 
+}
+.modal .detail-tabs .tab:not(.on):hover { 
+    filter: none !important; 
+    opacity: 1 !important; 
+}
+
+/* ====================================================================
+   KATEGORİ SEÇİCİ MODALI
+   ==================================================================== */
+#category-overlay { 
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    right: 0; 
+    bottom: 0; 
+    background: rgba(26, 26, 26, 0.6); 
+    backdrop-filter: blur(8px); 
+    -webkit-backdrop-filter: blur(8px); 
+    opacity: 0; 
+    pointer-events: none; 
+    transition: opacity 0.3s ease; 
+    z-index: 100; 
+}
+#category-overlay.active { 
+    opacity: 1; 
+    pointer-events: auto; 
+}
+#category-modal { 
+    position: fixed; 
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%); 
+    z-index: 1001; 
+    background: transparent; 
+    border: none; 
+    box-shadow: none; 
+    padding: 0; 
+    width: 90%; 
+    max-width: 450px; 
+    max-height: 80vh; 
+    overflow-y: auto; 
+    opacity: 0; 
+    transition: opacity 0.3s ease; 
+    overscroll-behavior: contain; 
+    -webkit-overflow-scrolling: touch; 
+    scrollbar-width: none; 
+    -ms-overflow-style: none; 
+}
+#category-modal::-webkit-scrollbar { display: none; }
+#category-overlay.active #category-modal { opacity: 1; }
+
+/* ====================================================================
+   MODAL TABLOLARI VE LİSTELERİ
+   ==================================================================== */
+
+#cari-list-container, .records-list { 
+    flex-grow: 1; 
+    overflow-y: auto; 
+    scrollbar-width: none; 
+    -ms-overflow-style: none; 
+    padding-right: 4px; 
+}
+#cari-list-container::-webkit-scrollbar, .records-list::-webkit-scrollbar { 
+    display: none; 
+}
+
+#modal-fin table td, #modal-veri #tx-list table td { 
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05); 
+}
+
+#modal-fin table td:nth-child(3) {
+    text-align: left; 
+    word-break: break-word; 
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.4em;
+    max-height: 2.8em;
+}
+
+/* GÜNCELLEME: TABLO BAŞLIKLARI SOLUKLAŞTIRILDI VE STİLİZE EDİLDİ */
+#modal-fin table th,
+#modal-tasitlar table th {
+    background-color: rgba(0, 96, 192, 0.08) !important; /* Daha şeffaf zemin */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important; /* İnce çizgi */
+    color: rgba(255, 255, 255, 0.7) !important; /* Kırık beyaz yazı */
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.5px;
+}
+
+/* ALT BAŞLIKLAR: 1 punto büyütüldü (12px) */
+#modal-fin table th {
+    font-size: 12px !important; 
+}
+
+
+/* ================================================================== 
+   DÜZELTME: FİNANSAL TABLO GLOBAL HİZALAMA
+   ================================================================== */
+#modal-fin #cash-transactions-table table {
+    table-layout: fixed !important; 
+    width: 100% !important;
+    border-collapse: collapse;
+}
+
+/* --- BAŞLIKLAR (HEADER) --- */
+#modal-fin #cash-transactions-table th {
+    text-align: center !important;
+    vertical-align: middle !important;
+}
+
+/* --- SÜTUNLAR (DATA CELLS) --- */
+#modal-fin #cash-transactions-table th:nth-child(1) { width: 20% !important; }
+#modal-fin #cash-transactions-table td:nth-child(1) {
+    width: 20% !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+    padding-right: 4px !important;
+}
+
+#modal-fin #cash-transactions-table th:nth-child(2) { width: 50% !important; }
+#modal-fin #cash-transactions-table td:nth-child(2) {
+    width: 50% !important;
+    text-align: left !important; 
+    padding-left: 4px !important;
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    line-height: 1.2 !important;
+}
+
+#modal-fin #cash-transactions-table th:nth-child(3) { width: 30% !important; }
+#modal-fin #cash-transactions-table table td:nth-child(3) {
+    width: 30% !important;
+    text-align: right !important; 
+    display: table-cell !important;
+    padding-right: 10px !important; 
+    overflow: visible !important;
+    text-overflow: clip !important;
+    white-space: nowrap !important;
+}
+/* ================================================================== */
+
+/* ====================================================================
+   FİNANSAL DURUM - TAŞITLAR SEKME ÖZEL ARAMA BÖLÜMÜ
+   ==================================================================== */
+.fin-search-wrapper {
+    display: flex;
+    justify-content: flex-end; /* İçeriği sağa yasla */
+    align-items: center;
+    margin-top: -10px; /* Üstteki boşluğu azalt */
+    margin-bottom: 10px;
+    padding-right: 5px; 
+    height: 30px; 
+}
+
+/* İKON AYARLARI: Tıklanabilir yapıldı */
+.fin-search-icon {
+    color: var(--muted); 
+    font-size: 18px; 
+    margin-right: 5px; 
+    display: flex; 
+    align-items: center;
+    cursor: pointer !important; /* Tıklanabilir imleç */
+    pointer-events: auto !important; /* Tıklamayı algıla */
+    transition: color 0.3s;
+}
+.fin-search-icon:hover {
+    color: #fff;
+}
+
+/* INPUT AYARLARI: Gizli Başla -> Active olunca Açıl */
+.fin-search-input {
+    background: transparent !important; /* Arka plan yok */
+    border: none !important; /* Çerçeve yok (Gizliyken) */
+    border-bottom: none !important;
+    color: #fff !important; 
+    padding: 0 !important; /* Gizliyken padding yok */
+    font-size: 14px !important;
+    width: 0px; /* BAŞLANGIÇ GENİŞLİĞİ 0 */
+    opacity: 0; /* Görünmez */
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Yumuşak geçiş */
+    box-shadow: none !important; 
+    outline: none !important;
+}
+
+/* ACTIVE OLUNCA (JS ile eklenir) */
+.fin-search-input.active {
+    width: 150px; /* Açılınca genişlik */
+    opacity: 1;   /* Görünür */
+    padding: 4px 0 !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important; /* Çizgi gelir */
+}
+
+.fin-search-input::placeholder {
+    color: var(--muted) !important;
+    opacity: 0.7 !important;
+}
+
+.fin-search-input:focus {
+    border-bottom: 1px solid var(--theme-color) !important; 
+}
+
+
+/* ====================================================================
+   ÖZEL MODALLAR: FİNANS (#modal-fin)
+   ==================================================================== */
+
+#modal-fin .detail-tabs {
+    position: sticky;
+    top: 0;
+    background: linear-gradient(to bottom, var(--bg) 90%, transparent);
+    z-index: 10;
+    padding-bottom: 12px;
+    margin-bottom: -6px;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 4px;
+    border: none;
+}
+#modal-fin .detail-tabs .tab { 
+    font-size: 13px; 
+}
+
+#cash-transactions-table { 
+    padding-top: 4px; 
+}
+
+/* ====================================================================
+   ÖZEL MODALLAR: VERİ GİRİŞİ (#modal-veri)
+   ==================================================================== */
+
+#modal-veri .m-wrap.blurred { 
+    filter: blur(4px); 
+    transform: scale(0.98); 
+    transition: all 0.3s ease; 
+}
+.modal-blurred { 
+    filter: blur(4px) !important; 
+    transform: scale(0.98) !important; 
+    transition: all 0.3s ease !important; 
+}
+
+#modal-veri .detail-tabs { 
+    display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    gap: 0; 
+    position: sticky; 
+    top: 0; 
+    flex-shrink: 0; 
+    border-bottom: none; 
+    margin-bottom: 6px; 
+    padding-bottom: 12px; 
+    background: linear-gradient(to bottom, var(--bg) 90%, transparent); 
+    z-index: 10; 
+    margin-top: 4px;
+}
+#modal-veri .detail-tabs .tab { 
+    text-align: center; 
+    justify-self: stretch; 
+}
+
+#veri-kayit-view, #veri-hareketler-view { 
+    flex: 1; 
+    display: flex; 
+    flex-direction: column; 
+    overflow-y: auto; 
+    min-height: 0; 
+    padding-top: 8px; 
+    scrollbar-width: none; 
+    -ms-overflow-style: none; 
+}
+#veri-kayit-view::-webkit-scrollbar, #veri-hareketler-view::-webkit-scrollbar { display: none; }
+
+#veri-kayit-view > .card { 
+    flex: 1; 
+    display: flex; 
+    flex-direction: column; 
+    padding: 0; 
+    border: none; 
+    box-shadow: none; 
+    background: transparent; 
+    margin: 0; 
+    width: 100%; 
+    overflow-y: auto; 
+    scrollbar-width: none; 
+    -ms-overflow-style: none; 
+}
+#veri-kayit-view > .card::-webkit-scrollbar { display: none; }
+
+#tx-form { 
+    flex: 1; 
+    display: flex; 
+    flex-direction: column; 
+}
+#tx-form-fields-wrapper { 
+    flex: 1; 
+    overflow-y: auto; 
+    padding: 6px 8px !important; 
+    padding-top: 12px !important; 
+    scrollbar-width: none; 
+    -ms-overflow-style: none; 
+}
+#tx-form-fields-wrapper::-webkit-scrollbar { display: none; }
+#tx-form-fields-wrapper > div { margin-bottom: 8px; }
+#tx-form-fields-wrapper #amount-wrap { margin-bottom: 12px; }
+#tx-form-fields-wrapper #purchase-amount-row-wrap { margin-bottom: 12px; }
+#tx-form-fields-wrapper #joint-purchase-wrap {
+    gap: 8px; 
+    margin-bottom: 12px;
+}
+
+#tx-form .modal-footer { 
+    display: none !important; 
+    border-top: none; 
+    padding-top: 0; 
+    margin-top: 12px; 
+    flex-shrink: 0; 
+}
+#modal-veri.show-buttons .modal-footer { 
+    display: flex !important; 
+    justify-content: flex-start !important; 
+}
+#tx-form .modal-footer div { 
+    justify-content: flex-start; 
+}
+
+#tx-list { 
+    flex: 1; 
+    min-height: 0; 
+    overflow-y: auto; 
+    padding: 12px 16px; 
+    padding-right: 5px; 
+    scrollbar-width: none; 
+    -ms-overflow-style: none; 
+}
+#tx-list::-webkit-scrollbar { display: none; }
+
+#veri-hareketler-view .card { 
+    background: transparent; 
+    border: none; 
+    padding: 0; 
+    margin: 0; 
+    box-shadow: none; 
+}
+
+#filter-container { position: relative; }
+#modal-veri .filter-dropdown { 
+    display: none; 
+    position: absolute; 
+    top: 100%; 
+    right: 0; 
+    background: rgba(30, 30, 30, 0.9); 
+    backdrop-filter: blur(8px); 
+    -webkit-backdrop-filter: blur(8px); 
+    border-radius: 8px; 
+    padding: 12px 16px; 
+    min-width: 215px; 
+    z-index: 15; 
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5); 
+    border: 2px solid; 
+    border-image-slice: 1; 
+    border-image-source: linear-gradient(to bottom, #888, #444); 
+}
+#modal-veri #filter-container.on .filter-dropdown { display: block; }
+#modal-veri .filter-dropdown .filter-date-display { 
+    position: relative; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    gap: 2px; 
+    flex: 1; 
+    text-align: center; 
+}
+#modal-veri .filter-dropdown .filter-date-display label { 
+    font-size: 12px; 
+    margin-bottom: 0; 
+    font-weight: 500; 
+    color: var(--muted); 
+    text-align: center; 
+}
+#modal-veri .filter-dropdown input[type="date"] { 
+    position: absolute; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%; 
+    opacity: 0; 
+    cursor: pointer; 
+}
+#modal-veri .filter-dropdown .filter-date-text { 
+    font-size: 13px; 
+    color: #fff; 
+    cursor: pointer; 
+    white-space: nowrap; 
+}
+#modal-veri .filter-dropdown .filter-actions { 
+    display: flex; 
+    justify-content: space-between; 
+    margin-top: 15px; 
+}
+#modal-veri .filter-dropdown .filter-actions .form-button { 
+    flex: 1; 
+    text-align: center; 
+}
+
+#modal-veri .filter-category-dropdown { 
+    display: none; 
+    position: absolute; 
+    top: 100%; 
+    right: 0; 
+    z-index: 20; 
+    min-width: 180px; 
+    background: rgba(30, 30, 30, 0.9); 
+    backdrop-filter: blur(8px); 
+    -webkit-backdrop-filter: blur(8px); 
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5); 
+    border-radius: 6px; 
+    padding: 6px; 
+    max-height: 215px; 
+    overflow-y: auto; 
+    border: 2px solid transparent; 
+    border-image-slice: 1; 
+    border-image-source: linear-gradient(to bottom, #888, #444); 
+    scrollbar-width: none; 
+    -ms-overflow-style: none; 
+}
+#modal-veri .filter-category-dropdown::-webkit-scrollbar { display: none; }
+#modal-veri .filter-category-dropdown.show { display: block; }
+
+#modal-veri .filter-category-dropdown .filter-category-item { 
+    background: none; 
+    -webkit-background-clip: unset; 
+    -webkit-text-fill-color: unset; 
+    color: #f0f0f0; 
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.5); 
+    text-align: center; 
+    font-weight: 500; 
+    transition: all 0.2s ease; 
+    border-color: transparent; 
+}
+#modal-veri .filter-category-dropdown .filter-category-item:hover, 
+#modal-veri .filter-category-dropdown .filter-category-item.selected { 
+    background: rgba(0, 80, 161, 0.3); 
+    color: #fff; 
+    border-color: transparent; 
+    box-shadow: none; 
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.8), 0 0 15px rgba(0, 80, 161, 0.6); 
+}
+#modal-veri .filter-dropdown #filter-category-trigger { 
+    text-align: center; 
+    margin-top: 8px; 
+    margin-bottom: 8px; 
+    border: none; 
+    border-radius: 8px; 
+    padding: 8px; 
+    cursor: pointer; 
+    transition: background-color 0.2s; 
+    background-color: transparent !important; 
+}
+#modal-veri .filter-dropdown #filter-category-trigger:hover { 
+    background-color: transparent !important; 
+}
+
+/* ====================================================================
+   ÖZEL MODALLAR: TAŞITLAR (#modal-tasitlar)
+   ==================================================================== */
+
+#modal-tasitlar .detail-tabs { 
+    grid-template-columns: 1fr 1fr; 
+    gap: 8px; 
+    margin-bottom: 0; 
+    position: sticky; 
+    top: 0; 
+    z-index: 15; 
+    background: linear-gradient(to bottom, var(--bg) 90%, transparent); 
+    padding-bottom: 8px; 
+}
+#modal-tasitlar .detail-tabs .tab { 
+    font-size: 15px; 
+}
+
+/* ====================================================================
+   ÖZEL MODALLAR: CARİ (#modal-cari)
+   ==================================================================== */
+
+#modal-cari .m-wrap {
+    height: auto;
+    max-height: 85vh;
+}
+#modal-cari .m-content {
+    padding-bottom: 0;
+    display: flex;
+    flex-direction: column;
+    padding-left: 0;
+    padding-right: 0;
+}
+#modal-cari .m-content.card { 
+    background: transparent; 
+    border: none; 
+    box-shadow: none; 
+    padding-bottom: 4px; 
+    display: flex; 
+    flex-direction: column; 
+}
+#modal-cari #cari-list-container {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding-right: 4px;
+    min-height: 50px;
+}
+#modal-cari-edit .m-wrap {
+    max-width: 90%;
+    height: auto;
+    max-height: 80vh;
+    margin-top: 5vh;
+}
+#modal-cari-edit .card {
+    padding: 5px;
+}
+#modal-cari-edit .form-button {
+    font-size: 16px;
+    padding: 8px 12px;
+    background: transparent !important; 
+    border: none !important;
+}
+
+/* ====================================================================
+   ÖZEL MODALLAR: RAPORLAR (#modal-rapor)
+   ==================================================================== */
+
+#modal-rapor .tabs { 
+    position: sticky; 
+    top: 0; 
+    flex-shrink: 0; 
+    border-bottom: none; 
+    margin-bottom: 0; 
+    padding-bottom: 12px; 
+    background: linear-gradient(to bottom, var(--bg) 90%, transparent); 
+    z-index: 10; 
+    grid-template-columns: 1fr 1fr 1fr; 
+    gap: 8px; 
+}
+
+/* ====================================================================
+   ÖZEL MODALLAR: KATEGORİ (#modal-category)
+   ==================================================================== */
+
+#category-management-controls .row { 
+    margin-top: 10px; 
+}
+.category-action-btn { 
+    background: transparent; 
+    border: none; 
+    color: #f0f0f0; 
+    font-weight: 600; 
+    font-size: 15px; 
+    padding: 10px 14px; 
+    cursor: pointer; 
+    transition: color 0.2s, text-shadow 0.3s; 
+    text-align: center; 
+    width: 100%; 
+}
+.category-action-btn.selected-add { 
+    color: var(--green); 
+    text-shadow: 0 0 0.5px var(--green), 0 0 8px rgba(255, 255, 255, 0.7), 0 0 15px rgba(255, 255, 255, 0.5); 
+}
+.category-action-btn.selected-delete { 
+    color: var(--danger-red); 
+    text-shadow: 0 0 0.5px var(--danger-red), 0 0 8px rgba(255, 255, 255, 0.7), 0 0 15px rgba(255, 255, 255, 0.5); 
+}
+#modal-category .panel-title { 
+    color: #ccc; 
+    border: none; 
+    margin-bottom: 15px; 
+    font-size: 16px; 
+    font-weight: 600; 
+    text-align: center; 
+}
+#category-item-list { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 4px; 
+}
+#category-item-list .deletable-item { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    padding: 8px 5px; 
+    border-bottom: 1px solid var(--br); 
+    color: var(--muted); 
+    font-size: 14px; 
+}
+#category-item-list .deletable-item button { 
+    background: transparent; 
+    border: none; 
+    color: var(--muted); 
+    cursor: pointer; 
+    padding: 4px; 
+}
+#category-item-list .deletable-item button:hover { 
+    color: var(--danger-red); 
+    transform: scale(1.1); 
+}
+.hidden { display: none !important; }
+
+/* ====================================================================
+   ÖZEL MODALLAR: ONAY (#modal-confirm)
+   ==================================================================== */
+
+#modal-confirm { 
+    background-color: rgba(0, 0, 0, 0.5) !important; 
+    backdrop-filter: blur(8px) !important; 
+    -webkit-backdrop-filter: blur(8px) !important; 
+    align-items: flex-start !important; 
+    padding-top: 150px !important; 
+    z-index: 101; 
+}
+#modal-confirm .m-wrap { 
+    background: transparent !important; 
+    border: 1px solid rgba(255, 0, 0, 0.3) !important; 
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.1) !important; 
+    width: auto !important; 
+    min-width: 175px !important; 
+    max-width: 250px !important; 
+    height: auto !important; 
+    min-height: auto !important;
+    padding: 23px 18px !important; 
+    text-align: center !important; 
+    margin-top: -80px !important; 
+}
+#modal-confirm .modal-header, 
+#modal-confirm .m-title { 
+    display: none !important; 
+}
+#confirm-message { 
+    font-size: 16px !important; 
+    color: #f0f0f0 !important; 
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5) !important; 
+    padding: 0 !important; 
+    margin-bottom: 25px !important; 
+    line-height: 1.4 !important;
+    font-weight: 500 !important; 
+}
+#modal-confirm .m-wrap > div:last-child { 
+    display: flex !important; 
+    justify-content: center !important; 
+    gap: 12px !important; 
+    margin-top: 0 !important; 
+}
+#modal-confirm .form-button {
+    font-size: 15px !important;
+    padding: 8px 20px !important;
+    border-radius: 50px !important;
+    backdrop-filter: blur(5px) !important;
+    /* Kural: Çerçevesiz */
+    border: none !important;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.5px !important;
+}
+
+/* EVET BUTONU (Şeffaf, sadece yazı kırmızı) */
+#modal-confirm #confirm-yes { 
+    background: transparent !important;  /* Kural: Arka plan yok */
+    color: #ff6b6b !important; 
+}
+#modal-confirm #confirm-yes:hover { 
+    background: transparent !important; 
+    color: #ff4444 !important; 
+    transform: scale(1.1) !important; 
+    /* Hafif parlama efekti */
+    text-shadow: 0 0 15px rgba(255, 68, 68, 0.6) !important; 
+    box-shadow: none !important; 
+}
+
+/* HAYIR BUTONU (Şeffaf, sadece yazı yeşil) */
+#modal-confirm #confirm-no { 
+    background: transparent !important; /* Kural: Arka plan yok */
+    color: #6bff6b !important; 
+}
+#modal-confirm #confirm-no:hover { 
+    background: transparent !important; 
+    color: #4dff4d !important; 
+    transform: scale(1.1) !important; 
+    /* Hafif parlama efekti */
+    text-shadow: 0 0 15px rgba(76, 250, 117, 0.6) !important; 
+    box-shadow: none !important; 
+}
+
+/* ====================================================================
+   MOBİL (max-width: 640px) AYARLARI
+   ==================================================================== */
+
+@media (max-width: 640px) {
+    .modal .m-wrap { 
+        width: 100%; 
+        border-radius: 16px !important; 
+        border: none !important; 
+        margin: auto; 
+        padding: calc(env(safe-area-inset-top, 0px) + 16px) 0 calc(env(safe-area-inset-bottom, 0px) + 16px) 0 !important; 
+        height: 100% !important; 
+        min-height: 100% !important; 
+        max-height: 100% !important; 
+    }
+    .modal .m-content { 
+        padding: 0 16px 10px 16px; 
+        padding-top: 8px !important; 
+    }
+
+    /* Tablo Küçültme */
+    #modal-fin table th, #modal-fin table td { 
+        padding: 3px 1px !important; 
+        font-size: 13px !important; 
+    }
+    .modal table th,
+    .modal table td {
+        padding: 3px 1px !important;
+        font-size: 13px !important;
+    }
+    
+    .modal table th:nth-child(4),
+    .modal table td:nth-child(4) {
+        text-align: right !important;
+        padding-right: 4px !important;
+    }
+    .modal table th:nth-child(1),
+    .modal table td:nth-child(1) {
+        text-align: left !important;
+        white-space: nowrap;
+        padding-left: 4px !important;
+    }
+
+    /* Sekme Bulanıklığı Kapatma */
+    .modal .detail-tabs .tab:not(.on) {
+        filter: none !important;
+        opacity: 0.8 !important;
+    }
+    
+
+/* ====================================================================
+   MASAÜSTÜ (min-width: 641px) AYARLARI
+   ==================================================================== */
+
+@media (min-width: 641px) {
+    #modal-veri .m-wrap, .modal .m-wrap { 
+        min-width: 550px !important; 
+        max-width: 550px !important; 
+    }
+    
+    .modal .m-wrap {
+        height: 85vh !important;
+        max-height: 85vh !important;
+        min-height: 85vh !important;
+    }
+    
+    /* Masaüstünde de tablo yapısı aynı kalsın */
+    #modal-fin #cash-transactions-table table { 
+        /* table-layout: fixed zaten global atandı */
+        width: 100%; 
+    }
+    /* Sütun genişlikleri globalden geliyor, burada ezmeye gerek yok */
+}

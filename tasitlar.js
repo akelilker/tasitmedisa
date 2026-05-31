@@ -8597,6 +8597,12 @@
     return { vehicleId: vid, vehicle: vehicle, vehicles: vehicles };
   }
 
+  function parseDynamicKmValue(value) {
+    if (value == null || value === '') return null;
+    var parsed = parseInt(String(value).replace(/\D/g, ''), 10);
+    return isNaN(parsed) ? null : parsed;
+  }
+
   /**
    * Bakım olayı kaydet
    */
@@ -8620,6 +8626,30 @@
     }
     
     if (!vehicle.events) vehicle.events = [];
+
+    const bakimKmNum = parseDynamicKmValue(km);
+    const eskiKm = vehicle.guncelKm || vehicle.km || '';
+    const eskiKmNum = parseDynamicKmValue(eskiKm) || 0;
+    let kmRevisionEvent = null;
+
+    if (bakimKmNum !== null && eskiKmNum > 0 && bakimKmNum > eskiKmNum) {
+      const shouldUpdateVehicleKm = confirm('Bildirilmek İstenen Km Bilgisi, Taşıtın Bildirilmiş Km\'sinden Fazladır. Taşıt Km Bilgisini de Güncellemek İster misiniz?');
+      if (shouldUpdateVehicleKm) {
+        const yeniKm = String(bakimKmNum);
+        vehicle.guncelKm = yeniKm;
+        kmRevisionEvent = {
+          id: Date.now().toString() + '-km',
+          type: 'km-revize',
+          date: formatDateForDisplay(new Date()),
+          timestamp: new Date().toISOString(),
+          data: {
+            eskiKm: eskiKm,
+            yeniKm: yeniKm,
+            surucu: getEventPerformerName(vehicle)
+          }
+        };
+      }
+    }
     
     const data = {
       islemler: islemler,
@@ -8636,6 +8666,7 @@
       data: data
     };
     
+    if (kmRevisionEvent) vehicle.events.unshift(kmRevisionEvent);
     vehicle.events.unshift(event);
     return writeVehicles(vehicles).then(function() {
       return completeDynamicEventSave({
