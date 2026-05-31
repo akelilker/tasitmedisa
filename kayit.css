@@ -1153,7 +1153,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
 /* Hover'da genel kural transform'u ezmesin; römork ölçüsü korunsun */
 #vehicle-modal .vehicle-type-btn[data-type="romork"]:hover:not(.active) img {
     filter: brightness(1.2) grayscale(0.3);
-    transform: translate(-4px, 18px) scale(1.84);
+    transform: translate(-3px, 18px) scale(1.84);
     transform-origin: bottom center;
 }
 
@@ -1650,7 +1650,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         height: 100%;
         object-fit: contain;
         object-position: bottom center;
-        transform: translate(-2px, 9px) scale(1.22);
+        transform: translate(-1px, 9px) scale(1.22);
         transform-origin: bottom center;
         filter: brightness(1.12) grayscale(0.22) contrast(1.05);
     }
@@ -2056,7 +2056,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     }
     #vehicle-modal .modal-body .modal-column-left .form-section-inline:first-child .vehicle-type-group {
         margin-top: -12px !important;
-        gap: 36px !important;
+        gap: 28px !important;
     }
     
     #vehicle-modal .modal-body .form-section,
@@ -2284,14 +2284,14 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     }
     
     .vehicle-type-btn { width: 36px; height: 26px; padding: 0; }
-    .vehicle-type-btn[data-type="otomobil"] { width: 42px; height: 40px; left: 1px; }
+    .vehicle-type-btn[data-type="otomobil"] { width: 42px; height: 40px; }
     .vehicle-type-btn[data-type="minivan"] { width: 30px; height: 22px; }
     .vehicle-type-btn[data-type="kamyon"] { width: 44px; height: 32px; padding-top: 2px; }
     .vehicle-type-btn[data-type="kamyon"] img { object-position: bottom center; transform: scale(0.95); transform-origin: bottom center; }
     .vehicle-type-btn[data-type="romork"] { width: 52px; height: 40px; padding-top: 2px; align-self: flex-end; margin-left: -8px; }
     .vehicle-type-btn[data-type="romork"] img {
         object-position: bottom center;
-        transform: translate(-4px, 18px) scale(1.56);
+        transform: translate(-3px, 18px) scale(1.56);
         transform-origin: bottom center;
         filter: brightness(1.14) grayscale(0.22) contrast(1.05);
     }
