@@ -1810,6 +1810,21 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       }
   };
 
+  function parseDriverKmInput(val) {
+      if (val == null || val === '') return null;
+      var n = parseInt(String(val).replace(/\D/g, ''), 10);
+      return isNaN(n) ? null : n;
+  }
+
+  function resolveGuncelKmForBakim(guncelKm, bakimKmRaw) {
+      var bakimKmNum = parseDriverKmInput(bakimKmRaw);
+      if (bakimKmNum === null || bakimKmNum <= guncelKm) return guncelKm;
+      if (confirm('Bildirilmek İstenen Km Bilgisi, Taşıtın Bildirilmiş Km\'sinden Fazladır. Taşıt Km Bilgisini de Güncellemek İster misiniz?')) {
+          return bakimKmNum;
+      }
+      return guncelKm;
+  }
+
   window.submitDriverAction = async function(type, vid) {
       if (!ensureDriverOnlineForWrite()) return;
       if (type === 'km') {
@@ -1848,6 +1863,9 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           btnVazgec = document.querySelector('#bakim-block-' + vid + ' .universal-btn-cancel');
           formActions = document.querySelector('#bakim-block-' + vid + ' .universal-btn-group');
           successMsg = document.getElementById('bakim-success-' + vid);
+      }
+      if (type === 'bakim') {
+          guncelKm = resolveGuncelKmForBakim(guncelKm, ((document.getElementById('bakim-km-' + vid) || {}).value || '').trim());
       }
       if (btnBildir) btnBildir.disabled = true;
       if (btnVazgec) btnVazgec.disabled = true;
@@ -2669,6 +2687,11 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           return;
       }
 
+      var guncelKmVal = parseInt(String(km).replace(/\D/g, ''), 10);
+      if (bakimVar) {
+          guncelKmVal = resolveGuncelKmForBakim(guncelKmVal, bakimKm);
+      }
+
       // Kaporta: sadece boyalı/değişen parçaları topla
       let boyaParcalar = {};
       const kaportaContainer = document.getElementById('kaza-kaporta-' + vehicleId);
@@ -2696,7 +2719,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
               body: JSON.stringify({
                   arac_id: vehicleId,
                   vehicle_version: getVehicleVersionForRequest(vehicleId),
-                  guncel_km: parseInt(km),
+                  guncel_km: guncelKmVal,
                   bakim_durumu: bakimVar ? 1 : 0,
                   bakim_aciklama: capitalizeWords(bakimAciklama),
                   bakim_tarih: bakimTarih,
@@ -2731,7 +2754,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
               allHistoryRecords.push({
                   arac_id: vehicleId,
                   donem: period,
-                  guncel_km: parseInt(km),
+                  guncel_km: guncelKmVal,
                   kayit_tarihi: new Date().toISOString()
               });
               renderSlidingWarning(allHistoryVehicles || [], allHistoryRecords);
