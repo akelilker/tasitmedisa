@@ -2317,6 +2317,8 @@ input.settings-form-input:-moz-autofill,
     #settings-menu > button,
     #settings-menu .has-submenu-wrapper .has-submenu {
         height: 43px !important;
+        min-height: 43px !important;
+        max-height: 43px !important;
         padding: 11px 16px !important;
         border-radius: 12px !important;
         background: linear-gradient(180deg, var(--hero-gradient-start), var(--hero-gradient-end)) !important;
