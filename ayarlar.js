@@ -36,6 +36,151 @@
       syncSettingsOpenState();
     };
 
+    let settingsHistorySync = false;
+    let medisaSettingsLayers = ['home'];
+
+    function rebuildSettingsLayerStack(layer) {
+      medisaSettingsLayers = ['home'];
+      if (!layer || layer === 'home') return;
+      if (layer === 'settings-menu') {
+        medisaSettingsLayers.push('settings-menu');
+        return;
+      }
+      medisaSettingsLayers.push('settings-menu');
+      if (layer === 'settings-branch-form') {
+        medisaSettingsLayers.push('settings-branch', 'settings-branch-form');
+      } else if (layer === 'settings-user-form') {
+        medisaSettingsLayers.push('settings-user', 'settings-user-form');
+      } else {
+        medisaSettingsLayers.push(layer);
+      }
+    }
+
+    function pushSettingsHistoryLayer(layer) {
+      if (settingsHistorySync || !layer || layer === 'home') return;
+      const currentHistoryLayer = (history.state && history.state.__medisa) ? history.state.layer : 'home';
+      if (
+        medisaSettingsLayers.length === 1
+        && currentHistoryLayer !== 'home'
+        && currentHistoryLayer !== medisaSettingsLayers[medisaSettingsLayers.length - 1]
+      ) {
+        rebuildSettingsLayerStack(currentHistoryLayer);
+      }
+      if (medisaSettingsLayers[medisaSettingsLayers.length - 1] === layer) return;
+      medisaSettingsLayers.push(layer);
+      try {
+        history.pushState({ __medisa: true, layer: layer }, '');
+      } catch (e) {}
+    }
+
+    function resetToHomeFromPanel() {
+      const steps = medisaSettingsLayers.length - 1;
+      if (steps > 0) {
+        try { history.go(-steps); } catch (e) {
+          applySettingsHistoryLayer('home');
+          try { history.replaceState({ __medisa: true, layer: 'home' }, ''); } catch (err) {}
+          rebuildSettingsLayerStack('home');
+        }
+        return;
+      }
+      applySettingsHistoryLayer('home');
+      try { history.replaceState({ __medisa: true, layer: 'home' }, ''); } catch (e) {}
+      rebuildSettingsLayerStack('home');
+    }
+
+    function hideAyarlarModal(id) {
+      const modal = document.getElementById(id);
+      if (!modal) return;
+      modal.classList.remove('active');
+      modal.style.display = 'none';
+    }
+
+    function showAyarlarModal(id) {
+      const modal = document.getElementById(id);
+      if (!modal) return;
+      modal.style.display = 'flex';
+      requestAnimationFrame(function() { modal.classList.add('active'); });
+    }
+
+    function applySettingsHistoryLayer(layer) {
+      settingsHistorySync = true;
+      try {
+        hideAyarlarModal('branch-form-modal');
+        hideAyarlarModal('user-form-modal');
+        hideAyarlarModal('branch-modal');
+        hideAyarlarModal('user-modal');
+        hideAyarlarModal('required-documents-modal');
+        hideAyarlarModal('data-management-modal');
+        hideAyarlarModal('dis-veri-panel');
+        closeSettingsDropdown();
+
+        if (layer === 'settings-menu') {
+          reopenSettingsMenu();
+        } else if (layer === 'settings-branch') {
+          renderBranchList();
+          showAyarlarModal('branch-modal');
+        } else if (layer === 'settings-user') {
+          renderUserList();
+          showAyarlarModal('user-modal');
+          syncUserManagementSearchUi();
+          bindUserManagementKeyboardHandlers();
+          clearUserManagementKeyboardOffset();
+        } else if (layer === 'settings-required-docs') {
+          refreshZorunluEvraklarK2View();
+          setupZorunluEvraklarK2DatePicker();
+          setupZorunluEvraklarK2DocumentPicker();
+          showAyarlarModal('required-documents-modal');
+        } else if (layer === 'settings-data') {
+          showAyarlarModal('data-management-modal');
+        } else if (layer === 'settings-dis-veri') {
+          showAyarlarModal('dis-veri-panel');
+        } else if (layer === 'settings-branch-form') {
+          renderBranchList();
+          showAyarlarModal('branch-modal');
+          showAyarlarModal('branch-form-modal');
+        } else if (layer === 'settings-user-form') {
+          renderUserList();
+          showAyarlarModal('user-modal');
+          syncUserManagementSearchUi();
+          bindUserManagementKeyboardHandlers();
+          showAyarlarModal('user-form-modal');
+        }
+
+        if (typeof window.updateFooterDim === 'function') window.updateFooterDim();
+      } finally {
+        settingsHistorySync = false;
+      }
+    }
+
+    function onSettingsHistoryPopstate(e) {
+      if (settingsHistorySync) return;
+      const layer = (e.state && e.state.__medisa) ? e.state.layer : 'home';
+      rebuildSettingsLayerStack(layer);
+      applySettingsHistoryLayer(layer);
+    }
+
+    window.medisaSettingsPushLayer = pushSettingsHistoryLayer;
+
+    window.medisaOnSettingsMenuDismissed = function medisaOnSettingsMenuDismissed() {
+      if (settingsHistorySync) return;
+      if (medisaSettingsLayers[medisaSettingsLayers.length - 1] === 'settings-menu') {
+        try { history.back(); } catch (e) {}
+      }
+    };
+
+    window.medisaSettingsHistoryBack = function medisaSettingsHistoryBack(e) {
+      if (e && typeof e.stopPropagation === 'function') e.stopPropagation();
+      if (e && typeof e.preventDefault === 'function') e.preventDefault();
+      try { history.back(); } catch (err) {}
+    };
+
+    if (!window.__medisaSettingsHistoryReady) {
+      window.__medisaSettingsHistoryReady = true;
+      const initLayer = (history.state && history.state.__medisa) ? history.state.layer : 'home';
+      rebuildSettingsLayerStack(initLayer);
+      window.addEventListener('popstate', onSettingsHistoryPopstate);
+    }
+
     let activeUserFormCustomSelect = null;
     let userFormSelectedVehicleIds = [];
 
@@ -528,9 +673,10 @@
       setupZorunluEvraklarK2DocumentPicker();
       modal.style.display = 'flex';
       requestAnimationFrame(() => modal.classList.add('active'));
+      pushSettingsHistoryLayer('settings-required-docs');
     };
 
-    window.closeZorunluEvraklar = function closeZorunluEvraklar() {
+    window.closeZorunluEvraklar = function closeZorunluEvraklar(options) {
       const modal = document.getElementById('required-documents-modal');
       if (!modal) return;
       modal.classList.remove('active');
@@ -538,6 +684,9 @@
       setTimeout(() => {
         modal.style.display = 'none';
       }, 300);
+      if (!settingsHistorySync && !(options && options.skipHistory)) {
+        resetToHomeFromPanel();
+      }
     };
 
     window.viewZorunluEvrakK2 = function viewZorunluEvrakK2() {
@@ -594,14 +743,18 @@
       // Modalı aç
       modal.style.display = 'flex';
       requestAnimationFrame(() => modal.classList.add('active'));
+      pushSettingsHistoryLayer('settings-branch');
     };
   
-    window.closeBranchManagement = function closeBranchManagement() {
+    window.closeBranchManagement = function closeBranchManagement(options) {
       const modal = document.getElementById('branch-modal');
       if (!modal) return;
       modal.classList.remove('active');
       closeSettingsDropdown();
       setTimeout(() => modal.style.display = 'none', 300);
+      if (!settingsHistorySync && !(options && options.skipHistory)) {
+        resetToHomeFromPanel();
+      }
     };
 
     // Modal Kontrolü (Form)
@@ -648,6 +801,7 @@
       // Modalı aç
       modal.style.display = 'flex';
       requestAnimationFrame(() => modal.classList.add('active'));
+      pushSettingsHistoryLayer('settings-branch-form');
   
       // Focus
       if (nameInput && shouldAutofocusSettingsForm()) {
@@ -655,7 +809,7 @@
       }
     };
   
-    window.closeBranchFormModal = function closeBranchFormModal() {
+    window.closeBranchFormModal = function closeBranchFormModal(options) {
       const modal = document.getElementById('branch-form-modal');
       if (!modal) return;
       if (typeof window.resetModalInputs === 'function') {
@@ -670,6 +824,9 @@
       }
       modal.classList.remove('active');
       setTimeout(() => modal.style.display = 'none', 300);
+      if (!settingsHistorySync && !(options && options.skipHistory)) {
+        try { history.back(); } catch (e) {}
+      }
     };
   
     // CRUD İşlemleri
@@ -1202,9 +1359,10 @@
         bindUserManagementKeyboardHandlers();
         clearUserManagementKeyboardOffset();
       });
+      pushSettingsHistoryLayer('settings-user');
     };
   
-    window.closeUserManagement = function closeUserManagement() {
+    window.closeUserManagement = function closeUserManagement(options) {
       const modal = document.getElementById('user-modal');
       if (!modal) return;
       userManagementSearchQuery = '';
@@ -1214,6 +1372,9 @@
       modal.classList.remove('active');
       closeSettingsDropdown();
       setTimeout(() => modal.style.display = 'none', 300);
+      if (!settingsHistorySync && !(options && options.skipHistory)) {
+        resetToHomeFromPanel();
+      }
     };
 
     let userManagementSearchQuery = '';
@@ -1793,6 +1954,7 @@
       // Modalı aç
       modal.style.display = 'flex';
       requestAnimationFrame(() => modal.classList.add('active'));
+      pushSettingsHistoryLayer('settings-user-form');
   
       // Focus
       if (nameInput && shouldAutofocusSettingsForm()) {
@@ -1800,7 +1962,7 @@
       }
     };
   
-    window.closeUserFormModal = function closeUserFormModal() {
+    window.closeUserFormModal = function closeUserFormModal(options) {
       if (typeof window.medisaDismissVehicleAssignUserSavedListener === 'function') {
         window.medisaDismissVehicleAssignUserSavedListener();
       }
@@ -1823,6 +1985,9 @@
       }
       modal.classList.remove('active');
       setTimeout(() => modal.style.display = 'none', 300);
+      if (!settingsHistorySync && !(options && options.skipHistory)) {
+        try { history.back(); } catch (e) {}
+      }
     };
   
     // Şube Dropdown Doldur
@@ -2462,14 +2627,18 @@
       }
       modal.style.display = 'flex';
       requestAnimationFrame(() => modal.classList.add('active'));
+      pushSettingsHistoryLayer('settings-data');
     };
   
-    window.closeDataManagement = function closeDataManagement() {
+    window.closeDataManagement = function closeDataManagement(options) {
       const modal = document.getElementById('data-management-modal');
       if (!modal) return;
       modal.classList.remove('active');
       closeSettingsDropdown();
       setTimeout(() => modal.style.display = 'none', 300);
+      if (!settingsHistorySync && !(options && options.skipHistory)) {
+        resetToHomeFromPanel();
+      }
     };
 
     // ========================================
@@ -2501,13 +2670,17 @@
       if (panel.classList.contains('active') || panel.style.display === 'flex') return;
       panel.style.display = 'flex';
       requestAnimationFrame(() => panel.classList.add('active'));
+      pushSettingsHistoryLayer('settings-dis-veri');
     };
-    window.closeDisVeriPanel = function closeDisVeriPanel() {
+    window.closeDisVeriPanel = function closeDisVeriPanel(options) {
       const panel = document.getElementById('dis-veri-panel');
       if (!panel) return;
       panel.classList.remove('active');
       closeSettingsDropdown();
       setTimeout(() => { panel.style.display = 'none'; }, 300);
+      if (!settingsHistorySync && !(options && options.skipHistory)) {
+        resetToHomeFromPanel();
+      }
     };
     window.tsbKaskoListesiIndir = function tsbKaskoListesiIndir() {
       window.open('https://www.tsb.org.tr/tr/kasko-deger-listesi', '_blank');
