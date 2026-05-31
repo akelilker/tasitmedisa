@@ -1748,7 +1748,7 @@ body.modal-open:has(#info-modal.active) .app-container::after {
   }
   #main-menu .menu-btn:hover .ttl {
     color: #d1dbe4;
-    transform: none;
+    transform: scale(1.03);
     background-position: 50% 52%;
     filter: brightness(1);
     -webkit-text-fill-color: transparent;
@@ -1774,7 +1774,7 @@ body.modal-open:has(#info-modal.active) .app-container::after {
       inset 0 1px 0 rgba(255, 255, 255, 0.12);
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu .menu-btn:hover .ttl {
-    transform: none;
+    transform: scale(1.03);
     color: #d1dbe4;
     letter-spacing: 0.085em;
     background-position: 50% 52%;
