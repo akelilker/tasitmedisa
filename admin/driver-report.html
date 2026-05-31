@@ -55,6 +55,7 @@
 
   <div class="driver-report-page">
     <div id="report-error" class="report-error" style="display:none; color:#c62828; margin-bottom:0.5rem;"></div>
+    <div id="report-selection-bar" class="report-selection-bar" hidden></div>
     <div class="admin-tabs-container">
       <button type="button" class="admin-tab-btn active" data-admin-tab="aylik" onclick="switchAdminTab('aylik')">Aylık KM İzleme</button>
       <button type="button" class="admin-tab-btn" data-admin-tab="kullanici" onclick="switchAdminTab('kullanici')">Kullanıcı Raporları</button>
@@ -66,16 +67,10 @@
         <div id="monthly-stage-empty" class="monthly-stage-empty"></div>
 
         <div id="monthly-stage-detail" class="monthly-stage-detail" hidden>
-          <div id="report-selection-bar" class="report-selection-bar"></div>
-
           <div class="report-stats report-stats-enhanced">
             <div class="report-stat-box">
               <div class="label">Toplam Taşıt</div>
               <div class="value" id="stat-total">0</div>
-            </div>
-            <div class="report-stat-box">
-              <div class="label">Tahsisli</div>
-              <div class="value" id="stat-tracked">0</div>
             </div>
             <div class="report-stat-box">
               <div class="label">Bildiren</div>

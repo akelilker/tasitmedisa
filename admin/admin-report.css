@@ -2410,16 +2410,8 @@ body.admin-report-page .main-header-user-name.is-empty {
     justify-content: flex-end;
   }
 
-  .monthly-stage-detail .report-stats.report-stats-enhanced {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
-  }
-
-  .monthly-stage-detail .report-stats.report-stats-enhanced .report-stat-box {
-    min-height: 58px;
-  }
-
   .monthly-report-row {
+
     display: flex;
     gap: 12px;
   }
@@ -2577,8 +2569,8 @@ body.admin-report-page .main-header-user-name.is-empty {
   font-size: 12px;
 }
 
-.monthly-stage-detail > .report-selection-bar {
-  margin: -12px 0 0;
+.driver-report-page > #report-selection-bar {
+  margin: 0;
   padding: 0;
   border: none;
   border-radius: 0;
@@ -2590,9 +2582,14 @@ body.admin-report-page .main-header-user-name.is-empty {
   min-height: 0;
 }
 
-/* Şubeler geri satırı: ok + etiket ~4px yukarı (style-core 8px üst padding → 4px) */
-.monthly-stage-detail .report-selection-backbar.universal-back-bar {
+.driver-report-page > #report-selection-bar[hidden] {
+  display: none !important;
+}
+
+/* Şubeler geri satırı: sekme butonlarının üstünde */
+.driver-report-page > #report-selection-bar .report-selection-backbar.universal-back-bar {
   padding-top: 4px !important;
+  padding-bottom: 6px;
 }
 
 .report-selection-left {
@@ -2624,14 +2621,14 @@ body.admin-report-page .main-header-user-name.is-empty {
   padding: 0 2px;
   gap: 10px;
   margin: 0;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .monthly-stage-detail .report-stats.report-stats-enhanced .report-stat-box {
   height: auto;
   max-height: none;
-  min-height: 52px;
-  padding: 5px 6px 5px;
+  min-height: 46px;
+  padding: 2px 6px 2px;
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.2);
   display: flex;
@@ -2694,39 +2691,111 @@ body.admin-report-page .main-header-user-name.is-empty {
 
 .report-toolbar-period {
   flex: 0 0 auto;
+  position: relative;
 }
 
-.report-toolbar-period select {
-  width: 124px;
-  min-width: 124px;
+.report-toolbar-period .report-period-select {
+  position: relative;
+  display: inline-flex;
+  vertical-align: top;
+}
+
+.report-toolbar-period .report-period-select-native {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.report-toolbar-period .report-period-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   height: 32px;
   min-height: 32px;
-  padding: 5px 20px 5px 8px;
+  padding: 5px 8px;
   border: none;
   border-radius: 4px;
-  appearance: none;
-  color: var(--data-value-color, #a0aec0);
   background-color: rgba(12, 18, 30, 0.55);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23d40000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 5px center;
-  background-size: 14px;
+  color: var(--muted, #8d97a6);
+  font: inherit;
   font-size: 13px;
   line-height: 1.2;
+  cursor: pointer;
+  user-select: none;
 }
 
-.report-toolbar-period select:focus {
+.report-toolbar-period .report-period-trigger-text {
+  flex: 0 1 auto;
+  min-width: 0;
+  white-space: nowrap;
+}
+
+.report-toolbar-period .report-period-chevron {
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+  color: #d40000;
+  transition: transform 140ms ease;
+}
+
+.report-toolbar-period .report-period-trigger.is-open .report-period-chevron {
+  transform: rotate(180deg);
+}
+
+.report-toolbar-period .report-period-trigger:focus-visible {
   outline: 1px solid rgba(var(--theme-color-rgb), 0.45);
   outline-offset: 1px;
 }
 
-.report-toolbar-period select option {
-  background-color: #0c1220;
-  color: #e2e8f0;
+.report-toolbar-period .report-period-menu {
+  display: none;
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  min-width: 100%;
+  max-height: 240px;
+  overflow-y: auto;
+  background: #101722;
+  border: 1px solid rgba(190, 200, 214, 0.42);
+  border-radius: 8px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.48), inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+  z-index: 40;
 }
 
-.monthly-stage-detail .report-toolbar-period select {
-  color: var(--muted, #8d97a6);
+.report-toolbar-period .report-period-menu.open {
+  display: block;
+}
+
+.report-toolbar-period .report-period-option {
+  display: block;
+  width: 100%;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: #e2e8f0;
+  font: inherit;
+  font-size: 13px;
+  line-height: 1.25;
+  text-align: left;
+  cursor: pointer;
+}
+
+.report-toolbar-period .report-period-option:hover,
+.report-toolbar-period .report-period-option:focus-visible {
+  background: rgba(var(--theme-color-rgb), 0.12);
+  outline: none;
+}
+
+.report-toolbar-period .report-period-option.selected {
+  color: #f8fafc;
+  background: rgba(var(--theme-color-rgb), 0.18);
 }
 
 .report-toolbar-right,
@@ -3202,10 +3271,13 @@ body.admin-report-page .main-header-user-name.is-empty {
     flex: 0 0 auto;
   }
 
-  .report-toolbar-period select {
-    width: auto;
-    min-width: 102px;
+  .report-toolbar-period .report-period-trigger {
     max-width: 100%;
+  }
+
+  .monthly-stage-detail .report-stats.report-stats-enhanced {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
   }
 
   .report-toolbar-actions {
