@@ -544,6 +544,19 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
   color: #6c757d !important;
   font-size: 12px !important;
 }
+/* Olay Ekle: ceza kullanıcı dropdown açıkken arka plan flu */
+#dinamik-olay-modal:has(#ceza-user-dropdown.open) .modal-header,
+#dinamik-olay-modal:has(#ceza-user-dropdown.open) .universal-back-bar,
+#dinamik-olay-modal:has(#ceza-user-dropdown.open) #dinamik-olay-form-icerik > *:not(:has(#ceza-user-dropdown.open)),
+#dinamik-olay-modal:has(#ceza-user-dropdown.open) .universal-btn-group {
+  filter: blur(2px);
+  opacity: 0.92;
+  transition: filter 0.18s ease, opacity 0.18s ease;
+}
+#dinamik-olay-modal:has(#ceza-user-dropdown.open) .ceza-user-dropdown-wrap {
+  filter: none !important;
+  opacity: 1 !important;
+}
 
 /* Olay Ekle (13 modal): input/textarea arka planı; select’te ok için background-color (shorthand yok) */
 .olay-ekle-modal .modal-body .form-input:not(select),
@@ -725,6 +738,19 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 }
 #dinamik-olay-modal:has(.medisa-owner-select-menu.open) .universal-btn-group {
   pointer-events: none !important;
+}
+/* Olay Ekle: dinamik owner select açıkken arka plan flu (Kullanıcı Düzenle ile aynı) */
+#dinamik-olay-modal:has(.medisa-owner-select-menu.open) .modal-header,
+#dinamik-olay-modal:has(.medisa-owner-select-menu.open) .universal-back-bar,
+#dinamik-olay-modal:has(.medisa-owner-select-menu.open) #dinamik-olay-form-icerik > *:not(:has(.medisa-owner-select-menu.open)),
+#dinamik-olay-modal:has(.medisa-owner-select-menu.open) .universal-btn-group {
+  filter: blur(2px);
+  opacity: 0.92;
+  transition: filter 0.18s ease, opacity 0.18s ease;
+}
+#dinamik-olay-modal:has(.medisa-owner-select-menu.open) .medisa-owner-select:has(.medisa-owner-select-menu.open) {
+  filter: none !important;
+  opacity: 1 !important;
 }
 .olay-ekle-modal .modal-body input[type="date"].form-input,
 .olay-ekle-modal .modal-body input[type="date"].olay-tarih-input {
@@ -2220,6 +2246,20 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 }
 .v-transmission-dropdown.open {
     display: block;
+}
+/* Taşıtlar: şanzıman filtresi açıkken arka plan flu (Kullanıcı Düzenle / ayarlar menüsü ile aynı) */
+#vehicles-modal:has(.v-transmission-dropdown.open) .modal-header,
+#vehicles-modal:has(.v-transmission-dropdown.open) .vehicles-toolbar .vt-left,
+#vehicles-modal:has(.v-transmission-dropdown.open) .vehicles-toolbar .vt-right > :not(.v-transmission-wrap),
+#vehicles-modal:has(.v-transmission-dropdown.open) #vehicles-modal-content > :not(.vehicles-toolbar) {
+    filter: blur(2px);
+    opacity: 0.92;
+    transition: filter 0.18s ease, opacity 0.18s ease;
+}
+#vehicles-modal:has(.v-transmission-dropdown.open) .v-transmission-wrap,
+#vehicles-modal:has(.v-transmission-dropdown.open) .v-transmission-dropdown {
+    filter: none !important;
+    opacity: 1 !important;
 }
 .v-transmission-option {
     display: block;
