@@ -755,7 +755,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo {
   padding: 0 4px;
 
   /* METALİK GRADYAN - Temiz krom */
-  background: linear-gradient(to bottom, #bcc8d2 0%, #f1f5f8 38%, #8f9ca8 56%, #d4dce3 100%) !important;
+  background: linear-gradient(to bottom, #c6d2dc 0%, #f4f8fb 36%, #aab8c5 56%, #dce5ec 100%) !important;
   -webkit-background-clip: text !important;
   background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
@@ -1750,9 +1750,8 @@ body.modal-open:has(#info-modal.active) .app-container::after {
     color: var(--txt-white);
     transform: scale(1.02); /* Hafif büyüme (buton içinde, kesilmez) */
     text-shadow:
-      0 0 3px rgba(255, 255, 255, 0.68),
-      0 0 12px rgba(214, 224, 232, 0.42),
-      0 0 18px rgba(214, 188, 132, 0.20);
+      0 0 2px rgba(255, 255, 255, 0.56),
+      0 0 8px rgba(214, 224, 232, 0.24);
   }
 }
 
@@ -1776,9 +1775,9 @@ body.modal-open:has(#info-modal.active) .app-container::after {
     color: var(--txt-white);
     letter-spacing: 0.1em;
     text-shadow:
-      0 0 3px rgba(255, 255, 255, 0.72),
-      0 0 14px rgba(214, 224, 232, 0.50),
-      0 0 24px rgba(214, 188, 132, 0.28);
+      0 0 2px rgba(255, 255, 255, 0.60),
+      0 0 10px rgba(214, 224, 232, 0.30),
+      0 0 15px rgba(214, 188, 132, 0.14);
   }
 }
 
@@ -1790,9 +1789,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu .m
   letter-spacing: 0.085em;
   transition: color 0.2s, transform 0.2s, text-shadow 0.2s;
   text-shadow:
-    0 1px 1px rgba(0, 0, 0, 0.30),
-    0 0 10px rgba(214, 224, 232, 0.24),
-    0 0 14px rgba(214, 188, 132, 0.12);
+    0 1px 1px rgba(0, 0, 0, 0.28),
+    0 0 6px rgba(214, 224, 232, 0.12);
   transform-origin: center;
   max-width: 100%;
   min-width: 0;
@@ -3332,9 +3330,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         font-size: clamp(16px, 3.35vw, 18px) !important;
         letter-spacing: 1.5px;
         text-shadow:
-            0 1px 2px rgba(0, 0, 0, 0.26),
-            0 0 8px rgba(214, 224, 232, 0.30),
-            0 0 13px rgba(214, 188, 132, 0.18);
+            0 1px 2px rgba(0, 0, 0, 0.24),
+            0 0 6px rgba(214, 224, 232, 0.20),
+            0 0 9px rgba(214, 188, 132, 0.10);
     }
     
     /* Mobil: Kullanıcı paneli giriş butonu 2px aşağı */
@@ -3949,7 +3947,7 @@ body.modal-open .app-container {
     padding: 0 2px 0 0 !important;
     -webkit-font-smoothing: antialiased !important;
     text-rendering: optimizeLegibility !important;
-    text-shadow: 0 0 1.4px rgba(255, 255, 255, 0.34);
+    text-shadow: none !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .icons-row {
     padding-left: 6px !important;
