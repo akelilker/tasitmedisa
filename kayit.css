@@ -648,6 +648,20 @@ select option:active {
 #vehicle-modal:has(#vehicle-branch-list.open) .modal-body .universal-btn-group .universal-btn-cancel {
     pointer-events: none !important;
 }
+/* Kayıt: tahsis şube dropdown açıkken arka plan flu (Kullanıcı Düzenle ile aynı) */
+#vehicle-modal:has(#vehicle-branch-list.open) .modal-header,
+#vehicle-modal:has(#vehicle-branch-list.open) .modal-body .modal-column-left,
+#vehicle-modal:has(#vehicle-branch-list.open) .modal-body .modal-column-right > *:not(:has(#vehicle-branch-list.open)),
+#vehicle-modal:has(#vehicle-branch-list.open) .modal-body .universal-btn-group {
+    filter: blur(2px);
+    opacity: 0.92;
+    transition: filter 0.18s ease, opacity 0.18s ease;
+}
+#vehicle-modal:has(#vehicle-branch-list.open) .vehicle-branch-dropdown-wrap,
+#vehicle-modal:has(#vehicle-branch-list.open) #vehicle-branch-list.open {
+    filter: none !important;
+    opacity: 1 !important;
+}
 .vehicle-branch-dropdown-wrap.single-branch .vehicle-branch-list {
     display: none !important;
 }
