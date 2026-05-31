@@ -2628,14 +2628,14 @@ body.admin-report-page .main-header-user-name.is-empty {
   height: auto;
   max-height: none;
   min-height: 46px;
-  padding: 2px 6px 2px;
+  padding: 0 6px;
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.2);
   display: flex;
   flex-direction: column-reverse;
   justify-content: flex-start;
   align-items: stretch;
-  gap: 2px;
+  gap: 0;
   background: rgba(255, 255, 255, 0.02);
 }
 
