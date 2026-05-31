@@ -117,8 +117,8 @@ body.modal-open #info-modal.open {
     align-items: center !important;
     justify-content: center !important;
     background: rgba(8, 13, 22, 0.55) !important;
-    backdrop-filter: blur(8px) !important;
-    -webkit-backdrop-filter: blur(8px) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
 }
 
 body.modal-open #cache-confirm-modal .modal-container,
@@ -3238,8 +3238,8 @@ input.settings-form-input:-moz-autofill,
         justify-content: center !important;
         padding: env(safe-area-inset-top) 12px env(safe-area-inset-bottom) !important;
         background: rgba(8, 13, 22, 0.55) !important;
-        backdrop-filter: blur(8px) !important;
-        -webkit-backdrop-filter: blur(8px) !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
     }
 
     body.modal-open #cache-confirm-modal .modal-container,

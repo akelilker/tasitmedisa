@@ -1371,6 +1371,22 @@ body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-
   transition: filter 0.18s ease, opacity 0.18s ease;
 }
 
+/* Önbellek / bilgi onay: flu yalnızca içerik; kırmızı çerçeve pseudo'ları keskin kalsın */
+body.modal-open:has(#cache-confirm-modal.active) .content-wrap,
+body.modal-open:has(#info-modal.active) .content-wrap {
+  filter: blur(2px);
+  opacity: 0.92;
+  transition: filter 0.18s ease, opacity 0.18s ease;
+}
+
+body.modal-open:has(#cache-confirm-modal.active) .app-container::before,
+body.modal-open:has(#cache-confirm-modal.active) .app-container::after,
+body.modal-open:has(#info-modal.active) .app-container::before,
+body.modal-open:has(#info-modal.active) .app-container::after {
+  filter: none !important;
+  opacity: 1 !important;
+}
+
 #notifications-dropdown > .notification-item {
   width: 100% !important;
   box-sizing: border-box !important;
