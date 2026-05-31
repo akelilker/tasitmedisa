@@ -1,0 +1,703 @@
+/* style-vehicle.css - GÜNCEL TAM SÜRÜM (v76 - Sağ Boşluk Daraltma Fix) */
+
+/* ====================================================================
+   ARAÇ DETAY MODALI - TARİH ALANI DÜZELTMESİ
+   ==================================================================== */
+.vehicle-detail-date-field {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 2px !important;
+  background: transparent !important;
+  border: 1px solid var(--br);
+  border-radius: 8px;
+  padding: 4px 0 !important;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+  color: var(--txt) !important;
+  pointer-events: auto !important;
+}
+.vehicle-detail-date-field:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: #666;
+}
+.vehicle-detail-date-value {
+    font-size: 15px !important;
+    font-weight: 600;
+    color: var(--text-color);
+}
+.vehicle-detail-calendar-icon {
+  width: 15px !important;
+  height: 15px !important;
+  stroke: var(--muted);
+  stroke-width: 2;
+  fill: none;
+  flex-shrink: 0 !important;
+  margin-left: 0 !important;
+  cursor: pointer !important;
+} 
+.vehicle-detail-date-input {
+    position: absolute !important;
+    left: -9999px !important;
+    opacity: 0 !important;
+    pointer-events: auto !important;
+}
+/* DÜZENLEME MODU: Tarih input'larını görünür yap */
+#vehicle-detail-view:not(.view-mode) .vehicle-detail-date-input {
+    position: static !important;
+    left: 0 !important;
+    opacity: 1 !important;
+    width: 100%;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--br);
+    border-radius: 8px;
+    color: var(--txt);
+    font-size: 15px;
+    cursor: pointer;
+}
+/* Düzenleme modunda özel alan gizlenir, standart input görünür */
+#vehicle-detail-view:not(.view-mode) .vehicle-detail-date-field {
+    display: none !important;
+}
+
+/* ====================================================================
+   ARAÇ DETAY MODALI - BUTON STİLLERİ
+   ==================================================================== */
+.vehicle-detail-btn {
+  background: transparent !important;
+  border: none !important;
+  color: var(--txt) !important;
+  font-weight: 600;
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  font-size: 17px !important;
+  text-shadow: none;
+  font-family: inherit;
+  line-height: 1.2;
+  min-height: 38px;
+}
+.vehicle-detail-btn:hover {
+    color: #fff;
+    transform: scale(1.05);
+}
+#vehicle-detail-btn-update.btn:hover {
+    color: var(--green) !important;
+    text-shadow: 0 0 15px var(--green), 0 0 25px rgba(76, 250, 117, 0.7);
+}
+#vehicle-detail-btn-edit.btn.sec:hover {
+    color: var(--orange) !important;
+    text-shadow: 0 0 15px var(--orange), 0 0 25px rgba(255, 136, 68, 0.7);
+}
+#vehicle-detail-btn-done.btn.sec:hover {
+    color: #fff !important;
+    text-shadow: 0 0 25px rgba(255, 255, 255, 0.9), 0 0 45px rgba(255, 255, 255, 0.7);
+}
+
+/* Kırmızı (Tehlikeli) Buton Stili */
+.vehicle-detail-btn.danger {
+    background-color: rgba(255, 42, 42, 0.1) !important;
+    color: var(--danger-red) !important;
+    border: 1px solid var(--danger-red) !important;
+    margin-top: 15px;
+    width: 100%;
+}
+.vehicle-detail-btn.danger:hover {
+    background-color: var(--danger-red) !important;
+    color: #fff !important;
+    box-shadow: 0 0 15px rgba(255, 42, 42, 0.4) !important;
+}
+
+/* --- GÖRÜNTÜ/DÜZENLEME MODU BUTONLARI --- */
+#vehicle-detail-view.view-mode #vehicle-detail-btn-update { display: none !important; }
+#vehicle-detail-view.view-mode #vehicle-detail-btn-edit { display: block !important; grid-column: 1 / span 1; }
+#vehicle-detail-view.view-mode #vehicle-detail-btn-done { display: block !important; grid-column: 2 / span 1; }
+
+#vehicle-detail-view:not(.view-mode) #vehicle-detail-btn-edit { display: none !important; }
+#vehicle-detail-view:not(.view-mode) #vehicle-detail-btn-update { display: block !important; grid-column: 1 / span 1; }
+#vehicle-detail-view:not(.view-mode) #vehicle-detail-btn-done { display: block !important; grid-column: 2 / span 1; }
+
+/* ====================================================================
+   ARAÇ DETAY - GENEL GÖRÜNÜM
+   ==================================================================== */
+#vehicle-detail-view {
+    animation: slideUp 0.3s ease-out;
+    display: flex;
+    flex-direction: column;
+    padding: 0 20px 20px 20px !important; 
+}
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* HEADER DÜZENLEMESİ */
+.vehicle-detail-header {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    margin-bottom: 12px;
+    margin-top: 0;
+}
+#vehicle-detail-plate {
+    font-size: 22px !important;
+    margin-bottom: 0 !important;
+    color: var(--theme-color);
+    font-weight: 700;
+}
+
+/* 1. Model İsmi Konteyneri */
+#vehicle-detail-brand-model {
+    position: relative !important; 
+    display: flex !important;
+    justify-content: center !important; 
+    align-items: center !important;
+    width: 100%;
+    font-size: 22px !important;
+    margin-bottom: 0 !important; 
+    padding: 0 !important; /* Padding SIFIRLANDI (Daha geniş alan) */
+}
+
+/* 2. Borç Yazısı (Sağa Yaslama Düzeltmesi) */
+.debt-text-animated {
+    position: absolute !important; 
+    right: -15px !important; /* SAĞ BOŞLUĞU AZALTMAK İÇİN NEGATİF DEĞER */
+    top: 50%;
+    transform: translateY(-50%); 
+    
+    color: var(--danger-red) !important;
+    font-weight: 800;
+    font-size: 14px; 
+    animation: textPulse 1.8s infinite ease-in-out;
+    white-space: nowrap;
+    z-index: 2;
+}
+
+/* 3. Satıcı/Alıcı Kartı Boşluk */
+.dynamic-person-container {
+    margin-bottom: 1px !important;
+    margin-top: 1px !important; 
+}
+
+@keyframes textPulse {
+    0% { transform: translateY(-50%) scale(1); text-shadow: 0 0 0 rgba(255, 42, 42, 0); }
+    50% { transform: translateY(-50%) scale(1.1); text-shadow: 0 0 10px rgba(255, 42, 42, 0.6); }
+    100% { transform: translateY(-50%) scale(1); text-shadow: 0 0 0 rgba(255, 42, 42, 0); }
+}
+
+/* Görüntü Modu (view-mode) Stilleri */
+#vehicle-detail-view.view-mode .vehicle-detail-info-label {
+  margin-bottom: 0px !important;
+  color: #fff !important;
+  font-weight: 600 !important;
+}
+#vehicle-detail-view.view-mode .vehicle-detail-textarea,
+#vehicle-detail-view.view-mode #tramer-passive-content,
+#vehicle-detail-view.view-mode #vehicle-detail-garage-passive-text {
+    background: transparent !important;
+    border: none !important;
+    padding: 0px !important;
+    text-align: left;
+    color: var(--muted) !important;
+    resize: none !important;
+    pointer-events: none !important;
+    -webkit-appearance: none !important;
+}
+#vehicle-detail-view.view-mode #vehicle-detail-tramer-input {
+    -webkit-appearance: none;
+    pointer-events: none;
+}
+#vehicle-detail-view.view-mode #tramer-edit-container,
+#vehicle-detail-view.view-mode #tramer-dynamic-content {
+    display: none !important;
+}
+#vehicle-detail-view.view-mode #vehicle-detail-garage-passive-text,
+#vehicle-detail-view.view-mode #tramer-passive-content {
+    display: block !important;
+}
+#vehicle-detail-view.view-mode .vehicle-detail-date-field {
+    border: none !important;
+    padding: 0 !important;
+}
+#vehicle-detail-view.view-mode .vehicle-detail-date-value {
+    font-weight: normal !important;
+    color: var(--muted) !important;
+}
+#vehicle-detail-view.view-mode .vehicle-detail-calendar-icon {
+    display: none !important;
+}
+#vehicle-detail-view.view-mode ::placeholder {
+    opacity: 0 !important;
+    color: transparent !important;
+}
+
+/* Düzenleme Modu Stilleri */
+#vehicle-detail-view:not(.view-mode) .vehicle-detail-textarea,
+#vehicle-detail-view:not(.view-mode) .vehicle-detail-date-input,
+#vehicle-detail-view:not(.view-mode) #galeride-mi,
+#vehicle-detail-view:not(.view-mode) #galeride-konum {
+    background: transparent !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    border-radius: 6px !important;
+    padding: 6px 10px !important;
+    transition: all 0.2s ease;
+}
+#vehicle-detail-view:not(.view-mode) .vehicle-detail-textarea:focus,
+#vehicle-detail-view:not(.view-mode) .vehicle-detail-date-input:focus,
+#vehicle-detail-view:not(.view-mode) #galeride-mi:focus,
+#vehicle-detail-view:not(.view-mode) #galeride-konum:focus {
+    border-color: var(--theme-color) !important;
+    box-shadow: 0 0 0 3px rgba(0, 96, 192, 0.15) !important;
+    background: rgba(0, 0, 0, 0.2) !important;
+}
+#vehicle-detail-view:not(.view-mode) #vehicle-detail-year-input,
+#vehicle-detail-view:not(.view-mode) #vehicle-detail-km-input,
+#vehicle-detail-view:not(.view-mode) .vehicle-detail-date-input {
+    width: auto !important;
+    min-width: 110px !important;
+    max-width: 180px !important;
+}
+#vehicle-detail-view:not(.view-mode) #vehicle-detail-garage-passive-text,
+#vehicle-detail-view:not(.view-mode) #tramer-passive-content {
+    display: none !important;
+}
+#vehicle-detail-view:not(.view-mode) #tramer-edit-container {
+    display: flex !important;
+}
+#vehicle-detail-view .vehicle-detail-info-item input,
+#vehicle-detail-view .vehicle-detail-info-item select {
+    padding-left: 4px !important;
+    padding-right: 4px !important;
+}
+
+/* GRID VE YERLEŞİM */
+.vehicle-detail-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 20px;
+    margin-bottom: 8px;
+}
+.vehicle-detail-info-section, 
+.vehicle-detail-right-section {
+    display: flex;
+    flex-direction: column;
+    gap: 4px; 
+}
+.vehicle-detail-info-item {
+    display: flex;
+    align-items: baseline; 
+    gap: 8px; 
+    padding-top: 0 !important; 
+    padding-bottom: 0 !important; 
+    margin: 0; 
+}
+.vehicle-detail-info-item.item-stacked {
+    display: block;
+}
+.vehicle-detail-info-label {
+    font-size: 15px !important;
+    color: var(--muted);
+    margin-bottom: 0px !important;
+    font-weight: 500;
+    flex-shrink: 0;
+}
+.vehicle-detail-textarea {
+    font-size: 15px !important;
+    color: var(--muted);
+    border: none;
+    min-height: 0;
+    height: auto;
+    resize: none !important;
+    white-space: pre-line;
+}
+
+/* Tramer & Galeri Özel */
+.vehicle-yesno-btn, .vehicle-detail-garage-btn {
+    background: transparent;
+    border: none;
+    padding: 4px 8px;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-radius: 4px;
+}
+.vehicle-yesno-btn:hover, .vehicle-detail-garage-btn:hover {
+    color: white;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.7);
+}
+.vehicle-yesno-btn.btn-no.active[data-field="tramer"] { color: #10b981; text-shadow: 0 0 10px #10b981; }
+.vehicle-yesno-btn.btn-yes.active[data-field="tramer"] { color: #ef4444; text-shadow: 0 0 10px #ef4444; }
+
+#garage-status-container {
+    display: flex !important;
+    align-items: center !important;
+    gap: 15px !important;
+    flex-wrap: wrap;
+}
+.vehicle-detail-garage-buttons {
+    flex-grow: 1;
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* Tramer Liste */
+.vehicle-tramer-item {
+     display: grid;
+     grid-template-columns: 1fr 1fr 28px;
+     gap: 12px;
+     align-items: center;
+     padding: 4px 0;
+     border-bottom: 1px solid var(--br);
+}
+.vehicle-tramer-item:last-child { border-bottom: none; }
+.vehicle-tramer-item input { background: transparent; border: none; padding: 8px 4px; font-size: 15px; }
+.vehicle-part-remove { background: transparent; border: none; color: var(--danger-red); font-size: 24px; line-height: 1; padding: 4px; cursor: pointer; }
+.vehicle-add-part-btn { background: transparent; border: none; color: var(--theme-color); font-size: 15px; font-weight: 600; padding: 0; margin-top: 8px; cursor: pointer; }
+
+/* Alt Butonlar */
+.vehicle-detail-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    margin-top: 0;
+    padding-top: 0;
+}
+.vehicle-detail-btn { width: 100%; }
+
+/* ====================================================================
+   ARAÇ DETAY - MALİYET BÖLÜMÜ
+   ==================================================================== */
+.vehicle-detail-cost-section {
+    display: flex;
+    flex-direction: column;
+    gap: 2px !important; 
+    margin-top: 0; 
+}
+.vehicle-detail-cost-title {
+    display: none !important;
+}
+.vehicle-detail-cost-item {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 4px;
+}
+.vehicle-detail-cost-item.cost-item-expandable {
+    flex-direction: column;
+    align-items: stretch;
+}
+.vehicle-detail-cost-label {
+    font-size: 15px !important;
+    color: var(--text-color) !important;
+    font-weight: 600 !important;
+    margin-bottom: 0 !important;
+}
+.vehicle-detail-cost-value {
+    font-size: 15px !important;
+    color: var(--muted) !important;
+    font-weight: normal !important;
+}
+#vehicle-detail-expenses-total {
+    color: var(--muted) !important;
+    font-weight: normal !important;
+}
+.vehicle-detail-cost-expenses-header {
+    display: flex !important;
+    align-items: center !important;
+    padding: 4px 0;
+    transition: background-color 0.2s ease;
+    cursor: pointer;
+}
+.vehicle-detail-cost-expenses-header > div[style*="display: flex"] {
+    display: contents !important;
+}
+.vehicle-detail-cost-expenses-header .vehicle-detail-cost-label {
+    order: 1;
+    margin-right: 6px !important;
+}
+#vehicle-detail-expenses-arrow {
+    order: 2;
+    color: var(--muted);
+    transition: transform 0.3s ease;
+    margin-right: auto !important;
+}
+#vehicle-detail-expenses-total {
+    order: 3;
+}
+.vehicle-detail-cost-expenses-header:hover { background-color: rgba(255, 255, 255, 0.03); }
+#vehicle-detail-expenses-arrow.rotated { transform: rotate(180deg); }
+#vehicle-detail-view.view-mode .vehicle-detail-cost-expenses-header { pointer-events: auto !important; cursor: pointer; }
+
+/* Maliyet Tablosu */
+.vehicle-expenses-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.vehicle-expenses-table th { text-align: left; padding: 8px 0; color: var(--muted); font-weight: 600; }
+.vehicle-expenses-table th:last-child { text-align: right; }
+.vehicle-expenses-table td { padding: 4px 8px 4px 0; color: var(--text-color); }
+.vehicle-expenses-table td:last-child { text-align: right; font-weight: 600; white-space: nowrap; padding-right: 0; }
+.vehicle-expenses-table tfoot tr { border-top: 2px solid var(--br); font-weight: 700; }
+.vehicle-expenses-table tfoot td { padding: 10px 8px 10px 0; }
+.vehicle-expenses-table tfoot td:last-child,
+#vehicle-detail-total-cost {
+    color: var(--text-color) !important;
+    font-weight: 700 !important;
+}
+
+/* ====================================================================
+   DÜZELTME: TAŞITLAR LİSTESİ FİYAT SÜTUNU (MODEL SÜTUNU)
+   ==================================================================== */
+#modal-tasitlar table tr > *:nth-child(3) {
+    display: table-cell !important;
+    vertical-align: middle !important;
+    text-align: left !important; 
+    padding-left: 8px !important; 
+    white-space: nowrap !important;
+    line-height: normal !important;
+    padding-top: 4px !important;
+    padding-bottom: 4px !important;
+    height: auto !important;
+    max-width: none !important;
+    -webkit-line-clamp: unset !important;
+    -webkit-box-orient: unset !important;
+    overflow: visible !important;
+}
+#modal-tasitlar table thead th:nth-child(3) {
+    text-align: center !important;
+}
+#modal-tasitlar table tr > *:last-child {
+    width: 24px !important;
+    padding: 0 !important;
+    text-align: center !important;
+}
+
+/* ====================================================================
+   KONSİNYE EKLE BUTONU HOVER EFEKTİ
+   ==================================================================== */
+#btn-add-konsinye {
+    transition: all 0.3s ease;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+#btn-add-konsinye:hover {
+    color: #fff !important;
+    border-color: var(--theme-color) !important;
+    background-color: rgba(0, 96, 192, 0.15) !important;
+    box-shadow: 0 0 15px rgba(0, 96, 192, 0.6), inset 0 0 10px rgba(0, 96, 192, 0.2) !important;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+    transform: translateY(-1px);
+}
+
+/* ====================================================================
+   ÖZEL DÜZELTME: KONUM ALANI BOŞLUĞU
+   ==================================================================== */
+#vehicle-detail-view.view-mode .vehicle-detail-location-label {
+    display: none !important;
+}
+#vehicle-detail-view.view-mode .vehicle-detail-right-section {
+    gap: 0 !important;
+}
+@media (min-width: 641px) {
+    .vehicle-detail-right-section {
+        gap: 4px !important;
+    }
+}
+
+/* ====================================================================
+   MOBİL GÖRÜNÜM
+   ==================================================================== */
+@media (max-width: 640px) {
+    #modal-tasitlar table th,
+    #modal-tasitlar table td {
+        font-size: 16px !important; 
+    }
+    
+    .vehicle-detail-info-label, .vehicle-detail-textarea, .vehicle-detail-date-value,
+    #tramer-passive-content, .vehicle-detail-cost-label, .vehicle-detail-cost-value {
+         font-size: 17px !important;
+         line-height: 1.4 !important;
+    }
+    #vehicle-detail-plate { font-size: 28px !important; }
+    #vehicle-detail-brand-model { font-size: 24px !important; }
+
+    .vehicle-detail-content { 
+        display: block !important; 
+        width: 100% !important;
+        margin-bottom: 30px !important;
+    } 
+    
+    .vehicle-detail-info-section, 
+    .vehicle-detail-right-section { 
+        display: block !important; 
+        width: 100% !important;
+        margin-bottom: 0 !important;
+    } 
+    
+    .vehicle-detail-info-item {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 0px !important; 
+        margin-bottom: 0px !important; 
+        padding-bottom: 0 !important;
+        width: 100% !important;
+        min-height: 17px !important; 
+    }
+    
+    .vehicle-detail-info-item.item-stacked {
+        margin-bottom: 10px !important; 
+    }
+
+    #vehicle-detail-view.view-mode .vehicle-detail-info-item:not(.item-stacked) {
+        flex-direction: row !important;
+        align-items: center !important; 
+        gap: 4px !important; 
+        margin-bottom: 10px !important; 
+        padding: 0 !important;
+        line-height: 1 !important; 
+    }
+    
+    #vehicle-detail-view.view-mode .vehicle-detail-info-item:not(.item-stacked) .vehicle-detail-info-label {
+        display: inline-flex !important; 
+        width: auto !important; 
+        padding: 0 !important;
+        flex-shrink: 0 !important;
+        font-weight: 600 !important;
+        height: 17px !important;
+    }
+    
+    #vehicle-detail-view.view-mode .vehicle-detail-info-item:not(.item-stacked) * {
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        line-height: 1 !important;
+    }
+
+    #vehicle-detail-view.view-mode .vehicle-detail-info-item.item-stacked .vehicle-detail-textarea {
+         height: auto !important; 
+         line-height: 1.4 !important; 
+    }
+
+    #vehicle-detail-view.view-mode input.vehicle-detail-textarea,
+    #vehicle-detail-view.view-mode div.vehicle-detail-textarea,
+    #vehicle-detail-view.view-mode .vehicle-detail-info-value {
+        height: 17px !important; 
+        overflow: hidden !important;
+    }
+    
+    #vehicle-detail-view.view-mode .vehicle-detail-info-item:not(.item-stacked) input.vehicle-detail-textarea,
+    #vehicle-detail-view.view-mode .vehicle-detail-info-item:not(.item-stacked) .vehicle-detail-date-field,
+    #vehicle-detail-view.view-mode .vehicle-detail-info-item:not(.item-stacked) div.vehicle-detail-textarea {
+        flex-grow: 1 !important;
+        text-align: left !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        line-height: 1.4 !important;
+    }
+    
+    #vehicle-detail-view:not(.view-mode) .vehicle-detail-info-item {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+    }
+    
+    .vehicle-detail-info-section, 
+    .vehicle-detail-right-section {
+        gap: 4px !important;
+    }
+    
+    .vehicle-detail-right-section > .vehicle-detail-info-item:last-child {
+        margin-bottom: 0 !important;
+    }
+    
+    #vehicle-detail-view:not(.view-mode) #vehicle-detail-year-input,
+    #vehicle-detail-view:not(.view-mode) #vehicle-detail-km-input {
+        width: 100% !important;
+        min-width: 100% !important;
+        max-width: 100% !important;
+    }
+    
+    #galeride-mi-konum-wrap input#galeride-konum {
+        padding: 4px 8px !important; 
+        border-radius: 6px;
+    }
+    
+    #vehicle-detail-view.view-mode #garage-status-container { 
+        display: flex !important;
+        align-items: center !important; 
+        flex-direction: row !important; 
+        gap: 6px !important; 
+        margin-bottom: 10px !important;
+    }
+    
+    #vehicle-detail-view.view-mode #garage-status-container .vehicle-detail-garage-label {
+        font-size: 17px !important;
+        line-height: 1 !important;
+        height: 17px !important;
+        flex-shrink: 0 !important;
+        margin-bottom: 0 !important;
+    }
+ 
+    #garage-status-container {
+        flex-direction: column !important; 
+    }
+    #vehicle-detail-view.view-mode #garage-status-container {
+        flex-direction: row !important; 
+    }
+    
+    #vehicle-detail-view:not(.view-mode) #garage-status-container {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 6px !important;
+        width: 100% !important;
+        margin-bottom: 10px !important;
+    }
+
+    .vehicle-detail-garage-buttons { justify-content: flex-start; width: 100%; margin-top: 8px; }
+
+    .vehicle-detail-info-label, .vehicle-detail-label, .vehicle-detail-cost-label { 
+        margin-bottom: 0 !important; 
+    }
+    
+    .vehicle-detail-textarea {
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    /* MOBİLDE Borç Uyarısı Çakışma Fix (V75) */
+    @media (max-width: 640px) {
+        #vehicle-detail-brand-model {
+            flex-direction: row !important;
+            justify-content: center !important;
+            flex-wrap: nowrap !important;
+            position: relative;
+        }
+        
+        .debt-text-animated {
+            position: absolute !important; 
+            right: -15px !important; /* GÜNCELLEME: NEGATİF SAĞ BOŞLUK */
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 11px !important; 
+            background: rgba(255, 42, 42, 0.1); 
+            padding: 2px 6px;
+            border-radius: 4px;
+            white-space: nowrap;
+            z-index: 5;
+            animation: none !important; 
+        }
+        
+        #vehicle-detail-brand-model span:first-child {
+            padding-right: 0; 
+            max-width: 60%; 
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    }

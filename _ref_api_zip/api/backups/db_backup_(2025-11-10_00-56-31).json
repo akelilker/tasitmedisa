@@ -1,0 +1,20 @@
+{
+    "data": {
+        "transactions": [],
+        "schedules": [],
+        "persons": [],
+        "vehicles": [],
+        "revisions": [],
+        "userCategories": {
+            "gelir": {},
+            "gider": {}
+        }
+    },
+    "nextIds": {
+        "tx": 1001,
+        "schedule": 101,
+        "person": 101,
+        "vehicle": 101,
+        "revision": 1001
+    }
+}
