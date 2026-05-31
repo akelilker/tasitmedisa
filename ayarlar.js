@@ -2029,6 +2029,8 @@
           return;
         }
 
+        let savedUserId = id;
+
         const reassignedVehicles = vehicles
           .filter(function(v) {
             if (scope.isBranchManager && !isWithinUserManagementBranch(v && v.branchId, scope)) return false;
@@ -2062,7 +2064,6 @@
           }
         }
   
-        let savedUserId = id;
         if (id) {
           // güncelleME
           const idx = users.findIndex(u => String(u.id) === String(id));
