@@ -46,10 +46,9 @@ body::-webkit-scrollbar,
   --modal-max-width: 500px;
   --modal-radius: 10px;
   --modal-header-red-gradient: linear-gradient(180deg, #760016 0%, #5b0011 30%, #2f000a 64%, #090407 100%);
-  --modal-title-color: #f4f8fb;
-  --modal-title-gradient: linear-gradient(to bottom, #ffffff 0%, #f8fbff 34%, #d9e3ec 60%, #ffffff 100%);
-  --modal-title-shadow: 0 1px 1px rgba(0, 0, 0, 0.38), 0 0 6px rgba(236, 244, 250, 0.22), 0 0 11px rgba(214, 188, 132, 0.10);
-  --modal-title-weight: 700;
+  --modal-title-color: #aeb8c2;
+  --modal-title-shadow: 0 1px 0 rgba(0, 0, 0, 0.62), 0 0 3px rgba(174, 184, 194, 0.08);
+  --modal-title-weight: 800;
   --modal-margin-bottom-desktop: calc(var(--app-footer-height) + var(--modal-gap-above-footer));
   --modal-margin-bottom-mobile: calc(var(--modal-gap-above-footer) + var(--app-footer-height));
 
@@ -2404,12 +2403,10 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu .m
   font-size: 17px;
   font-weight: var(--modal-title-weight);
   color: var(--modal-title-color);
-  background: var(--modal-title-gradient);
-  background-size: 100% 170%;
-  background-position: 50% 54%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  background: none;
+  -webkit-background-clip: border-box;
+  background-clip: border-box;
+  -webkit-text-fill-color: var(--modal-title-color);
   text-shadow: var(--modal-title-shadow);
   letter-spacing: 0.05em;
   text-align: center;
