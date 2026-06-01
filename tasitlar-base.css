@@ -2751,13 +2751,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     text-overflow: ellipsis !important;
 }
 
-/* Liste container: başlışın altında kalsın, kayarken üzerine taşmasın; sütun başlıkları + altındaki öşeler 3px yukarı */
-#vehicles-modal .modal-body .view-list {
-    position: relative;
-    margin-top: -11px;
-    z-index: -1; /* Başlışın arkasında kalır (scroll sarmalayıcı yoksa) */
-    isolation: isolate;
-}
 /* Liste gövdesi sarmalayıcıda: örtüşme yok, margin sıfır; z-index tıklanabilirlik için */
 #vehicles-modal .vehicles-list-scroll .view-list {
     margin-top: 0 !important;
