@@ -1787,8 +1787,14 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 #vehicle-detail-modal .modal-header h2,
 #vehicle-history-modal .modal-header h2,
 .modal-overlay:has(.history-tabs) .modal-header h2 {
-    color: var(--txt) !important;
-    text-shadow: none !important;
+    color: var(--modal-title-color) !important;
+    background: var(--modal-title-gradient) !important;
+    background-size: 100% 170% !important;
+    background-position: 50% 54% !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    text-shadow: var(--modal-title-shadow) !important;
     opacity: 1 !important;
     margin: 0 !important;
     text-transform: uppercase;

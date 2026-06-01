@@ -46,6 +46,10 @@ body::-webkit-scrollbar,
   --modal-max-width: 500px;
   --modal-radius: 10px;
   --modal-header-red-gradient: linear-gradient(180deg, #760016 0%, #5b0011 30%, #2f000a 64%, #090407 100%);
+  --modal-title-color: #f4f8fb;
+  --modal-title-gradient: linear-gradient(to bottom, #ffffff 0%, #f8fbff 34%, #d9e3ec 60%, #ffffff 100%);
+  --modal-title-shadow: 0 1px 1px rgba(0, 0, 0, 0.38), 0 0 6px rgba(236, 244, 250, 0.22), 0 0 11px rgba(214, 188, 132, 0.10);
+  --modal-title-weight: 700;
   --modal-margin-bottom-desktop: calc(var(--app-footer-height) + var(--modal-gap-above-footer));
   --modal-margin-bottom-mobile: calc(var(--modal-gap-above-footer) + var(--app-footer-height));
 
@@ -2398,8 +2402,15 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu .m
 .modal-overlay .modal-header h2 {
   margin: 0;
   font-size: 17px;
-  font-weight: 600;
-  color: var(--txt);
+  font-weight: var(--modal-title-weight);
+  color: var(--modal-title-color);
+  background: var(--modal-title-gradient);
+  background-size: 100% 170%;
+  background-position: 50% 54%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: var(--modal-title-shadow);
   letter-spacing: 0.05em;
   text-align: center;
 }
@@ -3700,7 +3711,12 @@ body.modal-open .app-container {
 #tescil-tarih-confirm-modal .modal-header h2,
 #tescil-tarih-input-modal .modal-header h2 {
     color: var(--txt) !important;
+    background: none !important;
+    -webkit-background-clip: border-box !important;
+    background-clip: border-box !important;
+    -webkit-text-fill-color: var(--txt) !important;
     text-shadow: none !important;
+    font-weight: 600 !important;
     opacity: 1 !important;
     margin: 0;
     text-align: center;

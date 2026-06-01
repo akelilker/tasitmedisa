@@ -59,8 +59,14 @@ border-top-right-radius: var(--modal-radius, 10px);
 
 /* BAŞLIK */
 #reports-modal .modal-header h2 {
-color: #f0f0f0 !important;
-text-shadow: none !important;
+color: var(--modal-title-color) !important;
+background: var(--modal-title-gradient) !important;
+background-size: 100% 170% !important;
+background-position: 50% 54% !important;
+-webkit-background-clip: text !important;
+background-clip: text !important;
+-webkit-text-fill-color: transparent !important;
+text-shadow: var(--modal-title-shadow) !important;
 opacity: 1 !important;
 margin: 0;
 }
@@ -2660,8 +2666,14 @@ font-size: 11px;
 }
 /* Raporlar modal mobil: ortak ölçü style-core’da (.modal-overlay .modal-container) */
 #reports-modal .modal-header h2 {
-color: #ffffff !important;
-text-shadow: none !important;
+color: var(--modal-title-color) !important;
+background: var(--modal-title-gradient) !important;
+background-size: 100% 170% !important;
+background-position: 50% 54% !important;
+-webkit-background-clip: text !important;
+background-clip: text !important;
+-webkit-text-fill-color: transparent !important;
+text-shadow: var(--modal-title-shadow) !important;
 }
 #reports-modal .modal-close { font-size: 21px; }
 /* Yatay stok scroll: kapsayıcı pan-y + overflow-x hidden içeriği kesiyordu */

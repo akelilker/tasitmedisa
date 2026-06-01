@@ -1902,8 +1902,14 @@
   }
 
   .tasitlar-modal-overlay .modal-header h2 {
-    color: var(--txt-white) !important;
-    text-shadow: none !important;
+    color: var(--modal-title-color) !important;
+    background: var(--modal-title-gradient) !important;
+    background-size: 100% 170% !important;
+    background-position: 50% 54% !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    text-shadow: var(--modal-title-shadow) !important;
   }
 
   /* --- TAŞIT DETAY MODAL --- */
