@@ -923,7 +923,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 
     #dinamik-olay-modal[data-event-type="documents"] .universal-back-bar:has(.vehicle-context-row) {
         margin-bottom: 10px !important;
-        padding: 8px 48px 2px 6px !important;
+        padding: 8px 6px 2px 6px !important;
     }
 
     #dinamik-olay-modal[data-event-type="documents"] .universal-back-bar:has(.vehicle-context-row) .universal-back-btn {
