@@ -3524,9 +3524,9 @@
             filtered = filtered.filter(v => v.transmission === transmissionFilter);
           }
           
-          // Sonuçları Liste Modunda Göster (tıklanınca detay açılsın - event delegation ile)
+          // Sonuçları mevcut liste sarmalayıcısında göster (event delegation + mobil dokunma aynı kalsın).
           let html = `<div style="padding:10px; color:#aaa; font-size:12px;">GENEL ARAMA SONUÇLARI (${filtered.length})</div>`;
-          html += `<div class="view-list">` + filtered.map(v => {
+          html += `<div class="vehicles-list-scroll"><div class="view-list">` + filtered.map(v => {
               const vid = v.id != null ? String(v.id).replace(/"/g, '&quot;') : '';
               const gh = getVehicleSearchFieldHits(v, val);
               const brandLine = maybeHighlightCell(formatBrandModel(v.brandModel || '-'), val, gh.brand, 'brand');
@@ -3540,12 +3540,12 @@
                   <span>${yearLine} • ${userLine}</span>
                 </div>
               </div>
-          `}).join('') + `</div>`;
+          `}).join('') + `</div></div>`;
           
           modalContent.innerHTML = html;
           modalContent.dataset.renderScope = 'search-global';
           modalContent.dataset.renderSignature = q + '__' + filtered.length;
-          syncVehiclesListModeClass(false);
+          syncVehiclesListModeClass(true);
       }
   };
   window.handleSearch = (typeof window.debounce === 'function') ? window.debounce(handleSearchImpl, 200) : handleSearchImpl;
