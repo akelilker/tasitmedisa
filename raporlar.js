@@ -2367,6 +2367,70 @@
         }).join('')}</colgroup>`;
     }
 
+    /** Iframe print: raporlar.css @media print kuralları (body * visibility yok; ana DOM etkilenmez). */
+    function getStokPrintIframePageRule(useLandscape) {
+        if (isMobileStokViewport()) return '@page { size: A4 landscape; margin: 0; }';
+        if (useLandscape) return '@page { size: landscape; margin: 0; }';
+        return '@page { size: portrait; margin: 0; }';
+    }
+
+    function getStokPrintIframeMobileCellRules() {
+        return '#stok-print-area .stok-print-table th[data-col="plaka"],#stok-print-area .stok-print-table td[data-col="plaka"]{white-space:nowrap;word-break:normal;overflow-wrap:normal;overflow:hidden;text-overflow:clip;min-width:15ch;padding-left:3px;padding-right:5px;box-sizing:border-box;}' +
+            '#stok-print-area .stok-print-table th[data-col="yil"],#stok-print-area .stok-print-table td[data-col="yil"]{text-align:center;min-width:5ch;box-sizing:border-box;}' +
+            '#stok-print-area .stok-print-table th[data-col="tasitTipi"],#stok-print-area .stok-print-table td[data-col="tasitTipi"]{min-width:0;max-width:8ch;white-space:normal;overflow:visible;text-overflow:clip;vertical-align:top;}' +
+            '#stok-print-area .stok-print-table th[data-col="marka"],#stok-print-area .stok-print-table td[data-col="marka"]{min-width:0;max-width:22%;overflow:visible;vertical-align:top;}' +
+            '#stok-print-area .stok-print-table th[data-col="sube"],#stok-print-area .stok-print-table td[data-col="sube"],#stok-print-area .stok-print-table th[data-col="kaskoDegeri"],#stok-print-area .stok-print-table td[data-col="kaskoDegeri"]{min-width:0;}' +
+            '#stok-print-area .stok-print-table th[data-col="kullanici"],#stok-print-area .stok-print-table td[data-col="kullanici"]{word-break:normal;overflow-wrap:normal;line-break:auto;min-width:13ch;box-sizing:border-box;}';
+    }
+
+    function getStokPrintIframeStyles(useLandscape) {
+        var mobileCellRules = isMobileStokViewport() ? getStokPrintIframeMobileCellRules() : '';
+        return 'html,body{margin:0;padding:0;background:#fff;color:#000;}' +
+            '@media print{' +
+            getStokPrintIframePageRule(useLandscape) +
+            'html,body{background:#fff!important;max-width:none!important;width:100%!important;margin:0!important;padding:0!important;min-height:auto!important;}' +
+            '-webkit-print-color-adjust:exact;print-color-adjust:exact;' +
+            '#stok-print-area{position:absolute;left:0;top:0;width:100%;max-width:100%;padding:12px;background:#fff;color:#000;box-sizing:border-box;}' +
+            '#stok-print-area .stok-print-title{font-size:14pt;margin:0 0 8px 0;font-weight:bold;}' +
+            '#stok-print-area .stok-print-date{font-size:11pt;margin:0 0 12px 0;}' +
+            '#stok-print-area .stok-print-table{width:100%;border-collapse:collapse;font-size:10pt;table-layout:fixed;}' +
+            '#stok-print-area .stok-print-table.stok-print-dense{font-size:8.5pt;}' +
+            '#stok-print-area .stok-print-table th,#stok-print-area .stok-print-table td{border:1px solid #333;padding:3px 5px;text-align:center;box-sizing:border-box;white-space:normal;word-break:normal;overflow-wrap:break-word;overflow:visible;text-overflow:clip;height:auto;max-height:none;line-height:1.35;vertical-align:middle;}' +
+            '#stok-print-area .stok-print-table tbody tr{height:auto;max-height:none;break-inside:avoid;page-break-inside:avoid;}' +
+            '#stok-print-area .stok-print-table tbody td{height:auto;max-height:none;line-height:1.35;vertical-align:top;-webkit-line-clamp:unset;line-clamp:unset;}' +
+            '#stok-print-area .stok-print-table thead th{word-break:normal;overflow-wrap:break-word;line-height:1.25;padding-top:5px;padding-bottom:5px;vertical-align:middle;}' +
+            '#stok-print-area .stok-print-table thead th[data-col="utts"],#stok-print-area .stok-print-table thead th[data-col="tramer"]{white-space:nowrap;}' +
+            '#stok-print-area .stok-print-table th[data-col="sube"],#stok-print-area .stok-print-table td[data-col="sube"]{padding-left:2px!important;padding-right:2px!important;}' +
+            '#stok-print-area .stok-print-table th[data-col="sira"],#stok-print-area .stok-print-table td[data-col="sira"]{padding-left:1px!important;padding-right:1px!important;}' +
+            '#stok-print-area .stok-print-table th[data-col="sigorta"],#stok-print-area .stok-print-table td[data-col="sigorta"],#stok-print-area .stok-print-table th[data-col="kasko"],#stok-print-area .stok-print-table td[data-col="kasko"],#stok-print-area .stok-print-table th[data-col="tescil"],#stok-print-area .stok-print-table td[data-col="tescil"]{white-space:nowrap!important;word-break:normal!important;overflow-wrap:normal!important;overflow:hidden!important;}' +
+            '#stok-print-area .stok-print-table th[data-col="muayene"],#stok-print-area .stok-print-table td[data-col="muayene"],#stok-print-area .stok-print-table th[data-col="egzozMuayene"],#stok-print-area .stok-print-table td[data-col="egzozMuayene"]{white-space:normal!important;word-break:normal!important;overflow-wrap:break-word!important;overflow:visible!important;text-overflow:clip!important;}' +
+            '#stok-print-area .stok-print-table th[data-col="plaka"],#stok-print-area .stok-print-table td[data-col="plaka"]{white-space:nowrap;word-break:normal;overflow-wrap:normal;overflow:visible;text-overflow:clip;min-width:10ch;}' +
+            '#stok-print-area .stok-print-table th[data-col="yil"],#stok-print-area .stok-print-table td[data-col="yil"],#stok-print-area .stok-print-table th[data-col="sanziman"],#stok-print-area .stok-print-table td[data-col="sanziman"],#stok-print-area .stok-print-table th[data-col="km"],#stok-print-area .stok-print-table td[data-col="km"],#stok-print-area .stok-print-table th[data-col="sira"],#stok-print-area .stok-print-table td[data-col="sira"]{white-space:nowrap!important;word-break:normal!important;overflow-wrap:normal!important;overflow:hidden!important;}' +
+            '#stok-print-area .stok-print-table thead tr{background:#404040;color:#fff;}' +
+            '#stok-print-area .stok-print-table th[data-col="marka"],#stok-print-area .stok-print-table td[data-col="marka"],#stok-print-area .stok-print-table th[data-col="sube"],#stok-print-area .stok-print-table td[data-col="sube"],#stok-print-area .stok-print-table th[data-col="kullanici"],#stok-print-area .stok-print-table td[data-col="kullanici"],#stok-print-area .stok-print-table th[data-col="kaskoDegeri"],#stok-print-area .stok-print-table td[data-col="kaskoDegeri"]{white-space:normal;word-break:normal;overflow-wrap:break-word;overflow:visible;vertical-align:top;}' +
+            mobileCellRules +
+            '#stok-print-area .stok-print-table tbody tr.even{background:#fff;}' +
+            '#stok-print-area .stok-print-table tbody tr.odd{background:#e5e5e5;}' +
+            '}';
+    }
+
+    function buildStokPrintIframeDocumentHtml(titleText, dateRangeText, tableMarkup, printTableClass, useLandscape) {
+        return '<!DOCTYPE html><html lang="tr"><head><meta charset="utf-8"><title>' +
+            escapeHtml(titleText) +
+            '</title><style>' +
+            getStokPrintIframeStyles(useLandscape) +
+            '</style></head><body><div id="stok-print-area">' +
+            '<h1 class="stok-print-title">' + escapeHtml(titleText) + '</h1>' +
+            '<p class="stok-print-date">' + escapeHtml(dateRangeText) + '</p>' +
+            '<table class="' + printTableClass + '">' + tableMarkup + '</table>' +
+            '</div></body></html>';
+    }
+
+    function applyStokPrintIframeLayout(iframe) {
+        iframe.setAttribute('aria-hidden', 'true');
+        iframe.style.cssText = 'position:fixed;right:0;bottom:0;width:0;height:0;border:0;visibility:hidden;opacity:0;pointer-events:none;';
+    }
+
     window.printStokReport = function() {
         const data = getStokReportExportData();
         if (!data) {
@@ -2397,46 +2461,77 @@
             }).join('');
             return `<tr class="${index % 2 === 0 ? 'even' : 'odd'}">${cells}</tr>`;
         }).join('');
-        const el = document.createElement('div');
-        el.id = 'stok-print-area';
         const printTableClass = 'stok-print-table' + (activeColumns.length >= 11 ? ' stok-print-dense' : '');
-        el.innerHTML = `<h1 class="stok-print-title">${escapeHtml(titleText)}</h1><p class="stok-print-date">${escapeHtml(dateRangeText)}</p><table class="${printTableClass}">${colgroup}<thead><tr>${thead}</tr></thead><tbody>${rows}</tbody></table>`;
-        document.body.appendChild(el);
-        /* Detay çoksa yatay sayfa: masaüstü 9+ sütun; mobilde daha erken (7+) */
+        const tableMarkup = colgroup + '<thead><tr>' + thead + '</tr></thead><tbody>' + rows + '</tbody>';
         const useLandscape = activeColumns.length >= 9
             || (isMobileStokViewport() && activeColumns.length >= 7);
-        let landscapeStyle = null;
-        if (useLandscape) {
-            landscapeStyle = document.createElement('style');
-            landscapeStyle.id = 'stok-print-landscape';
-            landscapeStyle.textContent = '@media print { @page { size: landscape; } }';
-            document.head.appendChild(landscapeStyle);
+        const printHtml = buildStokPrintIframeDocumentHtml(titleText, dateRangeText, tableMarkup, printTableClass, useLandscape);
+
+        var iframe = document.createElement('iframe');
+        applyStokPrintIframeLayout(iframe);
+        var done = false;
+
+        function removeIframe() {
+            try { iframe.onload = null; } catch (e) {}
+            if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
         }
-        const cleanup = () => {
-            el.remove();
-            if (landscapeStyle && landscapeStyle.parentNode) landscapeStyle.remove();
-            window.removeEventListener('afterprint', cleanup);
-        };
-        window.addEventListener('afterprint', cleanup);
-        var triggerPrint = function () {
-            try {
-                window.print();
-            } catch (e) {}
-        };
-        /* iOS Safari: print() hemen çağrılınca boş önizleme; layout + izin sonrası bir frame beklet */
-        var isIOSWebKit = /iPhone|iPad|iPod/i.test(navigator.userAgent || '') && /WebKit/i.test(navigator.userAgent || '');
-        if (typeof requestAnimationFrame === 'function') {
-            requestAnimationFrame(function () {
-                requestAnimationFrame(function () {
-                    if (isIOSWebKit) {
-                        window.setTimeout(triggerPrint, 200);
-                    } else {
-                        triggerPrint();
-                    }
-                });
-            });
-        } else {
-            window.setTimeout(triggerPrint, isIOSWebKit ? 200 : 0);
+
+        function finishPrintJob() {
+            if (done) return;
+            done = true;
+            removeIframe();
+        }
+
+        function failPrintJob() {
+            finishPrintJob();
+            alert('Yazdırma başlatılamadı. Lütfen tekrar deneyin.');
+        }
+
+        try {
+            document.body.appendChild(iframe);
+            var frameWindow = iframe.contentWindow;
+            var frameDoc = frameWindow ? frameWindow.document : iframe.contentDocument;
+            if (!frameWindow || !frameDoc) {
+                failPrintJob();
+                return;
+            }
+
+            frameDoc.open();
+            frameDoc.write(printHtml);
+            frameDoc.close();
+
+            var isIOSWebKit = /iPhone|iPad|iPod/i.test(navigator.userAgent || '') && /WebKit/i.test(navigator.userAgent || '');
+
+            function runIframePrint() {
+                if (done) return;
+                try {
+                    var cleanupMs = isIOSWebKit ? 12000 : 2000;
+                    var cleanupTimer = window.setTimeout(function() {
+                        finishPrintJob();
+                    }, cleanupMs);
+                    var onAfterPrint = function() {
+                        window.clearTimeout(cleanupTimer);
+                        finishPrintJob();
+                        try { frameWindow.removeEventListener('afterprint', onAfterPrint); } catch (e) {}
+                    };
+                    frameWindow.addEventListener('afterprint', onAfterPrint);
+                    try {
+                        if (frameDoc.body) void frameDoc.body.offsetHeight;
+                    } catch (eReflow) {}
+                    frameWindow.focus();
+                    frameWindow.print();
+                } catch (printErr) {
+                    failPrintJob();
+                }
+            }
+
+            if (isIOSWebKit) {
+                window.setTimeout(runIframePrint, 200);
+            } else {
+                runIframePrint();
+            }
+        } catch (iframeErr) {
+            failPrintJob();
         }
     };
 
