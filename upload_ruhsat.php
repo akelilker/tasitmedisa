@@ -47,6 +47,42 @@ function medisaFormatUploadDocumentDate($isoDate) {
     return count($parts) === 3 ? ($parts[2] . '/' . $parts[1] . '/' . $parts[0]) : (string)$isoDate;
 }
 
+function medisaNormalizeUploadDocumentPath($path) {
+    $normalized = ltrim(str_replace('\\', '/', trim((string)$path)), '/');
+    if (strpos($normalized, 'data/') === 0) {
+        $normalized = substr($normalized, 5);
+    }
+    return $normalized;
+}
+
+function medisaCanMergeVehicleDocumentUpload($vehicle, $config, $documentType, $clientDocumentPath, $clientTasitKartiExpiryDate, $hasClientDocumentPath, $hasClientTasitKartiExpiryDate) {
+    if (!$hasClientDocumentPath || !is_array($vehicle) || !is_array($config)) {
+        return false;
+    }
+
+    $pathField = (string)($config['pathField'] ?? '');
+    if ($pathField === '') {
+        return false;
+    }
+
+    $serverDocumentPath = medisaNormalizeUploadDocumentPath($vehicle[$pathField] ?? '');
+    if ($serverDocumentPath !== medisaNormalizeUploadDocumentPath($clientDocumentPath)) {
+        return false;
+    }
+
+    if ($documentType === 'tasit_karti') {
+        if (!$hasClientTasitKartiExpiryDate) {
+            return false;
+        }
+        $serverExpiryDate = medisaNormalizeUploadDocumentDateToIso($vehicle['tasitKartiExpiryDate'] ?? '');
+        if ($serverExpiryDate !== $clientTasitKartiExpiryDate) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 $vehicleId = trim((string)($_POST['vehicleId'] ?? ''));
 $vehicleVersion = isset($_POST['vehicleVersion']) ? (int)$_POST['vehicleVersion'] : null;
 if (!$isSettingsDocument && $vehicleId === '') {
@@ -71,6 +107,13 @@ if ($documentType === 'tasit_karti') {
         exit;
     }
 }
+
+$hasClientDocumentPath = array_key_exists('documentPathBefore', $_POST);
+$clientDocumentPath = $hasClientDocumentPath ? (string)$_POST['documentPathBefore'] : '';
+$hasClientTasitKartiExpiryDate = array_key_exists('tasitKartiExpiryDateBefore', $_POST);
+$clientTasitKartiExpiryDate = $hasClientTasitKartiExpiryDate
+    ? medisaNormalizeUploadDocumentDateToIso($_POST['tasitKartiExpiryDateBefore'])
+    : '';
 
 $preloadData = loadData();
 if (!is_array($preloadData)) {
@@ -186,7 +229,7 @@ if (is_file($previewPath)) {
 }
 
 $documentPath = $config['dir'] . '/' . $filename;
-$result = medisaMutateData(function (&$data) use ($vehicleId, $vehicleVersion, $documentPath, $config, $isSettingsDocument, $documentType, $tasitKartiExpiryDate) {
+$result = medisaMutateData(function (&$data) use ($vehicleId, $vehicleVersion, $documentPath, $config, $isSettingsDocument, $documentType, $tasitKartiExpiryDate, $clientDocumentPath, $clientTasitKartiExpiryDate, $hasClientDocumentPath, $hasClientTasitKartiExpiryDate) {
     $auth = medisaResolveAuthorizedContext($data, 'view_main_app');
     if (($auth['success'] ?? false) !== true) {
         return medisaBuildErrorResult($auth['message'] ?? 'Bu işlem için yetkiniz yok.', (int)($auth['status'] ?? 403));
@@ -230,7 +273,18 @@ $result = medisaMutateData(function (&$data) use ($vehicleId, $vehicleVersion, $
 
     $versionCheck = medisaEnsureVehicleVersion($vehicle, $vehicleVersion, 'Bu taşıt başka biri tarafından güncellendi. Güncel veriler yüklendi.');
     if ($versionCheck !== true) {
-        return $versionCheck;
+        $canMergeDocumentUpload = medisaCanMergeVehicleDocumentUpload(
+            $vehicle,
+            $config,
+            $documentType,
+            $clientDocumentPath,
+            $clientTasitKartiExpiryDate,
+            $hasClientDocumentPath,
+            $hasClientTasitKartiExpiryDate
+        );
+        if (!$canMergeDocumentUpload) {
+            return $versionCheck;
+        }
     }
 
     $vehicle[$config['pathField']] = $documentPath;
