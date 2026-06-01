@@ -5778,6 +5778,68 @@
     return sync;
   }
 
+  function getPolicyDateIso(rawDate) {
+    if (typeof window.parseVehicleDateRawToIso === 'function') {
+      return window.parseVehicleDateRawToIso(rawDate) || '';
+    }
+    const raw = String(rawDate || '').trim();
+    if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) return raw;
+    return parseGgAaYyyyToIso(raw);
+  }
+
+  function isPolicyExpiryActive(rawDate) {
+    const iso = getPolicyDateIso(rawDate);
+    if (!iso) return false;
+    const expiry = new Date(iso + 'T00:00:00');
+    if (isNaN(expiry.getTime())) return false;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    expiry.setHours(0, 0, 0, 0);
+    return expiry.getTime() >= today.getTime();
+  }
+
+  function findLatestPolicyUpdateEvent(vehicle, eventType, expiryIso) {
+    const events = Array.isArray(vehicle && vehicle.events) ? vehicle.events : [];
+    let latest = null;
+    for (let i = 0; i < events.length; i++) {
+      const event = events[i] || {};
+      if (String(event.type || '').trim() !== eventType) continue;
+      if (!latest) latest = event;
+      const eventExpiryIso = getPolicyDateIso(event.data && event.data.bitisTarihi);
+      if (expiryIso && eventExpiryIso === expiryIso) return event;
+    }
+    return latest;
+  }
+
+  function getPolicyStartDateForForm(event, expiryIso) {
+    if (event && event.date) {
+      const eventDate = formatDateForDisplay(event.date).replace(/\s+\d{2}:\d{2}$/, '');
+      return normalizeGgAaYyyyInput(eventDate) || eventDate;
+    }
+    return expiryIso ? formatIsoToGgAaYyyy(addYears(expiryIso, -1)) : '';
+  }
+
+  function prefillPolicyEventForm(vehicle, policyType) {
+    if (!vehicle || (policyType !== 'sigorta' && policyType !== 'kasko')) return;
+    const dateField = policyType === 'sigorta' ? 'sigortaDate' : 'kaskoDate';
+    const expiryIso = getPolicyDateIso(vehicle[dateField]);
+    if (!expiryIso || !isPolicyExpiryActive(expiryIso)) return;
+
+    const event = findLatestPolicyUpdateEvent(vehicle, policyType + '-guncelle', expiryIso);
+    const data = (event && event.data) || {};
+    const values = {
+      tarih: getPolicyStartDateForForm(event, expiryIso),
+      firma: data.firma || '',
+      acente: data.acente || '',
+      iletisim: data.iletisim || ''
+    };
+
+    Object.keys(values).forEach(function(key) {
+      const input = document.getElementById(policyType + '-' + key);
+      if (input) input.value = values[key] != null ? String(values[key]) : '';
+    });
+  }
+
   function getEventFormHtml(type) {
     const labelCls = 'form-label';
     const inputCls = 'form-input';
@@ -6094,6 +6156,9 @@
       renderVehicleContextRow(modal, currentEventVehicle);
       formIcerik.innerHTML = getEventFormHtml(type);
       if (!formIcerik.innerHTML.trim()) return;
+      if (type === 'sigorta' || type === 'kasko') {
+        prefillPolicyEventForm(currentEventVehicle, type);
+      }
 
       kaydetBtn.onclick = null;
       kaydetBtn.style.display = '';
