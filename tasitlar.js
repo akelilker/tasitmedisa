@@ -1107,6 +1107,19 @@
     row.title = plate + ' • ' + model;
   }
 
+  function openVehicleDocumentsFromDetailButton(e, vehicleId) {
+    if (e) {
+      if (e.cancelable) e.preventDefault();
+      if (typeof e.stopPropagation === 'function') e.stopPropagation();
+    }
+    const now = Date.now();
+    if (now - vehicleDocumentsOpenHandledAt < 700) return;
+    vehicleDocumentsOpenHandledAt = now;
+    if (typeof window.openVehicleDocumentsModal === 'function') {
+      window.openVehicleDocumentsModal(vehicleId || window.currentDetailVehicleId);
+    }
+  }
+
   function buildVehicleUserNameHtml(rawName) {
     const userName = formatAdSoyad(rawName || '-');
     const cleanName = String(userName || '-').trim();
@@ -1290,6 +1303,7 @@
 
   // Global Detail Vehicle ID (HTML onclick erişimi için)
   window.currentDetailVehicleId = null;
+  let vehicleDocumentsOpenHandledAt = 0;
 
   // DOM Cache (statik elementler - init aşamasında bir kere bağlanır)
   const DOM = {};
@@ -3165,7 +3179,18 @@
       ruhsatBtn.title = 'Belgeler';
       ruhsatBtn.setAttribute('aria-label', 'Belgeler');
       ruhsatBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg>';
-      ruhsatBtn.onclick = (e) => { e.stopPropagation(); if (typeof window.openVehicleDocumentsModal === 'function') window.openVehicleDocumentsModal(vehicleId); };
+      ruhsatBtn.addEventListener('pointerdown', function(e) {
+        if (e.pointerType && e.pointerType !== 'mouse') {
+          openVehicleDocumentsFromDetailButton(e, vehicleId);
+        }
+      });
+      ruhsatBtn.addEventListener('touchstart', function(e) {
+        if (typeof window.PointerEvent === 'function') return;
+        openVehicleDocumentsFromDetailButton(e, vehicleId);
+      }, { passive: false });
+      ruhsatBtn.addEventListener('click', function(e) {
+        openVehicleDocumentsFromDetailButton(e, vehicleId);
+      });
       toolbarRight.appendChild(ruhsatBtn);
       const printBtn = document.createElement('button');
       printBtn.type = 'button';
@@ -8154,8 +8179,24 @@
     var hintEl = document.createElement('p');
     hintEl.className = 'ruhsat-upload-hint';
     hintEl.id = 'ruhsat-upload-hint';
-    hintEl.textContent = 'Dosyayı seçtikten sonra alttaki «' + cfg.uploadButton + '» ile sunucuya gönderilir.';
+    const autoUploadOnSelect = cfg.key === 'sigorta' || cfg.key === 'kasko';
+    hintEl.textContent = autoUploadOnSelect
+      ? (hasExistingRuhsat ? 'Dosya seçildiğinde mevcut poliçe için onay alınır.' : 'Dosya seçildiğinde poliçe otomatik yüklenir.')
+      : 'Dosyayı seçtikten sonra alttaki «' + cfg.uploadButton + '» ile sunucuya gönderilir.';
     content.appendChild(hintEl);
+    var replaceConfirm = null;
+    if (autoUploadOnSelect) {
+      replaceConfirm = document.createElement('div');
+      replaceConfirm.className = 'ruhsat-upload-replace-confirm';
+      replaceConfirm.hidden = true;
+      replaceConfirm.innerHTML =
+        '<div class="ruhsat-upload-replace-message">Yüklü Dosya Silinecektir. Dosyayı Yüklemek İstediğinizden Emin Misiniz?</div>' +
+        '<div class="ruhsat-upload-replace-actions">' +
+        '<button type="button" class="ruhsat-upload-confirm-yes">Evet</button>' +
+        '<button type="button" class="ruhsat-upload-confirm-no">Hayır</button>' +
+        '</div>';
+      content.appendChild(replaceConfirm);
+    }
     var progressWrap = document.createElement('div');
     progressWrap.className = 'ruhsat-upload-progress';
     progressWrap.id = 'ruhsat-upload-progress';
@@ -8168,19 +8209,63 @@
       '</div>' +
       '<div class="ruhsat-upload-progress-pct" id="ruhsat-upload-progress-pct">0%</div>';
     content.appendChild(progressWrap);
+    function syncSelectedFileBox(hasFile) {
+      if (!selectBox) return;
+      if (hasFile) {
+        selectBox.classList.add('upload-success');
+        selectBox.classList.remove('has-file');
+        selectBox.innerHTML = '<span class="ruhsat-select-box-icon" aria-hidden="true">\u2713</span><span class="ruhsat-select-box-label">' + (input.files[0].name || 'Seçildi') + '</span>';
+      } else {
+        selectBox.classList.remove('upload-success');
+        selectBox.classList.remove('has-file');
+        selectBox.innerHTML = '<span class="ruhsat-select-box-icon" aria-hidden="true">+</span><span class="ruhsat-select-box-label">Dosya Seç</span>';
+      }
+    }
+    function hideReplaceConfirm() {
+      if (!replaceConfirm) return;
+      replaceConfirm.hidden = true;
+    }
+    function resetSelectedUploadFile() {
+      input.value = '';
+      hideReplaceConfirm();
+      syncSelectedFileBox(false);
+      setRuhsatSaveBtnVisibility(saveBtn, false);
+    }
+    function uploadSelectedDocument() {
+      hideReplaceConfirm();
+      setRuhsatSaveBtnVisibility(saveBtn, false);
+      if (typeof window.saveRuhsatUpload === 'function') {
+        window.saveRuhsatUpload(cfg.key);
+      }
+    }
+    var confirmYesBtn = replaceConfirm ? replaceConfirm.querySelector('.ruhsat-upload-confirm-yes') : null;
+    var confirmNoBtn = replaceConfirm ? replaceConfirm.querySelector('.ruhsat-upload-confirm-no') : null;
+    if (confirmYesBtn) {
+      confirmYesBtn.onclick = function(e) {
+        e.stopPropagation();
+        uploadSelectedDocument();
+      };
+    }
+    if (confirmNoBtn) {
+      confirmNoBtn.onclick = function(e) {
+        e.stopPropagation();
+        resetSelectedUploadFile();
+      };
+    }
     input.onchange = function() {
       const hasFile = input.files.length > 0;
-      setRuhsatSaveBtnVisibility(saveBtn, hasFile);
-      if (selectBox) {
-        if (hasFile) {
-          selectBox.classList.add('upload-success');
-          selectBox.classList.remove('has-file');
-          selectBox.innerHTML = '<span class="ruhsat-select-box-icon" aria-hidden="true">\u2713</span><span class="ruhsat-select-box-label">' + (input.files[0].name || 'Seçildi') + '</span>';
-        } else {
-          selectBox.classList.remove('upload-success');
-          selectBox.classList.remove('has-file');
-          selectBox.innerHTML = '<span class="ruhsat-select-box-icon" aria-hidden="true">+</span><span class="ruhsat-select-box-label">Dosya Seç</span>';
-        }
+      syncSelectedFileBox(hasFile);
+      if (!autoUploadOnSelect) {
+        setRuhsatSaveBtnVisibility(saveBtn, hasFile);
+        return;
+      }
+      setRuhsatSaveBtnVisibility(saveBtn, false);
+      hideReplaceConfirm();
+      if (!hasFile) return;
+      if (hasExistingRuhsat && replaceConfirm) {
+        replaceConfirm.hidden = false;
+      } else {
+        uploadSelectedDocument();
       }
     };
     if (cfg.key === 'tasit_karti') {
@@ -8203,7 +8288,7 @@
       expiryWrap.appendChild(expiryInput);
       content.appendChild(expiryWrap);
     }
-    setRuhsatSaveBtnVisibility(saveBtn, input.files.length > 0);
+    setRuhsatSaveBtnVisibility(saveBtn, autoUploadOnSelect ? false : input.files.length > 0);
   }
 
   function setRuhsatUploadProgressVisible(visible, percent, indeterminate) {
