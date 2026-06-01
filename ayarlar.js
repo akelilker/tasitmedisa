@@ -541,6 +541,7 @@
       if (hasDocument) renderZorunluEvraklarK2Preview();
       else renderZorunluEvraklarK2Picker();
       if (fileInput) fileInput.value = '';
+      hideZorunluEvraklarK2ReplaceConfirm();
     }
 
     function buildZorunluEvraklarK2PreviewUrl() {
@@ -574,6 +575,40 @@
       picker.appendChild(icon);
       picker.appendChild(label);
       area.appendChild(picker);
+    }
+
+    function ensureZorunluEvraklarK2ReplaceConfirm() {
+      const area = document.getElementById('required-k2-document-area');
+      if (!area || !area.parentNode) return null;
+      let confirm = document.getElementById('required-k2-replace-confirm');
+      if (!confirm) {
+        confirm = document.createElement('div');
+        confirm.id = 'required-k2-replace-confirm';
+        confirm.className = 'required-k2-replace-confirm';
+        confirm.hidden = true;
+        confirm.innerHTML =
+          '<div class="required-k2-replace-message">Yüklü Dosya Silinecektir. Dosyayı Yüklemek İstediğinizden Emin Misiniz?</div>' +
+          '<div class="required-k2-replace-actions">' +
+          '<button type="button" class="required-k2-confirm-yes">Evet</button>' +
+          '<button type="button" class="required-k2-confirm-no">Hayır</button>' +
+          '</div>';
+        area.parentNode.insertBefore(confirm, area.nextSibling);
+      }
+      return confirm;
+    }
+
+    function hideZorunluEvraklarK2ReplaceConfirm() {
+      const confirm = document.getElementById('required-k2-replace-confirm');
+      if (confirm) confirm.hidden = true;
+    }
+
+    function getZorunluEvraklarK2ExpiryIsoOrAlert() {
+      const dateInput = document.getElementById('required-k2-expiry-date');
+      const isoDate = parseZorunluEvrakDate(dateInput ? dateInput.value : '');
+      if (isoDate) return isoDate;
+      alert('K2 Belgesi Geçerlilik tarihi geçerli olmalıdır. Örnek: 17/05/2027');
+      if (dateInput) dateInput.focus();
+      return '';
     }
 
     function renderZorunluEvraklarK2Preview() {
@@ -620,6 +655,7 @@
       const area = document.getElementById('required-k2-document-area');
       const fileInput = document.getElementById('required-k2-document-input');
       if (!area || !fileInput) return;
+      const replaceConfirm = ensureZorunluEvraklarK2ReplaceConfirm();
 
       if (area.dataset.k2PickerBound !== '1') {
         area.dataset.k2PickerBound = '1';
@@ -635,15 +671,48 @@
         });
       }
 
+      if (replaceConfirm && replaceConfirm.dataset.k2ConfirmBound !== '1') {
+        replaceConfirm.dataset.k2ConfirmBound = '1';
+        const yesBtn = replaceConfirm.querySelector('.required-k2-confirm-yes');
+        const noBtn = replaceConfirm.querySelector('.required-k2-confirm-no');
+        if (yesBtn) {
+          yesBtn.addEventListener('click', function(event) {
+            event.stopPropagation();
+            hideZorunluEvraklarK2ReplaceConfirm();
+            window.saveZorunluEvraklarK2({ confirmedReplace: true });
+          });
+        }
+        if (noBtn) {
+          noBtn.addEventListener('click', function(event) {
+            event.stopPropagation();
+            fileInput.value = '';
+            hideZorunluEvraklarK2ReplaceConfirm();
+            refreshZorunluEvraklarK2View();
+          });
+        }
+      }
+
       if (fileInput.dataset.k2PickerBound === '1') return;
       fileInput.dataset.k2PickerBound = '1';
       fileInput.addEventListener('change', function() {
         const selectedFile = fileInput.files && fileInput.files[0] ? fileInput.files[0] : null;
+        hideZorunluEvraklarK2ReplaceConfirm();
         if (!selectedFile) {
           refreshZorunluEvraklarK2View();
           return;
         }
+        if (!getZorunluEvraklarK2ExpiryIsoOrAlert()) {
+          fileInput.value = '';
+          refreshZorunluEvraklarK2View();
+          return;
+        }
         renderZorunluEvraklarK2Picker(selectedFile.name);
+        const hasDocument = !!String(getZorunluEvraklarK2State().documentPath || '').trim();
+        if (hasDocument && replaceConfirm) {
+          replaceConfirm.hidden = false;
+        } else {
+          window.saveZorunluEvraklarK2();
+        }
       });
     }
 
@@ -702,13 +771,17 @@
       window.open(url.toString(), '_blank', 'noopener');
     };
 
-    window.saveZorunluEvraklarK2 = async function saveZorunluEvraklarK2() {
-      const dateInput = document.getElementById('required-k2-expiry-date');
+    window.saveZorunluEvraklarK2 = async function saveZorunluEvraklarK2(options) {
       const fileInput = document.getElementById('required-k2-document-input');
-      const isoDate = parseZorunluEvrakDate(dateInput ? dateInput.value : '');
+      const isoDate = getZorunluEvraklarK2ExpiryIsoOrAlert();
       if (!isoDate) {
-        alert('K2 Belgesi Geçerlilik tarihi geçerli olmalıdır. Örnek: 17/05/2027');
-        if (dateInput) dateInput.focus();
+        return;
+      }
+      const hasSelectedFile = !!(fileInput && fileInput.files && fileInput.files[0]);
+      const hasExistingDocument = !!String(getZorunluEvraklarK2State().documentPath || '').trim();
+      if (hasSelectedFile && hasExistingDocument && !(options && options.confirmedReplace === true)) {
+        const confirm = ensureZorunluEvraklarK2ReplaceConfirm();
+        if (confirm) confirm.hidden = false;
         return;
       }
       try {
