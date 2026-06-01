@@ -2336,15 +2336,46 @@
         return '@page { size: portrait; margin: 0; }';
     }
 
-    /** Tüm stok print hücreleri: kelime kırılması yok, taşma yok, hücre içi ellipsis. */
-    var stokPrintIframeCellClip =
-        'white-space:nowrap;overflow:hidden;text-overflow:ellipsis;word-break:keep-all;overflow-wrap:normal;line-break:strict;hyphens:manual;';
+    /** Genel print hücresi: okunabilir satır kırılması, taşma yok, ellipsis yok. */
+    var stokPrintIframeCellBase =
+        'white-space:normal;overflow:hidden;text-overflow:clip;word-break:normal;overflow-wrap:break-word;line-break:auto;hyphens:manual;';
+
+    /** Kısa/teknik kolonlar: tek satır, taşma yok. */
+    var stokPrintIframeCellNowrap =
+        'white-space:nowrap;overflow:hidden;text-overflow:clip;word-break:normal;overflow-wrap:normal;line-break:auto;hyphens:manual;';
+
+    function getStokPrintIframeTextCellWordRules() {
+        var textCols = ['marka', 'sube', 'kullanici', 'kaskoDegeri', 'tasitTipi', 'muayene', 'egzozMuayene'];
+        var wrap = stokPrintIframeCellBase + 'vertical-align:top;';
+        var bodySel = textCols.map(function(col) {
+            return '#stok-print-area .stok-print-table th[data-col="' + col + '"],#stok-print-area .stok-print-table td[data-col="' + col + '"]';
+        }).join(',');
+        var headSel = textCols.map(function(col) {
+            return '#stok-print-area .stok-print-table thead th[data-col="' + col + '"]';
+        }).join(',');
+        return bodySel + '{' + wrap + '}' +
+            headSel + '{word-break:normal;overflow-wrap:break-word;line-break:auto;hyphens:manual;}';
+    }
+
+    function getStokPrintIframeCompactCellRules() {
+        var compactCols = ['sira', 'yil', 'plaka', 'sanziman', 'km', 'sigorta', 'kasko', 'tescil'];
+        var sel = compactCols.map(function(col) {
+            return '#stok-print-area .stok-print-table th[data-col="' + col + '"],#stok-print-area .stok-print-table td[data-col="' + col + '"]';
+        }).join(',');
+        return sel + '{' + stokPrintIframeCellNowrap + '}';
+    }
 
     function getStokPrintIframeMobileCellRules() {
-        var clip = stokPrintIframeCellClip;
-        return '#stok-print-area .stok-print-table th[data-col="plaka"],#stok-print-area .stok-print-table td[data-col="plaka"]{' + clip + 'min-width:15ch;padding-left:3px;padding-right:5px;box-sizing:border-box;}' +
-            '#stok-print-area .stok-print-table th[data-col="yil"],#stok-print-area .stok-print-table td[data-col="yil"]{' + clip + 'text-align:center;min-width:5ch;box-sizing:border-box;}' +
-            '#stok-print-area .stok-print-table th[data-col="kullanici"],#stok-print-area .stok-print-table td[data-col="kullanici"]{' + clip + 'min-width:13ch;box-sizing:border-box;}';
+        var nowrap = stokPrintIframeCellNowrap;
+        var wrap = stokPrintIframeCellBase + 'vertical-align:top;';
+        return '#stok-print-area .stok-print-table th[data-col="plaka"],#stok-print-area .stok-print-table td[data-col="plaka"]{' + nowrap + 'min-width:15ch;padding-left:3px;padding-right:5px;box-sizing:border-box;}' +
+            '#stok-print-area .stok-print-table th[data-col="yil"],#stok-print-area .stok-print-table td[data-col="yil"]{' + nowrap + 'text-align:center;min-width:5ch;box-sizing:border-box;}' +
+            '#stok-print-area .stok-print-table th[data-col="marka"],#stok-print-area .stok-print-table td[data-col="marka"],' +
+            '#stok-print-area .stok-print-table th[data-col="sube"],#stok-print-area .stok-print-table td[data-col="sube"],' +
+            '#stok-print-area .stok-print-table th[data-col="kullanici"],#stok-print-area .stok-print-table td[data-col="kullanici"],' +
+            '#stok-print-area .stok-print-table th[data-col="kaskoDegeri"],#stok-print-area .stok-print-table td[data-col="kaskoDegeri"],' +
+            '#stok-print-area .stok-print-table th[data-col="tasitTipi"],#stok-print-area .stok-print-table td[data-col="tasitTipi"]{' + wrap + 'min-width:0;}' +
+            '#stok-print-area .stok-print-table th[data-col="kullanici"],#stok-print-area .stok-print-table td[data-col="kullanici"]{min-width:13ch;box-sizing:border-box;}';
     }
 
     function getStokPrintIframeStyles(useLandscape) {
@@ -2359,13 +2390,16 @@
             '#stok-print-area .stok-print-date{font-size:11pt;margin:0 0 12px 0;white-space:normal;}' +
             '#stok-print-area .stok-print-table{width:100%;max-width:100%;border-collapse:collapse;font-size:10pt;table-layout:fixed;}' +
             '#stok-print-area .stok-print-table.stok-print-dense{font-size:8.5pt;}' +
-            '#stok-print-area .stok-print-table th,#stok-print-area .stok-print-table td{border:1px solid #333;padding:3px 5px;text-align:center;box-sizing:border-box;' + stokPrintIframeCellClip + 'max-width:100%;height:auto;max-height:none;line-height:1.35;vertical-align:middle;}' +
+            '#stok-print-area .stok-print-table th,#stok-print-area .stok-print-table td{border:1px solid #333;padding:3px 5px;text-align:center;box-sizing:border-box;' + stokPrintIframeCellBase + 'max-width:100%;height:auto;max-height:none;line-height:1.35;vertical-align:middle;}' +
             '#stok-print-area .stok-print-table tbody tr{height:auto;max-height:none;break-inside:avoid;page-break-inside:avoid;}' +
-            '#stok-print-area .stok-print-table tbody td{height:auto;max-height:none;line-height:1.35;vertical-align:middle;}' +
-            '#stok-print-area .stok-print-table thead th{line-height:1.25;padding-top:5px;padding-bottom:5px;vertical-align:middle;}' +
+            '#stok-print-area .stok-print-table tbody td{height:auto;max-height:none;line-height:1.35;vertical-align:top;}' +
+            '#stok-print-area .stok-print-table thead th{word-break:normal;overflow-wrap:break-word;line-height:1.25;padding-top:5px;padding-bottom:5px;vertical-align:middle;}' +
+            '#stok-print-area .stok-print-table thead th[data-col="utts"],#stok-print-area .stok-print-table thead th[data-col="tramer"]{white-space:nowrap;}' +
             '#stok-print-area .stok-print-table th[data-col="sube"],#stok-print-area .stok-print-table td[data-col="sube"]{padding-left:2px!important;padding-right:2px!important;}' +
             '#stok-print-area .stok-print-table th[data-col="sira"],#stok-print-area .stok-print-table td[data-col="sira"]{padding-left:1px!important;padding-right:1px!important;}' +
-            '#stok-print-area .stok-print-table th[data-col="plaka"],#stok-print-area .stok-print-table td[data-col="plaka"]{' + stokPrintIframeCellClip + 'min-width:10ch;}' +
+            '#stok-print-area .stok-print-table th[data-col="plaka"],#stok-print-area .stok-print-table td[data-col="plaka"]{' + stokPrintIframeCellNowrap + 'min-width:10ch;}' +
+            getStokPrintIframeCompactCellRules() +
+            getStokPrintIframeTextCellWordRules() +
             '#stok-print-area .stok-print-table thead tr{background:#404040;color:#fff;}' +
             mobileCellRules +
             '#stok-print-area .stok-print-table tbody tr.even{background:#fff;}' +
@@ -2413,10 +2447,7 @@
             const cells = activeColumns.map(col => {
                 const cellValue = getStokCellValue(vehicle, col, index, printOpts);
                 const safeCellValue = escapeHtml(String(cellValue));
-                const renderedCellValue = col.key === 'tasitTipi'
-                    ? safeCellValue.replace(/\s+/g, '<br>')
-                    : safeCellValue;
-                return `<td data-col="${col.key}">${renderedCellValue}</td>`;
+                return `<td data-col="${col.key}">${safeCellValue}</td>`;
             }).join('');
             return `<tr class="${index % 2 === 0 ? 'even' : 'odd'}">${cells}</tr>`;
         }).join('');
