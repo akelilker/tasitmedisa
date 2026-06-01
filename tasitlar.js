@@ -8244,24 +8244,20 @@
     var hintEl = document.createElement('p');
     hintEl.className = 'ruhsat-upload-hint';
     hintEl.id = 'ruhsat-upload-hint';
-    const autoUploadOnSelect = cfg.key === 'sigorta' || cfg.key === 'kasko';
-    hintEl.textContent = autoUploadOnSelect
-      ? (hasExistingRuhsat ? 'Dosya seçildiğinde mevcut poliçe için onay alınır.' : 'Dosya seçildiğinde poliçe otomatik yüklenir.')
-      : 'Dosyayı seçtikten sonra alttaki «' + cfg.uploadButton + '» ile sunucuya gönderilir.';
+    hintEl.textContent = hasExistingRuhsat
+      ? 'Dosya seçildiğinde mevcut belge için onay alınır.'
+      : 'Dosya seçildiğinde belge otomatik yüklenir.';
     content.appendChild(hintEl);
-    var replaceConfirm = null;
-    if (autoUploadOnSelect) {
-      replaceConfirm = document.createElement('div');
-      replaceConfirm.className = 'ruhsat-upload-replace-confirm';
-      replaceConfirm.hidden = true;
-      replaceConfirm.innerHTML =
-        '<div class="ruhsat-upload-replace-message">Yüklü Dosya Silinecektir. Dosyayı Yüklemek İstediğinizden Emin Misiniz?</div>' +
-        '<div class="ruhsat-upload-replace-actions">' +
-        '<button type="button" class="ruhsat-upload-confirm-yes">Evet</button>' +
-        '<button type="button" class="ruhsat-upload-confirm-no">Hayır</button>' +
-        '</div>';
-      content.appendChild(replaceConfirm);
-    }
+    var replaceConfirm = document.createElement('div');
+    replaceConfirm.className = 'ruhsat-upload-replace-confirm';
+    replaceConfirm.hidden = true;
+    replaceConfirm.innerHTML =
+      '<div class="ruhsat-upload-replace-message">Yüklü Dosya Silinecektir. Dosyayı Yüklemek İstediğinizden Emin Misiniz?</div>' +
+      '<div class="ruhsat-upload-replace-actions">' +
+      '<button type="button" class="ruhsat-upload-confirm-yes">Evet</button>' +
+      '<button type="button" class="ruhsat-upload-confirm-no">Hayır</button>' +
+      '</div>';
+    content.appendChild(replaceConfirm);
     var progressWrap = document.createElement('div');
     progressWrap.className = 'ruhsat-upload-progress';
     progressWrap.id = 'ruhsat-upload-progress';
@@ -8296,7 +8292,19 @@
       syncSelectedFileBox(false);
       setRuhsatSaveBtnVisibility(saveBtn, false);
     }
+    function validateSelectedDocumentBeforeUpload() {
+      if (cfg.key !== 'tasit_karti') return true;
+      const expiryInput = document.getElementById('tasit-karti-expiry-date');
+      const expiryIsoDate = parseVehicleDocumentExpiryDate(expiryInput ? expiryInput.value : '');
+      const expiryValidation = validateTasitKartiExpiryDate(expiryIsoDate);
+      if (expiryValidation.valid) return true;
+      alert(expiryValidation.message);
+      resetSelectedUploadFile();
+      if (expiryInput) expiryInput.focus();
+      return false;
+    }
     function uploadSelectedDocument() {
+      if (!validateSelectedDocumentBeforeUpload()) return;
       hideReplaceConfirm();
       setRuhsatSaveBtnVisibility(saveBtn, false);
       if (typeof window.saveRuhsatUpload === 'function') {
@@ -8320,14 +8328,11 @@
     input.onchange = function() {
       const hasFile = input.files.length > 0;
       syncSelectedFileBox(hasFile);
-      if (!autoUploadOnSelect) {
-        setRuhsatSaveBtnVisibility(saveBtn, hasFile);
-        return;
-      }
       setRuhsatSaveBtnVisibility(saveBtn, false);
       hideReplaceConfirm();
       if (!hasFile) return;
-      if (hasExistingRuhsat && replaceConfirm) {
+      if (!validateSelectedDocumentBeforeUpload()) return;
+      if (hasExistingRuhsat) {
         replaceConfirm.hidden = false;
       } else {
         uploadSelectedDocument();
@@ -8353,7 +8358,7 @@
       expiryWrap.appendChild(expiryInput);
       content.appendChild(expiryWrap);
     }
-    setRuhsatSaveBtnVisibility(saveBtn, autoUploadOnSelect ? false : input.files.length > 0);
+    setRuhsatSaveBtnVisibility(saveBtn, false);
   }
 
   function setRuhsatUploadProgressVisible(visible, percent, indeterminate) {

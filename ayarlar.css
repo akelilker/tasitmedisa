@@ -648,6 +648,52 @@ body.modal-open #info-modal .modal-container {
     color: #7dffae;
 }
 
+#required-documents-modal .required-k2-replace-confirm {
+    width: min(280px, 100%);
+    margin: 0 auto 12px auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    color: rgba(255, 255, 255, 0.9);
+    text-align: center;
+}
+
+#required-documents-modal .required-k2-replace-confirm[hidden] {
+    display: none;
+}
+
+#required-documents-modal .required-k2-replace-message {
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.35;
+}
+
+#required-documents-modal .required-k2-replace-actions {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+#required-documents-modal .required-k2-replace-actions button {
+    min-height: 36px;
+    border-radius: 8px;
+    background: transparent;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+#required-documents-modal .required-k2-confirm-yes {
+    border: 1px solid rgba(220, 38, 38, 0.85);
+    color: #ef4444;
+}
+
+#required-documents-modal .required-k2-confirm-no {
+    border: 1px solid rgba(34, 197, 94, 0.72);
+    color: #22c55e;
+}
+
 #required-documents-modal .required-k2-document-picker-icon {
     width: 28px;
     min-width: 28px;
