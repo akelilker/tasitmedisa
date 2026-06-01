@@ -923,11 +923,13 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 
     #dinamik-olay-modal[data-event-type="documents"] .universal-back-bar:has(.vehicle-context-row) {
         margin-bottom: 10px !important;
-        padding: 8px 48px 2px 16px !important;
+        padding: 8px 48px 2px 6px !important;
     }
 
     #dinamik-olay-modal[data-event-type="documents"] .universal-back-bar:has(.vehicle-context-row) .universal-back-btn {
         max-width: 132px !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
     }
 
     #dinamik-olay-modal[data-event-type="documents"] .universal-back-bar:has(.vehicle-context-row) .universal-back-btn .universal-back-label {
