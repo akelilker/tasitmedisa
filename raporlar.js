@@ -754,7 +754,7 @@
         setReportsModalStokListLayoutActive(true);
     }
 
-    // Marka, şube, taşıt tipi: satır kır; yine taşarsa en fazla ~1 punto küçült (masaüstü)
+    // Marka, şube, taşıt tipi, plaka: sarmalama raporlar.css ile; JS ölç/yaz döngüsü forced reflow üretiyordu.
     function adjustStokResponsiveCellFontSizes() {
         const listContainer = document.getElementById('stok-list-container');
         if (!listContainer) return;
@@ -762,47 +762,9 @@
         const sel = isDesk
             ? '.stok-list-cell[data-col="marka"], .stok-list-cell[data-col="sube"], .stok-list-cell[data-col="tasitTipi"], .stok-list-cell[data-col="plaka"]'
             : '.stok-list-cell[data-col="marka"], .stok-list-cell[data-col="sube"]';
-        const responsiveCells = listContainer.querySelectorAll(sel);
-        requestAnimationFrame(function() {
-            responsiveCells.forEach(function(cell) {
-                if (cell.offsetHeight === 0) return;
-                cell.style.fontSize = '';
-                var baseFontSize = parseFloat(window.getComputedStyle(cell).fontSize) || 12;
-                /* 1 CSS pt ≒ 96/72 px — en fazla bu kadar küçültülebilir (taban yazıdan) */
-                var onePtPx = 96 / 72;
-                var colKey = cell.getAttribute('data-col') || '';
-                /* Mobilde tasitTipi SVG simgesi küçültme yapma */
-                if (!isDesk && colKey === 'tasitTipi' && cell.querySelector('.stok-tasit-tipi-wrap')) return;
-                var minFloorAbs = isDesk ? 10 : (colKey === 'sube' ? 10.5 : 11);
-                /* Masaüstü: tasit tek satır sığdırmak için 1 punto sonrası bile ~10 px’e düşebilsin */
-                if (isDesk && colKey === 'tasitTipi') minFloorAbs = 9.5;
-                var minFontSize = isDesk
-                    ? Math.max(baseFontSize - onePtPx, minFloorAbs)
-                    : Math.max(baseFontSize - 1.5, minFloorAbs);
-                var current = baseFontSize;
-                while ((cell.scrollHeight > cell.offsetHeight || cell.scrollWidth > cell.clientWidth) && current > minFontSize) {
-                    current = Math.max(minFontSize, current - 0.5);
-                    cell.style.fontSize = current + 'px';
-                    if (current === minFontSize) break;
-                }
-            });
+        listContainer.querySelectorAll(sel).forEach(function(cell) {
+            if (cell.style.fontSize) cell.style.fontSize = '';
         });
-        // Resize'da tekrar hesapla (debounce)
-        if (!window._stokResponsiveCellResize) {
-            window._stokResponsiveCellResize = true;
-            var onResize = window.debounce ? window.debounce(function () {
-                const container = document.getElementById('stok-list-container');
-                if (container && container.querySelector('.stok-list-cell[data-col="marka"], .stok-list-cell[data-col="sube"], .stok-list-cell[data-col="tasitTipi"], .stok-list-cell[data-col="plaka"]')) {
-                    adjustStokResponsiveCellFontSizes();
-                }
-            }, 100) : function () {
-                const container = document.getElementById('stok-list-container');
-                if (container && container.querySelector('.stok-list-cell[data-col="marka"], .stok-list-cell[data-col="sube"], .stok-list-cell[data-col="tasitTipi"], .stok-list-cell[data-col="plaka"]')) {
-                    adjustStokResponsiveCellFontSizes();
-                }
-            };
-            window.addEventListener('resize', onResize);
-        }
     }
 
     // Sütun genişliklerini hesapla (key bazlı: sürükle-bırak sonrası genişlik doğru sütunla kalır)
