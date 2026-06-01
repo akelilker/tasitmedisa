@@ -7203,7 +7203,7 @@
       const rest = cacheKey.slice((rawId + '::').length);
       const firstSeg = rest.split('::')[0];
       var keyDocType = null;
-      if (firstSeg === 'ruhsat' || firstSeg === 'sigorta' || firstSeg === 'kasko') {
+      if (Object.prototype.hasOwnProperty.call(VEHICLE_DOCUMENT_TYPES, firstSeg)) {
         keyDocType = firstSeg;
       } else if (/^\d+$/.test(firstSeg)) {
         keyDocType = 'ruhsat';
@@ -7367,7 +7367,7 @@
       const rest = cacheKey.slice((rawId + '::').length);
       const firstSeg = rest.split('::')[0];
       var keyDocType = null;
-      if (firstSeg === 'ruhsat' || firstSeg === 'sigorta' || firstSeg === 'kasko') {
+      if (Object.prototype.hasOwnProperty.call(VEHICLE_DOCUMENT_TYPES, firstSeg)) {
         keyDocType = firstSeg;
       } else if (/^\d+$/.test(firstSeg)) {
         keyDocType = 'ruhsat';
@@ -8468,7 +8468,9 @@
     formData.append('vehicleId', vehicleId);
     formData.append('vehicleVersion', String(Number(vehicle.version) || 1));
     formData.append('documentType', cfg.key);
+    formData.append('documentPathBefore', getVehicleDocumentPath(vehicle, cfg.key));
     if (cfg.key === 'tasit_karti') {
+      formData.append('tasitKartiExpiryDateBefore', getTasitKartiExpiryDate(vehicle));
       const expiryInput = document.getElementById('tasit-karti-expiry-date');
       const expiryIsoDate = parseVehicleDocumentExpiryDate(expiryInput ? expiryInput.value : '');
       const expiryValidation = validateTasitKartiExpiryDate(expiryIsoDate);
