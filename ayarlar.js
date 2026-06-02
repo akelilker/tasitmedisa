@@ -2976,6 +2976,25 @@
       return payload;
     }
 
+    function notifyExportDataResult(message, isError) {
+      if (typeof window.showCenteredInfoBox === 'function') {
+        window.showCenteredInfoBox(message, {
+          variant: 'bare-text',
+          autoCloseMs: isError ? 3500 : 2200
+        });
+        return;
+      }
+      if (!isError && typeof window.showInfoModal === 'function') {
+        window.showInfoModal(message);
+        return;
+      }
+      if (isError && typeof window.showErrorModal === 'function') {
+        window.showErrorModal(message);
+        return;
+      }
+      console[isError ? 'error' : 'info'](message);
+    }
+
     // Veri dışa aktar (JSON indir)
     window.exportData = function exportData() {
       try {
@@ -2989,10 +3008,13 @@
         link.click();
         
         URL.revokeObjectURL(link.href);
-  
-        alert('Yedek başarıyla indirildi!');
+
+        setTimeout(function() {
+          notifyExportDataResult('Yedek başarıyla indirildi!', false);
+        }, 0);
       } catch (error) {
-        alert('Yedekleme sırasında hata Oluştu!');
+        console.error('[Medisa] Yedekleme hatası:', error);
+        notifyExportDataResult('Yedekleme sırasında hata oluştu!', true);
       }
     };
   
