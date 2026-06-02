@@ -764,6 +764,8 @@
   let currentFilter = 'az'; // 'az' | 'newest' | 'oldest' | 'type' (liste filtre dropdown)
   let transmissionFilter = ''; // '' | 'otomatik' | 'manuel' (şanzıman filtresi)
   let lastListContext = null; // Son açılan liste bağlamı (geri dönüş hedefi)
+  let returnToMonthlyTodoAfterVehicleDetail = false;
+  let monthlyTodoCloseTimer = null;
   let isAutoSingleBranchVehiclesView = false;
 
   let lastVehiclesRenderSignature = '';
@@ -3123,8 +3125,8 @@
       toolbarLeft.style.gap = '8px';
 
       // Geri gidilecek hedef: lastListContext (geldiğimiz liste)
-      let backLabel = 'Taşıtlar';
-      if (lastListContext) {
+      let backLabel = returnToMonthlyTodoAfterVehicleDetail ? getMonthlyTodoTitleText() : 'Taşıtlar';
+      if (!returnToMonthlyTodoAfterVehicleDetail && lastListContext) {
         if (lastListContext.mode === 'archive') {
           backLabel = 'Arşiv';
         } else if (lastListContext.branchId === 'all') {
@@ -3374,6 +3376,7 @@
     });
     setVehiclesDetailUnderlay(false);
     window.currentDetailVehicleId = null;
+    returnToMonthlyTodoAfterVehicleDetail = false;
     // iOS: print() çağrısı iframe.onload/setTimeout ile geç tetiklenebiliyor.
     // Kullanıcı başka ekrana giderken bekleyen print'in çalışmaması için token iptal ediyoruz.
     window.__ruhsatPrintToken = null;
@@ -3408,6 +3411,11 @@
 
   /** Taşıt detaydan çıkınca son liste bağlamına dön (araçtaki geri ok ile aynı). */
   function backFromVehicleDetailToListContext() {
+    if (returnToMonthlyTodoAfterVehicleDetail) {
+      returnToMonthlyTodoAfterVehicleDetail = false;
+      openMonthlyTodoModal();
+      return;
+    }
     if (lastListContext && lastListContext.mode === 'archive') {
       openArchiveView();
     } else if (lastListContext && lastListContext.mode === 'branch') {
@@ -4765,6 +4773,7 @@
       if (!vid) return;
       closeMonthlyTodoModal();
       if (typeof window.showVehicleDetail === 'function') {
+        returnToMonthlyTodoAfterVehicleDetail = true;
         if (!lastListContext) {
           lastListContext = { mode: 'branch', branchId: 'all', branchName: 'Taşıtlar' };
         }
@@ -4858,6 +4867,10 @@
 
   function openMonthlyTodoModal() {
     var modal = ensureMonthlyTodoModalMounted();
+    if (monthlyTodoCloseTimer) {
+      clearTimeout(monthlyTodoCloseTimer);
+      monthlyTodoCloseTimer = null;
+    }
     modal.style.display = 'flex';
     modal.classList.add('active');
     modal.classList.add('open');
@@ -4872,7 +4885,9 @@
     var modal = document.getElementById('monthly-todo-modal');
     if (!modal) return;
     modal.classList.remove('active', 'open');
-    setTimeout(function() {
+    if (monthlyTodoCloseTimer) clearTimeout(monthlyTodoCloseTimer);
+    monthlyTodoCloseTimer = setTimeout(function() {
+      monthlyTodoCloseTimer = null;
       modal.style.display = 'none';
       if (typeof window.updateFooterDim === 'function') window.updateFooterDim();
     }, 300);
