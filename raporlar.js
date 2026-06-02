@@ -2260,14 +2260,14 @@
         sira: 3,
         yil: 5,
         plaka: 11,
-        marka: 18,
+        marka: 17,
         tasitTipi: 8,
         sanziman: 5,
         km: 8,
         sube: 9,
         sigorta: 11,
         kasko: 11,
-        kaskoDegeri: 12,
+        kaskoDegeri: 13,
         muayene: 11,
         egzozMuayene: 11,
         kredi: 7,
@@ -2400,7 +2400,7 @@
             getStokPrintIframePageRule(useLandscape) +
             'html,body{background:#fff!important;max-width:none!important;width:100%!important;margin:0!important;padding:0!important;min-height:auto!important;}' +
             '-webkit-print-color-adjust:exact;print-color-adjust:exact;' +
-            '#stok-print-area{position:relative;width:calc(100% - 2mm);max-width:calc(100% - 2mm);margin:0 auto;padding:0;background:#fff;color:#000;box-sizing:border-box;overflow:hidden;}' +
+            '#stok-print-area{position:relative;width:calc(100% - 3mm);max-width:calc(100% - 3mm);margin:0 auto;padding:0;background:#fff;color:#000;box-sizing:border-box;overflow:hidden;}' +
             '#stok-print-area .stok-print-title{font-size:14pt;margin:0 0 8px 0;font-weight:bold;white-space:normal;}' +
             '#stok-print-area .stok-print-date{font-size:11pt;margin:0 0 12px 0;white-space:normal;}' +
             '#stok-print-area .stok-print-table{width:100%;max-width:100%;border-collapse:collapse;font-size:10pt;table-layout:fixed;}' +
