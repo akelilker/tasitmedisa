@@ -2331,9 +2331,10 @@
 
     /** Iframe print: raporlar.css @media print kuralları (body * visibility yok; ana DOM etkilenmez). */
     function getStokPrintIframePageRule(useLandscape) {
-        if (isMobileStokViewport()) return '@page { size: A4 landscape; margin: 0; }';
-        if (useLandscape) return '@page { size: landscape; margin: 0; }';
-        return '@page { size: portrait; margin: 0; }';
+        var pageMargin = '6mm';
+        if (isMobileStokViewport()) return '@page { size: A4 landscape; margin: ' + pageMargin + '; }';
+        if (useLandscape) return '@page { size: landscape; margin: ' + pageMargin + '; }';
+        return '@page { size: portrait; margin: ' + pageMargin + '; }';
     }
 
     /** Genel print hücresi: okunabilir satır kırılması, taşma yok, ellipsis yok. */
@@ -2399,7 +2400,7 @@
             getStokPrintIframePageRule(useLandscape) +
             'html,body{background:#fff!important;max-width:none!important;width:100%!important;margin:0!important;padding:0!important;min-height:auto!important;}' +
             '-webkit-print-color-adjust:exact;print-color-adjust:exact;' +
-            '#stok-print-area{position:absolute;left:0;top:0;width:100%;max-width:100%;padding:8px;background:#fff;color:#000;box-sizing:border-box;overflow:hidden;}' +
+            '#stok-print-area{position:absolute;left:0;top:0;width:100%;max-width:100%;padding:0;background:#fff;color:#000;box-sizing:border-box;overflow:hidden;}' +
             '#stok-print-area .stok-print-title{font-size:14pt;margin:0 0 8px 0;font-weight:bold;white-space:normal;}' +
             '#stok-print-area .stok-print-date{font-size:11pt;margin:0 0 12px 0;white-space:normal;}' +
             '#stok-print-area .stok-print-table{width:100%;max-width:100%;border-collapse:collapse;font-size:10pt;table-layout:fixed;}' +
