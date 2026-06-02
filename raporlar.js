@@ -2340,13 +2340,17 @@
     var stokPrintIframeCellBase =
         'white-space:normal;overflow:hidden;text-overflow:clip;word-break:normal;overflow-wrap:break-word;line-break:auto;hyphens:manual;';
 
+    /** Metin kolonlari: once boslukta kir, hucre disina tasma yok. */
+    var stokPrintIframeTextCellBase =
+        'white-space:normal;overflow:hidden;text-overflow:clip;word-break:normal;overflow-wrap:normal;line-break:auto;hyphens:manual;';
+
     /** Kısa/teknik kolonlar: tek satır, taşma yok. */
     var stokPrintIframeCellNowrap =
         'white-space:nowrap;overflow:hidden;text-overflow:clip;word-break:normal;overflow-wrap:normal;line-break:auto;hyphens:manual;';
 
     function getStokPrintIframeTextCellWordRules() {
         var textCols = ['marka', 'sube', 'kullanici', 'kaskoDegeri', 'tasitTipi', 'muayene', 'egzozMuayene'];
-        var wrap = stokPrintIframeCellBase + 'vertical-align:top;';
+        var wrap = stokPrintIframeTextCellBase + 'vertical-align:top;';
         var bodySel = textCols.map(function(col) {
             return '#stok-print-area .stok-print-table th[data-col="' + col + '"],#stok-print-area .stok-print-table td[data-col="' + col + '"]';
         }).join(',');
@@ -2354,11 +2358,11 @@
             return '#stok-print-area .stok-print-table thead th[data-col="' + col + '"]';
         }).join(',');
         return bodySel + '{' + wrap + '}' +
-            headSel + '{word-break:normal;overflow-wrap:break-word;line-break:auto;hyphens:manual;}';
+            headSel + '{word-break:normal;overflow-wrap:normal;line-break:auto;hyphens:manual;}';
     }
 
     function getStokPrintIframeCompactCellRules() {
-        var compactCols = ['sira', 'yil', 'plaka', 'sanziman', 'km', 'sigorta', 'kasko', 'tescil'];
+        var compactCols = ['sira', 'yil', 'plaka', 'sanziman', 'km', 'sigorta', 'kasko', 'tescil', 'kredi', 'lastik', 'utts', 'takip', 'tramer', 'boya'];
         var sel = compactCols.map(function(col) {
             return '#stok-print-area .stok-print-table th[data-col="' + col + '"],#stok-print-area .stok-print-table td[data-col="' + col + '"]';
         }).join(',');
@@ -2367,7 +2371,7 @@
 
     function getStokPrintIframeMobileCellRules() {
         var nowrap = stokPrintIframeCellNowrap;
-        var wrap = stokPrintIframeCellBase + 'vertical-align:top;';
+        var wrap = stokPrintIframeTextCellBase + 'vertical-align:top;';
         return '#stok-print-area .stok-print-table th[data-col="plaka"],#stok-print-area .stok-print-table td[data-col="plaka"]{' + nowrap + 'min-width:15ch;padding-left:3px;padding-right:5px;box-sizing:border-box;}' +
             '#stok-print-area .stok-print-table th[data-col="yil"],#stok-print-area .stok-print-table td[data-col="yil"]{' + nowrap + 'text-align:center;min-width:5ch;box-sizing:border-box;}' +
             '#stok-print-area .stok-print-table th[data-col="marka"],#stok-print-area .stok-print-table td[data-col="marka"],' +
