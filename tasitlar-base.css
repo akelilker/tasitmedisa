@@ -306,7 +306,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
   box-sizing: border-box !important;
 }
 
-/* Olay Ekle: tarih satırı — input, etiket div'inin doğrudan çocuğu (modal-body > #dinamik-olay-form-icerik > sarmalayıcı > satır > input) */
+/* Olay Ekle: tarih satırı — etiket tam genişlik, input gg.aa.yyyy oranında dar */
 .olay-ekle-modal .modal-body div:has(> input.olay-tarih-input),
 .olay-ekle-modal .modal-body div:has(> input[type="date"].olay-tarih-input) {
   width: 100% !important;
@@ -314,18 +314,12 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
   min-width: 0 !important;
   box-sizing: border-box !important;
 }
-@media (min-width: 641px) {
-  .olay-ekle-modal .modal-body div:has(> input.olay-tarih-input),
-  .olay-ekle-modal .modal-body div:has(> input[type="date"].olay-tarih-input) {
-    width: min(190px, 100%) !important;
-  }
-}
 .olay-ekle-modal .modal-body input[type="date"].form-input,
 .olay-ekle-modal .modal-body .olay-tarih-input {
   position: relative !important; /* Takvim simgesi absolute ile buna göre ortalanır */
   display: block !important;
-  width: 100% !important;
-  max-width: 100% !important;
+  width: min(152px, 100%) !important;
+  max-width: 152px !important;
   min-width: 0 !important;
   box-sizing: border-box !important;
   overflow: hidden !important;
@@ -871,6 +865,11 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     box-sizing: border-box;
 }
 
+#event-menu-modal .universal-back-bar:has(.vehicle-context-row) .vehicle-context-plate,
+#event-menu-modal .universal-back-bar:has(.vehicle-context-row) .vehicle-context-model {
+    transform: translateY(-8px);
+}
+
 #event-menu-modal .universal-back-bar:has(.vehicle-context-row) .vehicle-context-model,
 #dinamik-olay-modal .universal-back-bar:has(.vehicle-context-row) .vehicle-context-model,
 #vehicle-history-modal .universal-back-bar:has(.vehicle-context-row) .vehicle-context-model {
@@ -912,13 +911,33 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 
 @media (max-width: 640px) {
     #event-menu-modal .universal-back-bar:has(.vehicle-context-row) {
+        margin-top: 0 !important;
+        padding: 6px 12px 0 !important;
         row-gap: 0 !important;
-        padding-bottom: 3px !important;
+        min-height: 44px;
+    }
+
+    #event-menu-modal .universal-back-bar:has(.vehicle-context-row) .universal-back-btn {
+        max-width: 35%;
+        padding: 4px 0 !important;
+    }
+
+    #event-menu-modal .universal-back-bar:has(.vehicle-context-row) .universal-back-label {
+        font-size: 14px !important;
+        line-height: 1.1 !important;
     }
 
     #event-menu-modal .universal-back-bar:has(.vehicle-context-row) .vehicle-context-plate {
         align-self: end;
-        transform: translateY(-2px);
+        font-size: 14px;
+        line-height: 1.05;
+        transform: none;
+    }
+
+    #event-menu-modal .universal-back-bar:has(.vehicle-context-row) .vehicle-context-model {
+        font-size: 11.5px;
+        line-height: 1.12;
+        transform: none;
     }
 
     #dinamik-olay-modal[data-event-type="documents"] .universal-back-bar:has(.vehicle-context-row) {
@@ -958,6 +977,327 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 
     #event-menu-modal .universal-back-bar:has(.vehicle-context-row) .vehicle-context-plate {
         align-self: end;
+    }
+}
+
+/* Olay Ekle seçim menüsü: ikonlu kategori ana ekranı + kategori içi işlem kartları */
+#event-menu-modal .modal-body {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 20px 24px !important;
+}
+
+#event-menu-modal #event-menu-list.event-menu-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    width: min(100%, 560px);
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+#event-menu-modal #event-menu-list.event-menu-list--categories {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 58px;
+    row-gap: 46px;
+    width: min(100%, 400px);
+    padding-top: 0;
+    transform: translateY(-18px);
+}
+
+#event-menu-modal .event-menu-category-card {
+    min-height: 84px;
+    padding: 6px 4px;
+    box-sizing: border-box;
+    overflow: visible;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    color: rgba(245, 247, 250, 0.88);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    text-align: center;
+    font-size: 13.5px;
+    font-weight: 600;
+    line-height: 1.25;
+    appearance: none;
+    transition: color 0.18s ease, text-shadow 0.18s ease;
+}
+
+#event-menu-modal .event-menu-category-card:hover,
+#event-menu-modal .event-menu-category-card:focus-visible {
+    outline: none;
+    background: transparent;
+    color: #ffffff;
+    text-shadow: 0 0 12px rgba(255, 255, 255, 0.32);
+}
+
+#event-menu-modal .event-menu-category-card:focus-visible {
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.28);
+}
+
+#event-menu-modal .event-menu-category-icon {
+    width: 42px;
+    height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
+    color: rgba(210, 218, 228, 0.82);
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.08));
+    transition: color 0.18s ease, filter 0.18s ease, transform 0.18s ease;
+}
+
+#event-menu-modal .event-menu-category-card:hover .event-menu-category-icon,
+#event-menu-modal .event-menu-category-card:focus-visible .event-menu-category-icon {
+    color: rgba(255, 255, 255, 0.96);
+    filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.42));
+    transform: scale(1.08);
+}
+
+#event-menu-modal .event-menu-category-icon svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.45;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+#event-menu-modal #event-menu-list.event-menu-list--categories .event-menu-category-icon {
+    width: 52px;
+    height: 52px;
+}
+
+#event-menu-modal #event-menu-list.event-menu-list--categories .event-menu-category-icon svg[viewBox="0 0 64 64"] {
+    stroke-width: 2.8;
+}
+
+#event-menu-modal .event-menu-category-title {
+    display: block;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+}
+
+#event-menu-modal .event-menu-list--items {
+    width: min(100%, 460px);
+    transform: translateY(-5px);
+    overflow: visible;
+}
+
+#event-menu-modal .event-menu-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+}
+
+#event-menu-modal .event-menu-section-heading {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 9px;
+    width: 100%;
+    text-align: center;
+}
+
+#event-menu-modal .event-menu-section-title {
+    margin: 0;
+    color: #ffffff;
+    font-size: 17px;
+    font-weight: 650;
+    letter-spacing: 0;
+    line-height: 1.2;
+}
+
+#event-menu-modal .event-menu-section-kicker {
+    color: rgba(160, 174, 192, 0.68);
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.2;
+}
+
+#event-menu-modal .event-menu-card-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 48px;
+    row-gap: 18px;
+    justify-content: center;
+    width: min(100%, 420px);
+    overflow: visible;
+}
+
+#event-menu-modal .event-menu-list--items .event-menu-card-grid {
+    padding: 4px 0 6px;
+    box-sizing: border-box;
+}
+
+#event-menu-modal .event-menu-card-grid:has(> .event-menu-card:only-child) {
+    grid-template-columns: minmax(0, 180px);
+}
+
+#event-menu-modal .event-menu-card {
+    width: 100%;
+    min-height: 72px;
+    padding: 6px 4px;
+    box-sizing: border-box;
+    overflow: visible;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    color: rgba(245, 247, 250, 0.88);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.25;
+    text-align: center;
+    overflow-wrap: anywhere;
+    appearance: none;
+    transition: color 0.18s ease, text-shadow 0.18s ease;
+}
+
+#event-menu-modal .event-menu-card:hover,
+#event-menu-modal .event-menu-card:focus-visible {
+    outline: none;
+    background: transparent;
+    color: #ffffff;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.26);
+}
+
+#event-menu-modal .event-menu-card:focus-visible {
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.25);
+}
+
+#event-menu-modal .event-menu-card .event-menu-category-icon {
+    width: 40px;
+    height: 40px;
+}
+
+#event-menu-modal .event-menu-card:hover .event-menu-category-icon,
+#event-menu-modal .event-menu-card:focus-visible .event-menu-category-icon {
+    color: rgba(255, 255, 255, 0.96);
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.32));
+    transform: scale(1.08);
+}
+
+#event-menu-modal .event-menu-card-title {
+    display: block;
+    max-width: 100%;
+}
+
+#event-menu-modal .event-menu-card--danger {
+    color: var(--theme-color, #d40000);
+}
+
+#event-menu-modal .event-menu-card--danger:hover,
+#event-menu-modal .event-menu-card--danger:focus-visible {
+    background: transparent;
+    color: var(--theme-color, #d40000);
+    text-shadow: 0 0 11px rgba(var(--theme-color-rgb), 0.24);
+}
+
+#event-menu-modal .event-menu-card--danger:hover .event-menu-category-icon,
+#event-menu-modal .event-menu-card--danger:focus-visible .event-menu-category-icon {
+    transform: scale(1.08);
+}
+
+#event-menu-modal .event-menu-card--danger .event-menu-category-icon {
+    color: var(--theme-color, #d40000);
+    filter: drop-shadow(0 0 7px rgba(var(--theme-color-rgb), 0.18));
+}
+
+@media (max-width: 640px) {
+    #event-menu-modal .modal-body {
+        padding: 0 16px 18px !important;
+    }
+
+    #event-menu-modal #event-menu-list.event-menu-list {
+        gap: 12px;
+        width: 100%;
+    }
+
+    #event-menu-modal #event-menu-list.event-menu-list--categories {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        column-gap: 28px;
+        row-gap: 30px;
+        justify-items: center;
+        width: min(100%, 312px);
+        transform: translateY(-14px);
+    }
+
+    #event-menu-modal .event-menu-list--items {
+        width: min(100%, 340px);
+        transform: translateY(-10px);
+    }
+
+    #event-menu-modal .event-menu-category-card {
+        width: min(100%, 140px);
+        min-height: 82px;
+        padding: 2px 2px;
+        gap: 7px;
+        font-size: 13px;
+    }
+
+    #event-menu-modal .event-menu-category-icon {
+        width: 38px;
+        height: 38px;
+    }
+
+    #event-menu-modal #event-menu-list.event-menu-list--categories .event-menu-category-icon {
+        width: 46px;
+        height: 46px;
+    }
+
+    #event-menu-modal #event-menu-list.event-menu-list--categories .event-menu-category-icon svg[viewBox="0 0 64 64"] {
+        stroke-width: 3;
+    }
+
+    #event-menu-modal .event-menu-section-heading {
+        gap: 7px;
+        flex-wrap: wrap;
+    }
+
+    #event-menu-modal .event-menu-section-title {
+        font-size: 15.5px;
+    }
+
+    #event-menu-modal .event-menu-card-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        column-gap: 26px;
+        row-gap: 12px;
+        justify-items: center;
+        width: min(100%, 330px);
+        overflow: visible;
+    }
+
+    #event-menu-modal .event-menu-card {
+        width: min(100%, 142px);
+        min-height: 72px;
+        padding: 2px 2px;
+        gap: 5px;
+        font-size: 12.5px;
+        overflow: visible;
+    }
+
+    #event-menu-modal .event-menu-card .event-menu-category-icon {
+        width: 40px;
+        height: 40px;
     }
 }
 
@@ -1056,8 +1396,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
   #dinamik-olay-modal .modal-body input[type="date"].form-input,
   #dinamik-olay-modal .modal-body .olay-tarih-input {
     display: block !important;
-    width: 100% !important;
-    max-width: 100% !important;
+    width: min(158px, 100%) !important;
+    max-width: 158px !important;
     min-width: 0 !important;
     padding-right: 28px !important;
     overflow: hidden !important;
@@ -1070,7 +1410,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     width: 100% !important;
     max-width: 100% !important;
     min-width: 0 !important;
-    overflow: hidden !important;
+    overflow: visible !important;
   }
   #dinamik-olay-modal .modal-body .universal-btn-group {
     width: 100% !important;
@@ -2099,6 +2439,11 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
   .olay-ekle-modal .modal-body select {
     height: 27px !important;
     min-height: 27px !important;
+  }
+  .olay-ekle-modal .modal-body input[type="date"].form-input,
+  .olay-ekle-modal .modal-body .olay-tarih-input {
+    width: min(152px, 100%) !important;
+    max-width: 152px !important;
   }
   .olay-ekle-modal .modal-body input.form-input,
   .olay-ekle-modal .modal-body select,
