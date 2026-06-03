@@ -42,11 +42,6 @@ function medisaNormalizeUploadDocumentDateToIso($rawDate) {
     return '';
 }
 
-function medisaFormatUploadDocumentDate($isoDate) {
-    $parts = explode('-', (string)$isoDate);
-    return count($parts) === 3 ? ($parts[2] . '/' . $parts[1] . '/' . $parts[0]) : (string)$isoDate;
-}
-
 function medisaNormalizeUploadDocumentPath($path) {
     $normalized = ltrim(str_replace('\\', '/', trim((string)$path)), '/');
     if (strpos($normalized, 'data/') === 0) {
@@ -55,7 +50,15 @@ function medisaNormalizeUploadDocumentPath($path) {
     return $normalized;
 }
 
-function medisaCanMergeVehicleDocumentUpload($vehicle, $config, $documentType, $clientDocumentPath, $clientTasitKartiExpiryDate, $hasClientDocumentPath, $hasClientTasitKartiExpiryDate) {
+function medisaUploadVehicleNeedsK2($vehicle) {
+    if (!is_array($vehicle)) {
+        return false;
+    }
+    $typeKey = strtolower(trim((string)($vehicle['vehicleType'] ?? $vehicle['tip'] ?? '')));
+    return in_array($typeKey, ['minivan', 'kamyon', 'romork'], true);
+}
+
+function medisaCanMergeVehicleDocumentUpload($vehicle, $config, $documentType, $clientDocumentPath, $clientTasitKartiSyncDate, $hasClientDocumentPath, $hasClientTasitKartiSyncDate, $k2ExpiryDate = '') {
     if (!$hasClientDocumentPath || !is_array($vehicle) || !is_array($config)) {
         return false;
     }
@@ -71,11 +74,17 @@ function medisaCanMergeVehicleDocumentUpload($vehicle, $config, $documentType, $
     }
 
     if ($documentType === 'tasit_karti') {
-        if (!$hasClientTasitKartiExpiryDate) {
+        if (!$hasClientTasitKartiSyncDate) {
             return false;
         }
+        $k2SourceExpiryDate = medisaNormalizeUploadDocumentDateToIso($k2ExpiryDate);
+        if ($k2SourceExpiryDate !== '') {
+            if ($k2SourceExpiryDate === $clientTasitKartiSyncDate) {
+                return true;
+            }
+        }
         $serverExpiryDate = medisaNormalizeUploadDocumentDateToIso($vehicle['tasitKartiExpiryDate'] ?? '');
-        if ($serverExpiryDate !== $clientTasitKartiExpiryDate) {
+        if ($serverExpiryDate !== $clientTasitKartiSyncDate) {
             return false;
         }
     }
@@ -97,21 +106,12 @@ if (!$isSettingsDocument && ($vehicleVersion === null || $vehicleVersion <= 0)) 
     exit;
 }
 
-$tasitKartiExpiryDate = '';
-if ($documentType === 'tasit_karti') {
-    $rawTasitKartiExpiryDate = trim((string)($_POST['tasitKartiExpiryDate'] ?? ''));
-    $tasitKartiExpiryDate = medisaNormalizeUploadDocumentDateToIso($rawTasitKartiExpiryDate);
-    if ($tasitKartiExpiryDate === '') {
-        http_response_code(400);
-        echo json_encode(['error' => 'Taşıt Belgesi Geçerlilik tarihi geçerli olmalıdır. Örnek: 17/05/2027'], JSON_UNESCAPED_UNICODE);
-        exit;
-    }
-}
+$tasitKartiK2ExpiryDate = '';
 
 $hasClientDocumentPath = array_key_exists('documentPathBefore', $_POST);
 $clientDocumentPath = $hasClientDocumentPath ? (string)$_POST['documentPathBefore'] : '';
-$hasClientTasitKartiExpiryDate = array_key_exists('tasitKartiExpiryDateBefore', $_POST);
-$clientTasitKartiExpiryDate = $hasClientTasitKartiExpiryDate
+$hasClientTasitKartiSyncDate = array_key_exists('tasitKartiExpiryDateBefore', $_POST);
+$clientTasitKartiSyncDate = $hasClientTasitKartiSyncDate
     ? medisaNormalizeUploadDocumentDateToIso($_POST['tasitKartiExpiryDateBefore'])
     : '';
 
@@ -149,11 +149,15 @@ if (!$isSettingsDocument) {
         exit;
     }
     if ($documentType === 'tasit_karti') {
-        $k2ExpiryDate = medisaNormalizeUploadDocumentDateToIso($preloadData['ayarlar']['k2Belgesi']['expiryDate'] ?? '');
-        if ($k2ExpiryDate !== '' && $tasitKartiExpiryDate > $k2ExpiryDate) {
-            $k2DisplayDate = medisaFormatUploadDocumentDate($k2ExpiryDate);
+        if (!medisaUploadVehicleNeedsK2($preVehicle)) {
             http_response_code(400);
-            echo json_encode(['error' => "K Belgesinin Geçerlilik Tarihi {$k2DisplayDate} 'dır. Taşıt Belgesi Geçerlilik Tarihi Bu Tarihten Sonrası Olamaz."], JSON_UNESCAPED_UNICODE);
+            echo json_encode(['error' => 'Bu taşıt tipi için Taşıt Kartı yüklenemez.'], JSON_UNESCAPED_UNICODE);
+            exit;
+        }
+        $tasitKartiK2ExpiryDate = medisaNormalizeUploadDocumentDateToIso($preloadData['ayarlar']['k2Belgesi']['expiryDate'] ?? '');
+        if ($tasitKartiK2ExpiryDate === '') {
+            http_response_code(400);
+            echo json_encode(['error' => 'Taşıt Kartı yüklemek için önce K2 Belgesi Geçerlilik Süresi kaydedilmelidir.'], JSON_UNESCAPED_UNICODE);
             exit;
         }
     }
@@ -229,7 +233,7 @@ if (is_file($previewPath)) {
 }
 
 $documentPath = $config['dir'] . '/' . $filename;
-$result = medisaMutateData(function (&$data) use ($vehicleId, $vehicleVersion, $documentPath, $config, $isSettingsDocument, $documentType, $tasitKartiExpiryDate, $clientDocumentPath, $clientTasitKartiExpiryDate, $hasClientDocumentPath, $hasClientTasitKartiExpiryDate) {
+$result = medisaMutateData(function (&$data) use ($vehicleId, $vehicleVersion, $documentPath, $config, $isSettingsDocument, $documentType, $tasitKartiK2ExpiryDate, $clientDocumentPath, $clientTasitKartiSyncDate, $hasClientDocumentPath, $hasClientTasitKartiSyncDate) {
     $auth = medisaResolveAuthorizedContext($data, 'view_main_app');
     if (($auth['success'] ?? false) !== true) {
         return medisaBuildErrorResult($auth['message'] ?? 'Bu işlem için yetkiniz yok.', (int)($auth['status'] ?? 403));
@@ -270,17 +274,24 @@ $result = medisaMutateData(function (&$data) use ($vehicleId, $vehicleVersion, $
     if (!medisaCanManageVehicleRecord($vehicle, $context)) {
         return medisaBuildErrorResult('Bu taşıtı güncelleme yetkiniz yok.', 403);
     }
+    if ($documentType === 'tasit_karti' && !medisaUploadVehicleNeedsK2($vehicle)) {
+        return medisaBuildErrorResult('Bu taşıt tipi için Taşıt Kartı yüklenemez.', 400);
+    }
 
     $versionCheck = medisaEnsureVehicleVersion($vehicle, $vehicleVersion, 'Bu taşıt başka biri tarafından güncellendi. Güncel veriler yüklendi.');
     if ($versionCheck !== true) {
+        $k2ExpiryDateForMerge = $documentType === 'tasit_karti'
+            ? medisaNormalizeUploadDocumentDateToIso($data['ayarlar']['k2Belgesi']['expiryDate'] ?? '')
+            : '';
         $canMergeDocumentUpload = medisaCanMergeVehicleDocumentUpload(
             $vehicle,
             $config,
             $documentType,
             $clientDocumentPath,
-            $clientTasitKartiExpiryDate,
+            $clientTasitKartiSyncDate,
             $hasClientDocumentPath,
-            $hasClientTasitKartiExpiryDate
+            $hasClientTasitKartiSyncDate,
+            $k2ExpiryDateForMerge
         );
         if (!$canMergeDocumentUpload) {
             return $versionCheck;
@@ -290,11 +301,10 @@ $result = medisaMutateData(function (&$data) use ($vehicleId, $vehicleVersion, $
     $vehicle[$config['pathField']] = $documentPath;
     if ($documentType === 'tasit_karti') {
         $k2ExpiryDate = medisaNormalizeUploadDocumentDateToIso($data['ayarlar']['k2Belgesi']['expiryDate'] ?? '');
-        if ($k2ExpiryDate !== '' && $tasitKartiExpiryDate > $k2ExpiryDate) {
-            $k2DisplayDate = medisaFormatUploadDocumentDate($k2ExpiryDate);
-            return medisaBuildErrorResult("K Belgesinin Geçerlilik Tarihi {$k2DisplayDate} 'dır. Taşıt Belgesi Geçerlilik Tarihi Bu Tarihten Sonrası Olamaz.", 400);
+        if ($k2ExpiryDate === '') {
+            return medisaBuildErrorResult('Taşıt Kartı yüklemek için önce K2 Belgesi Geçerlilik Süresi kaydedilmelidir.', 400);
         }
-        $vehicle['tasitKartiExpiryDate'] = $tasitKartiExpiryDate;
+        $vehicle['tasitKartiExpiryDate'] = $k2ExpiryDate;
     }
     $newVehicleVersion = medisaBumpVehicleVersion($vehicle);
 
@@ -310,6 +320,9 @@ $result = medisaMutateData(function (&$data) use ($vehicleId, $vehicleVersion, $
     if ($config['pathField'] === 'ruhsatPath') {
         $payload['ruhsatPath'] = $documentPath;
     }
+    if ($documentType === 'tasit_karti') {
+        $payload['tasitKartiExpiryDate'] = $vehicle['tasitKartiExpiryDate'];
+    }
     return $payload;
 });
 
@@ -318,7 +331,7 @@ if (($result['success'] ?? false) === true) {
     $result['documentPath'] = $documentPath;
     $result['ruhsatPath'] = $documentType === 'ruhsat' ? $documentPath : null;
     if ($documentType === 'tasit_karti') {
-        $result['tasitKartiExpiryDate'] = $tasitKartiExpiryDate;
+        $result['tasitKartiExpiryDate'] = $result['tasitKartiExpiryDate'] ?? $tasitKartiK2ExpiryDate;
     }
 }
 
