@@ -90,12 +90,33 @@
     return getRegistrationVehicleTypeKey(vehicleOrType) === 'kamyon';
   }
 
+  function registrationVehicleNeedsK2(vehicleOrType) {
+    const typeKey = getRegistrationVehicleTypeKey(vehicleOrType);
+    return typeKey === 'minivan' || typeKey === 'kamyon' || typeKey === 'romork';
+  }
+
+  function getRegistrationK2ExpiryDate() {
+    const state = window.appData && window.appData.ayarlar && window.appData.ayarlar.k2Belgesi;
+    return String((state && state.expiryDate) || '').trim();
+  }
+
   function clearVehicleTakografFieldsWhenOutOfScope(vehicle) {
     if (!vehicle || registrationVehicleNeedsTakograf(vehicle)) return vehicle;
     vehicle.takografKalibrasyonDate = '';
     vehicle.takografExpiryDate = '';
     vehicle.takografBelgesiPath = '';
     vehicle.takografServis = '';
+    return vehicle;
+  }
+
+  function syncVehicleTasitKartiFieldsForK2Scope(vehicle) {
+    if (!vehicle) return vehicle;
+    if (registrationVehicleNeedsK2(vehicle)) {
+      vehicle.tasitKartiExpiryDate = getRegistrationK2ExpiryDate();
+      return vehicle;
+    }
+    vehicle.tasitKartiExpiryDate = '';
+    vehicle.tasitKartiPath = '';
     return vehicle;
   }
 
@@ -2315,6 +2336,8 @@
       updatedAt: new Date().toISOString()
     };
 
+    syncVehicleTasitKartiFieldsForK2Scope(record);
+
     // Tescil tarihi onay modalını aç (kayıt işlemi oradan devam edecek)
     showTescilTarihConfirmModal(record);
     } catch (error) {
@@ -2647,11 +2670,12 @@
       if (isEditMode) {
         const index = vehicles.findIndex(v => v.id === editingVehicleId);
         if (index !== -1) {
-          vehicles[index] = clearVehicleTakografFieldsWhenOutOfScope({ ...vehicles[index], ...record });
+          vehicles[index] = syncVehicleTasitKartiFieldsForK2Scope(clearVehicleTakografFieldsWhenOutOfScope({ ...vehicles[index], ...record }));
         }
       } else {
         // Yeni kayıt: İlk km'yi guncelKm olarak ayarla ve tarihçeye ekle
         clearVehicleTakografFieldsWhenOutOfScope(record);
+        syncVehicleTasitKartiFieldsForK2Scope(record);
         if (record.km) {
           record.guncelKm = record.km.replace(/\./g, ''); // Noktaları temizle
           
@@ -2962,6 +2986,7 @@
             if (vehicle) {
               vehicle.vehicleType = type;
               clearVehicleTakografFieldsWhenOutOfScope(vehicle);
+              syncVehicleTasitKartiFieldsForK2Scope(vehicle);
               if (window.dataApi && window.dataApi.saveVehiclesList) {
                 window.dataApi.saveVehiclesList(vehicles).catch(function() {});
               }

@@ -6871,20 +6871,16 @@
   }
 
   function getTasitKartiExpiryDate(vehicle) {
-    return String((vehicle && vehicle.tasitKartiExpiryDate) || '').trim();
+    return String(getK2BelgesiExpiryDate() || (vehicle && vehicle.tasitKartiExpiryDate) || '').trim();
   }
 
-  function buildTasitKartiK2LimitMessage(k2IsoDate) {
-    return "K Belgesinin Geçerlilik Tarihi " + formatVehicleDocumentExpiryDate(k2IsoDate) + " 'dır. Taşıt Belgesi Geçerlilik Tarihi Bu Tarihten Sonrası Olamaz.";
+  function getTasitKartiSourceK2ExpiryIsoDate() {
+    return parseVehicleDocumentExpiryDate(getK2BelgesiExpiryDate());
   }
 
-  function validateTasitKartiExpiryDate(expiryIsoDate) {
-    if (!expiryIsoDate) return { valid: false, message: 'Taşıt Belgesi Geçerlilik tarihi geçerli olmalıdır. Örnek: 17/05/2027' };
-    const k2IsoDate = parseVehicleDocumentExpiryDate(getK2BelgesiExpiryDate());
-    if (k2IsoDate && expiryIsoDate > k2IsoDate) {
-      return { valid: false, message: buildTasitKartiK2LimitMessage(k2IsoDate) };
-    }
-    return { valid: true };
+  function validateTasitKartiK2SourceDate() {
+    if (getTasitKartiSourceK2ExpiryIsoDate()) return { valid: true };
+    return { valid: false, message: 'Taşıt Kartı yüklemek için önce K2 Belgesi Geçerlilik Süresi kaydedilmelidir.' };
   }
 
   function getVehicleDocumentKeysForVehicle(vehicle) {
@@ -8309,13 +8305,10 @@
     }
     function validateSelectedDocumentBeforeUpload() {
       if (cfg.key !== 'tasit_karti') return true;
-      const expiryInput = document.getElementById('tasit-karti-expiry-date');
-      const expiryIsoDate = parseVehicleDocumentExpiryDate(expiryInput ? expiryInput.value : '');
-      const expiryValidation = validateTasitKartiExpiryDate(expiryIsoDate);
+      const expiryValidation = validateTasitKartiK2SourceDate();
       if (expiryValidation.valid) return true;
       alert(expiryValidation.message);
       resetSelectedUploadFile();
-      if (expiryInput) expiryInput.focus();
       return false;
     }
     function uploadSelectedDocument() {
@@ -8358,19 +8351,16 @@
       expiryWrap.className = 'tasit-karti-expiry-field';
       const expiryLabel = document.createElement('label');
       expiryLabel.className = 'form-label';
-      expiryLabel.setAttribute('for', 'tasit-karti-expiry-date');
-      expiryLabel.textContent = 'Geçerlilik Süresi';
-      const expiryInput = document.createElement('input');
-      expiryInput.type = 'text';
-      expiryInput.id = 'tasit-karti-expiry-date';
-      expiryInput.className = 'form-input';
-      expiryInput.placeholder = 'gg/aa/yyyy';
-      expiryInput.inputMode = 'numeric';
-      const vehicles = window.appData?.tasitlar || [];
-      const vehicle = vehicles.find(function(x) { return String(x.id) === String(window.currentDetailVehicleId || ''); });
-      expiryInput.value = formatVehicleDocumentExpiryDate(getTasitKartiExpiryDate(vehicle));
+      expiryLabel.textContent = 'K2 Belgesine Bağlı Geçerlilik';
+      const expiryInfo = document.createElement('div');
+      expiryInfo.className = 'form-input';
+      expiryInfo.setAttribute('aria-readonly', 'true');
+      const k2ExpiryDate = getTasitKartiSourceK2ExpiryIsoDate();
+      expiryInfo.textContent = k2ExpiryDate
+        ? (formatVehicleDocumentExpiryDate(k2ExpiryDate) + ' (K2 Belgesi Bitiş Tarihinden Gelir)')
+        : 'Önce K2 Belgesi Geçerlilik Süresi Kaydedilmelidir';
       expiryWrap.appendChild(expiryLabel);
-      expiryWrap.appendChild(expiryInput);
+      expiryWrap.appendChild(expiryInfo);
       content.appendChild(expiryWrap);
     }
     setRuhsatSaveBtnVisibility(saveBtn, false);
@@ -8486,15 +8476,11 @@
     formData.append('documentPathBefore', getVehicleDocumentPath(vehicle, cfg.key));
     if (cfg.key === 'tasit_karti') {
       formData.append('tasitKartiExpiryDateBefore', getTasitKartiExpiryDate(vehicle));
-      const expiryInput = document.getElementById('tasit-karti-expiry-date');
-      const expiryIsoDate = parseVehicleDocumentExpiryDate(expiryInput ? expiryInput.value : '');
-      const expiryValidation = validateTasitKartiExpiryDate(expiryIsoDate);
+      const expiryValidation = validateTasitKartiK2SourceDate();
       if (!expiryValidation.valid) {
         alert(expiryValidation.message);
-        if (expiryInput) expiryInput.focus();
         return;
       }
-      formData.append('tasitKartiExpiryDate', expiryIsoDate);
     }
     formData.append('document', input.files[0]);
     setRuhsatUploadProgressVisible(true, 0, true);
