@@ -1428,7 +1428,7 @@
 }
 
 /* Event Menu List Hover Efektleri - Sadece Metin Büyüyecek */
-#event-menu-list {
+#event-menu-list:has(> button:not(.event-menu-card):not(.event-menu-category-card):not(.event-menu-category-back)) {
   display: flex !important;
   flex-direction: column !important;
   gap: 8px !important;
@@ -1436,7 +1436,7 @@
   width: 100%; /* Container genişliği */
 }
 
-#event-menu-list button {
+#event-menu-list > button:not(.event-menu-card):not(.event-menu-category-card):not(.event-menu-category-back) {
   transition: outline 0.2s ease, font-weight 0.2s ease, transform 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
   outline: 2px solid transparent;
   outline-offset: -2px;
@@ -1451,7 +1451,7 @@
 
 /* Fare ile: çerçeve + metin hafif büyür; kırmızı butonlarda beyaz outline yok (yalnızca tema kırmızısı) */
 @media (hover: hover) {
-  #event-menu-list button:hover {
+  #event-menu-list > button:not(.event-menu-card):not(.event-menu-category-card):not(.event-menu-category-back):hover {
     outline-color: rgba(255, 255, 255, 0.4);
     font-weight: 700 !important;
     transform: scale(1.02);
@@ -1459,7 +1459,7 @@
   }
 
   /* Tema kırmızısı (#d40000) ile aynı hue; #ff5252 gibi açık tonlar pembeye kayar */
-  #event-menu-list button.event-menu-btn--danger:hover {
+  #event-menu-list > button.event-menu-btn--danger:not(.event-menu-card):not(.event-menu-category-card):not(.event-menu-category-back):hover {
     outline-color: rgba(var(--theme-color-rgb), 0.95) !important;
     border-color: #ff1a1a !important;
     color: #ff2424 !important;
@@ -2055,8 +2055,8 @@
   /* --- TARİH INPUTLARI (Olay Ekle 14 modal) - mobilde dar ama dikeyde ortalı kalsın --- */
   .olay-ekle-modal .modal-body .olay-tarih-input,
   .olay-ekle-modal .modal-body input[type="date"].form-input {
-    width: 100% !important;
-    max-width: 100% !important;
+    width: min(158px, 100%) !important;
+    max-width: 158px !important;
     min-width: 0 !important;
     overflow: hidden !important;
     font-size: 11px !important;
@@ -2067,7 +2067,7 @@
   }
   .olay-ekle-modal .modal-body > div > div:has(> .olay-tarih-input),
   .olay-ekle-modal .modal-body > div > div:has(> input[type="date"].olay-tarih-input) {
-    width: min(165px, 100%) !important;
+    width: 100% !important;
     max-width: 100% !important;
     min-width: 0 !important;
   }
@@ -2197,12 +2197,12 @@
     height: 35px !important;
   }
 
-  .olay-ekle-modal .modal-body button:not(.ceza-user-trigger):not(.ceza-user-option):not(.medisa-owner-select-trigger):not(.medisa-owner-select-option) {
+  .olay-ekle-modal .modal-body button:not(.event-menu-card):not(.event-menu-category-card):not(.event-menu-category-back):not(.ceza-user-trigger):not(.ceza-user-option):not(.medisa-owner-select-trigger):not(.medisa-owner-select-option) {
     font-size: 17px !important; /* 16px + 1 punto */
   }
 
   /* Olay Ekle: uzun buton metni taşmasın – satır kırılır, gerekirse font küçülür */
-  #event-menu-modal .modal-body button {
+  #event-menu-modal .modal-body button:not(.event-menu-card):not(.event-menu-category-card):not(.event-menu-category-back) {
     white-space: normal !important;
     overflow-wrap: break-word !important;
     word-break: break-word !important;
@@ -2211,7 +2211,7 @@
     font-size: clamp(11px, 2.8vw, 17px) !important;
   }
   @media (min-width: 769px) {
-    #event-menu-modal .modal-body #event-menu-list button {
+    #event-menu-modal .modal-body #event-menu-list > button:not(.event-menu-card):not(.event-menu-category-card):not(.event-menu-category-back) {
       width: calc(100% - 24px) !important;
       max-width: calc(100% - 24px) !important;
     }
@@ -2845,10 +2845,10 @@
   }
 
   /* --- EVENT MENU LIST MOBİL --- (spesifik seçici: .modal-body button kuralını ezer) */
-  #event-menu-list {
+  #event-menu-list:has(> button:not(.event-menu-card):not(.event-menu-category-card):not(.event-menu-category-back)) {
     align-items: flex-end !important; /* Mobilde saşa yaslı */
   }
-  #event-menu-modal .modal-body #event-menu-list button {
+  #event-menu-modal .modal-body #event-menu-list > button:not(.event-menu-card):not(.event-menu-category-card):not(.event-menu-category-back) {
     text-align: right !important;
     width: calc(100% - 20px) !important;
     max-width: calc(100% - 20px) !important;

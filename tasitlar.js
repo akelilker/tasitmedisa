@@ -2186,10 +2186,125 @@
     }, { passive: true });
   }
 
+  var eventMenuRenderState = {
+    groups: [],
+    labels: {},
+    vehicleId: ''
+  };
+
+  function getEventMenuCategoryIconHtml(categoryId) {
+    var icons = {
+      sureli: '<svg viewBox="0 0 64 64" aria-hidden="true"><rect x="14" y="9" width="34" height="47" rx="3"/><path d="M24 9V6h14v3M21 24h21M21 33h21M21 42h15"/><circle cx="48" cy="47" r="10"/><path d="M43 47l4 4 8-9"/></svg>',
+      police: '<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M8 31c7-14 18-21 32-21s25 7 32 21"/><path d="M8 31c5-4 10-4 15 0 5-4 10-4 15 0 5-4 10-4 15 0 5-4 10-4 15 0"/><path d="M40 10v35c0 7-10 7-10 1"/></svg>',
+      donanim: '<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M9 55l8-15 18-25 8 6-9 28-8-4-9 13z"/><path d="M36 15l10-8 15-3 1 8-14 3-10 8M41 20l4 6M18 41l9 6M20 53l-8-4M25 45c5-9 11-12 18-8"/></svg>',
+      genel: '<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M22 17h20"/><path d="M22 17L16 29"/><path d="M42 17l6 12"/><path d="M16 29h32"/><path d="M14 29c10-6 26-6 36 0"/><path d="M12 29v12"/><path d="M52 29v12"/><path d="M10 41h44"/><path d="M13 44h38"/><circle cx="18" cy="35" r="4"/><circle cx="46" cy="35" r="4"/><circle cx="18" cy="35" r="1.5"/><circle cx="46" cy="35" r="1.5"/><path d="M26 34h12"/><path d="M27 37h10"/><path d="M28 40h8"/><path d="M14 41v5"/><path d="M50 41v5"/><path d="M11 24h5"/><path d="M48 24h5"/></svg>',
+      muayene: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3v3M17 3v3M4 8h16M6 5h12a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"/><path d="M8 14l2.2 2.2L15 11.4"/></svg>',
+      takograf: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7"/><path d="M12 13l3-3M7 17h10"/></svg>',
+      sigorta: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6l7-3z"/><path d="M9 12l2 2 4-5"/></svg>',
+      kasko: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v5h5M9 15l2 2 4-5"/></svg>',
+      takip: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s6-5.2 6-10A6 6 0 0 0 6 11c0 4.8 6 10 6 10z"/><circle cx="12" cy="11" r="2"/></svg>',
+      utts: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 20V5a2 2 0 0 1 2-2h6v17"/><path d="M6 9h8M14 7h2l3 3v7a2 2 0 0 1-2 2h-3"/></svg>',
+      anahtar: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="7" cy="14" r="3"/><path d="M10 14h10M16 14v3M19 14v2"/></svg>',
+      lastik: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 4v3M12 17v3M4 12h3M17 12h3"/></svg>',
+      kredi: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>',
+      kaskokodu: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10l6 6-7 7-6-6V7z"/><circle cx="9" cy="11" r="1"/></svg>',
+      ceza: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4l9 16H3z"/><path d="M12 9v5M12 17h.01"/></svg>',
+      km: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 17a8 8 0 1 1 14 0"/><path d="M12 14l4-4M8 17h8"/></svg>',
+      bakim: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>',
+      kaza: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4l9 16H3z"/><path d="M9 16h6M10 12h4"/></svg>',
+      sube: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21V8l8-4 8 4v13"/><path d="M8 21v-7h8v7M8 10h.01M12 10h.01M16 10h.01"/></svg>',
+      kullanici: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M5 21a7 7 0 0 1 14 0"/></svg>',
+      satis: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h10l5 5-7 7-8-8V7z"/><path d="M9 11h.01M16 8l-8 8"/></svg>'
+    };
+    return '<span class="event-menu-category-icon">' + (icons[categoryId] || icons.genel) + '</span>';
+  }
+
+  function syncEventMenuBackButton(mode) {
+    var modal = DOM.eventMenuModal;
+    var backBtn = modal ? modal.querySelector('.universal-back-btn') : null;
+    if (!backBtn) return;
+    var labelSpan = backBtn.querySelector('.universal-back-label');
+    if (mode === 'items') {
+      if (labelSpan) labelSpan.textContent = 'Olay Ekle';
+      backBtn.title = 'Olay Ekle kategorilerine dön';
+      backBtn.onclick = function(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        renderEventMenuCategoryRoot();
+      };
+      return;
+    }
+    if (labelSpan) labelSpan.textContent = 'Taşıt Detay';
+    backBtn.title = "Taşıt Detay'a dön";
+    backBtn.onclick = function(e) {
+      e.stopPropagation();
+      if (typeof window.backToVehicleDetail === 'function') window.backToVehicleDetail();
+    };
+  }
+
+  function syncEventMenuHeaderTitle(title) {
+    var modal = DOM.eventMenuModal;
+    var titleEl = modal ? modal.querySelector('.modal-header h2') : null;
+    var nextTitle = title || 'OLAY EKLE';
+    try {
+      nextTitle = String(nextTitle).toLocaleUpperCase('tr-TR');
+    } catch (e) {
+      nextTitle = String(nextTitle).toUpperCase();
+    }
+    if (titleEl) titleEl.textContent = nextTitle;
+  }
+
+  function renderEventMenuCategoryRoot() {
+    var menuList = DOM.eventMenuList;
+    if (!menuList) return;
+    syncEventMenuBackButton('root');
+    syncEventMenuHeaderTitle('OLAY EKLE');
+    menuList.classList.add('event-menu-list--categories');
+    menuList.classList.remove('event-menu-list--items');
+    menuList.innerHTML = eventMenuRenderState.groups.map(function(group) {
+      return '<button type="button" class="event-menu-category-card" data-event-category="' + escapeAttr(group.id) + '">' +
+        getEventMenuCategoryIconHtml(group.id) +
+        '<span class="event-menu-category-title">' + escapeHtml(group.title) + '</span>' +
+        '</button>';
+    }).join('');
+  }
+
+  function renderEventMenuCategoryItems(categoryId) {
+    var menuList = DOM.eventMenuList;
+    if (!menuList) return;
+    var group = eventMenuRenderState.groups.find(function(item) {
+      return item.id === categoryId;
+    });
+    if (!group) return;
+    menuList.classList.remove('event-menu-list--categories');
+    menuList.classList.add('event-menu-list--items');
+    syncEventMenuBackButton('items');
+    syncEventMenuHeaderTitle(group.title);
+    var buttonsHtml = group.ids.map(function(eventId) {
+      var isDanger = eventId === 'kaza' || eventId === 'satis' || eventId === 'ceza';
+      var dangerClass = isDanger ? ' event-menu-card--danger' : '';
+      return '<button type="button" class="event-menu-card' + dangerClass + '" data-event-id="' + eventId + '" data-vehicle-id="' + escapeAttr(eventMenuRenderState.vehicleId) + '">' +
+        getEventMenuCategoryIconHtml(eventId) +
+        '<span class="event-menu-card-title">' + escapeHtml(eventMenuRenderState.labels[eventId] || eventId) + '</span>' +
+        '</button>';
+    }).join('');
+    menuList.innerHTML =
+      '<section class="event-menu-section event-menu-section--active">' +
+      '<div class="event-menu-card-grid">' + buttonsHtml + '</div>' +
+      '</section>';
+  }
+
   // Olay menü listesi: delegation (her butona ayrı onclick yerine tek listener)
   if (DOM.eventMenuList && !DOM.eventMenuList._eventDelegationBound) {
     DOM.eventMenuList._eventDelegationBound = true;
     DOM.eventMenuList.addEventListener('click', function(e) {
+      var categoryBtn = e.target.closest('button[data-event-category]');
+      if (categoryBtn) {
+        e.stopPropagation();
+        e.preventDefault();
+        renderEventMenuCategoryItems(categoryBtn.getAttribute('data-event-category'));
+        return;
+      }
       var btn = e.target.closest('button[data-event-id]');
       if (!btn) return;
       e.stopPropagation();
@@ -6041,50 +6156,73 @@
       if (!menuList) return;
       
       // Menü listesini oluştur
-      const isMobile = window.innerWidth <= 640;
-      const takipLabel = isMobile ? 'Taşıt Takip Cih.Bilg. Günc.' : 'Taşıt Takip Cihaz Bilgisi Güncelle';
       const currentMenuVehicle = readVehicles().find(v => String(v.id) === String(effectiveVid));
       renderVehicleContextRow(modal, currentMenuVehicle);
       const assignmentLocked = isArchivedVehicleAssignmentLocked(currentMenuVehicle);
-      let events = [
-        { id: 'ceza', label: 'Trafik Cezası Ekle' },
-        { id: 'km', label: 'Km Güncelle' },
-        { id: 'bakim', label: 'Bakım Bilgisi Ekle' },
-        { id: 'kaza', label: 'Kaza Bilgisi Ekle' },
-        { id: 'sigorta', label: 'Sigorta Bilgisi Güncelle' },
-        { id: 'kasko', label: 'Kasko Bilgisi Güncelle' },
-        { id: 'muayene', label: 'Muayene Bilgisi G\u00FCncelle' },
-        { id: 'anahtar', label: 'Yedek Anahtar Bilgisi G\u00FCncelle' },
-        { id: 'kredi', label: 'Hak Mahrumiyeti Bilgisi G\u00FCncelle' },
-        { id: 'lastik', label: 'Yazl\u0131k/K\u0131\u015Fl\u0131k Lastik Durumu G\u00FCncelle' },
-        { id: 'utts', label: 'UTTS Bilgisi G\u00FCncelle' },
-        { id: 'takip', label: takipLabel },
-        { id: 'kaskokodu', label: 'Kasko Kodu G\u00FCncelleme' },
-        { id: 'sube', label: '\u015Eube De\u011Fi\u015Fikli\u011Fi Bilgisi G\u00FCncelle' },
-        { id: 'kullanici', label: 'Kullan\u0131c\u0131 Atama/De\u011Fi\u015Fikli\u011Fi Bilgisi G\u00FCncelle' },
-        { id: 'satis', label: 'Sat\u0131\u015F/Pert Bildirimi Yap' }
-      ];
-      if (vehicleNeedsTakograf(currentMenuVehicle)) {
-        events.splice(8, 0, { id: 'takograf', label: 'Takograf Kalibrasyon G\u00FCncelle' });
-      }
+      const eventLabels = {
+        muayene: 'Muayene Bilgisi Güncelle',
+        takograf: 'Takograf Kalibrasyon Güncelle',
+        sigorta: 'Sigorta Bilgisi Güncelle',
+        kasko: 'Kasko Bilgisi Güncelle',
+        takip: 'Taşıt Takip Cihaz Bilgisi Güncelle',
+        utts: 'UTTS Bilgisi Güncelle',
+        anahtar: 'Yedek Anahtar Bilgisi Güncelle',
+        lastik: 'Yazlık/Kışlık Lastik Durumu Güncelle',
+        kredi: 'Hak Mahrumiyeti Bilgisi Güncelle',
+        kaskokodu: 'Kasko Kodu Güncelleme',
+        ceza: 'Trafik Cezası Ekle',
+        km: 'Km Güncelle',
+        bakim: 'Bakım Bilgisi Ekle',
+        kaza: 'Kaza Bilgisi Ekle',
+        sube: 'Şube Değişikliği Bilgisi Güncelle',
+        kullanici: 'Kullanıcı Atama/Değişikliği Bilgisi Güncelle',
+        satis: 'Satış/Pert Bildirimi Yap'
+      };
+      const availableEventIds = new Set([
+        'muayene',
+        'sigorta',
+        'kasko',
+        'takip',
+        'utts',
+        'anahtar',
+        'lastik',
+        'kredi',
+        'kaskokodu',
+        'ceza',
+        'km',
+        'bakim',
+        'kaza',
+        'satis'
+      ]);
+      if (vehicleNeedsTakograf(currentMenuVehicle)) availableEventIds.add('takograf');
       if (assignmentLocked) {
-        events = events.filter(function(event) {
-          return event.id !== 'sube' && event.id !== 'kullanici';
-        });
+        availableEventIds.delete('sube');
+        availableEventIds.delete('kullanici');
+      } else {
+        availableEventIds.add('sube');
+        availableEventIds.add('kullanici');
       }
+      const eventGroups = [
+        { id: 'genel', title: 'Taşıt Detayları', ids: ['ceza', 'km', 'bakim', 'kaza', 'sube', 'kullanici', 'satis'] },
+        { id: 'sureli', title: 'Zorunlu Kontroller', ids: ['muayene', 'takograf'] },
+        { id: 'police', title: 'Sigorta / Kasko', ids: ['sigorta', 'kasko'] },
+        { id: 'donanim', title: 'Fiziki Donanımlar', ids: ['takip', 'utts', 'anahtar', 'lastik', 'kredi', 'kaskokodu'] }
+      ];
       
       const vid = (window.currentDetailVehicleId || vehicleId || '').toString().replace(/"/g, '&quot;');
-      menuList.innerHTML = events.map(event => {
-        const isKaza = event.id === 'kaza';
-        const isSatis = event.id === 'satis';
-        const isCeza = event.id === 'ceza';
-        const isDanger = isKaza || isSatis || isCeza;
-        const dangerClass = isDanger ? ' class="event-menu-btn--danger"' : '';
-        const borderColor = isDanger ? '#d40000' : 'rgba(255, 255, 255, 0.3)';
-        const textColor = isDanger ? '#d40000' : '#ccc';
-        const borderWidth = isDanger ? '0.3px' : '1px';
-        return `<button type="button"${dangerClass} data-event-id="${event.id}" data-vehicle-id="${vid}" style="width: 100%; padding: 12px; background: transparent; border: ${borderWidth} solid ${borderColor}; color: ${textColor}; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px; text-align: left;">${event.label}</button>`;
-      }).join('');
+      eventMenuRenderState.labels = eventLabels;
+      eventMenuRenderState.vehicleId = vid;
+      eventMenuRenderState.groups = eventGroups.map(function(group) {
+        return {
+          id: group.id,
+          title: group.title,
+          ids: group.ids
+          .filter(function(eventId) { return availableEventIds.has(eventId); })
+        };
+      }).filter(function(group) {
+        return group.ids.length > 0;
+      });
+      renderEventMenuCategoryRoot();
       
       modal.style.display = 'flex';
       requestAnimationFrame(() => {
