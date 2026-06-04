@@ -8709,6 +8709,9 @@
             window.showVehicleDetail(vehicleId);
           } catch (e) {}
         }
+        if (cfg.scope !== 'settings' && data.documentEvent) {
+          refreshOpenVehicleHistoryList(vehicleId);
+        }
       })
       .catch(function(err) {
         setRuhsatUploadProgressVisible(false, 0, false);
@@ -10199,6 +10202,24 @@
       '<div class="history-item-body history-item-summary" style="font-size: 12px; margin-top: 2px;">' + summaryInner + '</div>' +
       detailsHtml +
       '</div>';
+  }
+
+  /** Açık taşıt tarihçesi listesini bellekteki güncel events ile yeniden çizer */
+  function refreshOpenVehicleHistoryList(vehicleId) {
+    const vid = (vehicleId || window.currentDetailVehicleId || '').toString();
+    if (!vid) return;
+    const historyModal = DOM.vehicleHistoryModal;
+    if (!historyModal || historyModal.style.display === 'none' || !historyModal.classList.contains('active')) {
+      return;
+    }
+    if (String(window.currentDetailVehicleId || '') !== vid) {
+      return;
+    }
+    const activeTab = historyModal.querySelector('.history-tab.active');
+    const tabType = (activeTab && activeTab.dataset.tab) ? activeTab.dataset.tab : 'diger';
+    if (typeof window.switchHistoryTab === 'function') {
+      window.switchHistoryTab(tabType, vid);
+    }
   }
 
   /**
