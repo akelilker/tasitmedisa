@@ -3437,6 +3437,18 @@ padding: 16px;
   }
 }
 
+#reports-modal #stok-list-container .stok-list-cell[data-col="sube"] {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  align-content: center !important;
+  text-align: center !important;
+  white-space: normal !important;
+  -webkit-box-orient: unset !important;
+  -webkit-line-clamp: unset !important;
+  line-clamp: unset !important;
+}
+
 /* Yazdır: sadece Excel ile aynı rapor tablosu görünsün (ekran görüntüsü değil) */
 @media print {
 /* Varsayılan: dikey sayfa (detay azken) */
