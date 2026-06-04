@@ -3053,7 +3053,7 @@
               } else if (totalCards === 2) {
                   cols = 2; // 2 kutu: 2 kolon
               } else {
-                  cols = isMobile ? 3 : 5; // 3+ kutu: sabit kolon sayısı
+                  cols = isMobile ? 3 : 4; // 3+ kutu: sabit kolon sayısı
               }
               gridEl.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
           }

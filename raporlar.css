@@ -2858,6 +2858,17 @@ padding: 2px 3px !important;
 .stok-list-cell[data-col="sube"] {
 font-size: clamp(calc(9.5px + var(--stok-mob-half-pt)), 2.5vw, 13.5px) !important;
 }
+#reports-modal.reports-modal--stok-list #stok-list-container .stok-list-cell[data-col="sube"] {
+display: flex !important;
+align-items: center !important;
+justify-content: center !important;
+text-align: center !important;
+-webkit-box-orient: unset !important;
+-webkit-line-clamp: unset !important;
+line-clamp: unset !important;
+white-space: normal !important;
+line-height: 1.15 !important;
+}
 
 /* Grid sütunları - taşma önleme */
 .stok-list-header-cell,
