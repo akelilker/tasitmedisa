@@ -3448,6 +3448,15 @@ padding: 16px;
   -webkit-line-clamp: unset !important;
   line-clamp: unset !important;
 }
+#reports-modal #stok-list-container .stok-list-cell[data-col="sube"] .stok-sube-cell-inner {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  text-align: center !important;
+  line-height: 1.15 !important;
+}
 
 /* Yazdır: sadece Excel ile aynı rapor tablosu görünsün (ekran görüntüsü değil) */
 @media print {
