@@ -30,6 +30,11 @@
         if (s === '') s = '-';
         return '<div class="stok-marka-cell-inner"><span class="stok-marka-line">' + escapeHtml(s) + '</span></div>';
     }
+    function getStokSubeCellInnerHtml(branchName) {
+        var s = String(branchName == null ? '' : branchName).trim();
+        if (s === '') s = '-';
+        return '<span class="stok-sube-cell-inner">' + escapeHtml(s) + '</span>';
+    }
     function formatPlaka(str) { return (typeof window.formatPlaka === 'function' ? window.formatPlaka(str) : (str == null ? '-' : String(str))); }
     function formatAdSoyad(str) { return (typeof window.formatAdSoyad === 'function' ? window.formatAdSoyad(str) : str); }
 
@@ -777,7 +782,7 @@
         const basePx = isMobile
             ? {
                 /* Mobil: görünür gridde tasitTipi yok — dar ekran için 396px track + 6px gap ≈ 402px */
-                'sira': 22, 'sube': 54, 'yil': 34, 'marka': 108, 'plaka': 72, 'sanziman': 48, 'km': 58
+                'sira': 22, 'sube': 96, 'yil': 34, 'marka': 108, 'plaka': 72, 'sanziman': 48, 'km': 58
             }
             : {
                 'sira': 20,
@@ -1072,6 +1077,8 @@
                 inner = getStokTasitTipiDesktopCellHtml(String(cell.value));
             } else if (cell.key === 'marka') {
                 inner = getStokMarkaCellInnerHtml(String(cell.value));
+            } else if (cell.key === 'sube') {
+                inner = getStokSubeCellInnerHtml(String(cell.value));
             } else {
                 inner = escapeHtml(String(cell.value));
             }

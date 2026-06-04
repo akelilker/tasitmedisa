@@ -2937,9 +2937,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 #vehicles-modal .view-card .card {
     aspect-ratio: 1 / 1;
     min-height: 0;
-    width: calc((100% - (4 * 8px)) / 5);
-    max-width: calc((100% - (4 * 8px)) / 5);
-    flex: 0 0 calc((100% - (4 * 8px)) / 5);
+    width: calc((100% - (3 * 8px)) / 4);
+    max-width: calc((100% - (3 * 8px)) / 4);
+    flex: 0 0 calc((100% - (3 * 8px)) / 4);
     background: var(--border-faint-02); 
     border: 1px solid var(--border-subtle);
     border-radius: 8px;
