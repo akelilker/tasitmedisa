@@ -831,7 +831,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 #dinamik-olay-modal .universal-back-bar:has(.vehicle-context-row),
 #vehicle-history-modal .universal-back-bar:has(.vehicle-context-row) {
     display: grid !important;
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr) minmax(0, auto) minmax(0, 1fr);
     grid-template-rows: auto auto;
     align-items: center;
     row-gap: 3px;
@@ -854,27 +854,38 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     align-self: center;
     position: relative;
     z-index: 1;
-    max-width: 46%;
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+#event-menu-modal .universal-back-bar:has(.vehicle-context-row) .universal-back-label,
+#dinamik-olay-modal .universal-back-bar:has(.vehicle-context-row) .universal-back-label,
+#vehicle-history-modal .universal-back-bar:has(.vehicle-context-row) .universal-back-label {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 #event-menu-modal .universal-back-bar:has(.vehicle-context-row) .vehicle-context-plate,
 #dinamik-olay-modal .universal-back-bar:has(.vehicle-context-row) .vehicle-context-plate,
 #vehicle-history-modal .universal-back-bar:has(.vehicle-context-row) .vehicle-context-plate {
-    grid-column: 1;
+    grid-column: 2;
     grid-row: 1;
     justify-self: center;
     align-self: center;
     text-align: center;
-    width: 100%;
-    max-width: calc(100% - 24px);
-    padding: 0 12px;
+    width: auto;
+    max-width: min(240px, calc(100vw - 190px));
+    padding: 0 8px;
     box-sizing: border-box;
 }
 
 #event-menu-modal .universal-back-bar:has(.vehicle-context-row) .vehicle-context-model,
 #dinamik-olay-modal .universal-back-bar:has(.vehicle-context-row) .vehicle-context-model,
 #vehicle-history-modal .universal-back-bar:has(.vehicle-context-row) .vehicle-context-model {
-    grid-column: 1;
+    grid-column: 1 / -1;
     grid-row: 2;
     justify-self: center;
     text-align: center;
@@ -921,7 +932,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 
     #event-menu-modal .universal-back-bar:has(.vehicle-context-row) .universal-back-btn,
     #dinamik-olay-modal:not([data-event-type="documents"]) .universal-back-bar:has(.vehicle-context-row) .universal-back-btn {
-        max-width: 35%;
+        max-width: 100%;
         padding: 4px 0 !important;
     }
 
@@ -936,6 +947,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
         align-self: center;
         font-size: 14px;
         line-height: 1.05;
+        max-width: min(160px, calc(100vw - 180px));
         transform: none;
     }
 
@@ -996,7 +1008,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     }
 
     #event-menu-modal .universal-back-bar:has(.vehicle-context-row) .vehicle-context-plate {
-        align-self: end;
+        align-self: center;
     }
 }
 
