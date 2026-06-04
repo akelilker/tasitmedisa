@@ -820,16 +820,10 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     border-radius: 0 !important;
 }
 
-#event-menu-modal .universal-back-bar,
-#dinamik-olay-modal .universal-back-bar,
-#vehicle-history-modal .universal-back-bar {
-    position: relative !important;
-}
-
-/* Taşıt bağlamı: geri solda; plaka aynı satırda merkezde; marka/model plakanın hemen altında */
-#event-menu-modal .universal-back-bar:has(.vehicle-context-row),
-#dinamik-olay-modal .universal-back-bar:has(.vehicle-context-row),
-#vehicle-history-modal .universal-back-bar:has(.vehicle-context-row) {
+/* Taşıt bağlamı grid — layout kontratı: .universal-back-bar--context (Faz 2) */
+#event-menu-modal .universal-back-bar--context,
+#dinamik-olay-modal .universal-back-bar--context,
+#vehicle-history-modal .universal-back-bar--context {
     display: grid !important;
     grid-template-columns: minmax(0, 1fr) minmax(0, auto) minmax(0, 1fr);
     grid-template-rows: auto auto;
@@ -839,15 +833,15 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     box-sizing: border-box !important;
 }
 
-#event-menu-modal .universal-back-bar:has(.vehicle-context-row) .vehicle-context-row,
-#dinamik-olay-modal .universal-back-bar:has(.vehicle-context-row) .vehicle-context-row,
-#vehicle-history-modal .universal-back-bar:has(.vehicle-context-row) .vehicle-context-row {
+#event-menu-modal .universal-back-bar--context .vehicle-context-row,
+#dinamik-olay-modal .universal-back-bar--context .vehicle-context-row,
+#vehicle-history-modal .universal-back-bar--context .vehicle-context-row {
     display: contents;
 }
 
-#event-menu-modal .universal-back-bar:has(.vehicle-context-row) .universal-back-btn,
-#dinamik-olay-modal .universal-back-bar:has(.vehicle-context-row) .universal-back-btn,
-#vehicle-history-modal .universal-back-bar:has(.vehicle-context-row) .universal-back-btn {
+#event-menu-modal .universal-back-bar--context .universal-back-btn,
+#dinamik-olay-modal .universal-back-bar--context .universal-back-btn,
+#vehicle-history-modal .universal-back-bar--context .universal-back-btn {
     grid-column: 1;
     grid-row: 1;
     justify-self: start;
@@ -859,18 +853,18 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     overflow: hidden;
 }
 
-#event-menu-modal .universal-back-bar:has(.vehicle-context-row) .universal-back-label,
-#dinamik-olay-modal .universal-back-bar:has(.vehicle-context-row) .universal-back-label,
-#vehicle-history-modal .universal-back-bar:has(.vehicle-context-row) .universal-back-label {
+#event-menu-modal .universal-back-bar--context .universal-back-label,
+#dinamik-olay-modal .universal-back-bar--context .universal-back-label,
+#vehicle-history-modal .universal-back-bar--context .universal-back-label {
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
-#event-menu-modal .universal-back-bar:has(.vehicle-context-row) .vehicle-context-plate,
-#dinamik-olay-modal .universal-back-bar:has(.vehicle-context-row) .vehicle-context-plate,
-#vehicle-history-modal .universal-back-bar:has(.vehicle-context-row) .vehicle-context-plate {
+#event-menu-modal .universal-back-bar--context .vehicle-context-plate,
+#dinamik-olay-modal .universal-back-bar--context .vehicle-context-plate,
+#vehicle-history-modal .universal-back-bar--context .vehicle-context-plate {
     grid-column: 2;
     grid-row: 1;
     justify-self: center;
@@ -882,17 +876,17 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     box-sizing: border-box;
 }
 
-#event-menu-modal .universal-back-bar:has(.vehicle-context-row) {
+#event-menu-modal .universal-back-bar--context {
     row-gap: 0;
 }
 
-#event-menu-modal .universal-back-bar:has(.vehicle-context-row) .vehicle-context-plate {
+#event-menu-modal .universal-back-bar--context .vehicle-context-plate {
     line-height: 1.05;
 }
 
-#event-menu-modal .universal-back-bar:has(.vehicle-context-row) .vehicle-context-model,
-#dinamik-olay-modal .universal-back-bar:has(.vehicle-context-row) .vehicle-context-model,
-#vehicle-history-modal .universal-back-bar:has(.vehicle-context-row) .vehicle-context-model {
+#event-menu-modal .universal-back-bar--context .vehicle-context-model,
+#dinamik-olay-modal .universal-back-bar--context .vehicle-context-model,
+#vehicle-history-modal .universal-back-bar--context .vehicle-context-model {
     grid-column: 1 / -1;
     grid-row: 2;
     justify-self: center;
@@ -903,7 +897,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     box-sizing: border-box;
 }
 
-#event-menu-modal .universal-back-bar:has(.vehicle-context-row) .vehicle-context-model {
+#event-menu-modal .universal-back-bar--context .vehicle-context-model {
     line-height: 1.05;
 }
 
@@ -934,32 +928,32 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 }
 
 @media (max-width: 640px) {
-    #event-menu-modal .universal-back-bar:has(.vehicle-context-row),
-    #dinamik-olay-modal:not([data-event-type="documents"]) .universal-back-bar:has(.vehicle-context-row) {
+    #event-menu-modal .universal-back-bar--context,
+    #dinamik-olay-modal:not([data-event-type="documents"]) .universal-back-bar--context {
         margin-top: 0 !important;
         padding: 6px 12px 0 !important;
         row-gap: 2px !important;
         min-height: 44px;
     }
 
-    #event-menu-modal .universal-back-bar:has(.vehicle-context-row) {
+    #event-menu-modal .universal-back-bar--context {
         row-gap: 0 !important;
     }
 
-    #event-menu-modal .universal-back-bar:has(.vehicle-context-row) .universal-back-btn,
-    #dinamik-olay-modal:not([data-event-type="documents"]) .universal-back-bar:has(.vehicle-context-row) .universal-back-btn {
+    #event-menu-modal .universal-back-bar--context .universal-back-btn,
+    #dinamik-olay-modal:not([data-event-type="documents"]) .universal-back-bar--context .universal-back-btn {
         max-width: 100%;
         padding: 4px 0 !important;
     }
 
-    #event-menu-modal .universal-back-bar:has(.vehicle-context-row) .universal-back-label,
-    #dinamik-olay-modal:not([data-event-type="documents"]) .universal-back-bar:has(.vehicle-context-row) .universal-back-label {
+    #event-menu-modal .universal-back-bar--context .universal-back-label,
+    #dinamik-olay-modal:not([data-event-type="documents"]) .universal-back-bar--context .universal-back-label {
         font-size: 14px !important;
         line-height: 1.1 !important;
     }
 
-    #event-menu-modal .universal-back-bar:has(.vehicle-context-row) .vehicle-context-plate,
-    #dinamik-olay-modal:not([data-event-type="documents"]) .universal-back-bar:has(.vehicle-context-row) .vehicle-context-plate {
+    #event-menu-modal .universal-back-bar--context .vehicle-context-plate,
+    #dinamik-olay-modal:not([data-event-type="documents"]) .universal-back-bar--context .vehicle-context-plate {
         align-self: center;
         font-size: 14px;
         line-height: 1.05;
@@ -967,20 +961,20 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
         transform: none;
     }
 
-    #event-menu-modal .universal-back-bar:has(.vehicle-context-row) .vehicle-context-model,
-    #dinamik-olay-modal:not([data-event-type="documents"]) .universal-back-bar:has(.vehicle-context-row) .vehicle-context-model {
+    #event-menu-modal .universal-back-bar--context .vehicle-context-model,
+    #dinamik-olay-modal:not([data-event-type="documents"]) .universal-back-bar--context .vehicle-context-model {
         font-size: 11.5px;
         line-height: 1.05;
         transform: none;
         margin-top: 0;
     }
 
-    #dinamik-olay-modal[data-event-type="muayene"] .universal-back-bar:has(.vehicle-context-row) {
+    #dinamik-olay-modal[data-event-type="muayene"] .universal-back-bar--context {
         row-gap: 0 !important;
         padding-bottom: 0 !important;
     }
 
-    #dinamik-olay-modal[data-event-type="muayene"] .universal-back-bar:has(.vehicle-context-row) .vehicle-context-model {
+    #dinamik-olay-modal[data-event-type="muayene"] .universal-back-bar--context .vehicle-context-model {
         line-height: 1.08 !important;
     }
 
@@ -988,42 +982,42 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
         margin-top: 2.4em;
     }
 
-    #dinamik-olay-modal[data-event-type="documents"] .universal-back-bar:has(.vehicle-context-row) {
+    #dinamik-olay-modal[data-event-type="documents"] .universal-back-bar--context {
         margin-bottom: 10px !important;
         padding: 8px 6px 2px 6px !important;
     }
 
-    #dinamik-olay-modal[data-event-type="documents"] .universal-back-bar:has(.vehicle-context-row) .universal-back-btn {
+    #dinamik-olay-modal[data-event-type="documents"] .universal-back-bar--context .universal-back-btn {
         max-width: 132px !important;
         padding-left: 0 !important;
         padding-right: 0 !important;
     }
 
-    #dinamik-olay-modal[data-event-type="documents"] .universal-back-bar:has(.vehicle-context-row) .universal-back-btn .universal-back-label {
+    #dinamik-olay-modal[data-event-type="documents"] .universal-back-bar--context .universal-back-btn .universal-back-label {
         font-size: 13px !important;
         line-height: 1.1 !important;
         white-space: nowrap !important;
     }
 
-    #dinamik-olay-modal[data-event-type="documents"] .universal-back-bar:has(.vehicle-context-row) .vehicle-context-plate {
+    #dinamik-olay-modal[data-event-type="documents"] .universal-back-bar--context .vehicle-context-plate {
         font-size: 20px;
         line-height: 1.05;
         letter-spacing: 0.08em;
     }
 
-    #dinamik-olay-modal[data-event-type="documents"] .universal-back-bar:has(.vehicle-context-row) .vehicle-context-model {
+    #dinamik-olay-modal[data-event-type="documents"] .universal-back-bar--context .vehicle-context-model {
         font-size: 12.5px;
         line-height: 1.15;
     }
 }
 
 @media (min-width: 641px) {
-    #event-menu-modal .universal-back-bar:has(.vehicle-context-row) {
+    #event-menu-modal .universal-back-bar--context {
         row-gap: 0;
         padding-bottom: 8px !important;
     }
 
-    #event-menu-modal .universal-back-bar:has(.vehicle-context-row) .vehicle-context-plate {
+    #event-menu-modal .universal-back-bar--context .vehicle-context-plate {
         align-self: center;
     }
 }
@@ -1666,7 +1660,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 /* === DETAY İŞLERİK === */
 #vehicle-detail-content {
     padding: 20px;
-    padding-top: 18px !important;
+    padding-top: 8px !important;
     padding-bottom: 4px;
     padding-left: 18px; /* Container çerçevelerine 2px boşluk (16px – 18px) */
     padding-right: 18px;
@@ -1699,7 +1693,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     width: 100%;
     min-height: fit-content; /* İçeriğe göre yükseklik */
     height: fit-content; /* İçeriğe göre yükseklik */
-    margin-top: -20px !important; /* Plaka 3px daha yukarı (-17px – -20px) */
+    margin-top: 0 !important;
     margin-bottom: 2px !important; /* Plaka–marka/model arası 2px */
     position: relative; /* Absolute "Olay Ekle" butonu için gerekli */
     z-index: 1;
@@ -2108,18 +2102,12 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     color: #ffffff !important;
     padding-bottom: 1px !important; /* Sekme metni ile altındaki yatay çizgi arası 1px */
 }
-/* Tarihçe modalı: sol ok + etiket — style-core'da header z-index:20 > back-bar:10 olduğu için üst üste binince kırmızı başlık satırı kesiyordu; katman + opak şerit */
-#vehicle-history-modal .universal-back-bar {
-  margin-top: 0 !important;
-  padding: 12px 16px 8px 16px !important;
+/* Tarihçe modalı: header katmanı üstünde opak şerit (layout --context kontratında) */
+#vehicle-history-modal .universal-back-bar--context {
   position: relative !important;
   z-index: 22 !important;
   background-color: var(--modal-bg) !important;
   box-sizing: border-box !important;
-}
-#vehicle-history-modal .universal-back-btn .universal-back-label {
-  color: #adb5bd !important;
-  font-size: 13px !important;
 }
 /* Masaüstü: Tarihçe sekme başlıkları 1pt büyük */
 @media (min-width: 641px) {
@@ -2235,7 +2223,16 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 }
 
 #vehicles-modal .modal-header h2,
-#vehicle-detail-modal .modal-header h2,
+#vehicle-detail-modal .modal-header h2 {
+    opacity: 1 !important;
+    margin: 0 !important;
+    text-transform: uppercase;
+    position: absolute !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    text-align: center !important;
+}
+
 #vehicle-history-modal .modal-header h2,
 .modal-overlay:has(.history-tabs) .modal-header h2 {
     color: var(--modal-title-color) !important;
@@ -2315,65 +2312,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     gap: 2px !important;
 }
 
-/* Toolbar içi geri çubuşu: tam genişlik almasın (style-core .universal-back-bar override) */
-.vehicle-detail-toolbar .universal-back-bar,
-.vt-left .universal-back-bar {
-  width: auto;
-  flex: 0 0 auto;
-}
-
-/* Taşıt detay ve Tarihçe toolbar: sol ok + etiket hizası */
-#vehicle-detail-modal .vehicle-detail-toolbar .universal-back-bar,
-#vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn,
-#vehicle-history-modal .universal-back-bar,
-#vehicle-history-modal .universal-back-btn {
-  display: inline-flex !important;
-  align-items: center !important;
-  gap: 3px !important;
-}
-#vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn i,
-#vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn svg,
-#vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn .back-icon-svg,
-#vehicle-history-modal .universal-back-btn i,
-#vehicle-history-modal .universal-back-btn svg,
-#vehicle-history-modal .universal-back-btn .back-icon-svg {
-  position: relative !important;
-  top: 0 !important;
-  margin: 0 !important;
-  padding: 0 !important;
-}
-#vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn .universal-back-label,
-#vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn span,
-#vehicle-history-modal .universal-back-btn .universal-back-label,
-#vehicle-history-modal .universal-back-btn span {
-  font-size: 13px !important;
-  line-height: 1 !important;
-  margin: 0 !important;
-  padding-left: 0 !important;
-  color: #adb5bd !important;
-}
-/* HİZALAMASI - KESİN KURAL (Taşıtlar Modalı) */
-#vehicles-modal .vehicles-toolbar .vt-left .universal-back-bar,
-#vehicles-modal .vehicles-toolbar .vt-left .universal-back-btn,
-#vehicles-modal .vehicles-toolbar .vt-left .modal-header-back {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: flex-start !important;
-  gap: 6px !important;
-  height: auto !important;
-}
-#vehicles-modal .vehicles-toolbar .vt-left .universal-back-btn i,
-#vehicles-modal .vehicles-toolbar .vt-left .universal-back-btn svg,
-#vehicles-modal .vehicles-toolbar .vt-left .modal-header-back i,
-#vehicles-modal .vehicles-toolbar .vt-left .modal-header-back svg {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  position: static !important;
-  transform: none !important;
-  margin: 0 !important;
-  line-height: 1 !important;
-}
+/* Toolbar içi geri çubuğu: genişlik style-core .vt-left / .vehicle-detail-toolbar */
 
 .vt-icon-btn {
     background: transparent !important;
@@ -2413,20 +2352,16 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     position: relative;
     z-index: 21;
   }
-  /* Taşıt detay modalı: sol ok + Taşıtlar etiketi 6px yukarı (masaüstü) */
-  #vehicle-detail-modal .vehicle-detail-toolbar > div:first-child {
-    margin-top: -6px;
-  }
   /* Taşıt detay: plaka 1pt büyük, plaka–marka/model arası 3px az (masaüstü) */
   #vehicle-detail-modal .detail-plate {
     font-size: 16px !important;
   }
   #vehicle-detail-modal .detail-plate-row {
+    margin-top: 0 !important;
     margin-bottom: 2px !important;
   }
-  /* Plaka üstten kesilmesin (masaüstü) – 2px aşaşı */
   #vehicle-detail-modal #vehicle-detail-content {
-    padding-top: 17px !important;
+    padding-top: 8px !important;
   }
   #vehicle-detail-modal .vehicle-detail-columns {
     margin-top: 13px !important;
@@ -2584,26 +2519,12 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     margin-bottom: 0 !important;
     flex-shrink: 0 !important;
   }
-  .olay-ekle-modal .universal-back-bar {
-    margin-top: -6px !important;
-  }
 }
 
-/* Masaüstü taşıt detay: geri ok + etiket sadece bu ekranda 10px yukarı ve sola yaslı */
-@media (min-width: 769px) {
-  #vehicle-detail-modal .vehicle-detail-toolbar > .vt-left {
-    margin-top: -10px !important;
-    justify-content: flex-start !important;
-    margin-left: -10px !important;
-  }
-  #vehicle-detail-modal .vehicle-detail-toolbar > .vt-left .universal-back-bar {
-    width: auto !important;
-    margin-left: 0 !important;
-    justify-content: flex-start !important;
-  }
-  #vehicle-detail-modal .vehicle-detail-toolbar > .vt-left .universal-back-btn {
-    justify-content: flex-start !important;
-  }
+/* Toolbar içi geri çubuğu: --toolbar kontratı (Faz 2) */
+#vehicles-modal .vehicles-toolbar .universal-back-bar--toolbar,
+#vehicle-detail-modal .vehicle-detail-toolbar .universal-back-bar--toolbar {
+  align-self: center;
 }
 
 /* === ARAMA KUTUSU: toolbar satırında, sağdan sola açılır – simgeleri kapatmaz === */

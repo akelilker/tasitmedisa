@@ -522,20 +522,20 @@
   }
 }
 
-/* Detay Modal Toolbar - Büyüteç satırı gibi */
+/* Detay Modal Toolbar — liste toolbar ile aynı yükseklik bandı */
 .vehicle-detail-toolbar {
-  height: 24px; /* 8px daha azaltıldı (32px – 24px) */
-  min-height: 24px; /* Minimum yükseklik */
+  height: 40px;
+  min-height: 40px;
   background: transparent !important;
   border-bottom: none; 
   display: flex;
-  justify-content: space-between; /* Sol ve saş arasında boşluk */
+  justify-content: space-between; /* Sol ve sağ arasında boşluk */
   align-items: center;
   padding: 0 16px;
   position: relative;
   z-index: 10;
   flex-shrink: 0;
-  margin-bottom: 0 !important; /* Alt boşluk yok - plakayı yukarı çekmek için */
+  margin-bottom: 8px !important; /* Toolbar–plaka kimlik bloğu arası nefes */
 }
 
 /* Şubeye Tahsis Etmek iiiiiiçin + yatayda ortalı (sol ok/Taşıtlar dikkate alınmadan); SATILDI + tahsis birlikte sarılabilsin */
@@ -598,10 +598,6 @@
 }
 
 /* Ruhsat (#dinamik-olay-modal + #ruhsat-modal-content): Görüntüle / yükle — çerçevesiz, arka plansız, beyaz metin */
-#dinamik-olay-modal .universal-back-bar:not(:has(.vehicle-context-row)) {
-  transform: translateY(0px);
-  margin-bottom: -8px;
-}
 #dinamik-olay-modal #ruhsat-modal-content .universal-btn-group {
   justify-content: center;
   margin-left: auto;
@@ -1729,9 +1725,11 @@
     line-height: 1.2 !important;
     padding: 10px 12px !important;
   }
-  /* Taşıt detay toolbar sol 4px */
+  /* Taşıt detay toolbar: touch hedefi + sol inset */
   #vehicle-detail-modal .vehicle-detail-toolbar {
-    padding-left: 1px !important; /* Sol ok 3px sola (4→1) */
+    min-height: 44px;
+    height: auto;
+    padding-left: 1px !important;
   }
   /* Taşıt detaşmasın */
   #vehicle-detail-modal .muayene-detail-tooltip-wrap {
@@ -1743,18 +1741,7 @@
     max-width: min(280px, 90vw);
     box-sizing: border-box;
   }
-  /* --- EVRENSEL GERİ BUTONU MOBİL (touch target) --- */
-  .vehicle-detail-toolbar .universal-back-btn,
-  .olay-ekle-modal .universal-back-btn {
-    padding: 10px !important;
-    min-width: 44px !important;
-    min-height: 44px !important;
-  }
-  .vehicle-detail-toolbar .back-icon-svg,
-  .olay-ekle-modal .back-icon-svg {
-    width: 28px !important;
-    height: 28px !important;
-  }
+  /* --- EVRENSEL GERİ BUTONU MOBİL (touch target — ölçüler style-core token) --- */
   .vehicle-print-btn,
   .vehicle-ruhsat-btn {
     width: 44px !important;
@@ -1765,41 +1752,6 @@
     width: 22px !important;
     height: 22px !important;
   }
-  /* Mobil: sol ok ile etiket (Taşıtlar ve Tarihçe) dikeyde hizalı */
-  #vehicle-detail-modal .vehicle-detail-toolbar .universal-back-bar,
-  #vehicle-history-modal .universal-back-bar {
-    display: inline-flex !important;
-    align-items: center !important;
-    gap: 4px !important;
-    padding-left: 0 !important;
-  }
-  #vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn,
-  #vehicle-history-modal .universal-back-btn {
-    display: inline-flex !important;
-    align-items: center !important;
-    gap: 4px !important;
-    padding-left: 0 !important;
-  }
-  #vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn i,
-  #vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn svg,
-  #vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn .back-icon-svg,
-  #vehicle-history-modal .universal-back-btn i,
-  #vehicle-history-modal .universal-back-btn svg,
-  #vehicle-history-modal .universal-back-btn .back-icon-svg {
-    position: relative !important;
-    top: 0 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-  }
-  #vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn .universal-back-label,
-  #vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn span,
-  #vehicle-history-modal .universal-back-btn .universal-back-label,
-  #vehicle-history-modal .universal-back-btn span {
-    font-size: 13px !important;
-    line-height: 1 !important;
-    margin: 0 !important;
-    color: #adb5bd !important;
-  }
   .vt-icon-btn {
     width: 38px !important;
     height: 38px !important;
@@ -1807,14 +1759,6 @@
   .vt-icon-btn svg {
     width: 22px !important;
     height: 22px !important;
-  }
-  .olay-ekle-modal:not(#event-menu-modal):not(#dinamik-olay-modal) .universal-back-bar {
-    margin-top: -6px !important;
-  }
-  .olay-ekle-modal:not(#event-menu-modal):not(#dinamik-olay-modal) .universal-back-bar .universal-back-label {
-    font-size: 17.5px !important;
-    margin-top: 0 !important;
-    color: #adb5bd !important;
   }
 
   /* Dinamik olay: sigorta/kasko/muayene gg/aa/yyyy + takvim simgesi (mobil) */
@@ -1907,7 +1851,7 @@
     max-height: 100% !important;
   }
 
-  .tasitlar-modal-overlay .modal-header h2 {
+  .tasitlar-modal-overlay:not(#vehicles-modal):not(#vehicle-detail-modal) .modal-header h2 {
     color: var(--modal-title-color) !important;
     background: none !important;
     -webkit-background-clip: border-box !important;
@@ -1918,12 +1862,11 @@
   }
 
   /* --- TAŞIT DETAY MODAL --- */
-  /* Taşıt detay toolbar kesilme sorunu; yatay boşluk aşağıdaki DETAY MODAL SCROLL & PADDING bloşunda 3px */
-  #vehicle-detail-content {
-    padding-top: 20px !important; /* 14px – 20px */
+  #vehicle-detail-modal #vehicle-detail-content {
+    padding-top: 8px !important;
   }
-  .detail-plate-row {
-    margin-top: -16px !important; /* Plaka 3px yukarı (mobil) */
+  #vehicle-detail-modal .detail-plate-row {
+    margin-top: 0 !important;
   }
   
   /* Taşıt detay: layout base + container query ile; mobilde de yatay alan varsa yan yana */
@@ -2284,10 +2227,6 @@
   }
 
   /* --- TARİHÇE MODAL --- */
-  /* Mobil: negatif margin header ile çakıştırıyordu; boşluk tasitlar-base #vehicle-history-modal .universal-back-bar padding ile */
-  #vehicle-history-modal .universal-back-bar {
-    margin-top: 0 !important;
-  }
   #vehicle-history-modal .modal-header {
     justify-content: flex-start !important;
   }
@@ -2767,9 +2706,9 @@
   }
   
   /* --- DETAY MODAL SCROLL & PADDING --- */
-  #vehicle-detail-content {
-    padding-top: 18px !important; /* Plaka üstten kesilmesin */
-    padding-left: 8px !important; /*Çerçeve ile içerik arası – detay sayfası rahat olsun */
+  #vehicle-detail-modal #vehicle-detail-content {
+    padding-top: 8px !important;
+    padding-left: 8px !important; /* Çerçeve ile içerik arası – detay sayfası rahat olsun */
     padding-right: 8px !important;
   }
   #vehicle-detail-modal .modal-body {
@@ -2804,9 +2743,7 @@
   /* Detay modal: legend–footer arası boşluk 4px toplam (mobil) */
   #vehicle-detail-modal #vehicle-detail-content { padding-bottom: 4px !important; }
   #vehicle-detail-modal .modal-body { padding-bottom: 4px !important; }
-  /* Plaka üstten kesilmesin; plaka–marka arası 2px kalsın */
-  #vehicle-detail-content { padding-top: 18px !important; }
-  .detail-plate-row { margin-top: 0 !important; margin-bottom: 2px !important; }
+  #vehicle-detail-modal .detail-plate-row { margin-top: 0 !important; margin-bottom: 2px !important; }
   .detail-plate { margin-top: 0 !important; }
   /* Marka/model satırı: Olay Ekle ve Tarihçe aynı satırda; marka plakanın 2px altında */
   .detail-brand-year-row {

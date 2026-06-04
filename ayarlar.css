@@ -19,11 +19,6 @@
 
 /* Masaüstü PWA (standalone): ayarlar modallarında üst kesilme/katman çakışması düzeltmeleri */
 @media (min-width: 769px) and (display-mode: standalone) {
-    /* Şube/Kullanıcı düzenle: etiketlerin header altında kesilmesini önle */
-    #branch-form-modal .universal-back-bar,
-    #user-form-modal .universal-back-bar {
-        margin-top: 0 !important;
-    }
     #branch-form-modal #branch-form,
     #user-form-modal #user-form.user-form-inner {
         margin-top: 0 !important;
@@ -34,12 +29,6 @@
         margin-top: 0 !important;
         margin-bottom: 4px !important;
         line-height: 1.25 !important;
-    }
-
-    /* Dış Veri Yönetimi / Veri Yedekleme: sol ok + etiket 16px aşağı */
-    #data-management-modal .universal-back-bar,
-    #dis-veri-panel .universal-back-bar {
-        margin-top: 0 !important;
     }
 
     /* Veri Yedekleme: X tıklaması üst katman tarafından engellenmesin */
@@ -53,8 +42,8 @@
         z-index: 40 !important;
         pointer-events: auto !important;
     }
-    #data-management-modal .universal-back-bar,
-    #dis-veri-panel .universal-back-bar {
+    #data-management-modal .universal-back-bar--standalone,
+    #dis-veri-panel .universal-back-bar--standalone {
         z-index: 12 !important;
     }
 }
@@ -492,17 +481,6 @@ body.modal-open #info-modal .modal-container {
 }
 .modal-close:hover { color: var(--txt-white); }
 
-#branch-modal .universal-back-bar,
-#branch-form-modal .universal-back-bar,
-#user-modal .universal-back-bar,
-#user-form-modal .universal-back-bar,
-#required-documents-modal .universal-back-bar,
-#data-management-modal .universal-back-bar,
-#dis-veri-panel .universal-back-bar {
-    margin-top: 0;
-    flex-shrink: 0;
-}
-
 #required-documents-modal .required-k2-section-title {
     margin: 0 auto 10px auto;
     text-align: center;
@@ -902,7 +880,7 @@ body.modal-open #info-modal .modal-container {
     }
 }
 
-#user-modal .user-management-back-bar {
+#user-modal .user-management-back-bar.universal-back-bar--standalone {
     justify-content: space-between !important;
     gap: 0 !important;
     align-items: center !important;
@@ -989,9 +967,6 @@ body.modal-open #info-modal .modal-container {
 }
 .user-management-search-toggle:hover {
     color: #ffffff;
-}
-.ayarlar-modal-overlay .universal-back-btn .universal-back-label {
-    color: #adb5bd !important;
 }
 
 /* Modal Body */
@@ -2390,10 +2365,6 @@ input.settings-form-input:-moz-autofill,
     #settings-menu > .has-submenu-wrapper {
         margin-bottom: 0 !important;
     }
-    #data-management-modal .universal-back-bar,
-    #dis-veri-panel .universal-back-bar {
-        margin-top: 0 !important;
-    }
 
     /* Şube/Kullanıcı modalları: çerçeve genişliği style-core varsayıanı (500px); input/buton genişlikleri aşağıdaki kurallarda */
 
@@ -2497,17 +2468,6 @@ input.settings-form-input:-moz-autofill,
 
 /* Masaüstü: Şube/Kullanıcı form – Kaydet/Vazgeç/Sil aynı satırda, yatayda ortada */
 @media (min-width: 769px) {
-  /* Şube / Kullanıcı / Veri yedekleme / Dış veri listesi: geri ok masaüstünde 10px aşağı */
-  #branch-modal .universal-back-bar,
-  #user-modal .universal-back-bar,
-  #data-management-modal .universal-back-bar,
-  #dis-veri-panel .universal-back-bar {
-    margin-top: 0 !important;
-  }
-  #branch-form-modal .universal-back-bar,
-  #user-form-modal .universal-back-bar {
-    margin-top: 0 !important;
-  }
   #branch-modal .modal-body > div,
   #user-modal .modal-body > .user-management-list-inner {
     margin-top: 0 !important;
@@ -2521,7 +2481,7 @@ input.settings-form-input:-moz-autofill,
   #user-modal .modal-body > .user-management-list-inner {
     padding-top: 0;
   }
-  #user-modal .user-management-back-bar {
+  #user-modal .user-management-back-bar.universal-back-bar--standalone {
     padding-bottom: 2px !important;
   }
   #user-modal .modal-body {
@@ -2644,17 +2604,6 @@ input.settings-form-input:-moz-autofill,
 
 /* === MOBİL AYARLAR === */
 @media (max-width: 640px) {
-    /* Geri ok + etiket: liste modallarında 8px aşağı (-32→-24) */
-    #branch-modal .universal-back-bar,
-    #user-modal .universal-back-bar,
-    #data-management-modal .universal-back-bar,
-    #dis-veri-panel .universal-back-bar {
-        margin-top: 0 !important;
-    }
-    #branch-form-modal .universal-back-bar,
-    #user-form-modal .universal-back-bar {
-        margin-top: 0 !important;
-    }
     #branch-modal .modal-header {
         border-bottom: none !important;
     }
@@ -2756,19 +2705,15 @@ input.settings-form-input:-moz-autofill,
         font-weight: var(--modal-title-weight) !important;
     }
     .ayarlar-modal-overlay .universal-back-btn {
-        padding: 10px !important;
+        padding: 10px 0 !important;
         min-width: 44px !important;
         min-height: 44px !important;
-    }
-    .ayarlar-modal-overlay .back-icon-svg {
-        width: 24px !important;
-        height: 24px !important;
     }
     #user-modal .user-management-search-toggle {
         width: 36px;
         height: 36px;
     }
-    #user-modal .user-management-back-bar {
+    #user-modal .user-management-back-bar.universal-back-bar--standalone {
         flex-wrap: wrap !important;
         justify-content: flex-start !important;
         align-items: center !important;

@@ -2107,32 +2107,81 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
 
   let slidingWarningInterval = null;
 
-  const driverNotificationModalId = 'driver-notification-modal';
-  const driverNotificationModalListId = 'driver-notification-modal-list';
+  const driverNotificationDropdownId = 'driver-notifications-dropdown';
+  const driverNotificationDropdownListId = 'driver-notifications-dropdown-list';
   const driverNotificationEmptyStateHtml = '<div class="driver-notification-empty">Aktif bildirim bulunmuyor.</div>';
+  let driverNotificationOutsideClickHandler = null;
 
-  function setDriverNotificationModalContent(warningItemsHtml) {
-      const modalList = document.getElementById(driverNotificationModalListId);
-      if (!modalList) return;
-      modalList.innerHTML = warningItemsHtml && warningItemsHtml.trim() ? warningItemsHtml : driverNotificationEmptyStateHtml;
+  function ensureDriverNotificationsDropdown() {
+      const host = document.getElementById('driver-sliding-warning');
+      if (!host) return null;
+
+      let dropdown = document.getElementById(driverNotificationDropdownId);
+      if (!dropdown) {
+          dropdown = document.createElement('div');
+          dropdown.id = driverNotificationDropdownId;
+          dropdown.className = 'driver-notifications-dropdown';
+          dropdown.hidden = true;
+          dropdown.setAttribute('role', 'dialog');
+          dropdown.setAttribute('aria-label', 'Bildirimler');
+
+          const list = document.createElement('div');
+          list.id = driverNotificationDropdownListId;
+          list.className = 'driver-notifications-dropdown-list';
+          list.setAttribute('aria-live', 'polite');
+          dropdown.appendChild(list);
+      }
+
+      if (dropdown.parentNode !== host) host.appendChild(dropdown);
+      return dropdown;
+  }
+
+  function setDriverNotificationDropdownContent(warningItemsHtml) {
+      const dropdown = ensureDriverNotificationsDropdown();
+      const list = dropdown && dropdown.querySelector('#' + driverNotificationDropdownListId);
+      if (!list) return;
+      list.innerHTML = warningItemsHtml && warningItemsHtml.trim() ? warningItemsHtml : driverNotificationEmptyStateHtml;
   }
 
   window.openDriverNotificationModal = function(warningItemsHtml) {
-      const modal = document.getElementById(driverNotificationModalId);
-      if (!modal) return;
-      setDriverNotificationModalContent(warningItemsHtml || '');
-      modal.classList.add('show');
+      const dropdown = ensureDriverNotificationsDropdown();
+      if (!dropdown) return;
+      setDriverNotificationDropdownContent(warningItemsHtml || '');
+      dropdown.hidden = false;
+      window.requestAnimationFrame(function() {
+          dropdown.classList.add('open');
+      });
       const trigger = document.querySelector('#driver-sliding-warning .driver-warning-trigger');
       if (trigger) trigger.setAttribute('aria-expanded', 'true');
-      updateDriverModalBodyClass();
+      document.body.classList.add('driver-notification-dropdown-open');
+      if (driverNotificationOutsideClickHandler) {
+          document.removeEventListener('click', driverNotificationOutsideClickHandler, true);
+      }
+      driverNotificationOutsideClickHandler = function(ev) {
+          const activeDropdown = document.getElementById(driverNotificationDropdownId);
+          const activeTrigger = document.querySelector('#driver-sliding-warning .driver-warning-trigger');
+          if (!activeDropdown || !activeDropdown.classList.contains('open')) return;
+          if ((activeTrigger && activeTrigger.contains(ev.target)) || activeDropdown.contains(ev.target)) return;
+          window.closeDriverNotificationModal();
+      };
+      window.setTimeout(function() {
+          document.addEventListener('click', driverNotificationOutsideClickHandler, true);
+      }, 0);
   };
 
   window.closeDriverNotificationModal = function() {
-      const modal = document.getElementById(driverNotificationModalId);
-      if (modal) modal.classList.remove('show');
+      const dropdown = document.getElementById(driverNotificationDropdownId);
+      if (dropdown) {
+          dropdown.classList.remove('open');
+          dropdown.hidden = true;
+      }
       const trigger = document.querySelector('#driver-sliding-warning .driver-warning-trigger');
       if (trigger) trigger.setAttribute('aria-expanded', 'false');
-      updateDriverModalBodyClass();
+      document.body.classList.remove('driver-notification-dropdown-open');
+      if (driverNotificationOutsideClickHandler) {
+          document.removeEventListener('click', driverNotificationOutsideClickHandler, true);
+          driverNotificationOutsideClickHandler = null;
+      }
   };
 
   function renderSlidingWarning(vehicles, records) {
@@ -2168,8 +2217,9 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       }).join('');
       const engineIcon = '<span class="driver-warning-icon driver-warning-icon-engine ' + iconClass + '" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"></svg></span>';
 
+      window.closeDriverNotificationModal();
       el.className = 'driver-sliding-warning driver-warning-popover' + (hasRedWarning ? '' : ' driver-sliding-warning-orange');
-      el.innerHTML = '<button type="button" class="driver-warning-trigger" aria-label="Uyarilari goster" aria-expanded="false" aria-haspopup="dialog" aria-controls="' + driverNotificationModalId + '">'
+      el.innerHTML = '<button type="button" class="driver-warning-trigger" aria-label="Uyarilari goster" aria-expanded="false" aria-haspopup="dialog" aria-controls="' + driverNotificationDropdownId + '">'
           + engineIcon
           + '</button>';
 
@@ -2178,6 +2228,11 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           trigger.addEventListener('click', function(e) {
               e.preventDefault();
               e.stopPropagation();
+              const activeDropdown = document.getElementById(driverNotificationDropdownId);
+              if (activeDropdown && activeDropdown.classList.contains('open')) {
+                  window.closeDriverNotificationModal();
+                  return;
+              }
               window.openDriverNotificationModal(warningItemsHtml);
           });
       }
