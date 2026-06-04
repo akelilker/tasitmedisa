@@ -2202,12 +2202,12 @@
       takograf: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7"/><path d="M12 13l3-3M7 17h10"/></svg>',
       sigorta: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6l7-3z"/><path d="M9 12l2 2 4-5"/></svg>',
       kasko: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v5h5M9 15l2 2 4-5"/></svg>',
-      takip: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s6-5.2 6-10A6 6 0 0 0 6 11c0 4.8 6 10 6 10z"/><circle cx="12" cy="11" r="2"/></svg>',
-      utts: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 20V5a2 2 0 0 1 2-2h6v17"/><path d="M6 9h8M14 7h2l3 3v7a2 2 0 0 1-2 2h-3"/></svg>',
+      takip: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s6-5.2 6-10A6 6 0 0 0 6 11c0 4.8 6 10 6 10z"/><circle cx="12" cy="11" r="2.5"/><circle cx="12" cy="11" r="5.5" stroke-dasharray="2 3"/></svg>',
+      utts: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4v15a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4"/><path d="M7 4h10v3H7z"/><path d="M16 7h1.5L20 9.5V18a1.5 1.5 0 0 1-1.5 1.5H16"/><path d="M9 10h4M9 13h4"/><path d="M10 19v1"/></svg>',
       anahtar: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="7" cy="14" r="3"/><path d="M10 14h10M16 14v3M19 14v2"/></svg>',
-      lastik: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 4v3M12 17v3M4 12h3M17 12h3"/></svg>',
+      lastik: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="3.5"/><path d="M12 5v2M12 17v2M5 12h2M17 12h2M7.8 7.8l1.4 1.4M14.8 14.8l1.4 1.4M16.2 7.8l-1.4 1.4M9.2 14.8l-1.4 1.4"/></svg>',
       kredi: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>',
-      kaskokodu: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10l6 6-7 7-6-6V7z"/><circle cx="9" cy="11" r="1"/></svg>',
+      kaskokodu: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7l8-3 8 3v10l-8 3-8-3V7z"/><path d="M8 11h5M8 14h3"/><circle cx="15" cy="12.5" r="1.5"/></svg>',
       ceza: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4l9 16H3z"/><path d="M12 9v5M12 17h.01"/></svg>',
       km: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 17a8 8 0 1 1 14 0"/><path d="M12 14l4-4M8 17h8"/></svg>',
       bakim: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>',
@@ -5802,6 +5802,73 @@
     });
   }
 
+  function getTodayIsoDateLocal() {
+    var d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  }
+
+  /** Olay formu render sonrası tarih helper'larını hemen + rAF ile senkronla (iOS ilk çizim gecikmesini önler). */
+  function applyDinamikOlayFormDateHelpers(modal) {
+    if (!modal) return;
+    modal.querySelectorAll('input[type="date"]').forEach(function(input) {
+      if (typeof window.setupDatePlaceholder === 'function') {
+        window.setupDatePlaceholder(input);
+      } else if (typeof setupDatePlaceholder === 'function') {
+        setupDatePlaceholder(input);
+      } else {
+        const existing = input.parentElement && input.parentElement.querySelector('.date-placeholder');
+        if (existing) existing.remove();
+
+        const isMobileFallback = window.innerWidth <= 640;
+        const skipDinamikDatePh = !!input.closest('#dinamik-olay-modal');
+        if (!input.value && input !== document.activeElement && !skipDinamikDatePh) {
+          const leftPx = isMobileFallback ? '12px' : '8px';
+          const st = window.getComputedStyle(input);
+          var pt = parseFloat(st.paddingTop); if (!Number.isFinite(pt)) pt = 0;
+          var pb = parseFloat(st.paddingBottom); if (!Number.isFinite(pb)) pb = 0;
+          var ih = parseFloat(st.height);
+          if (!Number.isFinite(ih) || ih <= 0) ih = input.getBoundingClientRect().height;
+          if (!Number.isFinite(ih) || ih <= 0) ih = 22;
+          const parent = input.parentElement;
+          const inputRect = input.getBoundingClientRect();
+          const parentRect = parent ? parent.getBoundingClientRect() : inputRect;
+          const inputOffsetTop = inputRect.top - parentRect.top;
+          const fs = parseFloat(st.fontSize) || 10;
+          const ph = fs * 1.2;
+          const contentCenter = inputOffsetTop + pt + (ih - pt - pb) / 2;
+          const topPx = contentCenter - ph / 2;
+          const placeholder = document.createElement('span');
+          placeholder.className = 'date-placeholder';
+          placeholder.textContent = 'gg.aa.yyyy';
+          placeholder.style.cssText = 'position: absolute; left: ' + leftPx + '; top: ' + topPx + 'px; color: #666 !important; pointer-events: none; font-size: 10px; z-index: 100; line-height: ' + ph + 'px;';
+
+          if (parent) {
+            parent.style.position = 'relative';
+            parent.appendChild(placeholder);
+
+            function updatePlaceholder() {
+              if (input.value || input === document.activeElement) {
+                placeholder.style.display = 'none';
+              } else {
+                placeholder.style.display = 'block';
+              }
+            }
+
+            input.addEventListener('change', updatePlaceholder);
+            input.addEventListener('focus', function() {
+              placeholder.style.display = 'none';
+            });
+            input.addEventListener('blur', updatePlaceholder);
+            updatePlaceholder();
+          }
+        }
+      }
+    });
+    bindGgAaYyyyTextInputs(modal);
+    setupOlayGgAaYyyyPickers(modal);
+    bindDinamikOlayDateInputsForIos(modal);
+  }
+
   /** sigorta/kasko/muayene gg/aa/yyyy metin alanlarını kayıttan önce normalize et */
   function bindGgAaYyyyTextInputs(modal) {
     if (!modal) return;
@@ -6393,6 +6460,11 @@
       } else if (type === 'ceza') {
         const vehicle = readVehicles().find(v => String(v.id) === String(vehicleId || window.currentDetailVehicleId));
         bindCezaUserDropdown(modal, vehicle);
+        const cezaTarihInput = document.getElementById('ceza-tarih');
+        if (cezaTarihInput && !cezaTarihInput.value) {
+          cezaTarihInput.value = getTodayIsoDateLocal();
+          syncDinamikOlayDateInputVisual(cezaTarihInput);
+        }
         const cezaTutarInput = document.getElementById('ceza-tutar');
         if (cezaTutarInput) {
           cezaTutarInput.addEventListener('blur', function() {
@@ -6755,70 +6827,11 @@
         
         // Event menu'yu kapat (modal açıldıktan sonra)
         closeEventMenuModal();
-        
-        // Tarih inputlarına placeholder ekle
-        setTimeout(() => {
-          const dateInputs = modal.querySelectorAll('input[type="date"]');
-          dateInputs.forEach(input => {
-            // Eğer setupDatePlaceholder fonksiyonu varsa kullan
-            if (typeof window.setupDatePlaceholder === 'function') {
-              window.setupDatePlaceholder(input);
-            } else if (typeof setupDatePlaceholder === 'function') {
-              setupDatePlaceholder(input);
-            } else {
-              // Basit placeholder ekleme (kayit.js'teki mantığı kullan)
-              const existing = input.parentElement.querySelector('.date-placeholder');
-              if (existing) existing.remove();
-              
-              const isMobileFallback = window.innerWidth <= 640;
-              const skipDinamikDatePh = !!input.closest('#dinamik-olay-modal');
-              if (!input.value && input !== document.activeElement && !skipDinamikDatePh) {
-                const leftPx = isMobileFallback ? '12px' : '8px';
-                const st = window.getComputedStyle(input);
-                var pt = parseFloat(st.paddingTop); if (!Number.isFinite(pt)) pt = 0;
-                var pb = parseFloat(st.paddingBottom); if (!Number.isFinite(pb)) pb = 0;
-                var ih = parseFloat(st.height);
-                if (!Number.isFinite(ih) || ih <= 0) ih = input.getBoundingClientRect().height;
-                if (!Number.isFinite(ih) || ih <= 0) ih = 22;
-                const parent = input.parentElement;
-                const inputRect = input.getBoundingClientRect();
-                const parentRect = parent ? parent.getBoundingClientRect() : inputRect;
-                const inputOffsetTop = inputRect.top - parentRect.top;
-                const fs = parseFloat(st.fontSize) || 10;
-                const ph = fs * 1.2;
-                const contentCenter = inputOffsetTop + pt + (ih - pt - pb) / 2;
-                const topPx = contentCenter - ph / 2;
-                const placeholder = document.createElement('span');
-                placeholder.className = 'date-placeholder';
-                placeholder.textContent = 'gg.aa.yyyy';
-                placeholder.style.cssText = 'position: absolute; left: ' + leftPx + '; top: ' + topPx + 'px; color: #666 !important; pointer-events: none; font-size: 10px; z-index: 100; line-height: ' + ph + 'px;';
-                
-                if (parent) {
-                  parent.style.position = 'relative';
-                  parent.appendChild(placeholder);
-                  
-                  function updatePlaceholder() {
-                    if (input.value || input === document.activeElement) {
-                      placeholder.style.display = 'none';
-                    } else {
-                      placeholder.style.display = 'block';
-                    }
-                  }
-                  
-                  input.addEventListener('change', updatePlaceholder);
-                  input.addEventListener('focus', () => {
-                    placeholder.style.display = 'none';
-                  });
-                  input.addEventListener('blur', updatePlaceholder);
-                  updatePlaceholder();
-                }
-              }
-            }
-          });
-          bindGgAaYyyyTextInputs(modal);
-          setupOlayGgAaYyyyPickers(modal);
-          bindDinamikOlayDateInputsForIos(modal);
-        }, 100);
+
+        applyDinamikOlayFormDateHelpers(modal);
+        requestAnimationFrame(function() {
+          applyDinamikOlayFormDateHelpers(modal);
+        });
       }
     }
 

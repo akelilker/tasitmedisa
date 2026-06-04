@@ -508,6 +508,12 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
   background: transparent !important;
   border-radius: 0 !important;
 }
+.olay-ekle-modal .modal-body .ceza-user-option:nth-child(odd) {
+  background: rgba(255, 255, 255, 0.035) !important;
+}
+.olay-ekle-modal .modal-body .ceza-user-option:nth-child(even) {
+  background: transparent !important;
+}
 .olay-ekle-modal .modal-body .ceza-user-option {
   width: 100% !important;
   border: none !important;
@@ -820,7 +826,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     position: relative !important;
 }
 
-/* Taşıt bağlamı: geri solda; plaka + marka/model yatayda ortalı (alt satırda, sol oku ezmesin) */
+/* Taşıt bağlamı: geri solda; plaka aynı satırda merkezde; marka/model plakanın hemen altında */
 #event-menu-modal .universal-back-bar:has(.vehicle-context-row),
 #dinamik-olay-modal .universal-back-bar:has(.vehicle-context-row),
 #vehicle-history-modal .universal-back-bar:has(.vehicle-context-row) {
@@ -865,11 +871,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     box-sizing: border-box;
 }
 
-#event-menu-modal .universal-back-bar:has(.vehicle-context-row) .vehicle-context-plate,
-#event-menu-modal .universal-back-bar:has(.vehicle-context-row) .vehicle-context-model {
-    transform: translateY(-8px);
-}
-
 #event-menu-modal .universal-back-bar:has(.vehicle-context-row) .vehicle-context-model,
 #dinamik-olay-modal .universal-back-bar:has(.vehicle-context-row) .vehicle-context-model,
 #vehicle-history-modal .universal-back-bar:has(.vehicle-context-row) .vehicle-context-model {
@@ -910,34 +911,53 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 }
 
 @media (max-width: 640px) {
-    #event-menu-modal .universal-back-bar:has(.vehicle-context-row) {
+    #event-menu-modal .universal-back-bar:has(.vehicle-context-row),
+    #dinamik-olay-modal:not([data-event-type="documents"]) .universal-back-bar:has(.vehicle-context-row) {
         margin-top: 0 !important;
         padding: 6px 12px 0 !important;
-        row-gap: 0 !important;
+        row-gap: 2px !important;
         min-height: 44px;
     }
 
-    #event-menu-modal .universal-back-bar:has(.vehicle-context-row) .universal-back-btn {
+    #event-menu-modal .universal-back-bar:has(.vehicle-context-row) .universal-back-btn,
+    #dinamik-olay-modal:not([data-event-type="documents"]) .universal-back-bar:has(.vehicle-context-row) .universal-back-btn {
         max-width: 35%;
         padding: 4px 0 !important;
     }
 
-    #event-menu-modal .universal-back-bar:has(.vehicle-context-row) .universal-back-label {
+    #event-menu-modal .universal-back-bar:has(.vehicle-context-row) .universal-back-label,
+    #dinamik-olay-modal:not([data-event-type="documents"]) .universal-back-bar:has(.vehicle-context-row) .universal-back-label {
         font-size: 14px !important;
         line-height: 1.1 !important;
     }
 
-    #event-menu-modal .universal-back-bar:has(.vehicle-context-row) .vehicle-context-plate {
-        align-self: end;
+    #event-menu-modal .universal-back-bar:has(.vehicle-context-row) .vehicle-context-plate,
+    #dinamik-olay-modal:not([data-event-type="documents"]) .universal-back-bar:has(.vehicle-context-row) .vehicle-context-plate {
+        align-self: center;
         font-size: 14px;
         line-height: 1.05;
         transform: none;
     }
 
-    #event-menu-modal .universal-back-bar:has(.vehicle-context-row) .vehicle-context-model {
+    #event-menu-modal .universal-back-bar:has(.vehicle-context-row) .vehicle-context-model,
+    #dinamik-olay-modal:not([data-event-type="documents"]) .universal-back-bar:has(.vehicle-context-row) .vehicle-context-model {
         font-size: 11.5px;
-        line-height: 1.12;
+        line-height: 1.1;
         transform: none;
+        margin-top: 0;
+    }
+
+    #dinamik-olay-modal[data-event-type="muayene"] .universal-back-bar:has(.vehicle-context-row) {
+        row-gap: 0 !important;
+        padding-bottom: 0 !important;
+    }
+
+    #dinamik-olay-modal[data-event-type="muayene"] .universal-back-bar:has(.vehicle-context-row) .vehicle-context-model {
+        line-height: 1.08 !important;
+    }
+
+    #dinamik-olay-modal[data-event-type="muayene"] #dinamik-olay-form-icerik > div > div:first-child {
+        margin-top: 2.4em;
     }
 
     #dinamik-olay-modal[data-event-type="documents"] .universal-back-bar:has(.vehicle-context-row) {
@@ -1006,7 +1026,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     row-gap: 46px;
     width: min(100%, 400px);
     padding-top: 0;
-    transform: translateY(-18px);
 }
 
 #event-menu-modal .event-menu-category-card {
@@ -1051,8 +1070,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     align-items: center;
     justify-content: center;
     overflow: visible;
-    color: rgba(210, 218, 228, 0.82);
-    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.08));
+    color: rgba(148, 163, 184, 0.62);
+    filter: none;
     transition: color 0.18s ease, filter 0.18s ease, transform 0.18s ease;
 }
 
@@ -1091,7 +1110,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 
 #event-menu-modal .event-menu-list--items {
     width: min(100%, 460px);
-    transform: translateY(-5px);
     overflow: visible;
 }
 
@@ -1187,13 +1205,15 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 #event-menu-modal .event-menu-card .event-menu-category-icon {
     width: 40px;
     height: 40px;
+    color: rgba(148, 163, 184, 0.62);
+    filter: none;
 }
 
 #event-menu-modal .event-menu-card:hover .event-menu-category-icon,
 #event-menu-modal .event-menu-card:focus-visible .event-menu-category-icon {
     color: rgba(255, 255, 255, 0.96);
     filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.32));
-    transform: scale(1.08);
+    transform: scale(1.06);
 }
 
 #event-menu-modal .event-menu-card-title {
@@ -1235,15 +1255,18 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     #event-menu-modal #event-menu-list.event-menu-list--categories {
         grid-template-columns: repeat(2, minmax(0, 1fr));
         column-gap: 28px;
-        row-gap: 30px;
+        row-gap: 34px;
         justify-items: center;
+        align-content: center;
         width: min(100%, 312px);
-        transform: translateY(-14px);
     }
 
     #event-menu-modal .event-menu-list--items {
         width: min(100%, 340px);
-        transform: translateY(-10px);
+    }
+
+    #event-menu-modal .event-menu-section {
+        gap: 10px;
     }
 
     #event-menu-modal .event-menu-category-card {
@@ -1255,13 +1278,13 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     }
 
     #event-menu-modal .event-menu-category-icon {
-        width: 38px;
-        height: 38px;
+        width: 42px;
+        height: 42px;
     }
 
     #event-menu-modal #event-menu-list.event-menu-list--categories .event-menu-category-icon {
-        width: 46px;
-        height: 46px;
+        width: 50px;
+        height: 50px;
     }
 
     #event-menu-modal #event-menu-list.event-menu-list--categories .event-menu-category-icon svg[viewBox="0 0 64 64"] {
@@ -1279,8 +1302,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 
     #event-menu-modal .event-menu-card-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
-        column-gap: 26px;
-        row-gap: 12px;
+        column-gap: 22px;
+        row-gap: 8px;
         justify-items: center;
         width: min(100%, 330px);
         overflow: visible;
@@ -1288,16 +1311,16 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 
     #event-menu-modal .event-menu-card {
         width: min(100%, 142px);
-        min-height: 72px;
+        min-height: 68px;
         padding: 2px 2px;
-        gap: 5px;
+        gap: 4px;
         font-size: 12.5px;
         overflow: visible;
     }
 
     #event-menu-modal .event-menu-card .event-menu-category-icon {
-        width: 40px;
-        height: 40px;
+        width: 42px;
+        height: 42px;
     }
 }
 
