@@ -1190,8 +1190,38 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     transition: color 0.18s ease, text-shadow 0.18s ease;
 }
 
-#event-menu-modal .event-menu-card:hover,
-#event-menu-modal .event-menu-card:focus-visible {
+/* Touch phantom focus: idle renge dön (iOS kategori tıklaması sonrası beyaz kalmasın) */
+#event-menu-modal .event-menu-card:focus:not(:focus-visible) {
+    outline: none;
+    background: transparent;
+    color: rgba(245, 247, 250, 0.88);
+    text-shadow: none;
+    box-shadow: none;
+}
+
+#event-menu-modal .event-menu-card:focus:not(:focus-visible) .event-menu-category-icon {
+    color: rgba(148, 163, 184, 0.62);
+    filter: none;
+    transform: none;
+}
+
+@media (hover: hover) {
+    #event-menu-modal .event-menu-card:hover {
+        outline: none;
+        background: transparent;
+        color: #ffffff;
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.26);
+    }
+
+    #event-menu-modal .event-menu-card:hover .event-menu-category-icon {
+        color: rgba(255, 255, 255, 0.96);
+        filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.32));
+        transform: scale(1.06);
+    }
+}
+
+#event-menu-modal .event-menu-card:focus-visible,
+#event-menu-modal .event-menu-card:active {
     outline: none;
     background: transparent;
     color: #ffffff;
@@ -1209,8 +1239,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     filter: none;
 }
 
-#event-menu-modal .event-menu-card:hover .event-menu-category-icon,
-#event-menu-modal .event-menu-card:focus-visible .event-menu-category-icon {
+#event-menu-modal .event-menu-card:focus-visible .event-menu-category-icon,
+#event-menu-modal .event-menu-card:active .event-menu-category-icon {
     color: rgba(255, 255, 255, 0.96);
     filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.32));
     transform: scale(1.06);
@@ -1221,25 +1251,42 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     max-width: 100%;
 }
 
-#event-menu-modal .event-menu-card--danger {
-    color: var(--theme-color, #d40000);
+/* Danger: idle diğer kartlarla aynı soluk; kırmızı yalnızca etkileşimde */
+#event-menu-modal .event-menu-card--danger:focus:not(:focus-visible) {
+    color: rgba(245, 247, 250, 0.88);
 }
 
-#event-menu-modal .event-menu-card--danger:hover,
-#event-menu-modal .event-menu-card--danger:focus-visible {
+#event-menu-modal .event-menu-card--danger:focus:not(:focus-visible) .event-menu-category-icon {
+    color: rgba(148, 163, 184, 0.62);
+    filter: none;
+}
+
+@media (hover: hover) {
+    #event-menu-modal .event-menu-card--danger:hover {
+        background: transparent;
+        color: var(--theme-color, #d40000);
+        text-shadow: 0 0 11px rgba(var(--theme-color-rgb), 0.24);
+    }
+
+    #event-menu-modal .event-menu-card--danger:hover .event-menu-category-icon {
+        color: var(--theme-color, #d40000);
+        filter: drop-shadow(0 0 7px rgba(var(--theme-color-rgb), 0.18));
+        transform: scale(1.06);
+    }
+}
+
+#event-menu-modal .event-menu-card--danger:focus-visible,
+#event-menu-modal .event-menu-card--danger:active {
     background: transparent;
     color: var(--theme-color, #d40000);
     text-shadow: 0 0 11px rgba(var(--theme-color-rgb), 0.24);
 }
 
-#event-menu-modal .event-menu-card--danger:hover .event-menu-category-icon,
-#event-menu-modal .event-menu-card--danger:focus-visible .event-menu-category-icon {
-    transform: scale(1.08);
-}
-
-#event-menu-modal .event-menu-card--danger .event-menu-category-icon {
+#event-menu-modal .event-menu-card--danger:focus-visible .event-menu-category-icon,
+#event-menu-modal .event-menu-card--danger:active .event-menu-category-icon {
     color: var(--theme-color, #d40000);
     filter: drop-shadow(0 0 7px rgba(var(--theme-color-rgb), 0.18));
+    transform: scale(1.06);
 }
 
 @media (max-width: 640px) {

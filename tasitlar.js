@@ -2292,6 +2292,9 @@
       '<section class="event-menu-section event-menu-section--active">' +
       '<div class="event-menu-card-grid">' + buttonsHtml + '</div>' +
       '</section>';
+    if (document.activeElement && typeof document.activeElement.blur === 'function') {
+      document.activeElement.blur();
+    }
   }
 
   // Olay menü listesi: delegation (her butona ayrı onclick yerine tek listener)
@@ -8670,6 +8673,14 @@
             if (cfg.key === 'tasit_karti' && data.tasitKartiExpiryDate) {
               v.tasitKartiExpiryDate = data.tasitKartiExpiryDate;
             }
+            if (data.documentEvent && typeof data.documentEvent === 'object') {
+              if (!Array.isArray(v.events)) v.events = [];
+              const documentEventId = String(data.documentEvent.id || '');
+              const hasDocumentEvent = documentEventId && v.events.some(function(ev) {
+                return String(ev && ev.id || '') === documentEventId;
+              });
+              if (!hasDocumentEvent) v.events.unshift(data.documentEvent);
+            }
             if (data.vehicleVersion != null) {
               v.version = Number(data.vehicleVersion) || v.version;
             }
@@ -10005,6 +10016,17 @@
       if (v) details.push({ label: label, value: v });
     }
 
+    function getVehicleDocumentUploadLabel(type, data) {
+      const labels = {
+        'ruhsat-yukle': 'Ruhsat Belgesi',
+        'sigorta-policesi-yukle': 'Sigorta Poliçesi',
+        'kasko-policesi-yukle': 'Kasko Poliçesi',
+        'takograf-belgesi-yukle': 'Takograf Belgesi',
+        'tasit-karti-yukle': 'Taşıt Kartı'
+      };
+      return String((data && data.belgeTipi) || labels[type] || '').trim();
+    }
+
     let summaryInner = '';
 
     if (eventType === 'anahtar-guncelle') {
@@ -10152,8 +10174,12 @@
       summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text"> Kasko Kodunu G\u00FCncelledi.</span>';
       const yeniKod = (eventData.kaskoKodu || '').trim();
       if (yeniKod) pushDetail('Yeni Kod', yeniKod);
-    } else if (eventType === 'ruhsat-yukle') {
-      summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Ruhsat Belgesi Y\u00fckledi.</span>';
+    } else if (getVehicleDocumentUploadLabel(eventType, eventData)) {
+      const belgeTipi = getVehicleDocumentUploadLabel(eventType, eventData);
+      const actionText = eventData.isReplacement === true ? 'De\u011fi\u015ftirdi' : 'Y\u00fckledi';
+      summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, ' + escapeHtml(belgeTipi) + ' ' + actionText + '.</span>';
+      if (eventData.fileName) pushDetail('Dosya', eventData.fileName);
+      if (eventData.expiryDate) pushDetail('Ge\u00e7erlilik', formatDateForDisplay(eventData.expiryDate));
     } else if (legacyAciklama) {
       // Eski serbest metin kayıtlarını yeni özet/detay formatında göster
       const fallback = toTitleCase(eventType || 'Di\u011fer i\u015flem');
@@ -10495,7 +10521,11 @@
       'sube-degisiklik': '\u015Eube Bilgisini G\u00FCncelledi',
       'kullanici-atama': 'Kullan\u0131c\u0131 Atamas\u0131 Yapt\u0131',
       'satis': 'Sat\u0131\u015F/Pert Bildirdi',
-      'ruhsat-yukle': 'Ruhsat Belgesi Y\u00fckledi'
+      'ruhsat-yukle': 'Ruhsat Belgesi Y\u00fckledi',
+      'sigorta-policesi-yukle': 'Sigorta Poli\u00E7esi Y\u00FCkledi',
+      'kasko-policesi-yukle': 'Kasko Poli\u00E7esi Y\u00FCkledi',
+      'takograf-belgesi-yukle': 'Takograf Belgesi Y\u00FCkledi',
+      'tasit-karti-yukle': 'Ta\u015F\u0131t Kart\u0131 Y\u00FCkledi'
     };
     const mesaj = typeMessages[type] || 'Bilgi G\u00FCncelledi';
     return isimStr + ', ' + plateStr + ' Plakalı Taşıt İçin ' + mesaj + '.';
