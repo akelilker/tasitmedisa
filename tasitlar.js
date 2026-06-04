@@ -2193,30 +2193,7 @@
   };
 
   function getEventMenuCategoryIconHtml(categoryId) {
-    var icons = {
-      sureli: '<svg viewBox="0 0 64 64" aria-hidden="true"><rect x="14" y="9" width="34" height="47" rx="3"/><path d="M24 9V6h14v3M21 24h21M21 33h21M21 42h15"/><circle cx="48" cy="47" r="10"/><path d="M43 47l4 4 8-9"/></svg>',
-      police: '<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M8 31c7-14 18-21 32-21s25 7 32 21"/><path d="M8 31c5-4 10-4 15 0 5-4 10-4 15 0 5-4 10-4 15 0 5-4 10-4 15 0"/><path d="M40 10v35c0 7-10 7-10 1"/></svg>',
-      donanim: '<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M9 55l8-15 18-25 8 6-9 28-8-4-9 13z"/><path d="M36 15l10-8 15-3 1 8-14 3-10 8M41 20l4 6M18 41l9 6M20 53l-8-4M25 45c5-9 11-12 18-8"/></svg>',
-      genel: '<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M16 39l4-13c1.1-3.4 4-5.6 7.5-5.6h17c3.5 0 6.4 2.2 7.5 5.6l4 13"/><path d="M13 38h43v12c0 3-2.4 5.4-5.4 5.4H18.4c-3 0-5.4-2.4-5.4-5.4V38z"/><path d="M23 38l3-11h22l3 11"/><circle cx="23" cy="46" r="4"/><circle cx="46" cy="46" r="4"/><path d="M29 46h10M13 35h-4M60 35h-4M20 55v3M49 55v3"/></svg>',
-      muayene: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3v3M17 3v3M4 8h16M6 5h12a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"/><path d="M8 14l2.2 2.2L15 11.4"/></svg>',
-      takograf: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7"/><path d="M12 13l3-3M7 17h10"/></svg>',
-      sigorta: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6l7-3z"/><path d="M9 12l2 2 4-5"/></svg>',
-      kasko: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v5h5M9 15l2 2 4-5"/></svg>',
-      takip: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s6-5.2 6-10A6 6 0 0 0 6 11c0 4.8 6 10 6 10z"/><circle cx="12" cy="11" r="2.5"/><circle cx="12" cy="11" r="5.5" stroke-dasharray="2 3"/></svg>',
-      utts: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4v15a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4"/><path d="M7 4h10v3H7z"/><path d="M16 7h1.5L20 9.5V18a1.5 1.5 0 0 1-1.5 1.5H16"/><path d="M9 10h4M9 13h4"/><path d="M10 19v1"/></svg>',
-      anahtar: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="7" cy="14" r="3"/><path d="M10 14h10M16 14v3M19 14v2"/></svg>',
-      lastik: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="3.5"/><path d="M12 5v2M12 17v2M5 12h2M17 12h2M7.8 7.8l1.4 1.4M14.8 14.8l1.4 1.4M16.2 7.8l-1.4 1.4M9.2 14.8l-1.4 1.4"/></svg>',
-      kredi: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>',
-      kaskokodu: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7l8-3 8 3v10l-8 3-8-3V7z"/><path d="M8 11h5M8 14h3"/><circle cx="15" cy="12.5" r="1.5"/></svg>',
-      ceza: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4l9 16H3z"/><path d="M12 9v5M12 17h.01"/></svg>',
-      km: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 17a8 8 0 1 1 14 0"/><path d="M12 14l4-4M8 17h8"/></svg>',
-      bakim: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>',
-      kaza: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4l9 16H3z"/><path d="M9 16h6M10 12h4"/></svg>',
-      sube: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21V8l8-4 8 4v13"/><path d="M8 21v-7h8v7M8 10h.01M12 10h.01M16 10h.01"/></svg>',
-      kullanici: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M5 21a7 7 0 0 1 14 0"/></svg>',
-      satis: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h10l5 5-7 7-8-8V7z"/><path d="M9 11h.01M16 8l-8 8"/></svg>'
-    };
-    return '<span class="event-menu-category-icon">' + (icons[categoryId] || icons.genel) + '</span>';
+    return '';
   }
 
   function syncEventMenuBackButton(mode) {
