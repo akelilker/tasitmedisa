@@ -2031,11 +2031,11 @@
   .branch-name { font-size: clamp(11.5px, 4.1vw, 15px); line-height: 1.12; overflow-wrap: normal; word-break: keep-all; hyphens: none; } /* Sığmazsa JS kontrollü küçültür; kelime harften kırılmaz */
   .branch-count { font-size: 15px; } /* +1 punto daha (sadece mobil) */
   
-  /* Mobil: 2'li grid, kartlar eşit yükseklik, alt satır (fiyat/buton) hep aynı hizada */
+  /* Mobil: 3'lü grid, kartlar eşit yükseklik, alt satır (fiyat/buton) hep aynı hizada */
   #vehicles-modal .view-card { 
     display: grid !important;
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 15px;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 3px;
     align-items: stretch;
     padding: 0; 
   }
@@ -2054,9 +2054,9 @@
     height: auto !important; /* Orta alan esnasın, üçüncü satır alta yapışsın */
   }
   
-  .card-plate { font-size: 18px; } /* +1 punto daha (sadece mobil) */
-  .card-brand-model { font-size: 16px; font-weight: 400; color: var(--form-label-color); } /* +1 punto daha (sadece mobil) */
-  .card-third-line { font-size: 14px; } /* +1 punto daha (sadece mobil) */
+  .card-plate { font-size: clamp(13px, 3.5vw, 16px); } /* 3'lü mobil kartta plaka tek satır kalsın */
+  .card-brand-model { font-size: clamp(10px, 2.8vw, 13px); font-weight: 400; color: var(--form-label-color); }
+  .card-third-line { font-size: clamp(10px, 2.8vw, 12px); }
 
   /* --- TARİH INPUTLARI (Olay Ekle 14 modal) - mobilde dar ama dikeyde ortalı kalsın --- */
   .olay-ekle-modal .modal-body .olay-tarih-input,
