@@ -57,15 +57,8 @@ border-top-left-radius: var(--modal-radius, 10px);
 border-top-right-radius: var(--modal-radius, 10px);
 }
 
-/* BAŞLIK */
+/* BAŞLIK — premium-title style-core'da */
 #reports-modal .modal-header h2 {
-color: var(--modal-title-color) !important;
-background: none !important;
--webkit-background-clip: border-box !important;
-background-clip: border-box !important;
--webkit-text-fill-color: var(--modal-title-color) !important;
-text-shadow: var(--modal-title-shadow) !important;
-font-weight: var(--modal-title-weight) !important;
 opacity: 1 !important;
 margin: 0;
 }
@@ -2663,15 +2656,9 @@ font-size: 21px;
 color: var(--form-label-color) !important;
 font-size: 11px;
 }
-/* Raporlar modal mobil: ortak ölçü style-core’da (.modal-overlay .modal-container) */
+/* Raporlar modal mobil: ortak ölçü style-core'da (.modal-overlay .modal-container) */
 #reports-modal .modal-header h2 {
-color: var(--modal-title-color) !important;
-background: none !important;
--webkit-background-clip: border-box !important;
-background-clip: border-box !important;
--webkit-text-fill-color: var(--modal-title-color) !important;
-text-shadow: var(--modal-title-shadow) !important;
-font-weight: var(--modal-title-weight) !important;
+opacity: 1 !important;
 }
 #reports-modal .modal-close { font-size: 21px; }
 /* Yatay stok scroll: kapsayıcı pan-y + overflow-x hidden içeriği kesiyordu */

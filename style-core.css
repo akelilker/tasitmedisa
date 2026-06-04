@@ -46,9 +46,22 @@ body::-webkit-scrollbar,
   --modal-max-width: 500px;
   --modal-radius: 10px;
   --modal-header-red-gradient: linear-gradient(180deg, #760016 0%, #5b0011 30%, #2f000a 64%, #090407 100%);
-  --modal-title-color: #aeb8c2;
-  --modal-title-shadow: 0 1px 0 rgba(0, 0, 0, 0.62), 0 0 3px rgba(174, 184, 194, 0.08);
-  --modal-title-weight: 800;
+  --premium-title-gradient: linear-gradient(to bottom, #ccd7e1 0%, #f4f8fb 38%, #adbdca 56%, #e2ebf2 100%);
+  --premium-title-shadow: 0 1px 1px rgba(0, 0, 0, 0.26), 0 0 7px rgba(214, 224, 232, 0.16);
+  --premium-title-weight: 700;
+  --premium-title-letter-spacing: 0.085em;
+  --back-bar-standalone-padding: 8px 16px 4px 16px;
+  --back-bar-toolbar-padding: 0;
+  --back-bar-context-padding: 8px 16px 6px 16px;
+  --back-btn-gap: 4px;
+  --back-icon-size: 20px;
+  --back-label-size: 13px;
+  --back-label-weight: 500;
+  --back-label-color: #adb5bd;
+  --back-btn-padding-y: 8px;
+  --modal-title-color: #d1dbe4;
+  --modal-title-shadow: 0 1px 0 rgba(0, 0, 0, 0.55), 0 0 5px rgba(214, 224, 232, 0.12);
+  --modal-title-weight: 700;
   --modal-margin-bottom-desktop: calc(var(--app-footer-height) + var(--modal-gap-above-footer));
   --modal-margin-bottom-mobile: calc(var(--modal-gap-above-footer) + var(--app-footer-height));
 
@@ -137,14 +150,36 @@ body::-webkit-scrollbar,
 
 .universal-back-bar {
   display: flex;
-  align-items: flex-start !important; /* Buton dikey hizası bozulmasın */
-  justify-content: flex-start !important;
-  padding: 8px 0 0 0 !important;
-  width: 100% !important;
+  justify-content: flex-start;
   margin: 0 !important;
   box-sizing: border-box !important;
-  gap: 3px !important; /* Bar içi boşluk tutarlı */
+  gap: var(--back-btn-gap) !important;
 }
+
+/* --- Geri bar layout kontratları (Faz 2) --- */
+.universal-back-bar--standalone {
+  width: 100% !important;
+  flex-shrink: 0;
+  align-items: flex-start !important;
+  padding: var(--back-bar-standalone-padding) !important;
+}
+
+.universal-back-bar--toolbar {
+  width: auto !important;
+  flex: 0 0 auto !important;
+  align-items: center !important;
+  align-self: center !important;
+  padding: var(--back-bar-toolbar-padding) !important;
+}
+
+.universal-back-bar--context {
+  width: 100% !important;
+  flex-shrink: 0;
+  position: relative;
+  align-items: flex-start !important;
+  padding: var(--back-bar-context-padding) !important;
+}
+
 .universal-back-bar svg,
 .universal-back-bar i,
 .universal-back-bar img {
@@ -159,23 +194,25 @@ body::-webkit-scrollbar,
 .universal-back-bar a.universal-back-btn {
   display: inline-flex !important;
   align-items: center !important; /* Ok ve etiket aynı satırda dikey ortalı */
-  gap: 4px !important;
+  gap: var(--back-btn-gap) !important;
   text-decoration: none !important;
   cursor: pointer;
   background: none;
   border: none;
-  padding: 8px 0 8px 0 !important; /* Yatay padding yok – gap 3px kalır */
+  padding: var(--back-btn-padding-y) 0 var(--back-btn-padding-y) 0 !important; /* Yatay padding yok */
   color: var(--txt);
+  box-sizing: border-box;
 }
 .universal-back-btn:hover { color: var(--txt-white); }
 
 /* Etiket: 1 punto küçük (14px → 13px), tüm ekranlar */
 .universal-back-label {
-  color: #adb5bd !important;
-  font-size: 13px !important; /* 14px → 13px (1 punto küçültme) */
-  font-weight: 500 !important;
+  color: var(--back-label-color) !important;
+  font-size: var(--back-label-size) !important;
+  font-weight: var(--back-label-weight) !important;
   line-height: 1 !important;
   margin: 0 !important;
+  text-transform: none !important;
 }
 
 /* Sol oku aşağı kaydırma (global, masaüstü + mobil) – metin baseline ile hizalı */
@@ -199,9 +236,17 @@ body::-webkit-scrollbar,
 }
 
 .back-icon-svg {
-  width: 20px;
-  height: 20px;
+  width: var(--back-icon-size);
+  height: var(--back-icon-size);
   flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .modal-overlay .universal-back-btn {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 10px 0 !important;
+  }
 }
 
 /* --- EVRENSEL İŞLEM BUTONLARI (Orijinal kayit.css matematiği ve zarafeti) --- */
@@ -1793,20 +1838,18 @@ body.modal-open:has(#info-modal.active) .app-container::after {
 /* Menü metinleri - taşma yok, uzun metin sığsın veya ellipsis */
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu .menu-btn .ttl {
   font-size: clamp(13px, 2.8vw, 15px);
-  font-weight: 700;
+  font-weight: var(--premium-title-weight);
   color: #d1dbe4;
-  letter-spacing: 0.085em;
+  letter-spacing: var(--premium-title-letter-spacing);
   transition: color 0.2s, transform 0.2s, text-shadow 0.24s ease, background-position 0.32s ease, filter 0.32s ease;
-  background: linear-gradient(to bottom, #ccd7e1 0%, #f4f8fb 38%, #adbdca 56%, #e2ebf2 100%);
+  background: var(--premium-title-gradient);
   background-size: 100% 180%;
   background-position: 50% 54%;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   filter: brightness(1.01);
-  text-shadow:
-    0 1px 1px rgba(0, 0, 0, 0.26),
-    0 0 7px rgba(214, 224, 232, 0.16);
+  text-shadow: var(--premium-title-shadow);
   transform-origin: center;
   max-width: 100%;
   min-width: 0;
@@ -2410,6 +2453,21 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu .m
   text-shadow: var(--modal-title-shadow);
   letter-spacing: 0.05em;
   text-align: center;
+}
+
+/* Premium başlık — ana menü .ttl ile aynı metalik gradient (Kayıt, Taşıtlar, Detay, Raporlar) */
+.modal-overlay .modal-header h2.premium-title {
+  font-weight: var(--premium-title-weight);
+  letter-spacing: var(--premium-title-letter-spacing);
+  background: var(--premium-title-gradient);
+  background-size: 100% 180%;
+  background-position: 50% 54%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  filter: brightness(1.01);
+  text-shadow: var(--premium-title-shadow);
 }
 
 /* Dış çerçeve .modal-container’da: başlıkta üst border yok — çift katman / üst kırım önlenir */
@@ -3146,10 +3204,13 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         box-sizing: border-box !important;
     }
     
-    /* Modal başlıkları mobilde 19px, letter-spacing 0.2em */
+    /* Modal başlıkları mobilde 19px; düz başlıklar geniş tracking, premium menüye yakın */
     .modal-header h2 {
         font-size: 19px !important;
         letter-spacing: 0.2em !important;
+    }
+    .modal-header h2.premium-title {
+        letter-spacing: 0.12em !important;
     }
     
     .modal-overlay {
@@ -4043,14 +4104,12 @@ body.modal-open .app-container {
   40% { transform: scale(1); opacity: 1; }
 }
 
-/* Ayarlar listesi modalları (şube / kullanıcı / veri yedekleme / dış veri): geri çubuğu header altında tam görünsün (negatif margin header arkasına kaçırmayı önler).
-   .universal-back-bar { margin: 0 !important } tüm kenarı sıfırladığı için düşük özgüllü margin-top eziliyordu.
-   Sadece masaüstü; mobil max-width kuralları ayrı. */
+/* Ayarlar listesi modalları: standalone geri çubuğu header altında tam görünsün (masaüstü) */
 @media (min-width: 769px) {
-  #branch-modal.modal-overlay.ayarlar-modal-overlay .universal-back-bar,
-  #user-modal.modal-overlay.ayarlar-modal-overlay .universal-back-bar,
-  #data-management-modal.modal-overlay.ayarlar-modal-overlay .universal-back-bar,
-  #dis-veri-panel.modal-overlay.ayarlar-modal-overlay .universal-back-bar {
+  #branch-modal.modal-overlay.ayarlar-modal-overlay .universal-back-bar--standalone,
+  #user-modal.modal-overlay.ayarlar-modal-overlay .universal-back-bar--standalone,
+  #data-management-modal.modal-overlay.ayarlar-modal-overlay .universal-back-bar--standalone,
+  #dis-veri-panel.modal-overlay.ayarlar-modal-overlay .universal-back-bar--standalone {
     margin-top: 0 !important;
   }
 }
