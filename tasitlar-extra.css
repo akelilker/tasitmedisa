@@ -1802,10 +1802,10 @@
     width: 22px !important;
     height: 22px !important;
   }
-  .olay-ekle-modal .universal-back-bar {
+  .olay-ekle-modal:not(#event-menu-modal):not(#dinamik-olay-modal) .universal-back-bar {
     margin-top: -6px !important;
   }
-  .olay-ekle-modal .universal-back-bar .universal-back-label {
+  .olay-ekle-modal:not(#event-menu-modal):not(#dinamik-olay-modal) .universal-back-bar .universal-back-label {
     font-size: 17.5px !important;
     margin-top: 0 !important;
     color: #adb5bd !important;
@@ -2838,10 +2838,6 @@
   #vehicle-detail-modal #detail-boya-container .boya-legend-dot {
     width: 8px !important;
     height: 8px !important;
-  }
-
-  #event-menu-modal .universal-back-bar {
-    margin-top: -6px !important;
   }
 
   /* --- EVENT MENU LIST MOBİL --- (spesifik seçici: .modal-body button kuralını ezer) */
