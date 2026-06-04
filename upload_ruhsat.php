@@ -58,6 +58,58 @@ function medisaUploadVehicleNeedsK2($vehicle) {
     return in_array($typeKey, ['minivan', 'kamyon', 'romork'], true);
 }
 
+function medisaUploadDocumentHistoryMeta($documentType) {
+    $type = strtolower(trim((string)$documentType));
+    $map = [
+        'ruhsat' => ['eventType' => 'ruhsat-yukle', 'label' => 'Ruhsat Belgesi'],
+        'sigorta' => ['eventType' => 'sigorta-policesi-yukle', 'label' => 'Sigorta Poliçesi'],
+        'kasko' => ['eventType' => 'kasko-policesi-yukle', 'label' => 'Kasko Poliçesi'],
+        'tasit_karti' => ['eventType' => 'tasit-karti-yukle', 'label' => 'Taşıt Kartı'],
+        'takograf' => ['eventType' => 'takograf-belgesi-yukle', 'label' => 'Takograf Belgesi'],
+    ];
+    return $map[$type] ?? null;
+}
+
+function medisaUploadDocumentRecorderName($context) {
+    $user = is_array($context['user'] ?? null) ? $context['user'] : [];
+    $name = trim((string)($user['isim'] ?? $user['name'] ?? ''));
+    if ($name !== '') {
+        return $name;
+    }
+    return 'Yönetim';
+}
+
+function medisaBuildVehicleDocumentUploadEvent($documentType, $documentPath, $previousDocumentPath, $context, $extraData = []) {
+    $meta = medisaUploadDocumentHistoryMeta($documentType);
+    if (!$meta) {
+        return null;
+    }
+    $now = date('c');
+    $recorder = medisaUploadDocumentRecorderName($context);
+    $eventData = [
+        'belgeTipi' => $meta['label'],
+        'documentType' => strtolower(trim((string)$documentType)),
+        'documentPath' => (string)$documentPath,
+        'fileName' => basename((string)$documentPath),
+        'isReplacement' => trim((string)$previousDocumentPath) !== '',
+        'previousDocumentPath' => (string)$previousDocumentPath,
+        'surucu' => $recorder,
+        'kaydeden' => $recorder,
+    ];
+    foreach ($extraData as $key => $value) {
+        if ($value !== null && $value !== '') {
+            $eventData[$key] = $value;
+        }
+    }
+    return [
+        'id' => 'doc_' . str_replace('.', '', sprintf('%.6F', microtime(true))) . '_' . substr(sha1($documentType . '|' . $documentPath . '|' . $now), 0, 8),
+        'type' => $meta['eventType'],
+        'date' => date('Y-m-d'),
+        'timestamp' => $now,
+        'data' => $eventData,
+    ];
+}
+
 function medisaCanMergeVehicleDocumentUpload($vehicle, $config, $documentType, $clientDocumentPath, $clientTasitKartiSyncDate, $hasClientDocumentPath, $hasClientTasitKartiSyncDate, $k2ExpiryDate = '') {
     if (!$hasClientDocumentPath || !is_array($vehicle) || !is_array($config)) {
         return false;
@@ -298,13 +350,24 @@ $result = medisaMutateData(function (&$data) use ($vehicleId, $vehicleVersion, $
         }
     }
 
-    $vehicle[$config['pathField']] = $documentPath;
+    $pathField = (string)($config['pathField'] ?? '');
+    $previousDocumentPath = medisaNormalizeUploadDocumentPath($vehicle[$pathField] ?? '');
+    $vehicle[$pathField] = $documentPath;
+    $documentEventExtra = [];
     if ($documentType === 'tasit_karti') {
         $k2ExpiryDate = medisaNormalizeUploadDocumentDateToIso($data['ayarlar']['k2Belgesi']['expiryDate'] ?? '');
         if ($k2ExpiryDate === '') {
             return medisaBuildErrorResult('Taşıt Kartı yüklemek için önce K2 Belgesi Geçerlilik Süresi kaydedilmelidir.', 400);
         }
         $vehicle['tasitKartiExpiryDate'] = $k2ExpiryDate;
+        $documentEventExtra['expiryDate'] = $k2ExpiryDate;
+    }
+    $documentEvent = medisaBuildVehicleDocumentUploadEvent($documentType, $documentPath, $previousDocumentPath, $context, $documentEventExtra);
+    if ($documentEvent) {
+        if (!isset($vehicle['events']) || !is_array($vehicle['events'])) {
+            $vehicle['events'] = [];
+        }
+        array_unshift($vehicle['events'], $documentEvent);
     }
     $newVehicleVersion = medisaBumpVehicleVersion($vehicle);
 
@@ -322,6 +385,9 @@ $result = medisaMutateData(function (&$data) use ($vehicleId, $vehicleVersion, $
     }
     if ($documentType === 'tasit_karti') {
         $payload['tasitKartiExpiryDate'] = $vehicle['tasitKartiExpiryDate'];
+    }
+    if ($documentEvent) {
+        $payload['documentEvent'] = $documentEvent;
     }
     return $payload;
 });
