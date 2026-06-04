@@ -3438,10 +3438,12 @@ padding: 16px;
 }
 
 #reports-modal #stok-list-container .stok-list-cell[data-col="sube"] {
-  display: flex !important;
+  display: grid !important;
   align-items: center !important;
   justify-content: center !important;
   align-content: center !important;
+  justify-items: center !important;
+  place-items: center !important;
   text-align: center !important;
   white-space: normal !important;
   -webkit-box-orient: unset !important;
@@ -3452,7 +3454,7 @@ padding: 16px;
   display: block !important;
   align-items: center !important;
   justify-content: center !important;
-  width: auto !important;
+  width: 100% !important;
   max-width: 100% !important;
   min-width: 0 !important;
   margin-left: auto !important;
@@ -3463,6 +3465,16 @@ padding: 16px;
   word-break: break-word !important;
   overflow-wrap: anywhere !important;
   hyphens: none !important;
+}
+#reports-modal #stok-list-container .stok-list-header-cell[data-col="sube"] {
+  display: grid !important;
+  place-items: center !important;
+  text-align: center !important;
+}
+#reports-modal #stok-list-container .stok-list-header-cell[data-col="sube"] .stok-header-text {
+  width: 100% !important;
+  text-align: center !important;
+  justify-content: center !important;
 }
 
 /* Yazdır: sadece Excel ile aynı rapor tablosu görünsün (ekran görüntüsü değil) */
