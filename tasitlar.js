@@ -2193,7 +2193,31 @@
   };
 
   function getEventMenuCategoryIconHtml(categoryId) {
-    return '';
+    var iconMap = {
+      genel: 'vehicle',
+      sureli: 'zorunlu',
+      police: 'police',
+      donanim: 'donanim',
+      muayene: 'zorunlu',
+      takograf: 'zorunlu',
+      sigorta: 'police',
+      kasko: 'police',
+      takip: 'donanim',
+      utts: 'donanim',
+      anahtar: 'donanim',
+      lastik: 'donanim',
+      kredi: 'donanim',
+      kaskokodu: 'donanim',
+      ceza: 'vehicle',
+      km: 'vehicle',
+      bakim: 'vehicle',
+      kaza: 'vehicle',
+      sube: 'vehicle',
+      kullanici: 'vehicle',
+      satis: 'vehicle'
+    };
+    var iconName = iconMap[categoryId] || 'vehicle';
+    return '<span class="event-menu-category-icon event-menu-icon--' + escapeAttr(iconName) + '" aria-hidden="true"></span>';
   }
 
   function syncEventMenuBackButton(mode) {
