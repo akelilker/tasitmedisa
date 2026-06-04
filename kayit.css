@@ -85,13 +85,6 @@
 }
 
 #vehicle-modal .modal-header h2 {
-    color: var(--modal-title-color) !important;
-    background: none !important;
-    -webkit-background-clip: border-box !important;
-    background-clip: border-box !important;
-    -webkit-text-fill-color: var(--modal-title-color) !important;
-    text-shadow: var(--modal-title-shadow) !important;
-    font-weight: var(--modal-title-weight) !important;
     opacity: 1 !important;
     margin: 0;
     text-transform: uppercase;
@@ -2496,13 +2489,6 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
 }
 
 #vehicle-modal .modal-header h2 {
-    color: var(--modal-title-color) !important;
-    background: none !important;
-    -webkit-background-clip: border-box !important;
-    background-clip: border-box !important;
-    -webkit-text-fill-color: var(--modal-title-color) !important;
-    text-shadow: var(--modal-title-shadow) !important;
-    font-weight: var(--modal-title-weight) !important;
     opacity: 1 !important;
     margin: 0;
     text-align: center;

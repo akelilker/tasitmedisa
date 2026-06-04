@@ -1181,6 +1181,7 @@ body.dashboard-page {
 .driver-sliding-warning.driver-sliding-warning-orange .driver-warning-icon {
   color: var(--orange-warn);
 }
+
 .driver-sliding-warning .driver-warning-text {
   overflow: hidden;
   text-overflow: ellipsis;
