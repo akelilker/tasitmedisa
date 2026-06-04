@@ -782,7 +782,7 @@
         const basePx = isMobile
             ? {
                 /* Mobil: görünür gridde tasitTipi yok — dar ekran için 396px track + 6px gap ≈ 402px */
-                'sira': 22, 'sube': 54, 'yil': 34, 'marka': 108, 'plaka': 72, 'sanziman': 48, 'km': 58
+                'sira': 22, 'sube': 76, 'yil': 34, 'marka': 86, 'plaka': 72, 'sanziman': 48, 'km': 58
             }
             : {
                 'sira': 20,
