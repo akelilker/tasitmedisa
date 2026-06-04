@@ -1012,7 +1012,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     }
 }
 
-/* Olay Ekle seçim menüsü: sade kategori ana ekranı + kategori içi işlem kartları */
+/* Olay Ekle seçim menüsü: asset mask ikonlu kategori ana ekranı + kategori içi işlem kartları */
 #event-menu-modal .modal-body {
     display: flex !important;
     align-items: center !important;
@@ -1035,14 +1035,14 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     column-gap: 58px;
-    row-gap: 30px;
+    row-gap: 40px;
     width: min(100%, 400px);
     padding-top: 0;
 }
 
 #event-menu-modal .event-menu-category-card {
-    min-height: 54px;
-    padding: 8px 4px;
+    min-height: 88px;
+    padding: 6px 4px;
     box-sizing: border-box;
     overflow: visible;
     border: 0;
@@ -1054,7 +1054,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 0;
+    gap: 9px;
     text-align: center;
     font-size: 13.5px;
     font-weight: 600;
@@ -1073,6 +1073,48 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 
 #event-menu-modal .event-menu-category-card:focus-visible {
     box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.28);
+}
+
+#event-menu-modal .event-menu-category-icon {
+    --event-menu-icon-url: url("icon/event-menu-vehicle.png?v=20260604.2");
+    width: 42px;
+    height: 42px;
+    display: block;
+    flex-shrink: 0;
+    color: rgba(148, 163, 184, 0.66);
+    background: currentColor;
+    -webkit-mask: var(--event-menu-icon-url) center / contain no-repeat;
+    mask: var(--event-menu-icon-url) center / contain no-repeat;
+    filter: none;
+    transition: color 0.18s ease, filter 0.18s ease, transform 0.18s ease;
+}
+
+#event-menu-modal .event-menu-icon--vehicle {
+    --event-menu-icon-url: url("icon/event-menu-vehicle.png?v=20260604.2");
+}
+
+#event-menu-modal .event-menu-icon--zorunlu {
+    --event-menu-icon-url: url("icon/event-menu-zorunlu.png?v=20260604.2");
+}
+
+#event-menu-modal .event-menu-icon--police {
+    --event-menu-icon-url: url("icon/event-menu-police.png?v=20260604.2");
+}
+
+#event-menu-modal .event-menu-icon--donanim {
+    --event-menu-icon-url: url("icon/event-menu-donanim.png?v=20260604.2");
+}
+
+#event-menu-modal .event-menu-category-card:hover .event-menu-category-icon,
+#event-menu-modal .event-menu-category-card:focus-visible .event-menu-category-icon {
+    color: rgba(255, 255, 255, 0.96);
+    filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.34));
+    transform: scale(1.06);
+}
+
+#event-menu-modal #event-menu-list.event-menu-list--categories .event-menu-category-icon {
+    width: 52px;
+    height: 52px;
 }
 
 #event-menu-modal .event-menu-category-title {
@@ -1129,7 +1171,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     column-gap: 48px;
-    row-gap: 14px;
+    row-gap: 16px;
     justify-content: center;
     width: min(100%, 420px);
     overflow: visible;
@@ -1146,8 +1188,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 
 #event-menu-modal .event-menu-card {
     width: 100%;
-    min-height: 54px;
-    padding: 7px 4px;
+    min-height: 72px;
+    padding: 6px 4px;
     box-sizing: border-box;
     overflow: visible;
     border: 0;
@@ -1159,7 +1201,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 0;
+    gap: 6px;
     font-size: 13px;
     font-weight: 600;
     line-height: 1.25;
@@ -1178,12 +1220,24 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     box-shadow: none;
 }
 
+#event-menu-modal .event-menu-card:focus:not(:focus-visible) .event-menu-category-icon {
+    color: rgba(148, 163, 184, 0.66);
+    filter: none;
+    transform: none;
+}
+
 @media (hover: hover) {
     #event-menu-modal .event-menu-card:hover {
         outline: none;
         background: transparent;
         color: #ffffff;
         text-shadow: 0 0 10px rgba(255, 255, 255, 0.26);
+    }
+
+    #event-menu-modal .event-menu-card:hover .event-menu-category-icon {
+        color: rgba(255, 255, 255, 0.96);
+        filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.30));
+        transform: scale(1.05);
     }
 }
 
@@ -1197,6 +1251,18 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 
 #event-menu-modal .event-menu-card:focus-visible {
     box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.25);
+}
+
+#event-menu-modal .event-menu-card .event-menu-category-icon {
+    width: 38px;
+    height: 38px;
+}
+
+#event-menu-modal .event-menu-card:focus-visible .event-menu-category-icon,
+#event-menu-modal .event-menu-card:active .event-menu-category-icon {
+    color: rgba(255, 255, 255, 0.96);
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.30));
+    transform: scale(1.05);
 }
 
 #event-menu-modal .event-menu-card-title {
@@ -1221,11 +1287,21 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     color: rgba(245, 247, 250, 0.88);
 }
 
+#event-menu-modal .event-menu-card--danger:focus:not(:focus-visible) .event-menu-category-icon {
+    color: rgba(148, 163, 184, 0.66);
+    filter: none;
+}
+
 @media (hover: hover) {
     #event-menu-modal .event-menu-card--danger:hover {
         background: transparent;
         color: var(--theme-color, #d40000);
         text-shadow: 0 0 11px rgba(var(--theme-color-rgb), 0.24);
+    }
+
+    #event-menu-modal .event-menu-card--danger:hover .event-menu-category-icon {
+        color: var(--theme-color, #d40000);
+        filter: drop-shadow(0 0 7px rgba(var(--theme-color-rgb), 0.20));
     }
 }
 
@@ -1234,6 +1310,12 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     background: transparent;
     color: var(--theme-color, #d40000);
     text-shadow: 0 0 11px rgba(var(--theme-color-rgb), 0.24);
+}
+
+#event-menu-modal .event-menu-card--danger:focus-visible .event-menu-category-icon,
+#event-menu-modal .event-menu-card--danger:active .event-menu-category-icon {
+    color: var(--theme-color, #d40000);
+    filter: drop-shadow(0 0 7px rgba(var(--theme-color-rgb), 0.20));
 }
 
 @media (max-width: 640px) {
@@ -1249,7 +1331,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     #event-menu-modal #event-menu-list.event-menu-list--categories {
         grid-template-columns: repeat(2, minmax(0, 1fr));
         column-gap: 28px;
-        row-gap: 22px;
+        row-gap: 30px;
         justify-items: center;
         align-content: center;
         width: min(100%, 312px);
@@ -1265,10 +1347,20 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 
     #event-menu-modal .event-menu-category-card {
         width: min(100%, 140px);
-        min-height: 52px;
-        padding: 6px 2px;
-        gap: 0;
+        min-height: 78px;
+        padding: 4px 2px;
+        gap: 7px;
         font-size: 13px;
+    }
+
+    #event-menu-modal .event-menu-category-icon {
+        width: 42px;
+        height: 42px;
+    }
+
+    #event-menu-modal #event-menu-list.event-menu-list--categories .event-menu-category-icon {
+        width: 48px;
+        height: 48px;
     }
 
     #event-menu-modal .event-menu-section-heading {
@@ -1283,7 +1375,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     #event-menu-modal .event-menu-card-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
         column-gap: 22px;
-        row-gap: 6px;
+        row-gap: 8px;
         justify-items: center;
         width: min(100%, 330px);
         overflow: visible;
@@ -1291,13 +1383,17 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 
     #event-menu-modal .event-menu-card {
         width: min(100%, 142px);
-        min-height: 50px;
-        padding: 5px 2px;
-        gap: 0;
+        min-height: 66px;
+        padding: 4px 2px;
+        gap: 4px;
         font-size: 12.5px;
         overflow: visible;
     }
 
+    #event-menu-modal .event-menu-card .event-menu-category-icon {
+        width: 38px;
+        height: 38px;
+    }
 }
 
 /* Olay Ekle (Kaza, Bakım vb.): modal gövdesi mutlaka kayar, üst görünsün */
