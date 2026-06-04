@@ -1081,6 +1081,7 @@
       return child.classList && child.classList.contains('universal-back-bar');
     });
     if (!backBar) return;
+    backBar.classList.add('universal-back-bar--context');
 
     const existingRows = Array.from(container.querySelectorAll('.vehicle-context-row'));
     let row = existingRows[0] || null;
@@ -2545,12 +2546,12 @@
             </div>
         `;
     } else {
-        // DETAY MODU: Solda Geri+İsim, Sağda Yerel Arama/Filtre/Görünüm
+        // DETAY MODU: Solda Geri (hedef: şube seçim), Sağda Yerel Arama/Filtre/Görünüm
         const leftContent = isAutoSingleBranchVehiclesView ? '' : `
-                <div class="universal-back-bar">
-                    <button type="button" class="universal-back-btn" onclick="goBackToVehiclesDashboard()">
+                <div class="universal-back-bar universal-back-bar--toolbar">
+                    <button type="button" class="universal-back-btn" onclick="goBackToVehiclesDashboard()" aria-label="Şube Seçimi">
                         <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-                        ${title ? `<span class="universal-back-label">${escapeHtml(title)}</span>` : ''}
+                        <span class="universal-back-label">Şube Seçimi</span>
                     </button>
                 </div>
         `;
@@ -2662,7 +2663,7 @@
 
     // 1. "TÜMÜ" Kartı (Manuel) — sadece aktif (satılmamış) taşıtlar
     html += `
-      <div class="branch-card all-card" data-branch-id="all" data-branch-name="TAŞITLAR">
+      <div class="branch-card all-card" data-branch-id="all" data-branch-name="Taşıtlar">
         <div class="branch-name">TÜMÜ</div>
         <div class="branch-count">${activeVehicles.length} Taşıt</div>
       </div>
@@ -2710,7 +2711,9 @@
     isAutoSingleBranchVehiclesView = options.autoSingleBranch === true;
     invalidateVehicleListRenderCache();
     closeSearchBox(true);
-    const displayTitle = branchId === 'all' ? branchName : (branchName + ' Taşıtlar');
+    const displayTitle = branchId === 'all'
+      ? (typeof toTitleCase === 'function' ? toTitleCase(branchName) : branchName)
+      : ((typeof toTitleCase === 'function' ? toTitleCase(branchName) : branchName) + ' Taşıtlar');
     updateToolbar('detail', displayTitle);
 
     renderVehicles();
@@ -3251,13 +3254,16 @@
         } else if (lastListContext.branchId === 'all') {
           backLabel = 'Taşıtlar';
         } else {
-          backLabel = lastListContext.branchName + ' Taşıtlar';
+          const branchPart = typeof toTitleCase === 'function'
+            ? toTitleCase(String(lastListContext.branchName || '').trim())
+            : String(lastListContext.branchName || '').trim();
+          backLabel = branchPart ? (branchPart + ' Taşıtlar') : 'Taşıtlar';
         }
       }
 
       // Geri butonu (evrensel yapı)
       const backBar = document.createElement('div');
-      backBar.className = 'universal-back-bar';
+      backBar.className = 'universal-back-bar universal-back-bar--toolbar';
       const backBtn = document.createElement('button');
       backBtn.type = 'button';
       backBtn.className = 'universal-back-btn';

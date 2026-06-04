@@ -162,9 +162,9 @@
     </style>
 
     <!-- CSS Preload + Async Load -->
-    <link rel="preload" href="style-core.css?v=20260531.1" as="style">
-    <link rel="stylesheet" href="style-core.css?v=20260531.1">
-    <noscript><link rel="stylesheet" href="style-core.css?v=20260531.1"></noscript>
+    <link rel="preload" href="style-core.css?v=20260604.2" as="style">
+    <link rel="stylesheet" href="style-core.css?v=20260604.2">
+    <noscript><link rel="stylesheet" href="style-core.css?v=20260604.2"></noscript>
     <script>
         (function() {
             function getMainAppBasePath() {
@@ -346,7 +346,7 @@
         <div id="vehicle-modal" class="modal-overlay">
             <div class="modal-container">
                 <div class="modal-header">
-                    <h2>KAYIT İŞLEMLERİ</h2>
+                    <h2 class="premium-title">KAYIT İŞLEMLERİ</h2>
                     <button class="modal-close" onclick="closeVehicleModal()">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -526,7 +526,7 @@
 
         <div id="vehicles-modal" class="modal-overlay tasitlar-modal-overlay" onclick="if(event.target === this) { event.stopPropagation(); }">
           <div class="modal-container" onclick="event.stopPropagation();">
-            <div class="modal-header"><h2>TAŞITLAR</h2><button class="modal-close" onclick="event.stopPropagation(); event.preventDefault(); closeVehiclesModal(event); return false;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div>
+            <div class="modal-header"><h2 class="premium-title">TAŞITLAR</h2><button class="modal-close" onclick="event.stopPropagation(); event.preventDefault(); closeVehiclesModal(event); return false;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div>
             <div class="modal-body"><div id="vehicles-modal-content"></div></div>
           </div>
         </div>
@@ -534,7 +534,7 @@
         <div id="vehicle-detail-modal" class="modal-overlay tasitlar-modal-overlay" onclick="if(event.target === this) { event.stopPropagation(); event.preventDefault(); return false; }">
           <div class="modal-container" onclick="event.stopPropagation();">
             <div class="modal-header">
-              <h2>TAŞIT DETAYI</h2>
+              <h2 class="premium-title">TAŞIT DETAYI</h2>
               <button class="modal-close" onclick="typeof backFromVehicleDetailModal==='function'?backFromVehicleDetailModal():closeAllModals();">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -570,7 +570,7 @@
                         </svg>
                     </button>
                 </div>
-                <div class="universal-back-bar">
+                <div class="universal-back-bar universal-back-bar--standalone">
                     <button type="button" class="universal-back-btn" aria-label="Ayarlar" onclick="medisaSettingsHistoryBack(event)">
                         <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
                         <span class="universal-back-label">Ayarlar</span>
@@ -596,7 +596,7 @@
                         </svg>
                     </button>
                 </div>
-                <div class="universal-back-bar">
+                <div class="universal-back-bar universal-back-bar--standalone">
                     <button type="button" class="universal-back-btn" aria-label="Şube Yönetimi" onclick="medisaSettingsHistoryBack(event)">
                         <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
                         <span class="universal-back-label">Şube Yönetimi</span>
@@ -634,7 +634,7 @@
                         </svg>
                     </button>
                 </div>
-                <div class="universal-back-bar user-management-back-bar">
+                <div class="universal-back-bar universal-back-bar--standalone user-management-back-bar">
                     <button type="button" class="universal-back-btn" aria-label="Ayarlar" onclick="medisaSettingsHistoryBack(event)">
                         <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
                         <span class="universal-back-label">Ayarlar</span>
@@ -683,7 +683,7 @@
                         </svg>
                     </button>
                 </div>
-                <div class="universal-back-bar">
+                <div class="universal-back-bar universal-back-bar--standalone">
                     <button type="button" class="universal-back-btn" aria-label="Kullanıcı Yönetimi" onclick="medisaSettingsHistoryBack(event)">
                         <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
                         <span class="universal-back-label">Kullanıcı Yönetimi</span>
@@ -766,7 +766,7 @@
                         </svg>
                     </button>
                 </div>
-                <div class="universal-back-bar">
+                <div class="universal-back-bar universal-back-bar--standalone">
                     <button type="button" class="universal-back-btn" aria-label="Ayarlar" onclick="medisaSettingsHistoryBack(event)">
                         <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
                         <span class="universal-back-label">Ayarlar</span>
@@ -809,7 +809,7 @@
                         </svg>
                     </button>
                 </div>
-                <div class="universal-back-bar">
+                <div class="universal-back-bar universal-back-bar--standalone">
                     <button type="button" class="universal-back-btn" aria-label="Ayarlar" onclick="medisaSettingsHistoryBack(event)">
                         <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
                         <span class="universal-back-label">Ayarlar</span>
@@ -836,7 +836,7 @@
                         </svg>
                     </button>
                 </div>
-                <div class="universal-back-bar">
+                <div class="universal-back-bar universal-back-bar--standalone">
                     <button type="button" class="universal-back-btn" aria-label="Ayarlar" onclick="medisaSettingsHistoryBack(event)">
                         <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
                         <span class="universal-back-label">Ayarlar</span>
@@ -855,7 +855,7 @@
         <div id="reports-modal" class="modal-overlay">
             <div class="modal-container">
                 <div class="modal-header">
-                    <h2>RAPORLAR</h2>
+                    <h2 class="premium-title">RAPORLAR</h2>
                     <button class="modal-close" onclick="closeReportsModal()">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -1067,7 +1067,7 @@
                         </svg>
                     </button>
                 </div>
-                <div class="universal-back-bar">
+                <div class="universal-back-bar universal-back-bar--context">
                     <button type="button" class="universal-back-btn" onclick="event.stopPropagation(); backToVehicleDetail();" title="Taşıt Detay'a dön">
                         <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
                         <span class="universal-back-label">Taşıt Detay</span>
@@ -1090,7 +1090,7 @@
                         </svg>
                     </button>
                 </div>
-                <div class="universal-back-bar">
+                <div class="universal-back-bar universal-back-bar--context">
                     <button type="button" class="universal-back-btn" onclick="openEventModal('menu', window.currentDetailVehicleId)" aria-label="Olay menüsüne dön">
                         <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
                         <span class="universal-back-label">Olay Ekle</span>
@@ -1120,7 +1120,7 @@
                         </svg>
                     </button>
                 </div>
-                <div class="universal-back-bar">
+                <div class="universal-back-bar universal-back-bar--context">
                     <button type="button" class="universal-back-btn" onclick="if(window.backFromHistoryToVehicleDetail) window.backFromHistoryToVehicleDetail(); event.stopPropagation();" title="Taşıt detayına dön" aria-label="Taşıt detayına dön">
                         <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
                         <span class="universal-back-label">Taşıt Detay</span>
