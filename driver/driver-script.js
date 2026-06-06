@@ -1157,11 +1157,6 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
   function renderDriverDocumentsModal(vehicle) {
       const listEl = document.getElementById('driver-documents-list');
       if (!listEl) return;
-      const plateEl = document.getElementById('driver-documents-vehicle-plate');
-      const modelEl = document.getElementById('driver-documents-vehicle-model');
-      const brandModelFormatter = (typeof window.formatBrandModel === 'function' ? window.formatBrandModel : (typeof window.toTitleCase === 'function' ? window.toTitleCase : function(x){ return x; }));
-      if (plateEl) plateEl.textContent = formatDriverPlaka(vehicle && vehicle.plaka);
-      if (modelEl) modelEl.textContent = brandModelFormatter((vehicle && (vehicle.brandModel || [vehicle.marka, vehicle.model].filter(Boolean).join(' '))) || '') || '';
       const vehicleId = vehicle && vehicle.id != null ? String(vehicle.id) : '';
       const documentTypes = getDriverDocumentTypesForVehicle(vehicle);
       const typeByKey = {};
@@ -2105,8 +2100,6 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       return w.warnLevel === 'orange' ? 'orange' : 'red';
   }
 
-  let slidingWarningInterval = null;
-
   const DRIVER_NOTIFICATIONS_DROPDOWN_ID = 'driver-notifications-dropdown';
   const DRIVER_NOTIFICATIONS_BACKDROP_ID = 'driver-notifications-backdrop';
   const DRIVER_NOTIFICATIONS_LIST_ID = 'driver-notifications-dropdown-list';
@@ -2355,11 +2348,6 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       removeOrphanDriverNotificationsDropdown();
       const el = document.getElementById('driver-sliding-warning');
       if (!el) return;
-
-      if (slidingWarningInterval) {
-          clearInterval(slidingWarningInterval);
-          slidingWarningInterval = null;
-      }
 
       const warnings = buildSlidingWarnings(vehicles, records);
       var belowHeroSlot = document.getElementById('driver-below-hero-notification-slot');
