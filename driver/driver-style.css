@@ -1174,6 +1174,81 @@ body.dashboard-page {
   text-align: center;
   font-size: 12px;
 }
+
+/* Bildirim dropdown — ayarlar referansı: başlık/yan ikonlar blur; motor + panel net */
+.driver-notifications-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 10040;
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  cursor: default;
+}
+.driver-notifications-dropdown {
+  display: none;
+  position: fixed;
+  z-index: 10052;
+  width: min(420px, calc(100vw - 24px));
+  max-height: min(60vh, 480px);
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 10px;
+  box-sizing: border-box;
+  border-radius: 10px;
+  border: 1px solid rgba(var(--theme-color-rgb), 0.35);
+  background: linear-gradient(180deg, rgba(12, 18, 30, 0.98) 0%, rgba(8, 13, 22, 0.96) 100%);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+  isolation: isolate;
+  filter: none !important;
+  opacity: 1 !important;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+.driver-notifications-dropdown-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+body.dashboard-page.driver-notifications-open .driver-notifications-backdrop {
+  display: block;
+}
+body.dashboard-page.driver-notifications-open .driver-notifications-dropdown.is-open {
+  display: flex;
+  flex-direction: column;
+}
+body.dashboard-page.driver-notifications-open .driver-header-fixed {
+  position: relative;
+  z-index: 10050 !important;
+}
+body.dashboard-page.driver-notifications-open .driver-header-fixed .hero,
+body.dashboard-page.driver-notifications-open .driver-header-fixed .driver-below-hero-pwa-slot,
+body.dashboard-page.driver-notifications-open .driver-header-fixed .driver-status-icon-slot-history,
+body.dashboard-page.driver-notifications-open .driver-header-fixed .driver-status-icon-slot-key {
+  filter: blur(2px);
+  opacity: 0.92;
+  transition: filter 0.18s ease, opacity 0.18s ease;
+}
+body.dashboard-page.driver-notifications-open .driver-status-icon-slot-warning {
+  position: relative;
+  z-index: 10051;
+  filter: none !important;
+  opacity: 1 !important;
+}
+body.dashboard-page.driver-notifications-open .driver-warning-trigger {
+  position: relative;
+  z-index: 10052;
+  filter: none !important;
+  opacity: 1 !important;
+}
+body.dashboard-page.driver-notifications-open .driver-scroll-area {
+  filter: blur(2px);
+  opacity: 0.92;
+  transition: filter 0.18s ease, opacity 0.18s ease;
+  pointer-events: none;
+}
+
 /* Tarih yaklaşıyor (turuncu): sol panel driver-warn-orange ile aynı ton */
 .driver-sliding-warning.driver-sliding-warning-orange {
   color: var(--orange-warn);
@@ -3425,7 +3500,6 @@ body.dashboard-page {
 /* #history-modal, #edit-request-modal, Driver overlay modalları: Taşıtlar modalı ile aynı ayarlar */
 #history-modal.driver-modal,
 #edit-request-modal.driver-modal,
-#driver-notification-modal.driver-modal,
 #driver-password-modal.driver-modal,
 #driver-feedback-modal.driver-modal,
 #driver-documents-modal.driver-modal,
@@ -3442,7 +3516,6 @@ body.dashboard-page {
 }
 #history-modal.driver-modal.show,
 #edit-request-modal.driver-modal.show,
-#driver-notification-modal.driver-modal.show,
 #driver-password-modal.driver-modal.show,
 #driver-feedback-modal.driver-modal.show,
 #driver-documents-modal.driver-modal.show,
@@ -3469,7 +3542,6 @@ body.dashboard-page {
 @media (min-width: 641px) {
   #history-modal.driver-modal,
   #edit-request-modal.driver-modal,
-  #driver-notification-modal.driver-modal,
   #driver-password-modal.driver-modal,
   #driver-feedback-modal.driver-modal,
   #driver-documents-modal.driver-modal,
@@ -3478,7 +3550,6 @@ body.dashboard-page {
   }
   #history-modal.driver-modal,
   #edit-request-modal.driver-modal,
-  #driver-notification-modal.driver-modal,
   #driver-feedback-modal.driver-modal,
   #driver-documents-modal.driver-modal {
     bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
@@ -3489,12 +3560,10 @@ body.dashboard-page {
 @media (min-width: 769px) {
   body.dashboard-page #history-modal.driver-modal,
   body.dashboard-page #edit-request-modal.driver-modal,
-  body.dashboard-page #driver-notification-modal.driver-modal,
   body.dashboard-page #driver-feedback-modal.driver-modal,
   body.dashboard-page #driver-documents-modal.driver-modal,
   body.login-page #history-modal.driver-modal,
   body.login-page #edit-request-modal.driver-modal,
-  body.login-page #driver-notification-modal.driver-modal,
   body.login-page #driver-feedback-modal.driver-modal,
   body.login-page #driver-documents-modal.driver-modal {
     bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
@@ -3526,7 +3595,6 @@ body.dashboard-page {
 
 #history-modal.driver-modal::before,
 #edit-request-modal.driver-modal::before,
-#driver-notification-modal.driver-modal::before,
 #driver-password-modal.driver-modal::before,
 #driver-documents-modal.driver-modal::before,
 #driver-muayene-modal.driver-modal::before,
@@ -3549,7 +3617,6 @@ body.dashboard-page {
 /* Geçmiş Kayıtlar + Düzeltme Talep: footer kararmasın, footer ışıkları kesilmesin (+4px tampon) */
 #history-modal.driver-modal.show::before,
 #edit-request-modal.driver-modal.show::before,
-#driver-notification-modal.driver-modal.show::before,
 #driver-password-modal.driver-modal.show::before,
 #driver-feedback-modal.driver-modal.show::before,
 #driver-documents-modal.driver-modal.show::before {
@@ -3589,8 +3656,6 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 #history-modal .modal-container,
 #edit-request-modal .driver-modal-content,
 #edit-request-modal .modal-container,
-#driver-notification-modal .driver-modal-content,
-#driver-notification-modal .modal-container,
 #driver-password-modal .driver-modal-content,
 #driver-password-modal .modal-container,
 #driver-feedback-modal .driver-modal-content,
@@ -3628,15 +3693,9 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   border-top-right-radius: var(--modal-radius, 10px);
 }
 
-#driver-notification-modal .driver-notification-modal-list {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
 
 /* Üst mikro-highlight: Geçmiş + Talep modalı (kayıt modalıyla aynı üst kenar birleşimi, köşede “erken kesilme” hissini düzeltir) */
 #history-modal .modal-container::before,
-#driver-notification-modal .modal-container::before,
 #driver-feedback-modal .modal-container::before,
 #driver-documents-modal .modal-container::before {
   content: '';
@@ -3654,7 +3713,6 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 
 #history-modal .modal-header,
 #edit-request-modal .modal-header,
-#driver-notification-modal .modal-header,
 #driver-feedback-modal .modal-header,
 #driver-documents-modal .modal-header,
 #driver-muayene-modal .modal-header {
@@ -7274,7 +7332,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
   #history-modal .modal-header,
   #edit-request-modal .modal-header,
-  #driver-notification-modal .modal-header,
   #driver-muayene-modal .modal-header,
   #driver-documents-modal .modal-header,
   #driver-feedback-modal .modal-header {

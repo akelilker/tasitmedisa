@@ -2107,84 +2107,156 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
 
   let slidingWarningInterval = null;
 
-  const driverNotificationDropdownId = 'driver-notifications-dropdown';
-  const driverNotificationDropdownListId = 'driver-notifications-dropdown-list';
+  const DRIVER_NOTIFICATIONS_DROPDOWN_ID = 'driver-notifications-dropdown';
+  const DRIVER_NOTIFICATIONS_BACKDROP_ID = 'driver-notifications-backdrop';
+  const DRIVER_NOTIFICATIONS_LIST_ID = 'driver-notifications-dropdown-list';
   const driverNotificationEmptyStateHtml = '<div class="driver-notification-empty">Aktif bildirim bulunmuyor.</div>';
-  let driverNotificationOutsideClickHandler = null;
+  let driverNotificationsResizeHandler = null;
 
-  function ensureDriverNotificationsDropdown() {
-      const host = document.getElementById('driver-sliding-warning');
-      if (!host) return null;
+  function removeLegacyDriverNotificationModal() {
+      var legacyModal = document.getElementById('driver-notification-modal');
+      if (legacyModal) legacyModal.remove();
+  }
 
-      let dropdown = document.getElementById(driverNotificationDropdownId);
+  function removeOrphanDriverNotificationsDropdown() {
+      var orphan = document.getElementById(DRIVER_NOTIFICATIONS_DROPDOWN_ID);
+      if (orphan && orphan.parentNode && orphan.parentNode.id === 'driver-sliding-warning') orphan.remove();
+  }
+
+  function ensureDriverNotificationsUi() {
+      removeLegacyDriverNotificationModal();
+      removeOrphanDriverNotificationsDropdown();
+
+      var backdrop = document.getElementById(DRIVER_NOTIFICATIONS_BACKDROP_ID);
+      if (!backdrop) {
+          backdrop = document.createElement('div');
+          backdrop.id = DRIVER_NOTIFICATIONS_BACKDROP_ID;
+          backdrop.className = 'driver-notifications-backdrop';
+          backdrop.setAttribute('aria-hidden', 'true');
+          backdrop.addEventListener('click', function() {
+              window.closeDriverNotifications();
+          });
+          document.body.appendChild(backdrop);
+      }
+
+      var dropdown = document.getElementById(DRIVER_NOTIFICATIONS_DROPDOWN_ID);
       if (!dropdown) {
           dropdown = document.createElement('div');
-          dropdown.id = driverNotificationDropdownId;
+          dropdown.id = DRIVER_NOTIFICATIONS_DROPDOWN_ID;
           dropdown.className = 'driver-notifications-dropdown';
           dropdown.hidden = true;
           dropdown.setAttribute('role', 'dialog');
           dropdown.setAttribute('aria-label', 'Bildirimler');
+          dropdown.addEventListener('click', function(ev) {
+              ev.stopPropagation();
+          });
 
-          const list = document.createElement('div');
-          list.id = driverNotificationDropdownListId;
+          var list = document.createElement('div');
+          list.id = DRIVER_NOTIFICATIONS_LIST_ID;
           list.className = 'driver-notifications-dropdown-list';
           list.setAttribute('aria-live', 'polite');
           dropdown.appendChild(list);
+          document.body.appendChild(dropdown);
+      } else if (dropdown.parentNode !== document.body) {
+          document.body.appendChild(dropdown);
       }
 
-      if (dropdown.parentNode !== host) host.appendChild(dropdown);
-      return dropdown;
-  }
-
-  function setDriverNotificationDropdownContent(warningItemsHtml) {
-      const dropdown = ensureDriverNotificationsDropdown();
-      const list = dropdown && dropdown.querySelector('#' + driverNotificationDropdownListId);
-      if (!list) return;
-      list.innerHTML = warningItemsHtml && warningItemsHtml.trim() ? warningItemsHtml : driverNotificationEmptyStateHtml;
-  }
-
-  window.openDriverNotificationModal = function(warningItemsHtml) {
-      const dropdown = ensureDriverNotificationsDropdown();
-      if (!dropdown) return;
-      setDriverNotificationDropdownContent(warningItemsHtml || '');
-      dropdown.hidden = false;
-      window.requestAnimationFrame(function() {
-          dropdown.classList.add('open');
-      });
-      const trigger = document.querySelector('#driver-sliding-warning .driver-warning-trigger');
-      if (trigger) trigger.setAttribute('aria-expanded', 'true');
-      document.body.classList.add('driver-notification-dropdown-open');
-      if (driverNotificationOutsideClickHandler) {
-          document.removeEventListener('click', driverNotificationOutsideClickHandler, true);
-      }
-      driverNotificationOutsideClickHandler = function(ev) {
-          const activeDropdown = document.getElementById(driverNotificationDropdownId);
-          const activeTrigger = document.querySelector('#driver-sliding-warning .driver-warning-trigger');
-          if (!activeDropdown || !activeDropdown.classList.contains('open')) return;
-          if ((activeTrigger && activeTrigger.contains(ev.target)) || activeDropdown.contains(ev.target)) return;
-          window.closeDriverNotificationModal();
+      return {
+          backdrop: backdrop,
+          dropdown: dropdown,
+          list: document.getElementById(DRIVER_NOTIFICATIONS_LIST_ID)
       };
-      window.setTimeout(function() {
-          document.addEventListener('click', driverNotificationOutsideClickHandler, true);
-      }, 0);
+  }
+
+  function positionDriverNotificationsDropdown(triggerEl) {
+      var dropdown = document.getElementById(DRIVER_NOTIFICATIONS_DROPDOWN_ID);
+      if (!dropdown || !triggerEl || typeof triggerEl.getBoundingClientRect !== 'function') return;
+
+      var rect = triggerEl.getBoundingClientRect();
+      var gap = 8;
+      var pad = 12;
+      dropdown.style.top = Math.round(rect.bottom + gap) + 'px';
+      dropdown.style.left = Math.round(rect.left + (rect.width / 2)) + 'px';
+      dropdown.style.transform = 'translateX(-50%)';
+
+      requestAnimationFrame(function() {
+          if (!dropdown.classList.contains('is-open')) return;
+          var panelRect = dropdown.getBoundingClientRect();
+          var viewportWidth = window.innerWidth || document.documentElement.clientWidth || 0;
+          if (panelRect.left < pad) {
+              dropdown.style.left = pad + 'px';
+              dropdown.style.transform = 'none';
+          } else if (panelRect.right > viewportWidth - pad) {
+              dropdown.style.left = Math.round(viewportWidth - pad - panelRect.width) + 'px';
+              dropdown.style.transform = 'none';
+          }
+      });
+  }
+
+  function bindDriverNotificationsGlobalHandlersOnce() {
+      if (document.body.dataset.driverNotificationsGlobalBound === '1') return;
+      document.body.dataset.driverNotificationsGlobalBound = '1';
+
+      document.addEventListener('keydown', function(ev) {
+          if (ev.key === 'Escape' && document.body.classList.contains('driver-notifications-open')) {
+              window.closeDriverNotifications();
+          }
+      });
+  }
+
+  function setDriverNotificationsContent(warningItemsHtml) {
+      var ui = ensureDriverNotificationsUi();
+      if (!ui.list) return;
+      ui.list.innerHTML = warningItemsHtml && warningItemsHtml.trim()
+          ? warningItemsHtml
+          : driverNotificationEmptyStateHtml;
+  }
+
+  window.openDriverNotifications = function(warningItemsHtml, triggerEl) {
+      var ui = ensureDriverNotificationsUi();
+      if (!ui.dropdown || !ui.backdrop) return;
+      setDriverNotificationsContent(warningItemsHtml || '');
+      document.body.classList.add('driver-notifications-open');
+      ui.backdrop.setAttribute('aria-hidden', 'false');
+      ui.dropdown.hidden = false;
+      ui.dropdown.classList.add('is-open');
+      if (triggerEl) {
+          positionDriverNotificationsDropdown(triggerEl);
+          triggerEl.setAttribute('aria-expanded', 'true');
+      }
+      bindDriverNotificationsGlobalHandlersOnce();
+      if (driverNotificationsResizeHandler) {
+          window.removeEventListener('resize', driverNotificationsResizeHandler);
+      }
+      driverNotificationsResizeHandler = function() {
+          var activeTrigger = document.querySelector('#driver-sliding-warning .driver-warning-trigger');
+          if (document.body.classList.contains('driver-notifications-open') && activeTrigger) {
+              positionDriverNotificationsDropdown(activeTrigger);
+          }
+      };
+      window.addEventListener('resize', driverNotificationsResizeHandler);
   };
 
-  window.closeDriverNotificationModal = function() {
-      const dropdown = document.getElementById(driverNotificationDropdownId);
+  window.closeDriverNotifications = function() {
+      document.body.classList.remove('driver-notifications-open');
+      var dropdown = document.getElementById(DRIVER_NOTIFICATIONS_DROPDOWN_ID);
+      var backdrop = document.getElementById(DRIVER_NOTIFICATIONS_BACKDROP_ID);
       if (dropdown) {
-          dropdown.classList.remove('open');
+          dropdown.classList.remove('is-open');
           dropdown.hidden = true;
       }
-      const trigger = document.querySelector('#driver-sliding-warning .driver-warning-trigger');
+      if (backdrop) backdrop.setAttribute('aria-hidden', 'true');
+      var trigger = document.querySelector('#driver-sliding-warning .driver-warning-trigger');
       if (trigger) trigger.setAttribute('aria-expanded', 'false');
-      document.body.classList.remove('driver-notification-dropdown-open');
-      if (driverNotificationOutsideClickHandler) {
-          document.removeEventListener('click', driverNotificationOutsideClickHandler, true);
-          driverNotificationOutsideClickHandler = null;
+      if (driverNotificationsResizeHandler) {
+          window.removeEventListener('resize', driverNotificationsResizeHandler);
+          driverNotificationsResizeHandler = null;
       }
   };
 
   function renderSlidingWarning(vehicles, records) {
+      removeLegacyDriverNotificationModal();
+      removeOrphanDriverNotificationsDropdown();
       const el = document.getElementById('driver-sliding-warning');
       if (!el) return;
 
@@ -2198,7 +2270,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       if (warnings.length === 0) {
           el.innerHTML = '';
           el.className = 'driver-sliding-warning';
-          window.closeDriverNotificationModal();
+          window.closeDriverNotifications();
           if (belowHeroSlot && el.parentNode !== belowHeroSlot) belowHeroSlot.appendChild(el);
           return;
       }
@@ -2217,9 +2289,9 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       }).join('');
       const engineIcon = '<span class="driver-warning-icon driver-warning-icon-engine ' + iconClass + '" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"></svg></span>';
 
-      window.closeDriverNotificationModal();
+      window.closeDriverNotifications();
       el.className = 'driver-sliding-warning driver-warning-popover' + (hasRedWarning ? '' : ' driver-sliding-warning-orange');
-      el.innerHTML = '<button type="button" class="driver-warning-trigger" aria-label="Uyarilari goster" aria-expanded="false" aria-haspopup="dialog" aria-controls="' + driverNotificationDropdownId + '">'
+      el.innerHTML = '<button type="button" class="driver-warning-trigger" aria-label="Uyarıları göster" aria-expanded="false" aria-haspopup="dialog" aria-controls="' + DRIVER_NOTIFICATIONS_DROPDOWN_ID + '">'
           + engineIcon
           + '</button>';
 
@@ -2228,12 +2300,11 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           trigger.addEventListener('click', function(e) {
               e.preventDefault();
               e.stopPropagation();
-              const activeDropdown = document.getElementById(driverNotificationDropdownId);
-              if (activeDropdown && activeDropdown.classList.contains('open')) {
-                  window.closeDriverNotificationModal();
+              if (document.body.classList.contains('driver-notifications-open')) {
+                  window.closeDriverNotifications();
                   return;
               }
-              window.openDriverNotificationModal(warningItemsHtml);
+              window.openDriverNotifications(warningItemsHtml, trigger);
           });
       }
   }

@@ -37,7 +37,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../style-core.css?v=20260524.2">
-<link rel="stylesheet" href="driver-style.css?v=20260531.2">
+<link rel="stylesheet" href="driver-style.css?v=20260606.4">
 <script defer src="../portal-session.js?v=20260513.2"></script>
 <script defer src="../script-core.js?v=20260519.3"></script>
 </head>
@@ -248,23 +248,6 @@
                 <span class="status status-ready">● Sistem Hazır</span>
             </div>
         </footer>
-
-        <div id="driver-notification-modal" class="driver-modal modal-overlay">
-        <div class="driver-modal-content modal-container" onclick="event.stopPropagation();">
-            <div class="modal-header">
-                <h2>Bildirimler</h2>
-                <button type="button" onclick="closeDriverNotificationModal()" class="modal-close" aria-label="Kapat">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div id="driver-notification-modal-list" class="driver-notification-modal-list" aria-live="polite"></div>
-            </div>
-        </div>
-        </div>
 
         <div id="driver-password-modal" class="driver-modal modal-overlay">
         <div class="driver-modal-content modal-container" onclick="event.stopPropagation();">
@@ -485,6 +468,6 @@
             <button type="button" class="btn-confirm-yes" onclick="confirmMuayeneSubmit()">Evet</button>
         </div>
     </div>
-<script defer src="driver-script.js?v=20260530.8"></script>
+<script defer src="driver-script.js?v=20260606.4"></script>
 </body>
 </html>
