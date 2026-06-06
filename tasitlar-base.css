@@ -2089,31 +2089,117 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     border-top-right-radius: var(--modal-radius);
 }
 
-/* Tarihçe modalı – sekme başlıkları yatüm viewport'lar) */
-#vehicle-history-modal #history-tabs {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+/* Tarihçe modalı: navigasyon, taşıt bağlamı ve sekmeler bağımsız katmanlar */
+#vehicle-history-modal .universal-back-bar--context {
+    position: relative !important;
+    z-index: 22 !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-rows: auto auto !important;
+    row-gap: 0 !important;
+    padding: 0 !important;
+    background-color: var(--modal-bg) !important;
+    box-sizing: border-box !important;
+}
+
+#vehicle-history-modal .universal-back-bar--context .universal-back-btn {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    justify-self: stretch !important;
+    width: 100%;
+    max-width: none;
+    min-height: 36px;
+    padding: 8px 16px !important;
+    overflow: visible;
     border-bottom: 1px solid var(--border-ultra);
 }
-#vehicle-history-modal #history-tabs .history-tab {
+
+#vehicle-history-modal .universal-back-bar--context .vehicle-context-row {
+    grid-column: 1 !important;
+    grid-row: 2 !important;
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+    width: 100%;
+    min-width: 0;
+    padding: 4px 16px 5px;
+    border-bottom: 1px solid var(--border-ultra) !important;
+    box-sizing: border-box;
+}
+
+#vehicle-history-modal .universal-back-bar--context .vehicle-context-plate,
+#vehicle-history-modal .universal-back-bar--context .vehicle-context-model {
+    grid-column: auto !important;
+    grid-row: auto !important;
+    justify-self: auto !important;
+    width: 100%;
+    max-width: 100%;
+    padding: 0;
     text-align: center;
-    justify-content: center;
+}
+
+#vehicle-history-modal .universal-back-bar--context .vehicle-context-plate {
+    font-size: 16px;
+    line-height: 1.1;
+    letter-spacing: 0.04em;
+}
+
+#vehicle-history-modal .universal-back-bar--context .vehicle-context-model {
+    font-size: 12.5px;
+    line-height: 1.15;
+}
+
+#vehicle-history-modal #history-tabs {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    align-items: center;
+    border-bottom: 1px solid var(--border-ultra);
+}
+
+#vehicle-history-modal #history-tabs .history-tab {
+    min-width: 0;
+    min-height: 34px;
+    padding: 7px 6px 4px;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    font-weight: normal;
+    font-size: 13px;
+    line-height: 1.1;
+    white-space: nowrap;
+    text-align: center;
     color: #ffffff !important;
-    padding-bottom: 1px !important; /* Sekme metni ile altındaki yatay çizgi arası 1px */
 }
-/* Tarihçe modalı: header katmanı üstünde opak şerit (layout --context kontratında) */
-#vehicle-history-modal .universal-back-bar--context {
-  position: relative !important;
-  z-index: 22 !important;
-  background-color: var(--modal-bg) !important;
-  box-sizing: border-box !important;
+
+#vehicle-history-modal #history-tabs .history-tab.active {
+    border-bottom-color: var(--theme-color) !important;
 }
-/* Masaüstü: Tarihçe sekme başlıkları 1pt büyük */
-@media (min-width: 641px) {
-  #vehicle-history-modal #history-tabs .history-tab {
-    font-size: 13px !important;
-  }
+
+#vehicle-history-modal #history-tabs .history-tab:focus {
+    outline: none;
+}
+
+#vehicle-history-modal #history-tabs .history-tab:focus-visible {
+    outline: 1px solid rgba(var(--theme-color-rgb), 0.72);
+    outline-offset: -2px;
+    background: rgba(var(--theme-color-rgb), 0.06);
+}
+
+@media (max-width: 640px) {
+    #vehicle-history-modal .universal-back-bar--context .universal-back-btn {
+        min-height: 44px;
+        padding: 10px 12px !important;
+    }
+
+    #vehicle-history-modal .universal-back-bar--context .vehicle-context-row {
+        padding: 3px 12px 4px;
+    }
+
+    #vehicle-history-modal .universal-back-bar--context .vehicle-context-plate {
+        font-size: 15px;
+    }
 }
 
 /* Tarihçe RENK (Stil): Tarih + etiketler beyaz; açıklamalar gri.
