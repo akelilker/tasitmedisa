@@ -4,15 +4,14 @@
    ========================================= */
 
 /* --- Scrollbar Gizleme (html/body/modal style-core'da; sadece driver-spesifik) --- */
-.driver-scroll-area, .history-list, .history-container, #history-list, .driver-warning-marquee-outer {
+.driver-scroll-area, .history-list, .history-container, #history-list {
   scrollbar-width: none !important;
   -ms-overflow-style: none !important;
 }
 .driver-scroll-area::-webkit-scrollbar,
 .history-list::-webkit-scrollbar,
 .history-container::-webkit-scrollbar,
-#history-list::-webkit-scrollbar,
-.driver-warning-marquee-outer::-webkit-scrollbar {
+#history-list::-webkit-scrollbar {
   display: none !important;
 }
 
@@ -1319,46 +1318,10 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
   min-width: 0;
   flex: 1;
 }
-.driver-warning-marquee-outer {
-  flex: 1;
-  min-width: 0;
-  overflow: hidden;
-}
-.driver-warning-marquee-inner {
-  display: inline-flex;
-  white-space: nowrap;
-  gap: 2em;
-  animation: driver-marquee 12s linear infinite;
-}
 @media (prefers-reduced-motion: reduce) {
-  .driver-sliding-warning.driver-warning-pulse,
-  .driver-sliding-warning.driver-warning-kaza-pulse .driver-warning-text {
-    animation: none;
-  }
   .driver-action-btn-feedback.driver-request-fab .driver-action-btn-feedback-icon {
     animation: none;
   }
-}
-.driver-warning-marquee-inner span {
-  flex-shrink: 0;
-}
-@keyframes driver-marquee {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-.driver-sliding-warning.driver-warning-pulse {
-  animation: driver-warning-pulse 1s ease-in-out 3;
-}
-@keyframes driver-warning-pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
-}
-.driver-sliding-warning.driver-warning-kaza-pulse .driver-warning-text {
-  animation: driver-warning-scale-text 1.2s ease-in-out infinite;
-}
-@keyframes driver-warning-scale-text {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.12); }
 }
 .driver-warning-icon {
   color: var(--theme-color);
@@ -3886,80 +3849,6 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   box-sizing: border-box !important;
 }
 
-#driver-documents-modal .driver-documents-vehicle-heading {
-  position: relative;
-  width: 100%;
-  margin: 0 0 16px;
-  text-align: center;
-  color: var(--txt-white, #fff);
-}
-
-#driver-documents-modal .driver-documents-vehicle-heading-top {
-  position: relative;
-  display: block;
-  width: 100%;
-  min-height: 28px;
-}
-
-#driver-documents-modal .driver-documents-vehicle-heading-top .universal-back-bar {
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  margin: 0;
-  padding: 0;
-  z-index: 2;
-}
-
-#driver-documents-modal .driver-documents-vehicle-heading-label {
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 2;
-  color: var(--txt-muted, #a0aec0);
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 1.15;
-  white-space: nowrap;
-  max-width: 42%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-#driver-documents-modal .driver-documents-vehicle-heading-top:has(.universal-back-bar) .driver-documents-vehicle-heading-label {
-  left: 22px;
-  max-width: calc(42% - 10px);
-}
-
-#driver-documents-modal .driver-documents-vehicle-heading-plate {
-  display: block;
-  width: 100%;
-  margin: 0;
-  padding: 0 6px;
-  box-sizing: border-box;
-  text-align: center;
-  color: var(--txt-white, #fff);
-  font-size: 19px;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  line-height: 1.1;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-#driver-documents-modal .driver-documents-vehicle-heading-model {
-  margin-top: 2px;
-  color: var(--txt-muted, #a0aec0);
-  font-size: 13px;
-  font-weight: 600;
-  line-height: 1.15;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
 .driver-documents-list {
   display: flex;
   flex-direction: column;
@@ -4146,29 +4035,6 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
     padding-top: 12px !important;
     padding-bottom: 16px !important;
     background: var(--modal-bg) !important;
-  }
-
-  #driver-documents-modal .driver-documents-vehicle-heading {
-    margin-bottom: 14px;
-  }
-
-  #driver-documents-modal .driver-documents-vehicle-heading-top {
-    min-height: 30px;
-  }
-
-  #driver-documents-modal .driver-documents-vehicle-heading-label {
-    font-size: 13px;
-  }
-
-  #driver-documents-modal .driver-documents-vehicle-heading-plate {
-    font-size: 18px;
-    letter-spacing: 0.06em;
-  }
-
-  #driver-documents-modal .driver-documents-vehicle-heading-model {
-    margin-top: 1px;
-    font-size: 12px;
-    line-height: 1.12;
   }
 
   #driver-documents-modal .driver-documents-list {
