@@ -1127,11 +1127,11 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div id="history-tabs" style="display: flex; align-items: center; justify-content: center; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
-                        <button type="button" class="history-tab active" data-tab="bakim" onclick="switchHistoryTab('bakim')" style="flex: 1; background: transparent; border: none; color: var(--form-label-color); padding: 8px 12px 4px 12px; cursor: pointer; font-weight: normal; font-size: 12px; border-bottom: 2px solid transparent; text-align: center;">Bakım Geçmişi</button>
-                        <button type="button" class="history-tab" data-tab="kaza" onclick="switchHistoryTab('kaza')" style="flex: 1; background: transparent; border: none; color: var(--form-label-color); padding: 8px 12px 4px 12px; cursor: pointer; font-weight: normal; font-size: 12px; border-bottom: 2px solid transparent; text-align: center;">Kaza Geçmişi</button>
-                        <button type="button" class="history-tab" data-tab="km" onclick="switchHistoryTab('km')" style="flex: 1; background: transparent; border: none; color: var(--form-label-color); padding: 8px 12px 4px 12px; cursor: pointer; font-weight: normal; font-size: 12px; border-bottom: 2px solid transparent; text-align: center;">Km Güncelle</button>
-                        <button type="button" class="history-tab" data-tab="diger" onclick="switchHistoryTab('diger')" style="flex: 1; background: transparent; border: none; color: var(--form-label-color); padding: 8px 12px 4px 12px; cursor: pointer; font-weight: normal; font-size: 12px; border-bottom: 2px solid transparent; text-align: center;">Diğer</button>
+                    <div id="history-tabs">
+                        <button type="button" class="history-tab active" data-tab="bakim" onclick="switchHistoryTab('bakim')" aria-label="Bakım geçmişi">Bakım</button>
+                        <button type="button" class="history-tab" data-tab="kaza" onclick="switchHistoryTab('kaza')" aria-label="Kaza geçmişi">Kaza</button>
+                        <button type="button" class="history-tab" data-tab="km" onclick="switchHistoryTab('km')" aria-label="Km güncelleme geçmişi">KM</button>
+                        <button type="button" class="history-tab" data-tab="diger" onclick="switchHistoryTab('diger')" aria-label="Diğer geçmiş kayıtları">Diğer</button>
                     </div>
                     <div id="history-content"></div>
                 </div>
