@@ -1914,7 +1914,6 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
                   kayit_tarihi: new Date().toISOString()
               });
               renderSlidingWarning(allHistoryVehicles || [], allHistoryRecords);
-              setTimeout(function() { renderSlidingWarning(allHistoryVehicles || [], allHistoryRecords); }, 300);
               setTimeout(function() {
                   var block = document.getElementById((type === 'kaza' ? 'kaza-block-' : 'bakim-block-') + vid);
                   var inner = document.querySelector('.driver-action-area-inner[data-vehicle-id="' + vid + '"]');
@@ -2007,7 +2006,6 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
                   kayit_tarihi: new Date().toISOString()
               });
               renderSlidingWarning(allHistoryVehicles || [], allHistoryRecords);
-              setTimeout(function() { renderSlidingWarning(allHistoryVehicles || [], allHistoryRecords); }, 300);
               setTimeout(function() {
                   const block = document.getElementById('km-block-' + vid);
                   const inner = document.querySelector('.driver-action-area-inner[data-vehicle-id="' + vid + '"]');
@@ -2893,7 +2891,6 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
                   kayit_tarihi: new Date().toISOString()
               });
               renderSlidingWarning(allHistoryVehicles || [], allHistoryRecords);
-              setTimeout(function() { renderSlidingWarning(allHistoryVehicles || [], allHistoryRecords); }, 300);
 
               setTimeout(() => {
                   loadDashboard();
