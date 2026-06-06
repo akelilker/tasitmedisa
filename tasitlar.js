@@ -4964,6 +4964,14 @@
     return (monthName || 'Bu Ay') + ' Ayı Özet';
   }
 
+  function syncMonthlyTodoModalHeader(modalEl) {
+    if (!modalEl) return;
+    var h2 = modalEl.querySelector('.modal-header h2');
+    if (!h2) return;
+    h2.classList.add('premium-title');
+    h2.textContent = getMonthlyTodoTitleText();
+  }
+
   function ensureMonthlyTodoModalMounted() {
     var el = document.getElementById('monthly-todo-modal');
     if (!el) {
@@ -4984,6 +4992,8 @@
           '</div>' +
         '</div>';
       document.body.appendChild(el);
+    } else {
+      syncMonthlyTodoModalHeader(el);
     }
     bindMonthlyTodoModalDelegatedInteraction(el);
     wireMonthlyTodoModalCloseUiOnce(el);
@@ -4992,6 +5002,7 @@
 
   function openMonthlyTodoModal() {
     var modal = ensureMonthlyTodoModalMounted();
+    syncMonthlyTodoModalHeader(modal);
     if (monthlyTodoCloseTimer) {
       clearTimeout(monthlyTodoCloseTimer);
       monthlyTodoCloseTimer = null;
