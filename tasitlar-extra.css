@@ -522,10 +522,10 @@
   }
 }
 
-/* Detay Modal Toolbar — liste toolbar ile aynı yükseklik bandı */
+/* Detay Modal Toolbar — masaüstü üst geri navigasyonu ile aynı 36px bant */
 .vehicle-detail-toolbar {
-  height: 40px;
-  min-height: 40px;
+  height: 36px;
+  min-height: 36px;
   background: transparent !important;
   border-bottom: none; 
   display: flex;
@@ -535,7 +535,15 @@
   position: relative;
   z-index: 10;
   flex-shrink: 0;
-  margin-bottom: 8px !important; /* Toolbar–plaka kimlik bloğu arası nefes */
+  margin-bottom: 2px !important; /* Toolbar–plaka kimlik bloğu arası nefes */
+}
+
+@media (max-width: 768px) {
+  #vehicle-detail-modal .vehicle-detail-toolbar {
+    height: auto;
+    min-height: 44px;
+    margin-bottom: 8px !important;
+  }
 }
 
 /* Şubeye Tahsis Etmek iiiiiiçin + yatayda ortalı (sol ok/Taşıtlar dikkate alınmadan); SATILDI + tahsis birlikte sarılabilsin */
@@ -1727,8 +1735,6 @@
   }
   /* Taşıt detay toolbar: touch hedefi + sol inset */
   #vehicle-detail-modal .vehicle-detail-toolbar {
-    min-height: 44px;
-    height: auto;
     padding-left: 1px !important;
   }
   /* Taşıt detaşmasın */
@@ -3201,6 +3207,12 @@
   box-sizing: border-box;
 }
 
+@media (min-width: 769px) {
+  #monthly-todo-modal .monthly-todo-task-row {
+    cursor: default;
+  }
+}
+
 #monthly-todo-modal .monthly-todo-task-row > .monthly-todo-plate-col,
 #monthly-todo-modal .monthly-todo-task-row > .monthly-todo-middle-col {
   text-align: center;
@@ -3300,7 +3312,7 @@
   white-space: nowrap;
 }
 
-@media (min-width: 641px) {
+@media (min-width: 641px) and (max-width: 768px) {
   #monthly-todo-modal .monthly-todo-plate-col .monthly-todo-plate {
     font-size: 14px;
   }
@@ -3366,7 +3378,7 @@
   text-align: center;
 }
 
-@media (min-width: 641px) {
+@media (min-width: 641px) and (max-width: 768px) {
   #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-user-name {
     font-size: 14px;
     line-height: 1.35;

@@ -180,6 +180,13 @@ body::-webkit-scrollbar,
   padding: var(--back-bar-context-padding) !important;
 }
 
+@media (min-width: 769px) {
+  :root {
+    --back-bar-standalone-padding: 0 16px 4px 16px;
+    --back-bar-context-padding: 0 16px 6px 16px;
+  }
+}
+
 .universal-back-bar svg,
 .universal-back-bar i,
 .universal-back-bar img {

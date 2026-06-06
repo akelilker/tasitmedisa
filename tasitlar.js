@@ -4892,6 +4892,9 @@
   function bindMonthlyTodoModalDelegatedInteraction(modalEl) {
     if (!modalEl || modalEl._medisaMonthlyTodoModalDelegatedBound) return;
     modalEl._medisaMonthlyTodoModalDelegatedBound = true;
+    function isMonthlyTodoDesktopView() {
+      return typeof window.matchMedia === 'function' && window.matchMedia('(min-width: 769px)').matches;
+    }
     function openMonthlyTodoRowVehicleDetail(row) {
       if (!row || !modalEl.contains(row)) return;
       var vid = row.getAttribute('data-vehicle-id');
@@ -4910,12 +4913,14 @@
       if (!target || typeof target.closest !== 'function') return;
       var insidePanel = target.closest('.monthly-todo-modal-container');
       if (!insidePanel || !modalEl.contains(insidePanel)) {
+        if (isMonthlyTodoDesktopView()) return;
         closeMonthlyTodoModal();
         return;
       }
       if (target.closest('.monthly-todo-wa-link')) return;
       var row = target.closest('.monthly-todo-task-row');
       if (!row || !modalEl.contains(row)) return;
+      if (isMonthlyTodoDesktopView()) return;
       ev.preventDefault();
       openMonthlyTodoRowVehicleDetail(row);
     }
@@ -4926,6 +4931,10 @@
       if (target.closest('.monthly-todo-wa-link')) return;
       var row = target.closest('.monthly-todo-task-row');
       if (!row || !modalEl.contains(row)) return;
+      if (isMonthlyTodoDesktopView()) {
+        ev.preventDefault();
+        return;
+      }
       ev.preventDefault();
       openMonthlyTodoRowVehicleDetail(row);
     }

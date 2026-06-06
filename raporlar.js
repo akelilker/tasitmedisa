@@ -525,7 +525,7 @@
         const hasDetailColumns = Object.values(stokActiveColumns).some(Boolean);
         const hasMuayeneEgzozSplit = !!stokActiveColumns.muayene;
         const backNavigationHtml = stokAutoSingleBranchView ? '' : `
-                    <div class="universal-back-bar">
+                    <div class="universal-back-bar universal-back-bar--toolbar">
                         <button type="button" class="universal-back-btn" onclick="goBackToStokGrid()" title="Raporlar">
                             <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
                             <span class="universal-back-label">Raporlar</span>
@@ -2661,7 +2661,7 @@
         
         let html = `
             <div class="kullanici-list-top-controls">
-                <div class="universal-back-bar">
+                <div class="universal-back-bar universal-back-bar--toolbar">
                     <button type="button" class="universal-back-btn" onclick="goBackToKullaniciGrid()" title="Geri Dön">
                         <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
                         <span class="universal-back-label">Geri Dön</span>
@@ -2835,7 +2835,7 @@
         
         let html = `
             <div class="kullanici-detail-header">
-                <div class="universal-back-bar">
+                <div class="universal-back-bar universal-back-bar--standalone">
                     <button type="button" class="universal-back-btn" onclick="goBackToKullaniciList()" title="Geri Dön">
                         <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
                         <span class="universal-back-label">Geri Dön</span>
