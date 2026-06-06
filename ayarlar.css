@@ -880,14 +880,16 @@ body.modal-open #info-modal .modal-container {
     }
 }
 
-#user-modal .user-management-back-bar.universal-back-bar--standalone {
+#user-modal .user-management-back-bar.universal-back-bar--standalone,
+#branch-modal .user-management-back-bar.universal-back-bar--standalone {
     justify-content: space-between !important;
     gap: 0 !important;
     align-items: center !important;
     padding: 0 16px 10px !important;
     box-sizing: border-box !important;
 }
-#user-modal .user-management-search-wrap {
+#user-modal .user-management-search-wrap,
+#branch-modal .user-management-search-wrap {
     margin-left: auto;
     display: flex;
     align-items: center;
@@ -900,11 +902,15 @@ body.modal-open #info-modal .modal-container {
     transition: flex-basis 0.18s ease, width 0.18s ease;
 }
 #user-modal .user-management-search-wrap,
+#branch-modal .user-management-search-wrap,
 #user-modal .user-management-search-input,
-#user-modal .user-management-search-toggle {
+#branch-modal .user-management-search-input,
+#user-modal .user-management-search-toggle,
+#branch-modal .user-management-search-toggle {
     touch-action: manipulation;
 }
-#user-modal .user-management-search-input {
+#user-modal .user-management-search-input,
+#branch-modal .user-management-search-input {
     flex: 1 1 0;
     width: auto;
     min-width: 0;
@@ -920,33 +926,43 @@ body.modal-open #info-modal .modal-container {
     transition: width 0.18s ease, padding 0.18s ease, opacity 0.18s ease, border-color 0.18s ease;
 }
 #user-modal .user-management-search-input::-webkit-search-decoration,
+#branch-modal .user-management-search-input::-webkit-search-decoration,
 #user-modal .user-management-search-input::-webkit-search-cancel-button,
+#branch-modal .user-management-search-input::-webkit-search-cancel-button,
 #user-modal .user-management-search-input::-webkit-search-results-button,
-#user-modal .user-management-search-input::-webkit-search-results-decoration {
+#branch-modal .user-management-search-input::-webkit-search-results-button,
+#user-modal .user-management-search-input::-webkit-search-results-decoration,
+#branch-modal .user-management-search-input::-webkit-search-results-decoration {
     -webkit-appearance: none;
     appearance: none;
 }
-#user-modal .user-management-search-wrap.open {
-    flex-basis: 195px;
-    width: 195px;
+#user-modal .user-management-search-wrap.open,
+#branch-modal .user-management-search-wrap.open {
+    flex-basis: 211px;
+    width: 211px;
 }
-#user-modal .user-management-search-input::placeholder {
+#user-modal .user-management-search-input::placeholder,
+#branch-modal .user-management-search-input::placeholder {
     color: var(--txt-placeholder, #6c757d);
 }
-#user-modal .user-management-search-wrap.open .user-management-search-input {
+#user-modal .user-management-search-wrap.open .user-management-search-input,
+#branch-modal .user-management-search-wrap.open .user-management-search-input {
     padding: 0 8px !important;
     border-color: rgba(var(--theme-color-rgb), 0.7);
     opacity: 1;
     pointer-events: auto;
 }
-#user-modal .user-management-search-wrap.open .user-management-search-toggle {
+#user-modal .user-management-search-wrap.open .user-management-search-toggle,
+#branch-modal .user-management-search-wrap.open .user-management-search-toggle {
     color: var(--theme-color);
 }
-#user-modal .user-management-search-input:focus {
+#user-modal .user-management-search-input:focus,
+#branch-modal .user-management-search-input:focus {
     outline: none;
     border-color: rgba(var(--theme-color-rgb), 0.7);
 }
-#user-modal .user-management-search-toggle {
+#user-modal .user-management-search-toggle,
+#branch-modal .user-management-search-toggle {
     width: 32px;
     height: 32px;
     display: inline-flex;
@@ -961,7 +977,8 @@ body.modal-open #info-modal .modal-container {
     box-shadow: none;
     border-radius: 0;
 }
-#user-modal .user-management-search-toggle svg {
+#user-modal .user-management-search-toggle svg,
+#branch-modal .user-management-search-toggle svg {
     width: 20px;
     height: 20px;
 }
@@ -2481,10 +2498,12 @@ input.settings-form-input:-moz-autofill,
   #user-modal .modal-body > .user-management-list-inner {
     padding-top: 0;
   }
-  #user-modal .user-management-back-bar.universal-back-bar--standalone {
+  #user-modal .user-management-back-bar.universal-back-bar--standalone,
+#branch-modal .user-management-back-bar.universal-back-bar--standalone {
     padding-bottom: 2px !important;
   }
-  #user-modal .user-management-back-bar .universal-back-btn {
+  #user-modal .user-management-back-bar .universal-back-btn,
+  #branch-modal .user-management-back-bar .universal-back-btn {
     align-self: flex-start;
   }
   #user-modal .modal-body {
@@ -2494,7 +2513,8 @@ input.settings-form-input:-moz-autofill,
     margin-top: -8px;
     padding-top: 0;
   }
-  #user-modal .user-management-search-wrap {
+  #user-modal .user-management-search-wrap,
+#branch-modal .user-management-search-wrap {
     position: relative;
     z-index: 5;
     flex-basis: 40px;
@@ -2502,11 +2522,13 @@ input.settings-form-input:-moz-autofill,
     overflow: visible;
     transform: translateY(2px);
   }
-  #user-modal .user-management-search-wrap.open {
-    flex-basis: 203px;
-    width: 203px;
+  #user-modal .user-management-search-wrap.open,
+#branch-modal .user-management-search-wrap.open {
+    flex-basis: 219px;
+    width: 219px;
   }
-  #user-modal .user-management-search-toggle {
+  #user-modal .user-management-search-toggle,
+#branch-modal .user-management-search-toggle {
     width: 40px;
     height: 40px;
     pointer-events: auto;
@@ -2712,33 +2734,39 @@ input.settings-form-input:-moz-autofill,
         min-width: 44px !important;
         min-height: 44px !important;
     }
-    #user-modal .user-management-search-toggle {
+    #user-modal .user-management-search-toggle,
+#branch-modal .user-management-search-toggle {
         width: 36px;
         height: 36px;
     }
-    #user-modal .user-management-back-bar.universal-back-bar--standalone {
+    #user-modal .user-management-back-bar.universal-back-bar--standalone,
+#branch-modal .user-management-back-bar.universal-back-bar--standalone {
         flex-wrap: wrap !important;
         justify-content: flex-start !important;
         align-items: center !important;
         row-gap: 0 !important;
         padding: 2px 16px 4px !important;
     }
-    #user-modal .user-management-back-bar .universal-back-btn {
+    #user-modal .user-management-back-bar .universal-back-btn,
+  #branch-modal .user-management-back-bar .universal-back-btn {
         flex: 0 0 100% !important;
         justify-content: flex-start !important;
     }
-    #user-modal .user-management-search-wrap {
+    #user-modal .user-management-search-wrap,
+#branch-modal .user-management-search-wrap {
         flex: 0 0 100% !important;
         width: 100% !important;
         margin-left: 0 !important;
         margin-top: -10px !important;
         justify-content: flex-end !important;
     }
-    #user-modal .user-management-search-wrap.open .user-management-search-input {
+    #user-modal .user-management-search-wrap.open .user-management-search-input,
+#branch-modal .user-management-search-wrap.open .user-management-search-input {
         width: clamp(116px, 38vw, 170px);
         max-width: calc(100% - 40px);
     }
-    #user-modal .modal-body.user-management-keyboard-open {
+    #user-modal .modal-body.user-management-keyboard-open,
+    #branch-modal .modal-body.user-management-keyboard-open {
         padding-bottom: calc(var(--user-modal-keyboard-offset, 260px) + env(safe-area-inset-bottom, 0px)) !important;
         scroll-padding-bottom: calc(var(--user-modal-keyboard-offset, 240px) + env(safe-area-inset-bottom, 0px)) !important;
     }
