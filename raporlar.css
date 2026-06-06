@@ -109,38 +109,6 @@ min-width: 0 !important;
 overflow: hidden !important;
 }
 
-/* Sol ok + etiket: tüm viewport’larda aynı satırda, 3px gap, ikon 5px aşağı */
-#reports-modal .reports-list-header-actions .universal-back-bar,
-#reports-modal .kullanici-list-top-controls .universal-back-bar,
-#reports-modal .kullanici-detail-header .universal-back-bar {
-display: inline-flex !important;
-align-items: center !important;
-gap: 3px !important;
-padding-left: 0 !important;
-}
-#reports-modal .reports-list-header-actions .universal-back-btn,
-#reports-modal .kullanici-list-top-controls .universal-back-btn,
-#reports-modal .kullanici-detail-header .universal-back-btn {
-display: inline-flex !important;
-align-items: center !important;
-gap: 3px !important;
-padding-left: 0 !important;
-}
-#reports-modal .reports-list-header-actions .universal-back-btn i,
-#reports-modal .reports-list-header-actions .universal-back-btn svg,
-#reports-modal .reports-list-header-actions .universal-back-btn .back-icon-svg,
-#reports-modal .kullanici-list-top-controls .universal-back-btn i,
-#reports-modal .kullanici-list-top-controls .universal-back-btn svg,
-#reports-modal .kullanici-list-top-controls .universal-back-btn .back-icon-svg,
-#reports-modal .kullanici-detail-header .universal-back-btn i,
-#reports-modal .kullanici-detail-header .universal-back-btn svg,
-#reports-modal .kullanici-detail-header .universal-back-btn .back-icon-svg {
-position: relative !important;
-top: 0 !important;
-margin: 0 !important;
-padding: 0 !important;
-}
-
 /* Header altı slot: masaüstü + mobil sol ok + Detay Ekleme burada görünür */
 #reports-modal .reports-list-header-actions {
 display: none;
@@ -188,22 +156,6 @@ justify-content: flex-start !important;
 gap: 4px;
 width: 100%;
 min-width: 0;
-}
-/* Sol ok + Raporlar etiketi 5px daha yukarı (stok-left-controls dışında; eskilerine uyum) */
-#reports-modal .reports-list-header-actions .stok-controls-row-1 .universal-back-bar {
-margin-top: -20px !important;
-margin-bottom: 0;
-}
-/* Sol blok içinde: Geri Al doğal konumda (margin sıfır) - sadece mobil/desktop-single-row dışında */
-#reports-modal .reports-list-header-actions:not(:has(.desktop-single-row)) .stok-left-controls .universal-back-bar {
-margin-top: 0 !important;
-}
-/* Raporlar etiketi 2 punto küçük; sol ok yanındaki etiket gri (#adb5bd); line-height ikonla aynı (20px) hiza için */
-#reports-modal .reports-list-header-actions .universal-back-label {
-font-size: 13px !important;
-line-height: 20px !important;
-color: #adb5bd !important;
-margin: 0;
 }
 /* Detay Ekleme butonu varsayılan beyaz; seçiliyken yeşil */
 #reports-modal .reports-list-header-actions .stok-detail-add-btn {
@@ -1607,10 +1559,12 @@ flex-shrink: 0 !important;
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-1 .stok-left-controls .stok-detail-add-btn {
 flex-shrink: 0 !important;
 }
-/* Masaüstü: üst iç boşluk (geri + Detay tek satır; translateY ile yukarı kaysın diye sıkı) */
+/* Masaüstü: geri + Detay tek satır; geri oku ortak 8px / 16px başlangıcında tut */
 #reports-modal .reports-list-header-actions:has(.stok-detail-add-wrap.desktop-single-row) {
-padding-top: 4px !important;
+padding-top: 0 !important;
 padding-bottom: 0 !important;
+padding-left: 16px !important;
+padding-right: 16px !important;
 margin-top: 0 !important;
 }
 #reports-modal .stok-detail-add-wrap.desktop-single-row {
@@ -2509,7 +2463,8 @@ color: var(--data-value-color, #a0aec0);
 display: flex;
 align-items: center;
 gap: 12px;
-padding: 12px 16px;
+min-height: 36px;
+padding: 0 16px;
 border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -2528,7 +2483,7 @@ gap: 8px;
 
 /* Kullanıcı Detay Grid */
 .kullanici-detail-header {
-padding: 12px 16px;
+padding: 0;
 border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -2999,65 +2954,6 @@ align-items: center !important;
 }
 .stok-list-top-controls > .stok-controls-row-1 { order: 0; }
 .stok-list-top-controls > .stok-controls-row-2 { order: 2; margin-top: 0 !important; }
-#reports-modal .universal-back-btn {
-margin-top: 0;
-margin-left: 0;
-padding: 10px !important;
-min-width: auto !important;
-min-height: auto !important;
-}
-#reports-modal .back-icon-svg {
-width: 20px !important;
-height: 20px !important;
-display: block !important;
-flex-shrink: 0 !important;
-}
-/* Mobil: Raporlar geri ok/metin hizasini sabitle */
-#reports-modal .reports-list-header-actions .universal-back-bar,
-#reports-modal .kullanici-list-top-controls .universal-back-bar,
-#reports-modal .kullanici-detail-header .universal-back-bar {
-display: inline-flex !important;
-align-items: center !important;
-gap: 3px !important;
-padding-left: 0 !important;
-}
-#reports-modal .reports-list-header-actions .universal-back-btn,
-#reports-modal .kullanici-list-top-controls .universal-back-btn,
-#reports-modal .kullanici-detail-header .universal-back-btn {
-display: inline-flex !important;
-align-items: center !important;
-gap: 3px !important;
-padding-left: 0 !important;
-}
-#reports-modal .reports-list-header-actions .universal-back-btn i,
-#reports-modal .reports-list-header-actions .universal-back-btn svg,
-#reports-modal .reports-list-header-actions .universal-back-btn .back-icon-svg,
-#reports-modal .kullanici-list-top-controls .universal-back-btn i,
-#reports-modal .kullanici-list-top-controls .universal-back-btn svg,
-#reports-modal .kullanici-list-top-controls .universal-back-btn .back-icon-svg,
-#reports-modal .kullanici-detail-header .universal-back-btn i,
-#reports-modal .kullanici-detail-header .universal-back-btn svg,
-#reports-modal .kullanici-detail-header .universal-back-btn .back-icon-svg {
-position: relative !important;
-top: 0 !important;
-margin: 0 !important;
-padding: 0 !important;
-}
-#reports-modal .reports-list-header-actions .universal-back-btn .universal-back-label,
-#reports-modal .reports-list-header-actions .universal-back-btn span {
-font-size: 12px !important; /* 13px -> 12px */
-line-height: 20px !important; /* ok ikonu ile aynı hizada */
-margin: 0 !important;
-}
-#reports-modal .kullanici-list-top-controls .universal-back-btn .universal-back-label,
-#reports-modal .kullanici-list-top-controls .universal-back-btn span,
-#reports-modal .kullanici-detail-header .universal-back-btn .universal-back-label,
-#reports-modal .kullanici-detail-header .universal-back-btn span {
-font-size: 13px !important; /* style-core 14px -> 13px */
-line-height: 1 !important;
-margin: 0 !important;
-color: #adb5bd !important;
-}
 .stok-detail-add-btn {
 font-size: 14px !important;
 margin-left: 0 !important;
@@ -3197,10 +3093,6 @@ overflow: visible !important;
 display: flex !important;
 align-items: center !important;
 justify-content: center !important;
-}
-/* Mobil: sol ok + etiket (row-1) 3px yukarı */
-#reports-modal .reports-list-header-actions .stok-controls-row-1 {
-margin-top: -3px !important;
 }
 /* Mobil: Detay Ekleme menü butonlarına +2px dikey yükseklik */
 #reports-modal .stok-detail-menu-btn {
@@ -3720,10 +3612,6 @@ box-sizing: border-box;
    MASAÜSTÜ: RAPORLAR UST BASLIK HIZALAMA
    ========================================= */
 @media (min-width: 640px) {
-    /* Masaüstü: header row-1 içindeki genel -20px geri çubuğu ofseti bu düzende hizayı bozar — sıfırla */
-    #reports-modal .reports-list-header-actions .stok-detail-add-wrap.desktop-single-row .stok-controls-row-1 .universal-back-bar {
-        margin-top: 0 !important;
-    }
     /* KOK COZUM: Sol ok+etiket sola yasli, +Detay Ekleme ayni satirda gercek merkezde */
     #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-1 {
         display: grid !important;
@@ -3736,7 +3624,6 @@ box-sizing: border-box;
         padding-bottom: 0 !important;
         width: 100% !important;
         min-width: 0 !important;
-        transform: translateY(-10px) !important;
     }
 
     #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-1 .universal-back-bar {
