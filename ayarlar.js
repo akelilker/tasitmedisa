@@ -119,6 +119,9 @@
         } else if (layer === 'settings-branch') {
           renderBranchList();
           showAyarlarModal('branch-modal');
+          syncBranchManagementSearchUi();
+          bindBranchManagementKeyboardHandlers();
+          clearBranchManagementKeyboardOffset();
         } else if (layer === 'settings-user') {
           renderUserList();
           showAyarlarModal('user-modal');
@@ -137,6 +140,8 @@
         } else if (layer === 'settings-branch-form') {
           renderBranchList();
           showAyarlarModal('branch-modal');
+          syncBranchManagementSearchUi();
+          bindBranchManagementKeyboardHandlers();
           showAyarlarModal('branch-form-modal');
         } else if (layer === 'settings-user-form') {
           renderUserList();
@@ -837,19 +842,28 @@
       closeSettingsDropdown();
       const modal = document.getElementById('branch-modal');
       if (!modal) return;
-  
-      // Listeyi render et
-      renderBranchList(); 
-  
-      // Modalı aç
+
+      branchManagementSearchQuery = '';
+      branchManagementSearchOpen = false;
+      renderBranchList();
+
       modal.style.display = 'flex';
-      requestAnimationFrame(() => modal.classList.add('active'));
+      requestAnimationFrame(() => {
+        modal.classList.add('active');
+        syncBranchManagementSearchUi();
+        bindBranchManagementKeyboardHandlers();
+        clearBranchManagementKeyboardOffset();
+      });
       pushSettingsHistoryLayer('settings-branch');
     };
   
     window.closeBranchManagement = function closeBranchManagement(options) {
       const modal = document.getElementById('branch-modal');
       if (!modal) return;
+      branchManagementSearchQuery = '';
+      branchManagementSearchOpen = false;
+      syncBranchManagementSearchUi();
+      clearBranchManagementKeyboardOffset();
       modal.classList.remove('active');
       closeSettingsDropdown();
       setTimeout(() => modal.style.display = 'none', 300);
@@ -857,6 +871,160 @@
         resetToHomeFromPanel();
       }
     };
+
+    let branchManagementSearchQuery = '';
+    let branchManagementSearchOpen = false;
+    let branchManagementKeyboardBound = false;
+
+    function clearBranchManagementKeyboardOffset() {
+      const body = document.querySelector('#branch-modal .modal-body');
+      if (!body) return;
+      body.classList.remove('user-management-keyboard-open');
+      body.style.removeProperty('--user-modal-keyboard-offset');
+    }
+
+    function applyBranchManagementKeyboardOffset() {
+      const modal = document.getElementById('branch-modal');
+      const input = document.getElementById('branch-management-search-input');
+      const body = modal ? modal.querySelector('.modal-body') : null;
+      if (!modal || !body || !input) return;
+      if (!modal.classList.contains('active')) {
+        clearBranchManagementKeyboardOffset();
+        return;
+      }
+      if (document.activeElement !== input) {
+        clearBranchManagementKeyboardOffset();
+        return;
+      }
+      if (!isUserManagementKeyboardAwareContext()) {
+        clearBranchManagementKeyboardOffset();
+        return;
+      }
+
+      const vv = window.visualViewport;
+      const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 0;
+      const vvHeight = vv && typeof vv.height === 'number' ? vv.height : viewportHeight;
+      const keyboardRaw = Math.max(0, Math.round(viewportHeight - vvHeight));
+      const keyboardOffset = keyboardRaw > 60 ? Math.max(220, Math.min(420, keyboardRaw + 24)) : 0;
+
+      if (keyboardOffset > 0) {
+        body.classList.add('user-management-keyboard-open');
+        body.style.setProperty('--user-modal-keyboard-offset', keyboardOffset + 'px');
+      } else {
+        clearBranchManagementKeyboardOffset();
+      }
+    }
+
+    function bindBranchManagementKeyboardHandlers() {
+      if (branchManagementKeyboardBound) return;
+      const input = document.getElementById('branch-management-search-input');
+      if (!input) return;
+      branchManagementKeyboardBound = true;
+
+      const onFocus = function() {
+        requestAnimationFrame(function() {
+          applyBranchManagementKeyboardOffset();
+        });
+      };
+      const onBlur = function() {
+        clearBranchManagementKeyboardOffset();
+      };
+      const onViewportResize = function() {
+        const modal = document.getElementById('branch-modal');
+        if (!modal || !modal.classList.contains('active')) return;
+        if (document.activeElement !== input) return;
+        applyBranchManagementKeyboardOffset();
+      };
+
+      input.addEventListener('focus', onFocus);
+      input.addEventListener('blur', onBlur);
+      if (window.visualViewport && typeof window.visualViewport.addEventListener === 'function') {
+        window.visualViewport.addEventListener('resize', onViewportResize);
+      }
+      window.addEventListener('resize', onViewportResize);
+    }
+
+    function focusBranchManagementSearchInput(input, options) {
+      if (!input) return;
+      try {
+        input.focus({ preventScroll: true });
+      } catch (e) {
+        input.focus();
+      }
+      if (options && options.select === true && !isUserManagementKeyboardAwareContext() && typeof input.select === 'function') {
+        input.select();
+      }
+      requestAnimationFrame(function() {
+        applyBranchManagementKeyboardOffset();
+      });
+    }
+
+    function syncBranchManagementSearchUi(options) {
+      const wrap = document.getElementById('branch-management-search-wrap');
+      const input = document.getElementById('branch-management-search-input');
+      const toggle = document.getElementById('branch-management-search-toggle');
+      if (!wrap || !input || !toggle) return;
+
+      wrap.classList.toggle('open', !!branchManagementSearchOpen);
+      input.value = branchManagementSearchQuery;
+      toggle.setAttribute('aria-expanded', branchManagementSearchOpen ? 'true' : 'false');
+
+      if (branchManagementSearchOpen && options && options.focus === true) {
+        focusBranchManagementSearchInput(input, { select: true });
+        setTimeout(function() {
+          if (document.activeElement !== input) {
+            focusBranchManagementSearchInput(input, { select: true });
+          }
+        }, 30);
+      } else if (!branchManagementSearchOpen && document.activeElement === input) {
+        input.blur();
+      }
+    }
+
+    window.toggleBranchManagementSearch = function toggleBranchManagementSearch(forceOpen) {
+      const nextOpen = typeof forceOpen === 'boolean' ? forceOpen : !branchManagementSearchOpen;
+
+      if (!nextOpen) {
+        branchManagementSearchOpen = false;
+        branchManagementSearchQuery = '';
+        syncBranchManagementSearchUi();
+        renderBranchList();
+        return;
+      }
+
+      branchManagementSearchOpen = true;
+      syncBranchManagementSearchUi({ focus: true });
+    };
+
+    window.setBranchManagementSearch = function setBranchManagementSearch(value) {
+      branchManagementSearchQuery = String(value || '');
+      branchManagementSearchOpen = true;
+      syncBranchManagementSearchUi();
+      renderBranchList();
+    };
+
+    function onBranchManagementSearchOutsidePointerDown(e) {
+      if (typeof window.innerWidth === 'number' && window.innerWidth > 640) return;
+      const modal = document.getElementById('branch-modal');
+      if (!modal || !modal.classList.contains('active')) return;
+      if (!branchManagementSearchOpen) return;
+      const wrap = document.getElementById('branch-management-search-wrap');
+      if (!wrap || wrap.contains(e.target)) return;
+      if (e.target && e.target.closest && e.target.closest('#branch-list .settings-card')) {
+        const input = document.getElementById('branch-management-search-input');
+        if (input && document.activeElement === input) input.blur();
+        return;
+      }
+      branchManagementSearchOpen = false;
+      branchManagementSearchQuery = '';
+      syncBranchManagementSearchUi();
+      renderBranchList();
+    }
+
+    if (!window.__medisaBranchManagementSearchOutsideCloseBound) {
+      window.__medisaBranchManagementSearchOutsideCloseBound = true;
+      document.addEventListener('pointerdown', onBranchManagementSearchOutsidePointerDown, true);
+    }
 
     // Modal Kontrolü (Form)
     window.openBranchFormModal = function openBranchFormModal(editId = null) {
@@ -1052,6 +1220,7 @@
 
       const branches = readBranches();
       const vehicles = readVehicles();
+      const normalizedQuery = normalizeUserManagementSearchText(branchManagementSearchQuery);
   
       if (branches.length === 0) {
         container.innerHTML = `
@@ -1061,8 +1230,27 @@
         `;
         return;
       }
+
+      const filteredBranches = normalizedQuery
+        ? branches.filter(function(branch) {
+            const haystack = normalizeUserManagementSearchText([
+              branch.name || '',
+              branch.city || ''
+            ].join(' '));
+            return haystack.includes(normalizedQuery);
+          })
+        : branches;
+
+      if (filteredBranches.length === 0) {
+        container.innerHTML = `
+          <div style="text-align:center; padding:20px; color:var(--muted);">
+            arama sonucu bulunamadı.
+          </div>
+        `;
+        return;
+      }
   
-      const rows = branches.map(branch => {
+      const rows = filteredBranches.map(branch => {
         const vehicleCount = vehicles.filter(v => v.branchId === branch.id).length;
         const branchName = String(branch.name || '');
         const longestWordLength = branchName.split(/\s+/).reduce((maxLen, part) => Math.max(maxLen, part.length), 0);
