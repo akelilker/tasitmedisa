@@ -884,7 +884,7 @@ body.modal-open #info-modal .modal-container {
     justify-content: space-between !important;
     gap: 0 !important;
     align-items: center !important;
-    padding: 4px 16px 10px !important;
+    padding: 0 16px 10px !important;
     box-sizing: border-box !important;
 }
 #user-modal .user-management-search-wrap {
@@ -2483,6 +2483,9 @@ input.settings-form-input:-moz-autofill,
   }
   #user-modal .user-management-back-bar.universal-back-bar--standalone {
     padding-bottom: 2px !important;
+  }
+  #user-modal .user-management-back-bar .universal-back-btn {
+    align-self: flex-start;
   }
   #user-modal .modal-body {
     padding-top: 0;

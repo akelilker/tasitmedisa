@@ -2371,17 +2371,25 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 
 /* === DİNAMİK TOOLBAR === */
 .vehicles-toolbar {
-    height: 40px;
+    height: 36px;
+    min-height: 36px;
     background: var(--bg);
     border-bottom: none; 
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 16px 0 0; /* Sol ok çerçeveye yaslı (3px sola alındı) */
+    padding: 0 16px;
     position: relative !important;
     z-index: 10;
     flex-shrink: 0;
     overflow: visible !important; /* ıman dropdown kesilmesin (masaüstü + mobil) */
+}
+
+@media (max-width: 768px) {
+    .vehicles-toolbar {
+        height: 44px;
+        min-height: 44px;
+    }
 }
 
 .vt-left { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }

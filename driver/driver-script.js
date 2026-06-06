@@ -2055,9 +2055,9 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           const kmMessage = getKmMessageByState(kmState);
           if (kmMessage) {
               const kmWarnLevel = kmState === 'MONTHLY_UPDATE_DUE_SOFT' ? 'orange' : 'red';
-              warnings.push({ text: plaka + ' Plakalı Taşıt İçin ' + kmMessage, plaka: plaka, type: null, warnLevel: kmWarnLevel });
+              warnings.push({ text: plaka + ' Plakalı Taşıt İçin ' + kmMessage, plaka: plaka, vehicleId: vid, action: 'km', type: 'km', warnLevel: kmWarnLevel });
           }
-          const checkDate = (dateStr, label) => {
+          const checkDate = (dateStr, label, actionType) => {
               if (!dateStr) return;
               const w = checkDateWarningsDriver(dateStr);
               if (w.class && w.days != null) {
@@ -2068,15 +2068,15 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
                   } else {
                       msg = plaka + ' Plakalı Taşıtın ' + label + ' Tarihine ' + w.days + ' Gün Kalmıştır';
                   }
-                  warnings.push({ text: msg, plaka: plaka, type: null, warnLevel: w.level, warnClass: w.class, days: w.days });
+                  warnings.push({ text: msg, plaka: plaka, vehicleId: vid, action: actionType || null, type: actionType || null, warnLevel: w.level, warnClass: w.class, days: w.days });
               }
           };
-          checkDate(v.muayeneDate, 'Muayene');
+          checkDate(v.muayeneDate, 'Muayene', 'muayene');
           if (v.egzozMuayeneDate && v.egzozMuayeneDate !== v.muayeneDate) {
-              checkDate(v.egzozMuayeneDate, 'Egzoz Muayenesi');
+              checkDate(v.egzozMuayeneDate, 'Egzoz Muayenesi', 'muayene');
           }
-          checkDate(v.sigortaDate, 'Sigorta');
-          checkDate(v.kaskoDate, 'Kasko');
+          checkDate(v.sigortaDate, 'Sigorta', 'sigorta');
+          checkDate(v.kaskoDate, 'Kasko', 'kasko');
           if (!k2WarningAdded && driverVehicleNeedsK2(v) && v.k2BelgesiExpiryDate) {
               const k2Warning = checkDateWarningsDriver(v.k2BelgesiExpiryDate);
               if (k2Warning.class && k2Warning.days != null) {
@@ -2088,7 +2088,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
               }
           }
           if (driverVehicleNeedsTakograf(v)) {
-              checkDate(v.takografExpiryDate, 'Takograf Kalibrasyon');
+              checkDate(v.takografExpiryDate, 'Takograf Kalibrasyon', null);
           }
       }
       return warnings;
@@ -2204,12 +2204,108 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       });
   }
 
+  function buildDriverNotificationItemHtml(w) {
+      const level = getDriverNotificationItemLevel(w);
+      const itemIconClass = level === 'orange' ? 'driver-warning-icon-engine-orange' : 'driver-warning-icon-engine-red';
+      const text = escapeHtmlDriver((w && w.text) || '');
+      const icon = '<span class="driver-warning-icon driver-warning-icon-engine ' + itemIconClass + '" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"></svg></span>';
+      const vehicleId = w && w.vehicleId != null && String(w.vehicleId) !== '' ? String(w.vehicleId) : '';
+      if (!vehicleId) {
+          return '<div class="driver-warning-panel-item driver-warning-panel-item-' + level + '">'
+              + icon
+              + '<span class="driver-warning-panel-text">' + text + '</span>'
+              + '</div>';
+      }
+      const action = w && w.action ? String(w.action) : '';
+      const actionAttr = action ? ' data-action="' + escapeHtmlDriver(action) + '"' : '';
+      return '<button type="button" class="driver-warning-panel-item driver-warning-panel-item-' + level + ' driver-warning-panel-item-action"'
+          + ' data-vehicle-id="' + escapeHtmlDriver(vehicleId) + '"' + actionAttr
+          + ' aria-label="' + text + '">'
+          + icon
+          + '<span class="driver-warning-panel-text">' + text + '</span>'
+          + '</button>';
+  }
+
+  function switchDriverDashboardVehicle(vehicleId) {
+      const vid = String(vehicleId);
+      const sel = allHistoryVehicles.find(function(v) { return String(v.id) === vid; });
+      if (!sel) return false;
+      selectedVehicleId = vid;
+      const plakaEl = document.getElementById('driver-current-plaka');
+      if (plakaEl) plakaEl.textContent = formatDriverPlaka(sel.plaka);
+      renderLeftPanel(allHistoryVehicles, allHistoryRecords);
+      renderRightPanel(allHistoryVehicles, allHistoryRecords);
+      renderSlidingWarning(allHistoryVehicles, allHistoryRecords);
+      setupEkstraNotAutoResize();
+      setupKmInputs();
+      return true;
+  }
+
+  function openDriverNotificationAction(vehicleId, action) {
+      window.closeDriverNotifications();
+      const vid = String(vehicleId);
+      const sameVehicle = String(selectedVehicleId) === vid;
+      if (!sameVehicle && !switchDriverDashboardVehicle(vid)) return;
+      if (!action) return;
+      setTimeout(function() {
+          const inner = document.querySelector('.driver-action-area-inner[data-vehicle-id="' + vid + '"]');
+          if (!inner) return;
+          const blockMap = {
+              km: 'km-block-' + vid,
+              kaza: 'kaza-block-' + vid,
+              bakim: 'bakim-block-' + vid,
+              sigorta: 'sigorta-block-' + vid,
+              kasko: 'kasko-block-' + vid,
+              muayene: 'muayene-block-' + vid,
+              anahtar: 'anahtar-block-' + vid,
+              lastik: 'lastik-block-' + vid
+          };
+          const block = document.getElementById(blockMap[action] || '');
+          if (!block) return;
+          if (!block.classList.contains('show')) {
+              if (typeof window.toggleDriverActionBlock === 'function') {
+                  window.toggleDriverActionBlock(action, vid);
+              }
+              return;
+          }
+          if (action === 'km') {
+              const inp = document.getElementById('km-' + vid);
+              if (inp && typeof inp.focus === 'function') {
+                  inp.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                  inp.focus();
+                  if (typeof inp.select === 'function') inp.select();
+              }
+          } else {
+              const group = block.closest('.driver-action-group');
+              (group || block).scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+      }, sameVehicle ? 0 : 80);
+  }
+
+  function bindDriverNotificationItemClicks() {
+      const list = document.getElementById(DRIVER_NOTIFICATIONS_LIST_ID);
+      if (!list) return;
+      list.querySelectorAll('.driver-warning-panel-item-action[data-vehicle-id]').forEach(function(item) {
+          if (item.dataset.driverNotificationBound === '1') return;
+          item.dataset.driverNotificationBound = '1';
+          item.addEventListener('click', function(ev) {
+              ev.preventDefault();
+              ev.stopPropagation();
+              const vid = item.getAttribute('data-vehicle-id');
+              const action = item.getAttribute('data-action') || '';
+              if (!vid) return;
+              openDriverNotificationAction(vid, action);
+          });
+      });
+  }
+
   function setDriverNotificationsContent(warningItemsHtml) {
       var ui = ensureDriverNotificationsUi();
       if (!ui.list) return;
       ui.list.innerHTML = warningItemsHtml && warningItemsHtml.trim()
           ? warningItemsHtml
           : driverNotificationEmptyStateHtml;
+      bindDriverNotificationItemClicks();
   }
 
   window.openDriverNotifications = function(warningItemsHtml, triggerEl) {
@@ -2280,12 +2376,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       const hasRedWarning = warnings.some(function(w) { return !w || w.warnLevel !== 'orange'; });
       const iconClass = hasRedWarning ? 'driver-warning-icon-engine-red' : 'driver-warning-icon-engine-orange';
       const warningItemsHtml = warnings.map(function(w) {
-          const level = getDriverNotificationItemLevel(w);
-          const itemIconClass = level === 'orange' ? 'driver-warning-icon-engine-orange' : 'driver-warning-icon-engine-red';
-          return '<div class="driver-warning-panel-item driver-warning-panel-item-' + level + '">'
-              + '<span class="driver-warning-icon driver-warning-icon-engine ' + itemIconClass + '" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"></svg></span>'
-              + '<span class="driver-warning-panel-text">' + escapeHtmlDriver((w && w.text) || '') + '</span>'
-              + '</div>';
+          return buildDriverNotificationItemHtml(w);
       }).join('');
       const engineIcon = '<span class="driver-warning-icon driver-warning-icon-engine ' + iconClass + '" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"></svg></span>';
 
