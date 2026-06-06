@@ -1311,13 +1311,6 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
 .driver-sliding-warning.driver-sliding-warning-orange .driver-warning-icon {
   color: var(--orange-warn);
 }
-
-.driver-sliding-warning .driver-warning-text {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  min-width: 0;
-  flex: 1;
-}
 @media (prefers-reduced-motion: reduce) {
   .driver-action-btn-feedback.driver-request-fab .driver-action-btn-feedback-icon {
     animation: none;
