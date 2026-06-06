@@ -291,13 +291,10 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
   let currentRecordId = null;
   let allHistoryRecords = [];
   let allHistoryVehicles = [];
-  let currentDriverEventVehicleId = null;
-  /** Muayene bildirimi teyit edildi mi (Hayır/Evet akışı). Modal kapanınca sıfırlanır. */
+  /** Muayene bildirimi teyit edildi mi (Hayır/Evet akışı). */
   let isMuayeneConfirmed = false;
-  /** Bloktan (sliding block) muayene bildirimi bekliyorsa vehicleId. Teyit sonrası API çağrısı için. */
+  /** Bloktan muayene bildirimi bekliyorsa vehicleId. Teyit sonrası API çağrısı için. */
   let pendingMuayeneVehicleId = null;
-  /** Popover gösterildiğinde hangi kaynaktan: 'modal' | 'block'. Butonları geri göstermek için. */
-  let muayeneConfirmSource = null;
   let currentPeriod = '';
   let selectedVehicleId = null;
   /** dashboard.html?action=km deep-link bir kez işlensin (yenilemede tekrar açılmasın). */
@@ -2510,18 +2507,13 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       return { tarih: tarih, egzozMuayeneYapilmaDate: egzozMuayeneYapilmaDate };
   }
 
-  function positionAndShowMuayenePopover(dateInputEl, source) {
+  function positionAndShowMuayenePopover(dateInputEl) {
       var popover = document.getElementById('muayene-confirm-popover');
       if (!popover || !dateInputEl) return;
-      muayeneConfirmSource = source;
       var inputRect = dateInputEl.getBoundingClientRect();
-      var container = dateInputEl.closest('.driver-report-block') || dateInputEl.closest('.driver-modal-content');
-      if (!container) container = dateInputEl.closest('.modal-body') || document.body;
+      var container = dateInputEl.closest('.driver-report-block') || document.body;
       var containerRect = container.getBoundingClientRect();
-      if (source === 'modal') {
-          var wrap = document.querySelector('#driver-muayene-modal .muayene-submit-wrap');
-          if (wrap) wrap.style.visibility = 'hidden';
-      } else if (source === 'block' && pendingMuayeneVehicleId) {
+      if (pendingMuayeneVehicleId) {
           var btnGroup = document.querySelector('#muayene-block-' + pendingMuayeneVehicleId + ' .universal-btn-group');
           if (btnGroup) btnGroup.style.visibility = 'hidden';
       }
@@ -2539,14 +2531,10 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
   function hideMuayenePopoverAndRestore() {
       var popover = document.getElementById('muayene-confirm-popover');
       if (popover) popover.style.display = 'none';
-      if (muayeneConfirmSource === 'modal') {
-          var wrap = document.querySelector('#driver-muayene-modal .muayene-submit-wrap');
-          if (wrap) wrap.style.visibility = '';
-      } else if (muayeneConfirmSource === 'block' && pendingMuayeneVehicleId) {
+      if (pendingMuayeneVehicleId) {
           var btnGroup = document.querySelector('#muayene-block-' + pendingMuayeneVehicleId + ' .universal-btn-group');
           if (btnGroup) btnGroup.style.visibility = '';
       }
-      muayeneConfirmSource = null;
   }
 
   window.cancelMuayeneSubmit = function() {
@@ -2556,55 +2544,34 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
 
   window.confirmMuayeneSubmit = async function() {
       if (!ensureDriverOnlineForWrite()) return;
+      if (!pendingMuayeneVehicleId) return;
       isMuayeneConfirmed = true;
       hideMuayenePopoverAndRestore();
-      if (pendingMuayeneVehicleId) {
-          const vid = pendingMuayeneVehicleId;
-          pendingMuayeneVehicleId = null;
-          const payload = getDriverMuayenePayload(vid);
-          if (!payload) { isMuayeneConfirmed = false; return; }
-          try {
-              const res = await fetch(API_BASE + 'driver_event.php', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + currentToken },
-                  body: JSON.stringify({ arac_id: parseInt(vid, 10), vehicle_version: getVehicleVersionForRequest(vid), event_type: 'muayene', data: payload })
-              });
-              const result = await res.json();
-              if (await handleDriverConflictResponse(result)) return;
-              if (result.success) {
-                  applyVehicleVersionUpdate(vid, result.vehicleVersion);
-                  lastCompletedActionInSession = { action: 'muayene', vehicleId: vid };
-                  cancelDriverActionForm('muayene', vid);
-                  await loadDashboard();
-              } else {
-                  alert(result.message || 'Kayıt başarısız!');
-              }
-          } catch (err) {
-              console.error(err);
-              alert('Bağlantı hatası!');
-          } finally {
-              isMuayeneConfirmed = false;
+      const vid = pendingMuayeneVehicleId;
+      pendingMuayeneVehicleId = null;
+      const payload = getDriverMuayenePayload(vid);
+      if (!payload) { isMuayeneConfirmed = false; return; }
+      try {
+          const res = await fetch(API_BASE + 'driver_event.php', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + currentToken },
+              body: JSON.stringify({ arac_id: parseInt(vid, 10), vehicle_version: getVehicleVersionForRequest(vid), event_type: 'muayene', data: payload })
+          });
+          const result = await res.json();
+          if (await handleDriverConflictResponse(result)) return;
+          if (result.success) {
+              applyVehicleVersionUpdate(vid, result.vehicleVersion);
+              lastCompletedActionInSession = { action: 'muayene', vehicleId: vid };
+              cancelDriverActionForm('muayene', vid);
+              await loadDashboard();
+          } else {
+              alert(result.message || 'Kayıt başarısız!');
           }
-      } else {
-          await saveDriverEvent('muayene');
+      } catch (err) {
+          console.error(err);
+          alert('Bağlantı hatası!');
+      } finally {
           isMuayeneConfirmed = false;
-      }
-  };
-
-  window.closeDriverEventModal = function(type) {
-      const vid = currentDriverEventVehicleId;
-      if (vid) {
-          const inner = document.querySelector('.driver-action-area-inner[data-vehicle-id="' + String(vid) + '"]');
-          if (inner) inner.classList.remove('driver-modal-open');
-      }
-      const modal = document.getElementById('driver-' + type + '-modal');
-      if (modal) modal.classList.remove('show');
-      currentDriverEventVehicleId = null;
-      updateDriverModalBodyClass();
-      if (type === 'muayene') {
-          isMuayeneConfirmed = false;
-          pendingMuayeneVehicleId = null;
-          hideMuayenePopoverAndRestore();
       }
   };
 
@@ -2635,7 +2602,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
               if (dateEl) dateEl.textContent = bitisStr ? formatDateDDMMYYYY(bitisStr) : '--/--/----';
               pendingMuayeneVehicleId = vehicleId;
               var dateInput = document.getElementById('driver-muayene-tarih-' + vehicleId);
-              positionAndShowMuayenePopover(dateInput, 'block');
+              positionAndShowMuayenePopover(dateInput);
               return;
           }
           data = payload;
@@ -2670,43 +2637,6 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
               applyVehicleVersionUpdate(vehicleId, result.vehicleVersion);
               lastCompletedActionInSession = { action: type, vehicleId: vehicleId };
               cancelDriverActionForm(type, vehicleId);
-              await loadDashboard();
-          } else {
-              alert(result.message || 'Kayıt başarısız!');
-          }
-      } catch (err) {
-          console.error(err);
-          alert('Bağlantı hatası!');
-      }
-  };
-
-  window.saveDriverEvent = async function(type) {
-      if (type !== 'muayene') return;
-      if (!ensureDriverOnlineForWrite()) return;
-      const vehicleId = currentDriverEventVehicleId;
-      if (!vehicleId || !currentToken) return;
-      const payload = getDriverMuayenePayload();
-      if (!payload) return;
-      if (!isMuayeneConfirmed) {
-          const vehicle = allHistoryVehicles && allHistoryVehicles.find(function(v) { return String(v.id) === String(vehicleId); });
-          const bitisStr = calculateNextMuayeneDate(payload.tarih, vehicle);
-          const dateEl = document.getElementById('muayene-calc-date');
-          if (dateEl) dateEl.textContent = bitisStr ? formatDateDDMMYYYY(bitisStr) : '--/--/----';
-          var dateInput = document.getElementById('driver-muayene-tarih');
-          positionAndShowMuayenePopover(dateInput, 'modal');
-          return;
-      }
-      try {
-          const res = await fetch(API_BASE + 'driver_event.php', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + currentToken },
-              body: JSON.stringify({ arac_id: vehicleId, vehicle_version: getVehicleVersionForRequest(vehicleId), event_type: 'muayene', data: payload })
-          });
-          const result = await res.json();
-          if (await handleDriverConflictResponse(result)) return;
-          if (result.success) {
-              applyVehicleVersionUpdate(vehicleId, result.vehicleVersion);
-              closeDriverEventModal('muayene');
               await loadDashboard();
           } else {
               alert(result.message || 'Kayıt başarısız!');
