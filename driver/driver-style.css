@@ -395,10 +395,6 @@ body.dashboard-page {
 .driver-mobile-notification-slot[aria-hidden="false"] {
   display: flex !important;
 }
-.driver-mobile-notification-slot .driver-sliding-warning {
-  flex: 1;
-  min-width: 0;
-}
 .hero.hero-two-rows .hero-title-block .hero-title-line {
   flex: 0 1 auto;
   min-width: 0;
