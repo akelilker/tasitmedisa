@@ -2467,10 +2467,10 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     margin-bottom: 2px !important;
   }
   #vehicle-detail-modal .vehicle-detail-toolbar {
-    margin-bottom: 2px !important;
+    margin-bottom: 0 !important;
   }
   #vehicle-detail-modal #vehicle-detail-content {
-    padding-top: 2px !important;
+    padding-top: 0 !important;
   }
   #vehicle-detail-modal .vehicle-detail-columns {
     margin-top: 13px !important;
