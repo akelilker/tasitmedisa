@@ -3407,8 +3407,6 @@
     requestAnimationFrame(() => {
       modal.classList.add('active');
       requestAnimationFrame(() => {
-        const detailScrollWrap = modal.querySelector('.vehicle-detail-scroll-wrap');
-        if (detailScrollWrap) detailScrollWrap.scrollTop = 0;
         applyVehicleDetailSubeShrink();
         fitVehicleTextBoxes(modal);
       });
@@ -5626,20 +5624,16 @@
 
         container.innerHTML = '';
 
-        // Şema genişliği sol kolona göre; masaüstünde yükseklik ayrıca görünür alana göre sınırlandırılır.
-        const isDesktopDetail = window.innerWidth >= 769;
+        // Şema genişliği: sol grid içinde, sol kolon genişliğine göre requestAnimationFrame ile uyarlanır (yatay -4px, dikey -8px küçültme; %20 küçültme)
         const schemaScale = 0.8; /* %20 küçültme */
         const svgOrgWidth = 148;
         const svgOrgHeight = 220;
         const shrinkX = 4;
+        const shrinkY = 18; // Dikeyde toplam 10px daha küçük görünüm
         const defaultTargetWidth = Math.round((220 - shrinkX) * schemaScale);
-        const targetHeight = isDesktopDetail
-          ? Math.round(defaultTargetWidth * (svgOrgWidth / svgOrgHeight))
-          : Math.round(defaultTargetWidth * (svgOrgWidth / svgOrgHeight)) - 23;
-        const wrapperOverflow = isDesktopDetail ? 'hidden' : 'visible';
-        const wrapperMargin = isDesktopDetail ? '0 auto 4px auto' : '6px auto 20px auto';
+        const targetHeight = Math.round(defaultTargetWidth * (148 / 220)) - shrinkY - 5; /* 5px daha kısa */
 
-        // Masaüstünde wrapper gerçek döndürülmüş SVG yüksekliğini taşır; mobil mevcut görünümü korur.
+        // Wrapper oluştur (Şemayı tutacak kutu); yatayda ortalı, üstte 6px boşluk (üst metinle overlap önlenir)
         const svgWrapper = document.createElement('div');
         svgWrapper.className = 'kaporta-schema-wrapper';
         svgWrapper.style.cssText = `
@@ -5648,9 +5642,9 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: ${wrapperOverflow};
+            overflow: visible;
             flex-shrink: 0;
-            margin: ${wrapperMargin};
+            margin: 6px auto 20px auto;
         `;
 
         // SVG'yi hazırla (zaten clone geldi)
@@ -5716,7 +5710,7 @@
         container.appendChild(legend);
 
         // Sol kolon genişliğine göre şema büyüklüğünü uyarla (sol grid içinde)
-        function alignSchemaToLeftColumn() {
+        requestAnimationFrame(function alignSchemaToLeftColumn() {
           const leftCol = DOM.vehicleDetailLeft;
           if (leftCol && container.isConnected) {
             const leftRect = leftCol.getBoundingClientRect();
@@ -5725,37 +5719,16 @@
             const minW = 128;
             const maxW = 304;
             const clamped = Math.max(minW, Math.min(maxW, Math.round(availableWidth * 0.8)));
-            const widthScale = (clamped - shrinkX) / svgOrgHeight;
-            let scaleRatio = widthScale;
+            const w = clamped - shrinkX;
+            const h = Math.round(clamped * (148 / 220)) - shrinkY - 5; /* 5px daha kısa */
+            svgWrapper.style.width = w + 'px';
+            svgWrapper.style.height = h + 'px';
 
-            if (isDesktopDetail) {
-              const scrollWrap = container.closest('.vehicle-detail-scroll-wrap');
-              if (scrollWrap) {
-                const scrollRect = scrollWrap.getBoundingClientRect();
-                const containerRect = container.getBoundingClientRect();
-                const legendHeight = legend.getBoundingClientRect().height;
-                const minReadableScale = 0.46;
-                const availableSvgHeight = Math.max(0, scrollRect.bottom - containerRect.top - legendHeight - 4);
-                const heightScale = availableSvgHeight / svgOrgWidth;
-                scaleRatio = Math.min(widthScale, Math.max(minReadableScale, heightScale));
-              }
-
-              svgWrapper.style.width = Math.floor(svgOrgHeight * scaleRatio) + 'px';
-              svgWrapper.style.height = Math.floor(svgOrgWidth * scaleRatio) + 'px';
-            } else {
-              const w = clamped - shrinkX;
-              svgWrapper.style.width = w + 'px';
-              svgWrapper.style.height = Math.round(clamped * (svgOrgWidth / svgOrgHeight)) - 23 + 'px';
-            }
-
-            // Arabayı yatırdığımızda doğal genişlik 220px; scale wrapper ölçüsüyle eşleşir.
+            // EKLENEN KISIM: Arabayı yatırdığımızda genişliği 220 oluyor.
+            // Konteynera (w) sığması için dinamik scale uyguluyoruz.
+            const scaleRatio = w / 220;
             svgClone.style.transform = `rotate(90deg) scale(${scaleRatio})`;
           }
-        }
-
-        requestAnimationFrame(function() {
-          alignSchemaToLeftColumn();
-          requestAnimationFrame(alignSchemaToLeftColumn);
         });
       })
       .catch(err => {
