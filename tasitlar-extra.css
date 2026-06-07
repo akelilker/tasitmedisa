@@ -3464,6 +3464,31 @@
   border-radius: 2px;
 }
 
+@media (min-width: 641px) {
+  #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-user {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-user-name,
+  #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-user-branch {
+    grid-column: auto;
+    grid-row: auto;
+    width: 100%;
+    text-align: center;
+  }
+
+  #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-wa-link {
+    position: absolute;
+    right: 0;
+    top: 0;
+    grid-column: auto;
+    grid-row: auto;
+  }
+}
+
 /* Aylık özet: WhatsApp daha önce başlatılmış (sunucu log’u); genel .whatsapp-btn’lere dokunma */
 #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-whatsapp-btn.is-reminder-opened {
   color: #718096;
