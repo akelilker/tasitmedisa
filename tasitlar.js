@@ -7105,7 +7105,7 @@
 
   function validateTasitKartiK2SourceDate() {
     if (getTasitKartiSourceK2ExpiryIsoDate()) return { valid: true };
-    return { valid: false, message: 'Taşıt Kartı yüklemek için önce K2 Belgesi Geçerlilik Süresi kaydedilmelidir.' };
+    return { valid: false, message: 'Taşıt Kartı işlemi için önce K2 Belgesi Geçerlilik Süresi kaydedilmelidir.' };
   }
 
   function getVehicleDocumentKeysForVehicle(vehicle) {
