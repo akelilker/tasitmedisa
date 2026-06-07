@@ -2215,6 +2215,7 @@
       donanim: 'donanim',
       muayene: 'zorunlu',
       takograf: 'zorunlu',
+      tasitkarti: 'zorunlu',
       sigorta: 'police',
       kasko: 'police',
       takip: 'donanim',
@@ -5734,6 +5735,7 @@
     sigorta: 'SİGORTA BİLGİSİ GÜNCELLE',
     kasko: 'KASKO BİLGİSİ GÜNCELLE',
     takograf: 'TAKOGRAF KALİBRASYON GÜNCELLE',
+    tasitkarti: 'TAŞIT KARTI GÜNCELLE',
     muayene: 'MUAYENE BİLGİSİ GÜNCELLE',
     anahtar: 'YEDEK ANAHTAR BİLGİSİ GÜNCELLE',
     kredi: 'HAK MAHRUMİYETİ BİLGİSİ GÜNCELLE',
@@ -5916,7 +5918,7 @@
   /** sigorta/kasko/muayene gg/aa/yyyy metin alanlarını kayıttan önce normalize et */
   function bindGgAaYyyyTextInputs(modal) {
     if (!modal) return;
-    ['sigorta-tarih', 'kasko-tarih', 'k2-belgesi-tarih', 'takograf-kalibrasyon-tarih', 'muayene-tarih', 'muayene-egzoz-yapilma-tarih'].forEach(function(id) {
+    ['sigorta-tarih', 'kasko-tarih', 'k2-belgesi-tarih', 'takograf-kalibrasyon-tarih', 'tasit-karti-yapilma-tarih', 'muayene-tarih', 'muayene-egzoz-yapilma-tarih'].forEach(function(id) {
       const input = modal.querySelector('#' + id);
       if (!input || input.dataset.ggaaNormalizeBound) return;
       input.dataset.ggaaNormalizeBound = '1';
@@ -5929,7 +5931,7 @@
   /** Sigorta/kasko/muayene gg/aa/yyyy metin alanına yerel tarih seçici + simge */
   function setupOlayGgAaYyyyPickers(modal) {
     if (!modal) return;
-    const ids = ['sigorta-tarih', 'kasko-tarih', 'k2-belgesi-tarih', 'takograf-kalibrasyon-tarih', 'muayene-tarih', 'muayene-egzoz-yapilma-tarih'];
+    const ids = ['sigorta-tarih', 'kasko-tarih', 'k2-belgesi-tarih', 'takograf-kalibrasyon-tarih', 'tasit-karti-yapilma-tarih', 'muayene-tarih', 'muayene-egzoz-yapilma-tarih'];
     const calendarSvg = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>';
     ids.forEach(function(id) {
       const textEl = document.getElementById(id);
@@ -6188,6 +6190,10 @@
           section('Kalibrasyon Tarihi (gg/aa/yyyy)', 'takograf-kalibrasyon-tarih', 'input', [['type', 'text'], ['placeholder', 'gg/aa/yyyy']]) +
           section('Servis', 'takograf-servis', 'input', [['type', 'text'], ['placeholder', 'Servis adı']]) +
           section('Not', 'takograf-not', 'textarea', [['rows', '2'], ['placeholder', 'İsteğe bağlı not']]) + '</div>';
+      case 'tasitkarti':
+        return '<div style="display:flex;flex-direction:column;gap:12px;">' +
+          section('Yapılma Tarihi (gg/aa/yyyy)', 'tasit-karti-yapilma-tarih', 'input', [['type', 'text'], ['placeholder', 'gg/aa/yyyy']]) +
+          section('Bitiş Tarihi (K2 Belgesi)', 'tasit-karti-bitis-display', 'div', [['class', inputCls], ['aria-readonly', 'true']]) + '</div>';
       case 'muayene':
         return '<div style="display:flex;flex-direction:column;gap:12px;">' +
           section('Muayene Tarihi', 'muayene-tarih', 'input', [['type', 'text'], ['placeholder', 'gg/aa/yyyy']]) +
@@ -6273,6 +6279,7 @@
       const eventLabels = {
         muayene: 'Muayene Bilgisi Güncelle',
         takograf: 'Takograf Kalibrasyon Güncelle',
+        tasitkarti: 'Taşıt Kartı Güncelle',
         sigorta: 'Sigorta Bilgisi Güncelle',
         kasko: 'Kasko Bilgisi Güncelle',
         takip: 'Taşıt Takip Cihaz Bilgisi Güncelle',
@@ -6306,6 +6313,7 @@
         'satis'
       ]);
       if (vehicleNeedsTakograf(currentMenuVehicle)) availableEventIds.add('takograf');
+      if (vehicleNeedsK2Belgesi(currentMenuVehicle)) availableEventIds.add('tasitkarti');
       if (assignmentLocked) {
         availableEventIds.delete('sube');
         availableEventIds.delete('kullanici');
@@ -6350,6 +6358,14 @@
         if (isArchivedVehicleAssignmentLocked(lockedVehicle)) {
           if (typeof showToast === 'function') showToast('Arşivdeki taşıtlarda kullanıcı/şube ataması yapılamaz.', 'error');
           else alert('Arşivdeki taşıtlarda kullanıcı/şube ataması yapılamaz.');
+          return;
+        }
+      }
+      if (type === 'tasitkarti') {
+        const k2ScopeVehicle = readVehicles().find(v => String(v.id) === String(effectiveVid));
+        if (!vehicleNeedsK2Belgesi(k2ScopeVehicle)) {
+          if (typeof showToast === 'function') showToast('Taşıt Kartı güncellemesi sadece K2 belgesi kapsamındaki taşıtlarda kullanılır.', 'error');
+          else alert('Taşıt Kartı güncellemesi sadece K2 belgesi kapsamındaki taşıtlarda kullanılır.');
           return;
         }
       }
@@ -6434,6 +6450,7 @@
         sigorta: window.updateSigortaInfo,
         kasko: window.updateKaskoInfo,
         takograf: window.updateTakografKalibrasyonInfo,
+        tasitkarti: window.updateTasitKartiInfo,
         muayene: window.updateMuayeneInfo,
         anahtar: window.updateAnahtarInfo,
         kredi: window.updateKrediInfo,
@@ -6520,6 +6537,19 @@
         const vehicle = readVehicles().find(v => String(v.id) === String(vehicleId || window.currentDetailVehicleId));
         const input = document.getElementById('takograf-kalibrasyon-tarih');
         if (input && vehicle) input.value = formatIsoToGgAaYyyy(vehicle.takografKalibrasyonDate || '');
+      } else if (type === 'tasitkarti') {
+        const vehicle = readVehicles().find(v => String(v.id) === String(vehicleId || window.currentDetailVehicleId));
+        const yapilmaInput = document.getElementById('tasit-karti-yapilma-tarih');
+        if (yapilmaInput && vehicle) {
+          yapilmaInput.value = formatIsoToGgAaYyyy(vehicle.tasitKartiYapilmaDate || '');
+        }
+        const bitisDisplay = document.getElementById('tasit-karti-bitis-display');
+        if (bitisDisplay) {
+          const k2ExpiryIso = getTasitKartiSourceK2ExpiryIsoDate();
+          bitisDisplay.textContent = k2ExpiryIso
+            ? formatVehicleDocumentExpiryDate(k2ExpiryIso)
+            : 'Önce K2 Belgesi Geçerlilik Süresi Kaydedilmelidir';
+        }
       } else if (type === 'muayene') {
         const vid = vehicleId || window.currentDetailVehicleId;
         const vehicleMuayenePref = vid ? readVehicles().find(v => String(v.id) === String(vid)) : null;
@@ -9407,6 +9437,64 @@
   };
 
   /**
+   * Taşıt Kartı yapılma tarihini güncelle; bitiş tarihi K2 belgesi ile uyumlu kalır.
+   */
+  window.updateTasitKartiInfo = function() {
+    const tarihInput = document.getElementById('tasit-karti-yapilma-tarih');
+    const tarih = normalizeGgAaYyyyInputElement(tarihInput);
+
+    if (!tarih || !parseGgAaYyyyToIso(tarih)) {
+      alert('Taşıt Kartı Yapılma Tarihi zorunludur!');
+      if (tarihInput) tarihInput.focus();
+      return;
+    }
+
+    const expiryValidation = validateTasitKartiK2SourceDate();
+    if (!expiryValidation.valid) {
+      alert(expiryValidation.message);
+      return;
+    }
+
+    const svc = resolveVehicleContextForDynamicSave();
+    if (!svc) return;
+    const vehicleId = svc.vehicleId;
+    const vehicle = svc.vehicle;
+    const vehicles = svc.vehicles;
+    if (!vehicleNeedsK2Belgesi(vehicle)) {
+      alert('Taşıt Kartı güncellemesi sadece K2 belgesi kapsamındaki taşıtlarda kullanılır.');
+      return;
+    }
+
+    const yapilmaIso = parseGgAaYyyyToIso(tarih);
+    const bitisTarihi = getTasitKartiSourceK2ExpiryIsoDate();
+    vehicle.tasitKartiYapilmaDate = yapilmaIso;
+    vehicle.tasitKartiExpiryDate = bitisTarihi;
+
+    if (!vehicle.events) vehicle.events = [];
+    vehicle.events.unshift({
+      id: Date.now().toString(),
+      type: 'tasit-karti-guncelle',
+      date: tarih,
+      timestamp: new Date().toISOString(),
+      data: {
+        yapilmaTarihi: yapilmaIso,
+        bitisTarihi: bitisTarihi,
+        surucu: getEventPerformerName(vehicle),
+        kaydeden: getRecorderDisplayName()
+      }
+    });
+
+    return writeVehicles(vehicles).then(function() {
+      if (window.updateNotifications) window.updateNotifications();
+      return completeDynamicEventSave({
+        modalType: 'tasitkarti',
+        vehicleId: vehicleId,
+        message: 'Taşıt Kartı bilgisi güncellendi.'
+      });
+    });
+  };
+
+  /**
    * Muayene bilgisi güncelle (bitiş tarihi otomatik hesaplanır)
    */
   window.updateMuayeneInfo = function() {
@@ -10033,7 +10121,7 @@
    */
   function renderHistoryDigerEventHtml(event, vehicle, branches) {
     const eventType = String(event.type || '').trim();
-    const isDateRenewalEvent = eventType === 'kasko-guncelle' || eventType === 'sigorta-guncelle' || eventType === 'takograf-kalibrasyon-guncelle' || eventType === 'muayene-guncelle' || eventType === 'muayene' || eventType === 'muayene-yenileme';
+    const isDateRenewalEvent = eventType === 'kasko-guncelle' || eventType === 'sigorta-guncelle' || eventType === 'takograf-kalibrasyon-guncelle' || eventType === 'tasit-karti-guncelle' || eventType === 'muayene-guncelle' || eventType === 'muayene' || eventType === 'muayene-yenileme';
     function formatHistoryActionDate(ev) {
       const stamp = ev && ev.timestamp ? String(ev.timestamp).trim() : '';
       if (stamp) {
@@ -10120,6 +10208,15 @@
       }
       if (eventData.servis) pushDetail('Servis', eventData.servis);
       if (eventData.not) pushDetail('Not', eventData.not);
+    } else if (eventType === 'tasit-karti-guncelle') {
+      const bitis = formatDateForDisplay(eventData.bitisTarihi || '');
+      const yapilma = formatDateForDisplay(eventData.yapilmaTarihi || '');
+      if (bitis) {
+        summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Taşıt Kartı Bitiş Tarihini </span><span class="history-detail-inline">' + escapeHtml(bitis) + '</span><span class="history-action-text"> Olarak Güncelledi.</span>';
+      } else {
+        summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Taşıt Kartı Bilgisini Güncelledi.</span>';
+      }
+      if (yapilma) pushDetail('Yapılma Tarihi', yapilma);
     } else if (eventType === 'muayene-guncelle' || eventType === 'muayene' || eventType === 'muayene-yenileme') {
       let bitis = formatDateForDisplay(eventData.bitisTarihi || '');
       if (!bitis && legacyAciklama) {
@@ -10490,6 +10587,7 @@
     window.updateSigortaInfo = withSaveButtonGuard(DINAMIK_OLAY_MODAL_ID, window.updateSigortaInfo);
     window.updateKaskoInfo = withSaveButtonGuard(DINAMIK_OLAY_MODAL_ID, window.updateKaskoInfo);
     window.updateMuayeneInfo = withSaveButtonGuard(DINAMIK_OLAY_MODAL_ID, window.updateMuayeneInfo);
+    window.updateTasitKartiInfo = withSaveButtonGuard(DINAMIK_OLAY_MODAL_ID, window.updateTasitKartiInfo);
     window.updateAnahtarInfo = withSaveButtonGuard(DINAMIK_OLAY_MODAL_ID, window.updateAnahtarInfo);
     window.updateKrediInfo = withSaveButtonGuard(DINAMIK_OLAY_MODAL_ID, window.updateKrediInfo);
     window.updateKmInfo = withSaveButtonGuard(DINAMIK_OLAY_MODAL_ID, window.updateKmInfo);
@@ -10574,6 +10672,7 @@
       'sigorta-guncelle': 'Sigorta Bilgisini G\u00FCncelledi',
       'kasko-guncelle': 'Kasko Bilgisini G\u00FCncelledi',
       'takograf-kalibrasyon-guncelle': 'Takograf Kalibrasyon Bilgisini G\u00FCncelledi',
+      'tasit-karti-guncelle': 'Ta\u015F\u0131t Kart\u0131 Bilgisini G\u00FCncelledi',
       'muayene-guncelle': 'Muayene Bilgisini G\u00FCncelledi',
       'anahtar-guncelle': 'Yedek Anahtar Bilgisini G\u00FCncelledi',
       'utts-guncelle': 'UTTS Bilgisini G\u00FCncelledi',
