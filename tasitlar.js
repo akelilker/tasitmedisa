@@ -2216,8 +2216,8 @@
       muayene: 'zorunlu',
       takograf: 'zorunlu',
       tasitkarti: 'zorunlu',
-      sigorta: 'police-s',
-      kasko: 'police-k',
+      sigorta: 'police',
+      kasko: 'police',
       takip: 'donanim',
       utts: 'donanim',
       anahtar: 'donanim',
@@ -2232,7 +2232,17 @@
       kullanici: 'vehicle',
       satis: 'vehicle'
     };
+    var letterMap = {
+      sigorta: 'S',
+      kasko: 'K'
+    };
     var iconName = iconMap[categoryId] || 'vehicle';
+    var letter = letterMap[categoryId] || '';
+    if (letter) {
+      return '<span class="event-menu-category-icon-wrap event-menu-category-icon-wrap--police-letter">' +
+        '<span class="event-menu-category-icon event-menu-icon--police" aria-hidden="true"></span>' +
+        '<span class="event-menu-category-icon-letter" aria-hidden="true">' + letter + '</span></span>';
+    }
     return '<span class="event-menu-category-icon event-menu-icon--' + escapeAttr(iconName) + '" aria-hidden="true"></span>';
   }
 
