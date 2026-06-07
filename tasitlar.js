@@ -1074,6 +1074,20 @@
 
   function renderVehicleContextRow(modal, vehicle) {
     if (!modal || !vehicle) return;
+
+    if (modal.id === 'vehicle-history-modal') {
+      const row = modal.querySelector('.history-vehicle-identity.vehicle-context-row');
+      if (!row) return;
+      const plateEl = row.querySelector('.vehicle-context-plate');
+      const modelEl = row.querySelector('.vehicle-context-model');
+      const plate = formatPlaka(vehicle.plate || '-');
+      const model = formatBrandModel(vehicle.brandModel || '-');
+      if (plateEl) plateEl.textContent = plate;
+      if (modelEl) modelEl.textContent = model;
+      row.title = plate + ' • ' + model;
+      return;
+    }
+
     const container = modal.querySelector('.modal-container');
     if (!container) return;
 
@@ -6300,10 +6314,10 @@
         availableEventIds.add('kullanici');
       }
       const eventGroups = [
-        { id: 'genel', title: 'Taşıt Detayları', ids: ['ceza', 'km', 'bakim', 'kaza', 'sube', 'kullanici', 'satis'] },
-        { id: 'sureli', title: 'Zorunlu Kontroller', ids: ['muayene', 'takograf'] },
-        { id: 'police', title: 'Sigorta / Kasko', ids: ['sigorta', 'kasko'] },
-        { id: 'donanim', title: 'Fiziki Donanımlar', ids: ['takip', 'utts', 'anahtar', 'lastik', 'kredi', 'kaskokodu'] }
+        { id: 'sureli', title: 'Araç Süreli İşlemleri', ids: ['muayene', 'takograf', 'tasitkarti'] },
+        { id: 'police', title: 'Poliçe İşlemleri', ids: ['sigorta', 'kasko'] },
+        { id: 'donanim', title: 'Araç Üzeri / Donanım', ids: ['takip', 'utts', 'anahtar', 'lastik', 'kredi', 'kaskokodu'] },
+        { id: 'genel', title: 'Operasyon / Genel', ids: ['ceza', 'km', 'bakim', 'kaza', 'sube', 'kullanici', 'satis'] }
       ];
       
       const vid = (window.currentDetailVehicleId || vehicleId || '').toString().replace(/"/g, '&quot;');
