@@ -538,6 +538,18 @@
   margin-bottom: 2px !important; /* Toolbar–plaka kimlik bloğu arası nefes */
 }
 
+@media (min-width: 769px) {
+  #vehicle-detail-modal .vehicle-detail-toolbar {
+    height: 32px;
+    min-height: 32px;
+  }
+
+  #vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn {
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
+  }
+}
+
 @media (max-width: 768px) {
   #vehicle-detail-modal .vehicle-detail-toolbar {
     height: auto;
