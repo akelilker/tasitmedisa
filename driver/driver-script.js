@@ -301,8 +301,6 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
   let driverKmActionHandled = false;
   /** Bu oturumda (ekran kapanana kadar) son bildirilen aksiyon: { action, vehicleId }. Ekran kapanınca temizlenir, yeşil geri bildirim beyaz/griye döner. */
   let lastCompletedActionInSession = null;
-  /** KM bildirimi sonrası uyarının hemen kaybolması için: vehicleId -> period eşlemesi. loadDashboard cache veya geç yanıt verse bile uyarı kalksın. */
-  let lastSuccessfulKmSubmissions = {};
   /** Query ile Talep prefill bir kez işlensin (loadDashboard tekrarlarında tekrar açılmasın). */
   let driverFeedbackPrefillHandled = false;
 
@@ -1905,7 +1903,6 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
               if (formActions) formActions.style.display = 'none';
               if (successMsg) successMsg.classList.add('show');
               const period = (currentPeriod || new Date().toISOString().slice(0, 7)).toString().trim();
-              lastSuccessfulKmSubmissions[String(vid)] = period;
               allHistoryRecords = allHistoryRecords || [];
               allHistoryRecords.push({
                   arac_id: vid,
@@ -1997,7 +1994,6 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
               if (formContent) formContent.style.display = 'none';
               if (successMsg) successMsg.classList.add('show');
               const period = (currentPeriod || new Date().toISOString().slice(0, 7)).toString().trim();
-              lastSuccessfulKmSubmissions[String(vid)] = period;
               allHistoryRecords = allHistoryRecords || [];
               allHistoryRecords.push({
                   arac_id: vid,
@@ -2041,7 +2037,16 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       for (const v of vehicles) {
           const vid = String(v.id);
           const plaka = formatDriverPlaka(v.plaka);
-          const kmState = getVehicleKmState(v);
+          const hasKmForPeriod = (records || []).some(function(r) {
+              if (String(r.arac_id) !== vid) return false;
+              if (String(r.donem || '').trim() !== period) return false;
+              if (r.guncel_km == null) return false;
+              const kmText = String(r.guncel_km).trim();
+              if (kmText === '') return false;
+              const kmNum = parseInt(kmText.replace(/\D/g, ''), 10);
+              return Number.isFinite(kmNum) && kmNum > 0;
+          });
+          const kmState = hasKmForPeriod ? 'OK' : getVehicleKmState(v);
           const kmMessage = getKmMessageByState(kmState);
           if (kmMessage) {
               const kmWarnLevel = kmState === 'MONTHLY_UPDATE_DUE_SOFT' ? 'orange' : 'red';
@@ -2881,7 +2886,6 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
 
               lastCompletedActionInSession = { action: 'km', vehicleId: vehicleId };
               const period = (currentPeriod || new Date().toISOString().slice(0, 7)).toString().trim();
-              lastSuccessfulKmSubmissions[String(vehicleId)] = period;
 
               allHistoryRecords = allHistoryRecords || [];
               allHistoryRecords.push({
