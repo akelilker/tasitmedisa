@@ -2733,7 +2733,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 /* Kısa masaüstü ekran: şema ilk açılışta görünür kalırken bilgi yoğunluğunu koru */
 @media (min-width: 769px) and (max-height: 760px) {
   #vehicle-detail-modal .detail-brand-year-row {
-    min-height: 30px !important;
+    min-height: 28px !important;
   }
   #vehicle-detail-modal .detail-brand-year-row .history-add-event-btn,
   #vehicle-detail-modal .detail-brand-year-row .history-btn-minimal {
@@ -2741,7 +2741,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     padding-bottom: 3px !important;
   }
   #vehicle-detail-modal .vehicle-detail-columns {
-    margin-top: 4px !important;
+    margin-top: 2px !important;
   }
   #vehicle-detail-modal .detail-row {
     padding-top: 0 !important;
@@ -2752,10 +2752,10 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
   #vehicle-detail-modal .detail-row-colon,
   #vehicle-detail-modal .detail-row-inline .detail-row-label,
   #vehicle-detail-modal .detail-row-inline .detail-row-value {
-    line-height: 1.2 !important;
+    line-height: 1.15 !important;
   }
   #vehicle-detail-modal .vehicle-detail-left #detail-boya-container {
-    margin-top: 4px !important;
+    margin-top: 2px !important;
   }
 }
 

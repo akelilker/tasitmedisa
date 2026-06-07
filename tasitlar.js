@@ -5740,8 +5740,8 @@
                 scaleRatio = Math.min(widthScale, Math.max(minReadableScale, heightScale));
               }
 
-              svgWrapper.style.width = Math.round(svgOrgHeight * scaleRatio) + 'px';
-              svgWrapper.style.height = Math.round(svgOrgWidth * scaleRatio) + 'px';
+              svgWrapper.style.width = Math.floor(svgOrgHeight * scaleRatio) + 'px';
+              svgWrapper.style.height = Math.floor(svgOrgWidth * scaleRatio) + 'px';
             } else {
               const w = clamped - shrinkX;
               svgWrapper.style.width = w + 'px';
