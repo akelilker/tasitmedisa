@@ -2579,9 +2579,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu .m
 #vehicle-history-modal #history-tabs {
   flex-shrink: 0 !important;
 }
-#vehicle-history-modal .modal-container > div:nth-child(2) {
-  flex-shrink: 0 !important;
-}
 #vehicle-history-modal #history-content {
   flex: 1 !important;
   overflow-y: auto !important;

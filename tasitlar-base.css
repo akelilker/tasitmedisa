@@ -2084,8 +2084,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 }
 
 /* Tarihçe modalı UX prototipi: geri navigasyon → taşıt kimliği → sekmeler → içerik */
-#vehicle-history-modal .history-back-nav,
-#vehicle-history-modal .universal-back-bar--context.history-back-nav {
+#vehicle-history-modal .history-back-nav {
     position: relative !important;
     z-index: 22 !important;
     display: flex !important;
@@ -2099,8 +2098,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     flex-shrink: 0 !important;
 }
 
-#vehicle-history-modal .history-back-nav .universal-back-btn,
-#vehicle-history-modal .universal-back-bar--context.history-back-nav .universal-back-btn {
+#vehicle-history-modal .history-back-nav .universal-back-btn {
     display: inline-flex !important;
     align-self: stretch !important;
     justify-content: flex-start !important;
@@ -2114,9 +2112,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     box-sizing: border-box;
 }
 
-#vehicle-history-modal .history-vehicle-identity,
-#vehicle-history-modal .universal-back-bar--context .history-vehicle-identity,
-#vehicle-history-modal .universal-back-bar--context .vehicle-context-row {
+#vehicle-history-modal .history-vehicle-identity {
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
@@ -2128,15 +2124,14 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     border-bottom: none !important;
     box-sizing: border-box;
     background-color: var(--modal-bg) !important;
+    flex-shrink: 0 !important;
 }
 
-#vehicle-history-modal .history-vehicle-identity .vehicle-context-separator,
-#vehicle-history-modal .universal-back-bar--context .vehicle-context-separator {
+#vehicle-history-modal .history-vehicle-identity .vehicle-context-separator {
     display: none !important;
 }
 
-#vehicle-history-modal .history-vehicle-identity .vehicle-context-plate,
-#vehicle-history-modal .universal-back-bar--context .vehicle-context-plate {
+#vehicle-history-modal .history-vehicle-identity .vehicle-context-plate {
     width: 100%;
     max-width: 100%;
     padding: 0;
@@ -2147,8 +2142,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     color: #ffffff;
 }
 
-#vehicle-history-modal .history-vehicle-identity .vehicle-context-model,
-#vehicle-history-modal .universal-back-bar--context .vehicle-context-model {
+#vehicle-history-modal .history-vehicle-identity .vehicle-context-model {
     width: 100%;
     max-width: 100%;
     padding: 0;
@@ -2196,20 +2190,16 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 }
 
 @media (max-width: 640px) {
-    #vehicle-history-modal .history-back-nav .universal-back-btn,
-    #vehicle-history-modal .universal-back-bar--context.history-back-nav .universal-back-btn {
+    #vehicle-history-modal .history-back-nav .universal-back-btn {
         min-height: 44px;
         padding: 10px 12px 3px !important;
     }
 
-    #vehicle-history-modal .history-vehicle-identity,
-    #vehicle-history-modal .universal-back-bar--context .history-vehicle-identity,
-    #vehicle-history-modal .universal-back-bar--context .vehicle-context-row {
+    #vehicle-history-modal .history-vehicle-identity {
         padding: 0 12px 4px !important;
     }
 
-    #vehicle-history-modal .history-vehicle-identity .vehicle-context-plate,
-    #vehicle-history-modal .universal-back-bar--context .vehicle-context-plate {
+    #vehicle-history-modal .history-vehicle-identity .vehicle-context-plate {
         font-size: 15px;
     }
 }
@@ -2498,10 +2488,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     width: 100% !important;
     max-width: 100% !important;
     box-sizing: border-box !important;
-  }
-  /* Tarihçe modal: sol ok satırı sabit (scroll ile gitmesin) */
-  #vehicle-history-modal .modal-container > div:nth-child(2) {
-    flex-shrink: 0;
   }
   /* Taşıt listesi: sekme başlıkları 3px yukarı (masaüstü) */
   #vehicles-modal .list-header-row {
