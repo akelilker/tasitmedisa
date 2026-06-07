@@ -840,9 +840,18 @@
                 </div>
                 <div class="modal-body">
                     <div class="data-management-actions">
-                        <button onclick="exportData()" class="data-management-text-btn">Yedek Al</button>
-                        <button onclick="restoreFromLastBackup()" class="data-management-text-btn">Son Yedekten Geri Yükle</button>
-                        <button onclick="importData()" class="data-management-text-btn">Dosyadan Geri Yükle</button>
+                        <button onclick="exportData()" class="data-management-text-btn">
+                            <img class="data-management-action-icon" src="icon/data-backup.svg" alt="" aria-hidden="true">
+                            <span>Yedek Al</span>
+                        </button>
+                        <button onclick="restoreFromLastBackup()" class="data-management-text-btn">
+                            <img class="data-management-action-icon" src="icon/data-restore.svg" alt="" aria-hidden="true">
+                            <span>Son Yedekten Geri Yükle</span>
+                        </button>
+                        <button onclick="importData()" class="data-management-text-btn">
+                            <img class="data-management-action-icon" src="icon/data-import.svg" alt="" aria-hidden="true">
+                            <span>Dosyadan Geri Yükle</span>
+                        </button>
                     </div>
                 </div>
             </div>
