@@ -1005,7 +1005,22 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     }
 }
 
+/* Olay Ekle seçim menüsü: asset mask ikonlu kategori ana ekranı + kategori içi işlem kartları */
+#event-menu-modal .modal-body {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding-top: 0 !important;
+    padding-right: 20px !important;
+    padding-left: 20px !important;
+    padding-bottom: 24px !important;
+}
+
 @media (min-width: 641px) {
+    #event-menu-modal .modal-container {
+        --event-menu-context-bar-height: 76px;
+    }
+
     #event-menu-modal .universal-back-bar--context {
         row-gap: 0;
         padding-bottom: 8px !important;
@@ -1014,14 +1029,19 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     #event-menu-modal .universal-back-bar--context .vehicle-context-plate {
         align-self: center;
     }
-}
 
-/* Olay Ekle seçim menüsü: asset mask ikonlu kategori ana ekranı + kategori içi işlem kartları */
-#event-menu-modal .modal-body {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    padding: 0 20px 24px !important;
+    #event-menu-modal .modal-body {
+        /* Bağlam çubuğu modal-body dışında; dikey ortayı optik dengelemek için alt boşluk telafisi */
+        padding-bottom: calc(24px + var(--event-menu-context-bar-height)) !important;
+    }
+
+    #event-menu-modal #event-menu-list.event-menu-list--categories {
+        row-gap: 56px;
+    }
+
+    #event-menu-modal .event-menu-card-grid {
+        row-gap: 28px;
+    }
 }
 
 #event-menu-modal #event-menu-list.event-menu-list {
@@ -1105,16 +1125,24 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     --event-menu-icon-url: url("icon/event-menu-police.png?v=20260604.2");
 }
 
-#event-menu-modal .event-menu-icon--police-s,
-#event-menu-modal .event-menu-icon--police-k {
-    --event-menu-icon-url: url("icon/event-menu-police.png?v=20260604.2");
+#event-menu-modal .event-menu-category-icon-wrap--police-letter {
     position: relative;
+    display: block;
+    flex-shrink: 0;
+    width: 42px;
+    height: 42px;
+    color: rgba(148, 163, 184, 0.66);
+    transition: color 0.18s ease;
 }
 
-#event-menu-modal .event-menu-icon--police-s::after,
-#event-menu-modal .event-menu-icon--police-k::after {
+#event-menu-modal .event-menu-category-icon-wrap--police-letter .event-menu-category-icon {
+    width: 100%;
+    height: 100%;
+}
+
+#event-menu-modal .event-menu-category-icon-wrap--police-letter .event-menu-category-icon-letter {
     position: absolute;
-    left: 52%;
+    left: 53%;
     bottom: 0;
     transform: translateX(1px);
     font-size: 10px;
@@ -1122,25 +1150,47 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     line-height: 1;
     letter-spacing: 0;
     color: currentColor;
-    background: none;
-    -webkit-mask: none;
-    mask: none;
-    filter: none;
     pointer-events: none;
 }
 
-#event-menu-modal .event-menu-icon--police-s::after {
-    content: 'S';
+#event-menu-modal .event-menu-card .event-menu-category-icon-wrap--police-letter {
+    width: 38px;
+    height: 38px;
 }
 
-#event-menu-modal .event-menu-icon--police-k::after {
-    content: 'K';
-}
-
-#event-menu-modal .event-menu-card .event-menu-icon--police-s::after,
-#event-menu-modal .event-menu-card .event-menu-icon--police-k::after {
+#event-menu-modal .event-menu-card .event-menu-category-icon-wrap--police-letter .event-menu-category-icon-letter {
     font-size: 9px;
-    left: 53%;
+}
+
+#event-menu-modal .event-menu-card:focus:not(:focus-visible) .event-menu-category-icon-wrap--police-letter {
+    color: rgba(148, 163, 184, 0.66);
+}
+
+#event-menu-modal .event-menu-card:focus:not(:focus-visible) .event-menu-category-icon-wrap--police-letter .event-menu-category-icon {
+    filter: none;
+    transform: none;
+}
+
+@media (hover: hover) {
+    #event-menu-modal .event-menu-card:hover .event-menu-category-icon-wrap--police-letter {
+        color: rgba(255, 255, 255, 0.96);
+    }
+
+    #event-menu-modal .event-menu-card:hover .event-menu-category-icon-wrap--police-letter .event-menu-category-icon {
+        filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.30));
+        transform: scale(1.05);
+    }
+}
+
+#event-menu-modal .event-menu-card:focus-visible .event-menu-category-icon-wrap--police-letter,
+#event-menu-modal .event-menu-card:active .event-menu-category-icon-wrap--police-letter {
+    color: rgba(255, 255, 255, 0.96);
+}
+
+#event-menu-modal .event-menu-card:focus-visible .event-menu-category-icon-wrap--police-letter .event-menu-category-icon,
+#event-menu-modal .event-menu-card:active .event-menu-category-icon-wrap--police-letter .event-menu-category-icon {
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.30));
+    transform: scale(1.05);
 }
 
 #event-menu-modal .event-menu-icon--donanim {
