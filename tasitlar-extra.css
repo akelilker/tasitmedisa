@@ -588,6 +588,14 @@
   min-height: 0 !important;
 }
 
+/* Masaüstü: scroll yalnızca .vehicle-detail-scroll-wrap içinde (kimlik bloğu sabit) */
+@media (min-width: 641px) {
+  #vehicle-detail-modal .modal-body {
+    overflow-y: hidden !important;
+    overflow-x: hidden !important;
+  }
+}
+
 .vehicle-detail-toolbar .toolbar-right {
   display: flex;
   align-items: center;
