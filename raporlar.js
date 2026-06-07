@@ -781,7 +781,6 @@
 
         const basePx = isMobile
             ? {
-                /* Mobil: görünür gridde tasitTipi yok — dar ekran için 396px track + 6px gap ≈ 402px */
                 'sira': 22, 'sube': 96, 'yil': 34, 'marka': 108, 'plaka': 72, 'sanziman': 48, 'km': 58
             }
             : {
@@ -794,6 +793,24 @@
                 'sanziman': 44,
                 'km': 62
             };
+
+        /*
+         * Mobil temel görünüm yatay kaydırma istemez: sabit px toplamı dar modalı aşıp KM'yi kesiyordu.
+         * Şube ve Marka kalan alanı paylaşırken kısa alanlar okunabilir sabit genişlikte kalır.
+         * Detay sütunları açıldığında aşağıdaki px düzeni ve bilinçli yatay kaydırma devam eder.
+         */
+        if (isMobile && !hasDetail) {
+            const mobileFluidWidths = {
+                'sira': '14px',
+                'sube': 'minmax(0, 0.75fr)',
+                'yil': '34px',
+                'marka': 'minmax(0, 1.25fr)',
+                'plaka': '70px',
+                'sanziman': '46px',
+                'km': '44px'
+            };
+            return allColumns.map(col => mobileFluidWidths[col.key] || 'minmax(0, 1fr)').join(' ');
+        }
 
         if (hasDetail) {
             const detailPx = {
