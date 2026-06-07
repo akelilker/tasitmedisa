@@ -115,6 +115,7 @@
       vehicle.tasitKartiExpiryDate = getRegistrationK2ExpiryDate();
       return vehicle;
     }
+    vehicle.tasitKartiYapilmaDate = '';
     vehicle.tasitKartiExpiryDate = '';
     vehicle.tasitKartiPath = '';
     return vehicle;
