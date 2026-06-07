@@ -1887,6 +1887,17 @@
     margin-top: 0 !important;
   }
   
+  /* Taşıt detay: iki kolon arasındaki kullanılmayan mobil boşluğu azalt; ayırıcı çizgi ve 1px iç nefes korunur. */
+  #vehicle-detail-modal .vehicle-detail-columns {
+    gap: 2px !important;
+  }
+  #vehicle-detail-modal .vehicle-detail-left {
+    padding-right: 1px !important;
+  }
+  #vehicle-detail-modal .vehicle-detail-right {
+    padding-left: 1px !important;
+  }
+
   /* Taşıt detay: layout base + container query ile; mobilde de yatay alan varsa yan yana */
   .detail-row-inline .detail-row-value {
     margin-top: 0 !important;
