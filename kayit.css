@@ -1131,12 +1131,11 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     padding: 0;
 }
 
-/* Römork PNG: translate(x,y) ile ince hiza; scale ile ölçü */
+/* Römork: translate(x,y) ile ince hiza; scale ile ölçü (SVG — diğer tiplerle aynı filtre) */
 .vehicle-type-btn[data-type="romork"] img {
     object-position: bottom center;
     transform: translate(-3px, 18px) scale(1.74);
     transform-origin: bottom center;
-    filter: brightness(1.14) grayscale(0.22) contrast(1.05);
 }
 
 /* Seçili taşıt tipi: Kaydet butonu ile aynı yeşil (--save-green) */
@@ -1150,7 +1149,6 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
 }
 /* Hover'da genel kural transform'u ezmesin; römork ölçüsü korunsun */
 #vehicle-modal .vehicle-type-btn[data-type="romork"]:hover:not(.active) img {
-    filter: brightness(1.2) grayscale(0.3);
     transform: translate(-3px, 18px) scale(1.84);
     transform-origin: bottom center;
 }
@@ -1230,7 +1228,6 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     max-height: 48px;
     transform: translate(-3px, 16px) scale(1.26);
     transform-origin: bottom center;
-    filter: brightness(1.1) grayscale(0.22) contrast(1.05);
 }
 .vehicle-type-picker-label {
     font-size: 11px;
@@ -1650,7 +1647,6 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         object-position: bottom center;
         transform: translate(-1px, 9px) scale(1.22);
         transform-origin: bottom center;
-        filter: brightness(1.12) grayscale(0.22) contrast(1.05);
     }
     .vehicle-type-btn[data-type="otomobil"] { width: 40px; height: 38px; }
     .vehicle-type-btn[data-type="minivan"] { width: 30px; height: 22px; }
@@ -2293,7 +2289,6 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         object-position: bottom center;
         transform: translate(-5px, 18px) scale(1.56);
         transform-origin: bottom center;
-        filter: brightness(1.14) grayscale(0.22) contrast(1.05);
     }
 }
 
