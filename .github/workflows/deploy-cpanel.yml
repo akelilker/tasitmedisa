@@ -39,9 +39,7 @@ jobs:
   ftp:
     name: FTP to cPanel
     runs-on: ubuntu-latest
-    # SamKirkland/FTP-Deploy-Action henüz node24 bildirmedi; GitHub Node 20 uyarısını kaldırmak için:
     env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
       FTP_REMOTE_DIR: ${{ secrets.FTP_REMOTE_DIR || vars.FTP_REMOTE_DIR }}
       FTP_PROTOCOL: ${{ vars.FTP_PROTOCOL || 'ftps' }}
       FTP_PORT: ${{ vars.FTP_PORT || '21' }}
@@ -98,7 +96,7 @@ jobs:
       - name: Sync via FTP attempt 1
         id: ftp_attempt_1
         continue-on-error: true
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.6
+        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
@@ -122,6 +120,16 @@ jobs:
             **/outputs/**
             **/tmp/**
             docs/**
+            scripts/**
+            _ux-test-output/**
+            assets/**
+            .cpanel.yml
+            .cursorignore
+            .editorconfig
+            AGENTS.md
+            DEPLOYMENT.md
+            README.md
+            package.json
             **/*.zip
             data/**
 
@@ -133,7 +141,7 @@ jobs:
         id: ftp_attempt_2
         if: steps.ftp_attempt_1.outcome == 'failure'
         continue-on-error: true
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.6
+        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
@@ -157,6 +165,16 @@ jobs:
             **/outputs/**
             **/tmp/**
             docs/**
+            scripts/**
+            _ux-test-output/**
+            assets/**
+            .cpanel.yml
+            .cursorignore
+            .editorconfig
+            AGENTS.md
+            DEPLOYMENT.md
+            README.md
+            package.json
             **/*.zip
             data/**
 
@@ -167,7 +185,7 @@ jobs:
       - name: Sync via FTP attempt 3
         id: ftp_attempt_3
         if: steps.ftp_attempt_1.outcome == 'failure' && steps.ftp_attempt_2.outcome == 'failure'
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.6
+        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
@@ -191,5 +209,15 @@ jobs:
             **/outputs/**
             **/tmp/**
             docs/**
+            scripts/**
+            _ux-test-output/**
+            assets/**
+            .cpanel.yml
+            .cursorignore
+            .editorconfig
+            AGENTS.md
+            DEPLOYMENT.md
+            README.md
+            package.json
             **/*.zip
             data/**
