@@ -1993,32 +1993,43 @@
     max-width: 100% !important;
   }
   
-  /* --- BRANCH GRID & CARDS --- */
+  /* --- BRANCH GRID & CARDS (mobil: raporlar stok-branch-grid ile aynı çizgi) --- */
   #vehicles-modal .branch-grid {
-    display: flex !important;
-    flex-wrap: wrap !important;
-    justify-content: center !important;
-    gap: 2px !important;
-    row-gap: 2px !important;
-    column-gap: 2px !important;
+    gap: 3px;
+    padding: 0 3px;
+    box-sizing: border-box;
     align-content: flex-start;
     align-items: flex-start;
-    width: 100%;
-    box-sizing: border-box;
   }
 
   #vehicles-modal .branch-card {
+    width: clamp(90px, 26vw, 104px);
+    max-width: clamp(90px, 26vw, 104px);
+    flex: 0 0 clamp(90px, 26vw, 104px);
     padding: 16px 3px 12px 3px !important;
-    justify-content: center !important;
-    width: calc((100% - 4px) / 3) !important;
-    max-width: calc((100% - 4px) / 3) !important;
-    flex: 0 0 calc((100% - 4px) / 3) !important;
     aspect-ratio: 1 / 1;
     box-sizing: border-box;
-    border: 1px solid rgba(255, 255, 255, 0.4) !important;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.30) !important;
+    border-radius: 8px;
   }
-  .branch-name { font-size: clamp(11.5px, 4.1vw, 15px); line-height: 1.12; overflow-wrap: normal; word-break: keep-all; hyphens: none; } /* Sığmazsa JS kontrollü küçültür; kelime harften kırılmaz */
-  .branch-count { font-size: 15px; } /* +1 punto daha (sadece mobil) */
+
+  #vehicles-modal .branch-card:not(.active) {
+    transform: none !important;
+  }
+
+  #vehicles-modal .branch-name {
+    font-size: 15px;
+    line-height: 1.12;
+    overflow-wrap: normal;
+    word-break: keep-all;
+    hyphens: none;
+  }
+
+  #vehicles-modal .branch-count {
+    font-size: 15px;
+    color: rgba(248, 250, 252, 0.62);
+  }
   
   /* Mobil: 3'lü grid, kartlar eşit yükseklik, alt satır (fiyat/buton) hep aynı hizada */
   #vehicles-modal .view-card { 
