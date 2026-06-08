@@ -2553,6 +2553,40 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu .m
 .modal-overlay .modal-close:hover {
   color: var(--theme-color);
 }
+
+/* Ana sayfa butonu sol köşede, kapat (X) ile simetrik */
+.modal-overlay .modal-home {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 30;
+  margin: 0;
+  padding: 6px;
+  min-width: 36px;
+  min-height: 36px;
+  background: transparent;
+  border: none;
+  color: var(--txt-gray-darker);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
+}
+.modal-overlay .modal-home:hover {
+  color: var(--theme-color);
+}
+.modal-overlay .modal-home:focus-visible {
+  color: var(--theme-color);
+  outline: 2px solid var(--theme-color);
+  outline-offset: 2px;
+}
+.modal-overlay .modal-home:active {
+  color: var(--theme-color);
+  opacity: 0.85;
+}
+
 /* Sadece gövde (body) kaydırılabilir – çerçeve sabit (iOS zıplama engeli) */
 .modal-overlay .modal-body,
 .login-body,
@@ -3336,11 +3370,16 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     .icons-row .icon-btn {
         padding: 8px !important;
     }
-    /* Modal geri/kapat butonları mobilde daha büyük tıklanabilir alan */
+    /* Modal geri/kapat/ana sayfa butonları mobilde daha büyük tıklanabilir alan */
     .modal-overlay .modal-close {
         padding: 12px !important;
         min-width: 44px !important;
         min-height: 44px !important;
+    }
+    .modal-overlay .modal-home {
+        padding: 12px;
+        min-width: 44px;
+        min-height: 44px;
     }
     
     /* Ana sayfa butonları mobilde: hero ile aynı cold silver çerçeve */
