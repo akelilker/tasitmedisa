@@ -969,7 +969,7 @@ var MEDISA_MODULE_VERSIONS = {
   tasitlar: '20260608.6',
   raporlar: '20260606.1',
   kayitJs: '20260607.1',
-  kayitCss: '20260531.2',
+  kayitCss: '20260608.1',
   ayarlarJs: '20260607.1',
   ayarlarCss: '20260607.2',
   tasitlarYazici: '20260517.5'
@@ -1116,7 +1116,7 @@ var TASITLAR_MODULE_VERSION = MEDISA_MODULE_VERSIONS.tasitlar;
    ========================================= */
 document.addEventListener('DOMContentLoaded', function() {
     var path = (document.location.pathname || '');
-    if (path.indexOf('/driver') !== -1 || path.indexOf('/admin') !== -1) return; /* Kullanıcı paneli 78.2, raporlar 78.3 kendi scriptlerinde */
+    if (path.indexOf('/driver') !== -1 || path.indexOf('/admin') !== -1) return; /* Kullanıcı paneli 78.1, raporlar 78.3 kendi scriptlerinde */
     const APP_VERSION = "v78.1";
     const versionEl = document.getElementById('version-display');
 

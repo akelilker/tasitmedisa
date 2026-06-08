@@ -23,8 +23,8 @@ const DRIVER_PAGE_BASE = API_BASE;
 const MAIN_APP_URL = (APP_ROOT === '/' ? '/index.html' : APP_ROOT + 'index.html');
 const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php');
 
-  // Uygulama sürümü (footer #version-display - kullanıcı girişi ve paneli 78.2)
-  const APP_VERSION = 'v78.2';
+  // Uygulama sürümü (footer #version-display - kullanıcı girişi ve paneli 78.1)
+  const APP_VERSION = 'v78.1';
   function showDriverOfflineReadonlyMessage() {
     alert('İnternet bağlantısı yok. Son kayıtlı veri görüntüleniyor; değişiklikler kaydedilemez.');
   }
