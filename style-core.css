@@ -920,21 +920,23 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
 .pwa-install-bar {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 4px;
 }
 .pwa-install-close {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
   padding: 0;
   border: none;
-  border-radius: 6px;
+  border-radius: 4px;
   background: transparent;
   color: var(--txt-placeholder, rgba(255, 255, 255, 0.5));
   cursor: pointer;
   transition: color 0.2s, background 0.2s;
+  flex-shrink: 0;
 }
 .pwa-install-close:hover {
   color: var(--txt, #f0f0f0);
@@ -960,7 +962,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
 /* PWA "Uygulamayı Yükle" butonu – yeşil metin + yeşil çerçeve, satırda ortalı */
 #pwa-install-btn,
 .pwa-install-btn {
-  padding: 8px 14px;
+  padding: 8px 0;
   border-radius: 8px;
   border: none;
   background: var(--bg);
@@ -969,6 +971,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
   font-weight: 600;
   cursor: pointer;
   transition: color 0.2s, border-color 0.2s, background 0.2s;
+  flex-shrink: 0;
 }
 #pwa-install-btn:hover,
 .pwa-install-btn:hover {
