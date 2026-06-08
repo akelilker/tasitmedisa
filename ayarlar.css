@@ -3067,7 +3067,7 @@ input.settings-form-input:-moz-autofill,
         margin-top: 0 !important;
         margin-bottom: 6px !important;
     }
-    /* Kullanıcı yönetimi araç tahsis listesi darlık düzeltmesi */
+    /* Kullanıcı yönetimi taşıt tahsis listesi darlık düzeltmesi */
     .user-management-modal .form-group:has(select#user-assigned-vehicles),
     .user-management-modal .form-group select#user-assigned-vehicles {
         width: 60vw !important;
