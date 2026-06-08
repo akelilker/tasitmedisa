@@ -11589,8 +11589,9 @@
       return vehicleTypePickerModulePromise;
     }
     const versions = window.MEDISA_MODULE_VERSIONS || {};
-    const kayitJs = 'kayit.js?v=' + (versions.kayitJs || '20260406.1');
-    const kayitCss = 'kayit.css?v=' + (versions.kayitCss || '20260421.2');
+    const base = typeof window.getMainAppBasePath === 'function' ? window.getMainAppBasePath() : '';
+    const kayitJs = base + 'kayit.js?v=' + (versions.kayitJs || '20260406.1');
+    const kayitCss = base + 'kayit.css?v=' + (versions.kayitCss || '20260421.2');
     if (typeof window.loadAppModule === 'function') {
       vehicleTypePickerModulePromise = window.loadAppModule(kayitJs, kayitCss).catch(function(err) {
         vehicleTypePickerModulePromise = null;
