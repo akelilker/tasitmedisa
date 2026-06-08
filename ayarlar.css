@@ -1106,18 +1106,20 @@ body.modal-open #info-modal .modal-container {
 
 #data-management-modal .data-management-action-icon {
     display: block;
-    width: 34px;
-    height: 34px;
-    flex: 0 0 34px;
+    width: 40px;
+    height: 40px;
+    flex: 0 0 40px;
     object-fit: contain;
-    opacity: 0.88;
-    transition: opacity 0.2s ease, transform 0.2s ease;
+    opacity: 0.92;
+    filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.12));
+    transition: opacity 0.2s ease, transform 0.2s ease, filter 0.2s ease;
 }
 
 #data-management-modal .data-management-text-btn:hover .data-management-action-icon,
 #data-management-modal .data-management-text-btn:focus-visible .data-management-action-icon {
     opacity: 1;
-    transform: scale(1.04);
+    transform: scale(1.05);
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.22));
 }
 
 .data-management-text-btn:last-child { margin-bottom: 0; }
