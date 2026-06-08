@@ -1076,7 +1076,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     box-sizing: border-box;
     overflow: visible;
     border: 0;
-    border-radius: 10px;
+    border-radius: 0;
     background: transparent;
     color: rgba(245, 247, 250, 0.88);
     cursor: pointer;
@@ -1090,23 +1090,39 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     font-weight: 600;
     line-height: 1.25;
     appearance: none;
+    -webkit-tap-highlight-color: transparent;
+    box-shadow: none;
     transition: color 0.18s ease, text-shadow 0.18s ease;
 }
 
-#event-menu-modal .event-menu-category-card:hover,
-#event-menu-modal .event-menu-category-card:focus-visible {
+#event-menu-modal .event-menu-category-card:focus:not(:focus-visible) {
     outline: none;
+    border: 0;
     background: transparent;
+    box-shadow: none;
+    color: rgba(245, 247, 250, 0.88);
+    text-shadow: none;
+}
+
+#event-menu-modal .event-menu-category-card:focus:not(:focus-visible) .event-menu-category-icon {
+    color: rgba(148, 163, 184, 0.66);
+    filter: none;
+    transform: none;
+}
+
+#event-menu-modal .event-menu-category-card:hover,
+#event-menu-modal .event-menu-category-card:focus-visible,
+#event-menu-modal .event-menu-category-card:active {
+    outline: none;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
     color: #ffffff;
     text-shadow: 0 0 12px rgba(255, 255, 255, 0.32);
 }
 
-#event-menu-modal .event-menu-category-card:focus-visible {
-    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.28);
-}
-
 #event-menu-modal .event-menu-category-icon {
-    --event-menu-icon-url: url("icon/event-menu-vehicle.png?v=20260604.2");
+    --event-menu-icon-url: url("icon/event-menu-vehicle.png?v=20260608.1");
     width: 42px;
     height: 42px;
     display: block;
@@ -1120,15 +1136,15 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 }
 
 #event-menu-modal .event-menu-icon--vehicle {
-    --event-menu-icon-url: url("icon/event-menu-vehicle.png?v=20260604.2");
+    --event-menu-icon-url: url("icon/event-menu-vehicle.png?v=20260608.1");
 }
 
 #event-menu-modal .event-menu-icon--zorunlu {
-    --event-menu-icon-url: url("icon/event-menu-zorunlu.png?v=20260604.2");
+    --event-menu-icon-url: url("icon/event-menu-zorunlu.png?v=20260608.1");
 }
 
 #event-menu-modal .event-menu-icon--police {
-    --event-menu-icon-url: url("icon/event-menu-police.png?v=20260604.2");
+    --event-menu-icon-url: url("icon/event-menu-police.png?v=20260608.1");
 }
 
 #event-menu-modal .event-menu-category-icon-wrap--police-letter {
@@ -1200,7 +1216,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 }
 
 #event-menu-modal .event-menu-icon--donanim {
-    --event-menu-icon-url: url("icon/event-menu-donanim.png?v=20260604.2");
+    --event-menu-icon-url: url("icon/event-menu-donanim.png?v=20260608.1");
 }
 
 #event-menu-modal .event-menu-category-card:hover .event-menu-category-icon,
@@ -1291,7 +1307,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     box-sizing: border-box;
     overflow: visible;
     border: 0;
-    border-radius: 10px;
+    border-radius: 0;
     background: transparent;
     color: rgba(245, 247, 250, 0.88);
     cursor: pointer;
@@ -1306,12 +1322,15 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     text-align: center;
     overflow-wrap: anywhere;
     appearance: none;
+    -webkit-tap-highlight-color: transparent;
+    box-shadow: none;
     transition: color 0.18s ease, text-shadow 0.18s ease;
 }
 
 /* Touch phantom focus: idle renge dön (iOS kategori tıklaması sonrası beyaz kalmasın) */
 #event-menu-modal .event-menu-card:focus:not(:focus-visible) {
     outline: none;
+    border: 0;
     background: transparent;
     color: rgba(245, 247, 250, 0.88);
     text-shadow: none;
@@ -1327,7 +1346,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 @media (hover: hover) {
     #event-menu-modal .event-menu-card:hover {
         outline: none;
+        border: 0;
         background: transparent;
+        box-shadow: none;
         color: #ffffff;
         text-shadow: 0 0 10px rgba(255, 255, 255, 0.26);
     }
@@ -1342,13 +1363,11 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 #event-menu-modal .event-menu-card:focus-visible,
 #event-menu-modal .event-menu-card:active {
     outline: none;
+    border: 0;
     background: transparent;
+    box-shadow: none;
     color: #ffffff;
     text-shadow: 0 0 10px rgba(255, 255, 255, 0.26);
-}
-
-#event-menu-modal .event-menu-card:focus-visible {
-    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.25);
 }
 
 #event-menu-modal .event-menu-card .event-menu-category-icon {
@@ -1392,7 +1411,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 
 @media (hover: hover) {
     #event-menu-modal .event-menu-card--danger:hover {
+        border: 0;
         background: transparent;
+        box-shadow: none;
         color: var(--theme-color, #d40000);
         text-shadow: 0 0 11px rgba(var(--theme-color-rgb), 0.24);
     }
@@ -1405,7 +1426,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 
 #event-menu-modal .event-menu-card--danger:focus-visible,
 #event-menu-modal .event-menu-card--danger:active {
+    border: 0;
     background: transparent;
+    box-shadow: none;
     color: var(--theme-color, #d40000);
     text-shadow: 0 0 11px rgba(var(--theme-color-rgb), 0.24);
 }
