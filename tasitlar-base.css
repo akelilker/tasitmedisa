@@ -1245,6 +1245,30 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     --event-menu-icon-url: url("icon/event-menu-donanim.png?v=20260608.1");
 }
 
+#event-menu-modal .event-menu-icon--takip {
+    --event-menu-icon-url: url("icon/event-menu-takip.png?v=20260608.2");
+}
+
+#event-menu-modal .event-menu-icon--utts {
+    --event-menu-icon-url: url("icon/event-menu-utts.png?v=20260608.2");
+}
+
+#event-menu-modal .event-menu-icon--anahtar {
+    --event-menu-icon-url: url("icon/event-menu-anahtar.png?v=20260608.2");
+}
+
+#event-menu-modal .event-menu-icon--lastik {
+    --event-menu-icon-url: url("icon/event-menu-lastik.png?v=20260608.2");
+}
+
+#event-menu-modal .event-menu-icon--kredi {
+    --event-menu-icon-url: url("icon/event-menu-kredi.png?v=20260608.2");
+}
+
+#event-menu-modal .event-menu-icon--kaskokodu {
+    --event-menu-icon-url: url("icon/event-menu-kaskokodu.png?v=20260608.2");
+}
+
 #event-menu-modal .event-menu-category-card:hover .event-menu-category-icon,
 #event-menu-modal .event-menu-category-card:focus-visible .event-menu-category-icon {
     color: rgba(255, 255, 255, 0.96);

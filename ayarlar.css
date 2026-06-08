@@ -499,7 +499,8 @@ body.modal-open #info-modal .modal-container {
 
 #required-documents-modal .required-k2-date-section .form-label {
     width: 158px;
-    text-align: center;
+    text-align: center !important;
+    align-self: center !important;
     font-size: 12px;
     line-height: 1.25;
     margin-bottom: 8px;
@@ -522,8 +523,8 @@ body.modal-open #info-modal .modal-container {
     }
 
     #required-documents-modal .modal-body > .u-p-16:has(> .required-k2-section-title) > .required-k2-date-section {
-        width: 120px !important;
-        max-width: 120px !important;
+        width: 158px !important;
+        max-width: 158px !important;
         margin: 8px auto 0 auto !important;
         align-items: center !important;
         text-align: center;
@@ -531,18 +532,18 @@ body.modal-open #info-modal .modal-container {
 
     #required-documents-modal .modal-body > .u-p-16:has(> .required-k2-section-title) > .required-k2-date-section .form-label {
         display: block;
-        width: 120px !important;
-        max-width: 120px !important;
+        width: 158px !important;
+        max-width: 158px !important;
         margin-left: 0 !important;
         margin-right: 0 !important;
-        align-self: stretch;
-        text-align: center;
+        align-self: center !important;
+        text-align: center !important;
         margin-bottom: 6px;
     }
 
     #required-documents-modal .modal-body > .u-p-16:has(> .required-k2-section-title) > .required-k2-date-section .required-k2-date-picker {
-        width: 120px;
-        max-width: 120px;
+        width: 158px;
+        max-width: 158px;
         margin-left: 0;
         margin-right: 0;
     }
