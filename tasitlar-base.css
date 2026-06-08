@@ -1037,7 +1037,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 
     #event-menu-modal .modal-body:has(#event-menu-list.event-menu-list--items) {
         justify-content: flex-start !important;
-        padding-top: 16px !important;
+        padding-top: 20px !important;
+        overflow-y: auto !important;
     }
 
     #event-menu-modal #event-menu-list.event-menu-list--categories {
@@ -1116,28 +1117,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     mask: var(--event-menu-icon-url) center / contain no-repeat;
     filter: none;
     transition: color 0.18s ease, filter 0.18s ease, transform 0.18s ease;
-}
-
-#event-menu-modal .event-menu-category-icon--inline {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    overflow: visible;
-    background: none;
-    -webkit-mask: none;
-    mask: none;
-}
-
-#event-menu-modal .event-menu-category-icon--inline svg {
-    display: block;
-    width: 100%;
-    height: 100%;
-    overflow: visible;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 1.75;
-    stroke-linecap: round;
-    stroke-linejoin: round;
 }
 
 #event-menu-modal .event-menu-icon--vehicle {
