@@ -7029,7 +7029,7 @@
       changeLabel: 'Sigorta Poliçesini Değiştir',
       missingAlert: 'Lütfen sigorta poliçesi dosyası seçin.',
       successMessage: 'Sigorta Poliçesi Başarıyla Yüklendi',
-      icon: 'shield'
+      icon: 'umbrella-badge'
     },
     kasko: {
       key: 'kasko',
@@ -7040,7 +7040,7 @@
       changeLabel: 'Kasko Poliçesini Değiştir',
       missingAlert: 'Lütfen kasko poliçesi dosyası seçin.',
       successMessage: 'Kasko Poliçesi Başarıyla Yüklendi',
-      icon: 'shield'
+      icon: 'umbrella-badge'
     },
     k2: {
       key: 'k2',
@@ -7129,6 +7129,24 @@
     return keys;
   }
 
+  function getVehicleDocumentIconSvg(cfg) {
+    if (!cfg) return '';
+    var svgOpen = '<svg class="vehicle-document-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">';
+    var svgClose = '</svg>';
+    if (cfg.key === 'sigorta' || cfg.key === 'kasko') {
+      var badgeLetter = cfg.key === 'sigorta' ? 'S' : 'K';
+      return svgOpen +
+        '<path d="M12 3v1"></path><path d="M12 19v2"></path><path d="M4.5 10.5a7.5 7.5 0 0 1 15 0"></path>' +
+        '<circle cx="17.5" cy="17.5" r="3.8" fill="currentColor" stroke="none"></circle>' +
+        '<text x="17.5" y="18.15" text-anchor="middle" fill="#0a1018" font-size="5" font-weight="700" font-family="Segoe UI, system-ui, sans-serif">' + badgeLetter + '</text>' +
+        svgClose;
+    }
+    return svgOpen +
+      '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>' +
+      '<path d="M14 2v6h6"></path><path d="M16 13H8"></path><path d="M16 17H8"></path><path d="M10 9H8"></path>' +
+      svgClose;
+  }
+
   function buildVehicleDocumentCardElement(vehicle, docKey, vehicleId) {
     const cfg = VEHICLE_DOCUMENT_TYPES[docKey];
     if (!cfg) return null;
@@ -7142,9 +7160,7 @@
     card.setAttribute('aria-label', cfg.label);
     const iconWrap = document.createElement('div');
     iconWrap.className = 'vehicle-document-icon-wrap';
-    iconWrap.innerHTML = cfg.icon === 'shield'
-      ? '<svg class="vehicle-document-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>'
-      : '<svg class="vehicle-document-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg>';
+    iconWrap.innerHTML = getVehicleDocumentIconSvg(cfg);
     const labelEl = document.createElement('div');
     labelEl.className = 'vehicle-document-label';
     labelEl.textContent = cfg.label;
