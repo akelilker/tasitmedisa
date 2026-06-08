@@ -2208,13 +2208,6 @@
   };
 
   function getEventMenuCategoryIconHtml(categoryId) {
-    var inlineSvgMap = {
-      ceza: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4l9 16H3z"/><path d="M12 9v5M12 17h.01"/></svg>',
-      km: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 17a8 8 0 1 1 14 0"/><path d="M12 14l4-4M8 17h8"/></svg>'
-    };
-    if (inlineSvgMap[categoryId]) {
-      return '<span class="event-menu-category-icon event-menu-category-icon--inline" aria-hidden="true">' + inlineSvgMap[categoryId] + '</span>';
-    }
     var iconMap = {
       genel: 'vehicle',
       sureli: 'zorunlu',
@@ -2231,6 +2224,8 @@
       lastik: 'donanim',
       kredi: 'donanim',
       kaskokodu: 'donanim',
+      ceza: 'vehicle',
+      km: 'vehicle',
       bakim: 'vehicle',
       kaza: 'vehicle',
       sube: 'vehicle',
