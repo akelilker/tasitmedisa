@@ -3483,7 +3483,7 @@
   border-radius: 2px;
 }
 
-@media (min-width: 641px) {
+@media (min-width: 641px) and (max-width: 768px) {
   #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-user {
     display: flex;
     flex-direction: column;
