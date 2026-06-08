@@ -1157,6 +1157,10 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     stroke-linejoin: round;
 }
 
+#event-menu-modal #event-menu-list.event-menu-list--categories .event-menu-category-icon--primary svg {
+    stroke-width: 1.55;
+}
+
 #event-menu-modal .event-menu-icon--vehicle {
     --event-menu-icon-url: url("icon/event-menu-vehicle.png?v=20260608.1");
 }
