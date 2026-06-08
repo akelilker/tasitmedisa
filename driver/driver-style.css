@@ -1389,7 +1389,7 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
   align-items: center;
   text-align: center;
   flex-shrink: 0;
-  margin-bottom: 4px; /* Plaka altı: plaka ile araç bilgisi arası 4px */
+  margin-bottom: 4px; /* Plaka altı: plaka ile taşıt bilgisi arası 4px */
   width: 100%;
 }
 .driver-panels-inner {
@@ -1412,7 +1412,7 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
   overflow: hidden;
   flex-shrink: 0;
 }
-/* Sol panel: Üst içerik (plaka + araç bilgisi) kayar, Yönetim Sistemi altta sabit */
+/* Sol panel: Üst içerik (plaka + taşıt bilgisi) kayar, Yönetim Sistemi altta sabit */
 .driver-left-panel-content {
   flex: 1;
   min-height: 0;
@@ -1658,7 +1658,7 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
   .dashboard-page .driver-left-panel-content .driver-left-quick-actions {
     display: none;
   }
-  /* Tablet/mobil: üst satır Araç Kısayolları (grid/apps) + açılır panel */
+  /* Tablet/mobil: üst satır Taşıt Kısayolları (grid/apps) + açılır panel */
   /* style-core .app-container>* z-index:1 override'ını geri al (2-sınıf specificity ile eşitle, cascade kazanır) */
   .dashboard-page .driver-header-fixed {
     position: relative;
@@ -2857,7 +2857,7 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
 .driver-radio-btn[data-group="lastik"].active {
   text-decoration: none; /* Var/Yok: border+arka plan yeterli */
 }
-/* Birden fazla araç: plaka satırı + sağda işaret (dropdown), liste plaka altında/ortada */
+/* Birden fazla taşıt: plaka satırı + sağda işaret (dropdown), liste plaka altında/ortada */
 .driver-multi-vehicle-wrap {
   position: relative;
 }
@@ -5455,7 +5455,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     box-sizing: border-box !important;
   }
 
-  /* Sol panel araç bilgisi (Sigorta/Kasko/Muayene dahil): Plaka/Marka ile aynı sol hiza */
+  /* Sol panel taşıt bilgisi (Sigorta/Kasko/Muayene dahil): Plaka/Marka ile aynı sol hiza */
   .dashboard-page .driver-left-panel .driver-vehicle-info {
     text-align: left !important;
     align-items: flex-start !important;
@@ -6062,7 +6062,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .dashboard-page .driver-plate-dropdown-row {
     overflow: visible !important;
   }
-  /* Sol bölme: uzun araç bilgisinde kendi içinde dikey kaydırma; yatay taşma kapalı (plaka listesi ayrı overflow ile) */
+  /* Sol bölme: uzun taşıt bilgisinde kendi içinde dikey kaydırma; yatay taşma kapalı (plaka listesi ayrı overflow ile) */
   .dashboard-page .driver-left-panel {
     position: relative;
     z-index: 3;

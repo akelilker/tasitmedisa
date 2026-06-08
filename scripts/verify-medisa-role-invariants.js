@@ -23,7 +23,7 @@ assert(
   'medisaComputeDriverDashboard_uses_vehicle',
   /return medisaUserHasAssignedVehicle\(\$data, \$userId\)/.test(core) &&
     /'genel_yonetici'/.test(core.slice(core.indexOf('function medisaComputeDriverDashboard'))),
-  'Genel yönetici dahil panel yalnızca atanmış araç ile olmalı'
+  'Genel yönetici dahil panel yalnızca atanmış taşıt ile olmalı'
 );
 assert(
   'medisaIsBranchManagerRole_sube_only',
@@ -48,7 +48,7 @@ const login = read('driver/driver_login.php');
 assert(
   'login_blocks_kullanici_without_vehicle',
   /rolPrecheck === 'kullanici'/.test(login) && /medisaUserHasAssignedVehicle/.test(login),
-  'Kullanıcı + araç yok giriş reddi korunmalı'
+  'Kullanıcı + taşıt yok giriş reddi korunmalı'
 );
 
 const sc = read('script-core.js');

@@ -155,7 +155,7 @@ if (!$user) {
     exit;
 }
 
-// Atanmış araçları bul (tek kaynak: tasit.assignedUserId)
+// Atanmış taşıtları bul (tek kaynak: tasit.assignedUserId)
 $branches = $data['branches'] ?? [];
 $vehicles = [];
 $tasitlar = $data['tasitlar'] ?? [];
@@ -166,7 +166,7 @@ foreach ($tasitlar as $tasit) {
         $vehicles[] = buildVehicleForDriver($tasit, $branches, $k2Belgesi);
     }
 }
-// Eski format yedek: zimmetli_araclar varsa ve assignedUserId ile araç bulunamadıysa kullanılabilir
+// Eski format yedek: zimmetli_araclar varsa ve assignedUserId ile taşıt bulunamadıysa kullanılabilir
 if (count($vehicles) === 0 && !empty($user['zimmetli_araclar'])) {
     $zimmetliAraclar = $user['zimmetli_araclar'];
     foreach ($zimmetliAraclar as $aracId) {

@@ -1109,7 +1109,7 @@
             event.stopPropagation();
         }
 
-        // Raporlar > Stok Liste salt görüntüleme ekranıdır; satır tıklaması araç detayı açmaz.
+        // Raporlar > Stok Liste salt görüntüleme ekranıdır; satır tıklaması taşıt detayı açmaz.
         return;
     };
 

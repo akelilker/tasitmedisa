@@ -2,9 +2,9 @@
 
 ## 1. Amaç
 
-Olay Ekle ekranındaki işlem yoğunluğunu azaltmak, işlemleri mantıksal kategorilere ayırmak ve araç bazlı süreli işlemleri aynı akış altında toplamak amaçlandı.
+Olay Ekle ekranındaki işlem yoğunluğunu azaltmak, işlemleri mantıksal kategorilere ayırmak ve taşıt bazlı süreli işlemleri aynı akış altında toplamak amaçlandı.
 
-Özellikle Taşıt Kartı işlemi, araç bazlı süreli bir kayıt olmasına rağmen daha önce Olay Ekle akışında yer almıyordu. Bu çalışma ile Taşıt Kartı, K2 mimarisi bozulmadan Olay Ekle sistemine dahil edildi.
+Özellikle Taşıt Kartı işlemi, taşıt bazlı süreli bir kayıt olmasına rağmen daha önce Olay Ekle akışında yer almıyordu. Bu çalışma ile Taşıt Kartı, K2 mimarisi bozulmadan Olay Ekle sistemine dahil edildi.
 
 ## 2. Tamamlanan Fazlar
 
@@ -29,7 +29,7 @@ Tespit edilen ana owner dosya:
 Ana tespitler:
 
 - K2 şirket bazlıdır.
-- Taşıt Kartı araç bazlı görünür; ancak mevcut sistemde bitiş tarihi K2 bitiş tarihini mirror eder.
+- Taşıt Kartı taşıt bazlı görünür; ancak mevcut sistemde bitiş tarihi K2 bitiş tarihini mirror eder.
 - Bu nedenle Taşıt Kartı event'i eklenirken K2 sync, upload, ayarlar, kayıt ve driver tarafına dokunulmamalıdır.
 
 ### Faz 2 — Olay Ekle Kategori Yapısı
@@ -40,15 +40,15 @@ Olay Ekle menüsü artık kategori bazlıdır.
 
 | Kategori | İşlemler |
 | --- | --- |
-| Araç Süreli İşlemleri | Muayene, Takograf, Taşıt Kartı |
+| Taşıt Süreli İşlemleri | Muayene, Takograf, Taşıt Kartı |
 | Poliçe İşlemleri | Sigorta, Kasko |
-| Araç Üzeri / Donanım | Takip, UTTS, Anahtar, Lastik, Hak Mahrumiyeti / Kredi, Kasko Kodu |
+| Taşıt Üzeri / Donanım | Takip, UTTS, Anahtar, Lastik, Hak Mahrumiyeti / Kredi, Kasko Kodu |
 | Operasyon / Genel | Ceza, KM, Bakım, Kaza, Şube, Kullanıcı, Satış/Pert |
 
 Korunan kurallar:
 
 - Egzoz ayrı event değildir; mevcut Muayene formu içindeki checkbox akışıyla çalışmaya devam eder.
-- Takograf yalnızca `vehicleNeedsTakograf()` şartını sağlayan araçlarda görünür.
+- Takograf yalnızca `vehicleNeedsTakograf()` şartını sağlayan taşıtlarda görünür.
 - Şube/Kullanıcı işlemleri arşiv/kilit mantığına göre filtrelenmeye devam eder.
 
 ### Faz 3 — Taşıt Kartı Güncelle Event'i
@@ -63,8 +63,8 @@ Tamamlandı.
 
 Davranış:
 
-- Sadece K2 kapsamındaki araçlarda görünür.
-- K2 kapsamı dışındaki araçlarda menüye gelmez; doğrudan açılmaya çalışılırsa işlem ayrıca engellenir.
+- Sadece K2 kapsamındaki taşıtlarda görünür.
+- K2 kapsamı dışındaki taşıtlarda menüye gelmez; doğrudan açılmaya çalışılırsa işlem ayrıca engellenir.
 - Kullanıcı yapılma/giriş tarihi girer.
 - Bitiş tarihi readonly olarak şirket bazlı K2 belgesi bitiş tarihinden gelir.
 - K2 bitiş tarihi yoksa kayıt engellenir ve veri yazılmaz.
@@ -77,7 +77,7 @@ Kapanış kontrolünde aşağıdaki maddeler güncel kodda doğrulanmıştır:
 
 - `tasitkarti` event label'ı mevcuttur.
 - `availableEventIds` içine `tasitkarti` yalnızca `vehicleNeedsK2Belgesi(currentMenuVehicle)` ile eklenir.
-- K2 dışı araçlarda `tasitkarti` görünmez.
+- K2 dışı taşıtlarda `tasitkarti` görünmez.
 - `case 'tasitkarti'` formu mevcuttur.
 - `window.updateTasitKartiInfo` kayıt handler'ı mevcuttur.
 - `tasit-karti-guncelle` history/event tipi mevcuttur.
@@ -120,13 +120,13 @@ Gerekçe:
 
 ## 6. Kapanış Test Senaryoları
 
-### 6.1 K2 Kapsamındaki Araç
+### 6.1 K2 Kapsamındaki Taşıt
 
-Araç tipleri: `minivan`, `kamyon`, `romork`
+Taşıt tipleri: `minivan`, `kamyon`, `romork`
 
 Beklenen:
 
-- Olay Ekle → Araç Süreli İşlemleri → Taşıt Kartı Güncelle görünür.
+- Olay Ekle → Taşıt Süreli İşlemleri → Taşıt Kartı Güncelle görünür.
 - Yapılma Tarihi girilebilir.
 - Bitiş Tarihi readonly görünür ve K2 bitiş tarihiyle aynıdır.
 - Kaydetme sonrası `vehicle.tasitKartiYapilmaDate` set edilir.
@@ -134,9 +134,9 @@ Beklenen:
 - `tasit-karti-guncelle` event'i oluşur.
 - Tarihçede Taşıt Kartı güncelleme kaydı görünür.
 
-### 6.2 K2 Dışı Araç
+### 6.2 K2 Dışı Taşıt
 
-Araç tipi: `otomobil`
+Taşıt tipi: `otomobil`
 
 Beklenen:
 
