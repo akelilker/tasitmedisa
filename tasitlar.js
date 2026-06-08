@@ -6332,10 +6332,10 @@
         availableEventIds.add('kullanici');
       }
       const eventGroups = [
-        { id: 'sureli', title: 'Taşıt Süreli İşlemleri', ids: ['muayene', 'takograf', 'tasitkarti'] },
-        { id: 'police', title: 'Poliçe İşlemleri', ids: ['sigorta', 'kasko'] },
-        { id: 'donanim', title: 'Taşıt Üzeri / Donanım', ids: ['takip', 'utts', 'anahtar', 'lastik', 'kredi', 'kaskokodu'] },
-        { id: 'genel', title: 'Operasyon / Genel', ids: ['ceza', 'km', 'bakim', 'kaza', 'sube', 'kullanici', 'satis'] }
+        { id: 'sureli', title: 'Periyodik Kontroller', ids: ['muayene', 'takograf', 'tasitkarti'] },
+        { id: 'police', title: 'Sigorta İşlemleri', ids: ['sigorta', 'kasko'] },
+        { id: 'donanim', title: 'Taşıt Kitleri', ids: ['takip', 'utts', 'anahtar', 'lastik', 'kredi', 'kaskokodu'] },
+        { id: 'genel', title: 'Taşıt Takip', ids: ['ceza', 'km', 'bakim', 'kaza', 'sube', 'kullanici', 'satis'] }
       ];
       
       const vid = (window.currentDetailVehicleId || vehicleId || '').toString().replace(/"/g, '&quot;');
