@@ -2210,14 +2210,17 @@
   function getEventMenuCategoryIconHtml(categoryId) {
     var categorySvgMap = {
       sureli: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 9h16"/><path d="M8 14l2.5 2.5L16 12"/></svg>',
-      police: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5c0 4.8-2.8 8-7 10-4.2-2-7-5.2-7-10V6l7-3z"/><path d="M8.5 12l2.2 2.2 4.8-4.8"/></svg>',
+      police: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>',
       donanim: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 6.5a4 4 0 0 0-5.2 5.2l-5.8 5.8a2.1 2.1 0 0 0 3 3l5.8-5.8a4 4 0 0 0 5.2-5.2l-2.7 2.7-3-3 2.7-2.7z"/><path d="M17 3v3M20 6h-3M18.5 4.5l2-2"/></svg>',
-      genel: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 16l1.6-5.1A3 3 0 0 1 9.5 9h5a3 3 0 0 1 2.9 1.9L19 16"/><path d="M4 16h16v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-3z"/><circle cx="8" cy="17" r="1.4"/><circle cx="16" cy="17" r="1.4"/><path d="M8 13h8"/><path d="M12 3v3M9 4l1 2M15 4l-1 2"/></svg>'
+      genel: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 17h2c.6 0 1-.4 1-1v-3l-2-5.5A2 2 0 0 0 17.7 6H6.3a2 2 0 0 0-1.9 1.4L2 12.8V16c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/><path d="M5 11h14"/></svg>'
     };
     if (categorySvgMap[categoryId]) {
       return '<span class="event-menu-category-icon event-menu-category-icon--inline event-menu-category-icon--primary" aria-hidden="true">' + categorySvgMap[categoryId] + '</span>';
     }
     var inlineSvgMap = {
+      sigorta: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>',
+      kasko: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M7 14h.01M17 14h.01"/><path d="M5 14h14l-1.4-4.2a1 1 0 0 0-.95-.8H7.35a1 1 0 0 0-.95.8L5 14z"/></svg>',
+      takip: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 17h2c.6 0 1-.4 1-1v-3l-2-5.5A2 2 0 0 0 17.7 6H6.3a2 2 0 0 0-1.9 1.4L2 12.8V16c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/><path d="M5 11h14"/><circle cx="12" cy="4" r="1.5"/><path d="M12 5.5V8"/></svg>',
       ceza: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4l9 16H3z"/><path d="M12 9v5M12 17h.01"/></svg>',
       km: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 17a8 8 0 1 1 14 0"/><path d="M12 14l4-4M8 17h8"/></svg>',
       bakim: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>',

@@ -59,10 +59,10 @@
 /* Kayıt modalı: container ölçüleri style-core.css'te; burada sadece içerik düzeni */
 #vehicle-modal .modal-body {
   min-height: 0;
-  padding: 6px 12px 12px 12px !important; /* style-core .modal-overlay .modal-body 20px'i override */
+  padding: 0px 12px 12px 12px !important; /* style-core .modal-overlay .modal-body 20px'i override */
 }
 #vehicle-modal .modal-body .modal-columns {
-  margin-top: 0 !important; /* üst boşluk */
+  margin-top: -10px !important;
 }
 
 /* Boya/Değişen ile Notlar alt hizası: sol sütun flex, son blok alta yapışır */
@@ -1066,7 +1066,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     max-width: 100%; 
 }
 
-/* Taşıt Tipi: etiket–ikon arası dikey boşluk sıfır; simgeler %88 oranında (ekrana sığdırma) */
+/* Taşıt Tipi: etiket–ikon arası dikey boşluk sıfır */
 .modal-column-left .form-section-inline:first-child .vehicle-type-group {
     margin: 0;
     margin-top: -6px !important;
@@ -1075,12 +1075,12 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     gap: 24px; /* +2px: ikonlar arası dokunma rahatlığı */
     flex-wrap: nowrap;
     max-width: 100%;
-    transform: scale(0.88);
-    transform-origin: center top;
 }
 
 .modal-column-left .form-section-inline:first-child .vehicle-type-btn {
-    margin: 0;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
     padding: 0;
     transform: none;
 }
@@ -1110,9 +1110,9 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
 .vehicle-type-btn[data-type="otomobil"] img { object-position: bottom center; }
 .vehicle-type-btn[data-type="minivan"] { width: 26px; height: 17px; }
 .vehicle-type-btn[data-type="kamyon"] { width: 36px; height: 26px; padding-top: 2px; }
-.vehicle-type-btn[data-type="kamyon"] img { object-position: bottom center; transform: scale(0.95); transform-origin: bottom center; }
-/* Römork: ölçü (img filtresi aşağıda, genel .vehicle-type-btn img'den sonra) */
-.vehicle-type-btn[data-type="romork"] { width: 44px; height: 34px; padding-top: 2px; align-self: flex-end; margin-left: -8px; }
+.vehicle-type-btn[data-type="kamyon"] img,
+.vehicle-type-btn[data-type="romork"] img { object-position: bottom center; transform: scale(0.95); transform-origin: bottom center; }
+.vehicle-type-btn[data-type="romork"] { width: 40px; height: 26px; padding-top: 2px; margin-left: -16px; }
 
 .vehicle-type-btn:hover { background: transparent; border: none; }
 .vehicle-type-btn.active { background: transparent; border: none; }
@@ -1131,13 +1131,6 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     padding: 0;
 }
 
-/* Römork: translate(x,y) ile ince hiza; scale ile ölçü (SVG — diğer tiplerle aynı filtre) */
-.vehicle-type-btn[data-type="romork"] img {
-    object-position: bottom center;
-    transform: translate(-3px, 18px) scale(1.74);
-    transform-origin: bottom center;
-}
-
 /* Seçili taşıt tipi: Kaydet butonu ile aynı yeşil (--save-green) */
 #vehicle-modal .vehicle-type-btn.active img,
 #vehicle-modal .vehicle-type-btn.active:hover img {
@@ -1146,11 +1139,6 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
 #vehicle-modal .vehicle-type-btn:hover:not(.active) img {
     filter: brightness(1.0) grayscale(0.35);
     transform: scale(1.05);
-}
-/* Hover'da genel kural transform'u ezmesin; römork ölçüsü korunsun */
-#vehicle-modal .vehicle-type-btn[data-type="romork"]:hover:not(.active) img {
-    transform: translate(-3px, 18px) scale(1.84);
-    transform-origin: bottom center;
 }
 
 /* Taşıt tipi seçim ekranı (overlay) */
@@ -1224,10 +1212,10 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     margin-left: -8px;
 }
 .vehicle-type-picker-option[data-type="romork"] img {
-    width: 58px;
-    max-height: 48px;
-    transform: translate(-3px, 16px) scale(1.26);
-    transform-origin: bottom center;
+    width: 50px;
+    max-height: 38px;
+    object-fit: contain;
+    object-position: bottom center;
 }
 .vehicle-type-picker-label {
     font-size: 11px;
@@ -1637,16 +1625,14 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     }
     .modal-column-left .form-section-inline:first-child .form-label { margin-bottom: 0 !important; padding-bottom: 0; line-height: 1; }
     
-    .vehicle-type-btn[data-type="kamyon"] { width: 38px; height: 28px; }
+    .vehicle-type-btn[data-type="kamyon"] { width: 38px; height: 28px; padding-top: 2px; }
     .vehicle-type-btn[data-type="kamyon"] img { width: 100%; height: 100%; object-fit: contain; object-position: bottom center; }
-    .vehicle-type-btn[data-type="romork"] { width: 46px; height: 38px; align-self: flex-end; margin-left: -16px; }
+    .vehicle-type-btn[data-type="romork"] { width: 42px; height: 28px; padding-top: 2px; margin-left: -24px; }
     .vehicle-type-btn[data-type="romork"] img {
         width: 100%;
         height: 100%;
         object-fit: contain;
         object-position: bottom center;
-        transform: translate(-1px, 9px) scale(1.22);
-        transform-origin: bottom center;
     }
     .vehicle-type-btn[data-type="otomobil"] { width: 40px; height: 38px; }
     .vehicle-type-btn[data-type="minivan"] { width: 30px; height: 22px; }
@@ -1910,6 +1896,10 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
 
 /* === MASAÜSTÜ OPTİMİZASYONLARI === */
 @media (min-width: 641px) {
+    #vehicle-modal.modal-overlay .modal-container {
+        margin-top: 2px !important;
+    }
+
     .form-input, select {
         border-width: 1.1px !important;
         border-color: rgba(255, 255, 255, 0.28) !important; /* Biraz daha parlak gri (0.20 -> 0.28) */
@@ -2043,16 +2033,33 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-body .modal-column-left .form-section-inline:first-child .form-label {
         margin: 0 !important;
         padding: 0 !important;
-        margin-bottom: 0 !important;
+        margin-bottom: 4px !important;
         padding-bottom: 0 !important;
-        line-height: 1;
-        display: block;
+        line-height: 1.35;
+        height: 16px;
+        display: flex;
+        align-items: flex-end;
     }
     #vehicle-modal .modal-body .modal-column-left .form-section-inline:first-child .vehicle-type-group {
-        margin-top: -12px !important;
-        gap: 28px !important;
+        margin-top: -16px !important;
+        gap: 18px !important;
         justify-content: flex-start !important;
-        transform-origin: left top;
+        transform: none !important;
+        max-width: 100%;
+        overflow: hidden;
+    }
+    #vehicle-modal .modal-body .modal-column-left .form-section-inline:first-child .vehicle-type-btn[data-type="romork"] {
+        width: 38px;
+        height: 32px;
+        padding-top: 2px;
+        margin-left: -8px;
+        flex-shrink: 1;
+        min-width: 0;
+    }
+    #vehicle-modal .modal-body .modal-column-left .form-section-inline:first-child .vehicle-type-btn[data-type="romork"] img {
+        object-position: bottom center;
+        transform: scale(0.82);
+        transform-origin: bottom center;
     }
     
     #vehicle-modal .modal-body .form-section,
@@ -2284,12 +2291,6 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     .vehicle-type-btn[data-type="minivan"] { width: 30px; height: 22px; }
     .vehicle-type-btn[data-type="kamyon"] { width: 44px; height: 32px; padding-top: 2px; }
     .vehicle-type-btn[data-type="kamyon"] img { object-position: bottom center; transform: scale(0.95); transform-origin: bottom center; }
-    .vehicle-type-btn[data-type="romork"] { width: 52px; height: 40px; padding-top: 2px; align-self: flex-end; margin-left: -8px; }
-    .vehicle-type-btn[data-type="romork"] img {
-        object-position: bottom center;
-        transform: translate(-5px, 18px) scale(1.56);
-        transform-origin: bottom center;
-    }
 }
 
 /* iOS PWA modal margin: style-core.css (.modal-overlay .modal-container) */
