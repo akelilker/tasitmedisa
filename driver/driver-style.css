@@ -3646,25 +3646,19 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
 body.dashboard-page:has(#history-modal.driver-modal.show) #app-footer,
 body.dashboard-page:has(#edit-request-modal.driver-modal.show) #app-footer,
 body.login-page:has(#history-modal.driver-modal.show) #app-footer.login-footer,
-body.login-page:has(#edit-request-modal.driver-modal.show) #app-footer.login-footer {
+body.login-page:has(#edit-request-modal.driver-modal.show) #app-footer.login-footer,
+body.dashboard-page.driver-history-or-edit-modal-open #app-footer,
+body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   z-index: 100020 !important;
 }
 /* Talep/şikayet modalı: footer üstte kalmamalı (iOS’ta form alanları tıklanmıyor) */
 body.dashboard-page:has(#driver-feedback-modal.driver-modal.show) #app-footer,
 body.dashboard-page:has(#driver-documents-modal.driver-modal.show) #app-footer,
 body.login-page:has(#driver-feedback-modal.driver-modal.show) #app-footer.login-footer,
-body.login-page:has(#driver-documents-modal.driver-modal.show) #app-footer.login-footer {
-  z-index: 10015 !important;
-}
+body.login-page:has(#driver-documents-modal.driver-modal.show) #app-footer.login-footer,
 body.dashboard-page.driver-feedback-modal-open #app-footer,
 body.login-page.driver-feedback-modal-open #app-footer.login-footer {
   z-index: 10015 !important;
-}
-
-/* :has() fallback: Geçmiş Kayıt / Düzeltme Talebi açıkken footer üstte ve ışıklı (JS body.driver-history-or-edit-modal-open) */
-body.dashboard-page.driver-history-or-edit-modal-open #app-footer,
-body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
-  z-index: 100020 !important;
 }
 
 /* Taşıtlar modalı ile aynı: genişlik 500px, yatay çerçeve. Diğer modallar: --modal-margin-bottom-desktop */
@@ -5833,13 +5827,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   body.driver-modal-open.dashboard-page #app-footer,
   body.driver-modal-open.login-page #app-footer.login-footer {
     z-index: 10012 !important;
-  }
-  /* Geçmiş Kayıtlar / Düzeltme Talebi: footer modalın üstünde, ışıklar sabit ton */
-  body.dashboard-page:has(#history-modal.driver-modal.show) #app-footer,
-  body.dashboard-page:has(#edit-request-modal.driver-modal.show) #app-footer,
-  body.login-page:has(#history-modal.driver-modal.show) #app-footer.login-footer,
-  body.login-page:has(#edit-request-modal.driver-modal.show) #app-footer.login-footer {
-    z-index: 100020 !important;
   }
   /* Geçmiş Kayıtlar / Düzeltme açıkken footer dimmer tonu bozulmasın. */
   body.dashboard-page:has(#history-modal.driver-modal.show) #app-footer .version,
