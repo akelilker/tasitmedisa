@@ -7636,19 +7636,17 @@ body.dashboard-page.driver-feedback-modal-open .driver-dashboard-container::befo
     bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
 }
 
-/* Belgeler + Talep modal: yan kırmızı çizgi/glow alt köşede birikmesin (mobil + masaüstü) */
-body.dashboard-page:has(#driver-documents-modal.driver-modal.show) .driver-dashboard-container::before,
-body.dashboard-page:has(#driver-feedback-modal.driver-modal.show) .driver-dashboard-container::before,
-body.login-page:has(#driver-documents-modal.driver-modal.show) .driver-dashboard-container::before,
-body.login-page:has(#driver-feedback-modal.driver-modal.show) .driver-dashboard-container::before {
+/* Driver modal açıkken: yan kırmızı çizgi/glow alt köşede birikmesin (mobil + masaüstü) */
+body.dashboard-page:has(.driver-modal.show) .driver-dashboard-container::before,
+body.login-page:has(.driver-modal.show) .driver-dashboard-container::before {
   border-left-color: transparent !important;
   border-right-color: transparent !important;
   box-shadow: none !important;
 }
 
 @supports not selector(body:has(*)) {
-  body.dashboard-page.driver-feedback-modal-open .driver-dashboard-container::before,
-  body.login-page.driver-feedback-modal-open .driver-dashboard-container::before {
+  body.dashboard-page.driver-modal-open .driver-dashboard-container::before,
+  body.login-page.driver-modal-open .driver-dashboard-container::before {
     border-left-color: transparent !important;
     border-right-color: transparent !important;
     box-shadow: none !important;
