@@ -554,7 +554,7 @@
   #vehicle-detail-modal .vehicle-detail-toolbar {
     height: auto;
     min-height: 44px;
-    margin-bottom: 8px !important;
+    margin-bottom: 2px !important;
   }
 }
 
@@ -1889,7 +1889,7 @@
 
   /* --- TAŞIT DETAY MODAL --- */
   #vehicle-detail-modal #vehicle-detail-content {
-    padding-top: 8px !important;
+    padding-top: 2px !important;
   }
   #vehicle-detail-modal .detail-plate-row {
     margin-top: 0 !important;
@@ -1994,18 +1994,27 @@
   }
   
   /* --- BRANCH GRID & CARDS --- */
-  .branch-grid { 
-    gap: 2px; 
-    align-content: flex-start; 
-    align-items: flex-start; 
+  #vehicles-modal .branch-grid {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    gap: 2px !important;
+    row-gap: 2px !important;
+    column-gap: 2px !important;
+    align-content: flex-start;
+    align-items: flex-start;
+    width: 100%;
+    box-sizing: border-box;
   }
-  .branch-card { 
+
+  #vehicles-modal .branch-card {
     padding: 16px 3px 12px 3px !important;
     justify-content: center !important;
-    width: clamp(93px, 27vw, 107px);
-    max-width: clamp(93px, 27vw, 107px);
-    flex: 0 0 clamp(93px, 27vw, 107px);
+    width: calc((100% - 4px) / 3) !important;
+    max-width: calc((100% - 4px) / 3) !important;
+    flex: 0 0 calc((100% - 4px) / 3) !important;
     aspect-ratio: 1 / 1;
+    box-sizing: border-box;
     border: 1px solid rgba(255, 255, 255, 0.4) !important;
   }
   .branch-name { font-size: clamp(11.5px, 4.1vw, 15px); line-height: 1.12; overflow-wrap: normal; word-break: keep-all; hyphens: none; } /* Sığmazsa JS kontrollü küçültür; kelime harften kırılmaz */
@@ -2744,7 +2753,7 @@
   
   /* --- DETAY MODAL SCROLL & PADDING --- */
   #vehicle-detail-modal #vehicle-detail-content {
-    padding-top: 8px !important;
+    padding-top: 2px !important;
     padding-left: 8px !important; /* Çerçeve ile içerik arası – detay sayfası rahat olsun */
     padding-right: 8px !important;
   }
@@ -3275,8 +3284,12 @@
   border-bottom-color: transparent;
 }
 
-#monthly-todo-modal .monthly-todo-list-scroll .monthly-todo-task-row:hover {
-  background: rgba(255, 255, 255, 0.095);
+#monthly-todo-modal .monthly-todo-list-scroll .monthly-todo-task-row:nth-child(odd):hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+#monthly-todo-modal .monthly-todo-list-scroll .monthly-todo-task-row:nth-child(even):hover {
+  background: rgba(255, 255, 255, 0.08);
 }
 
 #monthly-todo-modal .monthly-todo-task-row--past {
