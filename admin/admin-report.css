@@ -49,6 +49,20 @@ body.admin-report-page::-webkit-scrollbar {
   display: none;
 }
 
+/* PWA: hero altında, kırmızı çerçeve içinde ortalı (anasayfa icons-row ile aynı mantık) */
+body.admin-report-page .admin-report-icons-row:not(:has(.pwa-install-bar)) {
+  display: none;
+  margin: 0;
+  padding: 0;
+  min-height: 0;
+}
+
+body.admin-report-page .admin-report-icons-row {
+  padding-left: calc(1rem - 3px);
+  padding-right: calc(1rem - 3px);
+  margin-bottom: 6px;
+}
+
 /* --- Admin hero: kullanıcı paneli (dashboard) ile aynı iki satırlı grid (.hero.hero-two-rows) --- */
 .admin-report-hero {
   margin-bottom: 1rem;
