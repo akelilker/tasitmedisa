@@ -1,6 +1,6 @@
 /**
  * data (10).json — bozuk ilk taşıt (events yarım): tasitlar dizisindeki ilk objeyi,
- * ikinci araç (1778536692500) başlamadan önce keserek çıkarır.
+ * ikinci taşıt (1778536692500) başlamadan önce keserek çıkarır.
  */
 import fs from 'fs';
 import path from 'path';
@@ -21,7 +21,7 @@ let raw = fs.readFileSync(src, 'utf8');
 const anchor = '\n        {\n            "id": "1778536692500"';
 const iAnchor = raw.indexOf(anchor);
 if (iAnchor === -1) {
-  console.error('İkinci araç tamponu bulunamadı.');
+  console.error('İkinci taşıt tamponu bulunamadı.');
   process.exit(1);
 }
 
@@ -38,7 +38,7 @@ if (iBracket === -1) {
 }
 let firstBrace = raw.indexOf('{', iBracket + 1);
 if (firstBrace === -1 || firstBrace >= iAnchor) {
-  console.error('İlk araç { bulunamadı veya sıra hatalı.');
+  console.error('İlk taşıt { bulunamadı veya sıra hatalı.');
   process.exit(1);
 }
 

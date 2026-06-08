@@ -48,7 +48,7 @@
   }
 
   /**
-   * Sunucudan araç listesini çeker, window.appData.tasitlar güncellenir.
+   * Sunucudan taşıt listesini çeker, window.appData.tasitlar güncellenir.
    * @returns {Promise<Array>} Taşıt listesi (appData.tasitlar)
    */
   async function fetchVehicles() {

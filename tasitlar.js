@@ -4,7 +4,7 @@
    Ana bloklar (tek dosya; loadAppModule tek giriş):
    • Lazy script — veri okuma (şube/taşıt/kullanıcı) — DOM/bind
    • Liste / ara / şube kartları — detay modal doldurma
-   • Bildirim state — araç tarihçesi
+   • Bildirim state — taşıt tarihçesi
    • Olay menüsü + dinamik formlar (kaydet / güncelle)
    ========================================= */
 
@@ -2208,6 +2208,13 @@
   };
 
   function getEventMenuCategoryIconHtml(categoryId) {
+    var inlineSvgMap = {
+      ceza: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4l9 16H3z"/><path d="M12 9v5M12 17h.01"/></svg>',
+      km: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 17a8 8 0 1 1 14 0"/><path d="M12 14l4-4M8 17h8"/></svg>'
+    };
+    if (inlineSvgMap[categoryId]) {
+      return '<span class="event-menu-category-icon event-menu-category-icon--inline" aria-hidden="true">' + inlineSvgMap[categoryId] + '</span>';
+    }
     var iconMap = {
       genel: 'vehicle',
       sureli: 'zorunlu',
@@ -2224,8 +2231,6 @@
       lastik: 'donanim',
       kredi: 'donanim',
       kaskokodu: 'donanim',
-      ceza: 'vehicle',
-      km: 'vehicle',
       bakim: 'vehicle',
       kaza: 'vehicle',
       sube: 'vehicle',
@@ -3559,7 +3564,7 @@
     }
   };
 
-  /** Taşıt detaydan çıkınca son liste bağlamına dön (araçtaki geri ok ile aynı). */
+  /** Taşıt detaydan çıkınca son liste bağlamına dön (taşıttaki geri ok ile aynı). */
   function backFromVehicleDetailToListContext() {
     if (returnToMonthlyTodoAfterVehicleDetail) {
       returnToMonthlyTodoAfterVehicleDetail = false;
@@ -3648,7 +3653,7 @@
       if (!t || typeof t.closest !== 'function') return;
       if (t.closest('#v-search-container') || t.closest('.search-toggle-btn')) return;
       // Mobilde sonuç satırına dokunurken pointerdown capture aramayı erken kapatıp
-      // click ile araç açmayı bozmasın.
+      // click ile taşıt açmayı bozmasın.
       if (
           t.closest('.list-item') ||
           t.closest('.card') ||
@@ -3990,7 +3995,7 @@
 
   /**
    * Taşıtlar modalı liste/kart — kalıcı tarih uyarısı (bildirim okundu ile ilgisiz).
-   * Yalnızca araçtaki tarih alanları + window.checkDateWarnings (script-core ile aynı eşikler).
+   * Yalnızca taşıttaki tarih alanları + window.checkDateWarnings (script-core ile aynı eşikler).
    * Okundu/okunmadı, notification-read, medisa_notif_read_keys_v1 vb. kullanılmaz.
    * Öncelik: kırmızı > turuncu > normal. Bir tarih düzeltilince diğerleri hâlâ riskteyse en yüksek severity kalır.
    * @returns {string} '' | ' vehicle-date-warning-red' | ' vehicle-date-warning-orange'
@@ -6332,9 +6337,9 @@
         availableEventIds.add('kullanici');
       }
       const eventGroups = [
-        { id: 'sureli', title: 'Araç Süreli İşlemleri', ids: ['muayene', 'takograf', 'tasitkarti'] },
+        { id: 'sureli', title: 'Taşıt Süreli İşlemleri', ids: ['muayene', 'takograf', 'tasitkarti'] },
         { id: 'police', title: 'Poliçe İşlemleri', ids: ['sigorta', 'kasko'] },
-        { id: 'donanim', title: 'Araç Üzeri / Donanım', ids: ['takip', 'utts', 'anahtar', 'lastik', 'kredi', 'kaskokodu'] },
+        { id: 'donanim', title: 'Taşıt Üzeri / Donanım', ids: ['takip', 'utts', 'anahtar', 'lastik', 'kredi', 'kaskokodu'] },
         { id: 'genel', title: 'Operasyon / Genel', ids: ['ceza', 'km', 'bakim', 'kaza', 'sube', 'kullanici', 'satis'] }
       ];
       
@@ -8913,7 +8918,7 @@
         svgClone.style.transform = 'rotate(90deg)';
         svgClone.style.transformOrigin = 'center center';
         
-        const defaultGrayKaza = '#959595'; /* Araç simgesi gri – çok az daha açık ton */
+        const defaultGrayKaza = '#959595'; /* Taşıt simgesi gri – çok az daha açık ton */
         const allParts = svgClone.querySelectorAll('path[id]');
         allParts.forEach(part => {
           part.setAttribute('fill', defaultGrayKaza);
@@ -9006,7 +9011,7 @@
   }
 
   /**
-   * Dinamik olay "Kaydet" handler'ları için: currentDetailVehicleId + veri setinde araç.
+   * Dinamik olay "Kaydet" handler'ları için: currentDetailVehicleId + veri setinde taşıt.
    */
   function resolveVehicleContextForDynamicSave() {
     var vid = window.currentDetailVehicleId;
@@ -9275,7 +9280,7 @@
   /**
    * Muayene bitiş tarihi hesapla (üretim yılına göre ilk/sürekli periyot).
    * Kural:
-   * - İlk muayene sadece araç bu yıl üretilmişse uygulanır:
+   * - İlk muayene sadece taşıt bu yıl üretilmişse uygulanır:
    *   otomobil +3 yıl, ticari +2 yıl
    * - Sonraki tüm muayeneler:
    *   otomobil +2 yıl, ticari +1 yıl

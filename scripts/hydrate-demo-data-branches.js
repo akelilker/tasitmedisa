@@ -1,5 +1,5 @@
 /**
- * Demo data: boş branchId -> varsayılan şube; kullanici_paneli/surucu_paneli -> atanmış araç ile uyum.
+ * Demo data: boş branchId -> varsayılan şube; kullanici_paneli/surucu_paneli -> atanmış taşıt ile uyum.
  * Çalıştır: node scripts/hydrate-demo-data-branches.js
  */
 const fs = require('fs');
@@ -30,4 +30,4 @@ for (const u of data.users || []) {
 }
 
 fs.writeFileSync(dataPath, JSON.stringify(data, null, 4) + '\n', 'utf8');
-console.log('hydrate-demo-data-branches:', emptyBranch, 'araç branchId dolduruldu; kullanıcı panel bayrakları güncellendi.');
+console.log('hydrate-demo-data-branches:', emptyBranch, 'taşıt branchId dolduruldu; kullanıcı panel bayrakları güncellendi.');
