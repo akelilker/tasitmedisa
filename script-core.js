@@ -18,6 +18,23 @@ function setNotificationsOpenState(isOpen) {
 }
 window.setNotificationsOpenState = setNotificationsOpenState;
 
+
+function getMainAppBasePath() {
+  try {
+    var path = (document.location && document.location.pathname) ? document.location.pathname : '/';
+    var parts = String(path || '/').split('/').filter(Boolean);
+    if (!parts.length) return '';
+    var lastPart = parts[parts.length - 1] || '';
+    if (lastPart.indexOf('.') !== -1) parts.pop();
+    var lastDir = (parts[parts.length - 1] || '').toLowerCase();
+    if (lastDir === 'admin' || lastDir === 'driver') parts.pop();
+    return parts.length ? ('/' + parts.join('/') + '/') : '';
+  } catch (e) {
+    return '';
+  }
+}
+window.getMainAppBasePath = getMainAppBasePath;
+
 function toggleSettingsMenu(e) {
   if (e && typeof e.stopPropagation === 'function') e.stopPropagation();
   const menu = getMenu();
@@ -27,9 +44,10 @@ function toggleSettingsMenu(e) {
     if (willOpen && typeof window.loadAppModule === 'function') {
       var modVer = window.MEDISA_MODULE_VERSIONS;
       if (modVer) {
+        var base = getMainAppBasePath();
         window.loadAppModule(
-          'ayarlar.js?v=' + modVer.ayarlarJs,
-          'ayarlar.css?v=' + modVer.ayarlarCss
+          base + 'ayarlar.js?v=' + modVer.ayarlarJs,
+          base + 'ayarlar.css?v=' + modVer.ayarlarCss
         ).catch(function() {});
       }
     }
@@ -981,17 +999,18 @@ var TASITLAR_MODULE_VERSION = MEDISA_MODULE_VERSIONS.tasitlar;
 // tasitlar.js / raporlar.js / kayit.js / ayarlar.js yüklendiğinde kendi open* implementasyonlarını yazar.
 (function() {
   var V = MEDISA_MODULE_VERSIONS;
-  var TASITLAR_JS = 'tasitlar.js?v=' + V.tasitlar;
+  var base = getMainAppBasePath();
+  var TASITLAR_JS = base + 'tasitlar.js?v=' + V.tasitlar;
   var TASITLAR_CSS_LIST = [
-    'tasitlar-base.css?v=' + V.tasitlar,
-    'tasitlar-extra.css?v=' + V.tasitlar
+    base + 'tasitlar-base.css?v=' + V.tasitlar,
+    base + 'tasitlar-extra.css?v=' + V.tasitlar
   ];
-  var RAPORLAR_JS = 'raporlar.js?v=' + V.raporlar;
-  var RAPORLAR_CSS = 'raporlar.css?v=' + V.raporlar;
-  var KAYIT_JS = 'kayit.js?v=' + V.kayitJs;
-  var KAYIT_CSS = 'kayit.css?v=' + V.kayitCss;
-  var AYARLAR_JS = 'ayarlar.js?v=' + V.ayarlarJs;
-  var AYARLAR_CSS = 'ayarlar.css?v=' + V.ayarlarCss;
+  var RAPORLAR_JS = base + 'raporlar.js?v=' + V.raporlar;
+  var RAPORLAR_CSS = base + 'raporlar.css?v=' + V.raporlar;
+  var KAYIT_JS = base + 'kayit.js?v=' + V.kayitJs;
+  var KAYIT_CSS = base + 'kayit.css?v=' + V.kayitCss;
+  var AYARLAR_JS = base + 'ayarlar.js?v=' + V.ayarlarJs;
+  var AYARLAR_CSS = base + 'ayarlar.css?v=' + V.ayarlarCss;
 
   window.openVehiclesView = function() {
     showModuleSpinner();
@@ -1098,10 +1117,11 @@ var TASITLAR_MODULE_VERSION = MEDISA_MODULE_VERSIONS.tasitlar;
     if (!isMainSpaPath() || typeof window.loadAppModule !== 'function') return;
     var V = window.MEDISA_MODULE_VERSIONS;
     if (!V) return;
-    var rJs = 'raporlar.js?v=' + V.raporlar;
-    var rCss = 'raporlar.css?v=' + V.raporlar;
-    var kJs = 'kayit.js?v=' + V.kayitJs;
-    var kCss = 'kayit.css?v=' + V.kayitCss;
+    var base = getMainAppBasePath();
+    var rJs = base + 'raporlar.js?v=' + V.raporlar;
+    var rCss = base + 'raporlar.css?v=' + V.raporlar;
+    var kJs = base + 'kayit.js?v=' + V.kayitJs;
+    var kCss = base + 'kayit.css?v=' + V.kayitCss;
     window.loadAppModule(rJs, rCss).catch(function() {});
     window.loadAppModule(kJs, kCss).catch(function() {});
   }
@@ -1168,10 +1188,11 @@ window.addEventListener('dataLoaded', () => {
     }
 
     if (typeof window.loadAppModule === 'function') {
-      var tasitlarJsForNotif = 'tasitlar.js?v=' + TASITLAR_MODULE_VERSION;
+      var base = getMainAppBasePath();
+      var tasitlarJsForNotif = base + 'tasitlar.js?v=' + TASITLAR_MODULE_VERSION;
       var tasitlarCssForNotif = [
-        'tasitlar-base.css?v=' + TASITLAR_MODULE_VERSION,
-        'tasitlar-extra.css?v=' + TASITLAR_MODULE_VERSION
+        base + 'tasitlar-base.css?v=' + TASITLAR_MODULE_VERSION,
+        base + 'tasitlar-extra.css?v=' + TASITLAR_MODULE_VERSION
       ];
       var loadNotificationModule = function() {
         window.loadAppModule(tasitlarJsForNotif, tasitlarCssForNotif)
