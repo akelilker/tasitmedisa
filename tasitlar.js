@@ -2208,6 +2208,18 @@
   };
 
   function getEventMenuCategoryIconHtml(categoryId) {
+    var inlineSvgMap = {
+      ceza: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4l9 16H3z"/><path d="M12 9v5M12 17h.01"/></svg>',
+      km: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 17a8 8 0 1 1 14 0"/><path d="M12 14l4-4M8 17h8"/></svg>',
+      bakim: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>',
+      kaza: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4l9 16H3z"/><path d="M9 16h6M10 12h4"/></svg>',
+      sube: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21V8l8-4 8 4v13"/><path d="M8 21v-7h8v7M8 10h.01M12 10h.01M16 10h.01"/></svg>',
+      kullanici: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M5 21a7 7 0 0 1 14 0"/></svg>',
+      satis: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h10l5 5-7 7-8-8V7z"/><path d="M9 11h.01M16 8l-8 8"/></svg>'
+    };
+    if (inlineSvgMap[categoryId]) {
+      return '<span class="event-menu-category-icon event-menu-category-icon--inline" aria-hidden="true">' + inlineSvgMap[categoryId] + '</span>';
+    }
     var iconMap = {
       genel: 'vehicle',
       sureli: 'zorunlu',
