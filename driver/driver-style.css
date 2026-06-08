@@ -3661,8 +3661,6 @@ body.login-page.driver-feedback-modal-open #app-footer.login-footer {
   z-index: 10015 !important;
 }
 
-/* Geçmiş Kayıtlarım + Düzeltme Talebi modal açıkken footer ışıkları sönmesin — dimmed override */
-
 /* :has() fallback: Geçmiş Kayıt / Düzeltme Talebi açıkken footer üstte ve ışıklı (JS body.driver-history-or-edit-modal-open) */
 body.dashboard-page.driver-history-or-edit-modal-open #app-footer,
 body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
