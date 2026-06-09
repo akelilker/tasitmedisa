@@ -418,14 +418,6 @@
 
 .assign-toggle:hover { color: var(--txt-placeholder); }
 
-.assign-form {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  align-items: center;
-}
-
 .assign-select {
   width: 100%;
   max-width: 350px;
