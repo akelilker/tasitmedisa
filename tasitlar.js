@@ -3418,8 +3418,9 @@
     setVehiclesDetailUnderlay(true);
     modal.dataset.detailSignature = detailSignature;
     modal.style.display = 'flex';
+    modal.classList.add('active', 'open');
+    if (typeof window.updateFooterDim === 'function') window.updateFooterDim();
     requestAnimationFrame(() => {
-      modal.classList.add('active');
       requestAnimationFrame(() => {
         applyVehicleDetailSubeShrink();
         fitVehicleTextBoxes(modal);
@@ -3560,7 +3561,7 @@
       if (modal) {
         setVehiclesDetailUnderlay(false);
         resetModalState(modal);
-        modal.classList.remove('active');
+        modal.classList.remove('active', 'open');
         delete modal.dataset.detailSignature;
         setTimeout(() => modal.style.display = 'none', 300);
       }
@@ -4938,7 +4939,7 @@
       if (!row || !modalEl.contains(row)) return;
       var vid = row.getAttribute('data-vehicle-id');
       if (!vid) return;
-      closeMonthlyTodoModal();
+      closeMonthlyTodoModal(true);
       if (typeof window.showVehicleDetail === 'function') {
         returnToMonthlyTodoAfterVehicleDetail = true;
         if (!lastListContext) {
@@ -5060,11 +5061,17 @@
     });
   }
 
-  function closeMonthlyTodoModal() {
+  function closeMonthlyTodoModal(immediate) {
     var modal = document.getElementById('monthly-todo-modal');
     if (!modal) return;
     modal.classList.remove('active', 'open');
     if (monthlyTodoCloseTimer) clearTimeout(monthlyTodoCloseTimer);
+    if (immediate) {
+      monthlyTodoCloseTimer = null;
+      modal.style.display = 'none';
+      if (typeof window.updateFooterDim === 'function') window.updateFooterDim();
+      return;
+    }
     monthlyTodoCloseTimer = setTimeout(function() {
       monthlyTodoCloseTimer = null;
       modal.style.display = 'none';
