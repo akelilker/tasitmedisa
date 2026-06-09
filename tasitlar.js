@@ -2210,20 +2210,10 @@
   };
 
   function getEventMenuCategoryIconHtml(categoryId) {
-    var eventMenuCarSvg =
-      '<svg viewBox="-1.5 -1.5 27 27" aria-hidden="true">' +
-      '<circle cx="7" cy="17" r="2"/>' +
-      '<circle cx="17" cy="17" r="2"/>' +
-      '<path d="M5 17h14"/>' +
-      '<path d="M4.5 17 6.4 10.2h11.2L19.5 17"/>' +
-      '<path d="M6.4 10.2 8.1 7.2h7.8l1.7 3"/>' +
-      '<path d="M8.1 7.2 9.4 5.2h5.2l1.3 2"/>' +
-      '</svg>';
     var categorySvgMap = {
       sureli: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 9h16"/><path d="M8 14l2.5 2.5L16 12"/></svg>',
       police: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>',
-      donanim: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 6.5a4 4 0 0 0-5.2 5.2l-5.8 5.8a2.1 2.1 0 0 0 3 3l5.8-5.8a4 4 0 0 0 5.2-5.2l-2.7 2.7-3-3 2.7-2.7z"/><path d="M17 3v3M20 6h-3M18.5 4.5l2-2"/></svg>',
-      genel: eventMenuCarSvg
+      donanim: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 6.5a4 4 0 0 0-5.2 5.2l-5.8 5.8a2.1 2.1 0 0 0 3 3l5.8-5.8a4 4 0 0 0 5.2-5.2l-2.7 2.7-3-3 2.7-2.7z"/><path d="M17 3v3M20 6h-3M18.5 4.5l2-2"/></svg>'
     };
     if (categorySvgMap[categoryId]) {
       return '<span class="event-menu-category-icon event-menu-category-icon--inline event-menu-category-icon--primary" aria-hidden="true">' + categorySvgMap[categoryId] + '</span>';
@@ -2231,7 +2221,6 @@
     var inlineSvgMap = {
       sigorta: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>',
       kasko: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M7 14h.01M17 14h.01"/><path d="M5 14h14l-1.4-4.2a1 1 0 0 0-.95-.8H7.35a1 1 0 0 0-.95.8L5 14z"/></svg>',
-      takip: eventMenuCarSvg,
       ceza: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4l9 16H3z"/><path d="M12 9v5M12 17h.01"/></svg>',
       km: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 17a8 8 0 1 1 14 0"/><path d="M12 14l4-4M8 17h8"/></svg>',
       bakim: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>',
@@ -2253,7 +2242,7 @@
       tasitkarti: 'zorunlu',
       sigorta: 'police',
       kasko: 'police',
-      takip: 'takip',
+      takip: 'vehicle',
       utts: 'utts',
       anahtar: 'anahtar',
       lastik: 'lastik',
