@@ -3440,7 +3440,7 @@
    * Mobil (≤768px) Taşıtlar detay modalında şube ismi tek satıra sığmıyorsa 1pt küçült.
    * Satırdaki mevcut alan ile metnin tek satır genişliği karşılaştırılır; taşma varsa -shrink eklenir.
    */
-  window.applyVehicleDetailSubeShrink = function() {
+  function applyVehicleDetailSubeShrink() {
     if (window.innerWidth > 768) return;
     const modal = DOM.vehicleDetailModal;
     if (!modal || modal.style.display !== 'flex') return;
@@ -3457,63 +3457,7 @@
     var gap = 5;
     var availableWidth = row.clientWidth - headerWidth - gap;
     if (textWidth > availableWidth) el.classList.add('detail-row-value-sube-shrink');
-  };
-
-  // --- Şube Atama Formunu Aç/Kapat ---
-  window.toggleBranchAssign = function() {
-    const form = document.getElementById('assign-form');
-    if (form) {
-      form.style.display = form.style.display === 'none' ? 'flex' : 'none';
-    }
-  };
-
-  // --- Şubeye Tahsis Et ---
-  window.assignVehicleToBranch = function(vehicleId) {
-    const selectEl = document.getElementById('detail-branch-select');
-    if (!selectEl) return;
-    
-    const branchId = selectEl.value;
-    if (!branchId) {
-      alert('Lütfen bir şube seçiniz!');
-      return;
-    }
-    
-    const vehicles = readVehicles();
-    const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
-    if (!vehicle) return;
-    if (isArchivedVehicleAssignmentLocked(vehicle)) {
-      if (typeof showToast === 'function') showToast('Arşivdeki taşıtlarda kullanıcı/şube ataması yapılamaz.', 'error');
-      else alert('Arşivdeki taşıtlarda kullanıcı/şube ataması yapılamaz.');
-      return;
-    }
-    
-    const branches = readBranches();
-    const eskiSubeId = vehicle.branchId || '';
-    const eskiSube = branches.find(b => String(b.id) === String(eskiSubeId));
-    const yeniSube = branches.find(b => String(b.id) === String(branchId));
-    const normalizedBranchId = yeniSube ? yeniSube.id : branchId;
-
-    if (!vehicle.events) vehicle.events = [];
-    vehicle.events.unshift({
-      id: Date.now().toString(),
-      type: 'sube-degisiklik',
-      date: formatDateForDisplay(new Date()),
-      timestamp: new Date().toISOString(),
-      data: {
-        eskiSubeId: eskiSubeId,
-        yeniSubeId: normalizedBranchId,
-        eskiSubeAdi: eskiSube?.name || '',
-        yeniSubeAdi: yeniSube?.name || '',
-        surucu: getRecorderDisplayName()
-      }
-    });
-
-    vehicle.branchId = normalizedBranchId;
-    writeVehicles(vehicles);
-
-    closeVehicleDetailModal();
-    renderBranchDashboard();
-  };
+  }
 
   // --- Tüm Modalları Kapat ---
   window.closeAllModals = function() {
@@ -3944,8 +3888,6 @@
   function getMuayeneRenewalYearsByProfile(profileKey) {
     return profileKey === 'otomobil' ? 2 : 1;
   }
-
-  window.getVehicleTypeRuleProfile = getVehicleTypeRuleProfile;
 
   function isArchivedVehicleAssignmentLocked(vehicle) {
     return !!(vehicle && (vehicle.satildiMi === true || vehicle.arsiv === true));
@@ -9383,15 +9325,6 @@
     // Bitmiş tarihi 1 yıl sonrasına ayarla
     const bitisTarihi = addYears(tarih, 1);
     
-    // gg/aa/yyyy formatından YYYY-MM-DD'ye çevir (tarih input için)
-    const dateParts = tarih.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
-    if (dateParts) {
-      const day = dateParts[1];
-      const month = dateParts[2];
-      const year = dateParts[3];
-      // Bitiş tarihini YYYY-MM-DD formatında sakla
-    }
-    
     vehicle.sigortaDate = bitisTarihi;
     
     const event = {
@@ -10673,12 +10606,12 @@
   }
 
   if (!window.__medisaSaveGuardsApplied) {
-    window.assignVehicleToBranch = withSaveButtonGuard('vehicle-detail-modal', window.assignVehicleToBranch);
     window.saveBakimEvent = withSaveButtonGuard(DINAMIK_OLAY_MODAL_ID, window.saveBakimEvent);
     window.saveKazaEvent = withSaveButtonGuard(DINAMIK_OLAY_MODAL_ID, window.saveKazaEvent);
     window.saveCezaEvent = withSaveButtonGuard(DINAMIK_OLAY_MODAL_ID, window.saveCezaEvent);
     window.updateSigortaInfo = withSaveButtonGuard(DINAMIK_OLAY_MODAL_ID, window.updateSigortaInfo);
     window.updateKaskoInfo = withSaveButtonGuard(DINAMIK_OLAY_MODAL_ID, window.updateKaskoInfo);
+    window.updateTakografKalibrasyonInfo = withSaveButtonGuard(DINAMIK_OLAY_MODAL_ID, window.updateTakografKalibrasyonInfo);
     window.updateMuayeneInfo = withSaveButtonGuard(DINAMIK_OLAY_MODAL_ID, window.updateMuayeneInfo);
     window.updateTasitKartiInfo = withSaveButtonGuard(DINAMIK_OLAY_MODAL_ID, window.updateTasitKartiInfo);
     window.updateAnahtarInfo = withSaveButtonGuard(DINAMIK_OLAY_MODAL_ID, window.updateAnahtarInfo);
