@@ -1522,6 +1522,9 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         overflow-x: hidden !important;
         overscroll-behavior: none !important;
         overscroll-behavior-y: none !important;
+        padding-top: 12px !important;
+        padding-left: 12px !important;
+        padding-right: 12px !important;
         padding-bottom: 12px !important;
     }
     #vehicle-modal .modal-body .modal-columns {
@@ -1531,6 +1534,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         scrollbar-width: none;
         -ms-overflow-style: none;
         padding-bottom: 2px;
+        margin-top: 0 !important;
     }
     #vehicle-modal .modal-body .modal-columns::-webkit-scrollbar {
         display: none;
@@ -1562,7 +1566,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     .modal-close { font-size: 21px; }
     textarea.form-input { font-size: 13px; }
     
-    .modal-columns { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0; min-width: 0; }
+    .modal-columns { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0; min-width: 0; margin-top: 0 !important; }
     .modal-column-left { padding-right: 8px; padding-left: 0; border-right: 1px solid rgba(var(--theme-color-rgb), 0.28); min-width: 0; }
     .modal-column-right { padding-left: 8px; padding-right: 0; overflow: visible; min-width: 0; }
     #vehicle-modal .modal-column-right { display: flex; flex-direction: column; min-height: 0; }
@@ -1601,42 +1605,43 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         margin-bottom: 0 !important;
     }
 
-    /* Mobil: Taşıt Tipi–ikon ferahlığı (+4px, grup margin-top -17px); Plaka mesafesi için first-child margin-bottom +4px (toplam 5px) */
-    #vehicle-modal .modal-column-left .form-section-inline:first-child { flex-direction: column; align-items: flex-start; gap: 0 !important; margin-bottom: 5px !important; min-width: 0; max-width: 100%; }
+    /* Mobil: Taşıt Tipi–Plaka dikey aralık; negatif üst kaydırma yok */
+    #vehicle-modal .modal-column-left .form-section-inline:first-child { flex-direction: column; align-items: flex-start; gap: 9px !important; margin-top: 0 !important; margin-bottom: 8px !important; min-width: 0; max-width: 100%; }
     #vehicle-modal .modal-column-left .form-section:has(#vehicle-plate) { margin-top: 0 !important; }
-    /* Dar kolon: 4 ikon yatayda taşmasın — gap 8px, negatif margin yok */
     #vehicle-modal .modal-body .modal-column-left .form-section-inline:first-child .vehicle-type-group,
     .modal-column-left .form-section-inline:first-child .vehicle-type-group {
         width: 100%;
-        justify-content: center;
+        justify-content: space-between;
         align-items: flex-end;
         flex-wrap: nowrap;
         max-width: 100%;
-        margin-top: -12px !important;
-        padding: 0 2px;
+        margin-top: 0 !important;
+        padding: 0;
         box-sizing: border-box;
-        gap: 8px !important;
+        gap: 0 !important;
+        overflow: visible;
         transform: none !important;
     }
     .vehicle-type-group {
         width: 100%;
-        justify-content: center;
+        justify-content: space-between;
         align-items: flex-end;
         flex-wrap: nowrap;
         max-width: 100%;
-        margin-top: 0;
-        padding: 0 2px;
+        margin-top: 0 !important;
+        padding: 0;
         box-sizing: border-box;
-        gap: 8px !important;
+        gap: 0 !important;
+        overflow: visible;
     }
     .modal-column-left .form-section-inline:first-child .form-label { margin-bottom: 0 !important; padding-bottom: 0; line-height: 1; }
 
-    .vehicle-type-btn { flex: 0 0 auto; flex-shrink: 0; }
-    .vehicle-type-btn[data-type="otomobil"] { width: 36px; height: 36px; }
-    .vehicle-type-btn[data-type="minivan"] { width: 24px; height: 20px; }
-    .vehicle-type-btn[data-type="kamyon"] { width: 30px; height: 26px; padding-top: 2px; }
+    .vehicle-type-btn { flex: 0 0 auto; flex-shrink: 0; min-height: 36px; display: inline-flex; align-items: flex-end; justify-content: center; padding: 0; }
+    .vehicle-type-btn[data-type="otomobil"] { width: 42px; height: 40px; }
+    .vehicle-type-btn[data-type="minivan"] { width: 32px; height: 28px; }
+    .vehicle-type-btn[data-type="kamyon"] { width: 38px; height: 32px; padding-top: 2px; }
     .vehicle-type-btn[data-type="kamyon"] img { width: 100%; height: 100%; object-fit: contain; object-position: bottom center; }
-    .vehicle-type-btn[data-type="romork"] { width: 38px; height: 26px; padding-top: 2px; }
+    .vehicle-type-btn[data-type="romork"] { width: 46px; height: 32px; padding-top: 2px; }
     .vehicle-type-btn[data-type="romork"] img {
         width: 100%;
         height: 100%;
@@ -1734,15 +1739,16 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-column-right .form-section:first-child {
         margin-top: 0;
     }
-    /* Taşıt tipi / Sigorta ilk satırında üst boşluk minimal kalsın */
+    /* Taşıt tipi / Sigorta ilk satırı: aynı üst hiza, negatif margin yok */
     #vehicle-modal .modal-body .modal-column-left .form-section-inline:first-child,
     #vehicle-modal .modal-body .modal-column-right .form-section:first-child {
-        margin-top: 2px !important;
+        margin-top: 0 !important;
     }
-    /* Taşıt Tipi: etiket–ikon dikey aralık sıfır (2px ezmesin) */
+    /* Taşıt Tipi: etiket–ikon aralığı first-child gap ile */
     #vehicle-modal .modal-column-left .form-section-inline:first-child .form-label {
         margin-bottom: 0 !important;
         padding-bottom: 0 !important;
+        margin-top: 0 !important;
     }
     
     .form-input:not(#anahtar-nerede):not(#kredi-detay) { height: 26px; font-size: 13px; padding: 4px 8px; }
@@ -1836,8 +1842,8 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         padding: 0 16px !important;
         font-size: 13px !important;
     }
-    /* Taşıt Tipi: etiket–ikon arası sıfır (gap 4px ezmesin) */
-    .modal-column-left .form-section-inline:first-child { gap: 0 !important; }
+    /* Taşıt Tipi: etiket–ikon aralığı first-child gap ile (mobil) */
+    .modal-column-left .form-section-inline:first-child { gap: 9px !important; margin-top: 0 !important; }
     
     .modal-column-right .form-section-inline,
     .modal-column-right .form-section-inline:has(.radio-group),
@@ -2505,7 +2511,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
 /* iOS PWA: içerik Kaydet/Vazgeç butonlarına 10px daha yaklaşsın (elemanlar 10px üzerine kadar esnetilir) */
 @media (max-width: 640px) and (display-mode: standalone) {
     #vehicle-modal .modal-column-left .form-section-inline:first-child .vehicle-type-group {
-        margin-top: -14px !important;
+        margin-top: 0 !important;
     }
 
     #vehicle-modal .modal-body {
