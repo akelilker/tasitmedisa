@@ -3398,15 +3398,6 @@
       detailToolbar.appendChild(toolbarCenter);
       detailToolbar.appendChild(toolbarRight);
     }
-    
-    // Eski buton container'ını kaldır (varsa)
-    const oldAssignContainer = modal.querySelector('.detail-assign-button-container');
-    if (oldAssignContainer) {
-      oldAssignContainer.remove();
-    }
-
-    const existingAssign = contentEl.querySelector('.detail-branch-assign');
-    if (existingAssign) existingAssign.remove();
 
     // Modalı aç
     setVehiclesDetailUnderlay(true);
