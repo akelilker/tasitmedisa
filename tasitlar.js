@@ -2213,7 +2213,8 @@
     var categorySvgMap = {
       sureli: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 9h16"/><path d="M8 14l2.5 2.5L16 12"/></svg>',
       police: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>',
-      donanim: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 6.5a4 4 0 0 0-5.2 5.2l-5.8 5.8a2.1 2.1 0 0 0 3 3l5.8-5.8a4 4 0 0 0 5.2-5.2l-2.7 2.7-3-3 2.7-2.7z"/><path d="M17 3v3M20 6h-3M18.5 4.5l2-2"/></svg>'
+      donanim: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 6.5a4 4 0 0 0-5.2 5.2l-5.8 5.8a2.1 2.1 0 0 0 3 3l5.8-5.8a4 4 0 0 0 5.2-5.2l-2.7 2.7-3-3 2.7-2.7z"/><path d="M17 3v3M20 6h-3M18.5 4.5l2-2"/></svg>',
+      genel: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 13h13v9H4z"/><path d="M17 13v3h3"/><path d="M6 16h8M6 18.5h5.5M6 21h7"/><circle cx="8.5" cy="7" r="3.25"/><circle cx="16.5" cy="7" r="3.25"/><path d="M8.5 10.25h8"/><path d="M8.5 10.25 7 13"/><path d="M16.5 10.25 15 13"/></svg>'
     };
     if (categorySvgMap[categoryId]) {
       return '<span class="event-menu-category-icon event-menu-category-icon--inline event-menu-category-icon--primary" aria-hidden="true">' + categorySvgMap[categoryId] + '</span>';
