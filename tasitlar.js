@@ -1516,13 +1516,6 @@
     return window.appData.kaskoDegerListesi;
   }
 
-  function hasAnyKaskoListData() {
-    const state = getKaskoState();
-    if (Array.isArray(state.rows) && state.rows.length > 0) return true;
-    return false;
-  }
-  window.hasAnyKaskoListData = hasAnyKaskoListData;
-
   function getViewedNotificationKeys() {
     const scopeKey = getCurrentNotifScopeKey();
     if (scopeKey) {
@@ -5551,7 +5544,7 @@
     }
     if (kaskoDegeri === '-' && (!vehicle.kaskoKodu || String(vehicle.kaskoKodu).trim() === '')) {
       kaskoDegeri = 'Kasko kodu girilmedi';
-    } else if (kaskoDegeri === '-' && !hasAnyKaskoListData()) {
+    } else if (kaskoDegeri === '-' && !(typeof window.hasAnyKaskoListData === 'function' ? window.hasAnyKaskoListData() : false)) {
       kaskoDegeri = 'Excel yüklenmedi';
     }
     let isKaskoOutdated = true;
@@ -9299,16 +9292,13 @@
     return addYears(muayeneDate, yearsToAdd);
   }
 
-  /**
-   * Sigorta bilgisi güncelle (bitiş tarihi 1 yıl sonrasına ayarlanır)
-   */
-  window.updateSigortaInfo = function() {
-    const tarihInput = document.getElementById('sigorta-tarih');
+  function saveInsuranceLikeEvent(config) {
+    const tarihInput = document.getElementById(config.tarihInputId);
     const tarih = normalizeGgAaYyyyInputElement(tarihInput);
-    const firma = document.getElementById('sigorta-firma')?.value.trim() || '';
-    const acente = document.getElementById('sigorta-acente')?.value.trim() || '';
-    const iletisim = document.getElementById('sigorta-iletisim')?.value.trim() || '';
-    
+    const firma = document.getElementById(config.firmaInputId)?.value.trim() || '';
+    const acente = document.getElementById(config.acenteInputId)?.value.trim() || '';
+    const iletisim = document.getElementById(config.iletisimInputId)?.value.trim() || '';
+
     if (!tarih) {
       alert('Tarih zorunludur!');
       return;
@@ -9319,17 +9309,16 @@
     const vehicleId = svc.vehicleId;
     const vehicle = svc.vehicle;
     const vehicles = svc.vehicles;
-    
+
     if (!vehicle.events) vehicle.events = [];
-    
-    // Bitmiş tarihi 1 yıl sonrasına ayarla
+
     const bitisTarihi = addYears(tarih, 1);
-    
-    vehicle.sigortaDate = bitisTarihi;
-    
+
+    vehicle[config.vehicleDateField] = bitisTarihi;
+
     const event = {
       id: Date.now().toString(),
-      type: 'sigorta-guncelle',
+      type: config.eventType,
       date: tarih,
       timestamp: new Date().toISOString(),
       data: {
@@ -9340,15 +9329,31 @@
         surucu: getEventPerformerName(vehicle)
       }
     };
-    
+
     vehicle.events.unshift(event);
     return writeVehicles(vehicles).then(function() {
       if (window.updateNotifications) window.updateNotifications();
       return completeDynamicEventSave({
-        modalType: 'sigorta',
+        modalType: config.modalType,
         vehicleId: vehicleId,
-        message: 'Sigorta bilgisi güncellendi.'
+        message: config.successMessage
       });
+    });
+  }
+
+  /**
+   * Sigorta bilgisi güncelle (bitiş tarihi 1 yıl sonrasına ayarlanır)
+   */
+  window.updateSigortaInfo = function() {
+    return saveInsuranceLikeEvent({
+      tarihInputId: 'sigorta-tarih',
+      firmaInputId: 'sigorta-firma',
+      acenteInputId: 'sigorta-acente',
+      iletisimInputId: 'sigorta-iletisim',
+      vehicleDateField: 'sigortaDate',
+      eventType: 'sigorta-guncelle',
+      modalType: 'sigorta',
+      successMessage: 'Sigorta bilgisi güncellendi.'
     });
   };
 
@@ -9356,52 +9361,15 @@
    * Kasko bilgisi güncelle (bitiş tarihi 1 yıl sonrasına ayarlanır)
    */
   window.updateKaskoInfo = function() {
-    const tarihInput = document.getElementById('kasko-tarih');
-    const tarih = normalizeGgAaYyyyInputElement(tarihInput);
-    const firma = document.getElementById('kasko-firma')?.value.trim() || '';
-    const acente = document.getElementById('kasko-acente')?.value.trim() || '';
-    const iletisim = document.getElementById('kasko-iletisim')?.value.trim() || '';
-    
-    if (!tarih) {
-      alert('Tarih zorunludur!');
-      return;
-    }
-
-    const svc = resolveVehicleContextForDynamicSave();
-    if (!svc) return;
-    const vehicleId = svc.vehicleId;
-    const vehicle = svc.vehicle;
-    const vehicles = svc.vehicles;
-
-    if (!vehicle.events) vehicle.events = [];
-    
-    // Bitiş tarihi 1 yıl sonrasına ayarla
-    const bitisTarihi = addYears(tarih, 1);
-    
-    vehicle.kaskoDate = bitisTarihi;
-    
-    const event = {
-      id: Date.now().toString(),
-      type: 'kasko-guncelle',
-      date: tarih,
-      timestamp: new Date().toISOString(),
-      data: {
-        firma: firma,
-        acente: acente,
-        iletisim: iletisim,
-        bitisTarihi: bitisTarihi,
-        surucu: getEventPerformerName(vehicle)
-      }
-    };
-    
-    vehicle.events.unshift(event);
-    return writeVehicles(vehicles).then(function() {
-      if (window.updateNotifications) window.updateNotifications();
-      return completeDynamicEventSave({
-        modalType: 'kasko',
-        vehicleId: vehicleId,
-        message: 'Kasko bilgisi güncellendi.'
-      });
+    return saveInsuranceLikeEvent({
+      tarihInputId: 'kasko-tarih',
+      firmaInputId: 'kasko-firma',
+      acenteInputId: 'kasko-acente',
+      iletisimInputId: 'kasko-iletisim',
+      vehicleDateField: 'kaskoDate',
+      eventType: 'kasko-guncelle',
+      modalType: 'kasko',
+      successMessage: 'Kasko bilgisi güncellendi.'
     });
   };
 
