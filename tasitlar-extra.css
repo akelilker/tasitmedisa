@@ -365,107 +365,6 @@
     color: var(--theme-color) !important; /* Sadece metin kırmızı */
 }
 
-.list-actions {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-    opacity: 0;
-    transition: opacity 0.2s;
-}
-
-.view-list .list-item:hover .list-actions { opacity: 1; }
-
-.list-action-btn {
-    background: none;
-    border: none;
-    color: var(--txt-gray);
-    width: auto;
-    height: auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    font-size: 16px;
-    transition: color 0.2s, background 0.2s, transform 0.2s;
-    padding: 4px 8px;
-    border-radius: 4px;
-}
-
-.list-action-btn.edit:hover { color: var(--amber-edit); background: rgba(221, 164, 16, 0.1); transform: scale(1.1); }
-.list-action-btn.delete:hover { color: var(--theme-color); background: rgba(var(--theme-color-rgb), 0.1); transform: scale(1.1); }
-
-/* === ŞUBE ATAMA FORMU === */
-.detail-branch-assign {
-  margin-top: 24px;
-  padding-top: 20px;
-  border-top: 1px solid var(--border-ultra);
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  align-items: center;
-}
-
-.assign-toggle {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--txt-gray-darker);
-  text-align: center;
-  letter-spacing: 0.5px;
-  cursor: pointer;
-  padding: 8px 16px;
-  transition: color 0.2s;
-}
-
-.assign-toggle:hover { color: var(--txt-placeholder); }
-
-.assign-select {
-  width: 100%;
-  max-width: 350px;
-  padding: 8px 12px;
-  background: var(--bg-content);
-  border: 1px solid var(--border-shiny);
-  border-radius: 6px;
-  color: var(--txt-gray-darker) !important;
-  font-size: 12px;
-  font-weight: 600;
-  line-height: 1.5;
-  cursor: pointer;
-  transition: color 0.2s, border-color 0.2s, box-shadow 0.2s;
-  box-sizing: border-box;
-  overflow: visible;
-  text-overflow: clip;
-  white-space: nowrap;
-  opacity: 1 !important;
-  filter: none !important;
-  height: auto;
-  min-height: 36px;
-  display: block;
-}
-
-/* Select'te bir şey seçildiğinde rengi değiştir */
-.assign-select:not([value=""]),
-.assign-select.has-value {
-  color: var(--txt) !important;
-}
-
-.assign-select:focus {
-  outline: none;
-  border-color: var(--border-light);
-  box-shadow: 0 0 8px rgba(var(--theme-color-rgb), 0.3);
-}
-
-.assign-select option {
-  background: var(--bg);
-  color: var(--txt); 
-  padding: 8px;
-  font-size: 12px;
-  font-weight: 600;
-}
-.assign-select option:first-child { 
-  color: var(--txt-gray-darker); 
-  font-style: normal;
-}
-
 /* Şubeye Tahsis Etmek iiiiiiçin Butonu - Toolbar içinde, çerçevesiz */
 .detail-assign-button-frameless {
   background: transparent;
@@ -1579,9 +1478,6 @@
   .detail-row-label { font-size: 14px; color: var(--form-label-color); }
   .detail-row-value { font-size: 15px; }
 
-  /* Şube Atama Mobil */
-  .assign-toggle { font-size: 13px; }
-  .assign-select { font-size: 13px; }
 /* Tarihçe Diğer (history-item-diger): tarih satırı beyaz; gövde kuralları yukarıdaki özet/detay ile uyumlu */
 #vehicle-history-modal .history-item-diger .history-item-date {
     font-weight: 600;
@@ -2237,15 +2133,6 @@
   #dinamik-olay-modal .medisa-owner-select-search-input,
   .olay-ekle-modal .modal-body .ceza-user-trigger {
     font-size: 12px !important;
-  }
-
-  /* Taşıt detay: şube atama select */
-  #vehicle-detail-modal .assign-select {
-    min-height: 44px !important;
-    padding-top: 10px !important;
-    padding-bottom: 10px !important;
-    line-height: 1.3 !important;
-    box-sizing: border-box !important;
   }
 
   /* Olay Ekle (.olay-ekle-modal — event menü + dinamik olay): ortak header/h2 – uzun başlıklar satır kırar */
