@@ -766,6 +766,8 @@
   let lastListContext = null; // Son açılan liste bağlamı (geri dönüş hedefi)
   let returnToMonthlyTodoAfterVehicleDetail = false;
   let monthlyTodoCloseTimer = null;
+  var MONTHLY_TODO_INTERACTION_REV = 2;
+  var MONTHLY_TODO_HEADER_REV = 2;
   let isAutoSingleBranchVehiclesView = false;
 
   let lastVehiclesRenderSignature = '';
@@ -4904,6 +4906,76 @@
     });
     html += '</div></div></div></div>';
     bodyEl.innerHTML = html;
+    wireMonthlyTodoModalBodyInteraction(bodyEl);
+  }
+
+  function isMonthlyTodoDesktopView() {
+    return typeof window.matchMedia === 'function' && window.matchMedia('(min-width: 769px)').matches;
+  }
+
+  function closeMonthlyTodoModal(immediate) {
+    var modal = document.getElementById('monthly-todo-modal');
+    if (!modal) return;
+    modal.classList.remove('active', 'open');
+    if (monthlyTodoCloseTimer) clearTimeout(monthlyTodoCloseTimer);
+    if (immediate) {
+      monthlyTodoCloseTimer = null;
+      modal.style.display = 'none';
+      modal.style.pointerEvents = 'none';
+      if (typeof window.updateFooterDim === 'function') window.updateFooterDim();
+      return;
+    }
+    monthlyTodoCloseTimer = setTimeout(function() {
+      monthlyTodoCloseTimer = null;
+      modal.style.display = 'none';
+      modal.style.pointerEvents = '';
+      if (typeof window.updateFooterDim === 'function') window.updateFooterDim();
+    }, 300);
+  }
+
+  function openMonthlyTodoRowVehicleDetail(row, modalRoot) {
+    if (!row) return;
+    var root = modalRoot || document.getElementById('monthly-todo-modal');
+    if (!root || !root.contains(row)) return;
+    var vid = row.getAttribute('data-vehicle-id');
+    if (!vid) return;
+    closeMonthlyTodoModal(true);
+    if (typeof window.showVehicleDetail !== 'function') return;
+    returnToMonthlyTodoAfterVehicleDetail = true;
+    if (!lastListContext) {
+      lastListContext = { mode: 'branch', branchId: 'all', branchName: 'Taşıtlar' };
+    }
+    var openDetail = function() {
+      window.showVehicleDetail(vid);
+    };
+    if (typeof window.requestAnimationFrame === 'function') {
+      window.requestAnimationFrame(function() {
+        window.requestAnimationFrame(openDetail);
+      });
+    } else {
+      window.setTimeout(openDetail, 0);
+    }
+  }
+
+  function wireMonthlyTodoModalBodyInteraction(bodyEl) {
+    if (!bodyEl) return;
+    if (bodyEl._medisaMonthlyTodoBodyRev === MONTHLY_TODO_INTERACTION_REV) return;
+    if (bodyEl._medisaMonthlyTodoBodyClickHandler) {
+      bodyEl.removeEventListener('click', bodyEl._medisaMonthlyTodoBodyClickHandler);
+    }
+    bodyEl._medisaMonthlyTodoBodyRev = MONTHLY_TODO_INTERACTION_REV;
+    var handler = function(ev) {
+      var target = ev.target;
+      if (!target || typeof target.closest !== 'function') return;
+      if (target.closest('.monthly-todo-wa-link')) return;
+      var row = target.closest('.monthly-todo-task-row');
+      if (!row || !bodyEl.contains(row)) return;
+      ev.preventDefault();
+      ev.stopPropagation();
+      openMonthlyTodoRowVehicleDetail(row, bodyEl.closest('#monthly-todo-modal'));
+    };
+    bodyEl._medisaMonthlyTodoBodyClickHandler = handler;
+    bodyEl.addEventListener('click', handler);
   }
 
   function renderMonthlyTodoModalContent() {
@@ -4930,24 +5002,15 @@
   }
 
   function bindMonthlyTodoModalDelegatedInteraction(modalEl) {
-    if (!modalEl || modalEl._medisaMonthlyTodoModalDelegatedBound) return;
-    modalEl._medisaMonthlyTodoModalDelegatedBound = true;
-    function isMonthlyTodoDesktopView() {
-      return typeof window.matchMedia === 'function' && window.matchMedia('(min-width: 769px)').matches;
+    if (!modalEl) return;
+    if (modalEl._medisaMonthlyTodoInteractionRev === MONTHLY_TODO_INTERACTION_REV) return;
+    if (modalEl._medisaMonthlyTodoClickHandler) {
+      modalEl.removeEventListener('click', modalEl._medisaMonthlyTodoClickHandler, true);
     }
-    function openMonthlyTodoRowVehicleDetail(row) {
-      if (!row || !modalEl.contains(row)) return;
-      var vid = row.getAttribute('data-vehicle-id');
-      if (!vid) return;
-      closeMonthlyTodoModal(true);
-      if (typeof window.showVehicleDetail === 'function') {
-        returnToMonthlyTodoAfterVehicleDetail = true;
-        if (!lastListContext) {
-          lastListContext = { mode: 'branch', branchId: 'all', branchName: 'Taşıtlar' };
-        }
-        window.showVehicleDetail(vid);
-      }
+    if (modalEl._medisaMonthlyTodoKeydownHandler) {
+      modalEl.removeEventListener('keydown', modalEl._medisaMonthlyTodoKeydownHandler);
     }
+    modalEl._medisaMonthlyTodoInteractionRev = MONTHLY_TODO_INTERACTION_REV;
     function onMonthlyTodoModalClick(ev) {
       var target = ev.target;
       if (!target || typeof target.closest !== 'function') return;
@@ -4961,7 +5024,8 @@
       var row = target.closest('.monthly-todo-task-row');
       if (!row || !modalEl.contains(row)) return;
       ev.preventDefault();
-      openMonthlyTodoRowVehicleDetail(row);
+      ev.stopPropagation();
+      openMonthlyTodoRowVehicleDetail(row, modalEl);
     }
     function onMonthlyTodoModalKeydown(ev) {
       if (ev.key !== 'Enter' && ev.key !== ' ') return;
@@ -4971,11 +5035,15 @@
       var row = target.closest('.monthly-todo-task-row');
       if (!row || !modalEl.contains(row)) return;
       ev.preventDefault();
-      openMonthlyTodoRowVehicleDetail(row);
+      openMonthlyTodoRowVehicleDetail(row, modalEl);
     }
-    modalEl.addEventListener('click', onMonthlyTodoModalClick);
+    modalEl._medisaMonthlyTodoClickHandler = onMonthlyTodoModalClick;
+    modalEl._medisaMonthlyTodoKeydownHandler = onMonthlyTodoModalKeydown;
+    modalEl.addEventListener('click', onMonthlyTodoModalClick, true);
     modalEl.addEventListener('keydown', onMonthlyTodoModalKeydown);
     wireMonthlyTodoWhatsAppLinkHandler(modalEl);
+    var bodyEl = modalEl.querySelector('.monthly-todo-modal-body');
+    wireMonthlyTodoModalBodyInteraction(bodyEl);
   }
 
   function wireMonthlyTodoModalCloseUiOnce(modalEl) {
@@ -4991,8 +5059,8 @@
 
   function initMonthlyTodoHeaderButtonOnce() {
     var btn = document.getElementById('monthly-todo-header-btn');
-    if (!btn || btn._medisaMonthlyTodoHeaderBound) return;
-    btn._medisaMonthlyTodoHeaderBound = true;
+    if (!btn || btn._medisaMonthlyTodoHeaderRev === MONTHLY_TODO_HEADER_REV) return;
+    btn._medisaMonthlyTodoHeaderRev = MONTHLY_TODO_HEADER_REV;
     btn.addEventListener('click', function(ev) {
       ev.preventDefault();
       ev.stopPropagation();
@@ -5052,6 +5120,7 @@
       monthlyTodoCloseTimer = null;
     }
     modal.style.display = 'flex';
+    modal.style.pointerEvents = '';
     modal.classList.add('active');
     modal.classList.add('open');
     if (typeof window.updateFooterDim === 'function') window.updateFooterDim();
@@ -5061,23 +5130,6 @@
     });
   }
 
-  function closeMonthlyTodoModal(immediate) {
-    var modal = document.getElementById('monthly-todo-modal');
-    if (!modal) return;
-    modal.classList.remove('active', 'open');
-    if (monthlyTodoCloseTimer) clearTimeout(monthlyTodoCloseTimer);
-    if (immediate) {
-      monthlyTodoCloseTimer = null;
-      modal.style.display = 'none';
-      if (typeof window.updateFooterDim === 'function') window.updateFooterDim();
-      return;
-    }
-    monthlyTodoCloseTimer = setTimeout(function() {
-      monthlyTodoCloseTimer = null;
-      modal.style.display = 'none';
-      if (typeof window.updateFooterDim === 'function') window.updateFooterDim();
-    }, 300);
-  }
   window.addEventListener('dataLoaded', function() {
     invalidateVehicleDateTasksCache();
   });
