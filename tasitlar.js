@@ -9557,29 +9557,26 @@
     });
   };
 
-  /**
-   * Anahtar bilgisi güncelle
-   */
-  window.updateAnahtarInfo = function() {
+  function saveVarYokWithDetailEvent(config) {
     const svc = resolveVehicleContextForDynamicSave();
     if (!svc) return;
     const vehicleId = svc.vehicleId;
     const vehicle = svc.vehicle;
     const vehicles = svc.vehicles;
-    
-    const radioBtns = document.querySelectorAll('#dinamik-olay-modal .radio-btn');
+
+    const radioBtns = document.querySelectorAll(config.radioSelector);
     const activeBtn = Array.from(radioBtns).find(btn => btn.classList.contains('active'));
     const durum = activeBtn?.dataset.value || 'yok';
-    const detay = durum === 'var' ? (document.getElementById('anahtar-detay-event')?.value.trim() || '') : '';
-    
+    const detay = durum === 'var' ? (document.getElementById(config.detailInputId)?.value.trim() || '') : '';
+
     if (!vehicle.events) vehicle.events = [];
-    
-    vehicle.anahtar = durum;
-    vehicle.anahtarNerede = detay;
-    
+
+    vehicle[config.vehicleStatusField] = durum;
+    vehicle[config.vehicleDetailField] = detay;
+
     const event = {
       id: Date.now().toString(),
-      type: 'anahtar-guncelle',
+      type: config.eventType,
       date: formatDateForDisplay(new Date()),
       timestamp: new Date().toISOString(),
       data: {
@@ -9588,14 +9585,29 @@
         surucu: getEventPerformerName(vehicle)
       }
     };
-    
+
     vehicle.events.unshift(event);
     return writeVehicles(vehicles).then(function() {
       return completeDynamicEventSave({
-        modalType: 'anahtar',
+        modalType: config.modalType,
         vehicleId: vehicleId,
-        message: 'Yedek anahtar bilgisi güncellendi.'
+        message: config.successMessage
       });
+    });
+  }
+
+  /**
+   * Anahtar bilgisi güncelle
+   */
+  window.updateAnahtarInfo = function() {
+    return saveVarYokWithDetailEvent({
+      radioSelector: '#dinamik-olay-modal .radio-btn',
+      detailInputId: 'anahtar-detay-event',
+      vehicleStatusField: 'anahtar',
+      vehicleDetailField: 'anahtarNerede',
+      eventType: 'anahtar-guncelle',
+      modalType: 'anahtar',
+      successMessage: 'Yedek anahtar bilgisi güncellendi.'
     });
   };
 
@@ -9603,41 +9615,14 @@
    * Hak Mahrumiyeti bilgisi güncelle
    */
   window.updateKrediInfo = function() {
-    const svc = resolveVehicleContextForDynamicSave();
-    if (!svc) return;
-    const vehicleId = svc.vehicleId;
-    const vehicle = svc.vehicle;
-    const vehicles = svc.vehicles;
-    
-    const radioBtns = document.querySelectorAll('#dinamik-olay-modal .radio-btn');
-    const activeBtn = Array.from(radioBtns).find(btn => btn.classList.contains('active'));
-    const durum = activeBtn?.dataset.value || 'yok';
-    const detay = durum === 'var' ? (document.getElementById('kredi-detay-event')?.value.trim() || '') : '';
-    
-    if (!vehicle.events) vehicle.events = [];
-    
-    vehicle.kredi = durum;
-    vehicle.krediDetay = detay;
-    
-    const event = {
-      id: Date.now().toString(),
-      type: 'kredi-guncelle',
-      date: formatDateForDisplay(new Date()),
-      timestamp: new Date().toISOString(),
-      data: {
-        durum: durum,
-        detay: detay,
-        surucu: getEventPerformerName(vehicle)
-      }
-    };
-    
-    vehicle.events.unshift(event);
-    return writeVehicles(vehicles).then(function() {
-      return completeDynamicEventSave({
-        modalType: 'kredi',
-        vehicleId: vehicleId,
-        message: 'Hak Mahrumiyeti bilgisi güncellendi.'
-      });
+    return saveVarYokWithDetailEvent({
+      radioSelector: '#dinamik-olay-modal .radio-btn',
+      detailInputId: 'kredi-detay-event',
+      vehicleStatusField: 'kredi',
+      vehicleDetailField: 'krediDetay',
+      eventType: 'kredi-guncelle',
+      modalType: 'kredi',
+      successMessage: 'Hak Mahrumiyeti bilgisi güncellendi.'
     });
   };
 
@@ -9759,27 +9744,24 @@
     });
   };
 
-  /**
-   * UTTS Bilgisi güncelle
-   */
-  window.updateUTTSInfo = function() {
+  function saveBooleanVarYokEvent(config) {
     const svc = resolveVehicleContextForDynamicSave();
     if (!svc) return;
     const vehicleId = svc.vehicleId;
     const vehicle = svc.vehicle;
     const vehicles = svc.vehicles;
-    
-    const radioBtns = document.querySelectorAll('#dinamik-olay-modal .radio-btn');
+
+    const radioBtns = document.querySelectorAll(config.radioSelector);
     const activeBtn = Array.from(radioBtns).find(btn => btn.classList.contains('active'));
     const durum = activeBtn?.dataset.value === 'evet' ? true : false;
-    
+
     if (!vehicle.events) vehicle.events = [];
-    
-    vehicle.uttsTanimlandi = durum;
-    
+
+    vehicle[config.vehicleField] = durum;
+
     const event = {
       id: Date.now().toString(),
-      type: 'utts-guncelle',
+      type: config.eventType,
       date: formatDateForDisplay(new Date()),
       timestamp: new Date().toISOString(),
       data: {
@@ -9787,14 +9769,27 @@
         surucu: getEventPerformerName(vehicle)
       }
     };
-    
+
     vehicle.events.unshift(event);
     return writeVehicles(vehicles).then(function() {
       return completeDynamicEventSave({
-        modalType: 'utts',
+        modalType: config.modalType,
         vehicleId: vehicleId,
-        message: 'UTTS bilgisi güncellendi.'
+        message: config.successMessage
       });
+    });
+  }
+
+  /**
+   * UTTS Bilgisi güncelle
+   */
+  window.updateUTTSInfo = function() {
+    return saveBooleanVarYokEvent({
+      radioSelector: '#dinamik-olay-modal .radio-btn',
+      vehicleField: 'uttsTanimlandi',
+      eventType: 'utts-guncelle',
+      modalType: 'utts',
+      successMessage: 'UTTS bilgisi güncellendi.'
     });
   };
 
@@ -9802,38 +9797,12 @@
    * Taşıt Takip Cihaz Bilgisi güncelle
    */
   window.updateTakipCihazInfo = function() {
-    const svc = resolveVehicleContextForDynamicSave();
-    if (!svc) return;
-    const vehicleId = svc.vehicleId;
-    const vehicle = svc.vehicle;
-    const vehicles = svc.vehicles;
-    
-    const radioBtns = document.querySelectorAll('#dinamik-olay-modal .radio-btn');
-    const activeBtn = Array.from(radioBtns).find(btn => btn.classList.contains('active'));
-    const durum = activeBtn?.dataset.value === 'evet' ? true : false;
-    
-    if (!vehicle.events) vehicle.events = [];
-    
-    vehicle.takipCihaziMontaj = durum;
-    
-    const event = {
-      id: Date.now().toString(),
-      type: 'takip-cihaz-guncelle',
-      date: formatDateForDisplay(new Date()),
-      timestamp: new Date().toISOString(),
-      data: {
-        durum: durum,
-        surucu: getEventPerformerName(vehicle)
-      }
-    };
-    
-    vehicle.events.unshift(event);
-    return writeVehicles(vehicles).then(function() {
-      return completeDynamicEventSave({
-        modalType: 'takip',
-        vehicleId: vehicleId,
-        message: 'Taşıt takip cihaz bilgisi güncellendi.'
-      });
+    return saveBooleanVarYokEvent({
+      radioSelector: '#dinamik-olay-modal .radio-btn',
+      vehicleField: 'takipCihaziMontaj',
+      eventType: 'takip-cihaz-guncelle',
+      modalType: 'takip',
+      successMessage: 'Taşıt takip cihaz bilgisi güncellendi.'
     });
   };
 
