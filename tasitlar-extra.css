@@ -3258,12 +3258,6 @@
   box-sizing: border-box;
 }
 
-@media (min-width: 769px) {
-  #monthly-todo-modal .monthly-todo-task-row {
-    cursor: default;
-  }
-}
-
 #monthly-todo-modal .monthly-todo-task-row > .monthly-todo-plate-col,
 #monthly-todo-modal .monthly-todo-task-row > .monthly-todo-middle-col {
   text-align: center;

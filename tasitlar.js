@@ -4959,7 +4959,6 @@
       if (target.closest('.monthly-todo-wa-link')) return;
       var row = target.closest('.monthly-todo-task-row');
       if (!row || !modalEl.contains(row)) return;
-      if (isMonthlyTodoDesktopView()) return;
       ev.preventDefault();
       openMonthlyTodoRowVehicleDetail(row);
     }
@@ -4970,10 +4969,6 @@
       if (target.closest('.monthly-todo-wa-link')) return;
       var row = target.closest('.monthly-todo-task-row');
       if (!row || !modalEl.contains(row)) return;
-      if (isMonthlyTodoDesktopView()) {
-        ev.preventDefault();
-        return;
-      }
       ev.preventDefault();
       openMonthlyTodoRowVehicleDetail(row);
     }
