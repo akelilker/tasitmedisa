@@ -2627,10 +2627,10 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         width: calc(100% - 4px) !important;
         max-width: calc(100% - 4px) !important;
         min-width: 0 !important;
-        min-height: 30px !important;
-        height: 30px !important;
+        min-height: 34px !important;
+        height: 34px !important;
         max-height: 300px !important;
-        margin: 2px 0 0 0 !important;
+        margin: 0 !important;
         transform: none !important;
         padding: 4px 8px !important;
         box-sizing: border-box !important;
