@@ -4247,18 +4247,18 @@
     _vehicleDateTasksCache = monthly;
   }
 
-  window.getVehicleDateTasks = function() {
+  function getVehicleDateTasks() {
     if (_vehicleDateTasksCache === null) {
       runVehicleDateOperationalScan(null, 'monthly-cache-only');
     }
     return _vehicleDateTasksCache || [];
-  };
+  }
 
   function updateMonthlyTodoHeaderBadge() {
     var btn = document.getElementById('monthly-todo-header-btn');
     var badge = btn ? btn.querySelector('.monthly-todo-header-badge') : null;
     if (!btn || !badge) return;
-    var list = (typeof window.getVehicleDateTasks === 'function') ? window.getVehicleDateTasks() : [];
+    var list = getVehicleDateTasks();
     var merged = buildMonthlyTodoMergedDisplayTasks(list);
     var n = merged.length;
     if (n <= 0) {
@@ -4921,7 +4921,7 @@
       if (!modal || modal.style.display === 'none') return;
       var be = modal.querySelector('.monthly-todo-modal-body');
       if (!be) return;
-      var tasks = window.getVehicleDateTasks();
+      var tasks = getVehicleDateTasks();
       fillMonthlyTodoModalBody(be, tasks);
     });
   }
