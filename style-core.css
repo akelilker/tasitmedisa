@@ -2556,23 +2556,29 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu .m
 
 /* Ana sayfa butonu sol köşede, kapat (X) ile simetrik */
 .modal-overlay .modal-home {
-  position: absolute;
-  left: 15px;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 30;
-  margin: 0;
-  padding: 6px;
+  position: absolute !important;
+  left: 15px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  z-index: 30 !important;
+  margin: 0 !important;
+  padding: 6px !important;
   min-width: 36px;
   min-height: 36px;
-  background: transparent;
-  border: none;
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
   color: var(--txt-gray-darker);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: color 0.2s;
+  -webkit-tap-highlight-color: transparent;
 }
 .modal-overlay .modal-home:hover {
   color: var(--theme-color);
@@ -3377,9 +3383,14 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         min-height: 44px !important;
     }
     .modal-overlay .modal-home {
-        padding: 12px;
-        min-width: 44px;
-        min-height: 44px;
+        padding: 12px !important;
+        min-width: 44px !important;
+        min-height: 44px !important;
+        left: 15px !important;
+        background: transparent !important;
+        border: none !important;
+        -webkit-appearance: none !important;
+        appearance: none !important;
     }
     
     /* Ana sayfa butonları mobilde: hero ile aynı cold silver çerçeve */
