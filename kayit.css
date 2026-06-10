@@ -1115,13 +1115,13 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
 .vehicle-type-btn[data-type="minivan"] { width: 26px; height: 17px; }
 .vehicle-type-btn[data-type="kamyon"] { width: 36px; height: 26px; padding-top: 2px; }
 .vehicle-type-btn[data-type="kamyon"] img { object-position: bottom center; transform: scale(0.95); transform-origin: bottom center; }
-.vehicle-type-btn[data-type="romork"] { width: 40px; height: 26px; padding-top: 2px; }
+.vehicle-type-btn[data-type="romork"] { width: 36px; height: 26px; padding-top: 2px; }
 .vehicle-type-btn[data-type="romork"] img {
     width: 100%;
     height: 100%;
     object-fit: contain;
     object-position: bottom center;
-    transform: translateY(-4px) scale(1.28);
+    transform: scaleY(1.475);
     transform-origin: bottom center;
 }
 
@@ -1650,13 +1650,13 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     .vehicle-type-btn[data-type="kamyon"] { width: 38px; height: 32px; padding-top: 2px; }
     .vehicle-type-btn[data-type="kamyon"] img { width: 100%; height: 100%; object-fit: contain; object-position: bottom center; }
     /* Römork: yatay SVG — kamyonla aynı kutu, scale ile siluet yüksekliği */
-    .vehicle-type-btn[data-type="romork"] { width: 46px; height: 32px; padding-top: 0; }
+    .vehicle-type-btn[data-type="romork"] { width: 42px; height: 32px; padding-top: 2px; }
     .vehicle-type-btn[data-type="romork"] img {
         width: 100%;
         height: 100%;
         object-fit: contain;
         object-position: bottom center;
-        transform: translateY(-4px) scale(1.28);
+        transform: scaleY(1.454);
         transform-origin: bottom center;
     }
 
@@ -2303,8 +2303,8 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     .vehicle-type-btn[data-type="minivan"] { width: 28px; height: 22px; }
     .vehicle-type-btn[data-type="kamyon"] { width: 40px; height: 32px; padding-top: 2px; }
     .vehicle-type-btn[data-type="kamyon"] img { object-position: bottom center; transform: scale(0.95); transform-origin: bottom center; }
-    .vehicle-type-btn[data-type="romork"] { width: 52px; height: 36px; padding-top: 0; }
-    .vehicle-type-btn[data-type="romork"] img { width: 100%; height: 100%; object-fit: contain; object-position: bottom center; transform: translateY(-4px) scale(1.28); transform-origin: bottom center; }
+    .vehicle-type-btn[data-type="romork"] { width: 48px; height: 36px; padding-top: 0; }
+    .vehicle-type-btn[data-type="romork"] img { width: 100%; height: 100%; object-fit: contain; object-position: bottom center; transform: scaleY(1.443); transform-origin: bottom center; }
 }
 
 /* iOS PWA modal margin: style-core.css (.modal-overlay .modal-container) */
@@ -2554,7 +2554,8 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         height: 32px !important;
     }
     #vehicle-modal .modal-body #vehicle-notes {
-        min-height: 26px !important;
+        min-height: 32px !important;
+        height: 32px !important;
     }
     #vehicle-modal .modal-body .universal-btn-save,
     #vehicle-modal .modal-body .universal-btn-cancel {
@@ -2594,40 +2595,51 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         align-self: center;
     }
 
-    /* Mobil kayıt: römork + Notlar/Boya alt satır — tek owner (layout/flex'e dokunma) */
+    /* Mobil kayıt: römork + kolon alt hizası + Notlar dikey */
     .vehicle-type-btn[data-type="romork"] {
+        width: 42px !important;
         height: 32px !important;
     }
     .vehicle-type-btn[data-type="romork"] img {
-        transform: translateY(-4px) scale(1.28) !important;
+        transform: scaleY(1.454) !important;
         transform-origin: bottom center !important;
+    }
+    /* Mobil kayıt: kolon alt hizası + Notlar dikey (etiket üst / input alt) */
+    #vehicle-modal .modal-columns {
+        align-items: end !important;
     }
     #vehicle-modal .modal-column-right .form-section:has(#vehicle-notes) {
         display: flex !important;
-        flex-direction: row !important;
-        align-items: center !important;
-        justify-content: space-between !important;
-        gap: 8px !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 4px !important;
         margin-top: 0 !important;
         margin-bottom: 0 !important;
         padding-bottom: 0 !important;
-        flex: none !important;
+        flex: 0 0 auto !important;
+        height: auto !important;
+        min-height: 0 !important;
+        overflow: visible !important;
+        visibility: visible !important;
         transform: none !important;
     }
     #vehicle-modal .modal-column-right .form-section:has(#vehicle-notes) .form-label {
         flex: 0 0 auto !important;
+        width: 100% !important;
         margin: 0 !important;
         padding: 0 !important;
+        line-height: 1 !important;
         transform: none !important;
     }
     #vehicle-modal .modal-body #vehicle-notes {
-        flex: 1 1 auto !important;
+        flex: 0 0 auto !important;
+        width: calc(100% - 4px) !important;
+        max-width: calc(100% - 4px) !important;
         min-width: 0 !important;
-        width: auto !important;
-        max-width: 100% !important;
-        min-height: 27px !important;
-        height: 27px !important;
-        margin-top: 0 !important;
+        min-height: 30px !important;
+        height: 30px !important;
+        max-height: 300px !important;
+        margin: 0 !important;
         transform: none !important;
         padding: 4px 8px !important;
         box-sizing: border-box !important;
