@@ -539,39 +539,30 @@
   function resizeVehicleNotesArea(textarea) {
     if (!textarea) return;
     const isMobile = window.matchMedia('(max-width: 640px)').matches;
-    if (!isMobile) {
-      resizeVehicleTextareaArea(textarea);
-      return;
-    }
-
-    const minPx = parseFloat(getComputedStyle(textarea).minHeight) || 30;
-    const maxPx = parseFloat(getComputedStyle(textarea).maxHeight) || 300;
-    const modalBody = textarea.closest('.modal-body');
-    const scrollTop = modalBody ? modalBody.scrollTop : 0;
-
-    if (!String(textarea.value || '').trim()) {
+    if (isMobile) {
+      /* Mobilde flex-fill CSS yüksekliği yönetir; inline height yalnızca içerik taşınca */
       textarea.style.removeProperty('height');
-      textarea.style.removeProperty('overflow-y');
+      const value = String(textarea.value || '').trim();
+      if (!value) {
+        textarea.style.removeProperty('overflow-y');
+        return;
+      }
+      const maxPx = parseFloat(getComputedStyle(textarea).maxHeight) || 300;
+      const modalBody = textarea.closest('.modal-body');
+      const scrollTop = modalBody ? modalBody.scrollTop : 0;
+      if (textarea.scrollHeight > textarea.clientHeight + 1) {
+        const neededHeight = Math.min(textarea.scrollHeight, maxPx);
+        textarea.style.setProperty('height', `${neededHeight}px`, 'important');
+        textarea.style.setProperty('overflow-y', 'auto', 'important');
+      } else {
+        textarea.style.removeProperty('overflow-y');
+      }
+      if (modalBody) {
+        modalBody.scrollTop = scrollTop;
+      }
       return;
     }
-
-    /* iOS: height:auto ölçümü textarea'yı küçültüp modal scroll'unu yukarı zıplatır — sadece büyüt */
-    const currentHeight = textarea.offsetHeight || minPx;
-    textarea.style.setProperty('height', `${Math.max(currentHeight, minPx)}px`, 'important');
-    const neededHeight = Math.min(Math.max(textarea.scrollHeight, minPx), maxPx);
-
-    if (neededHeight > currentHeight) {
-      textarea.style.setProperty('height', `${neededHeight}px`, 'important');
-    }
-    textarea.style.setProperty(
-      'overflow-y',
-      neededHeight >= maxPx ? 'auto' : 'hidden',
-      'important'
-    );
-
-    if (modalBody) {
-      modalBody.scrollTop = scrollTop;
-    }
+    resizeVehicleTextareaArea(textarea);
   }
 
   function resizeVehicleConditionalTextArea(textarea) {
