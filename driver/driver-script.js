@@ -1053,8 +1053,8 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
 
   const DRIVER_DOCUMENT_TYPES = [
       { key: 'ruhsat', title: 'Ruhsat', pathField: 'ruhsatPath', icon: 'document' },
-      { key: 'sigorta', title: 'Sigorta Poliçesi', pathField: 'sigortaPolicePath', icon: 'umbrella-badge' },
-      { key: 'kasko', title: 'Kasko Poliçesi', pathField: 'kaskoPolicePath', icon: 'umbrella-badge' },
+      { key: 'sigorta', title: 'Sigorta Poliçesi', pathField: 'sigortaPolicePath', icon: 'shield' },
+      { key: 'kasko', title: 'Kasko Poliçesi', pathField: 'kaskoPolicePath', icon: 'shield' },
       { key: 'tasit_karti', title: 'Taşıt Kartı', pathField: 'tasitKartiPath', icon: 'id-card' },
       { key: 'takograf', title: 'Takograf Belgesi', pathField: 'takografBelgesiPath', icon: 'gauge' }
   ];
@@ -1136,9 +1136,17 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       if (!config) return '';
       var svgOpen = '<svg class="driver-document-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">';
       var svgClose = '</svg>';
-      if (config.key === 'sigorta' || config.key === 'kasko') {
+      if (config.key === 'sigorta') {
           return svgOpen +
-              '<path d="M12 3v1"></path><path d="M12 19v2"></path><path d="M4.5 10.5a7.5 7.5 0 0 1 15 0"></path>' +
+              '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>' +
+              '<path d="M8 12h8"></path><path d="M12 8v8"></path>' +
+              svgClose;
+      }
+      if (config.key === 'kasko') {
+          return svgOpen +
+              '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>' +
+              '<path d="M7 14h.01"></path><path d="M17 14h.01"></path>' +
+              '<path d="M6 14h12l-1.4-4.2a1 1 0 0 0-.95-.8H7.35a1 1 0 0 0-.95.8L6 14z"></path>' +
               svgClose;
       }
       if (config.key === 'tasit_karti') {
@@ -1165,12 +1173,9 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       const hasDocument = hasDriverDocument(vehicle, config);
       const actionText = hasDocument ? 'Görüntüle' : 'Yüklü Değil';
       const disabledAttr = hasDocument ? '' : ' aria-disabled="true"';
-      const badgeLetter = (config.key === 'sigorta') ? 'S' : (config.key === 'kasko') ? 'K' : '';
-      const iconWrapClass = badgeLetter ? 'driver-document-icon-wrap driver-document-icon-wrap--umbrella' : 'driver-document-icon-wrap';
-      const iconHtml = getDriverDocumentIconSvg(config) +
-        (badgeLetter ? '<span class="driver-document-icon-badge" aria-hidden="true">' + badgeLetter + '</span>' : '');
+      const iconHtml = getDriverDocumentIconSvg(config);
       return '<button type="button" class="driver-document-card' + (hasDocument ? '' : ' driver-document-card-missing') + '" data-document-type="' + config.key + '"' + disabledAttr + '>' +
-          '<span class="' + iconWrapClass + '">' + iconHtml + '</span>' +
+          '<span class="driver-document-icon-wrap">' + iconHtml + '</span>' +
           '<span class="driver-document-title">' + config.title + '</span>' +
           '<span class="driver-document-action">' + actionText + '</span>' +
       '</button>';
