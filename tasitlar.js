@@ -6353,7 +6353,7 @@
     } else {
       if (type === 'ruhsat') {
         window.currentDetailVehicleId = (vehicleId || window.currentDetailVehicleId || '').toString();
-        if (typeof window.openRuhsatModal === 'function') window.openRuhsatModal(vehicleId || window.currentDetailVehicleId);
+        if (typeof window.openVehicleDocumentsModal === 'function') window.openVehicleDocumentsModal(vehicleId || window.currentDetailVehicleId);
         return;
       }
       if (type === 'sube' || type === 'kullanici') {
@@ -8470,10 +8470,6 @@
     }
     modal.style.display = 'flex';
     requestAnimationFrame(function() { modal.classList.add('active'); });
-  };
-
-  window.openRuhsatModal = function(vehicleId) {
-    return window.openVehicleDocumentsModal(vehicleId);
   };
 
   function renderRuhsatUploadForm(content, saveBtn, hasExistingRuhsat, documentType) {
