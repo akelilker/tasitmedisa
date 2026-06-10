@@ -886,6 +886,24 @@
   color: #22c55e;
   flex-shrink: 0;
 }
+#dinamik-olay-modal #ruhsat-modal-content .vehicle-document-icon-wrap--umbrella {
+  position: relative;
+}
+#dinamik-olay-modal #ruhsat-modal-content .vehicle-document-icon-badge {
+  position: absolute;
+  right: 2px;
+  bottom: 2px;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: currentColor;
+  color: #0a1018;
+  font-size: 8px;
+  font-weight: 700;
+  line-height: 13px;
+  text-align: center;
+  pointer-events: none;
+}
 #dinamik-olay-modal #ruhsat-modal-content .vehicle-document-icon {
   width: 28px;
   height: 28px;
