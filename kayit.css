@@ -2625,6 +2625,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         transform: none !important;
         padding: 4px 8px !important;
         box-sizing: border-box !important;
+        overflow-anchor: none;
     }
 }
 
