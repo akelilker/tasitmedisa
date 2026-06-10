@@ -2213,8 +2213,9 @@
       return '<span class="event-menu-category-icon event-menu-category-icon--inline event-menu-category-icon--primary" aria-hidden="true">' + categorySvgMap[categoryId] + '</span>';
     }
     var inlineSvgMap = {
-      sigorta: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v1"/><path d="M12 19v2"/><path d="M4.5 10.5a7.5 7.5 0 0 1 15 0"/></svg>',
-      kasko: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v1"/><path d="M12 19v2"/><path d="M4.5 10.5a7.5 7.5 0 0 1 15 0"/></svg>',
+      sigorta: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>',
+      kasko: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M7 14h.01M17 14h.01"/><path d="M6 14h12l-1.4-4.2a1 1 0 0 0-.95-.8H7.35a1 1 0 0 0-.95.8L6 14z"/></svg>',
+      takip: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 17h2c.6 0 1-.4 1-1v-3l-2-5.5A2 2 0 0 0 17.7 6H6.3a2 2 0 0 0-1.9 1.4L2 12.8V16c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/><path d="M5 11h14"/></svg>',
       ceza: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4l9 16H3z"/><path d="M12 9v5M12 17h.01"/></svg>',
       km: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 17a8 8 0 1 1 14 0"/><path d="M12 14l4-4M8 17h8"/></svg>',
       bakim: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>',
@@ -2236,7 +2237,7 @@
       tasitkarti: 'zorunlu',
       sigorta: 'police',
       kasko: 'police',
-      takip: 'vehicle',
+      takip: 'takip',
       utts: 'utts',
       anahtar: 'anahtar',
       lastik: 'lastik',
@@ -7022,7 +7023,7 @@
       changeLabel: 'Sigorta Poliçesini Değiştir',
       missingAlert: 'Lütfen sigorta poliçesi dosyası seçin.',
       successMessage: 'Sigorta Poliçesi Başarıyla Yüklendi',
-      icon: 'umbrella-badge'
+      icon: 'shield'
     },
     kasko: {
       key: 'kasko',
@@ -7033,7 +7034,7 @@
       changeLabel: 'Kasko Poliçesini Değiştir',
       missingAlert: 'Lütfen kasko poliçesi dosyası seçin.',
       successMessage: 'Kasko Poliçesi Başarıyla Yüklendi',
-      icon: 'umbrella-badge'
+      icon: 'shield'
     },
     k2: {
       key: 'k2',
@@ -7126,22 +7127,23 @@
     if (!cfg) return '';
     var svgOpen = '<svg class="vehicle-document-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">';
     var svgClose = '</svg>';
-    if (cfg.key === 'sigorta' || cfg.key === 'kasko') {
+    if (cfg.key === 'sigorta') {
       return svgOpen +
-        '<path d="M12 3v1"></path><path d="M12 19v2"></path><path d="M4.5 10.5a7.5 7.5 0 0 1 15 0"></path>' +
+        '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>' +
+        '<path d="M8 12h8"></path><path d="M12 8v8"></path>' +
+        svgClose;
+    }
+    if (cfg.key === 'kasko') {
+      return svgOpen +
+        '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>' +
+        '<path d="M7 14h.01"></path><path d="M17 14h.01"></path>' +
+        '<path d="M6 14h12l-1.4-4.2a1 1 0 0 0-.95-.8H7.35a1 1 0 0 0-.95.8L6 14z"></path>' +
         svgClose;
     }
     return svgOpen +
       '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>' +
       '<path d="M14 2v6h6"></path><path d="M16 13H8"></path><path d="M16 17H8"></path><path d="M10 9H8"></path>' +
       svgClose;
-  }
-
-  function getVehicleDocumentIconBadgeLetter(cfg) {
-    if (!cfg) return '';
-    if (cfg.key === 'sigorta') return 'S';
-    if (cfg.key === 'kasko') return 'K';
-    return '';
   }
 
   function buildVehicleDocumentCardElement(vehicle, docKey, vehicleId) {
@@ -7157,14 +7159,7 @@
     card.setAttribute('aria-label', cfg.label);
     const iconWrap = document.createElement('div');
     iconWrap.className = 'vehicle-document-icon-wrap';
-    const badgeLetter = getVehicleDocumentIconBadgeLetter(cfg);
-    if (badgeLetter) {
-      iconWrap.classList.add('vehicle-document-icon-wrap--umbrella');
-      iconWrap.innerHTML = getVehicleDocumentIconSvg(cfg) +
-        '<span class="vehicle-document-icon-badge" aria-hidden="true">' + badgeLetter + '</span>';
-    } else {
-      iconWrap.innerHTML = getVehicleDocumentIconSvg(cfg);
-    }
+    iconWrap.innerHTML = getVehicleDocumentIconSvg(cfg);
     const labelEl = document.createElement('div');
     labelEl.className = 'vehicle-document-label';
     labelEl.textContent = cfg.label;

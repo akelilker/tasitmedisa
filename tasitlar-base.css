@@ -1170,6 +1170,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 
 #event-menu-modal .event-menu-icon--vehicle {
     --event-menu-icon-url: url("icon/event-menu-vehicle.png?v=20260608.1");
+    -webkit-mask-size: 88% auto;
+    mask-size: 88% auto;
 }
 
 #event-menu-modal .event-menu-icon--zorunlu {
