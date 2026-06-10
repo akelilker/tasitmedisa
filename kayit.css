@@ -1609,7 +1609,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         margin-bottom: 6px !important;
     }
     #vehicle-modal .modal-column-left .form-section-inline:has(#boya-var) {
-        margin-top: 0 !important;
+        margin-top: auto !important;
         margin-bottom: 0 !important;
     }
 
@@ -1665,12 +1665,12 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     }
     /* Notlar: Üstündeki alanlarla eşit aralıkta (6-7px) olacak şekilde düzeltildi */
     #vehicle-modal .modal-column-right .form-section:has(#vehicle-notes) {
-        margin-top: 0 !important;
+        margin-top: auto !important;
         margin-bottom: 0 !important;
-        padding-bottom: 8px !important;
+        padding-bottom: 0 !important;
         flex: none !important;
-        gap: 0 !important;
-        transform: none !important; /* Aşağı zorla itmeyi iptal ettik */
+        gap: 4px !important;
+        transform: none !important;
     }
     #vehicle-modal .modal-column-right .form-section,
     #vehicle-modal .modal-column-right .form-section-inline {
@@ -1766,10 +1766,6 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-column-right textarea.form-input:not(#vehicle-notes):not(#anahtar-nerede):not(#kredi-detay) {
         min-height: 73px !important;
     }
-    #vehicle-modal #vehicle-notes {
-        min-height: 64px !important; /* Mobilde 2px daraltıldı (66→64) */
-    }
-    
     /* Tarih inputları: gg.aa.yyyy kutudan taşmasın – font küçük, overflow gizli */
     .modal-body input[type="date"].form-input { 
         height: 28px; 
@@ -1880,10 +1876,10 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         margin-bottom: 6px !important;
     }
     #vehicle-modal .modal-column-right .form-section:has(#vehicle-notes) {
-        margin-top: 0 !important;
+        margin-top: auto !important;
         margin-bottom: 0 !important;
-        padding-bottom: 4px !important;
-        gap: 5px !important;
+        padding-bottom: 0 !important;
+        gap: 4px !important;
         flex: none !important;
         transform: none !important;
     }
@@ -1895,8 +1891,8 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-column-right .form-section:has(#vehicle-notes) textarea {
         margin-top: 0 !important;
         transform: none !important;
-        min-height: 34px !important;
-        height: 34px !important;
+        min-height: 30px !important;
+        height: 30px !important;
         max-height: 300px !important;
     }
 }
@@ -2589,7 +2585,10 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     }
     /* Mobil kayıt: kolon alt hizası + Notlar dikey (etiket üst / input alt) */
     #vehicle-modal .modal-columns {
-        align-items: end !important;
+        align-items: stretch !important;
+    }
+    #vehicle-modal .modal-column-left .form-section-inline:has(#boya-var) {
+        margin-top: auto !important;
     }
     #vehicle-modal .modal-column-left .form-section:has(#boya-parts-container):not(.boya-parts-visible) #boya-parts-container {
         margin-top: 0 !important;
@@ -2599,7 +2598,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         flex-direction: column !important;
         align-items: stretch !important;
         gap: 4px !important;
-        margin-top: 0 !important;
+        margin-top: auto !important;
         margin-bottom: 0 !important;
         padding-bottom: 0 !important;
         flex: 0 0 auto !important;
@@ -2622,12 +2621,20 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         width: calc(100% - 4px) !important;
         max-width: calc(100% - 4px) !important;
         min-width: 0 !important;
-        min-height: 34px !important;
-        height: 34px !important;
+        min-height: 30px !important;
+        height: 30px !important;
         max-height: 300px !important;
         margin: 0 !important;
         transform: none !important;
         padding: 4px 8px !important;
         box-sizing: border-box !important;
+    }
+}
+
+/* PWA: Notlar yüksekliği Var/Yok butonları ile eşit (genel mobil bloğundan sonra) */
+@media (max-width: 640px) and (display-mode: standalone) {
+    #vehicle-modal .modal-body #vehicle-notes {
+        min-height: 32px !important;
+        height: 32px !important;
     }
 }

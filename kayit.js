@@ -537,6 +537,15 @@
   }
 
   function resizeVehicleNotesArea(textarea) {
+    if (!textarea) return;
+    /* Mobilde CSS tek satır yüksekliği kazanır; boşken inline height kaldır */
+    if (window.matchMedia('(max-width: 640px)').matches) {
+      textarea.style.removeProperty('height');
+      textarea.style.removeProperty('overflow-y');
+      if (!String(textarea.value || '').trim()) {
+        return;
+      }
+    }
     resizeVehicleTextareaArea(textarea);
   }
 
