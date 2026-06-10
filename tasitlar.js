@@ -2213,8 +2213,8 @@
       return '<span class="event-menu-category-icon event-menu-category-icon--inline event-menu-category-icon--primary" aria-hidden="true">' + categorySvgMap[categoryId] + '</span>';
     }
     var inlineSvgMap = {
-      sigorta: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>',
-      kasko: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M7 14h.01M17 14h.01"/><path d="M5 14h14l-1.4-4.2a1 1 0 0 0-.95-.8H7.35a1 1 0 0 0-.95.8L5 14z"/></svg>',
+      sigorta: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v1"/><path d="M12 19v2"/><path d="M4.5 10.5a7.5 7.5 0 0 1 15 0"/></svg>',
+      kasko: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v1"/><path d="M12 19v2"/><path d="M4.5 10.5a7.5 7.5 0 0 1 15 0"/></svg>',
       ceza: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4l9 16H3z"/><path d="M12 9v5M12 17h.01"/></svg>',
       km: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 17a8 8 0 1 1 14 0"/><path d="M12 14l4-4M8 17h8"/></svg>',
       bakim: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>',
@@ -7127,17 +7127,21 @@
     var svgOpen = '<svg class="vehicle-document-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">';
     var svgClose = '</svg>';
     if (cfg.key === 'sigorta' || cfg.key === 'kasko') {
-      var badgeLetter = cfg.key === 'sigorta' ? 'S' : 'K';
       return svgOpen +
         '<path d="M12 3v1"></path><path d="M12 19v2"></path><path d="M4.5 10.5a7.5 7.5 0 0 1 15 0"></path>' +
-        '<circle cx="17.5" cy="17.5" r="3.8" fill="currentColor" stroke="none"></circle>' +
-        '<text x="17.5" y="18.15" text-anchor="middle" fill="#0a1018" font-size="5" font-weight="700" font-family="Segoe UI, system-ui, sans-serif">' + badgeLetter + '</text>' +
         svgClose;
     }
     return svgOpen +
       '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>' +
       '<path d="M14 2v6h6"></path><path d="M16 13H8"></path><path d="M16 17H8"></path><path d="M10 9H8"></path>' +
       svgClose;
+  }
+
+  function getVehicleDocumentIconBadgeLetter(cfg) {
+    if (!cfg) return '';
+    if (cfg.key === 'sigorta') return 'S';
+    if (cfg.key === 'kasko') return 'K';
+    return '';
   }
 
   function buildVehicleDocumentCardElement(vehicle, docKey, vehicleId) {
@@ -7153,7 +7157,14 @@
     card.setAttribute('aria-label', cfg.label);
     const iconWrap = document.createElement('div');
     iconWrap.className = 'vehicle-document-icon-wrap';
-    iconWrap.innerHTML = getVehicleDocumentIconSvg(cfg);
+    const badgeLetter = getVehicleDocumentIconBadgeLetter(cfg);
+    if (badgeLetter) {
+      iconWrap.classList.add('vehicle-document-icon-wrap--umbrella');
+      iconWrap.innerHTML = getVehicleDocumentIconSvg(cfg) +
+        '<span class="vehicle-document-icon-badge" aria-hidden="true">' + badgeLetter + '</span>';
+    } else {
+      iconWrap.innerHTML = getVehicleDocumentIconSvg(cfg);
+    }
     const labelEl = document.createElement('div');
     labelEl.className = 'vehicle-document-label';
     labelEl.textContent = cfg.label;

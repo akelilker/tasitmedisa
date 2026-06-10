@@ -1137,11 +1137,8 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       var svgOpen = '<svg class="driver-document-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">';
       var svgClose = '</svg>';
       if (config.key === 'sigorta' || config.key === 'kasko') {
-          var badgeLetter = config.key === 'sigorta' ? 'S' : 'K';
           return svgOpen +
               '<path d="M12 3v1"></path><path d="M12 19v2"></path><path d="M4.5 10.5a7.5 7.5 0 0 1 15 0"></path>' +
-              '<circle cx="17.5" cy="17.5" r="3.8" fill="currentColor" stroke="none"></circle>' +
-              '<text x="17.5" y="18.15" text-anchor="middle" fill="#0a1018" font-size="5" font-weight="700" font-family="Segoe UI, system-ui, sans-serif">' + badgeLetter + '</text>' +
               svgClose;
       }
       if (config.key === 'tasit_karti') {
@@ -1168,8 +1165,12 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       const hasDocument = hasDriverDocument(vehicle, config);
       const actionText = hasDocument ? 'Görüntüle' : 'Yüklü Değil';
       const disabledAttr = hasDocument ? '' : ' aria-disabled="true"';
+      const badgeLetter = (config.key === 'sigorta') ? 'S' : (config.key === 'kasko') ? 'K' : '';
+      const iconWrapClass = badgeLetter ? 'driver-document-icon-wrap driver-document-icon-wrap--umbrella' : 'driver-document-icon-wrap';
+      const iconHtml = getDriverDocumentIconSvg(config) +
+        (badgeLetter ? '<span class="driver-document-icon-badge" aria-hidden="true">' + badgeLetter + '</span>' : '');
       return '<button type="button" class="driver-document-card' + (hasDocument ? '' : ' driver-document-card-missing') + '" data-document-type="' + config.key + '"' + disabledAttr + '>' +
-          '<span class="driver-document-icon-wrap">' + getDriverDocumentIconSvg(config) + '</span>' +
+          '<span class="' + iconWrapClass + '">' + iconHtml + '</span>' +
           '<span class="driver-document-title">' + config.title + '</span>' +
           '<span class="driver-document-action">' + actionText + '</span>' +
       '</button>';
