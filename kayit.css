@@ -1580,7 +1580,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-column-right { display: flex; flex-direction: column; min-height: 0; }
     .modal-column-right .form-section { margin-bottom: 8px; }
 
-    /* Mobil: grid satırı sol kolon yüksekliğine gerilir; sağ Notlar kalan boşluğu doldurur */
+    /* Mobil: sağ-sol grid alt hizası eşit – kolonlar aynı yükseklikte, son satır aynı hizada */
     #vehicle-modal .modal-columns {
         align-items: stretch !important;
     }
@@ -1590,10 +1590,6 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         flex-direction: column !important;
         min-height: 0;
         align-self: stretch !important;
-    }
-    #vehicle-modal .modal-column-right > .form-section:not(:has(#vehicle-notes)),
-    #vehicle-modal .modal-column-right > .form-section-inline {
-        flex: 0 0 auto !important;
     }
     /* Sol alt hizayı bozan gizli Tramer/Boya alanları mobilde yer kaplamasın */
     #vehicle-modal .modal-column-left .form-section:has(#tramer-records-container):not(.tramer-records-visible),
@@ -1667,15 +1663,19 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-column-right .form-section:has(#vehicle-kasko-kodu) {
         margin-bottom: 6px !important;
     }
-    /* Notlar: sağ kolonda kalan dikey boşluğu doldurur (sabit px / translateY yok) */
+    /* Notlar: Üstündeki alanlarla eşit aralıkta (6-7px) olacak şekilde düzeltildi */
     #vehicle-modal .modal-column-right .form-section:has(#vehicle-notes) {
         margin-top: 0 !important;
         margin-bottom: 0 !important;
-        padding-bottom: 0 !important;
-        flex: 1 1 auto !important;
-        min-height: 0 !important;
-        gap: 4px !important;
-        transform: none !important;
+        padding-bottom: 8px !important;
+        flex: none !important;
+        gap: 0 !important;
+        transform: none !important; /* Aşağı zorla itmeyi iptal ettik */
+    }
+    #vehicle-modal #vehicle-notes,
+    #vehicle-modal .modal-column-right .form-section:has(#vehicle-notes) textarea {
+        min-height: 30px !important; /* Sol grid alt hizasıyla eşitlemek için 1 satır yüksekliğine indirildi */
+        height: auto !important;
     }
     #vehicle-modal .modal-column-right .form-section,
     #vehicle-modal .modal-column-right .form-section-inline {
@@ -1771,6 +1771,10 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-column-right textarea.form-input:not(#vehicle-notes):not(#anahtar-nerede):not(#kredi-detay) {
         min-height: 73px !important;
     }
+    #vehicle-modal #vehicle-notes {
+        min-height: 64px !important; /* Mobilde 2px daraltıldı (66→64) */
+    }
+    
     /* Tarih inputları: gg.aa.yyyy kutudan taşmasın – font küçük, overflow gizli */
     .modal-body input[type="date"].form-input { 
         height: 28px; 
@@ -2216,13 +2220,13 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         overflow: hidden;
         flex: 0 0 0;
     }
-    /* Notlar: Kasko Kodu ile arası 8px; Boya / Değişen butonlarının alt çizgisiyle hizalı */
+    /* Notlar: Kasko Kodu ile arası 8px; Boya ile aynı satırda (translateY ile aşağı hiza) */
     #vehicle-modal .modal-body .modal-column-right .form-section:has(#vehicle-notes) {
         margin-top: 2px !important;
         margin-bottom: 0 !important;
         flex: none !important;
         min-width: 0;
-        padding-bottom: 0 !important;
+        padding-bottom: 6px !important;
         transform: translateY(10px);
     }
     /* iOS PWA: Notlar etiketinin üstündeki dikey boşluk 2px daralt */
@@ -2488,7 +2492,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         padding-bottom: 0 !important;
     }
     #vehicle-modal .modal-body .universal-btn-group {
-        margin-top: 6px !important;
+        margin-top: auto !important;
         padding-top: 6px !important;
         padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px)) !important;
     }
@@ -2552,18 +2556,32 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         transform: scaleY(1.454) !important;
         transform-origin: bottom center !important;
     }
-    /* Mobil kayıt: Notlar flex-fill (owner — kolon alt hizası) */
-    #vehicle-modal .modal-column-right .form-section:has(#vehicle-notes) {
+    /* Mobil kayıt: içerik yüksekliği kolonlarda; boşluğu buton grubu üstlenir */
+    #vehicle-modal .modal-columns {
+        flex: 0 0 auto !important;
+        height: auto !important;
+        align-items: stretch !important;
+    }
+    #vehicle-modal .modal-column-left .form-section:has(#boya-parts-container):not(.boya-parts-visible) #boya-parts-container {
+        margin-top: 0 !important;
+    }
+    #vehicle-modal .modal-column-right {
         display: flex !important;
         flex-direction: column !important;
-        align-items: stretch !important;
+        min-height: 0 !important;
+    }
+    #vehicle-modal .modal-column-right .form-section:has(#vehicle-notes) {
+        display: flex !important;
         flex: 1 1 auto !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
         min-height: 0 !important;
         gap: 4px !important;
         margin-top: 0 !important;
         margin-bottom: 0 !important;
         padding-bottom: 0 !important;
-        overflow: hidden !important;
+        overflow: visible !important;
+        visibility: visible !important;
         transform: none !important;
     }
     #vehicle-modal .modal-column-right .form-section:has(#vehicle-notes) .form-label {
@@ -2586,19 +2604,9 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         transform: none !important;
         padding: 4px 8px !important;
         box-sizing: border-box !important;
-        overflow-x: hidden !important;
-        overflow-y: hidden !important;
         overflow-anchor: none;
-        resize: none !important;
     }
-    #vehicle-modal .modal-body #vehicle-notes:focus {
-        overflow-y: auto !important;
-    }
-}
-
-/* PWA: Notlar min yüksekliği (flex-fill ile birlikte; sabit height yok) */
-@media (max-width: 640px) and (display-mode: standalone) {
-    #vehicle-modal .modal-body #vehicle-notes {
-        min-height: 32px !important;
+    #vehicle-modal .modal-body .universal-btn-group {
+        margin-top: auto !important;
     }
 }

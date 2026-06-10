@@ -537,31 +537,6 @@
   }
 
   function resizeVehicleNotesArea(textarea) {
-    if (!textarea) return;
-    const isMobile = window.matchMedia('(max-width: 640px)').matches;
-    if (isMobile) {
-      /* Mobilde flex-fill CSS yüksekliği yönetir; inline height yalnızca içerik taşınca */
-      textarea.style.removeProperty('height');
-      const value = String(textarea.value || '').trim();
-      if (!value) {
-        textarea.style.removeProperty('overflow-y');
-        return;
-      }
-      const maxPx = parseFloat(getComputedStyle(textarea).maxHeight) || 300;
-      const modalBody = textarea.closest('.modal-body');
-      const scrollTop = modalBody ? modalBody.scrollTop : 0;
-      if (textarea.scrollHeight > textarea.clientHeight + 1) {
-        const neededHeight = Math.min(textarea.scrollHeight, maxPx);
-        textarea.style.setProperty('height', `${neededHeight}px`, 'important');
-        textarea.style.setProperty('overflow-y', 'auto', 'important');
-      } else {
-        textarea.style.removeProperty('overflow-y');
-      }
-      if (modalBody) {
-        modalBody.scrollTop = scrollTop;
-      }
-      return;
-    }
     resizeVehicleTextareaArea(textarea);
   }
 
