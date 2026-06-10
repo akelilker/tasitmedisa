@@ -3913,24 +3913,6 @@ body.login-page.driver-feedback-modal-open #app-footer.login-footer {
   flex-shrink: 0;
   transition: color .18s ease, filter .18s ease, transform .18s ease;
 }
-.driver-document-icon-wrap--umbrella {
-  position: relative;
-}
-.driver-document-icon-badge {
-  position: absolute;
-  right: 2px;
-  bottom: 2px;
-  width: 13px;
-  height: 13px;
-  border-radius: 50%;
-  background: currentColor;
-  color: #0a1018;
-  font-size: 8px;
-  font-weight: 700;
-  line-height: 13px;
-  text-align: center;
-  pointer-events: none;
-}
 
 #driver-documents-modal .driver-document-card:not(.driver-document-card-missing):hover .driver-document-icon-wrap,
 #driver-documents-modal .driver-document-card:not(.driver-document-card-missing):focus-visible .driver-document-icon-wrap {
