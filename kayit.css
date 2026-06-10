@@ -2596,6 +2596,9 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-columns {
         align-items: end !important;
     }
+    #vehicle-modal .modal-column-left .form-section:has(#boya-parts-container):not(.boya-parts-visible) #boya-parts-container {
+        margin-top: 0 !important;
+    }
     #vehicle-modal .modal-column-right .form-section:has(#vehicle-notes) {
         display: flex !important;
         flex-direction: column !important;
@@ -2627,7 +2630,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         min-height: 30px !important;
         height: 30px !important;
         max-height: 300px !important;
-        margin: 0 !important;
+        margin: 6px 0 0 0 !important;
         transform: none !important;
         padding: 4px 8px !important;
         box-sizing: border-box !important;
