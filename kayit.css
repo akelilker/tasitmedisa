@@ -1116,6 +1116,14 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
 .vehicle-type-btn[data-type="kamyon"] { width: 36px; height: 26px; padding-top: 2px; }
 .vehicle-type-btn[data-type="kamyon"] img { object-position: bottom center; transform: scale(0.95); transform-origin: bottom center; }
 .vehicle-type-btn[data-type="romork"] { width: 40px; height: 26px; padding-top: 2px; }
+.vehicle-type-btn[data-type="romork"] img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: bottom center;
+    transform: translateY(-4px) scale(1.28);
+    transform-origin: bottom center;
+}
 
 .vehicle-type-btn:hover { background: transparent; border: none; }
 .vehicle-type-btn:hover:not(.active) {
@@ -1648,7 +1656,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         height: 100%;
         object-fit: contain;
         object-position: bottom center;
-        transform: scale(1.28);
+        transform: translateY(-4px) scale(1.28);
         transform-origin: bottom center;
     }
 
@@ -2296,7 +2304,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     .vehicle-type-btn[data-type="kamyon"] { width: 40px; height: 32px; padding-top: 2px; }
     .vehicle-type-btn[data-type="kamyon"] img { object-position: bottom center; transform: scale(0.95); transform-origin: bottom center; }
     .vehicle-type-btn[data-type="romork"] { width: 52px; height: 36px; padding-top: 0; }
-    .vehicle-type-btn[data-type="romork"] img { width: 100%; height: 100%; object-fit: contain; object-position: bottom center; }
+    .vehicle-type-btn[data-type="romork"] img { width: 100%; height: 100%; object-fit: contain; object-position: bottom center; transform: translateY(-4px) scale(1.28); transform-origin: bottom center; }
 }
 
 /* iOS PWA modal margin: style-core.css (.modal-overlay .modal-container) */
@@ -2591,7 +2599,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         height: 32px !important;
     }
     .vehicle-type-btn[data-type="romork"] img {
-        transform: scale(1.28) !important;
+        transform: translateY(-4px) scale(1.28) !important;
         transform-origin: bottom center !important;
     }
     #vehicle-modal .modal-column-right .form-section:has(#vehicle-notes) {
