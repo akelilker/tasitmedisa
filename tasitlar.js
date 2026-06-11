@@ -6219,9 +6219,10 @@
     });
   }
 
-  function getPolicyOperationDateFieldHtml(policyType) {
+  function getPolicyOperationDateFieldHtml(policyType, labelText) {
     const inputId = policyType === 'sigorta' ? 'sigorta-tarih' : 'kasko-tarih';
-    return '<div><label class="form-label" for="' + inputId + '">Yenileme/Başlangıç (gg/aa/yyyy)</label>' +
+    const label = labelText || 'Yenileme/Başlangıç (gg/aa/yyyy)';
+    return '<div><label class="form-label" for="' + inputId + '">' + label + '</label>' +
       '<input id="' + inputId + '" class="form-input" type="text" placeholder="gg/aa/yyyy"></div>';
   }
 
@@ -8579,13 +8580,9 @@
     if (cfg.key === 'sigorta' || cfg.key === 'kasko') {
       const policyType = cfg.key === 'sigorta' ? 'sigorta' : 'kasko';
       const dateStack = document.createElement('div');
-      dateStack.className = 'event-form-stack';
-      dateStack.innerHTML = getPolicyOperationDateFieldHtml(policyType);
+      dateStack.className = 'event-form-stack ruhsat-policy-date-stack';
+      dateStack.innerHTML = getPolicyOperationDateFieldHtml(policyType, 'Başlangıç Tarihi');
       content.appendChild(dateStack);
-      const dateHint = document.createElement('p');
-      dateHint.className = 'ruhsat-upload-hint';
-      dateHint.textContent = 'Yeni dönem poliçesi ise yenileme/başlangıç tarihini girin. Mevcut belgeyi yalnızca sisteme ekliyorsanız boş bırakın.';
-      content.appendChild(dateHint);
     }
     const uploadBox = document.createElement('div');
     uploadBox.className = 'ruhsat-upload-box';
@@ -8607,10 +8604,13 @@
     var hintEl = document.createElement('p');
     hintEl.className = 'ruhsat-upload-hint';
     hintEl.id = 'ruhsat-upload-hint';
-    hintEl.textContent = hasExistingRuhsat
-      ? 'Dosya seçildiğinde mevcut belge için onay alınır.'
-      : 'Dosya seçildiğinde belge otomatik yüklenir.';
-    content.appendChild(hintEl);
+    var showUploadHint = !(cfg.key === 'tasit_karti' && !hasExistingRuhsat);
+    if (showUploadHint) {
+      hintEl.textContent = hasExistingRuhsat
+        ? 'Dosya seçildiğinde mevcut belge için onay alınır.'
+        : 'Dosya seçildiğinde belge otomatik yüklenir.';
+      content.appendChild(hintEl);
+    }
     var replaceConfirm = document.createElement('div');
     replaceConfirm.className = 'ruhsat-upload-replace-confirm';
     replaceConfirm.hidden = true;
@@ -8712,14 +8712,11 @@
       expiryWrap.className = 'tasit-karti-expiry-field';
       const expiryLabel = document.createElement('label');
       expiryLabel.className = 'form-label';
-      expiryLabel.textContent = 'K2 Belgesine Bağlı Geçerlilik';
+      expiryLabel.textContent = 'Geçerlilik Tarihi';
       const expiryInfo = document.createElement('div');
       expiryInfo.className = 'form-input';
       expiryInfo.setAttribute('aria-readonly', 'true');
-      const k2ExpiryDate = getTasitKartiSourceK2ExpiryIsoDate();
-      expiryInfo.textContent = k2ExpiryDate
-        ? (formatVehicleDocumentExpiryDate(k2ExpiryDate) + ' (K2 Belgesi Bitiş Tarihinden Gelir)')
-        : 'Önce K2 Belgesi Geçerlilik Süresi Kaydedilmelidir';
+      expiryInfo.textContent = '';
       expiryWrap.appendChild(expiryLabel);
       expiryWrap.appendChild(expiryInfo);
       content.appendChild(expiryWrap);

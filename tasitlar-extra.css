@@ -709,6 +709,19 @@
   box-sizing: border-box;
 }
 
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack {
+  width: 100%;
+  max-width: 280px;
+  margin: 0 auto 10px auto;
+  box-sizing: border-box;
+}
+
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack .form-input,
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack .olay-date-mobile-wrap {
+  width: 100%;
+  box-sizing: border-box;
+}
+
 /* Ruhsat: Yükle butonu — yeşil metin, yeşil çerçeve (#dinamik-olay-modal #ruhsat-btn-group) */
 #dinamik-olay-modal #ruhsat-btn-group #dinamik-olay-kaydet-btn {
   background: transparent !important;
