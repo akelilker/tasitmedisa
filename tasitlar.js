@@ -2203,56 +2203,44 @@
   };
 
   function getEventMenuCategoryIconHtml(categoryId) {
+    var shieldCheckSvg = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m8.5 12 2.2 2.2 4.8-4.8"/></svg>';
     var categorySvgMap = {
-      sureli: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 9h16"/><path d="M8 14l2.5 2.5L16 12"/></svg>',
-      police: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>',
-      donanim: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 6.5a4 4 0 0 0-5.2 5.2l-5.8 5.8a2.1 2.1 0 0 0 3 3l5.8-5.8a4 4 0 0 0 5.2-5.2l-2.7 2.7-3-3 2.7-2.7z"/><path d="M17 3v3M20 6h-3M18.5 4.5l2-2"/></svg>',
-      genel: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 13h13v9H4z"/><path d="M17 13v3h3"/><path d="M6 16h8M6 18.5h5.5M6 21h7"/><circle cx="8.5" cy="7" r="3.25"/><circle cx="16.5" cy="7" r="3.25"/><path d="M8.5 10.25h8"/><path d="M8.5 10.25 7 13"/><path d="M16.5 10.25 15 13"/></svg>'
+      sureli: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5.5A8.5 8.5 0 0 1 12 7v14a8.5 8.5 0 0 0-9-1.5z"/><path d="M21 5.5A8.5 8.5 0 0 0 12 7v14a8.5 8.5 0 0 1 9-1.5z"/><path d="M7 10h2M7 13h2M15 10h2M15 13h2"/></svg>',
+      police: shieldCheckSvg,
+      donanim: '<svg viewBox="0 0 28 24" aria-hidden="true" style="stroke-width:1.8"><path d="M8 21V5a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v16M7 21h13M10.5 6h6v5h-6z"/><path d="M19 7h2l2 2v8.5a1.5 1.5 0 0 0 3 0V10l-2-2M11 15h.01M14 15h.01M17 15h.01"/><path d="M5.5 8.5a5 5 0 0 0 0 7M3 6a8.5 8.5 0 0 0 0 12"/></svg>',
+      kullanim: '<svg viewBox="0 0 24 24" aria-hidden="true"><path style="fill:currentColor;stroke:none" d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2m0 2a8 8 0 0 1 7.94 7H16a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1H4.06A8 8 0 0 1 12 4m2 8v1a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-1zm-9.94 1H8a3 3 0 0 0 3 3v3.94A8 8 0 0 1 4.06 13m8.94 6.94V16a3 3 0 0 0 3-3h3.94A8 8 0 0 1 13 19.94"/></svg>',
+      yonetim: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5h6v2M3 12h18M10 12v2h4v-2"/></svg>'
     };
-    if (categorySvgMap[categoryId]) {
-      return '<span class="event-menu-category-icon event-menu-category-icon--inline event-menu-category-icon--primary" aria-hidden="true">' + categorySvgMap[categoryId] + '</span>';
-    }
     var inlineSvgMap = {
-      sigorta: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>',
-      kasko: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M7 14h.01M17 14h.01"/><path d="M6 14h12l-1.4-4.2a1 1 0 0 0-.95-.8H7.35a1 1 0 0 0-.95.8L6 14z"/></svg>',
-      takip: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 17h2c.6 0 1-.4 1-1v-3l-2-5.5A2 2 0 0 0 17.7 6H6.3a2 2 0 0 0-1.9 1.4L2 12.8V16c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/><path d="M5 11h14"/></svg>',
-      ceza: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4l9 16H3z"/><path d="M12 9v5M12 17h.01"/></svg>',
+      muayene: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 2h8l6 6v8l-6 6H8l-6-6V8z"/><path d="M9 5h6l4 4v6l-4 4H9l-4-4V9z"/><text x="12" y="11" style="fill:currentColor;stroke:none;font-family:Arial,sans-serif;font-size:3.8px;font-weight:800;text-anchor:middle">TÜV</text><text x="12" y="15" style="fill:currentColor;stroke:none;font-family:Arial,sans-serif;font-size:3.8px;font-weight:800;text-anchor:middle">TÜRK</text></svg>',
+      takograf: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 12l4-4M7 17h10M6.5 9h.01M12 6.5h.01M17.5 9h.01"/></svg>',
+      tasitkarti: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8" cy="11" r="2.2"/><path d="M5 16c.8-1.7 1.8-2.5 3-2.5s2.2.8 3 2.5M14 9h4M14 12h4M14 15h3"/></svg>',
+      kaskokodu: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h8l4 4v16H6zM14 2v5h5"/><path d="M9 11h6M9 15h6M9 19h6M11 9v12M14 9v12"/></svg>',
+      takip: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M1 12h4M19 12h4"/></svg>',
+      utts: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16M3 21h12M6 6h6v5H6z"/><path d="m16 6 3 3v8.5a1.5 1.5 0 0 0 3 0V10l-2-2M7 15h4"/></svg>',
       km: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 17a8 8 0 1 1 14 0"/><path d="M12 14l4-4M8 17h8"/></svg>',
+      ceza: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 2h9l5 5v15H5zM14 2v6h6M8 12h5M8 16h5"/><path d="M17 13v4M17 20h.01"/></svg>',
       bakim: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>',
-      kaza: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4l9 16H3z"/><path d="M9 16h6M10 12h4"/></svg>',
-      sube: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21V8l8-4 8 4v13"/><path d="M8 21v-7h8v7M8 10h.01M12 10h.01M16 10h.01"/></svg>',
-      kullanici: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M5 21a7 7 0 0 1 14 0"/></svg>',
-      satis: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h10l5 5-7 7-8-8V7z"/><path d="M9 11h.01M16 8l-8 8"/></svg>'
+      lastik: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.7"/><path d="m12 7 1.5 3.5L17 12l-3.5 1.5L12 17l-1.5-3.5L7 12l3.5-1.5zM8 3.9l1 2M16 3.9l-1 2M20.1 8l-2 1M20.1 16l-2-1M16 20.1l-1-2M8 20.1l1-2M3.9 16l2-1M3.9 8l2 1"/></svg>',
+      anahtar: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 4.4 11 2.5a2 2 0 0 1 2.6 1l3.7 8.5a2 2 0 0 1-1 2.6l-4.4 1.9a2 2 0 0 1-2.6-1L5.6 7a2 2 0 0 1 1-2.6z"/><path d="m11.5 16.6-1.2 4.9M10.3 21.5l-1.7-.4M9.6 18.7l-1.5-.4"/><rect x="8.2" y="5.3" width="4.7" height="3.2" rx="1"/><circle cx="10.8" cy="11.4" r=".8"/><circle cx="13.3" cy="10.3" r=".8"/></svg>',
+      kaza: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 15v-4l2-3h4l2 3v4H2zM14 15v-4l2-3h4l2 3v4h-8z"/><circle cx="5" cy="16.5" r="1.5"/><circle cx="19" cy="16.5" r="1.5"/><path d="m12 4 .8 2.5L15 5.2l-.8 2.6 2.6.2-2.3 1.3 1.7 2-2.6-.6-.3 2.6-1.3-2.2-1.3 2.2-.3-2.6-2.6.6 1.7-2L7.2 8l2.6-.2L9 5.2l2.2 1.3z"/></svg>',
+      kredi: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="9" width="14" height="12" rx="2"/><path d="M8 9V6a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15" r="1.5"/></svg>',
+      sube: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 21V8l6-4 6 4v13M6 21v-6h5v6M6 10h.01M10 10h.01"/><path style="fill:currentColor;stroke:none" d="M16 7h4V5l3 3-3 3V9h-4zm6 8h-4v2l-3-3 3-3v2h4z"/></svg>',
+      kullanici: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="7" r="3"/><path d="M2.5 19a5.5 5.5 0 0 1 11 0"/><path style="fill:currentColor;stroke:none" d="M16 7h4V5l3 3-3 3V9h-4zm6 8h-4v2l-3-3 3-3v2h4z"/></svg>',
+      satis: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 17v-5l2-4h10l2 4v5M4 12h10M4.5 18.5h.01M13.5 18.5h.01"/><path style="fill:currentColor;stroke:none" d="M16 6h4V4l4 4-4 4v-2h-4z"/></svg>',
+      vehicle: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17v-5l2-5h14l2 5v5M5 12h14"/><circle cx="6.5" cy="17" r="1.5"/><circle cx="17.5" cy="17" r="1.5"/></svg>'
     };
-    if (inlineSvgMap[categoryId]) {
-      return '<span class="event-menu-category-icon event-menu-category-icon--inline" aria-hidden="true">' + inlineSvgMap[categoryId] + '</span>';
+    if (categoryId === 'sigorta' || categoryId === 'kasko') {
+      var policeLetter = categoryId === 'sigorta' ? 'S' : 'K';
+      return '<span class="event-menu-category-icon-wrap--police-letter" aria-hidden="true">' +
+        '<span class="event-menu-category-icon event-menu-category-icon--inline">' + shieldCheckSvg + '</span>' +
+        '<span class="event-menu-category-icon-letter">' + policeLetter + '</span>' +
+        '</span>';
     }
-    var iconMap = {
-      genel: 'vehicle',
-      sureli: 'zorunlu',
-      police: 'police',
-      donanim: 'donanim',
-      muayene: 'zorunlu',
-      takograf: 'zorunlu',
-      tasitkarti: 'zorunlu',
-      sigorta: 'police',
-      kasko: 'police',
-      takip: 'takip',
-      utts: 'utts',
-      anahtar: 'anahtar',
-      lastik: 'lastik',
-      kredi: 'kredi',
-      kaskokodu: 'kaskokodu',
-      ceza: 'vehicle',
-      km: 'vehicle',
-      bakim: 'vehicle',
-      kaza: 'vehicle',
-      sube: 'vehicle',
-      kullanici: 'vehicle',
-      satis: 'vehicle'
-    };
-    var iconName = iconMap[categoryId] || 'vehicle';
-    return '<span class="event-menu-category-icon event-menu-icon--' + escapeAttr(iconName) + '" aria-hidden="true"></span>';
+    var isPrimary = Object.prototype.hasOwnProperty.call(categorySvgMap, categoryId);
+    var svgHtml = categorySvgMap[categoryId] || inlineSvgMap[categoryId] || inlineSvgMap.vehicle;
+    var primaryClass = isPrimary ? ' event-menu-category-icon--primary' : '';
+    return '<span class="event-menu-category-icon event-menu-category-icon--inline' + primaryClass + '" aria-hidden="true">' + svgHtml + '</span>';
   }
 
   function syncEventMenuBackButton(mode) {
@@ -3214,30 +3202,27 @@
       }
     }
 
-    // Marka Model satırına butonları ekle (Olay Ekle solda, Marka/Model ortada, Tarihçe sağda)
-    const brandYearRow = contentEl.querySelector('.detail-brand-year-row');
-    const brandYearEl = contentEl.querySelector('.detail-brand-year');
-    
-    if (brandYearRow && brandYearEl) {
-      const brandModel = formatBrandModel(vehicle.brandModel || '-');
-      brandYearEl.textContent = brandModel;
-      
-      // Mevcut butonları kaldır (eğer varsa)
-      const existingHistoryBtn = brandYearRow.querySelector('.history-btn-minimal');
-      const existingAddEventBtn = brandYearRow.querySelector('.history-add-event-btn');
-      if (existingHistoryBtn) existingHistoryBtn.remove();
-      if (existingAddEventBtn) existingAddEventBtn.remove();
-      
-      // Olay Ekle butonu (solda)
+    // Plaka satırı: Olay Ekle solda, plaka ortada, Tarihçe sağda
+    if (plateRow) {
+      const existingPlateHistoryBtn = plateRow.querySelector('.history-btn-minimal');
+      const existingPlateAddEventBtn = plateRow.querySelector('.history-add-event-btn');
+      if (existingPlateHistoryBtn) existingPlateHistoryBtn.remove();
+      if (existingPlateAddEventBtn) existingPlateAddEventBtn.remove();
+
+      const plateElForBtns = plateRow.querySelector('.detail-plate');
+
       const addEventBtn = document.createElement('button');
       addEventBtn.className = 'history-add-event-btn';
       addEventBtn.innerHTML = `
         <span>! Olay Ekle</span>
       `;
       addEventBtn.onclick = () => openEventModal('menu', vehicle.id);
-      brandYearRow.insertBefore(addEventBtn, brandYearEl);
-      
-      // Tarihçe butonu (sağda — yalnızca ikon)
+      if (plateElForBtns) {
+        plateRow.insertBefore(addEventBtn, plateElForBtns);
+      } else {
+        plateRow.appendChild(addEventBtn);
+      }
+
       const historyBtn = document.createElement('button');
       historyBtn.className = 'history-btn-minimal';
       historyBtn.innerHTML = `
@@ -3251,7 +3236,22 @@
       historyBtn.title = 'Tarihçe';
       historyBtn.setAttribute('aria-label', 'Tarihçe');
       historyBtn.onclick = () => showVehicleHistory(null);
-      brandYearRow.appendChild(historyBtn);
+      plateRow.appendChild(historyBtn);
+    }
+
+    // Marka/model satırı (yalnızca metin)
+    const brandYearRow = contentEl.querySelector('.detail-brand-year-row');
+    const brandYearEl = contentEl.querySelector('.detail-brand-year');
+
+    if (brandYearRow && brandYearEl) {
+      const brandModel = formatBrandModel(vehicle.brandModel || '-');
+      brandYearEl.textContent = brandModel;
+
+      // Eski konumdan butonları temizle (migration)
+      const existingHistoryBtn = brandYearRow.querySelector('.history-btn-minimal');
+      const existingAddEventBtn = brandYearRow.querySelector('.history-add-event-btn');
+      if (existingHistoryBtn) existingHistoryBtn.remove();
+      if (existingAddEventBtn) existingAddEventBtn.remove();
     }
 
     // İki kolonlu layout'u render et
@@ -6280,24 +6280,24 @@
       renderVehicleContextRow(modal, currentMenuVehicle);
       const assignmentLocked = isArchivedVehicleAssignmentLocked(currentMenuVehicle);
       const eventLabels = {
-        muayene: 'Muayene Bilgisi Güncelle',
-        takograf: 'Takograf Kalibrasyon Güncelle',
-        tasitkarti: 'Taşıt Kartı Güncelle',
-        sigorta: 'Sigorta Bilgisi Güncelle',
-        kasko: 'Kasko Bilgisi Güncelle',
-        takip: 'Taşıt Takip Cihaz Bilgisi Güncelle',
-        utts: 'UTTS Bilgisi Güncelle',
-        anahtar: 'Yedek Anahtar Bilgisi Güncelle',
-        lastik: 'Yazlık/Kışlık Lastik Durumu Güncelle',
-        kredi: 'Hak Mahrumiyeti Bilgisi Güncelle',
-        kaskokodu: 'Kasko Kodu Güncelleme',
-        ceza: 'Trafik Cezası Ekle',
-        km: 'Km Güncelle',
-        bakim: 'Bakım Bilgisi Ekle',
-        kaza: 'Kaza Bilgisi Ekle',
-        sube: 'Şube Değişikliği Bilgisi Güncelle',
-        kullanici: 'Kullanıcı Atama/Değişikliği Bilgisi Güncelle',
-        satis: 'Satış/Pert Bildirimi Yap'
+        muayene: 'Muayene',
+        takograf: 'Takograf Kalibrasyonu',
+        tasitkarti: 'Taşıt Kartı',
+        sigorta: 'Sigorta',
+        kasko: 'Kasko',
+        kaskokodu: 'Kasko Kodu',
+        takip: 'Taşıt Takip Cihazı',
+        utts: 'UTTS',
+        km: 'Kilometre',
+        ceza: 'Trafik Cezası',
+        bakim: 'Bakım',
+        lastik: 'Lastik Durumu',
+        anahtar: 'Yedek Anahtar',
+        kaza: 'Kaza',
+        kredi: 'Hak Mahrumiyeti',
+        sube: 'Şube Değişikliği',
+        kullanici: 'Kullanıcı Atama / Değişikliği',
+        satis: 'Satış / Pert'
       };
       const availableEventIds = new Set([
         'muayene',
@@ -6325,10 +6325,11 @@
         availableEventIds.add('kullanici');
       }
       const eventGroups = [
-        { id: 'sureli', title: 'Periyodik Kontroller', ids: ['muayene', 'takograf', 'tasitkarti'] },
-        { id: 'police', title: 'Sigorta İşlemleri', ids: ['sigorta', 'kasko'] },
-        { id: 'donanim', title: 'Taşıt Kitleri', ids: ['takip', 'utts', 'anahtar', 'lastik', 'kredi', 'kaskokodu'] },
-        { id: 'genel', title: 'Taşıt Takip', ids: ['ceza', 'km', 'bakim', 'kaza', 'sube', 'kullanici', 'satis'] }
+        { id: 'sureli', title: 'Yasal Zorunluluklar', ids: ['muayene', 'takograf', 'tasitkarti'] },
+        { id: 'police', title: 'Sigorta İşlemleri', ids: ['sigorta', 'kasko', 'kaskokodu'] },
+        { id: 'donanim', title: 'Kurumsal Eklentiler', ids: ['takip', 'utts'] },
+        { id: 'kullanim', title: 'Kullanım ve Olaylar', ids: ['km', 'ceza', 'bakim', 'lastik', 'anahtar', 'kaza'] },
+        { id: 'yonetim', title: 'Yönetim İşlemleri', ids: ['kullanici', 'sube', 'kredi', 'satis'] }
       ];
       
       const vid = (window.currentDetailVehicleId || vehicleId || '').toString().replace(/"/g, '&quot;');

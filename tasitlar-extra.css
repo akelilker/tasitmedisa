@@ -1270,8 +1270,8 @@
   opacity: 0.65;
 }
 
-/* Olay Ekle butonu - Marka/model satırında solda */
-.detail-brand-year-row .history-add-event-btn {
+/* Olay Ekle butonu - plaka satırında solda */
+.detail-plate-row .history-add-event-btn {
     width: auto;
     padding: 5px 8px 5px 0 !important;
     background: transparent !important;
@@ -1296,19 +1296,19 @@
     min-height: 26px;
 }
 
-.detail-brand-year-row .history-add-event-btn svg {
+.detail-plate-row .history-add-event-btn svg {
     width: 16px;
     height: 16px;
     flex-shrink: 0;
 }
 
-.detail-brand-year-row .history-add-event-btn:hover {
+.detail-plate-row .history-add-event-btn:hover {
     color: var(--theme-color); /* Renk değişmesin, aynı kırmızı kalacak */
     transform: scale(1.08); /* Görsel olarak büyüt (sayfa kıpırdamasın diye transform kullanıldı) */
 }
 
-/* Tarihçe butonu - Marka/model satırında saşda (Olay Ekle ile aynı satır, aynı dikey padding) */
-.detail-brand-year-row .history-btn-minimal {
+/* Tarihçe butonu - plaka satırında sağda (Olay Ekle ile aynı satır) */
+.detail-plate-row .history-btn-minimal {
     position: relative;
     display: flex !important;
     align-items: center !important; /* İkon ve metin kendi içinde hizalı */
@@ -1325,25 +1325,25 @@
     min-height: 26px;
 }
 
-.detail-brand-year-row .history-add-event-btn span,
-.detail-brand-year-row .history-btn-minimal span {
+.detail-plate-row .history-add-event-btn span,
+.detail-plate-row .history-btn-minimal span {
     display: inline-flex;
     align-items: center;
     line-height: 1.15;
 }
 
-.detail-brand-year-row .history-btn-minimal:hover {
+.detail-plate-row .history-btn-minimal:hover {
     color: var(--txt-white);
     font-size: 15px; /* Hover'da metin de büyüsün (15px – 16px) */
 }
 
-.detail-brand-year-row .history-btn-minimal svg {
+.detail-plate-row .history-btn-minimal svg {
     width: 16px;
     height: 16px; /* Olay Ekle satırı ile aynı cap hizası (kare ikon kutusu) */
     flex-shrink: 0;
     display: block !important; /* Inline SVG boşluk kaymasını önler */
 }
-.detail-brand-year-row .history-btn-minimal:hover svg {
+.detail-plate-row .history-btn-minimal:hover svg {
     transform: scale(1.08);
     transform-origin: center center;
 }
@@ -2679,28 +2679,34 @@
   /* Detay modal: legend–footer arası boşluk 4px toplam (mobil) */
   #vehicle-detail-modal #vehicle-detail-content { padding-bottom: 4px !important; }
   #vehicle-detail-modal .modal-body { padding-bottom: 4px !important; }
-  #vehicle-detail-modal .detail-plate-row { margin-top: 0 !important; margin-bottom: 2px !important; }
+  #vehicle-detail-modal .detail-plate-row {
+    margin-top: 0 !important;
+    margin-bottom: 2px !important;
+    padding-top: 0 !important;
+    position: relative;
+    z-index: 1;
+    min-height: 36px !important;
+  }
   .detail-plate { margin-top: 0 !important; }
-  /* Marka/model satırı: Olay Ekle ve Tarihçe aynı satırda; marka plakanın 2px altında */
+  /* Marka/model satırı: plakanın altında, yalnızca metin */
   .detail-brand-year-row {
     flex-wrap: nowrap !important;
     padding-top: 0 !important;
     margin-top: 0 !important;
-    position: relative;
-    z-index: 1;
+    justify-content: center !important;
     align-items: center !important;
-    min-height: 36px !important; /* Butonlar aynı satırda, kayma önlenir */
+    min-height: 0 !important;
   }
 
-  /* Taşıt detay: Olay Ekle ve Tarihçe mobilde +1pt (17px, hover 18px); Tarihçe rengi etiket beyazı */
-  #vehicle-detail-modal .detail-brand-year-row .history-add-event-btn {
+  /* Taşıt detay: Olay Ekle ve Tarihçe mobilde +1pt (17px); Tarihçe rengi etiket beyazı */
+  #vehicle-detail-modal .detail-plate-row .history-add-event-btn {
     font-size: 17px !important;
   }
-  #vehicle-detail-modal .detail-brand-year-row .history-btn-minimal {
+  #vehicle-detail-modal .detail-plate-row .history-btn-minimal {
     font-size: 17px !important;
     color: var(--form-label-color) !important;
   }
-  #vehicle-detail-modal .detail-brand-year-row .history-btn-minimal:hover {
+  #vehicle-detail-modal .detail-plate-row .history-btn-minimal:hover {
     font-size: 17px !important;
   }
 
