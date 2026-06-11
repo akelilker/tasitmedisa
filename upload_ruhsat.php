@@ -42,6 +42,20 @@ function medisaNormalizeUploadDocumentDateToIso($rawDate) {
     return '';
 }
 
+function medisaUploadAddYears($dateStr, $years) {
+    $value = trim((string)$dateStr);
+    if ($value === '') {
+        return '';
+    }
+    try {
+        $dt = new DateTime($value);
+        $dt->modify('+' . (int)$years . ' years');
+        return $dt->format('Y-m-d');
+    } catch (Exception $e) {
+        return '';
+    }
+}
+
 function medisaNormalizeUploadDocumentPath($path) {
     $normalized = ltrim(str_replace('\\', '/', trim((string)$path)), '/');
     if (strpos($normalized, 'data/') === 0) {
@@ -167,6 +181,23 @@ $clientTasitKartiSyncDate = $hasClientTasitKartiSyncDate
     ? medisaNormalizeUploadDocumentDateToIso($_POST['tasitKartiExpiryDateBefore'])
     : '';
 
+$documentOperationDateRaw = trim((string)($_POST['documentOperationDate'] ?? ''));
+$documentOperationDate = $documentOperationDateRaw !== ''
+    ? medisaNormalizeUploadDocumentDateToIso($documentOperationDateRaw)
+    : '';
+
+if ($documentOperationDateRaw !== '' && $documentOperationDate === '') {
+    http_response_code(400);
+    echo json_encode(['error' => 'Geçersiz işlem tarihi'], JSON_UNESCAPED_UNICODE);
+    exit;
+}
+
+if ($documentOperationDate !== '' && !in_array($documentType, ['sigorta', 'kasko'], true)) {
+    http_response_code(400);
+    echo json_encode(['error' => 'Bu belge tipi için işlem tarihi gönderilemez'], JSON_UNESCAPED_UNICODE);
+    exit;
+}
+
 $preloadData = loadData();
 if (!is_array($preloadData)) {
     $preloadData = medisaDefaultData();
@@ -285,7 +316,7 @@ if (is_file($previewPath)) {
 }
 
 $documentPath = $config['dir'] . '/' . $filename;
-$result = medisaMutateData(function (&$data) use ($vehicleId, $vehicleVersion, $documentPath, $config, $isSettingsDocument, $documentType, $tasitKartiK2ExpiryDate, $clientDocumentPath, $clientTasitKartiSyncDate, $hasClientDocumentPath, $hasClientTasitKartiSyncDate) {
+$result = medisaMutateData(function (&$data) use ($vehicleId, $vehicleVersion, $documentPath, $config, $isSettingsDocument, $documentType, $tasitKartiK2ExpiryDate, $clientDocumentPath, $clientTasitKartiSyncDate, $hasClientDocumentPath, $hasClientTasitKartiSyncDate, $documentOperationDate) {
     $auth = medisaResolveAuthorizedContext($data, 'view_main_app');
     if (($auth['success'] ?? false) !== true) {
         return medisaBuildErrorResult($auth['message'] ?? 'Bu işlem için yetkiniz yok.', (int)($auth['status'] ?? 403));
@@ -332,6 +363,9 @@ $result = medisaMutateData(function (&$data) use ($vehicleId, $vehicleVersion, $
 
     $versionCheck = medisaEnsureVehicleVersion($vehicle, $vehicleVersion, 'Bu taşıt başka biri tarafından güncellendi. Güncel veriler yüklendi.');
     if ($versionCheck !== true) {
+        if ($documentOperationDate !== '') {
+            return $versionCheck;
+        }
         $k2ExpiryDateForMerge = $documentType === 'tasit_karti'
             ? medisaNormalizeUploadDocumentDateToIso($data['ayarlar']['k2Belgesi']['expiryDate'] ?? '')
             : '';
@@ -361,6 +395,18 @@ $result = medisaMutateData(function (&$data) use ($vehicleId, $vehicleVersion, $
         }
         $vehicle['tasitKartiExpiryDate'] = $k2ExpiryDate;
         $documentEventExtra['expiryDate'] = $k2ExpiryDate;
+    } elseif ($documentOperationDate !== '') {
+        $expiryDate = medisaUploadAddYears($documentOperationDate, 1);
+        if ($expiryDate === '') {
+            return medisaBuildErrorResult('Geçersiz işlem tarihi.', 400);
+        }
+        if ($documentType === 'sigorta') {
+            $vehicle['sigortaDate'] = $expiryDate;
+        } elseif ($documentType === 'kasko') {
+            $vehicle['kaskoDate'] = $expiryDate;
+        }
+        $documentEventExtra['operationDate'] = $documentOperationDate;
+        $documentEventExtra['expiryDate'] = $expiryDate;
     }
     $documentEvent = medisaBuildVehicleDocumentUploadEvent($documentType, $documentPath, $previousDocumentPath, $context, $documentEventExtra);
     if ($documentEvent) {
@@ -385,6 +431,12 @@ $result = medisaMutateData(function (&$data) use ($vehicleId, $vehicleVersion, $
     }
     if ($documentType === 'tasit_karti') {
         $payload['tasitKartiExpiryDate'] = $vehicle['tasitKartiExpiryDate'];
+    }
+    if ($documentType === 'sigorta' && $documentOperationDate !== '') {
+        $payload['sigortaDate'] = $vehicle['sigortaDate'] ?? '';
+    }
+    if ($documentType === 'kasko' && $documentOperationDate !== '') {
+        $payload['kaskoDate'] = $vehicle['kaskoDate'] ?? '';
     }
     if ($documentEvent) {
         $payload['documentEvent'] = $documentEvent;

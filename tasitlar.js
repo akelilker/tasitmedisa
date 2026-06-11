@@ -5931,7 +5931,8 @@
   function parseGgAaYyyyToIso(tr) {
     const normalized = normalizeGgAaYyyyInput(tr);
     const m = normalized.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
-    return m ? (m[3] + '-' + m[2] + '-' + m[1]) : '';
+    if (!m || !isValidGgAaYyyyParts(m[1], m[2], m[3])) return '';
+    return m[3] + '-' + m[2] + '-' + m[1];
   }
 
   function formatIsoToGgAaYyyy(iso) {
@@ -6218,6 +6219,29 @@
     });
   }
 
+  function getPolicyOperationDateFieldHtml(policyType) {
+    const inputId = policyType === 'sigorta' ? 'sigorta-tarih' : 'kasko-tarih';
+    return '<div><label class="form-label" for="' + inputId + '">Yenileme/Başlangıç (gg/aa/yyyy)</label>' +
+      '<input id="' + inputId + '" class="form-input" type="text" placeholder="gg/aa/yyyy"></div>';
+  }
+
+  function validatePolicyDocumentOperationDate(policyType) {
+    const inputId = policyType === 'sigorta' ? 'sigorta-tarih' : 'kasko-tarih';
+    const tarihInput = document.getElementById(inputId);
+    if (!tarihInput) return { valid: true };
+    const raw = (tarihInput.value || '').trim();
+    if (!raw) return { valid: true };
+    const tarih = normalizeGgAaYyyyInputElement(tarihInput);
+    const iso = parseGgAaYyyyToIso(tarih);
+    if (!tarih || !iso) {
+      return {
+        valid: false,
+        message: 'Geçerli bir yenileme/başlangıç tarihi girin (gg/aa/yyyy) veya alanı boş bırakın.'
+      };
+    }
+    return { valid: true, iso: iso };
+  }
+
   function getEventFormHtml(type) {
     const labelCls = 'form-label';
     const inputCls = 'form-input';
@@ -6310,13 +6334,13 @@
           section('Açıklama', 'ceza-aciklama', 'textarea', [['rows', '2'], ['placeholder', 'Açıklama']]) + '</div>';
       case 'sigorta':
         return '<div class="event-form-stack">' +
-          section('Yenileme/Başlangıç (gg/aa/yyyy)', 'sigorta-tarih', 'input', [['type', 'text'], ['placeholder', 'gg/aa/yyyy']]) +
+          getPolicyOperationDateFieldHtml('sigorta') +
           section('Firma', 'sigorta-firma', 'input', [['type', 'text'], ['placeholder', 'ör. Anadolu']]) +
           section('Acente', 'sigorta-acente', 'input', [['type', 'text'], ['placeholder', 'ör. Hayri Çetin']]) +
           section('İletişim', 'sigorta-iletisim', 'input', [['type', 'text'], ['placeholder', '05** *******']]) + '</div>';
       case 'kasko':
         return '<div class="event-form-stack">' +
-          section('Yenileme/Başlangıç (gg/aa/yyyy)', 'kasko-tarih', 'input', [['type', 'text'], ['placeholder', 'gg/aa/yyyy']]) +
+          getPolicyOperationDateFieldHtml('kasko') +
           section('Firma', 'kasko-firma', 'input', [['type', 'text'], ['placeholder', 'ör. Anadolu']]) +
           section('Acente', 'kasko-acente', 'input', [['type', 'text'], ['placeholder', 'ör. Hayri Çetin']]) +
           section('İletişim', 'kasko-iletisim', 'input', [['type', 'text'], ['placeholder', '05** *******']]) + '</div>';
@@ -8552,6 +8576,17 @@
   function renderRuhsatUploadForm(content, saveBtn, hasExistingRuhsat, documentType) {
     const cfg = getVehicleDocumentConfig(documentType);
     content.innerHTML = '';
+    if (cfg.key === 'sigorta' || cfg.key === 'kasko') {
+      const policyType = cfg.key === 'sigorta' ? 'sigorta' : 'kasko';
+      const dateStack = document.createElement('div');
+      dateStack.className = 'event-form-stack';
+      dateStack.innerHTML = getPolicyOperationDateFieldHtml(policyType);
+      content.appendChild(dateStack);
+      const dateHint = document.createElement('p');
+      dateHint.className = 'ruhsat-upload-hint';
+      dateHint.textContent = 'Yeni dönem poliçesi ise yenileme/başlangıç tarihini girin. Mevcut belgeyi yalnızca sisteme ekliyorsanız boş bırakın.';
+      content.appendChild(dateHint);
+    }
     const uploadBox = document.createElement('div');
     uploadBox.className = 'ruhsat-upload-box';
     const input = document.createElement('input');
@@ -8621,12 +8656,21 @@
       setRuhsatSaveBtnVisibility(saveBtn, false);
     }
     function validateSelectedDocumentBeforeUpload() {
-      if (cfg.key !== 'tasit_karti') return true;
-      const expiryValidation = validateTasitKartiK2SourceDate();
-      if (expiryValidation.valid) return true;
-      alert(expiryValidation.message);
-      resetSelectedUploadFile();
-      return false;
+      if (cfg.key === 'tasit_karti') {
+        const expiryValidation = validateTasitKartiK2SourceDate();
+        if (expiryValidation.valid) return true;
+        alert(expiryValidation.message);
+        resetSelectedUploadFile();
+        return false;
+      }
+      if (cfg.key === 'sigorta' || cfg.key === 'kasko') {
+        const policyType = cfg.key === 'sigorta' ? 'sigorta' : 'kasko';
+        const dateValidation = validatePolicyDocumentOperationDate(policyType);
+        if (dateValidation.valid) return true;
+        alert(dateValidation.message);
+        return false;
+      }
+      return true;
     }
     function uploadSelectedDocument() {
       if (!validateSelectedDocumentBeforeUpload()) return;
@@ -8679,6 +8723,11 @@
       expiryWrap.appendChild(expiryLabel);
       expiryWrap.appendChild(expiryInfo);
       content.appendChild(expiryWrap);
+    }
+    if (cfg.key === 'sigorta' || cfg.key === 'kasko') {
+      const modal = content.closest('#dinamik-olay-modal') || DOM.dinamikOlayModal;
+      applyDinamikOlayFormDateHelpers(modal);
+      requestAnimationFrame(function() { applyDinamikOlayFormDateHelpers(modal); });
     }
     setRuhsatSaveBtnVisibility(saveBtn, false);
   }
@@ -8799,6 +8848,17 @@
         return;
       }
     }
+    if (cfg.key === 'sigorta' || cfg.key === 'kasko') {
+      const policyType = cfg.key === 'sigorta' ? 'sigorta' : 'kasko';
+      const dateValidation = validatePolicyDocumentOperationDate(policyType);
+      if (!dateValidation.valid) {
+        alert(dateValidation.message);
+        return;
+      }
+      if (dateValidation.iso) {
+        formData.append('documentOperationDate', dateValidation.iso);
+      }
+    }
     formData.append('document', input.files[0]);
     setRuhsatUploadProgressVisible(true, 0, true);
     setRuhsatUploadUiLocked(true);
@@ -8835,6 +8895,18 @@
             }
             if (cfg.key === 'tasit_karti' && data.tasitKartiExpiryDate) {
               v.tasitKartiExpiryDate = data.tasitKartiExpiryDate;
+            }
+            var policyDateUpdated = false;
+            if (cfg.key === 'sigorta' && data.sigortaDate) {
+              v.sigortaDate = data.sigortaDate;
+              policyDateUpdated = true;
+            }
+            if (cfg.key === 'kasko' && data.kaskoDate) {
+              v.kaskoDate = data.kaskoDate;
+              policyDateUpdated = true;
+            }
+            if (policyDateUpdated && typeof window.updateNotifications === 'function') {
+              window.updateNotifications();
             }
             if (data.documentEvent && typeof data.documentEvent === 'object') {
               if (!Array.isArray(v.events)) v.events = [];
