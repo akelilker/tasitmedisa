@@ -6219,15 +6219,32 @@
     });
   }
 
-  function getPolicyOperationDateFieldHtml(policyType, labelText) {
-    const inputId = policyType === 'sigorta' ? 'sigorta-tarih' : 'kasko-tarih';
-    const label = labelText || 'Yenileme/Başlangıç (gg/aa/yyyy)';
-    return '<div><label class="form-label" for="' + inputId + '">' + label + '</label>' +
-      '<input id="' + inputId + '" class="form-input" type="text" placeholder="gg/aa/yyyy"></div>';
+  function getPolicyOperationDateFieldHtml(documentType, labelText) {
+    const fieldMeta = {
+      sigorta: { inputId: 'sigorta-tarih', defaultLabel: 'Yenileme/Başlangıç (gg/aa/yyyy)' },
+      kasko: { inputId: 'kasko-tarih', defaultLabel: 'Yenileme/Başlangıç (gg/aa/yyyy)' },
+      takograf: { inputId: 'takograf-kalibrasyon-tarih', defaultLabel: 'Kalibrasyon Tarihi (gg/aa/yyyy)' }
+    };
+    const meta = fieldMeta[documentType];
+    if (!meta) return '';
+    const label = labelText || meta.defaultLabel;
+    return '<div><label class="form-label" for="' + meta.inputId + '">' + label + '</label>' +
+      '<input id="' + meta.inputId + '" class="form-input" type="text" placeholder="gg/aa/yyyy"></div>';
   }
 
-  function validatePolicyDocumentOperationDate(policyType) {
-    const inputId = policyType === 'sigorta' ? 'sigorta-tarih' : 'kasko-tarih';
+  function validatePolicyDocumentOperationDate(documentType) {
+    const inputIds = {
+      sigorta: 'sigorta-tarih',
+      kasko: 'kasko-tarih',
+      takograf: 'takograf-kalibrasyon-tarih'
+    };
+    const invalidMessages = {
+      sigorta: 'Geçerli bir yenileme/başlangıç tarihi girin (gg/aa/yyyy) veya alanı boş bırakın.',
+      kasko: 'Geçerli bir yenileme/başlangıç tarihi girin (gg/aa/yyyy) veya alanı boş bırakın.',
+      takograf: 'Geçerli bir kalibrasyon tarihi girin (gg/aa/yyyy) veya alanı boş bırakın.'
+    };
+    const inputId = inputIds[documentType];
+    if (!inputId) return { valid: true };
     const tarihInput = document.getElementById(inputId);
     if (!tarihInput) return { valid: true };
     const raw = (tarihInput.value || '').trim();
@@ -6237,7 +6254,7 @@
     if (!tarih || !iso) {
       return {
         valid: false,
-        message: 'Geçerli bir yenileme/başlangıç tarihi girin (gg/aa/yyyy) veya alanı boş bırakın.'
+        message: invalidMessages[documentType] || 'Geçerli bir tarih girin (gg/aa/yyyy) veya alanı boş bırakın.'
       };
     }
     return { valid: true, iso: iso };
@@ -8577,11 +8594,13 @@
   function renderRuhsatUploadForm(content, saveBtn, hasExistingRuhsat, documentType) {
     const cfg = getVehicleDocumentConfig(documentType);
     content.innerHTML = '';
-    if (cfg.key === 'sigorta' || cfg.key === 'kasko') {
-      const policyType = cfg.key === 'sigorta' ? 'sigorta' : 'kasko';
+    if (cfg.key === 'sigorta' || cfg.key === 'kasko' || cfg.key === 'takograf') {
       const dateStack = document.createElement('div');
-      dateStack.className = 'event-form-stack ruhsat-policy-date-stack';
-      dateStack.innerHTML = getPolicyOperationDateFieldHtml(policyType, 'Başlangıç Tarihi');
+      dateStack.className = cfg.key === 'takograf'
+        ? 'event-form-stack'
+        : 'event-form-stack ruhsat-policy-date-stack';
+      const uploadLabel = (cfg.key === 'sigorta' || cfg.key === 'kasko') ? 'Başlangıç Tarihi' : undefined;
+      dateStack.innerHTML = getPolicyOperationDateFieldHtml(cfg.key, uploadLabel);
       content.appendChild(dateStack);
     }
     const uploadBox = document.createElement('div');
@@ -8663,9 +8682,8 @@
         resetSelectedUploadFile();
         return false;
       }
-      if (cfg.key === 'sigorta' || cfg.key === 'kasko') {
-        const policyType = cfg.key === 'sigorta' ? 'sigorta' : 'kasko';
-        const dateValidation = validatePolicyDocumentOperationDate(policyType);
+      if (cfg.key === 'sigorta' || cfg.key === 'kasko' || cfg.key === 'takograf') {
+        const dateValidation = validatePolicyDocumentOperationDate(cfg.key);
         if (dateValidation.valid) return true;
         alert(dateValidation.message);
         return false;
@@ -8707,7 +8725,7 @@
         uploadSelectedDocument();
       }
     };
-    if (cfg.key === 'sigorta' || cfg.key === 'kasko') {
+    if (cfg.key === 'sigorta' || cfg.key === 'kasko' || cfg.key === 'takograf') {
       const modal = content.closest('#dinamik-olay-modal') || DOM.dinamikOlayModal;
       applyDinamikOlayFormDateHelpers(modal);
       requestAnimationFrame(function() { applyDinamikOlayFormDateHelpers(modal); });
@@ -8831,9 +8849,8 @@
         return;
       }
     }
-    if (cfg.key === 'sigorta' || cfg.key === 'kasko') {
-      const policyType = cfg.key === 'sigorta' ? 'sigorta' : 'kasko';
-      const dateValidation = validatePolicyDocumentOperationDate(policyType);
+    if (cfg.key === 'sigorta' || cfg.key === 'kasko' || cfg.key === 'takograf') {
+      const dateValidation = validatePolicyDocumentOperationDate(cfg.key);
       if (!dateValidation.valid) {
         alert(dateValidation.message);
         return;
@@ -8879,16 +8896,24 @@
             if (cfg.key === 'tasit_karti' && data.tasitKartiExpiryDate) {
               v.tasitKartiExpiryDate = data.tasitKartiExpiryDate;
             }
-            var policyDateUpdated = false;
+            var documentDateUpdated = false;
             if (cfg.key === 'sigorta' && data.sigortaDate) {
               v.sigortaDate = data.sigortaDate;
-              policyDateUpdated = true;
+              documentDateUpdated = true;
             }
             if (cfg.key === 'kasko' && data.kaskoDate) {
               v.kaskoDate = data.kaskoDate;
-              policyDateUpdated = true;
+              documentDateUpdated = true;
             }
-            if (policyDateUpdated && typeof window.updateNotifications === 'function') {
+            if (cfg.key === 'takograf' && data.takografKalibrasyonDate) {
+              v.takografKalibrasyonDate = data.takografKalibrasyonDate;
+              documentDateUpdated = true;
+            }
+            if (cfg.key === 'takograf' && data.takografExpiryDate) {
+              v.takografExpiryDate = data.takografExpiryDate;
+              documentDateUpdated = true;
+            }
+            if (documentDateUpdated && typeof window.updateNotifications === 'function') {
               window.updateNotifications();
             }
             if (data.documentEvent && typeof data.documentEvent === 'object') {
