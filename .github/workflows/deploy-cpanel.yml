@@ -21,6 +21,8 @@
 # - Bazı hostlar yalnızca FTPS kabul eder: protocol: ftps ve paneldeki port (genelde 21 explicit).
 # - Yeşil ama "0 file uploaded": önce yanlış server-dir mi bakın; gerekirse sunucudaki .ftp-deploy-sync-state.json
 #   yedekleyip silerek bir kez tam senkron deneyin (risk: exclude dışı silme davranışını bilerek yapın).
+#
+# FTP retry: her deneme ayrı job + ayrı GitHub-hosted runner (geçici ağ/IP sorunlarında aynı runner tekrarından kaçınır).
 
 name: Deploy cPanel
 
@@ -35,15 +37,16 @@ on:
       - main
   workflow_dispatch:
 
+env:
+  FTP_REMOTE_DIR: ${{ secrets.FTP_REMOTE_DIR || vars.FTP_REMOTE_DIR }}
+  FTP_PROTOCOL: ${{ vars.FTP_PROTOCOL || 'ftps' }}
+  FTP_PORT: ${{ vars.FTP_PORT || '21' }}
+  FTP_SECURITY: ${{ vars.FTP_SECURITY || 'loose' }}
+
 jobs:
-  ftp:
-    name: FTP to cPanel
+  deploy_preflight:
+    name: Deploy preflight
     runs-on: ubuntu-latest
-    env:
-      FTP_REMOTE_DIR: ${{ secrets.FTP_REMOTE_DIR || vars.FTP_REMOTE_DIR }}
-      FTP_PROTOCOL: ${{ vars.FTP_PROTOCOL || 'ftps' }}
-      FTP_PORT: ${{ vars.FTP_PORT || '21' }}
-      FTP_SECURITY: ${{ vars.FTP_SECURITY || 'loose' }}
     steps:
       - uses: actions/checkout@v6
 
@@ -100,8 +103,17 @@ jobs:
           git log -1 --oneline
           ls -la ayarlar.js script-core.js index.html
 
-      - name: Sync via FTP attempt 1
-        id: ftp_attempt_1
+  ftp_attempt_1:
+    name: FTP deploy attempt 1
+    needs: deploy_preflight
+    runs-on: ubuntu-latest
+    outputs:
+      succeeded: ${{ steps.attempt_result.outputs.succeeded }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Sync via FTP
+        id: ftp_deploy
         continue-on-error: true
         uses: SamKirkland/FTP-Deploy-Action@v4.4.0
         with:
@@ -140,116 +152,218 @@ jobs:
             **/*.zip
             data/**
 
-      - name: Retry wait after attempt 1
-        if: steps.ftp_attempt_1.outcome == 'failure'
-        run: sleep 60
-
-      - name: Sync via FTP attempt 2
-        id: ftp_attempt_2
-        if: steps.ftp_attempt_1.outcome == 'failure'
-        continue-on-error: true
-        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
-        with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: ${{ env.FTP_REMOTE_DIR }}
-          local-dir: ./
-          log-level: verbose
-          protocol: ${{ env.FTP_PROTOCOL }}
-          port: ${{ env.FTP_PORT }}
-          security: ${{ env.FTP_SECURITY }}
-          timeout: 600000
-          dangerous-clean-slate: false
-          exclude: |
-            **/.git*
-            **/.git*/**
-            **/node_modules/**
-            **/.github/**
-            **/.cursor/**
-            **/.agents/**
-            **/.vscode/**
-            **/outputs/**
-            **/tmp/**
-            docs/**
-            scripts/**
-            _ux-test-output/**
-            assets/**
-            .cpanel.yml
-            .cursorignore
-            .editorconfig
-            AGENTS.md
-            DEPLOYMENT.md
-            README.md
-            package.json
-            **/*.zip
-            data/**
-
-      - name: Retry wait after attempt 2
-        if: steps.ftp_attempt_1.outcome == 'failure' && steps.ftp_attempt_2.outcome == 'failure'
-        run: sleep 60
-
-      - name: Sync via FTP attempt 3
-        id: ftp_attempt_3
-        if: steps.ftp_attempt_1.outcome == 'failure' && steps.ftp_attempt_2.outcome == 'failure'
-        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
-        with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: ${{ env.FTP_REMOTE_DIR }}
-          local-dir: ./
-          log-level: verbose
-          protocol: ${{ env.FTP_PROTOCOL }}
-          port: ${{ env.FTP_PORT }}
-          security: ${{ env.FTP_SECURITY }}
-          timeout: 600000
-          dangerous-clean-slate: false
-          exclude: |
-            **/.git*
-            **/.git*/**
-            **/node_modules/**
-            **/.github/**
-            **/.cursor/**
-            **/.agents/**
-            **/.vscode/**
-            **/outputs/**
-            **/tmp/**
-            docs/**
-            scripts/**
-            _ux-test-output/**
-            assets/**
-            .cpanel.yml
-            .cursorignore
-            .editorconfig
-            AGENTS.md
-            DEPLOYMENT.md
-            README.md
-            package.json
-            **/*.zip
-            data/**
-
-      - name: Final deploy result
-        id: final_deploy_result
+      - name: Record attempt result
+        id: attempt_result
         if: always()
+        shell: bash
         run: |
-          if [ "${{ steps.ftp_attempt_1.outcome }}" = "success" ]; then
+          if [ "${{ steps.ftp_deploy.outcome }}" = "success" ]; then
+            echo "succeeded=true" >> "$GITHUB_OUTPUT"
             echo "FTP deploy succeeded on attempt 1"
-            exit 0
-          elif [ "${{ steps.ftp_attempt_2.outcome }}" = "success" ]; then
-            echo "FTP deploy succeeded on attempt 2"
-            exit 0
-          elif [ "${{ steps.ftp_attempt_3.outcome }}" = "success" ]; then
-            echo "FTP deploy succeeded on attempt 3"
-            exit 0
           else
-            echo "::error::FTP server control socket was unreachable from GitHub Actions after 3 attempts."
-            echo "FTP deploy failed after 3 attempts. Host was intermittently unreachable from GitHub Actions. Check cPanel firewall, FTP connection limits and passive port access."
+            echo "succeeded=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::FTP attempt 1 failed. A fresh runner will be used for attempt 2."
+          fi
+
+  ftp_attempt_2:
+    name: FTP deploy attempt 2
+    needs:
+      - deploy_preflight
+      - ftp_attempt_1
+    if: >-
+      ${{
+        !cancelled() &&
+        needs.deploy_preflight.result == 'success' &&
+        needs.ftp_attempt_1.outputs.succeeded != 'true'
+      }}
+    runs-on: ubuntu-latest
+    outputs:
+      succeeded: ${{ steps.attempt_result.outputs.succeeded }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Retry backoff
+        run: sleep 10
+
+      - name: Sync via FTP
+        id: ftp_deploy
+        continue-on-error: true
+        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: ${{ env.FTP_REMOTE_DIR }}
+          local-dir: ./
+          log-level: verbose
+          protocol: ${{ env.FTP_PROTOCOL }}
+          port: ${{ env.FTP_PORT }}
+          security: ${{ env.FTP_SECURITY }}
+          timeout: 600000
+          dangerous-clean-slate: false
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            **/.github/**
+            **/.cursor/**
+            **/.agents/**
+            **/.vscode/**
+            **/outputs/**
+            **/tmp/**
+            docs/**
+            scripts/**
+            _ux-test-output/**
+            assets/**
+            .cpanel.yml
+            .cursorignore
+            .editorconfig
+            AGENTS.md
+            DEPLOYMENT.md
+            README.md
+            package.json
+            **/*.zip
+            data/**
+
+      - name: Record attempt result
+        id: attempt_result
+        if: always()
+        shell: bash
+        run: |
+          if [ "${{ steps.ftp_deploy.outcome }}" = "success" ]; then
+            echo "succeeded=true" >> "$GITHUB_OUTPUT"
+            echo "FTP deploy succeeded on attempt 2"
+          else
+            echo "succeeded=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::FTP attempt 2 failed. A fresh runner will be used for attempt 3."
+          fi
+
+  ftp_attempt_3:
+    name: FTP deploy attempt 3
+    needs:
+      - deploy_preflight
+      - ftp_attempt_1
+      - ftp_attempt_2
+    if: >-
+      ${{
+        !cancelled() &&
+        needs.deploy_preflight.result == 'success' &&
+        needs.ftp_attempt_1.outputs.succeeded != 'true' &&
+        needs.ftp_attempt_2.outputs.succeeded != 'true'
+      }}
+    runs-on: ubuntu-latest
+    outputs:
+      succeeded: ${{ steps.attempt_result.outputs.succeeded }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Retry backoff
+        run: sleep 10
+
+      - name: Sync via FTP
+        id: ftp_deploy
+        continue-on-error: true
+        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: ${{ env.FTP_REMOTE_DIR }}
+          local-dir: ./
+          log-level: verbose
+          protocol: ${{ env.FTP_PROTOCOL }}
+          port: ${{ env.FTP_PORT }}
+          security: ${{ env.FTP_SECURITY }}
+          timeout: 600000
+          dangerous-clean-slate: false
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            **/.github/**
+            **/.cursor/**
+            **/.agents/**
+            **/.vscode/**
+            **/outputs/**
+            **/tmp/**
+            docs/**
+            scripts/**
+            _ux-test-output/**
+            assets/**
+            .cpanel.yml
+            .cursorignore
+            .editorconfig
+            AGENTS.md
+            DEPLOYMENT.md
+            README.md
+            package.json
+            **/*.zip
+            data/**
+
+      - name: Record attempt result
+        id: attempt_result
+        if: always()
+        shell: bash
+        run: |
+          if [ "${{ steps.ftp_deploy.outcome }}" = "success" ]; then
+            echo "succeeded=true" >> "$GITHUB_OUTPUT"
+            echo "FTP deploy succeeded on attempt 3"
+          else
+            echo "succeeded=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::FTP attempt 3 failed."
+          fi
+
+  deploy_result:
+    name: Final deploy result
+    needs:
+      - deploy_preflight
+      - ftp_attempt_1
+      - ftp_attempt_2
+      - ftp_attempt_3
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Evaluate FTP deploy result
+        id: evaluate
+        shell: bash
+        run: |
+          if [ "${{ needs.deploy_preflight.result }}" != "success" ]; then
+            echo "::error::Deploy preflight failed."
             exit 1
           fi
 
+          a1="${{ needs.ftp_attempt_1.outputs.succeeded }}"
+          a2="${{ needs.ftp_attempt_2.outputs.succeeded }}"
+          a3="${{ needs.ftp_attempt_3.outputs.succeeded }}"
+
+          if [ "$a1" = "true" ]; then
+            echo "succeeded=true" >> "$GITHUB_OUTPUT"
+            echo "successful_attempt=1" >> "$GITHUB_OUTPUT"
+            echo "FTP deploy succeeded on attempt 1"
+            exit 0
+          fi
+
+          if [ "$a2" = "true" ]; then
+            echo "succeeded=true" >> "$GITHUB_OUTPUT"
+            echo "successful_attempt=2" >> "$GITHUB_OUTPUT"
+            echo "FTP deploy succeeded on attempt 2"
+            exit 0
+          fi
+
+          if [ "$a3" = "true" ]; then
+            echo "succeeded=true" >> "$GITHUB_OUTPUT"
+            echo "successful_attempt=3" >> "$GITHUB_OUTPUT"
+            echo "FTP deploy succeeded on attempt 3"
+            exit 0
+          fi
+
+          echo "succeeded=false" >> "$GITHUB_OUTPUT"
+          echo "::error::FTP server control socket was unreachable from three separate GitHub-hosted runners."
+          echo "::error::FTP deploy failed after 3 fresh-runner attempts."
+          exit 1
+
       - name: HTTP verification — canlı site erişilebilir mi
-        if: steps.final_deploy_result.outcome == 'success'
+        if: steps.evaluate.outputs.succeeded == 'true'
         run: |
           curl --fail --silent --show-error --location \
             --connect-timeout 15 \
