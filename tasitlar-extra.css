@@ -1316,46 +1316,6 @@
     line-height: 1.15;
 }
 
-/* Event Menu List Hover Efektleri - Sadece Metin Büyüyecek */
-#event-menu-list:has(> button:not(.event-menu-card):not(.event-menu-category-card):not(.event-menu-category-back)) {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 8px !important;
-  align-items: center !important; /* Masaüstünde yatayda ortalı */
-  width: 100%; /* Container genişliği */
-}
-
-#event-menu-list > button:not(.event-menu-card):not(.event-menu-category-card):not(.event-menu-category-back) {
-  transition: outline 0.2s ease, font-weight 0.2s ease, transform 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
-  outline: 2px solid transparent;
-  outline-offset: -2px;
-  text-align: center !important; /* Buton metni ortalı - JavaScript'teki text-align: left'i override eder */
-  width: calc(100% - 20px) !important; /* Saş ve soldan 10px daralt (toplam 20px) - Tüm butonlar aynı genişlikte */
-  max-width: calc(100% - 20px) !important; /* Maksimum göre - 20px daralt */
-  box-sizing: border-box !important; /* Padding ve border genişlişe dahil */
-  min-width: 0 !important; /* Flexbox minimum genişlik sorunlarını önler */
-  white-space: nowrap !important; /* Metin tek satırda kalsın */
-  margin: 0 auto !important; /* Yatayda ortala (saş ve soldan eşit boşluk) */
-}
-
-/* Fare ile: çerçeve + metin hafif büyür; kırmızı butonlarda beyaz outline yok (yalnızca tema kırmızısı) */
-@media (hover: hover) {
-  #event-menu-list > button:not(.event-menu-card):not(.event-menu-category-card):not(.event-menu-category-back):hover {
-    outline-color: rgba(255, 255, 255, 0.4);
-    font-weight: 700 !important;
-    transform: scale(1.02);
-    transform-origin: center;
-  }
-
-  /* Tema kırmızısı (#d40000) ile aynı hue; #ff5252 gibi açık tonlar pembeye kayar */
-  #event-menu-list > button.event-menu-btn--danger:not(.event-menu-card):not(.event-menu-category-card):not(.event-menu-category-back):hover {
-    outline-color: rgba(var(--theme-color-rgb), 0.95) !important;
-    border-color: #ff1a1a !important;
-    color: #ff2424 !important;
-    box-shadow: 0 0 12px rgba(var(--theme-color-rgb), 0.28);
-  }
-}
-
 /* Kaza Modalı - Kaporta şeması sola yaslı */
   #kaza-kaporta-container {
     display: flex !important;
@@ -1702,17 +1662,6 @@
   }
   #dinamik-olay-modal .olay-date-mobile-btn:active {
     opacity: 0.9 !important;
-  }
-
-  /* Yapılan şlemler: 2 satır varsayılan, içerik uzadıkça aşaşı açılsın */
-  #bakim-islemler.olay-textarea-expand,
-  .olay-ekle-modal textarea.olay-textarea-expand {
-    min-height: 3em !important; /* ~2 satır yüksekliği */
-    height: auto !important;
-    resize: none !important;
-    overflow-y: auto !important;
-    line-height: 1.4 !important;
-    box-sizing: border-box !important;
   }
 
   .tasitlar-modal-overlay .modal-container {
@@ -2063,22 +2012,6 @@
 
   .olay-ekle-modal .modal-body button:not(.event-menu-card):not(.event-menu-category-card):not(.event-menu-category-back):not(.ceza-user-trigger):not(.ceza-user-option):not(.medisa-owner-select-trigger):not(.medisa-owner-select-option) {
     font-size: 17px !important; /* 16px + 1 punto */
-  }
-
-  /* Olay Ekle: uzun buton metni taşmasın – satır kırılır, gerekirse font küçülür */
-  #event-menu-modal .modal-body button:not(.event-menu-card):not(.event-menu-category-card):not(.event-menu-category-back) {
-    white-space: normal !important;
-    overflow-wrap: break-word !important;
-    word-break: break-word !important;
-    text-align: left !important;
-    line-height: 1.25 !important;
-    font-size: clamp(11px, 2.8vw, 17px) !important;
-  }
-  @media (min-width: 769px) {
-    #event-menu-modal .modal-body #event-menu-list > button:not(.event-menu-card):not(.event-menu-category-card):not(.event-menu-category-back) {
-      width: calc(100% - 24px) !important;
-      max-width: calc(100% - 24px) !important;
-    }
   }
 
   /* Dinamik olay: şube/kullanıcı select — büyük font + yeterli yükseklik (iOS kırpma önleme) */
@@ -2688,19 +2621,6 @@
     height: 8px !important;
   }
 
-  /* --- EVENT MENU LIST MOBİL --- (spesifik seçici: .modal-body button kuralını ezer) */
-  #event-menu-list:has(> button:not(.event-menu-card):not(.event-menu-category-card):not(.event-menu-category-back)) {
-    align-items: flex-end !important; /* Mobilde saşa yaslı */
-  }
-  #event-menu-modal .modal-body #event-menu-list > button:not(.event-menu-card):not(.event-menu-category-card):not(.event-menu-category-back) {
-    text-align: right !important;
-    width: calc(100% - 20px) !important;
-    max-width: calc(100% - 20px) !important;
-    margin: 0 !important;
-    font-size: 18px !important;
-    padding-top: 14px !important;
-    padding-bottom: 14px !important;
-  }
 }
 
 /* Kaza / Kaporta şeması: mobilde etiket–şema 6px, şema +12px dikey (inline JS boyutlarını ezer) */
