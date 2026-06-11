@@ -2,222 +2,150 @@
 
 ## 1. Amaç
 
-Olay Ekle ekranındaki işlem yoğunluğunu azaltmak, işlemleri mantıksal kategorilere ayırmak ve taşıt bazlı süreli işlemleri aynı akış altında toplamak amaçlandı.
+Olay Ekle ekranındaki işlem yoğunluğunu azaltmak, işlemleri mantıksal kategorilere ayırmak ve taşıt bazlı süreli işlemleri aynı akış altında toplamak.
 
-Özellikle Taşıt Kartı işlemi, taşıt bazlı süreli bir kayıt olmasına rağmen daha önce Olay Ekle akışında yer almıyordu. Bu çalışma ile Taşıt Kartı, K2 mimarisi bozulmadan Olay Ekle sistemine dahil edildi.
+Taşıt Kartı işlemi K2 mimarisi bozulmadan Olay Ekle sistemine dahil edildi. Sonraki temizlik fazlarında menü metadata'sı, ikon registry'si, form CSS owner'ı ve geliştirici dokümantasyonu güncel kod yapısına hizalandı.
 
-## 2. Tamamlanan Fazlar
+## 2. Güncel Olay Ekle Menü Yapısı
 
-### Faz 1 — Owner / Mimari Analiz
+Olay Ekle menüsü 5 ana kategori kartı ve inline SVG ikonlarla çalışır.
 
-Tamamlandı.
-
-Tespit edilen ana owner dosya:
-
-- `tasitlar.js`
-
-İncelenen ana yapılar:
-
-- Olay Ekle kategori yapısı
-- Event ID listesi
-- Takograf event hattı
-- Muayene / Egzoz checkbox hattı
-- Taşıt Kartı field yapısı
-- K2 bağlantısı
-- Tarihçe / bildirim sistemi
-
-Ana tespitler:
-
-- K2 şirket bazlıdır.
-- Taşıt Kartı taşıt bazlı görünür; ancak mevcut sistemde bitiş tarihi K2 bitiş tarihini mirror eder.
-- Bu nedenle Taşıt Kartı event'i eklenirken K2 sync, upload, ayarlar, kayıt ve driver tarafına dokunulmamalıdır.
-
-### Faz 2 — Olay Ekle Kategori Yapısı
-
-Tamamlandı.
-
-Olay Ekle menüsü artık kategori bazlıdır.
-
-| Kategori | İşlemler |
-| --- | --- |
-| Taşıt Süreli İşlemleri | Muayene, Takograf, Taşıt Kartı |
-| Poliçe İşlemleri | Sigorta, Kasko |
-| Taşıt Üzeri / Donanım | Takip, UTTS, Anahtar, Lastik, Hak Mahrumiyeti / Kredi, Kasko Kodu |
-| Operasyon / Genel | Ceza, KM, Bakım, Kaza, Şube, Kullanıcı, Satış/Pert |
+| Kategori ID | Başlık | Olay sırası |
+| --- | --- | --- |
+| `sureli` | Yasal Zorunluluklar | Muayene, Takograf Kalibrasyonu, Taşıt Kartı |
+| `police` | Sigorta İşlemleri | Sigorta, Kasko, Kasko Kodu |
+| `donanim` | Kurumsal Eklentiler | Taşıt Takip Cihazı, UTTS |
+| `kullanim` | Kullanım ve Olaylar | Kilometre, Trafik Cezası, Bakım, Lastik Durumu, Yedek Anahtar, Kaza |
+| `yonetim` | Yönetim İşlemleri | Kullanıcı Atama / Değişikliği, Şube Değişikliği, Hak Mahrumiyeti, Satış / Pert |
 
 Korunan kurallar:
 
-- Egzoz ayrı event değildir; mevcut Muayene formu içindeki checkbox akışıyla çalışmaya devam eder.
+- Egzoz ayrı event değildir; Muayene formu içindeki checkbox akışıyla çalışır.
 - Takograf yalnızca `vehicleNeedsTakograf()` şartını sağlayan taşıtlarda görünür.
-- Şube/Kullanıcı işlemleri arşiv/kilit mantığına göre filtrelenmeye devam eder.
+- Taşıt Kartı yalnızca `vehicleNeedsK2Belgesi()` kapsamındaki taşıtlarda görünür.
+- Şube/Kullanıcı işlemleri arşiv/kilit mantığına göre filtrelenir.
 
-### Faz 3 — Taşıt Kartı Güncelle Event'i
+## 3. Güncel Metadata Owner Yapısı (`tasitlar.js`)
 
-Tamamlandı.
+Ana owner dosya: `tasitlar.js`
 
-| Alan | Değer |
-| --- | --- |
-| Menü/event ID | `tasitkarti` |
-| Kayıt event tipi | `tasit-karti-guncelle` |
-| Label | Taşıt Kartı Güncelle |
+### 3.1. İkon registry'leri
 
-Davranış:
+Modül seviyesinde sabitler:
 
-- Sadece K2 kapsamındaki taşıtlarda görünür.
-- K2 kapsamı dışındaki taşıtlarda menüye gelmez; doğrudan açılmaya çalışılırsa işlem ayrıca engellenir.
-- Kullanıcı yapılma/giriş tarihi girer.
-- Bitiş tarihi readonly olarak şirket bazlı K2 belgesi bitiş tarihinden gelir.
-- K2 bitiş tarihi yoksa kayıt engellenir ve veri yazılmaz.
-- Kayıt sonrası tarihçe oluşur.
-- Bildirim/tarihçe mesajları güncellenmiştir.
+- `EVENT_MENU_SHIELD_CHECK_SVG`
+- `EVENT_MENU_CATEGORY_ICONS` — kategori kart ikonları (`sureli`, `police`, `donanim`, `kullanim`, `yonetim`)
+- `EVENT_MENU_EVENT_ICONS` — olay kart ikonları (18 olay + fallback `vehicle`)
 
-## 3. Güncel Kodda Doğrulananlar
+`getEventMenuCategoryIconHtml()` bu registry'lerden HTML üretir. Sigorta/Kasko kategori kartlarında tikli kalkan + dış S/K harfi korunur.
 
-Kapanış kontrolünde aşağıdaki maddeler güncel kodda doğrulanmıştır:
+### 3.2. `EVENT_DEFINITIONS` — tek metadata owner
 
-- `tasitkarti` event label'ı mevcuttur.
-- `availableEventIds` içine `tasitkarti` yalnızca `vehicleNeedsK2Belgesi(currentMenuVehicle)` ile eklenir.
-- K2 dışı taşıtlarda `tasitkarti` görünmez.
-- `case 'tasitkarti'` formu mevcuttur.
-- `window.updateTasitKartiInfo` kayıt handler'ı mevcuttur.
-- `tasit-karti-guncelle` history/event tipi mevcuttur.
-- `tasitKartiYapilmaDate` alanı işlenir.
-- Taşıt Kartı bitiş tarihi doğrudan K2 kaynağından alınır; K2 kaynak tarihi yoksa kayıt engellenir.
-- Egzoz için ayrı event oluşturulmamıştır.
-- Takograf görünürlük şartı korunmuştur.
-- K2 sync yapısı korunmuştur.
-- `upload_ruhsat.php`, `ayarlar.js`, `kayit.js`, `driver/`, raporlar ve `data/data.json` bu çalışma kapsamında değiştirilmemiştir.
+Her olay tanımı şu alanları taşır:
+
+- `menuLabel` — menü kart etiketi
+- `modalTitle` — dinamik olay modal başlığı
+- `saveHandlerName` — kayıt handler adı (yalnızca string)
+
+`EVENT_MENU_LABELS`, `EVENT_DEFINITIONS` üzerinden otomatik türetilir. Ayrı `EVENT_TITLES` veya local `saveHandlers` map'i kullanılmaz.
+
+### 3.3. Kategori ve varsayılan olay listeleri
+
+- `EVENT_MENU_GROUPS` — kategori sırası, başlıklar ve kategori içi olay sırası
+- `EVENT_MENU_DEFAULT_EVENT_IDS` — menüde başlangıçta görünen olay ID seti; takograf, taşıt kartı, şube/kullanıcı koşulları runtime'da eklenir veya çıkarılır
+
+### 3.4. Runtime handler çözümleme
+
+Modal açıldığında Kaydet butonu şu akışla bağlanır:
+
+```javascript
+const handler = window[eventDefinition.saveHandlerName];
+```
+
+Handler referansı registry'de tutulmaz; dosya sonundaki save guard wrapper'ları korunur.
+
+### 3.5. Vehicle ID escape akışı
+
+- `eventMenuRenderState.vehicleId` ham/orijinal string taşır.
+- State'e yazarken `.replace(/"/g, '&quot;')` uygulanmaz.
+- Escape yalnızca HTML attribute render edilirken `escapeAttr()` ile yapılır.
+- Menü butonundan okunan `data-vehicle-id` ham ID olarak `openEventModal`'a iletilir.
+
+### 3.6. Form stack CSS owner
+
+- `#dinamik-olay-modal #dinamik-olay-form-icerik` — flex column, gap 12px (`tasitlar-base.css` owner bloğu)
+- `.event-form-stack` — 18 dinamik olay formunun kök sarmalayıcı sınıfı
+- `index.html` içindeki `#dinamik-olay-form-icerik` inline flex stili kaldırıldı
 
 ## 4. Cache / Version Durumu
 
-Güncel kodda cache bump mevcuttur.
-
-| Dosya | Doğrulanan sürüm |
+| Dosya | Güncel sürüm |
 | --- | --- |
-| `script-core.js` içindeki `tasitlar` modül sürümü | `20260607.7` |
-| `index.html` içindeki `script-core.js` query sürümü | `20260607.5` |
+| `script-core.js` → `tasitlar` | `20260611.20` |
+| `index.html` → `script-core.js` query | `20260611.17` |
+| `sw.js` → `CACHE_VERSION` | `medisa-v2.150` |
 
-Canlı testte hard refresh veya uygulamadaki önbellek temizleme işlemi sonrasında güncel `tasitlar.js` yüklenmelidir.
+## 5. Tamamlanan Faz Özetleri
 
-## 5. Bilerek Dokunulmayan Alanlar
+| Faz | Kapsam | Durum |
+| --- | --- | --- |
+| Faz 1A | Kesin ölü Olay Ekle CSS/JS/PNG temizliği | Tamam |
+| Faz 1B | Genel taşıt legacy selector temizliği | Tamam |
+| Faz 2A-1 | Taşıt detay `.detail-plate-row` statik DOM | Tamam |
+| Faz 2B-1 | Taşıt detay mobil üst alan CSS tekrar temizliği | Tamam |
+| Faz 3A | İkon registry modül seviyesine taşındı | Tamam |
+| Faz 3B-1 | Menü metadata (`EVENT_MENU_LABELS`, `EVENT_MENU_GROUPS`, `EVENT_MENU_DEFAULT_EVENT_IDS`) | Tamam |
+| Faz 3C-1 | `EVENT_DEFINITIONS` tek metadata owner | Tamam |
+| Faz 3C-2 | Vehicle ID çift escape düzeltmesi | Tamam |
+| Faz 3C-3 | `.event-form-stack` CSS owner | Tamam |
+| Faz 3C-4 | Bu geliştirici raporu güncellemesi | Tamam |
 
-Bu çalışmada aşağıdaki alanlara bilinçli olarak dokunulmadı:
+## 6. Bilerek Dokunulmayan Alanlar
 
-- `upload_ruhsat.php`
-- `ayarlar.js`
-- `kayit.js`
-- `driver/`
-- Raporlar
 - `data/data.json`
-- K2 ayar akışı
-- Taşıt Kartı belge upload akışı
+- `upload_ruhsat.php`, `ayarlar.js`, `kayit.js`
+- `driver/`, `admin/`, raporlar
+- K2 ayar akışı, Taşıt Kartı belge upload akışı
 
-Gerekçe:
+### Belge / Ruhsat bloğu — kapsam dışı
 
-- K2 şirket bazlı kalmalıdır.
-- Taşıt Kartı bitiş tarihi mevcut mimaride K2 bitiş tarihini mirror eder.
-- Bu fazın amacı K2 mimarisini değiştirmek değil, Taşıt Kartı için Olay Ekle event hattı açmaktır.
+Belge/Ruhsat bloğu (belge yükleme, değiştirme, görüntüleme, önizleme, yazdırma; PDF/görsel belge; object URL/cache; Android/iOS PWA kodları) bilinçli olarak tüm temizlik fazlarından çıkarılmıştır. **Faz 4 modül adayı değildir**; ayrı analiz ve onay gerektirir.
 
-## 6. Kapanış Test Senaryoları
+## 7. Kapanış Test Senaryoları
 
-### 6.1 K2 Kapsamındaki Taşıt
+### 7.1 K2 kapsamındaki taşıt
 
-Taşıt tipleri: `minivan`, `kamyon`, `romork`
+- Olay Ekle → Yasal Zorunluluklar → Taşıt Kartı görünür.
+- Yapılma tarihi girilebilir; bitiş tarihi K2 bitişinden readonly gelir.
+- K2 bitişi yoksa kayıt engellenir.
 
-Beklenen:
+### 7.2 K2 dışı taşıt
 
-- Olay Ekle → Taşıt Süreli İşlemleri → Taşıt Kartı Güncelle görünür.
-- Yapılma Tarihi girilebilir.
-- Bitiş Tarihi readonly görünür ve K2 bitiş tarihiyle aynıdır.
-- Kaydetme sonrası `vehicle.tasitKartiYapilmaDate` set edilir.
-- `vehicle.tasitKartiExpiryDate`, K2 bitişiyle uyumlu kalır.
-- `tasit-karti-guncelle` event'i oluşur.
-- Tarihçede Taşıt Kartı güncelleme kaydı görünür.
+- Taşıt Kartı menüde görünmez; doğrudan tetiklenirse engellenir.
 
-### 6.2 K2 Dışı Taşıt
+### 7.3 Metadata ve handler
 
-Taşıt tipi: `otomobil`
+- 18 olay key'i menü etiketi, modal başlığı ve handler adıyla eşleşir.
+- Kaydet butonu doğru `window[saveHandlerName]` fonksiyonuna bağlanır.
 
-Beklenen:
+### 7.4 Form düzeni
 
-- Taşıt Kartı Güncelle menüde görünmez.
-- İşlem doğrudan tetiklenmeye çalışılırsa kayıt yapılmaz.
+- Desktop ve 390px: Bakım, Kaza, Sigorta, Muayene, Kullanıcı Atama, Yedek Anahtar formlarında alan aralıkları korunur.
 
-### 6.3 K2 Bitiş Tarihi Yoksa
+## 8. Faz 4 — Analiz / Modülerleştirme Backlog'u
 
-Beklenen:
+Faz 4 yalnızca analiz ve planlama fazıdır; otomatik uygulama kapsamı dışındadır.
 
-- Taşıt Kartı Güncelle kaydı yapılamaz.
-- Kullanıcıya uyarı verilir.
-- Veri yazılmaz.
+Olası güvenli adaylar (Belge/Ruhsat hariç):
 
-### 6.4 Egzoz Kontrolü
+- Olay form `switch` ve availability kurallarının `EVENT_DEFINITIONS` ile genişletilmesi (handler/form yönlendirmesi ayrı alt faz)
+- `getEventMenuCategoryIconHtml` → `getEventMenuIconHtml` isimlendirme netleştirmesi
+- Taşıt detay migration fallback'lerinin PWA doğrulaması sonrası kaldırılması
+- Mobil Olay Ekle / taşıt detay CSS parçalanmasının owner birleştirmesi
+- Genel taşıt legacy selector temizliği (runtime smoke sonrası)
 
-Beklenen:
+Belge/Ruhsat bloğu bu listeye dahil edilmemelidir.
 
-- Egzoz için ayrı event yoktur.
-- Egzoz mevcut Muayene formu içindeki checkbox akışında çalışır.
+## 9. Sonuç
 
-### 6.5 Takograf Kontrolü
-
-Beklenen:
-
-- Takograf yalnızca `vehicleNeedsTakograf()` sonucu `true` ise görünür.
-- Mevcut takograf form/save/history hattı değişmemiştir.
-
-## 7. Kalan Backlog
-
-Bu çalışma kapsamında zorunlu eksik kalmamıştır. Aşağıdaki işler yeni faz / backlog olarak değerlendirilmelidir.
-
-### Backlog 1 — Belge Yükleme + Tarih Entegrasyonu
-
-Mevcut durumda Belgeler ekranında belge yüklenir, Olay Ekle ekranında tarih girilir.
-
-İleride belge yüklerken yapılma tarihinin de girildiği ve belge upload + Olay Ekle tarih güncellemesinin tek işlemde yapıldığı bir yapı değerlendirilebilir.
-
-Risk: Belge history + olay history çift kayıt üretebilir. Bu nedenle ayrı analiz ve ayrı faz gerektirir.
-
-### Backlog 2 — Olay Ekle Kart Etiketlerini Kısaltma
-
-Mevcut örnekler:
-
-- Muayene Bilgisi Güncelle
-- Sigorta Bilgisi Güncelle
-- Kasko Bilgisi Güncelle
-
-Alternatif kısa etiketler: Muayene, Sigorta, Kasko.
-
-Şu an değiştirilmedi; mevcut uzun etiketler işlemin güncelleme olduğunu net anlatır ve form başlıklarıyla tutarlıdır. Bu değişiklik kozmetik olduğu için kapsam dışı bırakılmıştır.
-
-### Backlog 3 — Görsel Kategori Ayrıştırması
-
-Kategori başlıkları veya kartlar ileride hafif görsel ayrımla iyileştirilebilir. Mevcut ikon bazlı ayrım işlevseldir; renk/vurgu bazlı ayrım zorunlu değildir.
-
-### Backlog 4 — Olay Metadata Tanımlarının Merkezileştirilmesi
-
-Olay ikonları, etiketleri, kategorileri, başlıkları ve kayıt handler eşlemeleri birden fazla yerde tutulmaktadır. Yeni olay tipi eklenirken ilgili listelerin birlikte güncellenmesi gerekir. İleride tek kaynaklı metadata yapısıyla sadeleştirilebilir.
-
-## 8. Sonuç
-
-Olay Ekle revizyonu fonksiyonel olarak tamamlanmıştır.
-
-Tamamlanan ana çıktılar:
-
-- Kategori bazlı Olay Ekle menüsü
-- Taşıt Kartı Güncelle event'i
-- K2 kapsamına bağlı görünürlük
-- Yapılma tarihi girişi
-- K2 bitişine bağlı readonly bitiş tarihi
-- K2 tarihi yoksa kayıt engeli
-- Tarihçe entegrasyonu
-- Bildirim mesajı entegrasyonu
-- Cache/version güncellemesi
-
-Mevcut kodda bu çalışma için kritik eksik görünmemektedir.
-
-| Faz | Durum |
-| --- | --- |
-| Faz 1 | Tamam |
-| Faz 2 | Tamam |
-| Faz 3 | Tamam |
-| Olay Ekle çalışması | Kapatılabilir |
+Olay Ekle revizyonu ve Faz 3C metadata/CSS temizliği tamamlanmıştır. Kritik fonksiyonel eksik görünmemektedir. Yeni olay tipi eklerken `EVENT_DEFINITIONS`, `EVENT_MENU_GROUPS`, `EVENT_MENU_DEFAULT_EVENT_IDS` ve ilgili ikon registry'si birlikte güncellenmelidir.
