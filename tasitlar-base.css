@@ -1005,7 +1005,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     }
 }
 
-/* Olay Ekle seçim menüsü: asset mask ikonlu kategori ana ekranı + kategori içi işlem kartları */
+/* Olay Ekle seçim menüsü: tek tip inline SVG kategori ana ekranı + kategori içi işlem kartları */
 #event-menu-modal .modal-body {
     display: flex !important;
     align-items: center !important;
@@ -1047,6 +1047,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 
     #event-menu-modal #event-menu-list.event-menu-list--categories {
         row-gap: 56px;
+        transform: translateY(12px);
     }
 
     #event-menu-modal .event-menu-card-grid {
@@ -1099,6 +1100,12 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     transition: color 0.18s ease, text-shadow 0.18s ease;
 }
 
+#event-menu-modal #event-menu-list.event-menu-list--categories .event-menu-category-card:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+    justify-self: center;
+    width: min(100%, 160px);
+}
+
 #event-menu-modal .event-menu-category-card:focus:not(:focus-visible) {
     outline: none;
     border: 0;
@@ -1126,15 +1133,12 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 }
 
 #event-menu-modal .event-menu-category-icon {
-    --event-menu-icon-url: url("icon/event-menu-vehicle.png?v=20260608.1");
     width: 42px;
     height: 42px;
     display: block;
     flex-shrink: 0;
     color: rgba(148, 163, 184, 0.66);
-    background: currentColor;
-    -webkit-mask: var(--event-menu-icon-url) center / contain no-repeat;
-    mask: var(--event-menu-icon-url) center / contain no-repeat;
+    background: none;
     filter: none;
     transition: color 0.18s ease, filter 0.18s ease, transform 0.18s ease;
 }
@@ -1166,20 +1170,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 
 #event-menu-modal #event-menu-list.event-menu-list--categories .event-menu-category-icon--primary svg {
     stroke-width: 1.55;
-}
-
-#event-menu-modal .event-menu-icon--vehicle {
-    --event-menu-icon-url: url("icon/event-menu-vehicle.png?v=20260608.1");
-    -webkit-mask-size: 88% auto;
-    mask-size: 88% auto;
-}
-
-#event-menu-modal .event-menu-icon--zorunlu {
-    --event-menu-icon-url: url("icon/event-menu-zorunlu.png?v=20260608.1");
-}
-
-#event-menu-modal .event-menu-icon--police {
-    --event-menu-icon-url: url("icon/event-menu-police.png?v=20260608.1");
 }
 
 #event-menu-modal .event-menu-category-icon-wrap--police-letter {
@@ -1248,34 +1238,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 #event-menu-modal .event-menu-card:active .event-menu-category-icon-wrap--police-letter .event-menu-category-icon {
     filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.30));
     transform: scale(1.05);
-}
-
-#event-menu-modal .event-menu-icon--donanim {
-    --event-menu-icon-url: url("icon/event-menu-donanim.png?v=20260608.1");
-}
-
-#event-menu-modal .event-menu-icon--takip {
-    --event-menu-icon-url: url("icon/event-menu-takip.png?v=20260608.2");
-}
-
-#event-menu-modal .event-menu-icon--utts {
-    --event-menu-icon-url: url("icon/event-menu-utts.png?v=20260608.2");
-}
-
-#event-menu-modal .event-menu-icon--anahtar {
-    --event-menu-icon-url: url("icon/event-menu-anahtar.png?v=20260608.2");
-}
-
-#event-menu-modal .event-menu-icon--lastik {
-    --event-menu-icon-url: url("icon/event-menu-lastik.png?v=20260608.2");
-}
-
-#event-menu-modal .event-menu-icon--kredi {
-    --event-menu-icon-url: url("icon/event-menu-kredi.png?v=20260608.2");
-}
-
-#event-menu-modal .event-menu-icon--kaskokodu {
-    --event-menu-icon-url: url("icon/event-menu-kaskokodu.png?v=20260608.2");
 }
 
 #event-menu-modal .event-menu-category-card:hover .event-menu-category-icon,
@@ -1862,41 +1824,57 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 }
 .vehicle-detail-scroll-wrap::-webkit-scrollbar { display: none; }
 
-/* Plaka satırı - plaka ortada */
+/* Plaka satırı: Olay Ekle | plaka (gerçek orta) | Tarihçe — eşit yan kolonlar */
 .detail-plate-row {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center !important;
     width: 100%;
-    min-height: fit-content; /* İçeriğe göre yükseklik */
-    height: fit-content; /* İçeriğe göre yükseklik */
+    min-height: 34px;
+    height: fit-content;
     margin-top: 0 !important;
-    margin-bottom: 2px !important; /* Plaka–marka/model arası 2px */
-    position: relative; /* Absolute "Olay Ekle" butonu için gerekli */
+    margin-bottom: 2px !important;
+    position: relative;
     z-index: 1;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.detail-plate-row .history-add-event-btn {
+    grid-column: 1;
+    justify-self: start;
+}
+
+.detail-plate-row .history-btn-minimal {
+    grid-column: 3;
+    justify-self: end;
 }
 
 .detail-plate {
-    font-size: 15px; /* Plaka 15px */
+    grid-column: 2;
+    justify-self: center;
+    font-size: 15px;
     font-weight: 700;
     color: var(--txt);
     text-align: center;
-    width: 100%; /* Tam genişlik */
+    min-width: 0;
+    max-width: 100%;
     letter-spacing: 2px;
-    margin: 0; /* Container'daki margin kullanılacak */
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
-/* Plaka satırında artık buton yok, sadece plaka var */
-
-/* Taşıt Detay Alt Başlık Satırı: Olay Ekle | Marka/Model | Tarihçe – marka/model plakanın 2px altında */
+/* Marka/model satırı – plakanın 2px altında, yalnızca metin */
 .detail-brand-year-row {
     display: flex !important;
-    align-items: center !important; /* Olay Ekle · marka · Tarihçe aynı görsel satırda dikey ortalı */
-    justify-content: space-between !important;
+    align-items: center !important;
+    justify-content: center !important;
     flex-wrap: nowrap;
     width: 100% !important;
-    margin-top: 0 !important; /* Plaka satırı margin-bottom: 2px ile zaten 2px boşluk bırakıyor */
-    min-height: 34px; /* İkinci satıra inince alanın korunması için */
+    margin-top: 0 !important;
+    min-height: 0;
     position: relative;
     padding-left: 0;
     padding-right: 0;
@@ -1907,10 +1885,11 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     font-weight: 600;
     color: var(--txt-gray);
     text-align: center;
-    line-height: 1.2; /* İkinci satırla arayı açmak için */
+    line-height: 1.2;
     margin: 0 !important;
     flex: 1;
-    max-width: 55%; /* Metin uzadığında yanlardaki butonların üstüne taşmasını engeller */
+    max-width: 100%;
+    min-width: 0;
     pointer-events: none;
 }
 
