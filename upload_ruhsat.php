@@ -72,6 +72,14 @@ function medisaUploadVehicleNeedsK2($vehicle) {
     return in_array($typeKey, ['minivan', 'kamyon', 'romork'], true);
 }
 
+function medisaUploadVehicleNeedsTakograf($vehicle) {
+    if (!is_array($vehicle)) {
+        return false;
+    }
+    $typeKey = strtolower(trim((string)($vehicle['vehicleType'] ?? $vehicle['tip'] ?? '')));
+    return $typeKey === 'kamyon';
+}
+
 function medisaUploadDocumentHistoryMeta($documentType) {
     $type = strtolower(trim((string)$documentType));
     $map = [
@@ -192,7 +200,7 @@ if ($documentOperationDateRaw !== '' && $documentOperationDate === '') {
     exit;
 }
 
-if ($documentOperationDate !== '' && !in_array($documentType, ['sigorta', 'kasko'], true)) {
+if ($documentOperationDate !== '' && !in_array($documentType, ['sigorta', 'kasko', 'takograf'], true)) {
     http_response_code(400);
     echo json_encode(['error' => 'Bu belge tipi için işlem tarihi gönderilemez'], JSON_UNESCAPED_UNICODE);
     exit;
@@ -243,6 +251,11 @@ if (!$isSettingsDocument) {
             echo json_encode(['error' => 'Taşıt Kartı yüklemek için önce K2 Belgesi Geçerlilik Süresi kaydedilmelidir.'], JSON_UNESCAPED_UNICODE);
             exit;
         }
+    }
+    if ($documentType === 'takograf' && !medisaUploadVehicleNeedsTakograf($preVehicle)) {
+        http_response_code(400);
+        echo json_encode(['error' => 'Bu taşıt tipi için Takograf Belgesi yüklenemez.'], JSON_UNESCAPED_UNICODE);
+        exit;
     }
 } elseif (($context['role'] ?? '') !== 'genel_yonetici') {
     http_response_code(403);
@@ -360,6 +373,9 @@ $result = medisaMutateData(function (&$data) use ($vehicleId, $vehicleVersion, $
     if ($documentType === 'tasit_karti' && !medisaUploadVehicleNeedsK2($vehicle)) {
         return medisaBuildErrorResult('Bu taşıt tipi için Taşıt Kartı yüklenemez.', 400);
     }
+    if ($documentType === 'takograf' && !medisaUploadVehicleNeedsTakograf($vehicle)) {
+        return medisaBuildErrorResult('Bu taşıt tipi için Takograf Belgesi yüklenemez.', 400);
+    }
 
     $versionCheck = medisaEnsureVehicleVersion($vehicle, $vehicleVersion, 'Bu taşıt başka biri tarafından güncellendi. Güncel veriler yüklendi.');
     if ($versionCheck !== true) {
@@ -396,14 +412,23 @@ $result = medisaMutateData(function (&$data) use ($vehicleId, $vehicleVersion, $
         $vehicle['tasitKartiExpiryDate'] = $k2ExpiryDate;
         $documentEventExtra['expiryDate'] = $k2ExpiryDate;
     } elseif ($documentOperationDate !== '') {
-        $expiryDate = medisaUploadAddYears($documentOperationDate, 1);
-        if ($expiryDate === '') {
-            return medisaBuildErrorResult('Geçersiz işlem tarihi.', 400);
-        }
-        if ($documentType === 'sigorta') {
-            $vehicle['sigortaDate'] = $expiryDate;
-        } elseif ($documentType === 'kasko') {
-            $vehicle['kaskoDate'] = $expiryDate;
+        if ($documentType === 'takograf') {
+            $expiryDate = medisaUploadAddYears($documentOperationDate, 2);
+            if ($expiryDate === '') {
+                return medisaBuildErrorResult('Geçersiz işlem tarihi.', 400);
+            }
+            $vehicle['takografKalibrasyonDate'] = $documentOperationDate;
+            $vehicle['takografExpiryDate'] = $expiryDate;
+        } else {
+            $expiryDate = medisaUploadAddYears($documentOperationDate, 1);
+            if ($expiryDate === '') {
+                return medisaBuildErrorResult('Geçersiz işlem tarihi.', 400);
+            }
+            if ($documentType === 'sigorta') {
+                $vehicle['sigortaDate'] = $expiryDate;
+            } elseif ($documentType === 'kasko') {
+                $vehicle['kaskoDate'] = $expiryDate;
+            }
         }
         $documentEventExtra['operationDate'] = $documentOperationDate;
         $documentEventExtra['expiryDate'] = $expiryDate;
@@ -437,6 +462,10 @@ $result = medisaMutateData(function (&$data) use ($vehicleId, $vehicleVersion, $
     }
     if ($documentType === 'kasko' && $documentOperationDate !== '') {
         $payload['kaskoDate'] = $vehicle['kaskoDate'] ?? '';
+    }
+    if ($documentType === 'takograf' && $documentOperationDate !== '') {
+        $payload['takografKalibrasyonDate'] = $vehicle['takografKalibrasyonDate'] ?? '';
+        $payload['takografExpiryDate'] = $vehicle['takografExpiryDate'] ?? '';
     }
     if ($documentEvent) {
         $payload['documentEvent'] = $documentEvent;
