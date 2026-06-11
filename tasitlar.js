@@ -2199,14 +2199,15 @@
   var eventMenuRenderState = {
     groups: [],
     labels: {},
-    vehicleId: ''
+    vehicleId: '',
+    vehicle: null
   };
 
   var EVENT_MENU_SHIELD_CHECK_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m8.5 12 2.2 2.2 4.8-4.8"/></svg>';
   var EVENT_MENU_CATEGORY_ICONS = {
     sureli: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5.5A8.5 8.5 0 0 1 12 7v14a8.5 8.5 0 0 0-9-1.5z"/><path d="M21 5.5A8.5 8.5 0 0 0 12 7v14a8.5 8.5 0 0 1 9-1.5z"/><path d="M7 10h2M7 13h2M15 10h2M15 13h2"/></svg>',
     police: EVENT_MENU_SHIELD_CHECK_SVG,
-    donanim: '<svg viewBox="0 0 28 24" aria-hidden="true" style="stroke-width:1.8"><path d="M8 21V5a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v16M7 21h13M10.5 6h6v5h-6z"/><path d="M19 7h2l2 2v8.5a1.5 1.5 0 0 0 3 0V10l-2-2M11 15h.01M14 15h.01M17 15h.01"/><path d="M5.5 8.5a5 5 0 0 0 0 7M3 6a8.5 8.5 0 0 0 0 12"/></svg>',
+    donanim: '<svg viewBox="0 0 28 24" aria-hidden="true"><path d="M8 21V5a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v16M7 21h13M10.5 6h6v5h-6z"/><path d="M19 7h2l2 2v8.5a1.5 1.5 0 0 0 3 0V10l-2-2M11 15h.01M14 15h.01M17 15h.01"/><path d="M5.5 8.5a5 5 0 0 0 0 7M3 6a8.5 8.5 0 0 0 0 12"/></svg>',
     kullanim: '<svg viewBox="0 0 24 24" aria-hidden="true"><path style="fill:currentColor;stroke:none" d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2m0 2a8 8 0 0 1 7.94 7H16a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1H4.06A8 8 0 0 1 12 4m2 8v1a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-1zm-9.94 1H8a3 3 0 0 0 3 3v3.94A8 8 0 0 1 4.06 13m8.94 6.94V16a3 3 0 0 0 3-3h3.94A8 8 0 0 1 13 19.94"/></svg>',
     yonetim: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5h6v2M3 12h18M10 12v2h4v-2"/></svg>'
   };
@@ -2281,6 +2282,68 @@
     'satis'
   ];
 
+  function mergeEventMenuStatusLevels(currentLevel, nextLevel) {
+    var rank = { empty: 0, ok: 1, orange: 2, red: 3 };
+    var currentRank = rank[currentLevel] != null ? rank[currentLevel] : 0;
+    var nextRank = rank[nextLevel] != null ? rank[nextLevel] : 0;
+    return nextRank > currentRank ? nextLevel : currentLevel;
+  }
+
+  function getEventMenuTimedEventDateRaw(vehicle, eventId) {
+    if (!vehicle) return '';
+    if (eventId === 'sigorta') return vehicle.sigortaDate;
+    if (eventId === 'kasko') return vehicle.kaskoDate;
+    if (eventId === 'muayene') return vehicle.muayeneDate;
+    if (eventId === 'takograf') return vehicle.takografExpiryDate;
+    if (eventId === 'tasitkarti') return getTasitKartiExpiryDate(vehicle);
+    return '';
+  }
+
+  function getEventMenuItemStatusLevel(vehicle, eventId) {
+    if (!vehicle || typeof vehicle !== 'object') return 'empty';
+    if (isVehicleOperationallyInactive(vehicle)) return 'empty';
+    if (eventId === 'kaza' || eventId === 'ceza' || eventId === 'satis') return 'empty';
+
+    if (eventId === 'kaskokodu') {
+      return vehicle.kaskoKodu != null && String(vehicle.kaskoKodu).trim() !== '' ? 'ok' : 'empty';
+    }
+
+    var timedEventIds = ['sigorta', 'kasko', 'muayene', 'takograf', 'tasitkarti'];
+    if (timedEventIds.indexOf(eventId) === -1) return 'ok';
+
+    if (eventId === 'takograf' && !vehicleNeedsTakograf(vehicle)) return 'empty';
+    if (eventId === 'tasitkarti' && !vehicleNeedsK2Belgesi(vehicle)) return 'empty';
+
+    var rawDate = getEventMenuTimedEventDateRaw(vehicle, eventId);
+    if (rawDate == null || String(rawDate).trim() === '') return 'empty';
+
+    var warningClass = '';
+    if (eventId === 'muayene') {
+      var muayeneWarning = checkDateWarnings(rawDate);
+      warningClass = isEgzozMuayeneCritical(vehicle) ? 'date-warning-red' : muayeneWarning.class;
+    } else {
+      warningClass = checkDateWarnings(rawDate).class;
+    }
+
+    if (warningClass === 'date-warning-red') return 'red';
+    if (warningClass === 'date-warning-orange') return 'orange';
+    return 'ok';
+  }
+
+  function getEventMenuCategoryStatusLevel(vehicle, visibleEventIds) {
+    if (!vehicle || !Array.isArray(visibleEventIds) || !visibleEventIds.length) return 'empty';
+    var merged = 'empty';
+    visibleEventIds.forEach(function(eventId) {
+      merged = mergeEventMenuStatusLevels(merged, getEventMenuItemStatusLevel(vehicle, eventId));
+    });
+    return merged;
+  }
+
+  function getEventMenuCardStatusClass(statusLevel) {
+    if (!statusLevel || statusLevel === 'empty') return '';
+    return ' event-menu-item--status-' + statusLevel;
+  }
+
   function getEventMenuCategoryIconHtml(categoryId) {
     if (categoryId === 'sigorta' || categoryId === 'kasko') {
       var policeLetter = categoryId === 'sigorta' ? 'S' : 'K';
@@ -2330,6 +2393,49 @@
     if (titleEl) titleEl.textContent = nextTitle;
   }
 
+  function getEventMenuRowSizes(count) {
+    if (count <= 0) return [];
+    if (count === 1) return [1];
+    if (count === 2) return [2];
+    if (count === 3) return [1, 2];
+    if (count === 5) return [1, 2, 2];
+    var rows = [];
+    var remaining = count;
+    while (remaining > 0) {
+      if (remaining === 3) {
+        rows.push(1, 2);
+        break;
+      }
+      if (remaining === 1) {
+        rows.push(1);
+        break;
+      }
+      rows.push(2);
+      remaining -= 2;
+    }
+    return rows;
+  }
+
+  function buildEventMenuPickerHtml(cardHtmlList) {
+    var rowSizes = getEventMenuRowSizes(cardHtmlList.length);
+    var html = '<div class="event-menu-picker">';
+    var index = 0;
+    rowSizes.forEach(function(size) {
+      var rowCards = cardHtmlList.slice(index, index + size);
+      index += size;
+      if (!rowCards.length) return;
+      var rowClass = 'event-menu-row';
+      if (size === 1) {
+        rowClass += ' event-menu-row-single event-menu-row-one';
+      } else {
+        rowClass += ' event-menu-row-pair';
+      }
+      html += '<div class="' + rowClass + '">' + rowCards.join('') + '</div>';
+    });
+    html += '</div>';
+    return html;
+  }
+
   function renderEventMenuCategoryRoot() {
     var menuList = DOM.eventMenuList;
     if (!menuList) return;
@@ -2337,12 +2443,15 @@
     syncEventMenuHeaderTitle('OLAY EKLE');
     menuList.classList.add('event-menu-list--categories');
     menuList.classList.remove('event-menu-list--items');
-    menuList.innerHTML = eventMenuRenderState.groups.map(function(group) {
-      return '<button type="button" class="event-menu-category-card" data-event-category="' + escapeAttr(group.id) + '">' +
+    var vehicle = eventMenuRenderState.vehicle;
+    var cardsHtml = eventMenuRenderState.groups.map(function(group) {
+      var statusClass = getEventMenuCardStatusClass(getEventMenuCategoryStatusLevel(vehicle, group.ids));
+      return '<button type="button" class="event-menu-category-card' + statusClass + '" data-event-category="' + escapeAttr(group.id) + '">' +
         getEventMenuCategoryIconHtml(group.id) +
         '<span class="event-menu-category-title">' + escapeHtml(group.title) + '</span>' +
         '</button>';
-    }).join('');
+    });
+    menuList.innerHTML = buildEventMenuPickerHtml(cardsHtml);
   }
 
   function renderEventMenuCategoryItems(categoryId) {
@@ -2356,18 +2465,17 @@
     menuList.classList.add('event-menu-list--items');
     syncEventMenuBackButton('items');
     syncEventMenuHeaderTitle(group.title);
-    var buttonsHtml = group.ids.map(function(eventId) {
+    var vehicle = eventMenuRenderState.vehicle;
+    var cardsHtml = group.ids.map(function(eventId) {
       var isDanger = eventId === 'kaza' || eventId === 'satis' || eventId === 'ceza';
       var dangerClass = isDanger ? ' event-menu-card--danger' : '';
-      return '<button type="button" class="event-menu-card' + dangerClass + '" data-event-id="' + eventId + '" data-vehicle-id="' + escapeAttr(eventMenuRenderState.vehicleId) + '">' +
+      var statusClass = getEventMenuCardStatusClass(getEventMenuItemStatusLevel(vehicle, eventId));
+      return '<button type="button" class="event-menu-card' + dangerClass + statusClass + '" data-event-id="' + eventId + '" data-vehicle-id="' + escapeAttr(eventMenuRenderState.vehicleId) + '">' +
         getEventMenuCategoryIconHtml(eventId) +
         '<span class="event-menu-card-title">' + escapeHtml(eventMenuRenderState.labels[eventId] || eventId) + '</span>' +
         '</button>';
-    }).join('');
-    menuList.innerHTML =
-      '<section class="event-menu-section">' +
-      '<div class="event-menu-card-grid">' + buttonsHtml + '</div>' +
-      '</section>';
+    });
+    menuList.innerHTML = buildEventMenuPickerHtml(cardsHtml);
     if (document.activeElement && typeof document.activeElement.blur === 'function') {
       document.activeElement.blur();
     }
@@ -6317,6 +6425,7 @@
       const vid = (window.currentDetailVehicleId || vehicleId || '').toString();
       eventMenuRenderState.labels = EVENT_MENU_LABELS;
       eventMenuRenderState.vehicleId = vid;
+      eventMenuRenderState.vehicle = currentMenuVehicle || null;
       eventMenuRenderState.groups = EVENT_MENU_GROUPS.map(function(group) {
         return {
           id: group.id,
