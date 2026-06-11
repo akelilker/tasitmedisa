@@ -1556,6 +1556,14 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     flex: 0 0 auto !important;
     min-height: 0 !important;
     overflow: visible !important;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+#dinamik-olay-modal .event-form-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 /* Olay Ekle (#dinamik-olay-modal): tarih inputu gg.aa.yyyy dikey ortalama (iOS) */
 #dinamik-olay-modal input[type="date"].form-input::-webkit-datetime-edit,
