@@ -318,15 +318,8 @@ if (!move_uploaded_file($file['tmp_name'], $targetPath)) {
 }
 
 $legacyTargetPath = $dataDir . '/' . $safeId . '.pdf';
-if ($legacyTargetPath !== $targetPath) {
-    @copy($targetPath, $legacyTargetPath);
-}
-
 $previewDir = __DIR__ . '/data/' . $config['dir'] . '_preview';
 $previewPath = $previewDir . '/' . $safeId . '.jpg';
-if (is_file($previewPath)) {
-    @unlink($previewPath);
-}
 
 $documentPath = $config['dir'] . '/' . $filename;
 $result = medisaMutateData(function (&$data) use ($vehicleId, $vehicleVersion, $documentPath, $config, $isSettingsDocument, $documentType, $tasitKartiK2ExpiryDate, $clientDocumentPath, $clientTasitKartiSyncDate, $hasClientDocumentPath, $hasClientTasitKartiSyncDate, $documentOperationDate) {
@@ -474,6 +467,12 @@ $result = medisaMutateData(function (&$data) use ($vehicleId, $vehicleVersion, $
 });
 
 if (($result['success'] ?? false) === true) {
+    if ($legacyTargetPath !== $targetPath) {
+        @copy($targetPath, $legacyTargetPath);
+    }
+    if (is_file($previewPath)) {
+        @unlink($previewPath);
+    }
     $result['documentType'] = $documentType;
     $result['documentPath'] = $documentPath;
     $result['ruhsatPath'] = $documentType === 'ruhsat' ? $documentPath : null;
@@ -484,9 +483,6 @@ if (($result['success'] ?? false) === true) {
 
 if (($result['success'] ?? false) !== true) {
     @unlink($targetPath);
-    if ($legacyTargetPath !== $targetPath && is_file($legacyTargetPath)) {
-        @unlink($legacyTargetPath);
-    }
 }
 
 $status = (int)($result['status'] ?? ($result['conflict'] ?? false ? 409 : 200));
