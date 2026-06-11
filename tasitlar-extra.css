@@ -1684,13 +1684,6 @@
   }
 
   /* --- TAŞIT DETAY MODAL --- */
-  #vehicle-detail-modal #vehicle-detail-content {
-    padding-top: 2px !important;
-  }
-  #vehicle-detail-modal .detail-plate-row {
-    margin-top: 0 !important;
-  }
-  
   /* Taşıt detay: iki kolon arasındaki kullanılmayan mobil boşluğu azalt; ayırıcı çizgi ve 1px iç nefes korunur. */
   #vehicle-detail-modal .vehicle-detail-columns {
     gap: 2px !important;
@@ -2547,8 +2540,7 @@
     overscroll-behavior-x: none !important; /* Yatay overscroll'u engelle */
   }
   
-  /* Plaka/marka font-size tek blokta (yukarıda); sadece margin */
-  .detail-plate { margin-top: 0 !important; margin-bottom: 0 !important; } /* Plaka üstten kesilmesin */
+  /* Plaka/marka font-size tek blokta (yukarıda); marka alt boşluğu */
   .detail-brand-year { margin-top: 0 !important; margin-bottom: 4px !important; }
   .detail-row { padding: 4px 0; gap: 1px; }
   /* Kullanıcı–ı 1px azalt (4px→3px) */
@@ -2570,17 +2562,6 @@
     z-index: 1;
     min-height: 36px !important;
   }
-  .detail-plate { margin-top: 0 !important; }
-  /* Marka/model satırı: plakanın altında, yalnızca metin */
-  .detail-brand-year-row {
-    flex-wrap: nowrap !important;
-    padding-top: 0 !important;
-    margin-top: 0 !important;
-    justify-content: center !important;
-    align-items: center !important;
-    min-height: 0 !important;
-  }
-
   /* Taşıt detay: Olay Ekle mobilde +1pt (17px) */
   #vehicle-detail-modal .detail-plate-row .history-add-event-btn {
     font-size: 17px !important;

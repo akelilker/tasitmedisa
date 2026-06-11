@@ -2532,10 +2532,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
   #vehicle-detail-modal .detail-plate {
     font-size: 16px !important;
   }
-  #vehicle-detail-modal .detail-plate-row {
-    margin-top: 0 !important;
-    margin-bottom: 2px !important;
-  }
   #vehicle-detail-modal .vehicle-detail-toolbar {
     margin-bottom: 0 !important;
   }
