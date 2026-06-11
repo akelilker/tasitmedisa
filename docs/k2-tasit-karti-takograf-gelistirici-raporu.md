@@ -64,6 +64,18 @@ Takograf kalibrasyon bitiş tarihi büyük ticari taşıtlarda normal tarih uyar
 
 Taşıt satıldığında, silindiğinde veya pasif/arşiv statüsüne alındığında bu taşıt tarih taramalarında kapsam dışı kalır. Kod tarafında `satildiMi`, `arsiv`, `pasif`, `aktif === false`, `aktifMi === false` ve `durum === "pasif"` durumları aktif bildirim/aylık iş listesi için operasyon dışı kabul edilir. Böylece satılmış ya da pasif büyük ticari taşıtlar takograf kalibrasyon uyarısı üretmeye devam etmez. Aynı akışta taşıt bazlı `tasitKartiPath` ve `takograf*` alanları aktif bildirim/aylık iş listesi için yok sayılır; taşıt tamamen silindiyse bu bağlantılar da veri kaydıyla birlikte düşer.
 
+## Belge Upload — Tarih Bağlantısı (2026-06)
+
+Taşıt Detay → Belgeler üzerinden Sigorta/Kasko/Takograf PDF yüklerken opsiyonel tarih girişi eklendi. Ortak JS owner (`getPolicyOperationDateFieldHtml`, `validatePolicyDocumentOperationDate`), PHP mutation (`upload_ruhsat.php` → `documentOperationDate`) ve UI/CSS detayları ayrı raporda:
+
+→ [`belge-yukleme-tarih-baglantisi-gelistirici-raporu.md`](belge-yukleme-tarih-baglantisi-gelistirici-raporu.md)
+
+Özet:
+
+- Sigorta/Kasko: opsiyonel **Başlangıç Tarihi** → doluysa `sigortaDate` / `kaskoDate` (+1 yıl bitiş)
+- Takograf (büyük ticari): opsiyonel **Kalibrasyon Tarihi** → doluysa `takografKalibrasyonDate` / `takografExpiryDate` (+2 yıl)
+- Taşıt Kartı upload: kullanıcı tarih alanı yok; K2 merkezi geçerlilik kontrolü devam eder
+
 ## Faz Dışı Bırakılanlar
 
 - Yangın tüpü ve zorunlu ekipman takipleri
