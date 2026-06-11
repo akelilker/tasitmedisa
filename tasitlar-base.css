@@ -1060,12 +1060,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     }
 
     #event-menu-modal #event-menu-list.event-menu-list--categories {
-        row-gap: 56px;
         transform: translateY(12px);
-    }
-
-    #event-menu-modal .event-menu-card-grid {
-        row-gap: 28px;
     }
 }
 
@@ -1081,17 +1076,50 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 }
 
 #event-menu-modal #event-menu-list.event-menu-list--categories {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    column-gap: 58px;
-    row-gap: 40px;
-    width: min(100%, 400px);
+    width: min(100%, 560px);
     padding-top: 0;
 }
 
+#event-menu-modal .event-menu-picker {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#event-menu-modal .event-menu-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 28px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#event-menu-modal .event-menu-row-single {
+    gap: 0;
+}
+
+#event-menu-modal .event-menu-row-pair {
+    gap: 32px;
+}
+
+#event-menu-modal .event-menu-row-one {
+    justify-content: center;
+}
+
 #event-menu-modal .event-menu-category-card {
+    flex: 0 1 140px;
+    min-width: 0;
+    max-width: 168px;
+    width: auto;
     min-height: 88px;
-    padding: 6px 4px;
+    padding: 8px 6px;
     box-sizing: border-box;
     overflow: visible;
     border: 0;
@@ -1114,12 +1142,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     transition: color 0.18s ease, text-shadow 0.18s ease;
 }
 
-#event-menu-modal #event-menu-list.event-menu-list--categories .event-menu-category-card:last-child:nth-child(odd) {
-    grid-column: 1 / -1;
-    justify-self: center;
-    width: min(100%, 160px);
-}
-
 #event-menu-modal .event-menu-category-card:focus:not(:focus-visible) {
     outline: none;
     border: 0;
@@ -1135,9 +1157,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     transform: none;
 }
 
-#event-menu-modal .event-menu-category-card:hover,
-#event-menu-modal .event-menu-category-card:focus-visible,
-#event-menu-modal .event-menu-category-card:active {
+#event-menu-modal .event-menu-category-card:not(.event-menu-item--status-ok):not(.event-menu-item--status-orange):not(.event-menu-item--status-red):hover,
+#event-menu-modal .event-menu-category-card:not(.event-menu-item--status-ok):not(.event-menu-item--status-orange):not(.event-menu-item--status-red):focus-visible,
+#event-menu-modal .event-menu-category-card:not(.event-menu-item--status-ok):not(.event-menu-item--status-orange):not(.event-menu-item--status-red):active {
     outline: none;
     border: 0;
     background: transparent;
@@ -1172,18 +1194,18 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 #event-menu-modal .event-menu-category-icon--inline svg {
     display: block;
     flex: 0 0 auto;
-    width: 88%;
-    height: 88%;
+    width: 82%;
+    height: 82%;
     overflow: visible;
     fill: none;
     stroke: currentColor;
-    stroke-width: 1.75;
+    stroke-width: 1.25;
     stroke-linecap: round;
     stroke-linejoin: round;
 }
 
 #event-menu-modal #event-menu-list.event-menu-list--categories .event-menu-category-icon--primary svg {
-    stroke-width: 1.55;
+    stroke-width: 1.15;
 }
 
 #event-menu-modal .event-menu-category-icon-wrap--police-letter {
@@ -1254,8 +1276,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     transform: scale(1.05);
 }
 
-#event-menu-modal .event-menu-category-card:hover .event-menu-category-icon,
-#event-menu-modal .event-menu-category-card:focus-visible .event-menu-category-icon {
+#event-menu-modal .event-menu-category-card:not(.event-menu-item--status-ok):not(.event-menu-item--status-orange):not(.event-menu-item--status-red):hover .event-menu-category-icon,
+#event-menu-modal .event-menu-category-card:not(.event-menu-item--status-ok):not(.event-menu-item--status-orange):not(.event-menu-item--status-red):focus-visible .event-menu-category-icon {
     color: rgba(255, 255, 255, 0.96);
     filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.34));
     transform: scale(1.06);
@@ -1279,41 +1301,17 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 }
 
 #event-menu-modal .event-menu-list--items {
-    width: min(100%, 460px);
+    width: min(100%, 560px);
     overflow: visible;
-}
-
-#event-menu-modal .event-menu-section {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 16px;
-    width: 100%;
-}
-
-#event-menu-modal .event-menu-card-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    column-gap: 48px;
-    row-gap: 16px;
-    justify-content: center;
-    width: min(100%, 420px);
-    overflow: visible;
-}
-
-#event-menu-modal .event-menu-list--items .event-menu-card-grid {
-    padding: 8px 0 6px;
-    box-sizing: border-box;
-}
-
-#event-menu-modal .event-menu-card-grid:has(> .event-menu-card:only-child) {
-    grid-template-columns: minmax(0, 180px);
 }
 
 #event-menu-modal .event-menu-card {
-    width: 100%;
+    flex: 0 1 140px;
+    min-width: 0;
+    max-width: 168px;
+    width: auto;
     min-height: 72px;
-    padding: 6px 4px;
+    padding: 8px 6px;
     box-sizing: border-box;
     overflow: visible;
     border: 0;
@@ -1354,7 +1352,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 }
 
 @media (hover: hover) {
-    #event-menu-modal .event-menu-card:hover {
+    #event-menu-modal .event-menu-card:not(.event-menu-item--status-ok):not(.event-menu-item--status-orange):not(.event-menu-item--status-red):hover {
         outline: none;
         border: 0;
         background: transparent;
@@ -1363,15 +1361,15 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
         text-shadow: 0 0 10px rgba(255, 255, 255, 0.26);
     }
 
-    #event-menu-modal .event-menu-card:hover .event-menu-category-icon {
+    #event-menu-modal .event-menu-card:not(.event-menu-item--status-ok):not(.event-menu-item--status-orange):not(.event-menu-item--status-red):hover .event-menu-category-icon {
         color: rgba(255, 255, 255, 0.96);
         filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.30));
         transform: scale(1.05);
     }
 }
 
-#event-menu-modal .event-menu-card:focus-visible,
-#event-menu-modal .event-menu-card:active {
+#event-menu-modal .event-menu-card:not(.event-menu-item--status-ok):not(.event-menu-item--status-orange):not(.event-menu-item--status-red):focus-visible,
+#event-menu-modal .event-menu-card:not(.event-menu-item--status-ok):not(.event-menu-item--status-orange):not(.event-menu-item--status-red):active {
     outline: none;
     border: 0;
     background: transparent;
@@ -1388,8 +1386,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     padding: 2px 1px 0;
 }
 
-#event-menu-modal .event-menu-card:focus-visible .event-menu-category-icon,
-#event-menu-modal .event-menu-card:active .event-menu-category-icon {
+#event-menu-modal .event-menu-card:not(.event-menu-item--status-ok):not(.event-menu-item--status-orange):not(.event-menu-item--status-red):focus-visible .event-menu-category-icon,
+#event-menu-modal .event-menu-card:not(.event-menu-item--status-ok):not(.event-menu-item--status-orange):not(.event-menu-item--status-red):active .event-menu-category-icon {
     color: rgba(255, 255, 255, 0.96);
     filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.30));
     transform: scale(1.05);
@@ -1452,6 +1450,143 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     filter: drop-shadow(0 0 7px rgba(var(--theme-color-rgb), 0.20));
 }
 
+/* Olay Ekle menü: veri durumu renkleri — renk yalnız ikonda, etiket beyaz (Belgeler kontratı) */
+#event-menu-modal .event-menu-category-card.event-menu-item--status-ok,
+#event-menu-modal .event-menu-card.event-menu-item--status-ok,
+#event-menu-modal .event-menu-category-card.event-menu-item--status-orange,
+#event-menu-modal .event-menu-card.event-menu-item--status-orange,
+#event-menu-modal .event-menu-category-card.event-menu-item--status-red,
+#event-menu-modal .event-menu-card.event-menu-item--status-red,
+#event-menu-modal .event-menu-item--status-ok .event-menu-category-title,
+#event-menu-modal .event-menu-item--status-ok .event-menu-card-title,
+#event-menu-modal .event-menu-item--status-orange .event-menu-category-title,
+#event-menu-modal .event-menu-item--status-orange .event-menu-card-title,
+#event-menu-modal .event-menu-item--status-red .event-menu-category-title,
+#event-menu-modal .event-menu-item--status-red .event-menu-card-title {
+    color: rgba(245, 247, 250, 0.92);
+    text-shadow: none;
+    filter: none;
+}
+
+#event-menu-modal .event-menu-item--status-ok .event-menu-category-icon,
+#event-menu-modal .event-menu-item--status-ok .event-menu-category-icon-wrap--police-letter {
+    color: #16a34a;
+    filter: none;
+}
+
+#event-menu-modal .event-menu-item--status-orange .event-menu-category-icon,
+#event-menu-modal .event-menu-item--status-orange .event-menu-category-icon-wrap--police-letter {
+    color: #ea580c;
+    filter: none;
+}
+
+#event-menu-modal .event-menu-item--status-red .event-menu-category-icon,
+#event-menu-modal .event-menu-item--status-red .event-menu-category-icon-wrap--police-letter {
+    color: #dc2626;
+    filter: none;
+}
+
+#event-menu-modal .event-menu-category-card.event-menu-item--status-ok:focus:not(:focus-visible),
+#event-menu-modal .event-menu-card.event-menu-item--status-ok:focus:not(:focus-visible),
+#event-menu-modal .event-menu-category-card.event-menu-item--status-orange:focus:not(:focus-visible),
+#event-menu-modal .event-menu-card.event-menu-item--status-orange:focus:not(:focus-visible),
+#event-menu-modal .event-menu-category-card.event-menu-item--status-red:focus:not(:focus-visible),
+#event-menu-modal .event-menu-card.event-menu-item--status-red:focus:not(:focus-visible) {
+    color: rgba(245, 247, 250, 0.92);
+    text-shadow: none;
+}
+
+#event-menu-modal .event-menu-item--status-ok:focus:not(:focus-visible) .event-menu-category-icon,
+#event-menu-modal .event-menu-item--status-ok:focus:not(:focus-visible) .event-menu-category-icon-wrap--police-letter {
+    color: #16a34a;
+    filter: none;
+    transform: none;
+}
+
+#event-menu-modal .event-menu-item--status-orange:focus:not(:focus-visible) .event-menu-category-icon,
+#event-menu-modal .event-menu-item--status-orange:focus:not(:focus-visible) .event-menu-category-icon-wrap--police-letter {
+    color: #ea580c;
+    filter: none;
+    transform: none;
+}
+
+#event-menu-modal .event-menu-item--status-red:focus:not(:focus-visible) .event-menu-category-icon,
+#event-menu-modal .event-menu-item--status-red:focus:not(:focus-visible) .event-menu-category-icon-wrap--police-letter {
+    color: #dc2626;
+    filter: none;
+    transform: none;
+}
+
+@media (hover: hover) {
+    #event-menu-modal .event-menu-category-card.event-menu-item--status-ok:hover,
+    #event-menu-modal .event-menu-card.event-menu-item--status-ok:hover,
+    #event-menu-modal .event-menu-category-card.event-menu-item--status-ok:focus-visible,
+    #event-menu-modal .event-menu-card.event-menu-item--status-ok:focus-visible,
+    #event-menu-modal .event-menu-category-card.event-menu-item--status-orange:hover,
+    #event-menu-modal .event-menu-card.event-menu-item--status-orange:hover,
+    #event-menu-modal .event-menu-category-card.event-menu-item--status-orange:focus-visible,
+    #event-menu-modal .event-menu-card.event-menu-item--status-orange:focus-visible,
+    #event-menu-modal .event-menu-category-card.event-menu-item--status-red:hover,
+    #event-menu-modal .event-menu-card.event-menu-item--status-red:hover,
+    #event-menu-modal .event-menu-category-card.event-menu-item--status-red:focus-visible,
+    #event-menu-modal .event-menu-card.event-menu-item--status-red:focus-visible {
+        color: #ffffff;
+        text-shadow: none;
+    }
+
+    #event-menu-modal .event-menu-item--status-ok:hover .event-menu-category-title,
+    #event-menu-modal .event-menu-item--status-ok:focus-visible .event-menu-category-title,
+    #event-menu-modal .event-menu-item--status-ok:hover .event-menu-card-title,
+    #event-menu-modal .event-menu-item--status-ok:focus-visible .event-menu-card-title,
+    #event-menu-modal .event-menu-item--status-orange:hover .event-menu-category-title,
+    #event-menu-modal .event-menu-item--status-orange:focus-visible .event-menu-category-title,
+    #event-menu-modal .event-menu-item--status-orange:hover .event-menu-card-title,
+    #event-menu-modal .event-menu-item--status-orange:focus-visible .event-menu-card-title,
+    #event-menu-modal .event-menu-item--status-red:hover .event-menu-category-title,
+    #event-menu-modal .event-menu-item--status-red:focus-visible .event-menu-category-title,
+    #event-menu-modal .event-menu-item--status-red:hover .event-menu-card-title,
+    #event-menu-modal .event-menu-item--status-red:focus-visible .event-menu-card-title {
+        color: #ffffff;
+    }
+
+    #event-menu-modal .event-menu-item--status-ok:hover .event-menu-category-icon,
+    #event-menu-modal .event-menu-item--status-ok:focus-visible .event-menu-category-icon,
+    #event-menu-modal .event-menu-item--status-ok:hover .event-menu-category-icon-wrap--police-letter,
+    #event-menu-modal .event-menu-item--status-ok:focus-visible .event-menu-category-icon-wrap--police-letter {
+        color: #22c55e;
+        filter: none;
+        transform: scale(1.03);
+    }
+
+    #event-menu-modal .event-menu-item--status-orange:hover .event-menu-category-icon,
+    #event-menu-modal .event-menu-item--status-orange:focus-visible .event-menu-category-icon,
+    #event-menu-modal .event-menu-item--status-orange:hover .event-menu-category-icon-wrap--police-letter,
+    #event-menu-modal .event-menu-item--status-orange:focus-visible .event-menu-category-icon-wrap--police-letter {
+        color: var(--orange-warn, #ff6a00);
+        filter: none;
+        transform: scale(1.03);
+    }
+
+    #event-menu-modal .event-menu-item--status-red:hover .event-menu-category-icon,
+    #event-menu-modal .event-menu-item--status-red:focus-visible .event-menu-category-icon,
+    #event-menu-modal .event-menu-item--status-red:hover .event-menu-category-icon-wrap--police-letter,
+    #event-menu-modal .event-menu-item--status-red:focus-visible .event-menu-category-icon-wrap--police-letter {
+        color: var(--theme-color, #d40000);
+        filter: none;
+        transform: scale(1.03);
+    }
+}
+
+#event-menu-modal .event-menu-item--status-ok:active .event-menu-category-icon,
+#event-menu-modal .event-menu-item--status-orange:active .event-menu-category-icon,
+#event-menu-modal .event-menu-item--status-red:active .event-menu-category-icon,
+#event-menu-modal .event-menu-item--status-ok:active .event-menu-category-icon-wrap--police-letter,
+#event-menu-modal .event-menu-item--status-orange:active .event-menu-category-icon-wrap--police-letter,
+#event-menu-modal .event-menu-item--status-red:active .event-menu-category-icon-wrap--police-letter {
+    transform: scale(1.01);
+    filter: none;
+}
+
 @media (max-width: 640px) {
     #event-menu-modal .modal-body {
         padding: 0 16px 18px !important;
@@ -1467,26 +1602,30 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     }
 
     #event-menu-modal #event-menu-list.event-menu-list--categories {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        column-gap: 28px;
-        row-gap: 30px;
-        justify-items: center;
-        align-content: center;
-        width: min(100%, 312px);
+        width: min(100%, 560px);
     }
 
     #event-menu-modal .event-menu-list--items {
-        width: min(100%, 340px);
+        width: min(100%, 560px);
     }
 
-    #event-menu-modal .event-menu-section {
-        gap: 10px;
+    #event-menu-modal .event-menu-picker {
+        gap: 18px;
+    }
+
+    #event-menu-modal .event-menu-row {
+        gap: 20px;
+    }
+
+    #event-menu-modal .event-menu-row-pair {
+        gap: 22px;
     }
 
     #event-menu-modal .event-menu-category-card {
-        width: min(100%, 140px);
+        flex: 0 1 118px;
+        max-width: 148px;
         min-height: 78px;
-        padding: 4px 2px;
+        padding: 6px 4px;
         gap: 7px;
         font-size: 13px;
     }
@@ -1501,19 +1640,11 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
         height: 48px;
     }
 
-    #event-menu-modal .event-menu-card-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        column-gap: 22px;
-        row-gap: 8px;
-        justify-items: center;
-        width: min(100%, 330px);
-        overflow: visible;
-    }
-
     #event-menu-modal .event-menu-card {
-        width: min(100%, 142px);
+        flex: 0 1 118px;
+        max-width: 148px;
         min-height: 66px;
-        padding: 4px 2px;
+        padding: 6px 4px;
         gap: 4px;
         font-size: 12.5px;
         overflow: visible;

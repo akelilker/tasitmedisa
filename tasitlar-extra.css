@@ -773,6 +773,36 @@
 #dinamik-olay-modal #ruhsat-modal-content.vehicle-documents-picker-mode {
   max-width: 560px;
 }
+
+#dinamik-olay-modal[data-event-type="documents"]:has(#ruhsat-modal-content.vehicle-documents-picker-mode) #ruhsat-btn-group {
+  display: none !important;
+  margin: 0 !important;
+}
+
+@media (min-width: 641px) {
+  #dinamik-olay-modal[data-event-type="documents"]:has(#ruhsat-modal-content.vehicle-documents-picker-mode) .modal-body {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    padding-top: 0 !important;
+    padding-bottom: 28px !important;
+    overflow-y: hidden !important;
+  }
+
+  #dinamik-olay-modal[data-event-type="documents"]:has(#ruhsat-modal-content.vehicle-documents-picker-mode) #ruhsat-modal-content.vehicle-documents-picker-mode {
+    flex: 0 0 auto;
+    width: 100%;
+    margin-top: 0;
+  }
+
+  #dinamik-olay-modal #ruhsat-modal-content.vehicle-documents-picker-mode .vehicle-document-picker {
+    padding-bottom: 0;
+  }
+}
+
 #dinamik-olay-modal #ruhsat-modal-content .vehicle-document-picker {
   display: flex;
   flex-direction: column;
