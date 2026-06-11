@@ -66,10 +66,6 @@
         height: auto !important;
     }
 }
-#vehicle-detail-modal .modal-content {
-    height: auto !important;
-    max-height: 100% !important;
-}
 
 /* Masaüstü PWA: taşıt detay dış glow/çerçeve altta kesilmesin (iç scroll modal-body'de) */
 @media (min-width: 641px) {
@@ -177,15 +173,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 }
 
 /* Muayene tarihi input: Kaydet butonu ile yatayda hizalı (#dinamik-olay-modal muayene formu) */
-#dinamik-olay-modal .muayene-tarih-row {
-  display: flex !important;
-  justify-content: center !important;
-}
-#dinamik-olay-modal .muayene-tarih-inner {
-  width: 390px;
-  max-width: 100%;
-  box-sizing: border-box;
-}
 #dinamik-olay-modal #muayene-tarih {
   width: calc((100% - 16px) / 2) !important;
   max-width: calc((100% - 16px) / 2) !important;
@@ -1679,25 +1666,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     margin-top: 0 !important;
 }
 
-/* Hasar Gören Parça etiketi: Hasar Tutarı sol hizada */
-#dinamik-olay-modal .modal-body .kaza-kaporta-row {
-    width: 100% !important;
-    padding-left: 0 !important;
-    margin-left: 0 !important;
-    margin-top: 1px !important; /* 12px gap'i 4px'e indir – üstteki boşluşu kullan */
-    box-sizing: border-box !important;
-}
-/* "H" (Hasar...) ilk harfi = 5.000 inputunun sol dikey çerçevesi – şema arası 4px */
-#dinamik-olay-modal .kaza-kaporta-label {
-    display: block !important;
-    text-align: left !important;
-    margin-left: 0 !important;
-    padding-left: 55px !important; /* Sol çerçeve ile label arası 55px */
-    font-size: 14px !important;
-    margin-bottom: 0 !important;
-    box-sizing: border-box !important;
-}
-
 /* Kaza modalı buton grubu: form içeriğinin hemen altı */
 #dinamik-olay-modal .modal-body .universal-btn-group {
     margin-top: 6px !important;
@@ -2181,42 +2149,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     color: var(--link-blue-hover);
 }
 
-/* === TRAMER KAYITLARI DETAY MODAL STİLLERİ === */
-.detail-section {
-    margin-top: 20px;
-    width: 100%;
-    text-align: left;
-}
-
-.detail-label {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--form-label-color);
-    margin-bottom: 8px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.detail-item {
-    font-size: 13px;
-    color: var(--txt-gray);
-    padding: 4px 0;
-    border-bottom: 1px solid var(--border-ultra);
-}
-
-.detail-item:last-of-type {
-    border-bottom: none;
-}
-
-.detail-total {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--txt);
-    margin-top: 12px;
-    padding-top: 12px;
-    border-top: 1px solid var(--border-faint);
-}
-
 /* === SABİT HEADER === */
 .tasitlar-modal-overlay .modal-header {
     background: var(--modal-header-red-gradient);
@@ -2377,11 +2309,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 .modal-overlay:has(.history-tabs) .history-item-date + .history-item-body {
     margin-top: 2px !important;
 }
-#vehicle-history-modal .history-item-label,
-.modal-overlay:has(.history-tabs) .history-item-label {
-    color: #ffffff !important;
-    font-weight: 600 !important;
-}
 #vehicle-history-modal .history-item-body,
 .modal-overlay:has(.history-tabs) .history-item-body {
     color: #a0aec0 !important;
@@ -2427,7 +2354,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 }
 
 /* Taşıt Detay modalı: etiketler beyaz, veriler gri (Premium Dark) */
-#vehicle-detail-modal .detail-label,
 #vehicle-detail-modal .detail-row-label {
     color: #ffffff !important;
     font-weight: 600 !important;
@@ -2443,9 +2369,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 }
 #vehicle-detail-modal .detail-row-value.date-warning-orange {
     color: var(--orange-warn) !important;
-}
-#vehicle-detail-modal .detail-item {
-    color: #a0aec0 !important;
 }
 
 /* Tarihçe (5 sekme): her işlem sonrası 3px boşluk, hafif kırmızı yatay çizgi (taşıt detay ortadaki dikey çizgi ile aynı ton), altında 3px boşluk */
@@ -2831,10 +2754,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     flex: 1;
     min-width: 0;
 }
-.v-search-container .v-transmission-filter {
-    flex-shrink: 0;
-    margin-left: 0;
-}
 .v-search-input {
     width: 100%;
     background: var(--bg-2);
@@ -2855,24 +2774,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     color: var(--txt-gray-darkest);
 }
 
-/* ıman filtresi (arama çubuşu içinde, açıldışında görünür) */
-.v-transmission-filter {
-    height: 32px;
-    min-width: 90px;
-    margin-left: 0;
-    padding: 0 8px;
-    font-size: 12px;
-    color: var(--txt-gray);
-    background: var(--bg-2);
-    border: 1px solid var(--border-faint-15);
-    border-radius: 6px;
-    cursor: pointer;
-}
-.v-transmission-filter:hover,
-.v-transmission-filter:focus {
-    border-color: var(--theme-color);
-    outline: none;
-}
 /* ıman simgesi + dropdown (genişleyip daralmayan) */
 .v-transmission-wrap {
     position: relative;
@@ -2982,8 +2883,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     overflow: visible;
 }
 /* Liste: çerçeve ile 3px boşluk (modal-body padding 3px); hover taşmasın */
-#vehicles-modal .vehicles-list-scroll,
-#vehicles-modal .tasit-list-container {
+#vehicles-modal .vehicles-list-scroll {
     margin-left: 0 !important;
     margin-right: 0 !important;
     width: 100% !important;

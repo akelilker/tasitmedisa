@@ -1491,13 +1491,6 @@
    MOBİL GÖRÜNÜM - TÜM MEDIA QUERY'LER BİRLEŞTİRİLDİ
    ========================================= */
 @media (max-width: 640px) {
-  /* ıman + arama (önceki bloktan taşındı) */
-  .v-transmission-filter {
-    min-width: 72px;
-    font-size: 11px;
-    margin-left: 4px;
-    padding: 0 6px;
-  }
   .v-search-container.open {
     width: min(360px, calc(100vw - 120px)) !important;
     max-width: min(360px, calc(100vw - 120px)) !important;
@@ -1512,7 +1505,6 @@
   }
 
   /* Taşıt Detay modalı mobil: etiketler beyaz, veriler gri (Premium Dark) */
-  #vehicle-detail-modal .detail-label,
   #vehicle-detail-modal .detail-row-label {
     color: #ffffff !important;
     font-weight: 600 !important;
@@ -1523,9 +1515,6 @@
   #vehicle-detail-modal .detail-row-value.detail-user-empty,
   #vehicle-detail-modal .detail-user-empty {
     color: #d40000 !important;
-  }
-  #vehicle-detail-modal .detail-item {
-    color: #a0aec0 !important;
   }
   
   .detail-plate {
@@ -1773,15 +1762,6 @@
   }
   .detail-brand-year {
     font-size: 19px !important; /* +1pt (base 15→16 civarı mobil) */
-  }
-  .detail-label {
-    font-size: 15px !important; /* +1pt (base 14px) */
-  }
-  .detail-item {
-    font-size: 14px !important; /* +1pt (base 13px) */
-  }
-  .detail-total {
-    font-size: 15px !important; /* +1pt (base 14px) */
   }
   
   /* Mobil: çerçeve ile içerik arası 3px, alt boşluk 8px */
