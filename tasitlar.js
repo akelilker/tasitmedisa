@@ -2230,6 +2230,52 @@
     vehicle: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17v-5l2-5h14l2 5v5M5 12h14"/><circle cx="6.5" cy="17" r="1.5"/><circle cx="17.5" cy="17" r="1.5"/></svg>'
   };
 
+  var EVENT_MENU_LABELS = {
+    muayene: 'Muayene',
+    takograf: 'Takograf Kalibrasyonu',
+    tasitkarti: 'Taşıt Kartı',
+    sigorta: 'Sigorta',
+    kasko: 'Kasko',
+    kaskokodu: 'Kasko Kodu',
+    takip: 'Taşıt Takip Cihazı',
+    utts: 'UTTS',
+    km: 'Kilometre',
+    ceza: 'Trafik Cezası',
+    bakim: 'Bakım',
+    lastik: 'Lastik Durumu',
+    anahtar: 'Yedek Anahtar',
+    kaza: 'Kaza',
+    kredi: 'Hak Mahrumiyeti',
+    sube: 'Şube Değişikliği',
+    kullanici: 'Kullanıcı Atama / Değişikliği',
+    satis: 'Satış / Pert'
+  };
+
+  var EVENT_MENU_GROUPS = [
+    { id: 'sureli', title: 'Yasal Zorunluluklar', ids: ['muayene', 'takograf', 'tasitkarti'] },
+    { id: 'police', title: 'Sigorta İşlemleri', ids: ['sigorta', 'kasko', 'kaskokodu'] },
+    { id: 'donanim', title: 'Kurumsal Eklentiler', ids: ['takip', 'utts'] },
+    { id: 'kullanim', title: 'Kullanım ve Olaylar', ids: ['km', 'ceza', 'bakim', 'lastik', 'anahtar', 'kaza'] },
+    { id: 'yonetim', title: 'Yönetim İşlemleri', ids: ['kullanici', 'sube', 'kredi', 'satis'] }
+  ];
+
+  var EVENT_MENU_DEFAULT_EVENT_IDS = [
+    'muayene',
+    'sigorta',
+    'kasko',
+    'takip',
+    'utts',
+    'anahtar',
+    'lastik',
+    'kredi',
+    'kaskokodu',
+    'ceza',
+    'km',
+    'bakim',
+    'kaza',
+    'satis'
+  ];
+
   function getEventMenuCategoryIconHtml(categoryId) {
     if (categoryId === 'sigorta' || categoryId === 'kasko') {
       var policeLetter = categoryId === 'sigorta' ? 'S' : 'K';
@@ -6273,42 +6319,7 @@
       const currentMenuVehicle = readVehicles().find(v => String(v.id) === String(effectiveVid));
       renderVehicleContextRow(modal, currentMenuVehicle);
       const assignmentLocked = isArchivedVehicleAssignmentLocked(currentMenuVehicle);
-      const eventLabels = {
-        muayene: 'Muayene',
-        takograf: 'Takograf Kalibrasyonu',
-        tasitkarti: 'Taşıt Kartı',
-        sigorta: 'Sigorta',
-        kasko: 'Kasko',
-        kaskokodu: 'Kasko Kodu',
-        takip: 'Taşıt Takip Cihazı',
-        utts: 'UTTS',
-        km: 'Kilometre',
-        ceza: 'Trafik Cezası',
-        bakim: 'Bakım',
-        lastik: 'Lastik Durumu',
-        anahtar: 'Yedek Anahtar',
-        kaza: 'Kaza',
-        kredi: 'Hak Mahrumiyeti',
-        sube: 'Şube Değişikliği',
-        kullanici: 'Kullanıcı Atama / Değişikliği',
-        satis: 'Satış / Pert'
-      };
-      const availableEventIds = new Set([
-        'muayene',
-        'sigorta',
-        'kasko',
-        'takip',
-        'utts',
-        'anahtar',
-        'lastik',
-        'kredi',
-        'kaskokodu',
-        'ceza',
-        'km',
-        'bakim',
-        'kaza',
-        'satis'
-      ]);
+      const availableEventIds = new Set(EVENT_MENU_DEFAULT_EVENT_IDS);
       if (vehicleNeedsTakograf(currentMenuVehicle)) availableEventIds.add('takograf');
       if (vehicleNeedsK2Belgesi(currentMenuVehicle)) availableEventIds.add('tasitkarti');
       if (assignmentLocked) {
@@ -6318,18 +6329,11 @@
         availableEventIds.add('sube');
         availableEventIds.add('kullanici');
       }
-      const eventGroups = [
-        { id: 'sureli', title: 'Yasal Zorunluluklar', ids: ['muayene', 'takograf', 'tasitkarti'] },
-        { id: 'police', title: 'Sigorta İşlemleri', ids: ['sigorta', 'kasko', 'kaskokodu'] },
-        { id: 'donanim', title: 'Kurumsal Eklentiler', ids: ['takip', 'utts'] },
-        { id: 'kullanim', title: 'Kullanım ve Olaylar', ids: ['km', 'ceza', 'bakim', 'lastik', 'anahtar', 'kaza'] },
-        { id: 'yonetim', title: 'Yönetim İşlemleri', ids: ['kullanici', 'sube', 'kredi', 'satis'] }
-      ];
-      
+
       const vid = (window.currentDetailVehicleId || vehicleId || '').toString().replace(/"/g, '&quot;');
-      eventMenuRenderState.labels = eventLabels;
+      eventMenuRenderState.labels = EVENT_MENU_LABELS;
       eventMenuRenderState.vehicleId = vid;
-      eventMenuRenderState.groups = eventGroups.map(function(group) {
+      eventMenuRenderState.groups = EVENT_MENU_GROUPS.map(function(group) {
         return {
           id: group.id,
           title: group.title,
