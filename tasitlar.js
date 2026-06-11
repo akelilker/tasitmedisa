@@ -8707,20 +8707,6 @@
         uploadSelectedDocument();
       }
     };
-    if (cfg.key === 'tasit_karti') {
-      const expiryWrap = document.createElement('div');
-      expiryWrap.className = 'tasit-karti-expiry-field';
-      const expiryLabel = document.createElement('label');
-      expiryLabel.className = 'form-label';
-      expiryLabel.textContent = 'Geçerlilik Tarihi';
-      const expiryInfo = document.createElement('div');
-      expiryInfo.className = 'form-input';
-      expiryInfo.setAttribute('aria-readonly', 'true');
-      expiryInfo.textContent = '';
-      expiryWrap.appendChild(expiryLabel);
-      expiryWrap.appendChild(expiryInfo);
-      content.appendChild(expiryWrap);
-    }
     if (cfg.key === 'sigorta' || cfg.key === 'kasko') {
       const modal = content.closest('#dinamik-olay-modal') || DOM.dinamikOlayModal;
       applyDinamikOlayFormDateHelpers(modal);
