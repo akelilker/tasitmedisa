@@ -6161,14 +6161,14 @@
     };
     switch (type) {
       case 'bakim':
-        return '<div style="display:flex;flex-direction:column;gap:12px;">' +
+        return '<div class="event-form-stack">' +
           section('Tarih (gg.aa.yyyy)', 'bakim-tarih', 'input', [['type', 'date'], ['class', 'olay-tarih-input']]) +
           section('Servis', 'bakim-servis', 'input', [['type', 'text'], ['placeholder', 'Servis adı']]) +
           section('Km', 'bakim-km', 'input', [['type', 'text'], ['placeholder', 'Km'], ['inputmode', 'numeric']]) +
           section('Tutar', 'bakim-tutar', 'input', [['type', 'text'], ['placeholder', 'Tutar']]) +
           section('Yapılan İşlemler', 'bakim-islemler', 'textarea', [['rows', '2'], ['placeholder', 'Yapılan işlemler']]) + '</div>';
       case 'kaza':
-        return '<div style="display:flex;flex-direction:column;gap:12px;">' +
+        return '<div class="event-form-stack">' +
           section('Tarih', 'kaza-tarih', 'input', [['type', 'date'], ['class', 'olay-tarih-input']]) +
           section('Kullanıcı', 'kaza-surucu', 'input', [['type', 'text'], ['placeholder', 'Kullanıcı']]) +
           section('Hasar Tutarı', 'kaza-tutar', 'input', [['type', 'text'], ['placeholder', 'Tutar']]) +
@@ -6180,7 +6180,7 @@
           section('Açıklama', 'kaza-aciklama', 'textarea', [['rows', '2'], ['placeholder', 'Kaza ile ilgili açıklama girin']]) +
           '<div class="kaza-kaporta-block"><span class="' + labelCls + ' kaza-kaporta-section-label">Kaporta / Hasar</span><div id="kaza-kaporta-container"></div></div></div>';
       case 'ceza':
-        return '<div style="display:flex;flex-direction:column;gap:12px;">' +
+        return '<div class="event-form-stack">' +
           section('Tarih', 'ceza-tarih', 'input', [['type', 'date'], ['class', 'olay-tarih-input']]) +
           '<div>' +
             '<label class="' + labelCls + '" id="ceza-user-label" for="ceza-user-trigger">Kullanıcı</label>' +
@@ -6201,62 +6201,62 @@
           section('Ceza Tutarı', 'ceza-tutar', 'input', [['type', 'text'], ['placeholder', 'Ör. 2.140TL']]) +
           section('Açıklama', 'ceza-aciklama', 'textarea', [['rows', '2'], ['placeholder', 'Açıklama']]) + '</div>';
       case 'sigorta':
-        return '<div style="display:flex;flex-direction:column;gap:12px;">' +
+        return '<div class="event-form-stack">' +
           section('Yenileme/Başlangıç (gg/aa/yyyy)', 'sigorta-tarih', 'input', [['type', 'text'], ['placeholder', 'gg/aa/yyyy']]) +
           section('Firma', 'sigorta-firma', 'input', [['type', 'text'], ['placeholder', 'ör. Anadolu']]) +
           section('Acente', 'sigorta-acente', 'input', [['type', 'text'], ['placeholder', 'ör. Hayri Çetin']]) +
           section('İletişim', 'sigorta-iletisim', 'input', [['type', 'text'], ['placeholder', '05** *******']]) + '</div>';
       case 'kasko':
-        return '<div style="display:flex;flex-direction:column;gap:12px;">' +
+        return '<div class="event-form-stack">' +
           section('Yenileme/Başlangıç (gg/aa/yyyy)', 'kasko-tarih', 'input', [['type', 'text'], ['placeholder', 'gg/aa/yyyy']]) +
           section('Firma', 'kasko-firma', 'input', [['type', 'text'], ['placeholder', 'ör. Anadolu']]) +
           section('Acente', 'kasko-acente', 'input', [['type', 'text'], ['placeholder', 'ör. Hayri Çetin']]) +
           section('İletişim', 'kasko-iletisim', 'input', [['type', 'text'], ['placeholder', '05** *******']]) + '</div>';
       case 'takograf':
-        return '<div style="display:flex;flex-direction:column;gap:12px;">' +
+        return '<div class="event-form-stack">' +
           section('Kalibrasyon Tarihi (gg/aa/yyyy)', 'takograf-kalibrasyon-tarih', 'input', [['type', 'text'], ['placeholder', 'gg/aa/yyyy']]) +
           section('Servis', 'takograf-servis', 'input', [['type', 'text'], ['placeholder', 'Servis adı']]) +
           section('Not', 'takograf-not', 'textarea', [['rows', '2'], ['placeholder', 'İsteğe bağlı not']]) + '</div>';
       case 'tasitkarti':
-        return '<div style="display:flex;flex-direction:column;gap:12px;">' +
+        return '<div class="event-form-stack">' +
           section('Yapılma Tarihi (gg/aa/yyyy)', 'tasit-karti-yapilma-tarih', 'input', [['type', 'text'], ['placeholder', 'gg/aa/yyyy']]) +
           section('Bitiş Tarihi (K2 Belgesi)', 'tasit-karti-bitis-display', 'div', [['class', inputCls], ['aria-readonly', 'true']]) + '</div>';
       case 'muayene':
-        return '<div style="display:flex;flex-direction:column;gap:12px;">' +
+        return '<div class="event-form-stack">' +
           section('Muayene Tarihi', 'muayene-tarih', 'input', [['type', 'text'], ['placeholder', 'gg/aa/yyyy']]) +
           egzozMuayeneSection() + '</div>';
       case 'anahtar':
-        return '<div style="display:flex;flex-direction:column;gap:12px;">' +
+        return '<div class="event-form-stack">' +
           radioRow('Yedek Anahtar Var mı?', 'var', 'yok', 'Var', 'Yok') +
           '<div id="anahtar-detay-wrapper" style="display:none;"><label class="' + labelCls + '" for="anahtar-detay-event">Detay (nerede)</label><textarea id="anahtar-detay-event" class="' + inputCls + '" rows="2" placeholder="Nerede?"></textarea></div></div>';
       case 'kredi':
-        return '<div style="display:flex;flex-direction:column;gap:12px;">' +
+        return '<div class="event-form-stack">' +
           radioRow('Hak Mahrumiyeti Var mı?', 'var', 'yok', 'Var', 'Yok') +
           '<div id="kredi-detay-wrapper-event" style="display:none;"><label class="' + labelCls + '" for="kredi-detay-event">Hak mahrumiyeti detay</label><textarea id="kredi-detay-event" class="' + inputCls + '" rows="2"></textarea></div></div>';
       case 'km':
-        return '<div style="display:flex;flex-direction:column;gap:12px;">' +
+        return '<div class="event-form-stack">' +
           section('Güncel KM', 'km-guncelle-input', 'input', [['type', 'text'], ['placeholder', 'Km'], ['inputmode', 'numeric']]) + '</div>';
       case 'lastik':
-        return '<div style="display:flex;flex-direction:column;gap:12px;">' +
+        return '<div class="event-form-stack">' +
           radioRow('Yazlık/ Kışlık Lastik Var mı?', 'var', 'yok', 'Var', 'Yok') +
           '<div id="lastik-adres-wrapper-event" style="display:none;"><label class="' + labelCls + '" for="lastik-adres-event">Adres</label><textarea id="lastik-adres-event" class="' + inputCls + '" rows="2"></textarea></div></div>';
       case 'utts':
-        return '<div style="display:flex;flex-direction:column;gap:12px;">' +
+        return '<div class="event-form-stack">' +
           radioRow('UTTS Cihazı Var mı?', 'evet', 'hayir', 'Evet', 'Hayır') + '</div>';
       case 'takip':
-        return '<div style="display:flex;flex-direction:column;gap:12px;">' +
+        return '<div class="event-form-stack">' +
           radioRow('Taşıt Takip Cihazı Var mı?', 'evet', 'hayir', 'Evet', 'Hayır') + '</div>';
       case 'kaskokodu':
-        return '<div style="display:flex;flex-direction:column;gap:12px;">' +
+        return '<div class="event-form-stack">' +
           section('Kasko Kodu', 'kasko-kodu-guncelle-input', 'input', [['type', 'text'], ['placeholder', 'Kod'], ['inputmode', 'numeric'], ['pattern', '[0-9]*'], ['autocomplete', 'off']]) + '</div>';
       case 'sube':
-        return '<div style="display:flex;flex-direction:column;gap:12px;">' +
+        return '<div class="event-form-stack">' +
           section('Yeni Şube', 'sube-select', 'select', [], '<option value="">Şube Seçiniz</option>') + '</div>';
       case 'kullanici':
-        return '<div style="display:flex;flex-direction:column;gap:12px;">' +
+        return '<div class="event-form-stack">' +
           section('Kullanıcı', 'kullanici-select', 'select', [], '<option value="">Kullanıcı Seçiniz</option>') + '</div>';
       case 'satis':
-        return '<div style="display:flex;flex-direction:column;gap:12px;">' +
+        return '<div class="event-form-stack">' +
           section('Satış/Pert Tarihi', 'satis-tarih', 'input', [['type', 'date'], ['class', 'olay-tarih-input']]) +
           section('Tutar', 'satis-tutar', 'input', [['type', 'text'], ['placeholder', 'Tutar']]) +
           section('Açıklama', 'satis-aciklama', 'textarea', [['rows', '2'], ['placeholder', 'Açıklama']]) + '</div>';
