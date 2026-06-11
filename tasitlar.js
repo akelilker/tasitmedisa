@@ -6314,7 +6314,7 @@
         availableEventIds.add('kullanici');
       }
 
-      const vid = (window.currentDetailVehicleId || vehicleId || '').toString().replace(/"/g, '&quot;');
+      const vid = (window.currentDetailVehicleId || vehicleId || '').toString();
       eventMenuRenderState.labels = EVENT_MENU_LABELS;
       eventMenuRenderState.vehicleId = vid;
       eventMenuRenderState.groups = EVENT_MENU_GROUPS.map(function(group) {
