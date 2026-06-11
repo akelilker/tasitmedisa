@@ -293,6 +293,13 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
   box-sizing: border-box !important;
 }
 
+/* Belge upload (sigorta/kasko): Başlangıç Tarihi etiketi — base ile ilk çizimde ortada (extra.css FOUC önlenir) */
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack .form-label {
+  width: 100%;
+  text-align: center !important;
+  font-size: 12px !important;
+}
+
 /* Olay Ekle: tarih satırı — etiket tam genişlik, input gg.aa.yyyy oranında dar */
 .olay-ekle-modal .modal-body div:has(> input.olay-tarih-input),
 .olay-ekle-modal .modal-body div:has(> input[type="date"].olay-tarih-input) {
@@ -2800,6 +2807,10 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
   }
   .olay-ekle-modal .modal-body > div > div:has(label) label {
     text-align: left !important;
+  }
+  #dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack .form-label {
+    text-align: center !important;
+    font-size: 12px !important;
   }
   .olay-ekle-modal .modal-body .form-input,
   .olay-ekle-modal .modal-body select,

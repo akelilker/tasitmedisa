@@ -1984,6 +1984,11 @@
     text-align: left !important;
   }
 
+  #dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack .form-label {
+    font-size: 12px !important;
+    text-align: center !important;
+  }
+
   /* Mobil Olay Ekle: Var/Yok, Evet/Hayır satırları sola yaslı ve 3px dikey boşluklu */
   .olay-ekle-modal .event-radio-row {
     display: flex !important;
