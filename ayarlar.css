@@ -1098,22 +1098,29 @@ body.modal-open #info-modal .modal-container {
     display: inline-flex;
     flex-direction: column;
     gap: 7px;
+    color: #a0aec0;
     height: auto;
     min-height: 62px;
     overflow: visible;
     padding: 4px 0;
     margin-bottom: 28px;
+    transition: color 0.18s ease, font-size 0.2s;
 }
 
 #data-management-modal .data-management-action-icon {
     display: block;
-    width: 40px;
-    height: 40px;
-    flex: 0 0 40px;
+    width: 54px;
+    height: 54px;
+    flex: 0 0 54px;
     object-fit: contain;
     opacity: 0.92;
     filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.12));
     transition: opacity 0.2s ease, transform 0.2s ease, filter 0.2s ease;
+}
+
+#data-management-modal .data-management-text-btn:hover,
+#data-management-modal .data-management-text-btn:focus-visible {
+    color: #ffffff;
 }
 
 #data-management-modal .data-management-text-btn:hover .data-management-action-icon,
@@ -2817,14 +2824,18 @@ input.settings-form-input:-moz-autofill,
     #dis-veri-panel .modal-container {
         background: var(--bg) !important;
     }
-    /* Veri Yedekleme & Dış Veri Yönetimi mobil: butonlar 5px yukarı, sağa yaslı, metin beyaz */
+    /* Veri Yedekleme & Dış Veri Yönetimi mobil: butonlar 5px yukarı, sağa yaslı */
     #data-management-modal .data-management-actions,
     #dis-veri-panel .data-management-actions {
         transform: translateY(calc(-50% - 5px));
         align-items: flex-end;
         text-align: right;
     }
-    #data-management-modal .data-management-text-btn,
+    #data-management-modal .data-management-text-btn {
+        color: #a0aec0 !important;
+    }
+    #data-management-modal .data-management-text-btn:hover,
+    #data-management-modal .data-management-text-btn:focus-visible,
     #dis-veri-panel .data-management-text-btn {
         color: #ffffff !important;
     }
