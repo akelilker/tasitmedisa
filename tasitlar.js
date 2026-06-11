@@ -2231,26 +2231,30 @@
   };
 
   // Olay Ekle menüsünün etiket, grup ve varsayılan olay metadata owner'ı.
-  var EVENT_MENU_LABELS = {
-    muayene: 'Muayene',
-    takograf: 'Takograf Kalibrasyonu',
-    tasitkarti: 'Taşıt Kartı',
-    sigorta: 'Sigorta',
-    kasko: 'Kasko',
-    kaskokodu: 'Kasko Kodu',
-    takip: 'Taşıt Takip Cihazı',
-    utts: 'UTTS',
-    km: 'Kilometre',
-    ceza: 'Trafik Cezası',
-    bakim: 'Bakım',
-    lastik: 'Lastik Durumu',
-    anahtar: 'Yedek Anahtar',
-    kaza: 'Kaza',
-    kredi: 'Hak Mahrumiyeti',
-    sube: 'Şube Değişikliği',
-    kullanici: 'Kullanıcı Atama / Değişikliği',
-    satis: 'Satış / Pert'
+  var EVENT_DEFINITIONS = {
+    muayene: { menuLabel: 'Muayene', modalTitle: 'MUAYENE BİLGİSİ GÜNCELLE', saveHandlerName: 'updateMuayeneInfo' },
+    takograf: { menuLabel: 'Takograf Kalibrasyonu', modalTitle: 'TAKOGRAF KALİBRASYON GÜNCELLE', saveHandlerName: 'updateTakografKalibrasyonInfo' },
+    tasitkarti: { menuLabel: 'Taşıt Kartı', modalTitle: 'TAŞIT KARTI GÜNCELLE', saveHandlerName: 'updateTasitKartiInfo' },
+    sigorta: { menuLabel: 'Sigorta', modalTitle: 'SİGORTA BİLGİSİ GÜNCELLE', saveHandlerName: 'updateSigortaInfo' },
+    kasko: { menuLabel: 'Kasko', modalTitle: 'KASKO BİLGİSİ GÜNCELLE', saveHandlerName: 'updateKaskoInfo' },
+    kaskokodu: { menuLabel: 'Kasko Kodu', modalTitle: 'KASKO KODU GÜNCELLEME', saveHandlerName: 'updateKaskoKoduInfo' },
+    takip: { menuLabel: 'Taşıt Takip Cihazı', modalTitle: 'TAŞIT TAKİP CİHAZ BİLGİSİ GÜNCELLE', saveHandlerName: 'updateTakipCihazInfo' },
+    utts: { menuLabel: 'UTTS', modalTitle: 'UTTS BİLGİSİ GÜNCELLE', saveHandlerName: 'updateUTTSInfo' },
+    km: { menuLabel: 'Kilometre', modalTitle: 'KM GÜNCELLE', saveHandlerName: 'updateKmInfo' },
+    ceza: { menuLabel: 'Trafik Cezası', modalTitle: 'TRAFİK CEZASI EKLE', saveHandlerName: 'saveCezaEvent' },
+    bakim: { menuLabel: 'Bakım', modalTitle: 'BAKIM BİLGİSİ EKLE', saveHandlerName: 'saveBakimEvent' },
+    lastik: { menuLabel: 'Lastik Durumu', modalTitle: 'LASTİK DURUMU GÜNCELLE', saveHandlerName: 'updateLastikInfo' },
+    anahtar: { menuLabel: 'Yedek Anahtar', modalTitle: 'YEDEK ANAHTAR BİLGİSİ GÜNCELLE', saveHandlerName: 'updateAnahtarInfo' },
+    kaza: { menuLabel: 'Kaza', modalTitle: 'KAZA BİLGİSİ EKLE', saveHandlerName: 'saveKazaEvent' },
+    kredi: { menuLabel: 'Hak Mahrumiyeti', modalTitle: 'HAK MAHRUMİYETİ BİLGİSİ GÜNCELLE', saveHandlerName: 'updateKrediInfo' },
+    sube: { menuLabel: 'Şube Değişikliği', modalTitle: 'ŞUBE DEĞİŞİKLİĞİ', saveHandlerName: 'updateSubeDegisiklik' },
+    kullanici: { menuLabel: 'Kullanıcı Atama / Değişikliği', modalTitle: 'KULLANICI ATAMA/DEĞİŞİKLİĞİ', saveHandlerName: 'updateKullaniciAtama' },
+    satis: { menuLabel: 'Satış / Pert', modalTitle: 'SATIŞ/PERT BİLDİRİMİ', saveHandlerName: 'saveSatisPert' }
   };
+  var EVENT_MENU_LABELS = {};
+  Object.keys(EVENT_DEFINITIONS).forEach(function(eventId) {
+    EVENT_MENU_LABELS[eventId] = EVENT_DEFINITIONS[eventId].menuLabel;
+  });
 
   var EVENT_MENU_GROUPS = [
     { id: 'sureli', title: 'Yasal Zorunluluklar', ids: ['muayene', 'takograf', 'tasitkarti'] },
@@ -5772,27 +5776,6 @@
 
   // --- OLAY MODAL FONKSİYONLARI (tek #dinamik-olay-modal) ---
 
-  const EVENT_TITLES = {
-    bakim: 'BAKIM BİLGİSİ EKLE',
-    kaza: 'KAZA BİLGİSİ EKLE',
-    ceza: 'TRAFİK CEZASI EKLE',
-    sigorta: 'SİGORTA BİLGİSİ GÜNCELLE',
-    kasko: 'KASKO BİLGİSİ GÜNCELLE',
-    takograf: 'TAKOGRAF KALİBRASYON GÜNCELLE',
-    tasitkarti: 'TAŞIT KARTI GÜNCELLE',
-    muayene: 'MUAYENE BİLGİSİ GÜNCELLE',
-    anahtar: 'YEDEK ANAHTAR BİLGİSİ GÜNCELLE',
-    kredi: 'HAK MAHRUMİYETİ BİLGİSİ GÜNCELLE',
-    km: 'KM GÜNCELLE',
-    lastik: 'LASTİK DURUMU GÜNCELLE',
-    utts: 'UTTS BİLGİSİ GÜNCELLE',
-    takip: 'TAŞIT TAKİP CİHAZ BİLGİSİ GÜNCELLE',
-    kaskokodu: 'KASKO KODU GÜNCELLEME',
-    sube: 'ŞUBE DEĞİŞİKLİĞİ',
-    kullanici: 'KULLANICI ATAMA/DEĞİŞİKLİĞİ',
-    satis: 'SATIŞ/PERT BİLDİRİMİ'
-  };
-
   function padDatePart(value) {
     return String(value || '').padStart(2, '0');
   }
@@ -6433,7 +6416,8 @@
 
       formIcerik.id = 'dinamik-olay-form-icerik';
       window.currentDetailVehicleId = (vehicleId || window.currentDetailVehicleId || '').toString();
-      const title = EVENT_TITLES[type] || 'OLAY EKLE';
+      const eventDefinition = EVENT_DEFINITIONS[type];
+      const title = eventDefinition ? eventDefinition.modalTitle : 'OLAY EKLE';
       modal.dataset.eventType = type;
       baslikEl.textContent = title;
       renderVehicleContextRow(modal, currentEventVehicle);
@@ -6446,28 +6430,12 @@
       kaydetBtn.onclick = null;
       kaydetBtn.style.display = '';
       kaydetBtn.textContent = 'Kaydet';
-      const saveHandlers = {
-        bakim: window.saveBakimEvent,
-        kaza: window.saveKazaEvent,
-        ceza: window.saveCezaEvent,
-        sigorta: window.updateSigortaInfo,
-        kasko: window.updateKaskoInfo,
-        takograf: window.updateTakografKalibrasyonInfo,
-        tasitkarti: window.updateTasitKartiInfo,
-        muayene: window.updateMuayeneInfo,
-        anahtar: window.updateAnahtarInfo,
-        kredi: window.updateKrediInfo,
-        km: window.updateKmInfo,
-        lastik: window.updateLastikInfo,
-        utts: window.updateUTTSInfo,
-        takip: window.updateTakipCihazInfo,
-        kaskokodu: window.updateKaskoKoduInfo,
-        sube: window.updateSubeDegisiklik,
-        kullanici: window.updateKullaniciAtama,
-        satis: window.saveSatisPert
-      };
-      const handler = saveHandlers[type];
-      if (handler) kaydetBtn.onclick = function() { handler(); };
+      if (eventDefinition && eventDefinition.saveHandlerName) {
+        const handler = window[eventDefinition.saveHandlerName];
+        if (typeof handler === 'function') {
+          kaydetBtn.onclick = function() { handler(); };
+        }
+      }
 
       if (type === 'kaza') {
         // Kaza modal'ında mevcut boya şemasını göster (readonly) ve varsayılan kullanıcı
