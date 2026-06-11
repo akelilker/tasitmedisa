@@ -2313,7 +2313,7 @@
         '</button>';
     }).join('');
     menuList.innerHTML =
-      '<section class="event-menu-section event-menu-section--active">' +
+      '<section class="event-menu-section">' +
       '<div class="event-menu-card-grid">' + buttonsHtml + '</div>' +
       '</section>';
     if (document.activeElement && typeof document.activeElement.blur === 'function') {
@@ -6805,11 +6805,6 @@
         })();
         requestAnimationFrame(syncAdresGrow);
       } else if (type === 'bakim') {
-        const bakimKisiInput = document.getElementById('bakim-kisi');
-        if (bakimKisiInput) {
-          const vehicle = readVehicles().find(v => String(v.id) === String(vehicleId || window.currentDetailVehicleId));
-          if (vehicle && vehicle.tahsisKisi) bakimKisiInput.value = vehicle.tahsisKisi;
-        }
         const bakimIslemler = document.getElementById('bakim-islemler');
         if (bakimIslemler && !bakimIslemler.dataset.expandBound) {
           bakimIslemler.dataset.expandBound = '1';
@@ -9024,7 +9019,6 @@
     const tarih = document.getElementById('bakim-tarih')?.value.trim() || '';
     const islemler = document.getElementById('bakim-islemler')?.value.trim() || '';
     const servis = document.getElementById('bakim-servis')?.value.trim() || '';
-    const kisi = document.getElementById('bakim-kisi')?.value.trim() || '';
     const km = document.getElementById('bakim-km')?.value.trim() || '';
     const tutar = document.getElementById('bakim-tutar')?.value.trim() || '';
     
@@ -9062,7 +9056,7 @@
     const data = {
       islemler: islemler,
       servis: servis,
-      kisi: kisi || getEventPerformerName(vehicle),
+      kisi: getEventPerformerName(vehicle),
       km: km,
       tutar: tutar
     };
@@ -9084,22 +9078,6 @@
       });
     });
   };
-
-  /** Yapılan İşlemler textarea: 2 satır açık, içerik uzadıkça aşağı açılsın */
-  (function initBakimIslemlerExpand() {
-    var el = document.getElementById('bakim-islemler');
-    if (el) {
-      el.addEventListener('input', function() {
-        this.style.height = 'auto';
-        var lineHeight = 22;
-        var minH = lineHeight * 2;
-        var maxH = lineHeight * 10;
-        var newH = Math.min(Math.max(this.scrollHeight, minH), maxH);
-        this.style.height = newH + 'px';
-        this.style.overflow = this.scrollHeight > maxH ? 'auto' : 'hidden';
-      });
-    }
-  })();
 
   /**
    * Kaza olayı kaydet
