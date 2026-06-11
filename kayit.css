@@ -2128,17 +2128,6 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         margin-top: -2px !important; /* genel +1px kuralına göre 3px yukarı */
         margin-bottom: 1px !important;
     }
-    /* Notlar etiketi: 8px yukarı; etiket–input arası 0 */
-    #vehicle-modal .modal-body .modal-column-right .form-section:has(#vehicle-notes) {
-        gap: 0 !important;
-    }
-    #vehicle-modal .modal-body .modal-column-right .form-section:has(#vehicle-notes) .form-label {
-        transform: translateY(-8px);
-        margin-bottom: 0 !important;
-    }
-    #vehicle-modal .modal-body .modal-column-right .form-section:has(#vehicle-notes) #vehicle-notes {
-        margin-top: -4px !important;
-    }
     #vehicle-modal .modal-body {
         padding: 28px 12px 6px 12px !important;
         display: flex !important;
@@ -2182,8 +2171,8 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-body .modal-column-right {
         min-width: 0;
     }
-    /* Sağ kolon: açılır alanlar alttakileri itsin, bölümler küçülmesin */
-    #vehicle-modal .modal-body .modal-column-right .form-section,
+    /* Sağ kolon: Notlar hariç bölümler küçülmesin */
+    #vehicle-modal .modal-body .modal-column-right .form-section:not(:has(#vehicle-notes)),
     #vehicle-modal .modal-body .modal-column-right .form-section-inline {
         flex-shrink: 0;
     }
@@ -2220,26 +2209,32 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         overflow: hidden;
         flex: 0 0 0;
     }
-    /* Notlar: Kasko Kodu ile arası 8px; Boya ile aynı satırda (translateY ile aşağı hiza) */
+    /* Masaüstü: Notlar flex-fill — Boya alt hizası (translateY yok) */
     #vehicle-modal .modal-body .modal-column-right .form-section:has(#vehicle-notes) {
+        display: flex !important;
+        flex-direction: column !important;
+        flex: 1 1 auto !important;
+        align-items: stretch !important;
+        min-height: 0 !important;
+        gap: 4px !important;
         margin-top: 2px !important;
         margin-bottom: 0 !important;
-        flex: none !important;
+        padding-bottom: 0 !important;
         min-width: 0;
-        padding-bottom: 6px !important;
-        transform: translateY(10px);
+        transform: none !important;
     }
-    /* iOS PWA: Notlar etiketinin üstündeki dikey boşluk 2px daralt */
-    @media (display-mode: standalone) {
-        #vehicle-modal .modal-body .modal-column-right .form-section:has(#vehicle-notes) {
-            transform: translateY(8px);
-        }
+    #vehicle-modal .modal-body .modal-column-right .form-section:has(#vehicle-notes) .form-label {
+        flex: 0 0 auto !important;
+        transform: none !important;
+        margin-bottom: 0 !important;
     }
-    /* Masaüstü: Notlar textarea – varsayılan 1 satır, içerik uzadıkça aşağı genişler (max 300px) */
+    /* Masaüstü: Notlar textarea – flex ile kalan boşluk; içerik uzadıkça max 300px */
     #vehicle-modal .modal-body #vehicle-notes {
+        flex: 1 1 auto !important;
         min-height: 26px !important;
         max-height: 300px !important;
         height: auto !important;
+        margin-top: 0 !important;
         overflow-x: hidden !important;
         max-width: 100% !important;
         box-sizing: border-box !important;
