@@ -2202,43 +2202,44 @@
     vehicleId: ''
   };
 
+  var EVENT_MENU_SHIELD_CHECK_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m8.5 12 2.2 2.2 4.8-4.8"/></svg>';
+  var EVENT_MENU_CATEGORY_ICONS = {
+    sureli: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5.5A8.5 8.5 0 0 1 12 7v14a8.5 8.5 0 0 0-9-1.5z"/><path d="M21 5.5A8.5 8.5 0 0 0 12 7v14a8.5 8.5 0 0 1 9-1.5z"/><path d="M7 10h2M7 13h2M15 10h2M15 13h2"/></svg>',
+    police: EVENT_MENU_SHIELD_CHECK_SVG,
+    donanim: '<svg viewBox="0 0 28 24" aria-hidden="true" style="stroke-width:1.8"><path d="M8 21V5a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v16M7 21h13M10.5 6h6v5h-6z"/><path d="M19 7h2l2 2v8.5a1.5 1.5 0 0 0 3 0V10l-2-2M11 15h.01M14 15h.01M17 15h.01"/><path d="M5.5 8.5a5 5 0 0 0 0 7M3 6a8.5 8.5 0 0 0 0 12"/></svg>',
+    kullanim: '<svg viewBox="0 0 24 24" aria-hidden="true"><path style="fill:currentColor;stroke:none" d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2m0 2a8 8 0 0 1 7.94 7H16a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1H4.06A8 8 0 0 1 12 4m2 8v1a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-1zm-9.94 1H8a3 3 0 0 0 3 3v3.94A8 8 0 0 1 4.06 13m8.94 6.94V16a3 3 0 0 0 3-3h3.94A8 8 0 0 1 13 19.94"/></svg>',
+    yonetim: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5h6v2M3 12h18M10 12v2h4v-2"/></svg>'
+  };
+  var EVENT_MENU_EVENT_ICONS = {
+    muayene: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 2h8l6 6v8l-6 6H8l-6-6V8z"/><path d="M9 5h6l4 4v6l-4 4H9l-4-4V9z"/><text x="12" y="11" style="fill:currentColor;stroke:none;font-family:Arial,sans-serif;font-size:3.8px;font-weight:800;text-anchor:middle">TÜV</text><text x="12" y="15" style="fill:currentColor;stroke:none;font-family:Arial,sans-serif;font-size:3.8px;font-weight:800;text-anchor:middle">TÜRK</text></svg>',
+    takograf: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 12l4-4M7 17h10M6.5 9h.01M12 6.5h.01M17.5 9h.01"/></svg>',
+    tasitkarti: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8" cy="11" r="2.2"/><path d="M5 16c.8-1.7 1.8-2.5 3-2.5s2.2.8 3 2.5M14 9h4M14 12h4M14 15h3"/></svg>',
+    kaskokodu: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h8l4 4v16H6zM14 2v5h5"/><path d="M9 11h6M9 15h6M9 19h6M11 9v12M14 9v12"/></svg>',
+    takip: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M1 12h4M19 12h4"/></svg>',
+    utts: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16M3 21h12M6 6h6v5H6z"/><path d="m16 6 3 3v8.5a1.5 1.5 0 0 0 3 0V10l-2-2M7 15h4"/></svg>',
+    km: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 17a8 8 0 1 1 14 0"/><path d="M12 14l4-4M8 17h8"/></svg>',
+    ceza: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 2h9l5 5v15H5zM14 2v6h6M8 12h5M8 16h5"/><path d="M17 13v4M17 20h.01"/></svg>',
+    bakim: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>',
+    lastik: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.7"/><path d="m12 7 1.5 3.5L17 12l-3.5 1.5L12 17l-1.5-3.5L7 12l3.5-1.5zM8 3.9l1 2M16 3.9l-1 2M20.1 8l-2 1M20.1 16l-2-1M16 20.1l-1-2M8 20.1l1-2M3.9 16l2-1M3.9 8l2 1"/></svg>',
+    anahtar: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 4.4 11 2.5a2 2 0 0 1 2.6 1l3.7 8.5a2 2 0 0 1-1 2.6l-4.4 1.9a2 2 0 0 1-2.6-1L5.6 7a2 2 0 0 1 1-2.6z"/><path d="m11.5 16.6-1.2 4.9M10.3 21.5l-1.7-.4M9.6 18.7l-1.5-.4"/><rect x="8.2" y="5.3" width="4.7" height="3.2" rx="1"/><circle cx="10.8" cy="11.4" r=".8"/><circle cx="13.3" cy="10.3" r=".8"/></svg>',
+    kaza: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 15v-4l2-3h4l2 3v4H2zM14 15v-4l2-3h4l2 3v4h-8z"/><circle cx="5" cy="16.5" r="1.5"/><circle cx="19" cy="16.5" r="1.5"/><path d="m12 4 .8 2.5L15 5.2l-.8 2.6 2.6.2-2.3 1.3 1.7 2-2.6-.6-.3 2.6-1.3-2.2-1.3 2.2-.3-2.6-2.6.6 1.7-2L7.2 8l2.6-.2L9 5.2l2.2 1.3z"/></svg>',
+    kredi: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="9" width="14" height="12" rx="2"/><path d="M8 9V6a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15" r="1.5"/></svg>',
+    sube: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 21V8l6-4 6 4v13M6 21v-6h5v6M6 10h.01M10 10h.01"/><path style="fill:currentColor;stroke:none" d="M16 7h4V5l3 3-3 3V9h-4zm6 8h-4v2l-3-3 3-3v2h4z"/></svg>',
+    kullanici: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="7" r="3"/><path d="M2.5 19a5.5 5.5 0 0 1 11 0"/><path style="fill:currentColor;stroke:none" d="M16 7h4V5l3 3-3 3V9h-4zm6 8h-4v2l-3-3 3-3v2h4z"/></svg>',
+    satis: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 17v-5l2-4h10l2 4v5M4 12h10M4.5 18.5h.01M13.5 18.5h.01"/><path style="fill:currentColor;stroke:none" d="M16 6h4V4l4 4-4 4v-2h-4z"/></svg>',
+    vehicle: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17v-5l2-5h14l2 5v5M5 12h14"/><circle cx="6.5" cy="17" r="1.5"/><circle cx="17.5" cy="17" r="1.5"/></svg>'
+  };
+
   function getEventMenuCategoryIconHtml(categoryId) {
-    var shieldCheckSvg = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m8.5 12 2.2 2.2 4.8-4.8"/></svg>';
-    var categorySvgMap = {
-      sureli: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5.5A8.5 8.5 0 0 1 12 7v14a8.5 8.5 0 0 0-9-1.5z"/><path d="M21 5.5A8.5 8.5 0 0 0 12 7v14a8.5 8.5 0 0 1 9-1.5z"/><path d="M7 10h2M7 13h2M15 10h2M15 13h2"/></svg>',
-      police: shieldCheckSvg,
-      donanim: '<svg viewBox="0 0 28 24" aria-hidden="true" style="stroke-width:1.8"><path d="M8 21V5a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v16M7 21h13M10.5 6h6v5h-6z"/><path d="M19 7h2l2 2v8.5a1.5 1.5 0 0 0 3 0V10l-2-2M11 15h.01M14 15h.01M17 15h.01"/><path d="M5.5 8.5a5 5 0 0 0 0 7M3 6a8.5 8.5 0 0 0 0 12"/></svg>',
-      kullanim: '<svg viewBox="0 0 24 24" aria-hidden="true"><path style="fill:currentColor;stroke:none" d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2m0 2a8 8 0 0 1 7.94 7H16a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1H4.06A8 8 0 0 1 12 4m2 8v1a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-1zm-9.94 1H8a3 3 0 0 0 3 3v3.94A8 8 0 0 1 4.06 13m8.94 6.94V16a3 3 0 0 0 3-3h3.94A8 8 0 0 1 13 19.94"/></svg>',
-      yonetim: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5h6v2M3 12h18M10 12v2h4v-2"/></svg>'
-    };
-    var inlineSvgMap = {
-      muayene: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 2h8l6 6v8l-6 6H8l-6-6V8z"/><path d="M9 5h6l4 4v6l-4 4H9l-4-4V9z"/><text x="12" y="11" style="fill:currentColor;stroke:none;font-family:Arial,sans-serif;font-size:3.8px;font-weight:800;text-anchor:middle">TÜV</text><text x="12" y="15" style="fill:currentColor;stroke:none;font-family:Arial,sans-serif;font-size:3.8px;font-weight:800;text-anchor:middle">TÜRK</text></svg>',
-      takograf: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 12l4-4M7 17h10M6.5 9h.01M12 6.5h.01M17.5 9h.01"/></svg>',
-      tasitkarti: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8" cy="11" r="2.2"/><path d="M5 16c.8-1.7 1.8-2.5 3-2.5s2.2.8 3 2.5M14 9h4M14 12h4M14 15h3"/></svg>',
-      kaskokodu: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h8l4 4v16H6zM14 2v5h5"/><path d="M9 11h6M9 15h6M9 19h6M11 9v12M14 9v12"/></svg>',
-      takip: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M1 12h4M19 12h4"/></svg>',
-      utts: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16M3 21h12M6 6h6v5H6z"/><path d="m16 6 3 3v8.5a1.5 1.5 0 0 0 3 0V10l-2-2M7 15h4"/></svg>',
-      km: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 17a8 8 0 1 1 14 0"/><path d="M12 14l4-4M8 17h8"/></svg>',
-      ceza: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 2h9l5 5v15H5zM14 2v6h6M8 12h5M8 16h5"/><path d="M17 13v4M17 20h.01"/></svg>',
-      bakim: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>',
-      lastik: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.7"/><path d="m12 7 1.5 3.5L17 12l-3.5 1.5L12 17l-1.5-3.5L7 12l3.5-1.5zM8 3.9l1 2M16 3.9l-1 2M20.1 8l-2 1M20.1 16l-2-1M16 20.1l-1-2M8 20.1l1-2M3.9 16l2-1M3.9 8l2 1"/></svg>',
-      anahtar: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 4.4 11 2.5a2 2 0 0 1 2.6 1l3.7 8.5a2 2 0 0 1-1 2.6l-4.4 1.9a2 2 0 0 1-2.6-1L5.6 7a2 2 0 0 1 1-2.6z"/><path d="m11.5 16.6-1.2 4.9M10.3 21.5l-1.7-.4M9.6 18.7l-1.5-.4"/><rect x="8.2" y="5.3" width="4.7" height="3.2" rx="1"/><circle cx="10.8" cy="11.4" r=".8"/><circle cx="13.3" cy="10.3" r=".8"/></svg>',
-      kaza: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 15v-4l2-3h4l2 3v4H2zM14 15v-4l2-3h4l2 3v4h-8z"/><circle cx="5" cy="16.5" r="1.5"/><circle cx="19" cy="16.5" r="1.5"/><path d="m12 4 .8 2.5L15 5.2l-.8 2.6 2.6.2-2.3 1.3 1.7 2-2.6-.6-.3 2.6-1.3-2.2-1.3 2.2-.3-2.6-2.6.6 1.7-2L7.2 8l2.6-.2L9 5.2l2.2 1.3z"/></svg>',
-      kredi: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="9" width="14" height="12" rx="2"/><path d="M8 9V6a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15" r="1.5"/></svg>',
-      sube: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 21V8l6-4 6 4v13M6 21v-6h5v6M6 10h.01M10 10h.01"/><path style="fill:currentColor;stroke:none" d="M16 7h4V5l3 3-3 3V9h-4zm6 8h-4v2l-3-3 3-3v2h4z"/></svg>',
-      kullanici: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="7" r="3"/><path d="M2.5 19a5.5 5.5 0 0 1 11 0"/><path style="fill:currentColor;stroke:none" d="M16 7h4V5l3 3-3 3V9h-4zm6 8h-4v2l-3-3 3-3v2h4z"/></svg>',
-      satis: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 17v-5l2-4h10l2 4v5M4 12h10M4.5 18.5h.01M13.5 18.5h.01"/><path style="fill:currentColor;stroke:none" d="M16 6h4V4l4 4-4 4v-2h-4z"/></svg>',
-      vehicle: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17v-5l2-5h14l2 5v5M5 12h14"/><circle cx="6.5" cy="17" r="1.5"/><circle cx="17.5" cy="17" r="1.5"/></svg>'
-    };
     if (categoryId === 'sigorta' || categoryId === 'kasko') {
       var policeLetter = categoryId === 'sigorta' ? 'S' : 'K';
       return '<span class="event-menu-category-icon-wrap--police-letter" aria-hidden="true">' +
-        '<span class="event-menu-category-icon event-menu-category-icon--inline">' + shieldCheckSvg + '</span>' +
+        '<span class="event-menu-category-icon event-menu-category-icon--inline">' + EVENT_MENU_SHIELD_CHECK_SVG + '</span>' +
         '<span class="event-menu-category-icon-letter">' + policeLetter + '</span>' +
         '</span>';
     }
-    var isPrimary = Object.prototype.hasOwnProperty.call(categorySvgMap, categoryId);
-    var svgHtml = categorySvgMap[categoryId] || inlineSvgMap[categoryId] || inlineSvgMap.vehicle;
+    var isPrimary = Object.prototype.hasOwnProperty.call(EVENT_MENU_CATEGORY_ICONS, categoryId);
+    var svgHtml = EVENT_MENU_CATEGORY_ICONS[categoryId] || EVENT_MENU_EVENT_ICONS[categoryId] || EVENT_MENU_EVENT_ICONS.vehicle;
     var primaryClass = isPrimary ? ' event-menu-category-icon--primary' : '';
     return '<span class="event-menu-category-icon event-menu-category-icon--inline' + primaryClass + '" aria-hidden="true">' + svgHtml + '</span>';
   }
