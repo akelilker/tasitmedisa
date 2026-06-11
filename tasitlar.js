@@ -3202,7 +3202,7 @@
       }
     }
 
-    // Plaka satırı: Olay Ekle solda, plaka ortada, Tarihçe sağda
+    // Plaka satırı: Olay Ekle solda, plaka ortada
     if (plateRow) {
       const existingPlateHistoryBtn = plateRow.querySelector('.history-btn-minimal');
       const existingPlateAddEventBtn = plateRow.querySelector('.history-add-event-btn');
@@ -3222,21 +3222,6 @@
       } else {
         plateRow.appendChild(addEventBtn);
       }
-
-      const historyBtn = document.createElement('button');
-      historyBtn.className = 'history-btn-minimal';
-      historyBtn.innerHTML = `
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M5 22h14"/>
-          <path d="M5 2h14"/>
-          <path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22"/>
-          <path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2"/>
-        </svg>
-      `;
-      historyBtn.title = 'Tarihçe';
-      historyBtn.setAttribute('aria-label', 'Tarihçe');
-      historyBtn.onclick = () => showVehicleHistory(null);
-      plateRow.appendChild(historyBtn);
     }
 
     // Marka/model satırı (yalnızca metin)
@@ -3330,9 +3315,17 @@
         toolbarCenter.appendChild(assignBtn);
       }
       
-      // Sağ taraf (ruhsat simgesi + yazdır butonu)
+      // Sağ taraf (tarihçe + ruhsat + yazdır)
       const toolbarRight = document.createElement('div');
       toolbarRight.className = 'toolbar-right';
+      const historyBtn = document.createElement('button');
+      historyBtn.type = 'button';
+      historyBtn.className = 'vehicle-history-btn history-btn-minimal';
+      historyBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 22h14"/><path d="M5 2h14"/><path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22"/><path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2"/></svg>';
+      historyBtn.title = 'Tarihçe';
+      historyBtn.setAttribute('aria-label', 'Tarihçe');
+      historyBtn.onclick = () => showVehicleHistory(null);
+      toolbarRight.appendChild(historyBtn);
       const ruhsatBtn = document.createElement('button');
       ruhsatBtn.type = 'button';
       ruhsatBtn.className = 'vehicle-ruhsat-btn';

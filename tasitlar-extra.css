@@ -494,7 +494,8 @@
 }
 
 .vehicle-print-btn,
-.vehicle-ruhsat-btn {
+.vehicle-ruhsat-btn,
+.vehicle-history-btn {
   width: 30px;
   height: 30px;
   background: transparent;
@@ -507,12 +508,14 @@
   cursor: pointer;
 }
 .vehicle-print-btn svg,
-.vehicle-ruhsat-btn svg {
+.vehicle-ruhsat-btn svg,
+.vehicle-history-btn svg {
   width: 19px;
   height: 19px;
 }
 .vehicle-print-btn:hover,
-.vehicle-ruhsat-btn:hover {
+.vehicle-ruhsat-btn:hover,
+.vehicle-history-btn:hover {
   color: var(--theme-color);
 }
 
@@ -1307,45 +1310,10 @@
     transform: scale(1.08); /* Görsel olarak büyüt (sayfa kıpırdamasın diye transform kullanıldı) */
 }
 
-/* Tarihçe butonu - plaka satırında sağda (Olay Ekle ile aynı satır) */
-.detail-plate-row .history-btn-minimal {
-    position: relative;
-    display: flex !important;
-    align-items: center !important; /* İkon ve metin kendi içinde hizalı */
-    gap: 4px;
-    color: var(--txt-gray);
-    font-size: 15px;
-    padding: 5px 8px 5px 8px !important; /* Olay Ekle ile aynı dikey 5px – tek satır hizası */
-    flex-shrink: 0;
-    z-index: 2;
-    transition: color 0.2s ease, font-size 0.2s ease;
-    margin: 0 !important; /* Hizayı bozan dış boşlukları kaldır */
-    line-height: 1 !important; /* Font yüksekliğinden kaynaklı kaymaları önler */
-    white-space: nowrap !important;
-    min-height: 26px;
-}
-
-.detail-plate-row .history-add-event-btn span,
-.detail-plate-row .history-btn-minimal span {
+.detail-plate-row .history-add-event-btn span {
     display: inline-flex;
     align-items: center;
     line-height: 1.15;
-}
-
-.detail-plate-row .history-btn-minimal:hover {
-    color: var(--txt-white);
-    font-size: 15px; /* Hover'da metin de büyüsün (15px – 16px) */
-}
-
-.detail-plate-row .history-btn-minimal svg {
-    width: 16px;
-    height: 16px; /* Olay Ekle satırı ile aynı cap hizası (kare ikon kutusu) */
-    flex-shrink: 0;
-    display: block !important; /* Inline SVG boşluk kaymasını önler */
-}
-.detail-plate-row .history-btn-minimal:hover svg {
-    transform: scale(1.08);
-    transform-origin: center center;
 }
 
 /* Event Menu List Hover Efektleri - Sadece Metin Büyüyecek */
@@ -1657,12 +1625,14 @@
   }
   /* --- EVRENSEL GERİ BUTONU MOBİL (touch target — ölçüler style-core token) --- */
   .vehicle-print-btn,
-  .vehicle-ruhsat-btn {
+  .vehicle-ruhsat-btn,
+  .vehicle-history-btn {
     width: 44px !important;
     height: 44px !important;
   }
   .vehicle-print-btn svg,
-  .vehicle-ruhsat-btn svg {
+  .vehicle-ruhsat-btn svg,
+  .vehicle-history-btn svg {
     width: 22px !important;
     height: 22px !important;
   }
@@ -2698,15 +2668,8 @@
     min-height: 0 !important;
   }
 
-  /* Taşıt detay: Olay Ekle ve Tarihçe mobilde +1pt (17px); Tarihçe rengi etiket beyazı */
+  /* Taşıt detay: Olay Ekle mobilde +1pt (17px) */
   #vehicle-detail-modal .detail-plate-row .history-add-event-btn {
-    font-size: 17px !important;
-  }
-  #vehicle-detail-modal .detail-plate-row .history-btn-minimal {
-    font-size: 17px !important;
-    color: var(--form-label-color) !important;
-  }
-  #vehicle-detail-modal .detail-plate-row .history-btn-minimal:hover {
     font-size: 17px !important;
   }
 
