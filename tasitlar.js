@@ -2230,6 +2230,7 @@
     vehicle: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17v-5l2-5h14l2 5v5M5 12h14"/><circle cx="6.5" cy="17" r="1.5"/><circle cx="17.5" cy="17" r="1.5"/></svg>'
   };
 
+  // Olay Ekle menüsünün etiket, grup ve varsayılan olay metadata owner'ı.
   var EVENT_MENU_LABELS = {
     muayene: 'Muayene',
     takograf: 'Takograf Kalibrasyonu',
