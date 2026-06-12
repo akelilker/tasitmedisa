@@ -10411,6 +10411,10 @@
       const actionText = eventData.isReplacement === true ? 'De\u011fi\u015ftirdi' : 'Y\u00fckledi';
       summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, ' + escapeHtml(belgeTipi) + ' ' + actionText + '.</span>';
       if (eventData.fileName) pushDetail('Dosya', eventData.fileName);
+      if (eventData.operationDate) {
+        const operationDateLabel = eventData.documentType === 'takograf' ? 'Kalibrasyon Tarihi' : 'Ba\u015Flang\u0131\u00e7 Tarihi';
+        pushDetail(operationDateLabel, formatDateForDisplay(eventData.operationDate));
+      }
       if (eventData.expiryDate) pushDetail('Ge\u00e7erlilik', formatDateForDisplay(eventData.expiryDate));
     } else if (legacyAciklama) {
       // Eski serbest metin kayıtlarını yeni özet/detay formatında göster
