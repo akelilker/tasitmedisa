@@ -2841,7 +2841,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     text-align: left !important;
   }
   #dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack .form-label,
-  #dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack--takograf .form-label {
+  #dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack--takograf .form-label,
+  #dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-label {
     display: block;
     text-align: center !important;
     font-size: 12px !important;
