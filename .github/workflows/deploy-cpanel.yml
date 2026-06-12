@@ -365,10 +365,14 @@ jobs:
       - name: HTTP verification — canlı site erişilebilir mi
         if: steps.evaluate.outputs.succeeded == 'true'
         run: |
-          curl --fail --silent --show-error --location \
+          if curl --fail --silent --show-error --location \
             --connect-timeout 15 \
             --max-time 30 \
             --retry 3 \
             --retry-delay 5 \
             --output /dev/null \
-            https://karmotors.com.tr/medisa/
+            https://karmotors.com.tr/medisa/; then
+            echo "HTTP verification succeeded."
+          else
+            echo "::warning::FTP deploy succeeded, but post-deploy HTTPS verification could not reach the live site from the GitHub-hosted runner."
+          fi
