@@ -1058,16 +1058,28 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     }
 
     #event-menu-modal .modal-body {
-        /* Bağlam çubuğu modal-body dışında; dikey ortayı optik dengelemek için alt boşluk telafisi */
-        padding-bottom: calc(24px + var(--event-menu-context-bar-height)) !important;
+        /* Bağlam çubuğu dışındaki kullanılabilir gövde alanını optik olarak dengeler. */
+        padding-top: 20px !important;
+        padding-bottom: 20px !important;
     }
 
     #event-menu-modal .modal-body:has(#event-menu-list.event-menu-list--items) {
-        padding-top: 20px !important;
+        justify-content: center !important;
+        overflow-y: auto !important;
     }
 
     #event-menu-modal #event-menu-list.event-menu-list--categories {
-        transform: translateY(12px);
+        transform: translateY(18px);
+    }
+
+    #event-menu-modal .event-menu-card {
+        min-height: 78px;
+        gap: 8px;
+    }
+
+    #event-menu-modal .event-menu-card .event-menu-category-icon {
+        width: 48px;
+        height: 48px;
     }
 }
 
