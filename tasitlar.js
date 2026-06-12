@@ -1056,7 +1056,8 @@
     ].join(', '), {
       minFontSize: window.innerWidth <= 640 ? 8.5 : 9,
       maxReduction: window.innerWidth <= 640 ? 4 : 4,
-      step: listFitStep
+      step: window.innerWidth <= 640 ? listFitStep : 0.5,
+      tolerance: 0
     });
   }
 
