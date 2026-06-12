@@ -8310,7 +8310,7 @@
     const dt = documentType || 'ruhsat';
     const cfg = getVehicleDocumentConfig(dt);
     const content = document.getElementById('ruhsat-modal-content') || DOM.dinamikOlayFormIcerik;
-    const saveBtn = document.getElementById('ruhsat-save-btn') || DOM.dinamikOlayKaydetBtn;
+    const saveBtn = DOM.dinamikOlayKaydetBtn;
     if (!content || !saveBtn) return false;
     const viewerOptions = options || {};
     const isIosPwaViewer = typeof window.isIOSPWA === 'function' && window.isIOSPWA();
@@ -8508,7 +8508,7 @@
     if (modalCloseBtn) modalCloseBtn.onclick = function(e) { e.stopPropagation(); if (typeof window.closeRuhsatAndBackToDetail === 'function') window.closeRuhsatAndBackToDetail(); };
     var cancelBtn = document.getElementById('ruhsat-btn-group') ? document.getElementById('ruhsat-btn-group').querySelector('.universal-btn-cancel') : null;
     if (cancelBtn) cancelBtn.onclick = function(e) { e.stopPropagation(); window.openVehicleDocumentsModal(vid); };
-    saveBtn.onclick = function() { if (typeof window.saveRuhsatUpload === 'function') window.saveRuhsatUpload(dt); };
+    saveBtn.onclick = null;
     setRuhsatInlineViewerMode(false);
     content.innerHTML = '';
     var ruhsatGrp = document.getElementById('ruhsat-btn-group');
@@ -8657,11 +8657,9 @@
       if (!selectBox) return;
       if (hasFile) {
         selectBox.classList.add('upload-success');
-        selectBox.classList.remove('has-file');
         selectBox.innerHTML = '<span class="ruhsat-select-box-icon" aria-hidden="true">\u2713</span><span class="ruhsat-select-box-label">' + (input.files[0].name || 'Seçildi') + '</span>';
       } else {
         selectBox.classList.remove('upload-success');
-        selectBox.classList.remove('has-file');
         selectBox.innerHTML = '<span class="ruhsat-select-box-icon" aria-hidden="true">+</span><span class="ruhsat-select-box-label">Dosya Seç</span>';
       }
     }
@@ -8687,6 +8685,7 @@
         const dateValidation = validatePolicyDocumentOperationDate(cfg.key);
         if (dateValidation.valid) return true;
         alert(dateValidation.message);
+        resetSelectedUploadFile();
         return false;
       }
       return true;
@@ -8933,12 +8932,11 @@
 
         const selectBox = document.querySelector('#ruhsat-modal-content .ruhsat-select-box');
         if (selectBox && input.files && input.files[0]) {
-          selectBox.classList.remove('has-file');
           selectBox.classList.add('upload-success');
           selectBox.textContent = '\u2713 ' + cfg.successMessage;
         }
 
-        setRuhsatSaveBtnVisibility(document.getElementById('ruhsat-save-btn') || DOM.dinamikOlayKaydetBtn, false);
+        setRuhsatSaveBtnVisibility(DOM.dinamikOlayKaydetBtn, false);
         if (typeof showToast === 'function') {
           showToast(cfg.successMessage, 'success');
         }
@@ -8974,7 +8972,7 @@
           } else {
             afterRefresh();
           }
-          alert('Bu taşıt başka biri tarafından güncellenmiş. Güncel veriler yüklendi, lütfen dosyayı yeniden seçip tekrar kaydedin.');
+          alert('Bu taşıt başka biri tarafından güncellenmiş. Güncel veriler yüklendi, lütfen dosyayı yeniden seçin.');
           return;
         }
         alert((err && err.message) ? err.message : 'Y\u00fckleme s\u0131ras\u0131nda hata olu\u015ftu.');

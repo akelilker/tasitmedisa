@@ -47,9 +47,9 @@ Olay Ekle form metadata’sı (`EVENT_DEFINITIONS`, handler’lar) bu fazda değ
 
 | Dosya | Sürüm |
 | --- | --- |
-| `script-core.js` → `tasitlar` | `20260612.10` |
-| `index.html` → `script-core.js` query | `20260612.8` |
-| `sw.js` → `CACHE_VERSION` | `medisa-v2.165` |
+| `script-core.js` → `tasitlar` | `20260613.1` |
+| `index.html` → `script-core.js` query | `20260613.1` |
+| `sw.js` → `CACHE_VERSION` | `medisa-v2.166` |
 
 ---
 
@@ -258,6 +258,19 @@ Input ID’leri ve parse/doğrulama owner’ı ortaktır; iki akış birbirinin 
 - [ ] K2 bitiş yok → upload engellenir (alert)
 - [ ] K2 var → yalnızca dosya seç; boş tarih kutusu yok
 - [ ] İlk yüklemede otomatik upload hint’i görünmez
+
+### 10.4. Dar temizlik kabul testi (2026-06-13)
+
+- [x] Sigorta / Kasko / Takograf: geçerli tarih + yeni dosya → otomatik upload
+- [x] Geçersiz `31/02/2026` + dosya seçimi → upload başlamaz; dosya input’u ve yeşil görünüm sıfırlanır
+- [x] Tarih düzeltildikten sonra aynı dosya yeniden seçilip yüklenebilir
+- [x] Mevcut Kasko belgesinde `Hayır` → seçim sıfırlanır, mevcut belge korunur
+- [x] Mevcut Kasko belgesinde `Evet` → replacement event’iyle yeni belge yüklenir
+- [x] Ruhsat mobil görünümünde `Yazdır` butonu görünür; mevcut `48px` yükseklik ve `8px` radius korunur
+- [x] Upload modalında tek `Vazgeç` butonu yatay ortalı kalır
+- [ ] İki oturumlu conflict üretimi → çalıştırılmadı; conflict kod yolu ve kullanıcı mesajı statik doğrulandı
+
+Test sırasında oluşan `data.json` değişiklikleri ve yüklenen test PDF’leri başlangıç yedeğine geri alındı.
 
 ---
 
