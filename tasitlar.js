@@ -6220,15 +6220,19 @@
     });
   }
 
-  function getPolicyOperationDateFieldHtml(documentType, labelText) {
+  function getPolicyOperationDateFieldHtml(documentType, labelText, forUpload) {
     const fieldMeta = {
       sigorta: { inputId: 'sigorta-tarih', defaultLabel: 'Yenileme/Başlangıç (gg/aa/yyyy)' },
       kasko: { inputId: 'kasko-tarih', defaultLabel: 'Yenileme/Başlangıç (gg/aa/yyyy)' },
-      takograf: { inputId: 'takograf-kalibrasyon-tarih', defaultLabel: 'Kalibrasyon Tarihi (gg/aa/yyyy)' }
+      takograf: { inputId: 'takograf-kalibrasyon-tarih', defaultLabel: 'Kalibrasyon Tarihi' }
     };
     const meta = fieldMeta[documentType];
     if (!meta) return '';
     const label = labelText || meta.defaultLabel;
+    if (forUpload) {
+      return '<div class="ruhsat-policy-date-field" style="width:100%"><label class="form-label ruhsat-policy-date-label" style="display:block;width:100%;text-align:center;font-size:12px" for="' + meta.inputId + '">' + label + '</label>' +
+        '<input id="' + meta.inputId + '" class="form-input" type="text" placeholder="gg/aa/yyyy"></div>';
+    }
     return '<div><label class="form-label" for="' + meta.inputId + '">' + label + '</label>' +
       '<input id="' + meta.inputId + '" class="form-input" type="text" placeholder="gg/aa/yyyy"></div>';
   }
@@ -8598,10 +8602,16 @@
     if (cfg.key === 'sigorta' || cfg.key === 'kasko' || cfg.key === 'takograf') {
       const dateStack = document.createElement('div');
       dateStack.className = cfg.key === 'takograf'
-        ? 'event-form-stack ruhsat-policy-date-stack--takograf'
+        ? 'event-form-stack ruhsat-policy-date-stack ruhsat-policy-date-stack--takograf'
         : 'event-form-stack ruhsat-policy-date-stack';
-      const uploadLabel = (cfg.key === 'sigorta' || cfg.key === 'kasko') ? 'Başlangıç Tarihi' : undefined;
-      dateStack.innerHTML = getPolicyOperationDateFieldHtml(cfg.key, uploadLabel);
+      const uploadLabel = (cfg.key === 'sigorta' || cfg.key === 'kasko')
+        ? 'Başlangıç Tarihi'
+        : (cfg.key === 'takograf' ? 'Kalibrasyon Tarihi' : undefined);
+      dateStack.innerHTML = getPolicyOperationDateFieldHtml(cfg.key, uploadLabel, true);
+      dateStack.style.width = '100%';
+      dateStack.style.maxWidth = '280px';
+      dateStack.style.margin = '0 auto 10px auto';
+      dateStack.style.boxSizing = 'border-box';
       content.appendChild(dateStack);
     }
     const uploadBox = document.createElement('div');
@@ -8624,11 +8634,9 @@
     var hintEl = document.createElement('p');
     hintEl.className = 'ruhsat-upload-hint';
     hintEl.id = 'ruhsat-upload-hint';
-    var showUploadHint = !(cfg.key === 'tasit_karti' && !hasExistingRuhsat);
+    var showUploadHint = hasExistingRuhsat && cfg.key !== 'tasit_karti';
     if (showUploadHint) {
-      hintEl.textContent = hasExistingRuhsat
-        ? 'Dosya seçildiğinde mevcut belge için onay alınır.'
-        : 'Dosya seçildiğinde belge otomatik yüklenir.';
+      hintEl.textContent = 'Dosya seçildiğinde mevcut belge için onay alınır.';
       content.appendChild(hintEl);
     }
     var replaceConfirm = document.createElement('div');
