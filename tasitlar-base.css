@@ -3114,6 +3114,20 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     background: var(--border-faint-02);
 }
 
+@media (min-width: 769px) {
+    #vehicles-modal .branch-card,
+    #vehicles-modal .branch-card.all-card {
+        border-color: rgba(255, 255, 255, 0.52);
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+        #vehicles-modal .branch-card:hover,
+        #vehicles-modal .branch-card.all-card:hover {
+            border-color: rgba(255, 255, 255, 0.78) !important;
+        }
+    }
+}
+
 /* Tümü kartı için özel hover düzeltmesi */
 @media (hover: hover) and (pointer: fine) {
     .branch-card.all-card:hover {
