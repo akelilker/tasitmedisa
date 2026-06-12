@@ -293,8 +293,27 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
   box-sizing: border-box !important;
 }
 
-/* Belge upload (sigorta/kasko): Başlangıç Tarihi etiketi — base ile ilk çizimde ortada (extra.css FOUC önlenir) */
-#dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack .form-label {
+/* Belge upload (sigorta/kasko/takograf): tarih stack + etiket — base ile ilk çizimde ortada (extra.css FOUC önlenir) */
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack,
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack--takograf {
+  width: 100%;
+  max-width: 280px;
+  margin: 0 auto 10px auto;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack > div,
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack--takograf > div {
+  width: 100%;
+}
+
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack .form-label,
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack--takograf .form-label,
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-label {
+  display: block;
   width: 100%;
   text-align: center !important;
   font-size: 12px !important;
@@ -2821,7 +2840,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
   .olay-ekle-modal .modal-body > div > div:has(label) label {
     text-align: left !important;
   }
-  #dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack .form-label {
+  #dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack .form-label,
+  #dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack--takograf .form-label {
+    display: block;
     text-align: center !important;
     font-size: 12px !important;
   }
