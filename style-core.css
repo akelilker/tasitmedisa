@@ -3367,6 +3367,12 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         background-size: 100% 100% !important;
     }
 
+    #vehicle-modal .modal-header,
+    #reports-modal .modal-header,
+    .tasitlar-modal-overlay .modal-header {
+        background: linear-gradient(180deg, #760016 0%, #650013 30%, #47000f 64%, #250009 100%) !important;
+    }
+
     /* Mobil: opt-in full-screen modal body – dikey scroll, alt butonlar için fazladan kaydırma boşluğu */
     :is(#vehicle-modal, #reports-modal, #vehicles-modal, #vehicle-detail-modal, #dinamik-olay-modal, #event-menu-modal, #vehicle-history-modal).modal-overlay .modal-body {
         padding-bottom: 24px !important;
