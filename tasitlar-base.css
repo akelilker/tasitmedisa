@@ -1069,7 +1069,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     }
 
     #event-menu-modal #event-menu-list.event-menu-list--categories {
-        transform: translateY(18px);
+        /* 76px bağlam çubuğunun yarısını telafi eder; model-alt ile modal-alt arasında ortalar. */
+        transform: translateY(-26px);
     }
 
     #event-menu-modal .event-menu-card {
