@@ -2799,6 +2799,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #e
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicle-history-modal.modal-overlay {
     background: var(--bg) !important;
     background-color: var(--bg) !important;
+    overflow: hidden !important;
 }
 
 /* Taşıt tarafı tasitlar.css’te de şeffaf !important var; modal-open’da kapat */
@@ -2833,6 +2834,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     border-color: rgba(184, 192, 201, 0.42) !important;
     border-top-color: rgba(200, 208, 216, 0.48) !important;
     border-bottom-color: rgba(168, 176, 186, 0.40) !important;
+    overflow: hidden !important;
 }
 
 /* Ayarlar listesi / formlar (şube, kullanıcı, veri): masaüstünde üstte açık gri border + inset ile kırmızı header çakışmasın */
@@ -2843,12 +2845,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
 
     .modal-overlay .modal-header h2.premium-title {
         filter: brightness(1.08);
-    }
-
-    body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicles-modal .modal-container {
-        border-color: rgba(184, 192, 201, 0.46) !important;
-        border-top-color: rgba(200, 208, 216, 0.62) !important;
-        border-bottom-color: rgba(168, 176, 186, 0.44) !important;
     }
 
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay .modal-container {
