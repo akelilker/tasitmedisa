@@ -20,7 +20,7 @@ body::-webkit-scrollbar,
   --footer-glow-rgb: 224, 0, 0;
   --footer-glow-opacity: 0.50;  /* Masaüstü footer üstü parlaklık */
   --footer-top-border: rgba(190, 198, 208, 0.58);
-  --footer-side-border: rgba(255, 255, 255, 0.26);
+  --footer-side-border: rgba(255, 255, 255, 0.50);
   --footer-top-highlight: rgba(255, 255, 255, 0.16);
   --footer-red-glow: 0 -18px 34px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity));
   /* MEDISA marka kırmızısı (theme ile aynı; alias) */
@@ -724,7 +724,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   min-width: 0;
   overflow: hidden; /* Başlık ellipsis hero içinde kalsın */
   background: linear-gradient(180deg, var(--hero-gradient-start), var(--hero-gradient-end));
-  border: 1px solid rgba(184, 192, 201, 0.72);
+  border: 1px solid rgba(184, 192, 201, 0.77);
   border-radius: 18px;
   padding: 12px 16px;
   box-shadow:
@@ -1788,7 +1788,7 @@ body.modal-open:has(#info-modal.active) .app-container::after {
     margin-bottom: 0;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu .menu-btn {
-    border-color: rgba(196, 210, 228, 0.44);
+    border-color: rgba(196, 210, 228, 0.56);
     box-shadow:
       0 4px 10px rgba(0, 0, 0, 0.22),
       inset 0 1px 0 rgba(255, 255, 255, 0.10);
@@ -1798,7 +1798,7 @@ body.modal-open:has(#info-modal.active) .app-container::after {
 /* Hover efekti sadece masaüstü (mouse ile) – mobilde yok */
 @media (hover: hover) {
   .menu-btn:hover {
-    border-color: var(--border-light);
+    border-color: rgba(255, 255, 255, 0.68);
     background: linear-gradient(180deg, var(--hero-gradient-start), var(--hero-gradient-end)); /* Arka plan aynı kalır */
     /* Clip-safe hover: yukarı taşıma yok (üstten kırpılmasın) */
     transform: none;
@@ -1825,7 +1825,7 @@ body.modal-open:has(#info-modal.active) .app-container::after {
     position: relative;
     z-index: 2;
     transform: none;
-    border-color: var(--border-light);
+    border-color: rgba(255, 255, 255, 0.68);
     box-shadow:
       0 6px 16px rgba(0, 0, 0, 0.30),
       0 8px 24px rgba(var(--theme-color-rgb), 0.14),
@@ -2837,6 +2837,20 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
 
 /* Ayarlar listesi / formlar (şube, kullanıcı, veri): masaüstünde üstte açık gri border + inset ile kırmızı header çakışmasın */
 @media (min-width: 641px) {
+    :root {
+        --premium-title-shadow: 0 1px 1px rgba(0, 0, 0, 0.26), 0 0 7px rgba(214, 224, 232, 0.21);
+    }
+
+    .modal-overlay .modal-header h2.premium-title {
+        filter: brightness(1.08);
+    }
+
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicles-modal .modal-container {
+        border-color: rgba(184, 192, 201, 0.46) !important;
+        border-top-color: rgba(200, 208, 216, 0.62) !important;
+        border-bottom-color: rgba(168, 176, 186, 0.44) !important;
+    }
+
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay .modal-container {
         background: #0b111b !important;
         background-color: #0b111b !important;
