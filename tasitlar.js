@@ -6220,7 +6220,7 @@
     });
   }
 
-  function getPolicyOperationDateFieldHtml(documentType, labelText, forUpload) {
+  function getPolicyOperationDateFieldHtml(documentType, labelText) {
     const fieldMeta = {
       sigorta: { inputId: 'sigorta-tarih', defaultLabel: 'Yenileme/Başlangıç (gg/aa/yyyy)' },
       kasko: { inputId: 'kasko-tarih', defaultLabel: 'Yenileme/Başlangıç (gg/aa/yyyy)' },
@@ -6229,10 +6229,6 @@
     const meta = fieldMeta[documentType];
     if (!meta) return '';
     const label = labelText || meta.defaultLabel;
-    if (forUpload) {
-      return '<div class="ruhsat-policy-date-field" style="width:100%"><label class="form-label ruhsat-policy-date-label" style="display:block;width:100%;text-align:center;font-size:12px" for="' + meta.inputId + '">' + label + '</label>' +
-        '<input id="' + meta.inputId + '" class="form-input" type="text" placeholder="gg/aa/yyyy"></div>';
-    }
     return '<div><label class="form-label" for="' + meta.inputId + '">' + label + '</label>' +
       '<input id="' + meta.inputId + '" class="form-input" type="text" placeholder="gg/aa/yyyy"></div>';
   }
@@ -8607,11 +8603,7 @@
       const uploadLabel = (cfg.key === 'sigorta' || cfg.key === 'kasko')
         ? 'Başlangıç Tarihi'
         : (cfg.key === 'takograf' ? 'Kalibrasyon Tarihi' : undefined);
-      dateStack.innerHTML = getPolicyOperationDateFieldHtml(cfg.key, uploadLabel, true);
-      dateStack.style.width = '100%';
-      dateStack.style.maxWidth = '280px';
-      dateStack.style.margin = '0 auto 10px auto';
-      dateStack.style.boxSizing = 'border-box';
+      dateStack.innerHTML = getPolicyOperationDateFieldHtml(cfg.key, uploadLabel);
       content.appendChild(dateStack);
     }
     const uploadBox = document.createElement('div');
@@ -8631,11 +8623,10 @@
     uploadBox.appendChild(selectBox);
     uploadBox.appendChild(input);
     content.appendChild(uploadBox);
-    var hintEl = document.createElement('p');
-    hintEl.className = 'ruhsat-upload-hint';
-    hintEl.id = 'ruhsat-upload-hint';
-    var showUploadHint = hasExistingRuhsat && cfg.key !== 'tasit_karti';
-    if (showUploadHint) {
+    if (hasExistingRuhsat && cfg.key !== 'tasit_karti') {
+      var hintEl = document.createElement('p');
+      hintEl.className = 'ruhsat-upload-hint';
+      hintEl.id = 'ruhsat-upload-hint';
       hintEl.textContent = 'Dosya seçildiğinde mevcut belge için onay alınır.';
       content.appendChild(hintEl);
     }
