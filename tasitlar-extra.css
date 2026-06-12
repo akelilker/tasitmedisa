@@ -744,6 +744,45 @@
   text-align: center;
 }
 
+@media (min-width: 769px) {
+  #dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack--takograf {
+    width: 100%;
+    max-width: 280px;
+    margin: 0 auto 10px auto;
+    box-sizing: border-box;
+    align-items: stretch;
+  }
+
+  #dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack--takograf > div {
+    width: 100%;
+  }
+
+  #dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack .olay-date-mobile-wrap,
+  #dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack .form-input,
+  #dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack .olay-date-mobile-text,
+  #dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack--takograf .olay-date-mobile-wrap,
+  #dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack--takograf .form-input,
+  #dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack--takograf .olay-date-mobile-text {
+    width: 100%;
+    max-width: 100%;
+    height: 33px !important;
+    min-height: 33px !important;
+    max-height: 33px !important;
+    box-sizing: border-box;
+  }
+
+  #dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack .olay-date-mobile-text,
+  #dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack--takograf .olay-date-mobile-text {
+    line-height: 33px !important;
+  }
+
+  #dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack .olay-date-mobile-picker-slot,
+  #dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack--takograf .olay-date-mobile-picker-slot {
+    height: 31px !important;
+    flex-basis: 31px !important;
+  }
+}
+
 /* Ruhsat: Yükle butonu — yeşil metin, yeşil çerçeve (#dinamik-olay-modal #ruhsat-btn-group) */
 #dinamik-olay-modal #ruhsat-btn-group #dinamik-olay-kaydet-btn {
   background: transparent !important;

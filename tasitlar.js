@@ -2222,8 +2222,8 @@
     ceza: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 2h9l5 5v15H5zM14 2v6h6M8 12h5M8 16h5"/><path d="M17 13v4M17 20h.01"/></svg>',
     bakim: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>',
     lastik: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.7"/><path d="m12 7 1.5 3.5L17 12l-3.5 1.5L12 17l-1.5-3.5L7 12l3.5-1.5zM8 3.9l1 2M16 3.9l-1 2M20.1 8l-2 1M20.1 16l-2-1M16 20.1l-1-2M8 20.1l1-2M3.9 16l2-1M3.9 8l2 1"/></svg>',
-    anahtar: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 4.4 11 2.5a2 2 0 0 1 2.6 1l3.7 8.5a2 2 0 0 1-1 2.6l-4.4 1.9a2 2 0 0 1-2.6-1L5.6 7a2 2 0 0 1 1-2.6z"/><path d="m11.5 16.6-1.2 4.9M10.3 21.5l-1.7-.4M9.6 18.7l-1.5-.4"/><rect x="8.2" y="5.3" width="4.7" height="3.2" rx="1"/><circle cx="10.8" cy="11.4" r=".8"/><circle cx="13.3" cy="10.3" r=".8"/></svg>',
-    kaza: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 15v-4l2-3h4l2 3v4H2zM14 15v-4l2-3h4l2 3v4h-8z"/><circle cx="5" cy="16.5" r="1.5"/><circle cx="19" cy="16.5" r="1.5"/><path d="m12 4 .8 2.5L15 5.2l-.8 2.6 2.6.2-2.3 1.3 1.7 2-2.6-.6-.3 2.6-1.3-2.2-1.3 2.2-.3-2.6-2.6.6 1.7-2L7.2 8l2.6-.2L9 5.2l2.2 1.3z"/></svg>',
+    anahtar: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="7.5" cy="8.5" r="4.5"/><circle cx="7.5" cy="8.5" r="1.5"/><path d="m10.7 11.7 9.3 9.3M15 16l2-2M18 19l2-2"/></svg>',
+    kaza: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 17v-4.5L5 9h5l2 3.5V17M3 13h8.5M5 18.5h.01M10 18.5h.01"/><path d="M21.5 17v-4.5L19 9h-3M21 13h-5M19 18.5h.01"/><path d="m14 6 .5 1.7 1.5-.9-.5 1.8 1.8.1-1.6.9 1.1 1.4-1.8-.4-.2 1.8-.8-1.5-.8 1.5-.2-1.8-1.8.4 1.1-1.4-1.6-.9 1.8-.1-.5-1.8 1.5.9z"/></svg>',
     kredi: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="9" width="14" height="12" rx="2"/><path d="M8 9V6a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15" r="1.5"/></svg>',
     sube: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 21V8l6-4 6 4v13M6 21v-6h5v6M6 10h.01M10 10h.01"/><path style="fill:currentColor;stroke:none" d="M16 7h4V5l3 3-3 3V9h-4zm6 8h-4v2l-3-3 3-3v2h4z"/></svg>',
     kullanici: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="7" r="3"/><path d="M2.5 19a5.5 5.5 0 0 1 11 0"/><path style="fill:currentColor;stroke:none" d="M16 7h4V5l3 3-3 3V9h-4zm6 8h-4v2l-3-3 3-3v2h4z"/></svg>',
@@ -8597,7 +8597,7 @@
     if (cfg.key === 'sigorta' || cfg.key === 'kasko' || cfg.key === 'takograf') {
       const dateStack = document.createElement('div');
       dateStack.className = cfg.key === 'takograf'
-        ? 'event-form-stack'
+        ? 'event-form-stack ruhsat-policy-date-stack--takograf'
         : 'event-form-stack ruhsat-policy-date-stack';
       const uploadLabel = (cfg.key === 'sigorta' || cfg.key === 'kasko') ? 'Başlangıç Tarihi' : undefined;
       dateStack.innerHTML = getPolicyOperationDateFieldHtml(cfg.key, uploadLabel);
