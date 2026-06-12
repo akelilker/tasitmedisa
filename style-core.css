@@ -2837,6 +2837,11 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
 
 /* Ayarlar listesi / formlar (şube, kullanıcı, veri): masaüstünde üstte açık gri border + inset ile kırmızı header çakışmasın */
 @media (min-width: 641px) {
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay .modal-container {
+        background: #0b111b !important;
+        background-color: #0b111b !important;
+    }
+
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #branch-modal.modal-overlay .modal-container,
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #branch-form-modal.modal-overlay .modal-container,
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #user-modal.modal-overlay .modal-container,
