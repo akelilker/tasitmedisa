@@ -651,7 +651,8 @@
     min-height: 50px;
   }
 }
-#dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack {
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack,
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack--takograf {
   width: 100%;
   max-width: 280px;
   margin: 0 auto 10px auto;
@@ -661,11 +662,14 @@
   align-items: stretch;
 }
 
-#dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack > div {
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack > div,
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack--takograf > div {
   width: 100%;
 }
 
-#dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack .form-label {
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack .form-label,
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack--takograf .form-label {
+  display: block;
   width: 100%;
   margin: 0 0 6px 0;
   font-size: 12px !important;
@@ -675,13 +679,16 @@
 }
 
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack .form-input,
-#dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack .olay-date-mobile-wrap {
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack .olay-date-mobile-wrap,
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack--takograf .form-input,
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack--takograf .olay-date-mobile-wrap {
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
 }
 
-#dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack .olay-date-mobile-wrap {
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack .olay-date-mobile-wrap,
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack--takograf .olay-date-mobile-wrap {
   height: 36px;
   min-height: 36px;
   max-height: 36px;
@@ -689,7 +696,9 @@
 }
 
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack .form-input,
-#dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack .olay-date-mobile-text {
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack .olay-date-mobile-text,
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack--takograf .form-input,
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack--takograf .olay-date-mobile-text {
   height: 36px !important;
   min-height: 36px !important;
   max-height: 36px !important;
@@ -699,28 +708,18 @@
   box-sizing: border-box;
 }
 
-#dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack .olay-date-mobile-picker-slot {
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack .olay-date-mobile-picker-slot,
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack--takograf .olay-date-mobile-picker-slot {
   height: 34px !important;
   flex: 0 0 34px !important;
 }
 
-#dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack .form-input::placeholder {
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack .form-input::placeholder,
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack--takograf .form-input::placeholder {
   text-align: center;
 }
 
 @media (min-width: 769px) {
-  #dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack--takograf {
-    width: 100%;
-    max-width: 280px;
-    margin: 0 auto 10px auto;
-    box-sizing: border-box;
-    align-items: stretch;
-  }
-
-  #dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack--takograf > div {
-    width: 100%;
-  }
-
   #dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack .olay-date-mobile-wrap,
   #dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack .form-input,
   #dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack .olay-date-mobile-text,
@@ -1983,7 +1982,9 @@
     text-align: left !important;
   }
 
-  #dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack .form-label {
+  #dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack .form-label,
+  #dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack--takograf .form-label {
+    display: block;
     font-size: 12px !important;
     text-align: center !important;
   }
