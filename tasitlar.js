@@ -766,7 +766,8 @@
   let lastListContext = null; // Son açılan liste bağlamı (geri dönüş hedefi)
   let returnToMonthlyTodoAfterVehicleDetail = false;
   let monthlyTodoCloseTimer = null;
-  var MONTHLY_TODO_INTERACTION_REV = 2;
+  let monthlyTodoBranchFilterId = 'all';
+  var MONTHLY_TODO_INTERACTION_REV = 3;
   var MONTHLY_TODO_HEADER_REV = 2;
   let isAutoSingleBranchVehiclesView = false;
 
@@ -4850,14 +4851,40 @@
     }, true);
   }
 
-  function monthlyTodoTableColHeaderHtml() {
-    var html = '<div class="monthly-todo-col-header" aria-hidden="true">';
+  function getMonthlyTodoBranchFilterHtml(branches) {
+    if (!isMainAppSessionGenelYonetici()) return '';
+    var visibleBranches = Array.isArray(branches) ? branches : [];
+    var selectedBranch = visibleBranches.find(function(branch) {
+      return String(branch && branch.id) === String(monthlyTodoBranchFilterId);
+    });
+    if (monthlyTodoBranchFilterId !== 'all' && !selectedBranch) monthlyTodoBranchFilterId = 'all';
+    var selectedLabel = selectedBranch ? String(selectedBranch.name || '').trim() : 'Tüm Şubeler';
+    var html = '<span class="monthly-todo-branch-filter">';
+    html += '<button type="button" class="monthly-todo-branch-filter-trigger" aria-haspopup="listbox" aria-expanded="false">';
+    html += '<span>' + escapeHtml(selectedLabel || 'Tüm Şubeler') + '</span>';
+    html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
+    html += '</button>';
+    html += '<span class="monthly-todo-branch-filter-menu" role="listbox" aria-hidden="true">';
+    html += '<button type="button" class="monthly-todo-branch-filter-option' + (monthlyTodoBranchFilterId === 'all' ? ' selected' : '') + '" data-branch-id="all" role="option" aria-selected="' + (monthlyTodoBranchFilterId === 'all' ? 'true' : 'false') + '">Tüm Şubeler</button>';
+    visibleBranches.forEach(function(branch) {
+      if (!branch || branch.id == null) return;
+      var branchId = String(branch.id);
+      var selected = branchId === String(monthlyTodoBranchFilterId);
+      html += '<button type="button" class="monthly-todo-branch-filter-option' + (selected ? ' selected' : '') + '" data-branch-id="' + escapeAttr(branchId) + '" role="option" aria-selected="' + (selected ? 'true' : 'false') + '">' + escapeHtml(String(branch.name || '').trim() || 'İsimsiz Şube') + '</button>';
+    });
+    html += '</span></span>';
+    return html;
+  }
+
+  function monthlyTodoTableColHeaderHtml(branches) {
+    var ariaHidden = isMainAppSessionGenelYonetici() ? '' : ' aria-hidden="true"';
+    var html = '<div class="monthly-todo-col-header"' + ariaHidden + '>';
     html += '<span class="monthly-todo-col-h monthly-todo-col-h--middle">';
     html += '<span class="monthly-todo-col-h-line">Plaka</span>';
     html += '<span class="monthly-todo-col-h-line monthly-todo-col-h-line--sub">Marka-Model</span>';
     html += '</span>';
     html += '<span class="monthly-todo-col-h">Kullanıcı</span>';
-    html += '<span class="monthly-todo-col-h monthly-todo-col-h--desc">Açıklama</span>';
+    html += '<span class="monthly-todo-col-h monthly-todo-col-h--desc">' + getMonthlyTodoBranchFilterHtml(branches) + '<span>Açıklama</span></span>';
     html += '</div>';
     return html;
   }
@@ -4961,7 +4988,14 @@
     branches.forEach(function(b) {
       if (b && b.id != null) branchNameMap[String(b.id)] = String(b.name || '').trim();
     });
-    var combinedRaw = dedupeMonthlyTodoOperationalTasks(tasksArray || []);
+    var filteredTasks = tasksArray || [];
+    if (isMainAppSessionGenelYonetici() && monthlyTodoBranchFilterId !== 'all') {
+      filteredTasks = filteredTasks.filter(function(task) {
+        var vehicle = task && task.vehicle;
+        return vehicle && String(vehicle.branchId || '') === String(monthlyTodoBranchFilterId);
+      });
+    }
+    var combinedRaw = dedupeMonthlyTodoOperationalTasks(filteredTasks);
     var displayTasks = buildMonthlyTodoMergedDisplayTasks(combinedRaw);
     displayTasks.sort(function(a, b) {
       var da = typeof a.days === 'number' ? a.days : 9999;
@@ -4971,18 +5005,22 @@
       if (aPast !== bPast) return aPast ? -1 : 1;
       return da - db;
     });
-    if (!displayTasks.length) {
+    if (!displayTasks.length && monthlyTodoBranchFilterId === 'all') {
       bodyEl.innerHTML = '<div class="monthly-todo-empty">Bu dönem için listelenecek tarih işlemi yok.</div>';
       return;
     }
     var html = '<div class="monthly-todo-sheet">';
     html += '<div class="monthly-todo-table-outer">';
     html += '<div class="monthly-todo-table-inner">';
-    html += monthlyTodoTableColHeaderHtml();
+    html += monthlyTodoTableColHeaderHtml(branches);
     html += '<div class="monthly-todo-list-scroll" role="list">';
-    displayTasks.forEach(function(t) {
-      html += buildMonthlyTodoTaskRowHtml(t, userMap, typeDescriptionMap, branchNameMap);
-    });
+    if (displayTasks.length) {
+      displayTasks.forEach(function(t) {
+        html += buildMonthlyTodoTaskRowHtml(t, userMap, typeDescriptionMap, branchNameMap);
+      });
+    } else {
+      html += '<div class="monthly-todo-empty">Seçilen şube için listelenecek tarih işlemi yok.</div>';
+    }
     html += '</div></div></div></div>';
     bodyEl.innerHTML = html;
     wireMonthlyTodoModalBodyInteraction(bodyEl);
@@ -5095,8 +5133,36 @@
       if (!target || typeof target.closest !== 'function') return;
       var insidePanel = target.closest('.monthly-todo-modal-container');
       if (!insidePanel || !modalEl.contains(insidePanel)) {
+        var openFilterMenu = modalEl.querySelector('.monthly-todo-branch-filter-menu.open');
+        if (openFilterMenu) {
+          openFilterMenu.classList.remove('open');
+          openFilterMenu.setAttribute('aria-hidden', 'true');
+          var openFilterTrigger = modalEl.querySelector('.monthly-todo-branch-filter-trigger[aria-expanded="true"]');
+          if (openFilterTrigger) openFilterTrigger.setAttribute('aria-expanded', 'false');
+        }
         if (isMonthlyTodoDesktopView()) return;
         closeMonthlyTodoModal();
+        return;
+      }
+      var filterTrigger = target.closest('.monthly-todo-branch-filter-trigger');
+      if (filterTrigger && modalEl.contains(filterTrigger)) {
+        ev.preventDefault();
+        ev.stopPropagation();
+        var filterMenu = filterTrigger.parentNode.querySelector('.monthly-todo-branch-filter-menu');
+        var willOpen = filterMenu && !filterMenu.classList.contains('open');
+        if (filterMenu) {
+          filterMenu.classList.toggle('open', willOpen);
+          filterMenu.setAttribute('aria-hidden', willOpen ? 'false' : 'true');
+          filterTrigger.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+        }
+        return;
+      }
+      var filterOption = target.closest('.monthly-todo-branch-filter-option');
+      if (filterOption && modalEl.contains(filterOption)) {
+        ev.preventDefault();
+        ev.stopPropagation();
+        monthlyTodoBranchFilterId = filterOption.getAttribute('data-branch-id') || 'all';
+        renderMonthlyTodoModalContent();
         return;
       }
       if (target.closest('.monthly-todo-wa-link')) return;
