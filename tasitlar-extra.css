@@ -2962,8 +2962,104 @@
 }
 
 #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h--desc {
+  position: relative;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-end;
+  gap: 2px;
   text-align: center;
   justify-self: stretch;
+  overflow: visible;
+}
+
+#monthly-todo-modal .monthly-todo-branch-filter {
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+  min-width: 0;
+}
+
+#monthly-todo-modal .monthly-todo-branch-filter-trigger {
+  max-width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 2px;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.7);
+  font: inherit;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  cursor: pointer;
+}
+
+#monthly-todo-modal .monthly-todo-branch-filter-trigger span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#monthly-todo-modal .monthly-todo-branch-filter-trigger svg {
+  flex: 0 0 auto;
+  width: 12px;
+  height: 12px;
+  transition: transform 0.2s ease;
+}
+
+#monthly-todo-modal .monthly-todo-branch-filter-trigger[aria-expanded="true"] svg {
+  transform: rotate(180deg);
+}
+
+#monthly-todo-modal .monthly-todo-branch-filter-trigger:focus-visible {
+  color: #ffffff;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+#monthly-todo-modal .monthly-todo-branch-filter-menu {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 4px);
+  right: 0;
+  display: none;
+  min-width: 150px;
+  max-height: 210px;
+  overflow-y: auto;
+  padding: 4px;
+  border: 1px solid rgba(var(--theme-color-rgb), 0.46);
+  border-radius: 8px;
+  background: #111720;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.38);
+}
+
+#monthly-todo-modal .monthly-todo-branch-filter-menu.open {
+  display: block;
+}
+
+#monthly-todo-modal .monthly-todo-branch-filter-option {
+  width: 100%;
+  padding: 7px 8px;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 11px;
+  line-height: 1.25;
+  text-align: left;
+  cursor: pointer;
+}
+
+#monthly-todo-modal .monthly-todo-branch-filter-option:hover,
+#monthly-todo-modal .monthly-todo-branch-filter-option:focus-visible,
+#monthly-todo-modal .monthly-todo-branch-filter-option.selected {
+  outline: 0;
+  background: rgba(var(--theme-color-rgb), 0.16);
+  color: #ffffff;
 }
 
 @media (min-width: 641px) {
