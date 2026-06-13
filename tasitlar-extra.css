@@ -2840,7 +2840,12 @@
     padding: 10px 8px calc(14px + env(safe-area-inset-bottom, 0)) !important;
   }
 
-  #monthly-todo-modal .monthly-todo-col-header,
+  #monthly-todo-modal .monthly-todo-col-header {
+    grid-template-columns: minmax(0, 29%) minmax(0, 28%) minmax(0, 43%);
+    column-gap: 6px;
+    align-items: start;
+  }
+
   #monthly-todo-modal .monthly-todo-task-row {
     grid-template-columns: minmax(0, 29%) minmax(0, 28%) minmax(0, 43%);
     column-gap: 6px;
@@ -2849,6 +2854,16 @@
 
   #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h {
     font-size: 13px;
+    align-self: start;
+  }
+
+  #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h--middle {
+    justify-content: flex-start;
+  }
+
+  #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h--desc {
+    flex-direction: column-reverse;
+    justify-content: flex-start;
   }
 
   #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h-line--sub {
