@@ -2998,21 +2998,16 @@
   cursor: pointer;
 }
 
-#monthly-todo-modal .monthly-todo-branch-filter-trigger span {
+#monthly-todo-modal .monthly-todo-branch-filter-trigger .monthly-todo-branch-filter-label {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-#monthly-todo-modal .monthly-todo-branch-filter-trigger svg {
+#monthly-todo-modal .monthly-todo-branch-filter-trigger .monthly-todo-branch-filter-icon {
   flex: 0 0 auto;
-  width: 12px;
-  height: 12px;
-  transition: transform 0.2s ease;
-}
-
-#monthly-todo-modal .monthly-todo-branch-filter-trigger[aria-expanded="true"] svg {
-  transform: rotate(180deg);
+  width: 14px;
+  height: 14px;
 }
 
 #monthly-todo-modal .monthly-todo-branch-filter-trigger:focus-visible {
@@ -3045,13 +3040,18 @@
   width: 100%;
   padding: 7px 8px;
   border: 0;
+  border-bottom: 1px solid rgba(var(--theme-color-rgb), 0.46);
   border-radius: 5px;
   background: transparent;
   color: rgba(255, 255, 255, 0.78);
   font-size: 11px;
   line-height: 1.25;
-  text-align: left;
+  text-align: center;
   cursor: pointer;
+}
+
+#monthly-todo-modal .monthly-todo-branch-filter-option:last-child {
+  border-bottom: 0;
 }
 
 #monthly-todo-modal .monthly-todo-branch-filter-option:hover,
