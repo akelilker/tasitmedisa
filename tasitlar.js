@@ -4859,10 +4859,13 @@
     });
     if (monthlyTodoBranchFilterId !== 'all' && !selectedBranch) monthlyTodoBranchFilterId = 'all';
     var selectedLabel = selectedBranch ? String(selectedBranch.name || '').trim() : 'Tüm Şubeler';
+    var triggerLabelHtml = selectedBranch
+      ? '<span class="monthly-todo-branch-filter-label">' + escapeHtml(selectedLabel || 'İsimsiz Şube') + '</span>'
+      : '';
     var html = '<span class="monthly-todo-branch-filter">';
-    html += '<button type="button" class="monthly-todo-branch-filter-trigger" aria-haspopup="listbox" aria-expanded="false">';
-    html += '<span>' + escapeHtml(selectedLabel || 'Tüm Şubeler') + '</span>';
-    html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
+    html += '<button type="button" class="monthly-todo-branch-filter-trigger" aria-label="Şube filtresi: ' + escapeAttr(selectedLabel || 'Tüm Şubeler') + '" aria-haspopup="listbox" aria-expanded="false">';
+    html += triggerLabelHtml;
+    html += '<svg class="monthly-todo-branch-filter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16l-6.5 7.2V18l-3 1.5v-7.3L4 5z"/></svg>';
     html += '</button>';
     html += '<span class="monthly-todo-branch-filter-menu" role="listbox" aria-label="Şube filtresi" aria-hidden="true">';
     html += '<button type="button" class="monthly-todo-branch-filter-option' + (monthlyTodoBranchFilterId === 'all' ? ' selected' : '') + '" data-branch-id="all" role="option" aria-selected="' + (monthlyTodoBranchFilterId === 'all' ? 'true' : 'false') + '">Tüm Şubeler</button>';
