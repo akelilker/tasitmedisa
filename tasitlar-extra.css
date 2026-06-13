@@ -3485,3 +3485,75 @@
 #monthly-todo-modal .monthly-todo-type .monthly-todo-description-meta.monthly-todo-description-meta--past .monthly-todo-description-date {
   color: var(--theme-color, #ff4d5f);
 }
+
+/* Ay özeti şube filtresi: açık menüyü mobilde okunur tut, listeyi Ayarlar menüsü gibi flu göster. */
+#monthly-todo-modal.monthly-todo-filter-open .monthly-todo-list-scroll {
+  filter: blur(2px);
+  opacity: 0.72;
+  pointer-events: none;
+  transition: filter 0.18s ease, opacity 0.18s ease;
+}
+
+#monthly-todo-modal .monthly-todo-list-scroll {
+  transition: filter 0.18s ease, opacity 0.18s ease;
+}
+
+#monthly-todo-modal .monthly-todo-branch-filter-menu {
+  flex-direction: column;
+  align-items: stretch;
+  isolation: isolate;
+  color: #ffffff;
+  font-family: inherit;
+  -webkit-text-fill-color: currentColor;
+}
+
+#monthly-todo-modal .monthly-todo-branch-filter-menu.open {
+  display: flex;
+}
+
+#monthly-todo-modal .monthly-todo-branch-filter-option {
+  position: relative;
+  z-index: 1;
+  display: block;
+  flex: 0 0 auto;
+  visibility: visible;
+  opacity: 1;
+  color: rgba(255, 255, 255, 0.88) !important;
+  -webkit-text-fill-color: currentColor;
+}
+
+@media (max-width: 640px) {
+  #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h--desc {
+    gap: 5px;
+  }
+
+  #monthly-todo-modal .monthly-todo-branch-filter {
+    z-index: 30;
+    transform: translateY(-4px);
+  }
+
+  #monthly-todo-modal .monthly-todo-branch-filter-trigger {
+    min-height: 18px;
+    font-size: 11px;
+  }
+
+  #monthly-todo-modal .monthly-todo-branch-filter-menu {
+    top: calc(100% + 6px);
+    right: 0;
+    width: min(230px, calc(100vw - 32px));
+    min-width: 0;
+    max-height: min(250px, 42vh);
+    padding: 6px;
+    border-color: rgba(184, 192, 201, 0.54);
+    border-radius: 10px;
+    background: #0b111b;
+    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.58);
+  }
+
+  #monthly-todo-modal .monthly-todo-branch-filter-option {
+    min-height: 34px;
+    padding: 9px 10px;
+    font-size: 12px;
+    line-height: 1.3;
+  }
+}

@@ -767,7 +767,7 @@
   let returnToMonthlyTodoAfterVehicleDetail = false;
   let monthlyTodoCloseTimer = null;
   let monthlyTodoBranchFilterId = 'all';
-  var MONTHLY_TODO_INTERACTION_REV = 3;
+  var MONTHLY_TODO_INTERACTION_REV = 4;
   var MONTHLY_TODO_HEADER_REV = 2;
   let isAutoSingleBranchVehiclesView = false;
 
@@ -4864,7 +4864,7 @@
     html += '<span>' + escapeHtml(selectedLabel || 'Tüm Şubeler') + '</span>';
     html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
     html += '</button>';
-    html += '<span class="monthly-todo-branch-filter-menu" role="listbox" aria-hidden="true">';
+    html += '<span class="monthly-todo-branch-filter-menu" role="listbox" aria-label="Şube filtresi" aria-hidden="true">';
     html += '<button type="button" class="monthly-todo-branch-filter-option' + (monthlyTodoBranchFilterId === 'all' ? ' selected' : '') + '" data-branch-id="all" role="option" aria-selected="' + (monthlyTodoBranchFilterId === 'all' ? 'true' : 'false') + '">Tüm Şubeler</button>';
     visibleBranches.forEach(function(branch) {
       if (!branch || branch.id == null) return;
@@ -5033,6 +5033,7 @@
   function closeMonthlyTodoModal(immediate) {
     var modal = document.getElementById('monthly-todo-modal');
     if (!modal) return;
+    closeMonthlyTodoBranchFilter(modal);
     modal.classList.remove('active', 'open');
     if (monthlyTodoCloseTimer) clearTimeout(monthlyTodoCloseTimer);
     if (immediate) {
@@ -5118,6 +5119,25 @@
     });
   }
 
+  function setMonthlyTodoBranchFilterOpen(modalEl, filterTrigger, filterMenu, shouldOpen) {
+    if (!modalEl || !filterTrigger || !filterMenu) return;
+    filterMenu.classList.toggle('open', shouldOpen);
+    filterMenu.setAttribute('aria-hidden', shouldOpen ? 'false' : 'true');
+    filterTrigger.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
+    modalEl.classList.toggle('monthly-todo-filter-open', shouldOpen);
+  }
+
+  function closeMonthlyTodoBranchFilter(modalEl) {
+    if (!modalEl) return;
+    var openFilterMenu = modalEl.querySelector('.monthly-todo-branch-filter-menu.open');
+    var openFilterTrigger = modalEl.querySelector('.monthly-todo-branch-filter-trigger[aria-expanded="true"]');
+    if (openFilterMenu && openFilterTrigger) {
+      setMonthlyTodoBranchFilterOpen(modalEl, openFilterTrigger, openFilterMenu, false);
+      return;
+    }
+    modalEl.classList.remove('monthly-todo-filter-open');
+  }
+
   function bindMonthlyTodoModalDelegatedInteraction(modalEl) {
     if (!modalEl) return;
     if (modalEl._medisaMonthlyTodoInteractionRev === MONTHLY_TODO_INTERACTION_REV) return;
@@ -5133,13 +5153,7 @@
       if (!target || typeof target.closest !== 'function') return;
       var insidePanel = target.closest('.monthly-todo-modal-container');
       if (!insidePanel || !modalEl.contains(insidePanel)) {
-        var openFilterMenu = modalEl.querySelector('.monthly-todo-branch-filter-menu.open');
-        if (openFilterMenu) {
-          openFilterMenu.classList.remove('open');
-          openFilterMenu.setAttribute('aria-hidden', 'true');
-          var openFilterTrigger = modalEl.querySelector('.monthly-todo-branch-filter-trigger[aria-expanded="true"]');
-          if (openFilterTrigger) openFilterTrigger.setAttribute('aria-expanded', 'false');
-        }
+        closeMonthlyTodoBranchFilter(modalEl);
         if (isMonthlyTodoDesktopView()) return;
         closeMonthlyTodoModal();
         return;
@@ -5150,11 +5164,7 @@
         ev.stopPropagation();
         var filterMenu = filterTrigger.parentNode.querySelector('.monthly-todo-branch-filter-menu');
         var willOpen = filterMenu && !filterMenu.classList.contains('open');
-        if (filterMenu) {
-          filterMenu.classList.toggle('open', willOpen);
-          filterMenu.setAttribute('aria-hidden', willOpen ? 'false' : 'true');
-          filterTrigger.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
-        }
+        if (filterMenu) setMonthlyTodoBranchFilterOpen(modalEl, filterTrigger, filterMenu, willOpen);
         return;
       }
       var filterOption = target.closest('.monthly-todo-branch-filter-option');
@@ -5162,7 +5172,14 @@
         ev.preventDefault();
         ev.stopPropagation();
         monthlyTodoBranchFilterId = filterOption.getAttribute('data-branch-id') || 'all';
+        closeMonthlyTodoBranchFilter(modalEl);
         renderMonthlyTodoModalContent();
+        return;
+      }
+      if (modalEl.classList.contains('monthly-todo-filter-open')) {
+        ev.preventDefault();
+        ev.stopPropagation();
+        closeMonthlyTodoBranchFilter(modalEl);
         return;
       }
       if (target.closest('.monthly-todo-wa-link')) return;
@@ -5173,6 +5190,13 @@
       openMonthlyTodoRowVehicleDetail(row, modalEl);
     }
     function onMonthlyTodoModalKeydown(ev) {
+      if (ev.key === 'Escape' && modalEl.classList.contains('monthly-todo-filter-open')) {
+        ev.preventDefault();
+        closeMonthlyTodoBranchFilter(modalEl);
+        var filterTrigger = modalEl.querySelector('.monthly-todo-branch-filter-trigger');
+        if (filterTrigger) filterTrigger.focus();
+        return;
+      }
       if (ev.key !== 'Enter' && ev.key !== ' ') return;
       var target = ev.target;
       if (!target || typeof target.closest !== 'function') return;
@@ -5260,6 +5284,7 @@
   function openMonthlyTodoModal() {
     var modal = ensureMonthlyTodoModalMounted();
     syncMonthlyTodoModalHeader(modal);
+    closeMonthlyTodoBranchFilter(modal);
     if (monthlyTodoCloseTimer) {
       clearTimeout(monthlyTodoCloseTimer);
       monthlyTodoCloseTimer = null;
