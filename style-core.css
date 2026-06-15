@@ -393,10 +393,14 @@ body::-webkit-scrollbar,
   padding-right: 0 !important;
 }
 
-/* Şube/Kullanıcı formu: Kaydet, Vazgeç, Sil aynı satırda (mobil + masaüstü) */
+/* Şube/Kullanıcı formu: Kaydet ve Sil aynı satırda (mobil + masaüstü) */
 #branch-form-modal .universal-btn-group,
 #user-form-modal .universal-btn-group {
-  grid-template-columns: 1fr 1fr 1fr !important;
+  grid-template-columns: 1fr 1fr !important;
+}
+#branch-form-modal .universal-btn-group:has(#branch-delete-btn.u-hidden),
+#user-form-modal .universal-btn-group:has(#user-delete-btn.u-hidden) {
+  grid-template-columns: 1fr !important;
 }
 
 /* Sil butonunu grid'de tam genişlikte, simetrik (3. buton alt satırda tam boy) */
@@ -427,9 +431,7 @@ body::-webkit-scrollbar,
   max-width: none !important;
 }
 
-/* Şube/Kullanıcı düzenle: Vazgeç ile Sil birebir aynı (Sil referans: tema rengi, çerçeve, hover) */
-#branch-form-modal .universal-btn-group .universal-btn-cancel,
-#user-form-modal .universal-btn-group .universal-btn-cancel,
+/* Şube/Kullanıcı düzenle: Sil tema rengi, çerçeve ve hover */
 #branch-form-modal .universal-btn-group .settings-btn-delete,
 #user-form-modal .universal-btn-group .settings-btn-delete {
   color: var(--theme-color, #d40000) !important;
@@ -437,8 +439,6 @@ body::-webkit-scrollbar,
   font-weight: 500 !important;
   transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease, color 0.2s ease !important;
 }
-#branch-form-modal .universal-btn-group .universal-btn-cancel:hover,
-#user-form-modal .universal-btn-group .universal-btn-cancel:hover,
 #branch-form-modal .universal-btn-group .settings-btn-delete:hover,
 #user-form-modal .universal-btn-group .settings-btn-delete:hover {
   background: rgba(var(--theme-color-rgb), 0.1) !important;
