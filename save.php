@@ -57,45 +57,83 @@ $result = medisaMutateData(function (&$data) use ($incomingData) {
     $currentVehicles = medisaSaveNormalizeCollection($data['tasitlar'] ?? []);
     $currentUsers = medisaSaveNormalizeCollection($data['users'] ?? []);
     $currentVehiclesById = medisaSaveIndexVehiclesById($currentVehicles);
-    $versionCheck = medisaSaveValidateIncomingVehicleVersions($incomingVehicles, $currentVehiclesById, $context);
+    $mutation = is_array($incomingData['_medisaMutation'] ?? null) ? $incomingData['_medisaMutation'] : null;
+    $mutationCollections = $mutation !== null && is_array($mutation['collections'] ?? null)
+        ? array_values(array_unique(array_map('strval', $mutation['collections'])))
+        : null;
+    $changedVehicleIds = $mutation !== null && is_array($mutation['changedVehicleIds'] ?? null)
+        ? array_values(array_unique(array_filter(array_map('strval', $mutation['changedVehicleIds']), 'strlen')))
+        : null;
+    $deletedVehicleIds = $mutation !== null && is_array($mutation['deletedVehicleIds'] ?? null)
+        ? array_values(array_unique(array_filter(array_map('strval', $mutation['deletedVehicleIds']), 'strlen')))
+        : [];
+    $deletedVehicleVersions = $mutation !== null && is_array($mutation['deletedVehicleVersions'] ?? null)
+        ? $mutation['deletedVehicleVersions']
+        : [];
+    if ($mutationCollections !== null && (!empty($changedVehicleIds) || !empty($deletedVehicleIds)) && !in_array('tasitlar', $mutationCollections, true)) {
+        $mutationCollections[] = 'tasitlar';
+    }
+    $collectionChanged = function ($name) use ($mutationCollections) {
+        return $mutationCollections === null || in_array($name, $mutationCollections, true);
+    };
+
+    $versionCheck = medisaSaveValidateIncomingVehicleVersions($incomingVehicles, $currentVehiclesById, $context, $changedVehicleIds);
     if ($versionCheck !== true) {
         return $versionCheck;
     }
-    $incomingVehicles = medisaSaveApplyVehicleVersions($incomingVehicles, $currentVehiclesById);
+    $savedVehicleIds = $changedVehicleIds;
+    if ($changedVehicleIds === null) {
+        $incomingVehicles = medisaSaveApplyVehicleVersions($incomingVehicles, $currentVehiclesById);
+    } else {
+        foreach ($deletedVehicleIds as $deletedVehicleId) {
+            $currentVehicle = $currentVehiclesById[$deletedVehicleId] ?? null;
+            if ($currentVehicle !== null && !medisaCanManageVehicleRecord($currentVehicle, $context)) {
+                return medisaBuildErrorResult('Bu taşıtı silme yetkiniz yok.', 403);
+            }
+            if ($currentVehicle !== null && (int)($deletedVehicleVersions[$deletedVehicleId] ?? 0) !== medisaGetVehicleVersion($currentVehicle)) {
+                return medisaBuildConflictResult('vehicle', $deletedVehicleId, 'Bu taşıt başka biri tarafından güncellendi. Güncel veriler yüklendi.');
+            }
+        }
+        $incomingVehicles = medisaSaveApplyVehicleMutation($currentVehicles, $incomingVehicles, $changedVehicleIds, $deletedVehicleIds);
+    }
 
     if (($context['role'] ?? '') === 'genel_yonetici') {
-        $data['tasitlar'] = $incomingVehicles;
-        $data['kayitlar'] = is_array($incomingData['kayitlar'] ?? null) ? $incomingData['kayitlar'] : ($data['kayitlar'] ?? []);
-        $data['branches'] = medisaSaveNormalizeCollection($incomingData['branches'] ?? []);
-        $data['users'] = $incomingUsers;
-        $data['ayarlar'] = is_array($incomingData['ayarlar'] ?? null) ? $incomingData['ayarlar'] : ($data['ayarlar'] ?? []);
-        $data['sifreler'] = medisaSaveNormalizeCollection($incomingData['sifreler'] ?? []);
+        if ($collectionChanged('tasitlar')) $data['tasitlar'] = $incomingVehicles;
+        if ($collectionChanged('kayitlar')) $data['kayitlar'] = is_array($incomingData['kayitlar'] ?? null) ? $incomingData['kayitlar'] : ($data['kayitlar'] ?? []);
+        if ($collectionChanged('branches')) $data['branches'] = medisaSaveNormalizeCollection($incomingData['branches'] ?? []);
+        if ($collectionChanged('users')) $data['users'] = $incomingUsers;
+        if ($collectionChanged('ayarlar')) $data['ayarlar'] = is_array($incomingData['ayarlar'] ?? null) ? $incomingData['ayarlar'] : ($data['ayarlar'] ?? []);
+        if ($collectionChanged('sifreler')) $data['sifreler'] = medisaSaveNormalizeCollection($incomingData['sifreler'] ?? []);
     } else {
-        if (!medisaSaveEnsureScopedVehiclesAreAllowed($incomingVehicles, $context) || !medisaSaveEnsureScopedUsersAreAllowed($incomingUsers, $context)) {
+        $changedVehicleLookup = $changedVehicleIds === null ? null : array_fill_keys($changedVehicleIds, true);
+        $vehiclesToAuthorize = $changedVehicleLookup === null
+            ? $incomingVehicles
+            : array_values(array_filter($incomingVehicles, function ($vehicle) use ($changedVehicleLookup) {
+                return isset($changedVehicleLookup[(string)($vehicle['id'] ?? '')]);
+            }));
+        if (($collectionChanged('tasitlar') && !medisaSaveEnsureScopedVehiclesAreAllowed($vehiclesToAuthorize, $context)) || ($collectionChanged('users') && !medisaSaveEnsureScopedUsersAreAllowed($incomingUsers, $context))) {
             return medisaBuildErrorResult('Kapsam dışı veri kaydı engellendi.', 403);
         }
 
-        $data['tasitlar'] = medisaSaveMergeScopedCollection(
-            $currentVehicles,
-            $incomingVehicles,
-            function ($vehicle) use ($context) {
-                return medisaCanManageVehicleRecord($vehicle, $context);
-            },
-            function ($vehicle) use ($context) {
-                return medisaCanManageVehicleRecord($vehicle, $context);
-            }
-        );
+        if ($collectionChanged('tasitlar')) {
+            $data['tasitlar'] = $changedVehicleIds === null
+                ? medisaSaveMergeScopedCollection(
+                    $currentVehicles,
+                    $incomingVehicles,
+                    function ($vehicle) use ($context) { return medisaCanManageVehicleRecord($vehicle, $context); },
+                    function ($vehicle) use ($context) { return medisaCanManageVehicleRecord($vehicle, $context); }
+                )
+                : $incomingVehicles;
+        }
 
-        $data['users'] = medisaSaveMergeScopedCollection(
-            $currentUsers,
-            $incomingUsers,
-            function ($user) use ($context) {
-                return medisaCanManageUserRecord($user, $context);
-            },
-            function ($user) use ($context) {
-                return medisaCanManageUserRecord($user, $context);
-            }
-        );
+        if ($collectionChanged('users')) {
+            $data['users'] = medisaSaveMergeScopedCollection(
+                $currentUsers,
+                $incomingUsers,
+                function ($user) use ($context) { return medisaCanManageUserRecord($user, $context); },
+                function ($user) use ($context) { return medisaCanManageUserRecord($user, $context); }
+            );
+        }
     }
 
     // Ham kasko listesi save_kasko.php üzerinden; eski istemci payload yoksayıldı (ana data.json şişmez).
@@ -104,7 +142,7 @@ $result = medisaMutateData(function (&$data) use ($incomingData) {
         $data['notificationReadState'] = [];
     }
     $incomingReadState = $incomingData['notificationReadState'] ?? null;
-    if (is_array($incomingReadState)) {
+    if ($collectionChanged('notificationReadState') && is_array($incomingReadState)) {
         $isListArray = function ($value) {
             if (!is_array($value)) return false;
             if (function_exists('array_is_list')) return array_is_list($value);
@@ -206,7 +244,7 @@ $result = medisaMutateData(function (&$data) use ($incomingData) {
         $data['monthlyTodoWhatsAppLogs'] = [];
     }
     $incomingMonthlyWaLogs = $incomingData['monthlyTodoWhatsAppLogs'] ?? null;
-    if (is_array($incomingMonthlyWaLogs)) {
+    if ($collectionChanged('monthlyTodoWhatsAppLogs') && is_array($incomingMonthlyWaLogs)) {
         $validShortCodes = ['s', 'k', 'sk', 'm', 'e', 'me', 'km'];
         $mergeMonthlyWaEntry = function ($serverEntry, $clientEntry) {
             $serverEntry = is_array($serverEntry) ? $serverEntry : [];
@@ -267,7 +305,9 @@ $result = medisaMutateData(function (&$data) use ($incomingData) {
 
     return [
         'success' => true,
-        'vehicleVersions' => medisaSaveBuildVehicleVersions($incomingVehicles),
+        'vehicleVersions' => medisaSaveBuildVehicleVersions(array_values(array_filter($incomingVehicles, function ($vehicle) use ($savedVehicleIds) {
+            return $savedVehicleIds === null || in_array((string)($vehicle['id'] ?? ''), $savedVehicleIds, true);
+        }))),
     ];
 });
 

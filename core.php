@@ -1079,16 +1079,29 @@ function medisaSaveIndexVehiclesById($vehicles) {
     return $indexed;
 }
 
-function medisaSaveValidateIncomingVehicleVersions($incomingVehicles, $currentVehiclesById, $context) {
+function medisaSaveValidateIncomingVehicleVersions($incomingVehicles, $currentVehiclesById, $context, $changedVehicleIds = null) {
+    $changedLookup = is_array($changedVehicleIds)
+        ? array_fill_keys(array_map('strval', $changedVehicleIds), true)
+        : null;
     foreach ((array)$incomingVehicles as $vehicle) {
         $id = isset($vehicle['id']) ? (string)$vehicle['id'] : '';
-        if ($id === '' || !isset($vehicle['version'])) {
+        if ($changedLookup !== null && !isset($changedLookup[$id])) {
+            continue;
+        }
+        if ($id === '') {
             continue;
         }
 
         $currentVehicle = $currentVehiclesById[$id] ?? null;
         if ($currentVehicle === null) {
             continue;
+        }
+        if (!isset($vehicle['version'])) {
+            return medisaBuildConflictResult(
+                'vehicle',
+                $id,
+                'Bu taşıtın sürüm bilgisi eksik. Güncel veriler yüklendi.'
+            );
         }
 
         if (($context['role'] ?? '') !== 'genel_yonetici' && !medisaCanManageVehicleRecord($currentVehicle, $context)) {
@@ -1097,7 +1110,7 @@ function medisaSaveValidateIncomingVehicleVersions($incomingVehicles, $currentVe
 
         $currentVersion = isset($currentVehicle['version']) ? (int)$currentVehicle['version'] : 0;
         $incomingVersion = (int)$vehicle['version'];
-        if ($incomingVersion < $currentVersion) {
+        if ($incomingVersion !== $currentVersion) {
             return medisaBuildConflictResult(
                 'vehicle',
                 $id,
@@ -1122,6 +1135,36 @@ function medisaSaveApplyVehicleVersions($incomingVehicles, $currentById) {
         $updated[] = $vehicle;
     }
     return $updated;
+}
+
+function medisaSaveApplyVehicleMutation($currentVehicles, $incomingVehicles, $changedVehicleIds, $deletedVehicleIds) {
+    $changedLookup = array_fill_keys(array_map('strval', (array)$changedVehicleIds), true);
+    $deletedLookup = array_fill_keys(array_map('strval', (array)$deletedVehicleIds), true);
+    $incomingById = medisaSaveIndexVehiclesById($incomingVehicles);
+    $result = [];
+
+    foreach ((array)$currentVehicles as $vehicle) {
+        $id = isset($vehicle['id']) ? (string)$vehicle['id'] : '';
+        if ($id !== '' && isset($deletedLookup[$id])) {
+            continue;
+        }
+        if ($id !== '' && isset($changedLookup[$id]) && isset($incomingById[$id])) {
+            $updated = $incomingById[$id];
+            $updated['version'] = medisaGetVehicleVersion($vehicle) + 1;
+            $result[] = $updated;
+            unset($incomingById[$id]);
+            continue;
+        }
+        $result[] = $vehicle;
+    }
+
+    foreach ($incomingById as $id => $vehicle) {
+        if (isset($changedLookup[(string)$id])) {
+            $vehicle['version'] = 1;
+            $result[] = $vehicle;
+        }
+    }
+    return array_values($result);
 }
 
 function medisaSaveBuildVehicleVersions($vehicles) {
