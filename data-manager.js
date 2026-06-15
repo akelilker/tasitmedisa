@@ -777,6 +777,7 @@ async function loadDataFromServer(forceRefresh) {
             setMedisaSession(data.session || getSessionFromToken());
 
             serverDatasetTrusted = true;
+            setServerDatasetBaseline(window.appData);
             persistOfflineAppDataSnapshot(window.appData);
             return window.appData;
         } catch (error) {
@@ -801,6 +802,96 @@ async function loadDataFromServer(forceRefresh) {
 /**
  * @param {{ includeKaskoDegerListesi?: boolean }} [options] - includeKaskoDegerListesi eski API uyumu için yoksayılır.
  */
+var serverDatasetBaseline = null;
+
+function cloneServerDatasetValue(value) {
+    try {
+        return JSON.parse(JSON.stringify(value));
+    } catch (e) {
+        return null;
+    }
+}
+
+function setServerDatasetBaseline(data) {
+    serverDatasetBaseline = cloneServerDatasetValue(data);
+}
+
+function medisaValuesEqual(a, b) {
+    return JSON.stringify(a) === JSON.stringify(b);
+}
+
+function buildSaveMutationIntent() {
+    var current = window.appData || {};
+    var baseline = serverDatasetBaseline || {};
+    var collections = [];
+    ['kayitlar', 'branches', 'users', 'ayarlar', 'sifreler', 'notificationReadState', 'monthlyTodoWhatsAppLogs'].forEach(function(key) {
+        if (!medisaValuesEqual(current[key], baseline[key])) collections.push(key);
+    });
+
+    var currentVehicles = Array.isArray(current.tasitlar) ? current.tasitlar : [];
+    var baselineVehicles = Array.isArray(baseline.tasitlar) ? baseline.tasitlar : [];
+    var currentById = {};
+    var baselineById = {};
+    currentVehicles.forEach(function(vehicle) {
+        if (vehicle && vehicle.id != null) currentById[String(vehicle.id)] = vehicle;
+    });
+    baselineVehicles.forEach(function(vehicle) {
+        if (vehicle && vehicle.id != null) baselineById[String(vehicle.id)] = vehicle;
+    });
+
+    var changedVehicleIds = [];
+    Object.keys(currentById).forEach(function(id) {
+        if (!Object.prototype.hasOwnProperty.call(baselineById, id) || !medisaValuesEqual(currentById[id], baselineById[id])) {
+            changedVehicleIds.push(id);
+        }
+    });
+    var deletedVehicleIds = Object.keys(baselineById).filter(function(id) {
+        return !Object.prototype.hasOwnProperty.call(currentById, id);
+    });
+    var deletedVehicleVersions = {};
+    deletedVehicleIds.forEach(function(id) {
+        deletedVehicleVersions[id] = Number(baselineById[id] && baselineById[id].version) || 1;
+    });
+    if (changedVehicleIds.length || deletedVehicleIds.length) collections.push('tasitlar');
+
+    return {
+        collections: collections,
+        changedVehicleIds: changedVehicleIds,
+        deletedVehicleIds: deletedVehicleIds,
+        deletedVehicleVersions: deletedVehicleVersions
+    };
+}
+
+function updateServerDatasetBaselineAfterSave(intent) {
+    if (!serverDatasetBaseline) {
+        setServerDatasetBaseline(window.appData);
+        return;
+    }
+    var current = window.appData || {};
+    (intent.collections || []).forEach(function(key) {
+        if (key !== 'tasitlar') serverDatasetBaseline[key] = cloneServerDatasetValue(current[key]);
+    });
+    if ((intent.collections || []).indexOf('tasitlar') === -1) return;
+
+    var changedIds = {};
+    (intent.changedVehicleIds || []).forEach(function(id) { changedIds[String(id)] = true; });
+    var deletedIds = {};
+    (intent.deletedVehicleIds || []).forEach(function(id) { deletedIds[String(id)] = true; });
+    var currentVehicles = Array.isArray(current.tasitlar) ? current.tasitlar : [];
+    var baselineVehicles = Array.isArray(serverDatasetBaseline.tasitlar) ? serverDatasetBaseline.tasitlar : [];
+    var currentById = {};
+    currentVehicles.forEach(function(vehicle) {
+        if (vehicle && vehicle.id != null) currentById[String(vehicle.id)] = vehicle;
+    });
+    serverDatasetBaseline.tasitlar = baselineVehicles.filter(function(vehicle) {
+        var id = vehicle && vehicle.id != null ? String(vehicle.id) : '';
+        return id && !deletedIds[id] && !changedIds[id];
+    });
+    Object.keys(changedIds).forEach(function(id) {
+        if (currentById[id]) serverDatasetBaseline.tasitlar.push(cloneServerDatasetValue(currentById[id]));
+    });
+}
+
 async function saveDataToServer(options) {
     if (!ensureMainAppSession()) return false;
     if (!serverDatasetTrusted) return false;
@@ -821,6 +912,8 @@ async function saveDataToServer(options) {
     try {
         var payloadObj = Object.assign({}, window.appData);
         delete payloadObj.kaskoDegerListesi;
+        var mutationIntent = buildSaveMutationIntent();
+        payloadObj._medisaMutation = mutationIntent;
 
         var response = await fetch(API_SAVE, {
             method: 'POST',
@@ -902,6 +995,7 @@ async function saveDataToServer(options) {
             localStorage.setItem('medisa_server_backup', JSON.stringify(autoBackup));
         } catch (storageErr) {}
         persistOfflineAppDataSnapshot(window.appData);
+        updateServerDatasetBaselineAfterSave(mutationIntent);
 
         medisaInvalidateVehicleDateTasksCacheIfAvailable();
         return true;

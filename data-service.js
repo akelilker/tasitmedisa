@@ -83,9 +83,15 @@
     }
     try {
       const ok = await window.saveDataToServer();
+      if (ok !== true && typeof window.loadDataFromServer === 'function') {
+        await window.loadDataFromServer(true).catch(function() {});
+      }
       if (ok !== true) return Promise.reject(new Error('Sunucuya kayıt yapılamadı.'));
       return true;
     } catch (e) {
+      if (!(e && e.conflict === true) && typeof window.loadDataFromServer === 'function') {
+        await window.loadDataFromServer(true).catch(function() {});
+      }
       if (e && e.conflict === true) throw e;
       return Promise.reject(new Error('Sunucuya kayıt yapılamadı.'));
     }
@@ -99,9 +105,17 @@
   async function deleteVehicle(id) {
     ensureAppData();
     window.appData.tasitlar = window.appData.tasitlar.filter(function(v) { return String(v.id) !== String(id); });
-    const ok = await window.saveDataToServer();
-    if (ok !== true) return Promise.reject(new Error('Sunucuya silme kaydedilemedi.'));
-    return true;
+    try {
+      const ok = await window.saveDataToServer();
+      if (ok !== true) {
+        if (typeof window.loadDataFromServer === 'function') await window.loadDataFromServer(true).catch(function() {});
+        return Promise.reject(new Error('Sunucuya silme kaydedilemedi.'));
+      }
+      return true;
+    } catch (e) {
+      if (typeof window.loadDataFromServer === 'function') await window.loadDataFromServer(true).catch(function() {});
+      throw e;
+    }
   }
 
   /**
@@ -114,8 +128,14 @@
     window.appData.tasitlar = Array.isArray(vehicles) ? vehicles : [];
     try {
       const ok = await window.saveDataToServer();
+      if (ok !== true && typeof window.loadDataFromServer === 'function') {
+        await window.loadDataFromServer(true).catch(function() {});
+      }
       if (ok !== true) return Promise.reject(new Error('Sunucuya kayıt yapılamadı.'));
     } catch (e) {
+      if (!(e && e.conflict === true) && typeof window.loadDataFromServer === 'function') {
+        await window.loadDataFromServer(true).catch(function() {});
+      }
       if (e && e.conflict === true) {
         if (typeof window.loadDataFromServer === 'function') {
           await window.loadDataFromServer(true).catch(function() {});

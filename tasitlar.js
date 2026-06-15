@@ -730,21 +730,7 @@
           return result;
         })
         .catch(function(err) {
-          if (err && err.conflict) {
-            if (typeof window.onMedisaConflict === 'function') {
-              window.onMedisaConflict();
-            } else {
-              alert('Dikkat! Veri siz işlem yaparken başka biri tarafından güncellenmiş. Güncel veriler yüklendi.');
-            }
-            if (typeof window.loadDataFromServer === 'function') {
-              return window.loadDataFromServer(true).then(function() {
-                if (typeof window.renderBranchDashboard === 'function') window.renderBranchDashboard();
-                if (typeof window.renderVehicles === 'function') window.renderVehicles();
-                notifyIfAvailable();
-              }).catch(function() { return Promise.resolve(); });
-            }
-            return Promise.resolve();
-          }
+          if (err && err.conflict) return Promise.reject(err);
           console.warn('[Medisa] Sunucuya kayıt yapılamadı:', err && err.message);
           return Promise.reject(err);
         });
@@ -5603,9 +5589,7 @@
     }
 
     var v = vehicles[idx];
-    var curVer = (v.version != null && v.version !== undefined) ? Number(v.version) : 0;
     v.notes = newTrim;
-    v.version = curVer + 1;
     v.updatedAt = new Date().toISOString();
 
     return writeVehicles(vehicles).then(function() {
