@@ -1797,7 +1797,7 @@ input.settings-form-input:-moz-autofill,
   box-sizing: border-box;
 }
 
-/* Kullanıcı Düzenle: liste yukarı açılsın, Kaydet/Vazgeç butonları hep görünsün */
+/* Kullanıcı Düzenle: liste yukarı açılsın, işlem butonları hep görünsün */
 /* Taşıt seçimi: ana sayfa ayarlar menüsü kutularıyla aynı çerçeve tonu; liste + arama ayrı kutu */
 #user-form-modal .user-vehicles-trigger {
   border: 1px solid rgba(190, 200, 214, 0.42) !important;
@@ -2518,7 +2518,7 @@ input.settings-form-input:-moz-autofill,
     }
 }
 
-/* Masaüstü: Şube/Kullanıcı form – Kaydet/Vazgeç/Sil aynı satırda, yatayda ortada */
+/* Masaüstü: Şube/Kullanıcı form – Kaydet/Sil aynı satırda, yatayda ortada */
 @media (min-width: 769px) {
   #branch-modal .modal-body > div,
   #user-modal .modal-body > .user-management-list-inner {
@@ -2579,17 +2579,17 @@ input.settings-form-input:-moz-autofill,
   #branch-form-modal .universal-btn-group,
   #user-form-modal .universal-btn-group {
     display: grid !important;
-    grid-template-columns: 1fr 1fr 1fr !important;
+    grid-template-columns: 1fr 1fr !important;
     margin-left: auto !important;
     margin-right: auto !important;
     width: 100% !important;
   }
-  /* Yeni kullanıcı: Sil görünür değilken (inline display:flex yok) Kaydet+Vazgeç ikilisini ortala */
+  /* Yeni kayıt: Sil görünür değilken Kaydet butonunu ortala */
   #branch-form-modal .universal-btn-group:has(#branch-delete-btn.u-hidden),
   #user-form-modal .universal-btn-group:not(:has(#user-delete-btn[style*="flex"])) {
-    grid-template-columns: 1fr 1fr !important;
-    width: min(100%, 320px) !important;
-    max-width: 320px !important;
+    grid-template-columns: 1fr !important;
+    width: min(100%, 160px) !important;
+    max-width: 160px !important;
   }
   /* Kullanıcı Yönetimi: kişi kutuları isimleri etiket beyazı (kayıt modu etiketleri ile aynı) */
   #user-modal .settings-card-title {
@@ -3045,11 +3045,9 @@ input.settings-form-input:-moz-autofill,
         font-size: inherit !important;
         line-height: 1.2 !important;
     }
-    /* Mobil ayarlar formu: Kaydet / Vazgeç / Sil aynı ölçüde kalsın */
+    /* Mobil ayarlar formu: Kaydet / Sil aynı ölçüde kalsın */
     #branch-form-modal .universal-btn-save,
     #user-form-modal .universal-btn-save,
-    #branch-form-modal .universal-btn-cancel,
-    #user-form-modal .universal-btn-cancel,
     #branch-form-modal .settings-btn-delete,
     #user-form-modal .settings-btn-delete {
         height: 32px !important;
@@ -3067,8 +3065,6 @@ input.settings-form-input:-moz-autofill,
         box-sizing: border-box !important;
         flex: 1 1 auto !important;
     }
-    #branch-form-modal .universal-btn-cancel,
-    #user-form-modal .universal-btn-cancel,
     #branch-form-modal .settings-btn-delete,
     #user-form-modal .settings-btn-delete {
         color: #ff6b6b !important;
