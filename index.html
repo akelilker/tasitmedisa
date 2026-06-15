@@ -526,7 +526,13 @@
 
         <div id="vehicles-modal" class="modal-overlay tasitlar-modal-overlay" onclick="if(event.target === this) { event.stopPropagation(); }">
           <div class="modal-container" onclick="event.stopPropagation();">
-            <div class="modal-header"><h2 class="premium-title">TAŞITLAR</h2><button class="modal-close" onclick="event.stopPropagation(); event.preventDefault(); closeVehiclesModal(event); return false;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div>
+            <div class="modal-header">
+              <button type="button" class="modal-home" onclick="closeAllModals()" aria-label="Ana sayfaya dön" title="Ana sayfa">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 10v10h14V10"/></svg>
+              </button>
+              <h2 class="premium-title">TAŞITLAR</h2>
+              <button class="modal-close" onclick="event.stopPropagation(); event.preventDefault(); closeVehiclesModal(event); return false;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+            </div>
             <div class="modal-body"><div id="vehicles-modal-content"></div></div>
           </div>
         </div>
