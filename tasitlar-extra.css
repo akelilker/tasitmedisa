@@ -3513,16 +3513,26 @@
   color: var(--theme-color, #ff4d5f);
 }
 
-/* Ay özeti şube filtresi: açık menüyü mobilde okunur tut, listeyi Ayarlar menüsü gibi flu göster. */
+/* Ay özeti şube filtresi: açık menüyü okunur tut, listeyi flu göster; düşük opacity beyaz parlamaya yol açıyordu. */
 #monthly-todo-modal.monthly-todo-filter-open .monthly-todo-list-scroll {
-  filter: blur(2px);
-  opacity: 0.72;
+  position: relative;
+  isolation: isolate;
+  filter: blur(2px) brightness(0.76);
   pointer-events: none;
-  transition: filter 0.18s ease, opacity 0.18s ease;
+  transition: filter 0.18s ease;
+}
+
+#monthly-todo-modal.monthly-todo-filter-open .monthly-todo-list-scroll::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: rgba(6, 9, 14, 0.26);
+  pointer-events: none;
 }
 
 #monthly-todo-modal .monthly-todo-list-scroll {
-  transition: filter 0.18s ease, opacity 0.18s ease;
+  transition: filter 0.18s ease;
 }
 
 #monthly-todo-modal .monthly-todo-branch-filter-menu {
