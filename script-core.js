@@ -990,10 +990,72 @@ var MEDISA_MODULE_VERSIONS = {
   kayitCss: '20260612.10',
   ayarlarJs: '20260607.1',
   ayarlarCss: '20260615.2',
-  tasitlarYazici: '20260517.5'
+  tasitlarYazici: '20260517.5',
+  vehicleNotificationDomain: '20260617.1'
 };
 window.MEDISA_MODULE_VERSIONS = MEDISA_MODULE_VERSIONS;
 var TASITLAR_MODULE_VERSION = MEDISA_MODULE_VERSIONS.tasitlar;
+
+var MEDISA_VEHICLE_NOTIFICATION_DOMAIN_KEYS = [
+  'vehicleNeedsK2Belgesi',
+  'vehicleNeedsTakograf',
+  'getK2BelgesiState',
+  'getK2BelgesiExpiryDate',
+  'isVehicleOperationallyInactive',
+  'getEgzozMuayeneState',
+  'isEgzozMuayeneCritical'
+];
+
+function isMedisaVehicleNotificationDomainValid(namespace) {
+  if (!namespace || typeof namespace !== 'object' || Array.isArray(namespace)) return false;
+
+  var keys = Object.keys(namespace);
+  if (keys.length !== MEDISA_VEHICLE_NOTIFICATION_DOMAIN_KEYS.length) return false;
+
+  for (var i = 0; i < MEDISA_VEHICLE_NOTIFICATION_DOMAIN_KEYS.length; i++) {
+    var key = MEDISA_VEHICLE_NOTIFICATION_DOMAIN_KEYS[i];
+    if (keys.indexOf(key) === -1 || typeof namespace[key] !== 'function') return false;
+  }
+
+  return true;
+}
+
+window.ensureMedisaVehicleNotificationDomainReady = function() {
+  if (isMedisaVehicleNotificationDomainValid(window.MedisaVehicleNotificationDomain)) {
+    return Promise.resolve();
+  }
+
+  var inflightKey = 'medisa:vehicle-notification-domain';
+  var inflight = window.__medisaModuleInflight;
+  if (inflight[inflightKey]) return inflight[inflightKey];
+
+  var src = getMainAppBasePath()
+    + 'vehicle-notification-domain.js?v='
+    + MEDISA_MODULE_VERSIONS.vehicleNotificationDomain;
+
+  var promise = Promise.resolve()
+    .then(function() {
+      if (typeof window.__medisaLoadScriptOnce !== 'function') {
+        throw new Error('vehicle-notification-domain script loader hazir degil');
+      }
+      return window.__medisaLoadScriptOnce(src);
+    })
+    .then(function() {
+      if (!isMedisaVehicleNotificationDomainValid(window.MedisaVehicleNotificationDomain)) {
+        throw new Error('vehicle-notification-domain namespace gecersiz');
+      }
+    })
+    .catch(function(err) {
+      console.error('[Medisa] vehicle-notification-domain yüklenemedi:', err);
+      throw err;
+    })
+    .finally(function() {
+      if (inflight[inflightKey] === promise) delete inflight[inflightKey];
+    });
+
+  inflight[inflightKey] = promise;
+  return promise;
+};
 
 // Modal açma fonksiyonları: Lazy load – modül yüklenir, sonra ilgili açma fonksiyonu tetiklenir.
 // tasitlar.js / raporlar.js / kayit.js / ayarlar.js yüklendiğinde kendi open* implementasyonlarını yazar.
