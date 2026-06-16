@@ -1324,6 +1324,54 @@ function medisaSaveApplyVehicleVersions($incomingVehicles, $currentById) {
     return $updated;
 }
 
+function medisaSaveVehicleTypeKey($vehicle) {
+    if (!is_array($vehicle)) {
+        return '';
+    }
+    return strtolower(trim((string)($vehicle['vehicleType'] ?? $vehicle['tip'] ?? '')));
+}
+
+function medisaSaveVehicleNeedsK2($vehicle) {
+    return in_array(medisaSaveVehicleTypeKey($vehicle), ['minivan', 'kamyon', 'romork'], true);
+}
+
+function medisaSaveVehicleNeedsTakograf($vehicle) {
+    return medisaSaveVehicleTypeKey($vehicle) === 'kamyon';
+}
+
+function medisaSavePreserveVehicleDocumentReferences($currentVehicle, $updatedVehicle) {
+    if (!is_array($currentVehicle) || !is_array($updatedVehicle)) {
+        return $updatedVehicle;
+    }
+
+    $alwaysPreserveFields = ['ruhsatPath', 'sigortaPolicePath', 'kaskoPolicePath'];
+    foreach ($alwaysPreserveFields as $field) {
+        $currentValue = trim((string)($currentVehicle[$field] ?? ''));
+        $updatedValue = trim((string)($updatedVehicle[$field] ?? ''));
+        if ($currentValue !== '' && $updatedValue === '') {
+            $updatedVehicle[$field] = $currentValue;
+        }
+    }
+
+    if (medisaSaveVehicleNeedsK2($updatedVehicle)) {
+        $currentTasitKartiPath = trim((string)($currentVehicle['tasitKartiPath'] ?? ''));
+        $updatedTasitKartiPath = trim((string)($updatedVehicle['tasitKartiPath'] ?? ''));
+        if ($currentTasitKartiPath !== '' && $updatedTasitKartiPath === '') {
+            $updatedVehicle['tasitKartiPath'] = $currentTasitKartiPath;
+        }
+    }
+
+    if (medisaSaveVehicleNeedsTakograf($updatedVehicle)) {
+        $currentTakografPath = trim((string)($currentVehicle['takografBelgesiPath'] ?? ''));
+        $updatedTakografPath = trim((string)($updatedVehicle['takografBelgesiPath'] ?? ''));
+        if ($currentTakografPath !== '' && $updatedTakografPath === '') {
+            $updatedVehicle['takografBelgesiPath'] = $currentTakografPath;
+        }
+    }
+
+    return $updatedVehicle;
+}
+
 function medisaSaveApplyVehicleMutation($currentVehicles, $incomingVehicles, $changedVehicleIds, $deletedVehicleIds) {
     $changedLookup = array_fill_keys(array_map('strval', (array)$changedVehicleIds), true);
     $deletedLookup = array_fill_keys(array_map('strval', (array)$deletedVehicleIds), true);
@@ -1337,6 +1385,7 @@ function medisaSaveApplyVehicleMutation($currentVehicles, $incomingVehicles, $ch
         }
         if ($id !== '' && isset($changedLookup[$id]) && isset($incomingById[$id])) {
             $updated = $incomingById[$id];
+            $updated = medisaSavePreserveVehicleDocumentReferences($vehicle, $updated);
             $updated['version'] = medisaGetVehicleVersion($vehicle) + 1;
             $result[] = $updated;
             unset($incomingById[$id]);
