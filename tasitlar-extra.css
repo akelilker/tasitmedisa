@@ -3549,6 +3549,30 @@
   -webkit-text-fill-color: currentColor;
 }
 
+@media (min-width: 641px) {
+  #monthly-todo-modal .monthly-todo-branch-filter-menu {
+    min-width: 164px;
+    max-height: 228px;
+    padding: 5px;
+  }
+
+  #monthly-todo-modal .monthly-todo-branch-filter-option {
+    min-height: 32px;
+    padding: 8px 10px;
+    font-size: 12px;
+    line-height: 1.3;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff;
+  }
+
+  #monthly-todo-modal .monthly-todo-branch-filter-option:hover,
+  #monthly-todo-modal .monthly-todo-branch-filter-option:focus-visible,
+  #monthly-todo-modal .monthly-todo-branch-filter-option.selected {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff;
+  }
+}
+
 @media (max-width: 640px) {
   #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h--desc {
     gap: 5px;
