@@ -201,21 +201,10 @@ $result = medisaMutateData(function (&$data) use ($incomingData) {
         $mergeUnique = function ($a, $b) use ($normalizeKeys) {
             return $normalizeKeys(array_merge(is_array($a) ? $a : [], is_array($b) ? $b : []));
         };
-        $role = strtolower(trim((string)($context['role'] ?? '')));
-        $userId = trim((string)($context['user_id'] ?? ''));
-        $branchIds = array_values(array_filter(array_map(function ($id) {
-            return trim((string)$id);
-        }, is_array($context['branch_ids'] ?? null) ? $context['branch_ids'] : []), function ($id) {
-            return $id !== '';
-        }));
-        sort($branchIds, SORT_STRING);
-        $branchScope = empty($branchIds) ? ($role === 'genel_yonetici' ? 'all' : 'none') : implode(',', array_values(array_unique($branchIds)));
-        $scopeKey = 'user:' . ($userId !== '' ? $userId : 'anonymous') . '|role:' . ($role !== '' ? $role : 'unknown') . '|branches:' . $branchScope;
-        $legacyScopeKeys = [];
-        if ($userId !== '') $legacyScopeKeys[] = 'user:' . $userId;
-        if ($role !== '' && !empty($branchIds)) $legacyScopeKeys[] = 'scope:' . $role . ':' . implode(',', $branchIds);
-        if ($role !== '') $legacyScopeKeys[] = 'scope:' . $role;
-        $allowedScopeKeys = array_values(array_unique(array_merge([$scopeKey], $legacyScopeKeys)));
+        $scopeDescriptor = medisaBuildNotificationScopeDescriptor($context);
+        $scopeKey = $scopeDescriptor['scopeKey'];
+        $legacyScopeKeys = $scopeDescriptor['legacyScopeKeys'];
+        $allowedScopeKeys = $scopeDescriptor['saveAllowedKeys'];
 
         foreach ($allowedScopeKeys as $allowedScopeKey) {
             if (!array_key_exists($allowedScopeKey, $incomingReadState) || !is_array($incomingReadState[$allowedScopeKey])) continue;
