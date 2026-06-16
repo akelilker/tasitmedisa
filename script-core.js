@@ -1098,39 +1098,6 @@ var TASITLAR_MODULE_VERSION = MEDISA_MODULE_VERSIONS.tasitlar;
   };
 })();
 
-/* Ana modallar prefetch: ilk açılışı kilitlememek için kullanıcı ekranı oturduktan sonra idle zamanda çalışır. */
-(function scheduleMainModalModulePrefetch() {
-  function isMainSpaPath() {
-    var p = (typeof document !== 'undefined' && document.location && document.location.pathname) ? document.location.pathname : '';
-    return p.indexOf('/driver') === -1 && p.indexOf('/admin') === -1;
-  }
-  function runAfterFirstPaint(fn, delayMs, idleTimeoutMs) {
-    setTimeout(function() {
-      if (typeof requestIdleCallback === 'function') {
-        requestIdleCallback(fn, { timeout: idleTimeoutMs || 8000 });
-      } else {
-        setTimeout(fn, 0);
-      }
-    }, delayMs || 0);
-  }
-  function prefetchQuiet() {
-    if (!isMainSpaPath() || typeof window.loadAppModule !== 'function') return;
-    var V = window.MEDISA_MODULE_VERSIONS;
-    if (!V) return;
-    var base = getMainAppBasePath();
-    var rJs = base + 'raporlar.js?v=' + V.raporlar;
-    var rCss = base + 'raporlar.css?v=' + V.raporlar;
-    var kJs = base + 'kayit.js?v=' + V.kayitJs;
-    var kCss = base + 'kayit.css?v=' + V.kayitCss;
-    window.loadAppModule(rJs, rCss).catch(function() {});
-    window.loadAppModule(kJs, kCss).catch(function() {});
-  }
-  document.addEventListener('DOMContentLoaded', function() {
-    if (!isMainSpaPath()) return;
-    runAfterFirstPaint(prefetchQuiet, 25000, 15000);
-  });
-})();
-
 /* =========================================
    VERSION DISPLAY (Anasayfa - v78.1)
    ========================================= */
