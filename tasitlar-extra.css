@@ -3085,7 +3085,7 @@
 #monthly-todo-modal .monthly-todo-branch-filter-option:focus-visible,
 #monthly-todo-modal .monthly-todo-branch-filter-option.selected {
   outline: 0;
-  background: rgba(var(--theme-color-rgb), 0.16);
+  background: rgba(var(--theme-color-rgb), 0.24);
   color: #ffffff;
 }
 
