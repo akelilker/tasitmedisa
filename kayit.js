@@ -121,6 +121,16 @@
     return vehicle;
   }
 
+  function mergeDefinedVehicleFields(currentVehicle, incomingVehicle) {
+    const merged = { ...(currentVehicle || {}) };
+    Object.keys(incomingVehicle || {}).forEach(function(key) {
+      if (incomingVehicle[key] !== undefined) {
+        merged[key] = incomingVehicle[key];
+      }
+    });
+    return merged;
+  }
+
   function getVehicleDateInputs(root) {
     return $all(VEHICLE_DATE_INPUT_SELECTOR, root || document);
   }
@@ -2671,7 +2681,7 @@
       if (isEditMode) {
         const index = vehicles.findIndex(v => v.id === editingVehicleId);
         if (index !== -1) {
-          vehicles[index] = syncVehicleTasitKartiFieldsForK2Scope(clearVehicleTakografFieldsWhenOutOfScope({ ...vehicles[index], ...record }));
+          vehicles[index] = syncVehicleTasitKartiFieldsForK2Scope(clearVehicleTakografFieldsWhenOutOfScope(mergeDefinedVehicleFields(vehicles[index], record)));
         }
       } else {
         // Yeni kayıt: İlk km'yi guncelKm olarak ayarla ve tarihçeye ekle
