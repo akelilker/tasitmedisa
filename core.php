@@ -933,6 +933,190 @@ function medisaCanViewReportUserRecord($user, $context) {
     return (string)($user['id'] ?? '') === (string)($context['user_id'] ?? '');
 }
 
+/**
+ * Bildirim scope anahtarı üretimi — load projection ve save merge için tek owner.
+ * sharedLegacyKeys / saveAllowedKeys: save geriye dönük uyumluluk (scope:* yazılabilir).
+ * loadMergeKeys: yalnızca user:<id> + kanonik; scope:* load projection kaynağı olamaz.
+ */
+function medisaBuildNotificationScopeDescriptor(array $context): array {
+    $role = strtolower(trim((string)($context['role'] ?? '')));
+    $userId = trim((string)($context['user_id'] ?? ''));
+    $branchIds = array_values(array_filter(array_map(function ($id) {
+        return trim((string)$id);
+    }, is_array($context['branch_ids'] ?? null) ? $context['branch_ids'] : []), function ($id) {
+        return $id !== '';
+    }));
+    sort($branchIds, SORT_STRING);
+    $branchIds = array_values(array_unique($branchIds));
+    $branchScope = empty($branchIds)
+        ? ($role === 'genel_yonetici' ? 'all' : 'none')
+        : implode(',', $branchIds);
+    $canonicalKey = 'user:'
+        . ($userId !== '' ? $userId : 'anonymous')
+        . '|role:'
+        . ($role !== '' ? $role : 'unknown')
+        . '|branches:'
+        . $branchScope;
+    $userLegacyKey = $userId !== '' ? 'user:' . $userId : '';
+    $sharedLegacyKeys = [];
+    if ($role !== '' && !empty($branchIds)) {
+        $sharedLegacyKeys[] = 'scope:' . $role . ':' . implode(',', $branchIds);
+    }
+    if ($role !== '') {
+        $sharedLegacyKeys[] = 'scope:' . $role;
+    }
+    $loadMergeKeys = [];
+    if ($userLegacyKey !== '') {
+        $loadMergeKeys[] = $userLegacyKey;
+    }
+    $loadMergeKeys[] = $canonicalKey;
+    $legacyScopeKeys = [];
+    if ($userLegacyKey !== '') {
+        $legacyScopeKeys[] = $userLegacyKey;
+    }
+    foreach ($sharedLegacyKeys as $sharedLegacyKey) {
+        $legacyScopeKeys[] = $sharedLegacyKey;
+    }
+    $saveAllowedKeys = array_values(array_unique(array_merge([$canonicalKey], $legacyScopeKeys)));
+
+    return [
+        'canonicalKey' => $canonicalKey,
+        'userLegacyKey' => $userLegacyKey,
+        'sharedLegacyKeys' => $sharedLegacyKeys,
+        'loadMergeKeys' => $loadMergeKeys,
+        'saveAllowedKeys' => $saveAllowedKeys,
+        'scopeKey' => $canonicalKey,
+        'legacyScopeKeys' => $legacyScopeKeys,
+    ];
+}
+
+function medisaNotificationScopeIsListArray($value): bool {
+    if (!is_array($value)) {
+        return false;
+    }
+    if (function_exists('array_is_list')) {
+        return array_is_list($value);
+    }
+    $expectedIndex = 0;
+    foreach ($value as $key => $_) {
+        if ($key !== $expectedIndex) {
+            return false;
+        }
+        $expectedIndex++;
+    }
+    return true;
+}
+
+function medisaNotificationNormalizeKeys(array $keys): array {
+    $clean = [];
+    foreach ($keys as $key) {
+        $normalized = trim((string)$key);
+        if ($normalized === '') {
+            continue;
+        }
+        if (!in_array($normalized, $clean, true)) {
+            $clean[] = $normalized;
+        }
+    }
+    return array_slice($clean, -500);
+}
+
+function medisaNotificationNormalizeFirstSeenDates($map): array {
+    $clean = [];
+    if (!is_array($map)) {
+        return $clean;
+    }
+    foreach ($map as $key => $date) {
+        $normalizedKey = trim((string)$key);
+        if (!is_scalar($date)) {
+            continue;
+        }
+        $normalizedDate = trim((string)$date);
+        if ($normalizedKey === '' || $normalizedDate === '') {
+            continue;
+        }
+        $clean[$normalizedKey] = $normalizedDate;
+    }
+    return $clean;
+}
+
+function medisaNotificationNormalizeScopeState($scopeState): array {
+    if (medisaNotificationScopeIsListArray($scopeState)) {
+        return [
+            'readKeys' => medisaNotificationNormalizeKeys($scopeState),
+            'dismissedKeys' => [],
+            'firstSeenDates' => [],
+            'migratedFromLocalStorage' => false,
+            'updatedAt' => '',
+        ];
+    }
+    $scopeState = is_array($scopeState) ? $scopeState : [];
+    $dismissedKeys = medisaNotificationNormalizeKeys(
+        is_array($scopeState['dismissedKeys'] ?? null) ? $scopeState['dismissedKeys'] : []
+    );
+    $readKeysRaw = is_array($scopeState['readKeys'] ?? null) ? $scopeState['readKeys'] : [];
+    $readKeys = medisaNotificationNormalizeKeys(array_merge($readKeysRaw, $dismissedKeys));
+    return [
+        'readKeys' => $readKeys,
+        'dismissedKeys' => $dismissedKeys,
+        'firstSeenDates' => medisaNotificationNormalizeFirstSeenDates($scopeState['firstSeenDates'] ?? []),
+        'migratedFromLocalStorage' => ($scopeState['migratedFromLocalStorage'] ?? false) === true,
+        'updatedAt' => trim((string)($scopeState['updatedAt'] ?? '')),
+    ];
+}
+
+/**
+ * Load response için salt-okunur projection: user legacy + kanonik → tek kanonik bucket.
+ * scope:* anahtarları okunmaz, merge edilmez, response'a konmaz.
+ */
+function medisaProjectNotificationReadStateForContext(array $notificationReadState, array $context): array {
+    $descriptor = medisaBuildNotificationScopeDescriptor($context);
+    $canonicalKey = $descriptor['canonicalKey'];
+    $userLegacyKey = $descriptor['userLegacyKey'];
+
+    $legacyScope = medisaNotificationNormalizeScopeState([]);
+    if ($userLegacyKey !== ''
+        && array_key_exists($userLegacyKey, $notificationReadState)
+        && is_array($notificationReadState[$userLegacyKey])) {
+        $legacyScope = medisaNotificationNormalizeScopeState($notificationReadState[$userLegacyKey]);
+    }
+
+    $canonicalScope = medisaNotificationNormalizeScopeState([]);
+    if (array_key_exists($canonicalKey, $notificationReadState)
+        && is_array($notificationReadState[$canonicalKey])) {
+        $canonicalScope = medisaNotificationNormalizeScopeState($notificationReadState[$canonicalKey]);
+    }
+
+    $dismissedKeys = medisaNotificationNormalizeKeys(array_merge(
+        $legacyScope['dismissedKeys'],
+        $canonicalScope['dismissedKeys']
+    ));
+    $readKeys = medisaNotificationNormalizeKeys(array_merge(
+        $legacyScope['readKeys'],
+        $canonicalScope['readKeys'],
+        $dismissedKeys
+    ));
+
+    $firstSeenDates = $legacyScope['firstSeenDates'];
+    foreach ($canonicalScope['firstSeenDates'] as $notifKey => $firstSeenDate) {
+        $firstSeenDates[$notifKey] = $firstSeenDate;
+    }
+
+    $canonicalUpdatedAt = trim((string)($canonicalScope['updatedAt'] ?? ''));
+    $legacyUpdatedAt = trim((string)($legacyScope['updatedAt'] ?? ''));
+    $updatedAt = $canonicalUpdatedAt !== '' ? $canonicalUpdatedAt : $legacyUpdatedAt;
+
+    return [
+        $canonicalKey => [
+            'readKeys' => $readKeys,
+            'dismissedKeys' => $dismissedKeys,
+            'firstSeenDates' => $firstSeenDates,
+            'migratedFromLocalStorage' => $legacyScope['migratedFromLocalStorage'] || $canonicalScope['migratedFromLocalStorage'],
+            'updatedAt' => $updatedAt,
+        ],
+    ];
+}
+
 function medisaFilterDataForContextWithUserPredicate($data, $context, $userPredicate) {
     $visibleVehicles = array_values(array_filter($data['tasitlar'] ?? [], function ($vehicle) use ($context) {
         return medisaCanViewVehicleRecord($vehicle, $context);
@@ -1018,7 +1202,10 @@ function medisaFilterDataForContextWithUserPredicate($data, $context, $userPredi
             'sourceFileName' => '',
             'rows' => [],
         ],
-        'notificationReadState' => is_array($data['notificationReadState'] ?? null) ? $data['notificationReadState'] : [],
+        'notificationReadState' => medisaProjectNotificationReadStateForContext(
+            is_array($data['notificationReadState'] ?? null) ? $data['notificationReadState'] : [],
+            $context
+        ),
         'monthlyTodoWhatsAppLogs' => is_array($data['monthlyTodoWhatsAppLogs'] ?? null) ? $data['monthlyTodoWhatsAppLogs'] : [],
         'session' => medisaBuildSessionPayload($context),
     ];
