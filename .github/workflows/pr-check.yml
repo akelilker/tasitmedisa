@@ -41,6 +41,7 @@ jobs:
             script-core.js \
             data-manager.js \
             data-service.js \
+            notifications.js \
             tasitlar.js \
             tasitlar-yazici.js \
             kayit.js \
