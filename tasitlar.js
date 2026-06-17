@@ -9,6 +9,8 @@
    ========================================= */
 
 (function() {
+  window.__medisaTasitlarModuleReady = false;
+
   const BRANCHES_KEY = "medisa_branches_v1";
   const VEHICLES_KEY = "medisa_vehicles_v1";
   const USERS_KEY = "medisa_users_v1";
@@ -11860,5 +11862,7 @@
       });
     }
   }, true);
+
+  window.__medisaTasitlarModuleReady = true;
 
 })();
