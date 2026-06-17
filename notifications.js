@@ -1989,7 +1989,7 @@
     if (!el) {
       el = document.createElement('div');
       el.id = 'monthly-todo-modal';
-      el.className = 'modal-overlay tasitlar-modal-overlay';
+      el.className = 'modal-overlay monthly-todo-modal-overlay';
       el.setAttribute('data-monthly-todo-overlay', '1');
       el.innerHTML =
         '<div class="modal-container monthly-todo-modal-container">' +

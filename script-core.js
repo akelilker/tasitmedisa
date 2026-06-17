@@ -1072,8 +1072,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Lazy modül asset sürümleri — tek nesne; index.html içindeki style-core ?v= ile tasitlar sürümü uyumlu kalmalı
 var MEDISA_MODULE_VERSIONS = {
-  tasitlar: '20260617.4',
-  notifications: '20260617.1',
+  tasitlar: '20260617.5',
+  notifications: '20260617.2',
   raporlar: '20260606.1',
   kayitJs: '20260607.1',
   kayitCss: '20260612.10',
@@ -1157,7 +1157,9 @@ window.ensureMedisaVehicleNotificationDomainReady = function() {
     base + 'tasitlar-extra.css?v=' + V.tasitlar
   ];
   var NOTIFICATIONS_JS = base + 'notifications.js?v=' + V.notifications;
-  var NOTIFICATIONS_CSS_LIST = TASITLAR_CSS_LIST;
+  var NOTIFICATIONS_CSS_LIST = [
+    base + 'notifications.css?v=' + V.notifications
+  ];
 
   function isMedisaTasitlarModuleReady() {
     return window.__medisaTasitlarModuleReady === true
