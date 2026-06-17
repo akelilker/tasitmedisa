@@ -1072,7 +1072,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Lazy modül asset sürümleri — tek nesne; index.html içindeki style-core ?v= ile tasitlar sürümü uyumlu kalmalı
 var MEDISA_MODULE_VERSIONS = {
-  tasitlar: '20260617.3',
+  tasitlar: '20260617.4',
+  notifications: '20260617.1',
   raporlar: '20260606.1',
   kayitJs: '20260607.1',
   kayitCss: '20260612.10',
@@ -1155,15 +1156,61 @@ window.ensureMedisaVehicleNotificationDomainReady = function() {
     base + 'tasitlar-base.css?v=' + V.tasitlar,
     base + 'tasitlar-extra.css?v=' + V.tasitlar
   ];
+  var NOTIFICATIONS_JS = base + 'notifications.js?v=' + V.notifications;
+  var NOTIFICATIONS_CSS_LIST = TASITLAR_CSS_LIST;
 
   function isMedisaTasitlarModuleReady() {
     return window.__medisaTasitlarModuleReady === true
       && typeof window.openVehiclesView === 'function'
       && window.openVehiclesView !== lazyOpenVehiclesView
-      && typeof window.updateNotifications === 'function'
       && typeof window.showVehicleDetail === 'function'
-      && typeof window.showVehicleHistory === 'function'
-      && typeof window.invalidateVehicleDateTasksCache === 'function';
+      && typeof window.showVehicleHistory === 'function';
+  }
+
+  function isMedisaNotificationsModuleReady() {
+    return window.__medisaNotificationsModuleReady === true
+      && typeof window.updateNotifications === 'function'
+      && typeof window.invalidateVehicleDateTasksCache === 'function'
+      && typeof window.syncMobileNotificationsDropdownHeight === 'function'
+      && typeof window.resetNotificationsDropdownLayoutState === 'function';
+  }
+
+  window.ensureMedisaNotificationsModuleReady = function() {
+    if (isMedisaNotificationsModuleReady()) return Promise.resolve();
+
+    var inflightKey = 'medisa:notifications-module-ready';
+    var inflight = window.__medisaModuleInflight;
+    if (inflight[inflightKey]) return inflight[inflightKey];
+
+    var promise = Promise.resolve()
+      .then(function() {
+        if (typeof window.ensureMedisaVehicleNotificationDomainReady !== 'function') {
+          throw new Error('vehicle notification domain loader hazir degil');
+        }
+        return window.ensureMedisaVehicleNotificationDomainReady();
+      })
+      .then(function() {
+        if (isMedisaNotificationsModuleReady()) return;
+        if (typeof window.loadAppModule !== 'function') {
+          throw new Error('Notifications module loader hazir degil');
+        }
+        return window.loadAppModule(NOTIFICATIONS_JS, NOTIFICATIONS_CSS_LIST);
+      })
+      .then(function() {
+        if (!isMedisaNotificationsModuleReady()) {
+          throw new Error('Bildirim modulu hazir duruma gelemedi');
+        }
+      })
+      .catch(function(err) {
+        console.error('[Medisa] Bildirim modulu hazirlanamadi:', err);
+        throw err;
+      })
+      .finally(function() {
+        if (inflight[inflightKey] === promise) delete inflight[inflightKey];
+      });
+
+    inflight[inflightKey] = promise;
+    return promise;
   }
 
   window.ensureMedisaTasitlarModuleReady = function() {
@@ -1216,6 +1263,76 @@ window.ensureMedisaVehicleNotificationDomainReady = function() {
     }
     alert(message);
   }
+
+  function ensureVehicleNotificationTargetReady(targetName) {
+    if (typeof window.ensureMedisaTasitlarModuleReady !== 'function') {
+      throw new Error('Tasitlar module ready loader hazir degil');
+    }
+    return window.ensureMedisaTasitlarModuleReady()
+      .then(function() {
+        if (typeof window[targetName] !== 'function') {
+          throw new Error('Tasitlar hedef API hazir degil: ' + targetName);
+        }
+      });
+  }
+
+  window.medisaOpenVehicleDetailFromNotification = function(vehicleId, options) {
+    var opts = options || {};
+    showModuleSpinner();
+    var promise = Promise.resolve()
+      .then(function() {
+        return ensureVehicleNotificationTargetReady('showVehicleDetail');
+      })
+      .then(function() {
+        if (opts.returnToMonthlyTodo === true && typeof window.medisaSetVehicleDetailReturnToMonthlyTodo === 'function') {
+          window.medisaSetVehicleDetailReturnToMonthlyTodo(true);
+        }
+        return window.showVehicleDetail(vehicleId);
+      })
+      .catch(function(err) {
+        console.error('[Medisa] Bildirim tasit detayi acilamadi:', err);
+        showTasitlarModuleLoadError();
+        throw err;
+      })
+      .finally(function() {
+        hideModuleSpinner();
+      });
+    return promise;
+  };
+
+  window.medisaOpenVehicleHistoryFromNotification = function(vehicleId, tab, options) {
+    var opts = options || {};
+    showModuleSpinner();
+    var promise = Promise.resolve()
+      .then(function() {
+        return ensureVehicleNotificationTargetReady('showVehicleDetail');
+      })
+      .then(function() {
+        if (opts.returnToMonthlyTodo === true && typeof window.medisaSetVehicleDetailReturnToMonthlyTodo === 'function') {
+          window.medisaSetVehicleDetailReturnToMonthlyTodo(true);
+        }
+        window.showVehicleDetail(vehicleId);
+        return new Promise(function(resolve) {
+          setTimeout(resolve, 180);
+        });
+      })
+      .then(function() {
+        if (typeof window.showVehicleHistory !== 'function') {
+          throw new Error('Tasitlar tarihce API hazir degil');
+        }
+        window.__vehicleHistoryOpenedFromNotifications = true;
+        return window.showVehicleHistory(vehicleId, tab);
+      })
+      .catch(function(err) {
+        console.error('[Medisa] Bildirim tasit tarihcesi acilamadi:', err);
+        showTasitlarModuleLoadError();
+        throw err;
+      })
+      .finally(function() {
+        hideModuleSpinner();
+      });
+    return promise;
+  };
 
   function lazyOpenVehiclesView() {
     var openVehiclesArgs = arguments;
@@ -1364,7 +1481,7 @@ window.addEventListener('dataLoaded', () => {
         setTimeout(window.hideLoading, 50);
     }
 
-    // Bildirimler tasitlar.js içinde; taşıtlar ekranı açılmadan önce veri gelirse modül burada yüklenir.
+    // Bildirimler ayrı lazy modülde; Taşıtlar ekranı açılmadan tasitlar.js yüklenmez.
     const runNotifications = () => {
         if (typeof window.updateNotifications === 'function') {
             window.updateNotifications();
@@ -1379,10 +1496,10 @@ window.addEventListener('dataLoaded', () => {
     var loadNotificationModule = function() {
         Promise.resolve()
             .then(function() {
-                if (typeof window.ensureMedisaTasitlarModuleReady !== 'function') {
-                    throw new Error('Tasitlar module ready loader hazir degil');
+                if (typeof window.ensureMedisaNotificationsModuleReady !== 'function') {
+                    throw new Error('Notifications module ready loader hazir degil');
                 }
-                return window.ensureMedisaTasitlarModuleReady();
+                return window.ensureMedisaNotificationsModuleReady();
             })
             .then(runNotifications)
             .catch(function(err) {
