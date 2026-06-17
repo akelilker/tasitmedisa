@@ -4,7 +4,7 @@
    Ana bloklar (tek dosya; loadAppModule tek giriş):
    • Lazy script — veri okuma (şube/taşıt/kullanıcı) — DOM/bind
    • Liste / ara / şube kartları — detay modal doldurma
-   • Bildirim state — taşıt tarihçesi
+   • Taşıt tarihçesi
    • Olay menüsü + dinamik formlar (kaydet / güncelle)
    ========================================= */
 
@@ -1352,8 +1352,6 @@
     DOM.eventMenuList = document.getElementById('event-menu-list');
     DOM.vehicleHistoryModal = document.getElementById('vehicle-history-modal');
     DOM.historyContent = document.getElementById('history-content');
-    DOM.notificationsDropdown = document.getElementById('notifications-dropdown');
-    DOM.notificationsToggleBtn = document.getElementById('notifications-toggle-btn');
     DOM.dinamikOlayModal = document.getElementById('dinamik-olay-modal');
     DOM.dinamikOlayBaslik = document.getElementById('dinamik-olay-baslik');
     DOM.dinamikOlayFormIcerik = document.getElementById('dinamik-olay-form-icerik');

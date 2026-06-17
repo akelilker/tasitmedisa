@@ -2656,20 +2656,9 @@
     dismissNotificationKeys([key]);
   };
 
-  // Sayfa yüklendiğinde ve veri değiştiğinde bildirimleri güncelle
-  if (typeof window !== 'undefined') {
-    // İlk yüklemede
-    setTimeout(() => {
-      if (window.updateNotifications) window.updateNotifications();
-    }, 500);
-
-    // Veri değişikliklerini dinle (storage event)
-    window.addEventListener('storage', () => {
-      if (window.updateNotifications) window.updateNotifications();
-    });
-  }
-
-  // === SÜTUN SÜRÜKLE-BIRAK (DRAG & DROP) HANDLER'LARI ===
+  window.addEventListener('storage', function() {
+    if (window.updateNotifications) window.updateNotifications();
+  });
 
   window.addEventListener('medisa:open-monthly-todo-return', function() {
     openMonthlyTodoModal();

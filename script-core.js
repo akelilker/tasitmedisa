@@ -789,7 +789,7 @@ window.__medisaLoadScriptOnce = function(src) {
  * İstenen JS ve CSS dosyalarını document.createElement ile dinamik yükler.
  * Zaten yüklüyse tekrar yüklemez. Yüklendikten sonra Promise döner.
  * Aynı anahtara eşzamanlı ikinci çağrılar tek bir yükleme paylaşır (çift zincir / yarış düzeltmesi).
- * @param {string} jsPath - Örn. 'tasitlar.js?v=' + TASITLAR_MODULE_VERSION
+ * @param {string} jsPath - Modül JS yolu (ör. tasitlar.js + MEDISA_MODULE_VERSIONS query)
  * @param {string|null|string[]} cssPathOrArray - Tek CSS yolu veya sıralı birden fazla (opsiyonel)
  * @returns {Promise<void>}
  */
@@ -1083,7 +1083,6 @@ var MEDISA_MODULE_VERSIONS = {
   vehicleNotificationDomain: '20260617.1'
 };
 window.MEDISA_MODULE_VERSIONS = MEDISA_MODULE_VERSIONS;
-var TASITLAR_MODULE_VERSION = MEDISA_MODULE_VERSIONS.tasitlar;
 
 var MEDISA_VEHICLE_NOTIFICATION_DOMAIN_KEYS = [
   'vehicleNeedsK2Belgesi',
@@ -1467,11 +1466,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         versionEl.textContent = APP_VERSION + suffix;
     }
-
-    // Bildirimleri güncelle (sayfa yüklendiğinde)
-    setTimeout(() => {
-      if (window.updateNotifications) window.updateNotifications();
-    }, 1000);
 
     // Loading screen'i kapat (index.html'deki window.hideLoading kullanılır)
     if (window.hideLoading) window.hideLoading();
