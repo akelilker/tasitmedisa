@@ -1071,6 +1071,7 @@ window.ensureMedisaVehicleNotificationDomainReady = function() {
   function isMedisaTasitlarModuleReady() {
     return window.__medisaTasitlarModuleReady === true
       && typeof window.openVehiclesView === 'function'
+      && window.openVehiclesView !== lazyOpenVehiclesView
       && typeof window.updateNotifications === 'function'
       && typeof window.showVehicleDetail === 'function'
       && typeof window.showVehicleHistory === 'function'
@@ -1119,16 +1120,42 @@ window.ensureMedisaVehicleNotificationDomainReady = function() {
   var AYARLAR_JS = base + 'ayarlar.js?v=' + V.ayarlarJs;
   var AYARLAR_CSS = base + 'ayarlar.css?v=' + V.ayarlarCss;
 
-  window.openVehiclesView = function() {
+  function showTasitlarModuleLoadError() {
+    var message = 'Taşıtlar modülü yüklenemedi. Lütfen tekrar deneyin.';
+    if (typeof window.showCenteredInfoBox === 'function' && typeof window.closeCenteredInfoBox === 'function') {
+      window.showCenteredInfoBox(message);
+      return;
+    }
+    alert(message);
+  }
+
+  function lazyOpenVehiclesView() {
+    var openVehiclesArgs = arguments;
     showModuleSpinner();
-    window.loadAppModule(TASITLAR_JS, TASITLAR_CSS_LIST).then(function() {
-      if (typeof window.openVehiclesView === 'function') window.openVehiclesView();
-    }).catch(function(err) {
-      console.error('[Medisa] Taşıtlar modülü yüklenemedi:', err);
-    }).finally(function() {
-      hideModuleSpinner();
-    });
-  };
+    Promise.resolve()
+      .then(function() {
+        if (typeof window.ensureMedisaTasitlarModuleReady !== 'function') {
+          throw new Error('Tasitlar module ready loader hazir degil');
+        }
+        return window.ensureMedisaTasitlarModuleReady();
+      })
+      .then(function() {
+        var openVehiclesView = window.openVehiclesView;
+        if (typeof openVehiclesView !== 'function' || openVehiclesView === lazyOpenVehiclesView) {
+          throw new Error('Tasitlar ekrani acma fonksiyonu hazir degil');
+        }
+        return openVehiclesView.apply(window, openVehiclesArgs);
+      })
+      .catch(function(err) {
+        console.error('[Medisa] Taşıtlar modülü yüklenemedi:', err);
+        showTasitlarModuleLoadError();
+      })
+      .finally(function() {
+        hideModuleSpinner();
+      });
+  }
+
+  window.openVehiclesView = lazyOpenVehiclesView;
 
   window.openReportsView = function() {
     showModuleSpinner();
@@ -1261,22 +1288,20 @@ window.addEventListener('dataLoaded', () => {
         return;
     }
 
-    if (typeof window.loadAppModule === 'function') {
-      var base = getMainAppBasePath();
-      var tasitlarJsForNotif = base + 'tasitlar.js?v=' + TASITLAR_MODULE_VERSION;
-      var tasitlarCssForNotif = [
-        base + 'tasitlar-base.css?v=' + TASITLAR_MODULE_VERSION,
-        base + 'tasitlar-extra.css?v=' + TASITLAR_MODULE_VERSION
-      ];
-      var loadNotificationModule = function() {
-        window.loadAppModule(tasitlarJsForNotif, tasitlarCssForNotif)
+    var loadNotificationModule = function() {
+        Promise.resolve()
+            .then(function() {
+                if (typeof window.ensureMedisaTasitlarModuleReady !== 'function') {
+                    throw new Error('Tasitlar module ready loader hazir degil');
+                }
+                return window.ensureMedisaTasitlarModuleReady();
+            })
             .then(runNotifications)
             .catch(function(err) {
                 console.error('[Medisa] Bildirim modülü yüklenemedi:', err);
             });
-      };
-      setTimeout(loadNotificationModule, 100);
-    }
+    };
+    setTimeout(loadNotificationModule, 100);
 });
 
 /* =========================================
