@@ -984,7 +984,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Lazy modül asset sürümleri — tek nesne; index.html içindeki style-core ?v= ile tasitlar sürümü uyumlu kalmalı
 var MEDISA_MODULE_VERSIONS = {
-  tasitlar: '20260616.1',
+  tasitlar: '20260617.2',
   raporlar: '20260606.1',
   kayitJs: '20260607.1',
   kayitCss: '20260612.10',
@@ -1067,6 +1067,51 @@ window.ensureMedisaVehicleNotificationDomainReady = function() {
     base + 'tasitlar-base.css?v=' + V.tasitlar,
     base + 'tasitlar-extra.css?v=' + V.tasitlar
   ];
+
+  function isMedisaTasitlarModuleReady() {
+    return window.__medisaTasitlarModuleReady === true
+      && typeof window.openVehiclesView === 'function'
+      && typeof window.updateNotifications === 'function'
+      && typeof window.showVehicleDetail === 'function'
+      && typeof window.showVehicleHistory === 'function'
+      && typeof window.invalidateVehicleDateTasksCache === 'function';
+  }
+
+  window.ensureMedisaTasitlarModuleReady = function() {
+    var inflightKey = 'medisa:tasitlar-module-ready';
+    var inflight = window.__medisaModuleInflight;
+    if (inflight[inflightKey]) return inflight[inflightKey];
+
+    var promise = Promise.resolve()
+      .then(function() {
+        if (typeof window.ensureMedisaVehicleNotificationDomainReady !== 'function') {
+          throw new Error('vehicle notification domain loader hazir degil');
+        }
+        return window.ensureMedisaVehicleNotificationDomainReady();
+      })
+      .then(function() {
+        if (isMedisaTasitlarModuleReady()) return;
+        if (typeof window.loadAppModule !== 'function') {
+          throw new Error('Tasitlar module loader hazir degil');
+        }
+        return window.loadAppModule(TASITLAR_JS, TASITLAR_CSS_LIST);
+      })
+      .then(function() {
+        if (!isMedisaTasitlarModuleReady()) {
+          throw new Error('Taşıtlar modülü hazır duruma gelemedi');
+        }
+      })
+      .catch(function(err) {
+        console.error('[Medisa] Taşıtlar modülü hazırlanamadı:', err);
+        throw err;
+      })
+      .finally(function() {
+        if (inflight[inflightKey] === promise) delete inflight[inflightKey];
+      });
+
+    inflight[inflightKey] = promise;
+    return promise;
+  };
   var RAPORLAR_JS = base + 'raporlar.js?v=' + V.raporlar;
   var RAPORLAR_CSS = base + 'raporlar.css?v=' + V.raporlar;
   var KAYIT_JS = base + 'kayit.js?v=' + V.kayitJs;
