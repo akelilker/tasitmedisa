@@ -1,0 +1,2304 @@
+/* MEDISA bildirim dropdown + Bu Ay Yapılacaklar modülü */
+/* Bildirim simgesi renkleri */
+.icon-btn.notification-red {
+  color: var(--theme-color) !important;
+}
+.icon-btn.notification-orange {
+  color: #f2b13f !important;
+}
+
+/* Bildirim zili: kırmızı/turuncu severity → motor arıza (driver mask yaklaşımı) */
+#notifications-toggle-btn .notifications-engine-icon {
+  --notifications-engine-mask: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%20224%20144'%3E%3Cpath%20d%3D'M16%20110V47h22V34h28V18h62v16H99v13h39l18%2018h18l16%2049h13c7-24%207-49%200-73h-13l-22%2058h-18l-12%2034H66L39%2099H38v11H16'%20fill%3D'none'%20stroke%3D'%23000'%20stroke-width%3D'16'%20stroke-linejoin%3D'round'%20stroke-linecap%3D'square'%2F%3E%3C%2Fsvg%3E");
+  display: none;
+  width: 22px;
+  height: 20px;
+  flex-shrink: 0;
+  background-color: currentColor;
+  -webkit-mask-image: var(--notifications-engine-mask);
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  -webkit-mask-size: contain;
+  mask-image: var(--notifications-engine-mask);
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
+}
+#notifications-toggle-btn.notification-red .notifications-bell-icon,
+#notifications-toggle-btn.notification-orange .notifications-bell-icon {
+  display: none;
+}
+#notifications-toggle-btn.notification-red .notifications-engine-icon,
+#notifications-toggle-btn.notification-orange .notifications-engine-icon {
+  display: inline-flex;
+}
+#notifications-toggle-btn.notification-red .notifications-engine-icon {
+  width: 23px;
+  height: 23px;
+}
+
+/* Bildirim simgesi: premium sakin durum */
+.icon-btn.notification-pulse {
+  animation: none;
+  transform-origin: center center;
+  will-change: auto;
+}
+
+/* Bildirim öğeleri çerçeve renkleri */
+.notification-item {
+  background: var(--bg) !important;
+}
+
+.notification-item.date-warning-red-border {
+  border-color: rgba(var(--notif-red-rgb, 224, 68, 94), 0.72) !important;
+  background: linear-gradient(180deg, rgba(var(--notif-red-rgb, 224, 68, 94), 0.065), rgba(8, 13, 22, 0.96)) !important;
+  box-shadow: none !important;
+}
+
+.notification-item.date-warning-orange-border {
+  border-color: rgba(var(--notif-amber-rgb, 242, 177, 63), 0.72) !important;
+  background: linear-gradient(180deg, rgba(var(--notif-amber-rgb, 242, 177, 63), 0.055), rgba(8, 13, 22, 0.96)) !important;
+  box-shadow: none !important;
+}
+
+/*
+ * Kullanıcı paneli — genel talep bildirimi (tasitlar.js: talep_tipi === 'genel', notifKey request|general|*).
+ * KM/Bilgi düzeltme talepleri bu sınıfı almaz; renkleri kırmızı/turuncu kalır.
+ */
+#notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request.notification-unread:not(.date-warning-red-border):not(.date-warning-orange-border) {
+  border-color: rgba(34, 197, 94, 0.85) !important;
+  box-shadow: 0 0 10px rgba(34, 197, 94, 0.2) !important;
+  background: linear-gradient(180deg, rgba(14, 26, 20, 0.94) 0%, rgba(8, 20, 14, 0.92) 100%) !important;
+}
+#notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request.notification-read:not(.date-warning-red-border):not(.date-warning-orange-border) {
+  border-color: rgba(34, 197, 94, 0.45) !important;
+  box-shadow: 0 0 8px rgba(34, 197, 94, 0.12) !important;
+  background: linear-gradient(180deg, rgba(14, 26, 20, 0.68) 0%, rgba(8, 20, 14, 0.6) 100%) !important;
+}
+#notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request.notification-unread:not(.date-warning-red-border):not(.date-warning-orange-border) .notif-line1,
+#notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request.notification-unread:not(.date-warning-red-border):not(.date-warning-orange-border) .notif-title,
+#notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request.notification-unread:not(.date-warning-red-border):not(.date-warning-orange-border) .notif-line2 {
+  color: #22c55e !important;
+}
+#notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request.notification-unread:not(.date-warning-red-border):not(.date-warning-orange-border) .notif-line1 .date-warning-red,
+#notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request.notification-unread:not(.date-warning-red-border):not(.date-warning-orange-border) .notif-line1 .date-warning-orange {
+  color: #22c55e !important;
+}
+#notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request.notification-read:not(.date-warning-red-border):not(.date-warning-orange-border) .notif-line1,
+#notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request.notification-read:not(.date-warning-red-border):not(.date-warning-orange-border) .notif-title,
+#notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request.notification-read:not(.date-warning-red-border):not(.date-warning-orange-border) .notif-line2 {
+  color: rgba(34, 197, 94, 0.78) !important;
+}
+#notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request.notification-read:not(.date-warning-red-border):not(.date-warning-orange-border) .notif-line1 .notif-read-text {
+  color: rgba(34, 197, 94, 0.78) !important;
+}
+#notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request:not(.date-warning-red-border):not(.date-warning-orange-border):is(:hover, :focus, :active, :focus-visible) {
+  border-color: rgba(34, 197, 94, 1) !important;
+  background: rgba(34, 197, 94, 0.14) !important;
+  box-shadow: 0 0 12px rgba(34, 197, 94, 0.28) !important;
+}
+#notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request:not(.date-warning-red-border):not(.date-warning-orange-border):is(:hover, :focus, :active, :focus-visible) .notif-line1,
+#notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request:not(.date-warning-red-border):not(.date-warning-orange-border):is(:hover, :focus, :active, :focus-visible) .notif-title,
+#notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request:not(.date-warning-red-border):not(.date-warning-orange-border):is(:hover, :focus, :active, :focus-visible) .notif-line2 {
+  color: #22c55e !important;
+}
+#notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request.notification-read:not(.date-warning-red-border):not(.date-warning-orange-border):is(:hover, :focus, :active, :focus-visible) .notif-line1,
+#notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request.notification-read:not(.date-warning-red-border):not(.date-warning-orange-border):is(:hover, :focus, :active, :focus-visible) .notif-title,
+#notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request.notification-read:not(.date-warning-red-border):not(.date-warning-orange-border):is(:hover, :focus, :active, :focus-visible) .notif-line2 {
+  color: rgba(34, 197, 94, 0.92) !important;
+}
+
+/* Bildirim etkilesimi: renkli kartlarda efektsiz premium hover */
+#notifications-dropdown.settings-dropdown > .notification-item:is(:hover, :focus, :active, :focus-visible),
+#notifications-dropdown.settings-dropdown > button.notification-item:is(:hover, :focus, :active, :focus-visible) {
+  transform: none !important;
+  transform-origin: center center !important;
+  z-index: 4 !important;
+}
+
+#notifications-dropdown.settings-dropdown > .notification-item:not(.date-warning-red-border):not(.date-warning-orange-border):is(:hover, :focus, :active, :focus-visible),
+#notifications-dropdown.settings-dropdown > button.notification-item:not(.date-warning-red-border):not(.date-warning-orange-border):is(:hover, :focus, :active, :focus-visible) {
+  border-color: rgba(255,255,255,0.55) !important;
+  background: rgba(255,255,255,0.08) !important;
+  color: var(--txt-white) !important;
+  box-shadow: none !important;
+}
+
+#notifications-dropdown.settings-dropdown > .notification-item.date-warning-red-border:not(.kasko-excel-notification):is(:hover, :focus, :active, :focus-visible),
+#notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border:is(:hover, :focus, :active, :focus-visible) {
+  border-color: rgba(var(--notif-red-rgb, 224, 68, 94), 0.9) !important;
+  background: rgba(var(--notif-red-rgb, 224, 68, 94), 0.095) !important;
+  box-shadow: none !important;
+  color: var(--notif-red, #e0445e) !important;
+  transform: none !important;
+  transform-origin: center center !important;
+  z-index: 4 !important;
+}
+#notifications-dropdown.settings-dropdown > .notification-item.date-warning-orange-border:not(.mtv-notification):is(:hover, :focus, :active, :focus-visible),
+#notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible) {
+  border-color: rgba(var(--notif-amber-rgb, 242, 177, 63), 0.9) !important;
+  background: rgba(var(--notif-amber-rgb, 242, 177, 63), 0.09) !important;
+  box-shadow: none !important;
+  color: var(--notif-amber, #f2b13f) !important;
+  transform: none !important;
+  transform-origin: center center !important;
+  z-index: 4 !important;
+}
+
+#notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border:is(:hover, :focus, :active, :focus-visible) .notif-line1,
+#notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border:is(:hover, :focus, :active, :focus-visible) .notif-title,
+#notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border:is(:hover, :focus, :active, :focus-visible) .notif-line2 {
+  color: var(--notif-red, #e0445e) !important;
+}
+
+#notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible) .notif-line1,
+#notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible) .notif-title,
+#notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible) .notif-line2 {
+  color: var(--notif-amber, #f2b13f) !important;
+}
+/* Tarih uyarı kartları: settings-dropdown button mirasını ez; altta sadece 2px padding */
+#notifications-dropdown .notification-item.date-warning-red-border:not(.kasko-excel-notification),
+#notifications-dropdown .notification-item.date-warning-orange-border:not(.mtv-notification) {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: flex-start !important;
+  gap: 1px !important;
+  height: auto !important;
+  min-height: 52px !important;
+  padding: 4px 10px 1px !important;
+  white-space: normal !important;
+  overflow: hidden !important;
+  text-align: left !important;
+}
+#notifications-dropdown .notification-item.date-warning-red-border:not(.kasko-excel-notification) > div,
+#notifications-dropdown .notification-item.date-warning-orange-border:not(.mtv-notification) > div {
+  width: 100% !important;
+  margin-bottom: 0 !important;
+}
+
+/* Bildirim: Plaka + açıklama (uzarsa alt satıra iner), tarih ikinci satırda sola dayalı */
+#notifications-dropdown .notification-item-activity {
+  border: 1px solid rgba(255,255,255,0.25) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: flex-start !important;
+  gap: 1px !important;
+  height: auto !important;
+  min-height: 52px !important;
+  padding: 4px 10px 1px !important;
+  overflow: hidden !important;
+  text-align: left !important;
+}
+
+/* Okunmamış faaliyet (KM vb.): normal kart — tarih uyarısı kırmızı/turuncu DEĞİL */
+#notifications-dropdown .notification-item-activity.notification-unread {
+  border: 1px solid rgba(255, 255, 255, 0.52) !important;
+}
+
+/* Sadece MTV/Kasko özel kartları: beyaz vurgu; tarih/aktivite butonları --notif-fg ile yönetilir */
+#notifications-dropdown .mtv-notification .notif-line1,
+#notifications-dropdown .kasko-excel-notification .notif-line1 {
+  font-weight: 600 !important;
+  color: #fff !important;
+  line-height: 1.35 !important;
+  margin-bottom: 2px !important;
+  text-align: left !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+}
+#notifications-dropdown .notification-item .notif-line2 {
+  font-size: 11px !important;
+  line-height: 1.1 !important;
+  text-align: left !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  padding: 0 !important;
+  position: static !important;
+  flex: 0 0 auto !important;
+}
+#notifications-dropdown .notification-item:not(.date-warning-red-border):not(.date-warning-orange-border):not(.notification-item-activity.notification-unread) .notif-line2 {
+  color: #999 !important;
+}
+#notifications-dropdown .notification-item.notification-item-activity.notification-unread .notif-line2 {
+  color: rgba(160, 174, 192, 0.95) !important;
+  line-height: 1.1 !important;
+  margin-top: 0 !important;
+  padding: 0 !important;
+  position: static !important;
+  flex: 0 0 auto !important;
+}
+/* Severity tarih uyarısı: ikinci satır tema ile uyumlu (font ölçüleri üst blokta) */
+#notifications-dropdown .notification-item.date-warning-orange-border .notif-line2 {
+  color: rgba(var(--notif-amber-rgb, 242, 177, 63), 0.82);
+}
+#notifications-dropdown .notification-item.date-warning-red-border .notif-line2 {
+  color: rgba(var(--notif-red-rgb, 224, 68, 94), 0.84);
+}
+/* Tarih satırı: okunmuş/okunmamış --notif-fg (genel notif-line2 rengi tarihi örtmesin) */
+#notifications-dropdown.settings-dropdown > button.notification-item:not(.date-warning-red-border):not(.date-warning-orange-border):not(.notification-item-activity.notification-unread) .notif-line2.notif-meta-date {
+  color: var(--notif-fg, #a0aec0) !important;
+  opacity: 0.9;
+}
+#notifications-dropdown.settings-dropdown > button.notification-item.notification-item-activity.notification-unread .notif-line2.notif-meta-date {
+  color: rgba(160, 174, 192, 0.92) !important;
+  opacity: 0.95;
+}
+#notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border .notif-line2.notif-meta-date {
+  color: rgba(var(--notif-amber-rgb, 242, 177, 63), 0.84);
+  opacity: 0.95;
+}
+#notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border .notif-line2.notif-meta-date {
+  color: rgba(var(--notif-red-rgb, 224, 68, 94), 0.86);
+  opacity: 0.95;
+}
+#notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request.notification-unread:not(.date-warning-red-border):not(.date-warning-orange-border) .notif-line2.notif-meta-date {
+  color: #22c55e !important;
+  opacity: 0.95;
+}
+#notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request.notification-read:not(.date-warning-red-border):not(.date-warning-orange-border) .notif-line2.notif-meta-date {
+  color: rgba(34, 197, 94, 0.78) !important;
+  opacity: 0.95;
+}
+#notifications-dropdown .notification-item .notif-line2:empty {
+  display: none !important;
+}
+
+#notifications-dropdown .notifications-toolbar {
+  position: sticky;
+  top: 0;
+  bottom: auto;
+  z-index: 20 !important;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-shrink: 0;
+  min-height: 0;
+  padding: 2px 6px 3px;
+  margin: 0;
+  margin-bottom: 0;
+  line-height: normal;
+  background: linear-gradient(180deg, rgba(8, 13, 22, 1) 0%, rgba(8, 13, 22, 0.98) 100%) !important;
+  overflow: visible !important;
+  isolation: isolate;
+  box-shadow: 0 3px 8px rgba(8, 13, 22, 0.75) !important;
+}
+
+#notifications-dropdown .notifications-mark-all-read-btn {
+  width: auto !important;
+  max-width: none !important;
+  min-height: 0 !important;
+  height: auto !important;
+  margin: 0 !important;
+  padding: 2px 2px !important;
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  color: var(--txt-white) !important;
+  font-size: 11.5px !important;
+  font-weight: 600 !important;
+  line-height: 1.2 !important;
+  display: inline-flex !important;
+  gap: 4px !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  text-align: left !important;
+  overflow: visible !important;
+}
+
+#notifications-dropdown .notifications-mark-all-read-btn:hover,
+#notifications-dropdown .notifications-mark-all-read-btn:active {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: var(--theme-color) !important;
+  font-size: 11.5px !important;
+  text-decoration: underline;
+}
+
+/* Bildirim dropdown: kaydırılabilir, scrollbar gizli; kartlar arası dikey 6px (çifte margin yok) */
+#notifications-dropdown {
+  --notif-red: var(--theme-color);
+  --notif-red-rgb: var(--theme-color-rgb);
+  --notif-amber: var(--orange-warn);
+  --notif-amber-rgb: var(--orange-warn-rgb);
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+#notifications-dropdown.settings-dropdown {
+  display: none !important;
+  position: absolute !important;
+  top: 32px !important;
+  right: 0 !important;
+  left: auto !important;
+  transform: none;
+  width: min(360px, calc(100vw - 32px)) !important;
+  max-width: calc(100vw - 32px) !important;
+  flex-direction: column !important;
+  gap: 2px !important;
+}
+#notifications-dropdown.settings-dropdown.open {
+  display: flex !important;
+}
+#notifications-dropdown::-webkit-scrollbar {
+  display: none !important;
+}
+
+/* Açıkken footer (z-index 10000) ve kullanıcı paneli (9999) üstünde — alt çerçeve “kesik” görünmesin */
+#notifications-dropdown.open {
+  z-index: 10060 !important;
+  box-sizing: border-box !important;
+}
+
+/*
+ * Bildirim açık: footer (10000) body’de app-container DIŞINDA; main.content-wrap varsayılan z-index:1
+ * olduğu için dropdown içindeki z-index asla footer’ı geçemez — alt çerçeve footer altında kalır.
+ * content-wrap’ı 10015 yapıyoruz: footer < bildirim < modal (10020).
+ */
+body:not(.modal-open):has(#notifications-dropdown.open) .app-container {
+  overflow: visible !important;
+  isolation: auto !important; /* modal-open ile aynı: izole katman footer üstüne çıkmayı engelliyordu */
+}
+body:not(.modal-open):has(#notifications-dropdown.open) .content-wrap {
+  overflow-y: visible !important;
+  position: relative;
+  z-index: 10015 !important;
+}
+body:not(.modal-open):has(#notifications-dropdown.open) .icons-row {
+  position: relative;
+  /* Ana menü (.menu-container) DOM’da sonra geldiği için düşük z-index ile üst üste biniyordu; bildirim paneli üstte kalsın */
+  z-index: 10070;
+}
+body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
+  display: none !important;
+}
+/*
+ * Ayarlar / bildirim açık: tam ekran body::before + backdrop-filter kullanılmaz.
+ * body::before z-index 10040 tüm .app-container üstünde; backdrop alttaki her şeyi
+ * (ikon satırı dahil) flu gösterir — çocuk z-index ile kurtulmaz.
+ * Flu yalnızca .hero ve #main-menu üzerinde (ikon satırıyla kardeş).
+ */
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page)::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 10040;
+  transition: opacity 0.18s ease;
+}
+
+body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-page)::before{
+  opacity: 0 !important;
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Panel position:absolute kalsın; relative verilirse akışa girer ve ana menü aşağı kayar */
+body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .icons-row-right{
+  position: relative;
+  z-index: 10070;
+}
+
+body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) #notifications-dropdown.settings-dropdown.open{
+  z-index: 10070 !important;
+}
+
+body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .icons-row,
+body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .icons-row-left,
+body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .pwa-install-center,
+body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .icons-row-right{
+  filter: none !important;
+  opacity: 1 !important;
+}
+
+body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero,
+body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu.menu-container{
+  filter: blur(2px);
+  opacity: 0.92;
+  transition: filter 0.18s ease, opacity 0.18s ease;
+}
+#notifications-dropdown > .notification-item {
+  width: 100% !important;
+  box-sizing: border-box !important;
+  margin-bottom: 0 !important;
+}
+
+/* Ayarlar CSS'i yüklense bile bildirim satırları sabit layout'ta kalsın */
+/* ayarlar.css yüklendikten sonra .settings-dropdown button !important kuralları bildirimleri de ezmesin */
+#notifications-dropdown.settings-dropdown > button.notification-item {
+  width: 100% !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: flex-start !important;
+  gap: 1px !important;
+  height: auto !important;
+  min-height: 52px !important;
+  max-height: none !important;
+  padding: 4px 10px 1px !important;
+  border-radius: 7px !important;
+  border: 1px solid var(--notif-border, rgba(130, 130, 130, 0.55)) !important;
+  background: linear-gradient(180deg, rgba(12, 18, 30, 0.94) 0%, rgba(8, 13, 22, 0.92) 100%) !important;
+  color: var(--notif-fg, #ccc) !important;
+  font-weight: 500 !important;
+  font-size: 12px !important;
+  line-height: 1.2 !important;
+  cursor: pointer;
+  transition: color 0.16s ease, border-color 0.16s ease, background 0.16s ease;
+  white-space: normal !important;
+  text-align: left !important;
+  overflow: hidden !important;
+  position: relative;
+  z-index: 1;
+  justify-content: flex-start !important;
+  margin-bottom: 0 !important;
+}
+
+#notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border {
+  --notif-border: rgba(var(--notif-red-rgb, 224, 68, 94), 0.72);
+  background: linear-gradient(180deg, rgba(var(--notif-red-rgb, 224, 68, 94), 0.065), rgba(8, 13, 22, 0.96)) !important;
+  box-shadow: none !important;
+}
+
+#notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border {
+  --notif-border: rgba(var(--notif-amber-rgb, 242, 177, 63), 0.72);
+  background: linear-gradient(180deg, rgba(var(--notif-amber-rgb, 242, 177, 63), 0.055), rgba(8, 13, 22, 0.96)) !important;
+  box-shadow: none !important;
+}
+
+#notifications-dropdown.settings-dropdown > button.notification-item .notif-line1,
+#notifications-dropdown.settings-dropdown > button.notification-item .notif-title {
+  min-width: 0;
+  max-width: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  text-overflow: clip;
+  display: block;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  line-height: 1.18;
+  font-weight: 500 !important;
+  text-align: left !important;
+  margin-bottom: 0 !important;
+  padding: 0 !important;
+  flex: 0 0 auto;
+  position: static !important;
+}
+
+#notifications-dropdown.settings-dropdown > button.notification-item:not(.date-warning-red-border):not(.date-warning-orange-border):not(.notification-item-activity.notification-unread) .notif-line1,
+#notifications-dropdown.settings-dropdown > button.notification-item:not(.date-warning-red-border):not(.date-warning-orange-border):not(.notification-item-activity.notification-unread) .notif-title {
+  color: var(--notif-fg, #ccc) !important;
+}
+
+#notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border .notif-line1,
+#notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border .notif-title {
+  color: var(--notif-amber, #f2b13f) !important;
+}
+
+#notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border .notif-line1,
+#notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border .notif-title {
+  color: var(--notif-red, #e0445e) !important;
+}
+
+/* Okunmamış faaliyet: başlık beyaz (#ffffff), tarih uyarısı (kırmızı kart) ile karışmasın */
+#notifications-dropdown.settings-dropdown > button.notification-item.notification-item-activity.notification-unread .notif-line1,
+#notifications-dropdown.settings-dropdown > button.notification-item.notification-item-activity.notification-unread .notif-title {
+  color: #ffffff !important;
+}
+
+/* Tarih uyarı metni: tasitlar-base ile aynı (kırmızı/turuncu); gri #d7dde6 override'ı kaldırıldı */
+#notifications-dropdown.settings-dropdown > button.notification-item .notif-line1 .date-warning-red {
+  color: var(--notif-red, #e0445e) !important;
+}
+#notifications-dropdown.settings-dropdown > button.notification-item .notif-line1 .date-warning-orange {
+  color: var(--notif-amber, #f2b13f) !important;
+}
+
+#notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request:not(.date-warning-red-border):not(.date-warning-orange-border) .notif-line1 .date-warning-red,
+#notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request:not(.date-warning-red-border):not(.date-warning-orange-border) .notif-line1 .date-warning-orange {
+  color: #22c55e !important;
+}
+#notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request.notification-read:not(.date-warning-red-border):not(.date-warning-orange-border) .notif-line1 .notif-read-text {
+  color: rgba(34, 197, 94, 0.78) !important;
+}
+
+#notifications-dropdown.settings-dropdown > button.notification-item .notif-line1 .notif-read-text {
+  color: var(--notif-fg, #9a9a9a) !important;
+}
+
+#notifications-dropdown.settings-dropdown > button.notification-item .notif-line2 {
+  min-width: 0;
+  max-width: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  text-overflow: clip;
+  display: block;
+  white-space: normal;
+  line-height: 1.1;
+  margin-top: 0;
+  padding: 0;
+  flex: 0 0 auto;
+  position: static !important;
+}
+
+#notifications-dropdown.settings-dropdown > button.notification-item .notif-line1 > span,
+#notifications-dropdown.settings-dropdown > button.notification-item .notif-title > span {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  overflow-wrap: anywhere !important;
+}
+
+#notifications-dropdown.settings-dropdown > button.notification-item .notif-line2.notif-meta-date {
+  align-self: start;
+  white-space: nowrap;
+  margin-top: 0;
+  margin-left: 0;
+  padding: 0;
+  flex: 0 0 auto;
+  text-align: left;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: clip;
+  display: block;
+  position: static !important;
+}
+
+#notifications-dropdown .notif-meta-date {
+  grid-column: 1 / -1;
+  justify-self: start;
+  text-align: left;
+  white-space: nowrap;
+  margin-top: 0;
+  line-height: 1.1;
+  padding: 0;
+  margin-left: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: clip;
+  position: static;
+  right: auto;
+}
+
+#notifications-dropdown.settings-dropdown > button.notification-item .notif-line2.notif-detail {
+  grid-column: 1 / -1;
+}
+
+#notifications-dropdown > .notification-item:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* MTV Bildirimi - Global Çakışma Önleyici */
+#notifications-dropdown .mtv-notification {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  border: 1px solid rgba(255, 140, 0, 0.6) !important;
+  border-radius: 6px !important;
+  background: var(--bg) !important;
+  padding: 10px 12px 2px !important;
+  width: 100% !important;
+  min-height: 48px !important;
+  box-sizing: border-box !important;
+}
+
+#notifications-dropdown .kasko-excel-notification {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  border: 1px solid rgba(212, 0, 0, 0.6) !important;
+  border-radius: 6px !important;
+  background: var(--bg) !important;
+  padding: 10px 12px 2px !important;
+  width: 100% !important;
+  min-height: 48px !important;
+  box-sizing: border-box !important;
+}
+
+#notifications-dropdown .mtv-notification > div,
+#notifications-dropdown .kasko-excel-notification > div {
+  width: auto !important;
+  margin-bottom: 0 !important;
+}
+
+#notifications-dropdown .mtv-text-container {
+  flex: 1 1 auto !important;
+  text-align: left !important;
+  padding-right: 6px !important;
+  min-width: 0 !important;
+}
+
+#notifications-dropdown .mtv-text-container .mtv-main-text {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: var(--orange-warn) !important;
+  white-space: normal !important;
+  display: block !important;
+  line-height: 1.35 !important;
+}
+
+#notifications-dropdown .kasko-excel-notification .mtv-main-text {
+  color: var(--theme-color) !important;
+  margin-bottom: 0 !important;
+}
+
+#notifications-dropdown .mtv-dismiss-wrapper {
+  flex: 0 0 auto !important;
+  position: relative;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin-left: 6px !important;
+}
+
+#notifications-dropdown .mtv-dismiss-btn {
+  background: transparent !important;
+  border: none !important;
+  width: 18px !important;
+  height: 18px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  padding: 0 !important;
+  outline: none !important;
+  color: var(--txt-muted) !important;
+}
+
+#notifications-dropdown .mtv-notification .mtv-dismiss-btn {
+  color: var(--orange-warn) !important;
+}
+#notifications-dropdown .kasko-excel-notification .mtv-dismiss-btn {
+  color: var(--theme-color) !important;
+}
+
+#notifications-dropdown .mtv-dismiss-btn svg {
+  width: 12px !important;
+  height: 12px !important;
+}
+
+#notifications-dropdown .mtv-dismiss-btn:hover,
+#notifications-dropdown .mtv-dismiss-btn:active,
+#notifications-dropdown .mtv-dismiss-btn:focus {
+  background: transparent !important;
+  border: none !important;
+  transform: none !important;
+}
+
+.mtv-tooltip {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 6px;
+  background: var(--bg-2);
+  color: var(--txt-white);
+  border: 1px solid var(--border-medium);
+  padding: 6px 10px;
+  font-size: 11px;
+  border-radius: 6px;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+}
+
+/* Hover ve mobil focus/active: tooltip görünsün */
+.mtv-dismiss-wrapper:hover .mtv-tooltip,
+.mtv-dismiss-btn:focus + .mtv-tooltip,
+.mtv-dismiss-btn:active + .mtv-tooltip {
+  opacity: 1;
+  visibility: visible;
+}
+/* Masaüstü: bildirim listesi — daha yumuşak çerçeve; hover’da yarı saydam tema kırmızısı */
+@media (min-width: 769px) {
+  #notifications-dropdown.settings-dropdown {
+    width: min(320px, calc(100vw - 40px)) !important;
+    max-width: min(320px, calc(100vw - 40px)) !important;
+    top: 22px !important;
+    padding: 1px 8px 5px !important;
+    border: none !important;
+    border-radius: 12px !important;
+    background: linear-gradient(180deg, rgba(8, 13, 22, 0.98) 0%, rgba(8, 13, 22, 0.95) 100%) !important;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.42) !important;
+    backdrop-filter: blur(8px);
+  }
+
+  #notifications-dropdown .notifications-toolbar {
+    position: sticky !important;
+    top: 0 !important;
+    bottom: auto !important;
+    min-height: 0 !important;
+    padding: 2px 6px 3px !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    line-height: normal !important;
+    z-index: 20 !important;
+    background: linear-gradient(180deg, rgba(8, 13, 22, 1) 0%, rgba(8, 13, 22, 0.98) 100%) !important;
+    overflow: visible !important;
+    isolation: isolate;
+    box-shadow: 0 3px 8px rgba(8, 13, 22, 0.75) !important;
+  }
+
+  #notifications-dropdown .notification-item.date-warning-red-border,
+  #notifications-dropdown .notification-item.date-warning-orange-border,
+  #notifications-dropdown .notification-item-activity,
+  #notifications-dropdown .mtv-notification,
+  #notifications-dropdown .kasko-excel-notification {
+    min-height: 52px !important;
+    padding: 4px 10px 1px !important;
+    border-radius: 7px !important;
+    background: linear-gradient(180deg, rgba(12, 18, 30, 0.94) 0%, rgba(8, 13, 22, 0.92) 100%) !important;
+  }
+
+  .notification-item.date-warning-red-border {
+    border-color: rgba(var(--notif-red-rgb, 224, 68, 94), 0.74) !important;
+    background: linear-gradient(180deg, rgba(var(--notif-red-rgb, 224, 68, 94), 0.065), rgba(8, 13, 22, 0.96)) !important;
+    box-shadow: none !important;
+  }
+  .notification-item.date-warning-orange-border {
+    border-color: rgba(var(--notif-amber-rgb, 242, 177, 63), 0.72) !important;
+    background: linear-gradient(180deg, rgba(var(--notif-amber-rgb, 242, 177, 63), 0.055), rgba(8, 13, 22, 0.96)) !important;
+    box-shadow: none !important;
+  }
+  #notifications-dropdown .notification-item-activity {
+    border-color: rgba(255, 255, 255, 0.2) !important;
+  }
+  #notifications-dropdown .notification-item-activity.notification-unread {
+    border-color: rgba(255, 255, 255, 0.52) !important;
+    box-shadow: none !important;
+  }
+  #notifications-dropdown .mtv-notification {
+    border-color: rgba(255, 140, 0, 0.42) !important;
+  }
+  #notifications-dropdown .kasko-excel-notification {
+    border-color: rgba(var(--notif-red-rgb, 224, 68, 94), 0.62) !important;
+    box-shadow: none !important;
+  }
+
+  #notifications-dropdown.settings-dropdown button.notification-item {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    box-sizing: border-box;
+    justify-content: flex-start;
+    align-items: flex-start;
+    text-align: left;
+    position: relative;
+    z-index: 1;
+    transition: color 0.16s ease, border-color 0.16s ease, background 0.16s ease;
+  }
+
+  #notifications-dropdown .notification-item .notif-line1,
+  #notifications-dropdown .notification-item .notif-line2,
+  #notifications-dropdown .mtv-text-container .mtv-main-text {
+    transition: color 0.2s ease;
+  }
+
+  #notifications-dropdown .notification-item .date-warning-red {
+    color: var(--notif-red, #e0445e) !important;
+  }
+  #notifications-dropdown .notification-item .date-warning-orange {
+    color: var(--notif-amber, #f2b13f) !important;
+  }
+  #notifications-dropdown .notification-item.is-driver-request:not(.date-warning-red-border):not(.date-warning-orange-border) .date-warning-red,
+  #notifications-dropdown .notification-item.is-driver-request:not(.date-warning-red-border):not(.date-warning-orange-border) .date-warning-orange {
+    color: #22c55e !important;
+  }
+
+  #notifications-dropdown .notification-item:not(.date-warning-red-border):not(.date-warning-orange-border):not(.notification-item-activity.notification-unread) .notif-line2 {
+    color: #a0aec0 !important;
+  }
+  #notifications-dropdown .notification-item.notification-item-activity.notification-unread .notif-line2 {
+    color: rgba(160, 174, 192, 0.95) !important;
+  }
+
+  #notifications-dropdown.settings-dropdown > .notification-item:is(:hover, :focus, :active, :focus-visible),
+  #notifications-dropdown.settings-dropdown > button.notification-item:is(:hover, :focus, :active, :focus-visible) {
+    transform: none !important;
+    transform-origin: center center !important;
+    z-index: 4 !important;
+  }
+  #notifications-dropdown.settings-dropdown > .notification-item:not(.date-warning-red-border):not(.date-warning-orange-border):is(:hover, :focus, :active, :focus-visible),
+  #notifications-dropdown.settings-dropdown > button.notification-item:not(.date-warning-red-border):not(.date-warning-orange-border):is(:hover, :focus, :active, :focus-visible) {
+    border-color: rgba(255,255,255,0.55) !important;
+    background: rgba(255,255,255,0.08) !important;
+    color: var(--txt-white) !important;
+    box-shadow: none !important;
+  }
+  #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible) .notif-line1,
+  #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible) .notif-title {
+    color: var(--notif-amber, #f2b13f) !important;
+  }
+  #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border:is(:hover, :focus, :active, :focus-visible) .notif-line1,
+  #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border:is(:hover, :focus, :active, :focus-visible) .notif-title {
+    color: var(--notif-red, #e0445e) !important;
+  }
+
+  /* Okunmuş faaliyet: hover’da nötr beyaz çerçeve + yarı saydam zemin (tema rengi çerçeve yok) */
+  #notifications-dropdown .notification-item-activity:not(.notification-unread):hover {
+    border-color: rgba(255, 255, 255, 0.32) !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+  }
+  #notifications-dropdown.settings-dropdown > .notification-item.date-warning-red-border:not(.kasko-excel-notification):is(:hover, :focus, :active, :focus-visible),
+  #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border:is(:hover, :focus, :active, :focus-visible) {
+    border-color: rgba(var(--notif-red-rgb, 224, 68, 94), 0.9) !important;
+    background: rgba(var(--notif-red-rgb, 224, 68, 94), 0.095) !important;
+    box-shadow: none !important;
+    color: var(--notif-red, #e0445e) !important;
+    transform: none !important;
+    transform-origin: center center !important;
+    z-index: 4 !important;
+  }
+  #notifications-dropdown.settings-dropdown > .notification-item.date-warning-orange-border:not(.mtv-notification):is(:hover, :focus, :active, :focus-visible),
+  #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible) {
+    border-color: rgba(var(--notif-amber-rgb, 242, 177, 63), 0.9) !important;
+    background: rgba(var(--notif-amber-rgb, 242, 177, 63), 0.09) !important;
+    box-shadow: none !important;
+    color: var(--notif-amber, #f2b13f) !important;
+    transform: none !important;
+    transform-origin: center center !important;
+    z-index: 4 !important;
+  }
+
+  #notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request:not(.date-warning-red-border):not(.date-warning-orange-border):is(:hover, :focus, :active, :focus-visible) {
+    border-color: rgba(34, 197, 94, 1) !important;
+    background: rgba(34, 197, 94, 0.14) !important;
+    box-shadow: none !important;
+    color: #22c55e !important;
+    transform: none !important;
+    transform-origin: center center !important;
+    z-index: 4 !important;
+  }
+
+  #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border:is(:hover, :focus, :active, :focus-visible) .notif-line1,
+  #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border:is(:hover, :focus, :active, :focus-visible) .notif-title,
+  #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border:is(:hover, :focus, :active, :focus-visible) .notif-line2 {
+    color: var(--notif-red, #e0445e) !important;
+  }
+
+  #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible) .notif-line1,
+  #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible) .notif-title,
+  #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible) .notif-line2 {
+    color: var(--notif-amber, #f2b13f) !important;
+  }
+
+  #notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request:not(.date-warning-red-border):not(.date-warning-orange-border):is(:hover, :focus, :active, :focus-visible) .notif-line1,
+  #notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request:not(.date-warning-red-border):not(.date-warning-orange-border):is(:hover, :focus, :active, :focus-visible) .notif-title,
+  #notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request:not(.date-warning-red-border):not(.date-warning-orange-border):is(:hover, :focus, :active, :focus-visible) .notif-line2 {
+    color: #22c55e !important;
+  }
+  #notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request.notification-read:not(.date-warning-red-border):not(.date-warning-orange-border):is(:hover, :focus, :active, :focus-visible) .notif-line1,
+  #notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request.notification-read:not(.date-warning-red-border):not(.date-warning-orange-border):is(:hover, :focus, :active, :focus-visible) .notif-title,
+  #notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request.notification-read:not(.date-warning-red-border):not(.date-warning-orange-border):is(:hover, :focus, :active, :focus-visible) .notif-line2 {
+    color: rgba(34, 197, 94, 0.92) !important;
+  }
+
+  #notifications-dropdown .notification-item.mtv-notification {
+    transition: background 0.2s ease, border-color 0.2s ease;
+  }
+  #notifications-dropdown .notification-item.mtv-notification:hover {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: rgba(var(--notif-amber-rgb, 242, 177, 63), 0.62) !important;
+    box-shadow: none !important;
+  }
+  #notifications-dropdown .notification-item.kasko-excel-notification {
+    transition: background 0.2s ease, border-color 0.2s ease;
+  }
+  #notifications-dropdown .notification-item.kasko-excel-notification:hover {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: rgba(var(--notif-red-rgb, 224, 68, 94), 0.62) !important;
+    box-shadow: none !important;
+  }
+}
+@media (min-width: 641px) {
+  #notifications-dropdown {
+    max-height: var(--mobile-notifications-max-height, min(428px, calc(100vh - 180px))) !important;
+    width: 360px !important;
+    max-width: calc(100vw - 32px) !important;
+    right: 0 !important;
+  }
+  #notifications-dropdown.open {
+    box-sizing: border-box !important;
+  }
+  #notifications-dropdown.open > .notification-item:last-child {
+    margin-bottom: 2px !important;
+  }
+  /* Masaüstü: Bildirim kartları mobildeki gibi içerik kadar aksın */
+  #notifications-dropdown .notification-item.date-warning-red-border,
+  #notifications-dropdown .notification-item.date-warning-orange-border,
+  #notifications-dropdown .notification-item-activity,
+  #notifications-dropdown .mtv-notification,
+  #notifications-dropdown .kasko-excel-notification {
+    box-sizing: border-box !important;
+    height: auto !important;
+    min-height: 52px !important;
+    max-height: none !important;
+    overflow: hidden !important;
+    padding: 4px 10px 1px !important;
+  }
+  #notifications-dropdown .notification-item.date-warning-red-border:not(.kasko-excel-notification),
+  #notifications-dropdown .notification-item.date-warning-orange-border:not(.mtv-notification),
+  #notifications-dropdown .notification-item-activity {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+    gap: 1px !important;
+  }
+  #notifications-dropdown .notification-item.date-warning-red-border:not(.kasko-excel-notification) .notif-line1,
+  #notifications-dropdown .notification-item.date-warning-orange-border:not(.mtv-notification) .notif-line1,
+  #notifications-dropdown .notification-item-activity .notif-line1,
+  #notifications-dropdown .mtv-text-container .mtv-main-text {
+    width: 100% !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: 11.5px !important;
+    line-height: 1.18 !important;
+    display: block !important;
+    overflow: hidden !important;
+    text-overflow: clip !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+  }
+  #notifications-dropdown .notification-item.date-warning-red-border:not(.kasko-excel-notification) .notif-line2,
+  #notifications-dropdown .notification-item.date-warning-orange-border:not(.mtv-notification) .notif-line2,
+  #notifications-dropdown .notification-item-activity .notif-line2,
+  #notifications-dropdown .mtv-text-container .notif-line2 {
+    margin-top: 0 !important;
+    display: block !important;
+    width: 100% !important;
+    position: static !important;
+    top: auto !important;
+    transform: none !important;
+    flex-shrink: 0 !important;
+    min-height: 0 !important;
+    line-height: 1.1 !important;
+    padding: 0 !important;
+    font-size: 10.5px !important;
+    margin-top: 0 !important;
+  }
+  #notifications-dropdown .mtv-notification,
+  #notifications-dropdown .kasko-excel-notification {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: stretch !important;
+    justify-content: space-between !important;
+  }
+  #notifications-dropdown .mtv-text-container {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+    align-self: stretch !important;
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    height: auto !important;
+    padding-right: 8px !important;
+  }
+  #notifications-dropdown .mtv-dismiss-wrapper {
+    align-self: stretch !important;
+    display: flex !important;
+    align-items: flex-start !important;
+    justify-content: center !important;
+    margin-left: 8px !important;
+  }
+  #notifications-dropdown .mtv-dismiss-btn {
+    width: 20px !important;
+    height: 20px !important;
+  }
+}
+@media (max-width: 768px) {
+    /* Bildirim paneli: genişlik + sağ hizalı fallback (≤768; open’ta ≤640 JS ile uyumlu) */
+    #notifications-dropdown.settings-dropdown {
+        width: min(82vw, 420px) !important;
+        max-width: calc(100vw - 28px) !important;
+        left: auto !important;
+        right: max(8px, env(safe-area-inset-right, 0px)) !important;
+        transform: none !important;
+    }
+
+    /* Kasko Değer Listesi bildirimi: X sağda, metin solda, dikey kompakt */
+    #notifications-dropdown .mtv-notification,
+    #notifications-dropdown .kasko-excel-notification {
+        flex-wrap: nowrap !important;
+        align-items: flex-start !important;
+        justify-content: space-between !important;
+        gap: 8px !important;
+        padding: 4px 10px 1px !important;
+        min-height: 54px !important;
+        overflow: hidden !important;
+    }
+    #notifications-dropdown .mtv-notification .mtv-text-container,
+    #notifications-dropdown .kasko-excel-notification .mtv-text-container {
+        order: 1 !important;
+        flex: 1 1 auto !important;
+        min-width: 0 !important;
+        min-height: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        justify-content: flex-start !important;
+        gap: 3px !important;
+        padding-right: 0 !important;
+    }
+    #notifications-dropdown .mtv-notification .mtv-dismiss-wrapper,
+    #notifications-dropdown .kasko-excel-notification .mtv-dismiss-wrapper {
+        order: 2 !important;
+        flex: 0 0 auto !important;
+        align-self: flex-start !important;
+        margin-left: 0 !important;
+        padding-top: 2px !important;
+    }
+    #notifications-dropdown .mtv-notification .mtv-dismiss-btn,
+    #notifications-dropdown .kasko-excel-notification .mtv-dismiss-btn {
+        width: 16px !important;
+        height: 16px !important;
+    }
+    #notifications-dropdown .mtv-notification .mtv-dismiss-btn svg,
+    #notifications-dropdown .kasko-excel-notification .mtv-dismiss-btn svg {
+        width: 10px !important;
+        height: 10px !important;
+    }
+}
+@media (max-width: 640px) {
+    #notifications-toggle-btn.notification-red .notifications-engine-icon,
+    #notifications-toggle-btn.notification-orange .notifications-engine-icon {
+        width: 28px !important;
+        height: 28px !important;
+    }
+    /* Mobil bildirim çerçeveleri - arka plan opak */
+    .notification-item {
+        background: var(--bg) !important;
+    }
+
+    /* Bildirim satırları <button>: .settings-dropdown button sabit 48px + overflow:hidden metni keser — çok satır için genişlet */
+    #notifications-dropdown > button.notification-item {
+        height: auto !important;
+        min-height: 54px !important;
+        max-height: none !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        overflow: hidden !important;
+        align-items: flex-start !important;
+        justify-content: flex-start !important;
+        padding: 4px 10px 1px !important;
+    }
+    #notifications-dropdown .notification-item.date-warning-red-border:not(.kasko-excel-notification),
+    #notifications-dropdown .notification-item.date-warning-orange-border:not(.mtv-notification),
+    #notifications-dropdown .notification-item-activity {
+        padding: 4px 10px 1px !important;
+        min-height: 54px !important;
+        overflow: hidden !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        justify-content: flex-start !important;
+        gap: 1px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Mobil notification: net renk ayrımı, efektsiz premium yüzey */
+    #notifications-dropdown .notification-item.date-warning-red-border {
+        border-color: rgba(var(--notif-red-rgb, 224, 68, 94), 0.68) !important;
+        background: linear-gradient(180deg, rgba(var(--notif-red-rgb, 224, 68, 94), 0.06), rgba(8, 13, 22, 0.96)) !important;
+        box-shadow: none !important;
+    }
+    #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border .notif-line1,
+    #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border .notif-title,
+    #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border .notif-line1 .date-warning-red {
+        color: var(--notif-red, #e0445e) !important;
+    }
+    #notifications-dropdown .notification-item.date-warning-red-border .notif-line2,
+    #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border .notif-line2.notif-meta-date {
+        color: rgba(var(--notif-red-rgb, 224, 68, 94), 0.84) !important;
+    }
+    #notifications-dropdown .notification-item.date-warning-orange-border {
+        border-color: rgba(var(--notif-amber-rgb, 242, 177, 63), 0.68) !important;
+        background: linear-gradient(180deg, rgba(var(--notif-amber-rgb, 242, 177, 63), 0.055), rgba(8, 13, 22, 0.96)) !important;
+        box-shadow: none !important;
+    }
+    #notifications-dropdown .kasko-excel-notification {
+        border-color: rgba(var(--notif-red-rgb, 224, 68, 94), 0.6) !important;
+        box-shadow: none !important;
+    }
+    #notifications-dropdown.settings-dropdown > .notification-item.date-warning-red-border:not(.kasko-excel-notification):is(:hover, :focus, :active, :focus-visible),
+    #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border:is(:hover, :focus, :active, :focus-visible) {
+        border-color: rgba(var(--notif-red-rgb, 224, 68, 94), 0.86) !important;
+        background: rgba(var(--notif-red-rgb, 224, 68, 94), 0.09) !important;
+        box-shadow: none !important;
+        transform: none !important;
+    }
+    #notifications-dropdown.settings-dropdown > .notification-item.date-warning-orange-border:not(.mtv-notification):is(:hover, :focus, :active, :focus-visible),
+    #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible) {
+        border-color: rgba(var(--notif-amber-rgb, 242, 177, 63), 0.86) !important;
+        background: rgba(var(--notif-amber-rgb, 242, 177, 63), 0.085) !important;
+        box-shadow: none !important;
+        transform: none !important;
+    }
+    #notifications-dropdown.settings-dropdown > .notification-item.date-warning-red-border:is(:hover, :focus, :active, :focus-visible),
+    #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border:is(:hover, :focus, :active, :focus-visible) {
+        transform: none !important;
+    }
+    #notifications-dropdown.settings-dropdown > .notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible),
+    #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible) {
+        transform: none !important;
+    }
+
+    /* Mobil bildirimlerde metin boyutları 1 punto büyütüldü */
+    #notifications-dropdown .notification-item .notif-line1,
+    #notifications-dropdown .notification-item .notif-title {
+        font-size: 12.5px !important;
+        line-height: 1.18 !important;
+        margin-bottom: 0 !important;
+        padding: 0 !important;
+        position: static !important;
+        flex: 0 0 auto !important;
+        overflow-wrap: anywhere !important;
+    }
+    #notifications-dropdown .notification-item .notif-line2 {
+        font-size: 11.5px !important;
+        line-height: 1.14 !important;
+        margin-top: 0 !important;
+        padding: 0 !important;
+        position: static !important;
+        flex: 0 0 auto !important;
+    }
+    #notifications-dropdown .mtv-text-container .mtv-main-text {
+        font-size: 12.5px !important;
+        line-height: 1.3 !important;
+    }
+/* Mobil: 6 kartı güvenli gösterecek yükseklik; fazlası scroll */
+    #notifications-dropdown {
+        max-height: var(--mobile-notifications-max-height, min(64vh, calc(100dvh - 230px))) !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain !important;
+        touch-action: pan-y !important;
+        width: min(82vw, 420px) !important;
+        max-width: calc(100vw - 28px) !important;
+        left: auto !important;
+        right: max(8px, env(safe-area-inset-right, 0px)) !important;
+        transform: none !important;
+        padding-bottom: 0 !important; /* Açıkken JS inline güvenlik payı verir */
+        box-sizing: border-box !important;
+    }
+    #vehicle-history-modal #history-tabs .history-tab,
+    #history-tabs .history-tab {
+        font-size: 13px !important;
+    }
+    #vehicle-detail-modal .vehicle-detail-columns,
+    #vehicle-detail-content .vehicle-detail-columns {
+        border-left: 1px solid rgba(var(--theme-color-rgb), 0.5) !important;
+        border-right: 1px solid rgba(var(--theme-color-rgb), 0.5) !important;
+        box-shadow: 0 0 8px rgba(var(--theme-color-rgb), 0.14) !important;
+    }
+    #vehicle-detail-modal .vehicle-detail-left,
+    #vehicle-detail-modal .vehicle-detail-right,
+    #vehicle-detail-content .vehicle-detail-left,
+    #vehicle-detail-content .vehicle-detail-right {
+        border-color: rgba(var(--theme-color-rgb), 0.5) !important;
+    }
+    /* Açıkken: menü butonlarına metin sızmasın; panel opak kutu (masaüstü @769 ile aynı his) */
+    #notifications-dropdown.settings-dropdown.open {
+        background: linear-gradient(180deg, rgba(8, 13, 22, 0.98) 0%, rgba(8, 13, 22, 0.95) 100%) !important;
+        border-radius: 12px !important;
+        padding-left: 8px !important;
+        padding-right: 8px !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5) !important;
+        isolation: isolate;
+    }
+    body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu.menu-container {
+        pointer-events: none;
+    }
+    body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap {
+        overflow: hidden !important;
+        overscroll-behavior: none !important;
+    }
+}
+@media (max-width: 640px) and (display-mode: standalone) {
+    #notifications-dropdown {
+        max-height: var(--mobile-notifications-max-height, min(64vh, calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 230px))) !important;
+    }
+    #notifications-dropdown.open {
+        box-sizing: border-box !important;
+    }
+}
+/* Masaüstü PWA: Kasko Excel kartı ölçüleri (z-index/overflow bildirimler için global) */
+@media (min-width: 769px) and (display-mode: standalone) {
+    #notifications-dropdown .kasko-excel-notification {
+        padding: 8px 10px !important;
+        min-height: 52px !important;
+        box-sizing: border-box !important;
+    }
+    #notifications-dropdown .kasko-excel-notification .mtv-text-container .mtv-main-text {
+        font-size: 11.5px !important;
+        line-height: 1.28 !important;
+    }
+    #notifications-dropdown .kasko-excel-notification .mtv-dismiss-wrapper {
+        margin-left: 4px !important;
+    }
+}
+@media (max-width: 768px) {
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #monthly-todo-modal.modal-overlay {
+    bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
+  }
+  .monthly-todo-modal-overlay .modal-container {
+    border-bottom-left-radius: 12px !important;
+    border-bottom-right-radius: 12px !important;
+  }
+}
+
+/* --- Monthly todo (tasitlar-base) --- */
+/* Üst taşıt takvim / rozet */
+#monthly-todo-header-btn {
+    position: relative;
+}
+#monthly-todo-header-btn .monthly-todo-header-badge {
+    pointer-events: none;
+    box-sizing: border-box;
+    position: absolute;
+    top: -3px;
+    right: -7px;
+    min-width: 0;
+    min-height: 0;
+    padding: 0;
+    border-radius: 0;
+    background: none;
+    border: none;
+    box-shadow: none;
+    color: #d40000;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 800;
+    line-height: 1;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+    text-shadow: none;
+}
+@media (min-width: 641px) {
+    #monthly-todo-header-btn .monthly-todo-header-badge {
+        font-size: 11px;
+    }
+}
+@media (max-width: 640px) {
+    #monthly-todo-header-btn .monthly-todo-header-badge {
+        top: -5px;
+        right: -8px;
+        font-size: 14px;
+        font-weight: 800;
+        line-height: 1;
+    }
+}
+
+#monthly-todo-modal .monthly-todo-modal-container .modal-body.monthly-todo-modal-body {
+    box-sizing: border-box;
+}
+#monthly-todo-modal .monthly-todo-empty {
+    padding: 20px 16px;
+    text-align: center;
+    color: #a0aec0;
+    font-size: 14px;
+}
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #monthly-todo-modal.monthly-todo-modal-overlay.active,
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #monthly-todo-modal.monthly-todo-modal-overlay.open {
+    z-index: 10020 !important;
+}
+.monthly-todo-modal-overlay {
+    --modal-mobile-border-color: rgba(var(--theme-color-rgb), 0.30);
+    --modal-mobile-top-border-color: rgba(var(--theme-color-rgb), 0.54);
+    --modal-mobile-header-top-border: rgba(255, 255, 255, 0.18);
+    --modal-mobile-inner-top-highlight: rgba(var(--theme-color-rgb), 0.20);
+    display: none !important;
+    background: var(--bg) !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+    pointer-events: none !important;
+    padding-top: env(safe-area-inset-top, 0px) !important;
+    padding-bottom: env(safe-area-inset-bottom, 0px) !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    overflow: hidden !important;
+    touch-action: pan-y !important;
+}
+
+.monthly-todo-modal-overlay.active,
+.monthly-todo-modal-overlay.open {
+    display: flex !important;
+    pointer-events: auto !important; /* Aktif olduğunda tıklamaları al */
+    background: var(--bg) !important; /* Altın şeffaf görünmesini engelle */
+    background-color: var(--bg) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+}
+.monthly-todo-modal-overlay.active::before,
+.monthly-todo-modal-overlay.open::before {
+    display: none !important;
+    content: none !important;
+}
+.monthly-todo-modal-overlay .modal-header {
+    background: var(--modal-header-red-gradient);
+    padding: 2px 20px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+    position: relative;
+    border-bottom: none !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.35);
+    border-top-left-radius: var(--modal-radius);
+    border-top-right-radius: var(--modal-radius);
+}
+
+/* --- Monthly todo overlay shell --- */
+@media (min-width: 769px) {
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #monthly-todo-modal.modal-overlay {
+    bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
+  }
+}
+@media (max-width: 640px) {
+  .monthly-todo-modal-overlay {
+    height: auto !important;
+    padding-bottom: 0 !important;
+  }
+  .monthly-todo-modal-overlay .modal-container {
+    isolation: isolate !important;
+    margin-top: 0 !important;
+    background: var(--modal-bg) !important;
+    background-color: var(--modal-bg) !important;
+    overflow: hidden !important;
+    overflow-x: hidden !important; /* Yatay kayma engelle */
+    touch-action: pan-y !important;
+    overscroll-behavior: none !important;
+    overscroll-behavior-x: none !important;
+  }
+  .monthly-todo-modal-overlay .modal-header {
+    background: linear-gradient(
+      180deg,
+      #760016 0%,
+      #730016 10%,
+      #6d0015 22%,
+      #620013 36%,
+      #550011 52%,
+      #45000e 70%,
+      #2d0009 86%,
+      #140306 100%
+    ) !important;
+    box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.12) !important;
+  }
+  .monthly-todo-modal-overlay .modal-close { font-size: 21px; }
+  .monthly-todo-modal-overlay::before {
+    max-width: 100% !important;
+    width: 100%;
+    top: 0;
+    height: 100%;
+    left: 0;
+    transform: none;
+  }
+  .monthly-todo-modal-overlay .modal-body {
+    overflow-x: hidden !important; /* Saşa sola kaymayı engelle */
+    touch-action: pan-y !important; /* Sadece dikey kaydırma */
+    overscroll-behavior-x: none !important; /* Yatay overscroll'u engelle */
+  }
+  @media (display-mode: standalone) {
+    .monthly-todo-modal-overlay {
+      padding-top: env(safe-area-inset-top) !important;
+      padding-bottom: 0 !important;
+    }
+  }
+}
+@media (min-width: 769px) and (display-mode: standalone) {
+  .monthly-todo-modal-overlay .modal-container {
+    margin-top: 0 !important;
+    height: 100% !important;
+    max-height: 100% !important;
+  }
+}
+
+/* ---------- Bu Ay Yapılacaklar: standart modal genişliği + üç sütun liste (mobil dahil yatay scroll yok) ---------- */
+#monthly-todo-modal .monthly-todo-modal-body {
+  box-sizing: border-box;
+  min-height: 0;
+  flex: 1 1 auto !important;
+  /* style-core .modal-overlay .modal-body overflow-y:auto ezmesin; scroll yalnız list-scroll */
+  overflow-x: hidden !important;
+  overflow-y: hidden !important;
+  overscroll-behavior-y: contain;
+}
+
+#monthly-todo-modal .monthly-todo-modal-body:has(.monthly-todo-sheet) {
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 0 !important;
+  max-height: 100%;
+  overflow: hidden !important;
+  overscroll-behavior-x: contain;
+  overscroll-behavior-y: contain;
+  padding: 12px 12px 18px !important;
+}
+
+/* X: tıklanabilirlik + üst katman (başlık h2 pointer-events:none ile uyumlu) */
+#monthly-todo-modal .modal-header .monthly-todo-modal-close {
+  z-index: 40;
+  pointer-events: auto;
+}
+
+@media (max-width: 640px) and (display-mode: standalone) {
+  #monthly-todo-modal .modal-header h2.premium-title {
+    font-size: 17px !important;
+    letter-spacing: 0.12em !important;
+  }
+}
+
+#monthly-todo-modal .monthly-todo-sheet {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+#monthly-todo-modal .monthly-todo-table-outer {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  overscroll-behavior-y: none;
+}
+
+#monthly-todo-modal .monthly-todo-table-inner {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+#monthly-todo-modal .monthly-todo-col-header,
+#monthly-todo-modal .monthly-todo-task-row {
+  display: grid;
+  grid-template-columns: minmax(0, 30%) minmax(0, 25%) minmax(0, 45%);
+  column-gap: 8px;
+  align-items: center;
+}
+
+@media (max-width: 640px) {
+  #monthly-todo-modal .monthly-todo-modal-body:has(.monthly-todo-sheet) {
+    padding: 10px 8px calc(14px + env(safe-area-inset-bottom, 0)) !important;
+  }
+
+  #monthly-todo-modal .monthly-todo-col-header {
+    grid-template-columns: minmax(0, 29%) minmax(0, 28%) minmax(0, 43%);
+    column-gap: 6px;
+    align-items: start;
+  }
+
+  #monthly-todo-modal .monthly-todo-task-row {
+    grid-template-columns: minmax(0, 29%) minmax(0, 28%) minmax(0, 43%);
+    column-gap: 6px;
+    align-items: center;
+  }
+
+  #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h {
+    font-size: 13px;
+    align-self: start;
+  }
+
+  #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h--middle {
+    justify-content: center;
+  }
+
+  #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h--desc {
+    flex-direction: column-reverse;
+    justify-content: center;
+    align-items: center;
+  }
+
+  #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h-line--sub {
+    font-size: 12px;
+  }
+
+  #monthly-todo-modal .monthly-todo-task-row .monthly-todo-middle-col .monthly-todo-user {
+    display: grid;
+    --monthly-todo-wa-track: 18px;
+    --monthly-todo-wa-gap: 2px;
+    grid-template-columns: minmax(0, 1fr) var(--monthly-todo-wa-track);
+    grid-template-rows: auto auto;
+    column-gap: var(--monthly-todo-wa-gap);
+    row-gap: 2px;
+    align-items: center;
+    justify-content: center;
+    justify-items: center;
+  }
+
+  #monthly-todo-modal .monthly-todo-task-row .monthly-todo-middle-col .monthly-todo-user:not(:has(.monthly-todo-wa-link)) {
+    --monthly-todo-wa-track: 0px;
+    --monthly-todo-wa-gap: 0px;
+    grid-template-columns: minmax(0, 1fr);
+    column-gap: 0;
+  }
+
+  #monthly-todo-modal .monthly-todo-task-row .monthly-todo-middle-col .monthly-todo-user-name {
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: stretch;
+    width: 100%;
+    min-width: 0;
+    text-align: center;
+  }
+
+  #monthly-todo-modal .monthly-todo-task-row .monthly-todo-middle-col .monthly-todo-wa-link {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: start;
+    padding: 0;
+  }
+
+  #monthly-todo-modal .monthly-todo-task-row .monthly-todo-middle-col .monthly-todo-user-branch {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    justify-self: stretch;
+    width: 100%;
+    min-width: 0;
+    text-align: center;
+  }
+}
+
+@media (min-width: 641px) {
+  #monthly-todo-modal .monthly-todo-col-header,
+  #monthly-todo-modal .monthly-todo-task-row {
+    column-gap: 10px;
+  }
+}
+
+#monthly-todo-modal .monthly-todo-col-header {
+  flex-shrink: 0;
+  box-sizing: border-box;
+  align-items: stretch;
+  padding: 4px 8px 8px 10px;
+  margin-bottom: 0;
+  border-bottom: 1px solid rgba(var(--theme-color-rgb), 0.46);
+}
+
+#monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: center;
+  justify-self: stretch;
+  align-self: stretch;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.25;
+  color: #ffffff;
+  letter-spacing: 0.06em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+#monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h--middle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  white-space: normal;
+  line-height: 1.2;
+  letter-spacing: 0.04em;
+}
+
+#monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h-line {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h-line--sub {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+#monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h--desc {
+  position: relative;
+  flex-direction: column-reverse;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  text-align: center;
+  justify-self: stretch;
+  overflow: visible;
+}
+
+#monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h--desc .monthly-todo-branch-filter {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1;
+}
+
+#monthly-todo-modal .monthly-todo-branch-filter {
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+  min-width: 0;
+}
+
+#monthly-todo-modal .monthly-todo-branch-filter-trigger {
+  max-width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 2px;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.7);
+  font: inherit;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  cursor: pointer;
+}
+
+#monthly-todo-modal .monthly-todo-branch-filter-trigger .monthly-todo-branch-filter-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#monthly-todo-modal .monthly-todo-branch-filter-trigger .monthly-todo-branch-filter-icon {
+  flex: 0 0 auto;
+  width: 14px;
+  height: 14px;
+}
+
+#monthly-todo-modal .monthly-todo-branch-filter-trigger:focus-visible {
+  color: #ffffff;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+#monthly-todo-modal .monthly-todo-branch-filter-menu {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 4px);
+  right: 0;
+  display: none;
+  min-width: 150px;
+  max-height: 210px;
+  overflow-y: auto;
+  padding: 4px;
+  border: 1px solid rgba(var(--theme-color-rgb), 0.46);
+  border-radius: 8px;
+  background: #111720;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.38);
+}
+
+#monthly-todo-modal .monthly-todo-branch-filter-menu.open {
+  display: block;
+}
+
+#monthly-todo-modal .monthly-todo-branch-filter-option {
+  width: 100%;
+  padding: 7px 8px;
+  border: 0;
+  border-bottom: 1px solid rgba(var(--theme-color-rgb), 0.46);
+  border-radius: 5px;
+  background: transparent;
+  color: #ffffff;
+  font-size: 11px;
+  line-height: 1.25;
+  text-align: center;
+  cursor: pointer;
+}
+
+#monthly-todo-modal .monthly-todo-branch-filter-option:last-child {
+  border-bottom: 0;
+}
+
+#monthly-todo-modal .monthly-todo-branch-filter-option:hover,
+#monthly-todo-modal .monthly-todo-branch-filter-option:focus-visible,
+#monthly-todo-modal .monthly-todo-branch-filter-option.selected {
+  outline: 0;
+  background: rgba(var(--theme-color-rgb), 0.24);
+  color: #ffffff;
+}
+
+@media (min-width: 641px) {
+  #monthly-todo-modal .monthly-todo-modal-body:has(.monthly-todo-sheet) {
+    padding-top: 0 !important;
+  }
+  #monthly-todo-modal .monthly-todo-col-header {
+    padding-bottom: 2px;
+  }
+  #monthly-todo-modal .monthly-todo-list-scroll {
+    padding-top: 2px;
+  }
+  #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h {
+    font-size: 13px;
+  }
+  #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h-line--sub {
+    font-size: 12px;
+  }
+}
+
+#monthly-todo-modal .monthly-todo-plate-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 0;
+  width: 100%;
+  text-align: center;
+}
+
+#monthly-todo-modal .monthly-todo-middle-col {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  gap: 4px;
+  min-width: 0;
+  width: 100%;
+  text-align: center;
+}
+
+#monthly-todo-modal .monthly-todo-desc-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
+  text-align: left;
+  overflow: hidden;
+}
+
+#monthly-todo-modal .monthly-todo-list-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y !important;
+  padding-bottom: 16px;
+  box-sizing: border-box;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+#monthly-todo-modal .monthly-todo-list-scroll::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
+#monthly-todo-modal .monthly-todo-task-row {
+  row-gap: 0;
+  width: 100%;
+  margin: 0;
+  padding: 6px 8px 6px 10px;
+  border: none;
+  border-radius: 0;
+  border-bottom: 1px solid rgba(var(--theme-color-rgb), 0.46);
+  color: #a0aec0;
+  cursor: pointer;
+  text-align: left;
+  border-left-width: 2px;
+  border-left-style: solid;
+  border-left-color: transparent;
+  font-family: inherit;
+  transition: background 0.12s ease, border-bottom-color 0.12s ease;
+  box-sizing: border-box;
+}
+
+#monthly-todo-modal .monthly-todo-task-row > .monthly-todo-plate-col,
+#monthly-todo-modal .monthly-todo-task-row > .monthly-todo-middle-col {
+  text-align: center;
+}
+
+#monthly-todo-modal .monthly-todo-task-row > .monthly-todo-desc-col {
+  text-align: left;
+  justify-self: stretch;
+}
+
+#monthly-todo-modal .monthly-todo-task-row:focus {
+  outline: none;
+}
+
+#monthly-todo-modal .monthly-todo-task-row:focus-visible {
+  outline: 2px solid rgba(var(--theme-color-rgb), 0.95);
+  outline-offset: -2px;
+}
+
+#monthly-todo-modal .monthly-todo-list-scroll .monthly-todo-task-row:nth-child(odd) {
+  background: rgba(255, 255, 255, 0.01);
+}
+
+#monthly-todo-modal .monthly-todo-list-scroll .monthly-todo-task-row:nth-child(even) {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+#monthly-todo-modal .monthly-todo-task-row:last-child {
+  border-bottom-color: transparent;
+}
+
+#monthly-todo-modal .monthly-todo-list-scroll .monthly-todo-task-row:nth-child(odd):hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+#monthly-todo-modal .monthly-todo-list-scroll .monthly-todo-task-row:nth-child(even):hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+#monthly-todo-modal .monthly-todo-task-row--past {
+  border-left-color: var(--theme-color);
+}
+
+/* Açıklama metni: Taşıtlar listesi ile aynı veri gri; aciliyet sol şeritte (border-left) */
+#monthly-todo-modal .monthly-todo-task-row--past .monthly-todo-type {
+  color: #a0aec0;
+}
+
+#monthly-todo-modal .monthly-todo-task-row--upcoming {
+  border-left-color: var(--orange-warn);
+}
+
+#monthly-todo-modal .monthly-todo-task-row--upcoming .monthly-todo-type {
+  color: #a0aec0;
+}
+
+#monthly-todo-modal .monthly-todo-task-row > * {
+  min-width: 0;
+}
+
+#monthly-todo-modal .monthly-todo-cell {
+  font-size: 12px;
+  line-height: 1.3;
+}
+
+@media (min-width: 641px) {
+  #monthly-todo-modal .monthly-todo-cell {
+    font-size: 13px;
+    line-height: 1.35;
+  }
+}
+
+#monthly-todo-modal .monthly-todo-plate-col .monthly-todo-brand,
+#monthly-todo-modal .monthly-todo-middle-col .monthly-todo-user,
+#monthly-todo-modal .monthly-todo-desc-col .monthly-todo-type {
+  font-size: 12px;
+  line-height: 1.3;
+}
+
+@media (min-width: 641px) {
+  #monthly-todo-modal .monthly-todo-plate-col .monthly-todo-brand,
+  #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-user,
+  #monthly-todo-modal .monthly-todo-desc-col .monthly-todo-type {
+    font-size: 13px;
+    line-height: 1.35;
+  }
+}
+
+#monthly-todo-modal .monthly-todo-plate-col .monthly-todo-plate {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.02em;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (min-width: 641px) and (max-width: 768px) {
+  #monthly-todo-modal .monthly-todo-plate-col .monthly-todo-plate {
+    font-size: 14px;
+  }
+}
+
+#monthly-todo-modal .monthly-todo-plate-col .monthly-todo-brand {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  white-space: normal;
+  overflow: hidden;
+  word-break: normal;
+  overflow-wrap: break-word;
+  color: #a0aec0;
+  text-align: center;
+  width: 100%;
+  max-width: 100%;
+}
+
+#monthly-todo-modal .monthly-todo-middle-col .monthly-todo-user {
+  position: relative;
+  display: grid;
+  --monthly-todo-wa-track: 24px;
+  --monthly-todo-wa-gap: 6px;
+  grid-template-columns: minmax(0, 1fr) var(--monthly-todo-wa-track);
+  grid-template-rows: auto auto;
+  column-gap: var(--monthly-todo-wa-gap);
+  row-gap: 1px;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  justify-self: stretch;
+  color: #a0aec0;
+}
+
+#monthly-todo-modal .monthly-todo-middle-col .monthly-todo-user:not(:has(.monthly-todo-wa-link)) {
+  --monthly-todo-wa-track: 0px;
+  --monthly-todo-wa-gap: 0px;
+  grid-template-columns: minmax(0, 1fr);
+  column-gap: 0;
+}
+
+#monthly-todo-modal .monthly-todo-middle-col .monthly-todo-user-name {
+  grid-column: 1;
+  grid-row: 1;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  white-space: normal;
+  overflow: hidden;
+  word-break: normal;
+  overflow-wrap: break-word;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+  font-size: 13px;
+  line-height: 1.3;
+  font-weight: 700;
+  color: #ffffff;
+  text-align: center;
+}
+
+@media (min-width: 641px) and (max-width: 768px) {
+  #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-user-name {
+    font-size: 14px;
+    line-height: 1.35;
+  }
+}
+
+#monthly-todo-modal .monthly-todo-middle-col .monthly-todo-user-branch {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  justify-self: stretch;
+  box-sizing: border-box;
+  font-size: 12px;
+  line-height: 1.3;
+  font-weight: 400;
+  color: #a0aec0;
+  text-align: center;
+  white-space: normal;
+  overflow: hidden;
+  word-break: normal;
+  overflow-wrap: break-word;
+  transform: translateX(calc((var(--monthly-todo-wa-track, 0px) + var(--monthly-todo-wa-gap, 0px)) / -2));
+}
+
+@media (min-width: 641px) {
+  #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-user-branch {
+    font-size: 13px;
+    line-height: 1.35;
+  }
+}
+
+#monthly-todo-modal .monthly-todo-middle-col .monthly-todo-wa-link {
+  position: static;
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: center;
+  align-self: center;
+  transform: none;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 6px;
+  border: none;
+  background: none;
+  color: #25d366;
+  line-height: 0;
+  text-decoration: none;
+}
+
+#monthly-todo-modal .monthly-todo-middle-col .monthly-todo-wa-link svg {
+  display: block;
+  width: 16px;
+  height: 16px;
+}
+
+#monthly-todo-modal .monthly-todo-middle-col .monthly-todo-wa-link:focus {
+  outline: none;
+}
+
+#monthly-todo-modal .monthly-todo-middle-col .monthly-todo-wa-link:focus-visible {
+  outline: 2px solid rgba(37, 211, 102, 0.85);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+@media (min-width: 641px) and (max-width: 768px) {
+  #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-user {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-user-name,
+  #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-user-branch {
+    grid-column: auto;
+    grid-row: auto;
+    width: 100%;
+    text-align: center;
+  }
+
+  #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-wa-link {
+    position: absolute;
+    right: 0;
+    top: 0;
+    grid-column: auto;
+    grid-row: auto;
+  }
+}
+
+/* Aylık özet: WhatsApp daha önce başlatılmış (sunucu log’u); genel .whatsapp-btn’lere dokunma */
+#monthly-todo-modal .monthly-todo-middle-col .monthly-todo-whatsapp-btn.is-reminder-opened {
+  color: #718096;
+  opacity: 0.92;
+}
+#monthly-todo-modal .monthly-todo-middle-col .monthly-todo-whatsapp-btn.is-reminder-opened:hover {
+  color: #94a3b8;
+  opacity: 1;
+}
+#monthly-todo-modal .monthly-todo-middle-col .monthly-todo-whatsapp-btn.is-reminder-opened:focus-visible {
+  outline-color: rgba(148, 163, 184, 0.9);
+}
+
+#monthly-todo-modal .monthly-todo-type {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  font-weight: 400;
+  color: #a0aec0;
+  line-height: 1.25;
+  white-space: normal;
+  word-break: normal;
+  overflow-wrap: anywhere;
+  text-align: left;
+  box-sizing: border-box;
+}
+
+#monthly-todo-modal .monthly-todo-type-kind {
+  color: #ffffff;
+  font-weight: 400;
+}
+
+#monthly-todo-modal .monthly-todo-type-detail {
+  color: #a0aec0;
+  font-weight: 400;
+}
+
+#monthly-todo-modal .monthly-todo-type .monthly-todo-description-meta {
+  display: inline;
+  /* Tarih satırı açıklamadan ayrıca küçültülmesin; mobilde 1pt kesinti okunurluğu bozuyordu. */
+  font-size: 12px;
+  line-height: 1.35;
+  font-weight: 400;
+  color: #a0aec0;
+}
+
+@media (min-width: 641px) {
+  #monthly-todo-modal .monthly-todo-type .monthly-todo-description-meta {
+    font-size: 13px;
+  }
+}
+
+#monthly-todo-modal .monthly-todo-type .monthly-todo-description-date {
+  display: inline;
+  font-size: inherit;
+  line-height: inherit;
+  font-weight: inherit;
+  color: #a0aec0;
+}
+
+#monthly-todo-modal .monthly-todo-type .monthly-todo-description-meta.monthly-todo-description-meta--past,
+#monthly-todo-modal .monthly-todo-type .monthly-todo-description-meta.monthly-todo-description-meta--past .monthly-todo-description-date {
+  color: var(--theme-color, #ff4d5f);
+}
+
+/* Ay özeti şube filtresi: açık menüyü okunur tut, listeyi flu göster; düşük opacity beyaz parlamaya yol açıyordu. */
+#monthly-todo-modal.monthly-todo-filter-open .monthly-todo-list-scroll {
+  position: relative;
+  isolation: isolate;
+  filter: blur(2px) brightness(0.76);
+  pointer-events: none;
+  transition: filter 0.18s ease;
+}
+
+#monthly-todo-modal.monthly-todo-filter-open .monthly-todo-list-scroll::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: rgba(6, 9, 14, 0.26);
+  pointer-events: none;
+}
+
+#monthly-todo-modal .monthly-todo-list-scroll {
+  transition: filter 0.18s ease;
+}
+
+#monthly-todo-modal .monthly-todo-branch-filter-menu {
+  flex-direction: column;
+  align-items: stretch;
+  isolation: isolate;
+  color: #ffffff;
+  font-family: inherit;
+  -webkit-text-fill-color: currentColor;
+}
+
+#monthly-todo-modal .monthly-todo-branch-filter-menu.open {
+  display: flex;
+}
+
+#monthly-todo-modal .monthly-todo-branch-filter-option {
+  position: relative;
+  z-index: 1;
+  display: block;
+  flex: 0 0 auto;
+  visibility: visible;
+  opacity: 1;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff;
+}
+
+@media (min-width: 641px) {
+  #monthly-todo-modal .monthly-todo-branch-filter-menu {
+    min-width: 164px;
+    max-height: 228px;
+    padding: 5px;
+  }
+
+  #monthly-todo-modal .monthly-todo-branch-filter-option {
+    min-height: 32px;
+    padding: 8px 10px;
+    font-size: 12px;
+    line-height: 1.3;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff;
+  }
+
+  #monthly-todo-modal .monthly-todo-branch-filter-option:hover,
+  #monthly-todo-modal .monthly-todo-branch-filter-option:focus-visible,
+  #monthly-todo-modal .monthly-todo-branch-filter-option.selected {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff;
+  }
+}
+
+@media (max-width: 640px) {
+  #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h--desc {
+    gap: 5px;
+  }
+
+  #monthly-todo-modal .monthly-todo-branch-filter {
+    z-index: 30;
+    transform: translateY(-4px);
+  }
+
+  #monthly-todo-modal .monthly-todo-branch-filter-trigger {
+    min-height: 18px;
+    font-size: 11px;
+  }
+
+  #monthly-todo-modal .monthly-todo-branch-filter-menu {
+    top: calc(100% + 6px);
+    right: 0;
+    width: min(230px, calc(100vw - 32px));
+    min-width: 0;
+    max-height: min(250px, 42vh);
+    padding: 6px;
+    border-color: rgba(184, 192, 201, 0.54);
+    border-radius: 10px;
+    background: #0b111b;
+    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.58);
+  }
+
+  #monthly-todo-modal .monthly-todo-branch-filter-option {
+    min-height: 34px;
+    padding: 9px 10px;
+    font-size: 12px;
+    line-height: 1.3;
+  }
+}
