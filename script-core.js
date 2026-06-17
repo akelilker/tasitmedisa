@@ -716,39 +716,72 @@ window.__medisaLoadScriptOnce = function(src) {
   var existingFlight = inflight[inflightKey];
   if (existingFlight) return existingFlight;
 
+  function removeScriptElement(scriptEl) {
+    try {
+      if (scriptEl && scriptEl.parentNode) scriptEl.parentNode.removeChild(scriptEl);
+    } catch (eRemove) { /* noop */ }
+  }
+
+  function waitForExistingScript(scriptEl) {
+    return new Promise(function(resolve, reject) {
+      scriptEl.addEventListener('load', function() {
+        scriptEl.setAttribute('data-medisa-load-state', 'loaded');
+        resolve();
+      }, { once: true });
+      scriptEl.addEventListener('error', function() {
+        scriptEl.setAttribute('data-medisa-load-state', 'failed');
+        removeScriptElement(scriptEl);
+        reject(new Error('Script yüklenemedi: ' + src));
+      }, { once: true });
+    });
+  }
+
   var promise = new Promise(function(resolve, reject) {
     var wanted = pathKey || window.__medisaScriptCanonicalPath(src);
     var list = document.getElementsByTagName('script');
     for (var i = 0; i < list.length; i++) {
-      var raw = list[i].getAttribute('src');
+      var scriptEl = list[i];
+      var raw = scriptEl.getAttribute('src');
       if (!raw) continue;
       var rawUrl = window.__medisaScriptNormalizedUrl(raw);
-      if (raw === src || (srcUrl && rawUrl && rawUrl.href === srcUrl.href)) {
-        resolve();
+      var isSameScript = raw === src || (srcUrl && rawUrl && rawUrl.href === srcUrl.href);
+      var isSameUnversionedPath = !srcHasVersion && wanted && window.__medisaScriptCanonicalPath(raw) === wanted;
+      if (!isSameScript && !isSameUnversionedPath) continue;
+
+      var state = scriptEl.getAttribute('data-medisa-load-state') || 'loaded';
+      if (state === 'failed') {
+        removeScriptElement(scriptEl);
+        continue;
+      }
+      if (state === 'loading') {
+        waitForExistingScript(scriptEl).then(resolve, reject);
         return;
       }
-      if (!srcHasVersion && wanted && window.__medisaScriptCanonicalPath(raw) === wanted) {
-        resolve();
-        return;
-      }
+      resolve();
+      return;
     }
     var script = document.createElement('script');
     script.src = src;
+    script.setAttribute('data-medisa-load-state', 'loading');
     script.onload = function() {
+      script.setAttribute('data-medisa-load-state', 'loaded');
       resolve();
     };
     script.onerror = function() {
+      script.setAttribute('data-medisa-load-state', 'failed');
+      removeScriptElement(script);
       reject(new Error('Script yüklenemedi: ' + src));
     };
     document.head.appendChild(script);
   });
 
   inflight[inflightKey] = promise;
-  promise.finally(function() {
+  var cleanup = function() {
     try {
       if (inflight[inflightKey] === promise) delete inflight[inflightKey];
     } catch (eDel) { /* noop */ }
-  });
+  };
+  promise.then(cleanup, cleanup);
   return promise;
 };
 
@@ -778,11 +811,66 @@ window.loadAppModule = function(jsPath, cssPathOrArray) {
   }
   function loadCss(href) {
     return new Promise(function(resolve, reject) {
+      var hrefUrl = null;
+      try {
+        hrefUrl = new URL(String(href || ''), document.baseURI || window.location.href);
+      } catch (eUrl) { /* noop */ }
+
+      function removeLinkElement(linkEl) {
+        try {
+          if (linkEl && linkEl.parentNode) linkEl.parentNode.removeChild(linkEl);
+        } catch (eRemove) { /* noop */ }
+      }
+
+      function waitForExistingLink(linkEl) {
+        linkEl.addEventListener('load', function() {
+          linkEl.setAttribute('data-medisa-load-state', 'loaded');
+          resolve();
+        }, { once: true });
+        linkEl.addEventListener('error', function() {
+          linkEl.setAttribute('data-medisa-load-state', 'failed');
+          removeLinkElement(linkEl);
+          resolve();
+        }, { once: true });
+      }
+
+      var links = document.querySelectorAll('link[rel="stylesheet"]');
+      for (var i = 0; i < links.length; i++) {
+        var existing = links[i];
+        var rawHref = existing.getAttribute('href');
+        if (!rawHref) continue;
+        var existingUrl = null;
+        try {
+          existingUrl = new URL(rawHref, document.baseURI || window.location.href);
+        } catch (eExistingUrl) { /* noop */ }
+        if (!(rawHref === href || (hrefUrl && existingUrl && existingUrl.href === hrefUrl.href))) continue;
+
+        var state = existing.getAttribute('data-medisa-load-state') || 'loaded';
+        if (state === 'failed') {
+          removeLinkElement(existing);
+          continue;
+        }
+        if (state === 'loading') {
+          waitForExistingLink(existing);
+          return;
+        }
+        resolve();
+        return;
+      }
+
       var link = document.createElement('link');
       link.rel = 'stylesheet';
       link.href = href;
-      link.onload = function() { resolve(); };
-      link.onerror = function() { resolve(); }
+      link.setAttribute('data-medisa-load-state', 'loading');
+      link.onload = function() {
+        link.setAttribute('data-medisa-load-state', 'loaded');
+        resolve();
+      };
+      link.onerror = function() {
+        link.setAttribute('data-medisa-load-state', 'failed');
+        removeLinkElement(link);
+        resolve();
+      };
       document.head.appendChild(link);
     });
   }
