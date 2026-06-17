@@ -41,6 +41,7 @@ jobs:
             script-core.js \
             data-manager.js \
             data-service.js \
+            vehicle-notification-domain.js \
             notifications.js \
             tasitlar.js \
             tasitlar-yazici.js \
