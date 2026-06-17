@@ -12,6 +12,8 @@ $allowed = [
     // JS
     'data-manager.js',
     'script-core.js',
+    'notifications.js',
+    'vehicle-notification-domain.js',
     'kayit.js',
     'tasitlar.js',
     'tasitlar-yazici.js',
