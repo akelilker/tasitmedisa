@@ -21,6 +21,7 @@ $allowed = [
     'sw.js',
     // CSS
     'style-core.css',
+    'notifications.css',
     'tasitlar-base.css',
     'tasitlar-extra.css',
     'kayit.css',
