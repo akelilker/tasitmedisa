@@ -11,6 +11,25 @@
 (function() {
   window.__medisaTasitlarModuleReady = false;
 
+  var requiredVehicleDomainApi = [
+    'vehicleNeedsK2Belgesi',
+    'vehicleNeedsTakograf',
+    'getK2BelgesiState',
+    'getK2BelgesiExpiryDate',
+    'isVehicleOperationallyInactive',
+    'getEgzozMuayeneState',
+    'isEgzozMuayeneCritical'
+  ];
+  for (var vehicleDomainApiIndex = 0; vehicleDomainApiIndex < requiredVehicleDomainApi.length; vehicleDomainApiIndex++) {
+    var vehicleDomainApiKey = requiredVehicleDomainApi[vehicleDomainApiIndex];
+    if (!window.MedisaVehicleNotificationDomain
+      || typeof window.MedisaVehicleNotificationDomain !== 'object'
+      || Array.isArray(window.MedisaVehicleNotificationDomain)
+      || typeof window.MedisaVehicleNotificationDomain[vehicleDomainApiKey] !== 'function') {
+      throw new Error('MedisaVehicleNotificationDomain hazir degil veya gecersiz');
+    }
+  }
+
   const BRANCHES_KEY = "medisa_branches_v1";
   const VEHICLES_KEY = "medisa_vehicles_v1";
   const USERS_KEY = "medisa_users_v1";
@@ -2291,7 +2310,7 @@
 
   function getEventMenuItemStatusLevel(vehicle, eventId) {
     if (!vehicle || typeof vehicle !== 'object') return 'empty';
-    if (isVehicleOperationallyInactive(vehicle)) return 'empty';
+    if (window.MedisaVehicleNotificationDomain.isVehicleOperationallyInactive(vehicle)) return 'empty';
     if (eventId === 'kaza' || eventId === 'ceza' || eventId === 'satis') return 'empty';
 
     if (eventId === 'kaskokodu') {
@@ -2301,8 +2320,8 @@
     var timedEventIds = ['sigorta', 'kasko', 'muayene', 'takograf', 'tasitkarti'];
     if (timedEventIds.indexOf(eventId) === -1) return 'ok';
 
-    if (eventId === 'takograf' && !vehicleNeedsTakograf(vehicle)) return 'empty';
-    if (eventId === 'tasitkarti' && !vehicleNeedsK2Belgesi(vehicle)) return 'empty';
+    if (eventId === 'takograf' && !window.MedisaVehicleNotificationDomain.vehicleNeedsTakograf(vehicle)) return 'empty';
+    if (eventId === 'tasitkarti' && !window.MedisaVehicleNotificationDomain.vehicleNeedsK2Belgesi(vehicle)) return 'empty';
 
     var rawDate = getEventMenuTimedEventDateRaw(vehicle, eventId);
     if (rawDate == null || String(rawDate).trim() === '') return 'empty';
@@ -2310,7 +2329,7 @@
     var warningClass = '';
     if (eventId === 'muayene') {
       var muayeneWarning = checkDateWarnings(rawDate);
-      warningClass = isEgzozMuayeneCritical(vehicle) ? 'date-warning-red' : muayeneWarning.class;
+      warningClass = window.MedisaVehicleNotificationDomain.isEgzozMuayeneCritical(vehicle) ? 'date-warning-red' : muayeneWarning.class;
     } else {
       warningClass = checkDateWarnings(rawDate).class;
     }
@@ -3966,36 +3985,8 @@
     return rawType;
   }
 
-  function getVehicleTypeKey(vehicle) {
-    return String((vehicle && (vehicle.vehicleType || vehicle.tip)) || '').trim().toLowerCase();
-  }
-
-  function vehicleNeedsK2Belgesi(vehicle) {
-    var typeKey = getVehicleTypeKey(vehicle);
-    return typeKey === 'minivan' || typeKey === 'kamyon' || typeKey === 'romork';
-  }
-
-  function vehicleNeedsTakograf(vehicle) {
-    return getVehicleTypeKey(vehicle) === 'kamyon';
-  }
-
-  function getK2BelgesiState() {
-    if (!window.appData) window.appData = {};
-    if (!window.appData.ayarlar || typeof window.appData.ayarlar !== 'object' || Array.isArray(window.appData.ayarlar)) {
-      window.appData.ayarlar = {};
-    }
-    if (!window.appData.ayarlar.k2Belgesi || typeof window.appData.ayarlar.k2Belgesi !== 'object' || Array.isArray(window.appData.ayarlar.k2Belgesi)) {
-      window.appData.ayarlar.k2Belgesi = { expiryDate: '', documentPath: '', updatedAt: '' };
-    }
-    return window.appData.ayarlar.k2Belgesi;
-  }
-
-  function getK2BelgesiExpiryDate() {
-    return String(getK2BelgesiState().expiryDate || '').trim();
-  }
-
   function getK2BelgesiDocumentPath() {
-    return String(getK2BelgesiState().documentPath || '').trim();
+    return String(window.MedisaVehicleNotificationDomain.getK2BelgesiState().documentPath || '').trim();
   }
 
   function checkK2BelgesiWarnings(dateString) {
@@ -4020,59 +4011,6 @@
     return !!(vehicle && (vehicle.satildiMi === true || vehicle.arsiv === true));
   }
 
-  function isVehicleOperationallyInactive(vehicle) {
-    if (!vehicle || typeof vehicle !== 'object') return true;
-    return vehicle.satildiMi === true
-      || vehicle.arsiv === true
-      || vehicle.pasif === true
-      || vehicle.aktif === false
-      || vehicle.aktifMi === false
-      || String(vehicle.durum || '').trim().toLowerCase() === 'pasif';
-  }
-
-  function getEgzozMuayeneState(vehicle) {
-    const rawDate = vehicle && vehicle.egzozMuayeneDate != null ? String(vehicle.egzozMuayeneDate).trim() : '';
-    if (!rawDate) {
-      return {
-        state: 'missing',
-        date: '',
-        days: null,
-        warningClass: 'date-warning-red'
-      };
-    }
-
-    const warning = checkDateWarnings(rawDate);
-    if (warning.class === 'date-warning-red') {
-      return {
-        state: 'expired',
-        date: rawDate,
-        days: warning.days,
-        warningClass: 'date-warning-red'
-      };
-    }
-
-    if (warning.class === 'date-warning-orange') {
-      return {
-        state: 'approaching',
-        date: rawDate,
-        days: warning.days,
-        warningClass: 'date-warning-orange'
-      };
-    }
-
-    return {
-      state: 'valid',
-      date: rawDate,
-      days: warning.days,
-      warningClass: ''
-    };
-  }
-
-  function isEgzozMuayeneCritical(vehicle) {
-    const egzozState = getEgzozMuayeneState(vehicle);
-    return egzozState.warningClass === 'date-warning-red';
-  }
-
   /**
    * Taşıtlar modalı liste/kart — kalıcı tarih uyarısı (bildirim okundu ile ilgisiz).
    * Yalnızca taşıttaki tarih alanları + window.checkDateWarnings (script-core ile aynı eşikler).
@@ -4082,7 +4020,7 @@
    */
   function getVehicleDateSeverityClass(vehicle) {
     if (!vehicle || typeof vehicle !== 'object') return '';
-    if (isVehicleOperationallyInactive(vehicle)) return '';
+    if (window.MedisaVehicleNotificationDomain.isVehicleOperationallyInactive(vehicle)) return '';
     const dates = [
       vehicle.sigortaDate,
       vehicle.kaskoDate,
@@ -4098,7 +4036,7 @@
       else if (w.class === 'date-warning-orange') hasOrange = true;
     }
 
-    const egzozState = getEgzozMuayeneState(vehicle);
+    const egzozState = window.MedisaVehicleNotificationDomain.getEgzozMuayeneState(vehicle);
     if (egzozState.warningClass === 'date-warning-red') hasRed = true;
     else if (egzozState.warningClass === 'date-warning-orange') hasOrange = true;
 
@@ -4164,7 +4102,7 @@
   function computeMuayeneWarningForOperationalScan(vehicle) {
     if (!vehicle || !vehicle.muayeneDate) return null;
     var warning = checkDateWarnings(vehicle.muayeneDate);
-    if (isEgzozMuayeneCritical(vehicle)) {
+    if (window.MedisaVehicleNotificationDomain.isEgzozMuayeneCritical(vehicle)) {
       warning.class = 'date-warning-red';
       if (typeof warning.days !== 'number') warning.days = -1;
     }
@@ -4184,7 +4122,7 @@
     var vehicles = readVehicles();
 
     vehicles.forEach(function(vehicle) {
-      if (isVehicleOperationallyInactive(vehicle)) return;
+      if (window.MedisaVehicleNotificationDomain.isVehicleOperationallyInactive(vehicle)) return;
 
       var plate = vehicle.plate || '-';
       var brandModel = formatBrandModel(vehicle.brandModel || '-');
@@ -4245,7 +4183,7 @@
         }
       }
 
-      if (vehicleNeedsTakograf(vehicle) && vehicle.takografExpiryDate) {
+      if (window.MedisaVehicleNotificationDomain.vehicleNeedsTakograf(vehicle) && vehicle.takografExpiryDate) {
         var wTak = checkDateWarnings(vehicle.takografExpiryDate);
         if (monthlyOperationalDateTaskFilterPasses(vehicle.takografExpiryDate, wTak)) {
           monthly.push({
@@ -4301,7 +4239,7 @@
         }
       }
 
-      var egzozState = getEgzozMuayeneState(vehicle);
+      var egzozState = window.MedisaVehicleNotificationDomain.getEgzozMuayeneState(vehicle);
       if (egzozState.state === 'missing') {
         monthly.push({
           vehicle: vehicle,
@@ -4346,9 +4284,9 @@
       }
     });
 
-    var k2Date = getK2BelgesiExpiryDate();
+    var k2Date = window.MedisaVehicleNotificationDomain.getK2BelgesiExpiryDate();
     var k2AnchorVehicle = vehicles.find(function(vehicle) {
-      return !isVehicleOperationallyInactive(vehicle) && vehicleNeedsK2Belgesi(vehicle);
+      return !window.MedisaVehicleNotificationDomain.isVehicleOperationallyInactive(vehicle) && window.MedisaVehicleNotificationDomain.vehicleNeedsK2Belgesi(vehicle);
     });
     if (k2AnchorVehicle && k2Date) {
       var wK2 = checkK2BelgesiWarnings(k2Date);
@@ -5665,7 +5603,7 @@
     if (!rightEl) return;
     
     let html = '';
-    const isSoldOrArchivedVehicle = isVehicleOperationallyInactive(vehicle);
+    const isSoldOrArchivedVehicle = window.MedisaVehicleNotificationDomain.isVehicleOperationallyInactive(vehicle);
     
     // Sigorta bitiş tarihi
     const sigortaDate = vehicle.sigortaDate || '';
@@ -5684,7 +5622,7 @@
     // Muayene bitiş tarihi (taşıt tipi yoksa uyarı + tooltip + Tıklayınız)
     const muayeneDate = vehicle.muayeneDate || '';
     const muayeneWarning = checkDateWarnings(muayeneDate);
-    if (!isSoldOrArchivedVehicle && isEgzozMuayeneCritical(vehicle)) {
+    if (!isSoldOrArchivedVehicle && window.MedisaVehicleNotificationDomain.isEgzozMuayeneCritical(vehicle)) {
       muayeneWarning.class = 'date-warning-red';
     }
     const muayeneWarningClass = isSoldOrArchivedVehicle ? '' : muayeneWarning.class;
@@ -5699,19 +5637,19 @@
 
     const egzozRaw = vehicle && vehicle.egzozMuayeneDate != null ? String(vehicle.egzozMuayeneDate).trim() : '';
     if (egzozRaw) {
-      const egzozState = getEgzozMuayeneState(vehicle);
+      const egzozState = window.MedisaVehicleNotificationDomain.getEgzozMuayeneState(vehicle);
       const egzozWarningClass = isSoldOrArchivedVehicle ? '' : egzozState.warningClass;
       const egzozDisplay = formatDateForDetailModal(egzozState.date);
       html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Egzoz Muayene Bitiş</span><span class="detail-row-colon">:</span></div><span class="detail-row-value ${egzozWarningClass}"> ${escapeHtml(egzozDisplay || '-')}</span></div>`;
     }
 
-    if (vehicleNeedsK2Belgesi(vehicle)) {
+    if (window.MedisaVehicleNotificationDomain.vehicleNeedsK2Belgesi(vehicle)) {
       const tasitKartiExpiryDisplay = formatDateForDetailModal(getTasitKartiExpiryDate(vehicle));
       const tasitKartiLabel = getVehicleDocumentPath(vehicle, 'tasit_karti') ? ('Yüklü' + (tasitKartiExpiryDisplay ? ' - ' + tasitKartiExpiryDisplay : '')) : 'Yüklü Değil';
       html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Taşıt Kartı</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(tasitKartiLabel)}</span></div>`;
     }
 
-    if (vehicleNeedsTakograf(vehicle)) {
+    if (window.MedisaVehicleNotificationDomain.vehicleNeedsTakograf(vehicle)) {
       const takografDate = vehicle.takografExpiryDate || '';
       const takografWarning = checkDateWarnings(takografDate);
       const takografWarningClass = isSoldOrArchivedVehicle ? '' : takografWarning.class;
@@ -6535,8 +6473,8 @@
       renderVehicleContextRow(modal, currentMenuVehicle);
       const assignmentLocked = isArchivedVehicleAssignmentLocked(currentMenuVehicle);
       const availableEventIds = new Set(EVENT_MENU_DEFAULT_EVENT_IDS);
-      if (vehicleNeedsTakograf(currentMenuVehicle)) availableEventIds.add('takograf');
-      if (vehicleNeedsK2Belgesi(currentMenuVehicle)) availableEventIds.add('tasitkarti');
+      if (window.MedisaVehicleNotificationDomain.vehicleNeedsTakograf(currentMenuVehicle)) availableEventIds.add('takograf');
+      if (window.MedisaVehicleNotificationDomain.vehicleNeedsK2Belgesi(currentMenuVehicle)) availableEventIds.add('tasitkarti');
       if (assignmentLocked) {
         availableEventIds.delete('sube');
         availableEventIds.delete('kullanici');
@@ -6581,7 +6519,7 @@
       }
       if (type === 'tasitkarti') {
         const k2ScopeVehicle = readVehicles().find(v => String(v.id) === String(effectiveVid));
-        if (!vehicleNeedsK2Belgesi(k2ScopeVehicle)) {
+        if (!window.MedisaVehicleNotificationDomain.vehicleNeedsK2Belgesi(k2ScopeVehicle)) {
           if (typeof showToast === 'function') showToast('Taşıt Kartı güncellemesi sadece K2 belgesi kapsamındaki taşıtlarda kullanılır.', 'error');
           else alert('Taşıt Kartı güncellemesi sadece K2 belgesi kapsamındaki taşıtlarda kullanılır.');
           return;
@@ -7294,11 +7232,11 @@
   }
 
   function getTasitKartiExpiryDate(vehicle) {
-    return String(getK2BelgesiExpiryDate() || (vehicle && vehicle.tasitKartiExpiryDate) || '').trim();
+    return String(window.MedisaVehicleNotificationDomain.getK2BelgesiExpiryDate() || (vehicle && vehicle.tasitKartiExpiryDate) || '').trim();
   }
 
   function getTasitKartiSourceK2ExpiryIsoDate() {
-    return parseVehicleDocumentExpiryDate(getK2BelgesiExpiryDate());
+    return parseVehicleDocumentExpiryDate(window.MedisaVehicleNotificationDomain.getK2BelgesiExpiryDate());
   }
 
   function validateTasitKartiK2SourceDate() {
@@ -7308,10 +7246,10 @@
 
   function getVehicleDocumentKeysForVehicle(vehicle) {
     var keys = ['ruhsat', 'sigorta', 'kasko'];
-    if (vehicleNeedsK2Belgesi(vehicle)) {
+    if (window.MedisaVehicleNotificationDomain.vehicleNeedsK2Belgesi(vehicle)) {
       keys.push('tasit_karti');
     }
-    if (vehicleNeedsTakograf(vehicle)) {
+    if (window.MedisaVehicleNotificationDomain.vehicleNeedsTakograf(vehicle)) {
       keys.push('takograf');
     }
     return keys;
@@ -8956,7 +8894,7 @@
         invalidateRuhsatDocumentCache(vehicleId, cfg.key);
         var newPath = data.documentPath || data.ruhsatPath;
         if (cfg.scope === 'settings') {
-          const k2State = getK2BelgesiState();
+          const k2State = window.MedisaVehicleNotificationDomain.getK2BelgesiState();
           if (newPath) {
             k2State.documentPath = newPath;
           }
@@ -9598,7 +9536,7 @@
     const vehicleId = svc.vehicleId;
     const vehicle = svc.vehicle;
     const vehicles = svc.vehicles;
-    if (!vehicleNeedsTakograf(vehicle)) {
+    if (!window.MedisaVehicleNotificationDomain.vehicleNeedsTakograf(vehicle)) {
       alert('Takograf kalibrasyonu sadece büyük ticari taşıtlarda kullanılır.');
       return;
     }
@@ -9659,7 +9597,7 @@
     const vehicleId = svc.vehicleId;
     const vehicle = svc.vehicle;
     const vehicles = svc.vehicles;
-    if (!vehicleNeedsK2Belgesi(vehicle)) {
+    if (!window.MedisaVehicleNotificationDomain.vehicleNeedsK2Belgesi(vehicle)) {
       alert('Taşıt Kartı güncellemesi sadece K2 belgesi kapsamındaki taşıtlarda kullanılır.');
       return;
     }
