@@ -4,7 +4,7 @@
   color: var(--theme-color) !important;
 }
 .icon-btn.notification-orange {
-  color: #f2b13f !important;
+  color: #e8b832 !important;
 }
 
 /* Bildirim zili: kırmızı/turuncu severity → motor arıza (driver mask yaklaşımı) */
@@ -56,8 +56,8 @@
 }
 
 .notification-item.date-warning-orange-border {
-  border-color: rgba(var(--notif-amber-rgb, 242, 177, 63), 0.72) !important;
-  background: linear-gradient(180deg, rgba(var(--notif-amber-rgb, 242, 177, 63), 0.055), rgba(8, 13, 22, 0.96)) !important;
+  border-color: rgba(var(--notif-amber-rgb, 232, 184, 50), 0.78) !important;
+  background: linear-gradient(180deg, rgba(var(--notif-amber-rgb, 232, 184, 50), 0.075), rgba(8, 13, 22, 0.96)) !important;
   box-shadow: none !important;
 }
 
@@ -136,10 +136,10 @@
 }
 #notifications-dropdown.settings-dropdown > .notification-item.date-warning-orange-border:not(.mtv-notification):is(:hover, :focus, :active, :focus-visible),
 #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible) {
-  border-color: rgba(var(--notif-amber-rgb, 242, 177, 63), 0.9) !important;
-  background: rgba(var(--notif-amber-rgb, 242, 177, 63), 0.09) !important;
+  border-color: rgba(var(--notif-amber-rgb, 232, 184, 50), 0.9) !important;
+  background: rgba(var(--notif-amber-rgb, 232, 184, 50), 0.11) !important;
   box-shadow: none !important;
-  color: var(--notif-amber, #f2b13f) !important;
+  color: var(--notif-amber, #e8b832) !important;
   transform: none !important;
   transform-origin: center center !important;
   z-index: 4 !important;
@@ -154,7 +154,7 @@
 #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible) .notif-line1,
 #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible) .notif-title,
 #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible) .notif-line2 {
-  color: var(--notif-amber, #f2b13f) !important;
+  color: var(--notif-amber, #e8b832) !important;
 }
 /* Tarih uyarı kartları: settings-dropdown button mirasını ez; altta sadece 2px padding */
 #notifications-dropdown .notification-item.date-warning-red-border:not(.kasko-excel-notification),
@@ -231,7 +231,7 @@
 }
 /* Severity tarih uyarısı: ikinci satır tema ile uyumlu (font ölçüleri üst blokta) */
 #notifications-dropdown .notification-item.date-warning-orange-border .notif-line2 {
-  color: rgba(var(--notif-amber-rgb, 242, 177, 63), 0.82);
+  color: rgba(var(--notif-amber-rgb, 232, 184, 50), 0.92);
 }
 #notifications-dropdown .notification-item.date-warning-red-border .notif-line2 {
   color: rgba(var(--notif-red-rgb, 224, 68, 94), 0.84);
@@ -246,7 +246,7 @@
   opacity: 0.95;
 }
 #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border .notif-line2.notif-meta-date {
-  color: rgba(var(--notif-amber-rgb, 242, 177, 63), 0.84);
+  color: rgba(var(--notif-amber-rgb, 232, 184, 50), 0.92);
   opacity: 0.95;
 }
 #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border .notif-line2.notif-meta-date {
@@ -322,8 +322,8 @@
 #notifications-dropdown {
   --notif-red: var(--theme-color);
   --notif-red-rgb: var(--theme-color-rgb);
-  --notif-amber: var(--orange-warn);
-  --notif-amber-rgb: var(--orange-warn-rgb);
+  --notif-amber: #e8b832;
+  --notif-amber-rgb: 232, 184, 50;
   overflow-y: auto !important;
   overflow-x: hidden !important;
   -webkit-overflow-scrolling: touch;
@@ -469,8 +469,8 @@ body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-
 }
 
 #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border {
-  --notif-border: rgba(var(--notif-amber-rgb, 242, 177, 63), 0.72);
-  background: linear-gradient(180deg, rgba(var(--notif-amber-rgb, 242, 177, 63), 0.055), rgba(8, 13, 22, 0.96)) !important;
+  --notif-border: rgba(var(--notif-amber-rgb, 232, 184, 50), 0.78);
+  background: linear-gradient(180deg, rgba(var(--notif-amber-rgb, 232, 184, 50), 0.075), rgba(8, 13, 22, 0.96)) !important;
   box-shadow: none !important;
 }
 
@@ -501,7 +501,7 @@ body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-
 
 #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border .notif-line1,
 #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border .notif-title {
-  color: var(--notif-amber, #f2b13f) !important;
+  color: var(--notif-amber, #e8b832) !important;
 }
 
 #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border .notif-line1,
@@ -520,7 +520,7 @@ body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-
   color: var(--notif-red, #e0445e) !important;
 }
 #notifications-dropdown.settings-dropdown > button.notification-item .notif-line1 .date-warning-orange {
-  color: var(--notif-amber, #f2b13f) !important;
+  color: var(--notif-amber, #e8b832) !important;
 }
 
 #notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request:not(.date-warning-red-border):not(.date-warning-orange-border) .notif-line1 .date-warning-red,
@@ -772,8 +772,8 @@ body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-
     box-shadow: none !important;
   }
   .notification-item.date-warning-orange-border {
-    border-color: rgba(var(--notif-amber-rgb, 242, 177, 63), 0.72) !important;
-    background: linear-gradient(180deg, rgba(var(--notif-amber-rgb, 242, 177, 63), 0.055), rgba(8, 13, 22, 0.96)) !important;
+    border-color: rgba(var(--notif-amber-rgb, 232, 184, 50), 0.78) !important;
+    background: linear-gradient(180deg, rgba(var(--notif-amber-rgb, 232, 184, 50), 0.075), rgba(8, 13, 22, 0.96)) !important;
     box-shadow: none !important;
   }
   #notifications-dropdown .notification-item-activity {
@@ -814,7 +814,7 @@ body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-
     color: var(--notif-red, #e0445e) !important;
   }
   #notifications-dropdown .notification-item .date-warning-orange {
-    color: var(--notif-amber, #f2b13f) !important;
+    color: var(--notif-amber, #e8b832) !important;
   }
   #notifications-dropdown .notification-item.is-driver-request:not(.date-warning-red-border):not(.date-warning-orange-border) .date-warning-red,
   #notifications-dropdown .notification-item.is-driver-request:not(.date-warning-red-border):not(.date-warning-orange-border) .date-warning-orange {
@@ -843,7 +843,7 @@ body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-
   }
   #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible) .notif-line1,
   #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible) .notif-title {
-    color: var(--notif-amber, #f2b13f) !important;
+    color: var(--notif-amber, #e8b832) !important;
   }
   #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border:is(:hover, :focus, :active, :focus-visible) .notif-line1,
   #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border:is(:hover, :focus, :active, :focus-visible) .notif-title {
@@ -867,10 +867,10 @@ body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-
   }
   #notifications-dropdown.settings-dropdown > .notification-item.date-warning-orange-border:not(.mtv-notification):is(:hover, :focus, :active, :focus-visible),
   #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible) {
-    border-color: rgba(var(--notif-amber-rgb, 242, 177, 63), 0.9) !important;
-    background: rgba(var(--notif-amber-rgb, 242, 177, 63), 0.09) !important;
+    border-color: rgba(var(--notif-amber-rgb, 232, 184, 50), 0.9) !important;
+    background: rgba(var(--notif-amber-rgb, 232, 184, 50), 0.11) !important;
     box-shadow: none !important;
-    color: var(--notif-amber, #f2b13f) !important;
+    color: var(--notif-amber, #e8b832) !important;
     transform: none !important;
     transform-origin: center center !important;
     z-index: 4 !important;
@@ -895,7 +895,7 @@ body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-
   #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible) .notif-line1,
   #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible) .notif-title,
   #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible) .notif-line2 {
-    color: var(--notif-amber, #f2b13f) !important;
+    color: var(--notif-amber, #e8b832) !important;
   }
 
   #notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request:not(.date-warning-red-border):not(.date-warning-orange-border):is(:hover, :focus, :active, :focus-visible) .notif-line1,
@@ -914,7 +914,7 @@ body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-
   }
   #notifications-dropdown .notification-item.mtv-notification:hover {
     background: rgba(255, 255, 255, 0.08) !important;
-    border-color: rgba(var(--notif-amber-rgb, 242, 177, 63), 0.62) !important;
+    border-color: rgba(var(--notif-amber-rgb, 232, 184, 50), 0.62) !important;
     box-shadow: none !important;
   }
   #notifications-dropdown .notification-item.kasko-excel-notification {
@@ -1134,8 +1134,8 @@ body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-
         color: rgba(var(--notif-red-rgb, 224, 68, 94), 0.84) !important;
     }
     #notifications-dropdown .notification-item.date-warning-orange-border {
-        border-color: rgba(var(--notif-amber-rgb, 242, 177, 63), 0.68) !important;
-        background: linear-gradient(180deg, rgba(var(--notif-amber-rgb, 242, 177, 63), 0.055), rgba(8, 13, 22, 0.96)) !important;
+        border-color: rgba(var(--notif-amber-rgb, 232, 184, 50), 0.78) !important;
+        background: linear-gradient(180deg, rgba(var(--notif-amber-rgb, 232, 184, 50), 0.075), rgba(8, 13, 22, 0.96)) !important;
         box-shadow: none !important;
     }
     #notifications-dropdown .kasko-excel-notification {
@@ -1151,8 +1151,8 @@ body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-
     }
     #notifications-dropdown.settings-dropdown > .notification-item.date-warning-orange-border:not(.mtv-notification):is(:hover, :focus, :active, :focus-visible),
     #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible) {
-        border-color: rgba(var(--notif-amber-rgb, 242, 177, 63), 0.86) !important;
-        background: rgba(var(--notif-amber-rgb, 242, 177, 63), 0.085) !important;
+        border-color: rgba(var(--notif-amber-rgb, 232, 184, 50), 0.86) !important;
+        background: rgba(var(--notif-amber-rgb, 232, 184, 50), 0.11) !important;
         box-shadow: none !important;
         transform: none !important;
     }
@@ -1921,11 +1921,11 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
 }
 
 #monthly-todo-modal .monthly-todo-task-row--upcoming {
-  border-left-color: var(--orange-warn);
+  border-left-color: #e8b832;
 }
 
 #monthly-todo-modal .monthly-todo-task-row--upcoming .monthly-todo-type {
-  color: #a0aec0;
+  color: #e8b832;
 }
 
 #monthly-todo-modal .monthly-todo-task-row > * {
