@@ -4220,6 +4220,36 @@
     });
   }
 
+  function formatOlayGgAaYyyyDefault(dateValue) {
+    if (!dateValue) return '';
+    var formatted = formatDateForDisplay(dateValue);
+    if (/\s\d{2}:\d{2}$/.test(formatted)) formatted = formatted.replace(/\s+\d{2}:\d{2}$/, '');
+    return normalizeGgAaYyyyInput(formatted);
+  }
+
+  function resolveOlayEgzozMuayeneDefaultGgAa(vehicle) {
+    if (!vehicle) return '';
+    if (Array.isArray(vehicle.events)) {
+      for (var i = 0; i < vehicle.events.length; i++) {
+        var ev = vehicle.events[i];
+        var eventData = ev && ev.data ? ev.data : {};
+        var yapilma = eventData.egzozMuayeneYapilmaDate;
+        if (yapilma != null && String(yapilma).trim() !== '') {
+          var yapilmaDefault = formatOlayGgAaYyyyDefault(yapilma);
+          if (yapilmaDefault) return yapilmaDefault;
+        }
+      }
+    }
+    if (vehicle.egzozMuayeneDate) {
+      var vehicleType = vehicle.vehicleType || vehicle.tip || 'otomobil';
+      var profile = getVehicleTypeRuleProfile(vehicleType);
+      var yearsBack = -getMuayeneRenewalYearsByProfile(profile);
+      var previousIso = addYears(String(vehicle.egzozMuayeneDate).trim(), yearsBack);
+      return formatOlayGgAaYyyyDefault(previousIso);
+    }
+    return '';
+  }
+
   function syncOlayEgzozMuayeneFields() {
     const checkbox = document.getElementById('muayene-egzoz-different');
     const wrapper = document.getElementById('muayene-egzoz-date-wrapper');
@@ -4228,10 +4258,15 @@
     if (wrapper) wrapper.classList.toggle('egzoz-date-visible', visible);
     if (input) {
       input.disabled = !visible;
+      if (visible && !String(input.value || '').trim() && input.dataset.egzozDefaultGgAa) {
+        input.value = input.dataset.egzozDefaultGgAa;
+        syncDinamikOlayDateInputVisual(input);
+      }
       if (!visible) input.value = '';
       const nativeInput = input.closest('.olay-date-mobile-wrap')?.querySelector('.olay-date-mobile-native');
       if (nativeInput) {
         nativeInput.disabled = !visible;
+        if (visible && input.value) nativeInput.value = parseGgAaYyyyToIso(input.value) || '';
         if (!visible) nativeInput.value = '';
       }
     }
@@ -4801,6 +4836,10 @@
         }
         const muayeneTarihInput = document.getElementById('muayene-tarih');
         if (muayeneTarihInput) muayeneTarihInput.value = muayeneDefaultGgAa || formatDateForDisplay(new Date());
+        const egzozTarihInput = document.getElementById('muayene-egzoz-yapilma-tarih');
+        if (egzozTarihInput) {
+          egzozTarihInput.dataset.egzozDefaultGgAa = resolveOlayEgzozMuayeneDefaultGgAa(vehicleMuayenePref);
+        }
         const egzozCheckbox = document.getElementById('muayene-egzoz-different');
         if (egzozCheckbox) {
           egzozCheckbox.checked = false;
