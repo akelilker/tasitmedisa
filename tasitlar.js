@@ -1482,10 +1482,7 @@
     modalContent.addEventListener('click', handleVehicleRowClick);
   }
 
-  /**
-   * Kasko değer listesi bildirimi → Dış Veri / Excel yolu.
-   * Bildirim kısayolu, Ayarlar > Dış Veri paneliyle aynı availability kuralını kullanır.
-   */
+  /** Olay menüsü render state (gruplar, etiketler, aktif taşıt). */
   var eventMenuRenderState = {
     groups: [],
     labels: {},
@@ -3363,14 +3360,6 @@
     const s = formatDateForDisplay(dateStr);
     if (!s) return '';
     return s.replace(/\//g, '.');
-  }
-
-  function medisaNotificationTalepSortMs(str) {
-    const t = Date.parse(String(str || '').trim());
-    if (!isNaN(t)) return t;
-    const d = new Date(str);
-    if (!isNaN(d.getTime())) return d.getTime();
-    return 0;
   }
 
   function getLatestApprovedKmCorrection(vehicleId, kmEvents) {
