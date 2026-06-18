@@ -1218,12 +1218,12 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 }
 
 #event-menu-modal .event-menu-card .event-menu-category-icon-wrap--police-letter {
-    width: 38px;
-    height: 38px;
+    width: 44px;
+    height: 44px;
 }
 
 #event-menu-modal .event-menu-card .event-menu-category-icon-wrap--police-letter .event-menu-category-icon-letter {
-    font-size: 9px;
+    font-size: 10px;
 }
 
 #event-menu-modal .event-menu-card:focus:not(:focus-visible) .event-menu-category-icon-wrap--police-letter {
@@ -1287,12 +1287,12 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 }
 
 #event-menu-modal .event-menu-card {
-    flex: 0 1 140px;
+    flex: 0 1 148px;
     min-width: 0;
-    max-width: 168px;
+    max-width: 176px;
     width: auto;
-    min-height: 72px;
-    padding: 8px 6px;
+    min-height: 78px;
+    padding: 9px 6px;
     box-sizing: border-box;
     overflow: visible;
     border: 0;
@@ -1304,8 +1304,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 6px;
-    font-size: 13px;
+    gap: 7px;
+    font-size: 13.5px;
     font-weight: 600;
     line-height: 1.25;
     text-align: center;
@@ -1360,11 +1360,38 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 }
 
 #event-menu-modal .event-menu-card .event-menu-category-icon {
-    width: 44px;
-    height: 44px;
+    width: 48px;
+    height: 48px;
     overflow: visible;
     box-sizing: content-box;
     padding: 2px 1px 0;
+}
+
+@media (min-width: 641px) {
+    #event-menu-modal .event-menu-row-single .event-menu-card,
+    #event-menu-modal .event-menu-row-one .event-menu-card {
+        flex-basis: 160px;
+        max-width: 188px;
+        min-height: 86px;
+        font-size: 14px;
+    }
+
+    #event-menu-modal .event-menu-row-single .event-menu-card .event-menu-category-icon,
+    #event-menu-modal .event-menu-row-one .event-menu-card .event-menu-category-icon {
+        width: 54px;
+        height: 54px;
+    }
+
+    #event-menu-modal .event-menu-row-single .event-menu-card .event-menu-category-icon-wrap--police-letter,
+    #event-menu-modal .event-menu-row-one .event-menu-card .event-menu-category-icon-wrap--police-letter {
+        width: 50px;
+        height: 50px;
+    }
+
+    #event-menu-modal .event-menu-row-single .event-menu-card .event-menu-category-icon-wrap--police-letter .event-menu-category-icon-letter,
+    #event-menu-modal .event-menu-row-one .event-menu-card .event-menu-category-icon-wrap--police-letter .event-menu-category-icon-letter {
+        font-size: 10px;
+    }
 }
 
 #event-menu-modal .event-menu-card:not(.event-menu-item--status-ok):not(.event-menu-item--status-orange):not(.event-menu-item--status-red):focus-visible .event-menu-category-icon,
@@ -1578,7 +1605,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     }
 
     #event-menu-modal #event-menu-list.event-menu-list {
-        gap: 12px;
+        gap: 16px;
         width: 100%;
     }
 
@@ -1591,49 +1618,54 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     }
 
     #event-menu-modal .event-menu-picker {
-        gap: 18px;
-    }
-
-    #event-menu-modal .event-menu-row {
-        gap: 20px;
-    }
-
-    #event-menu-modal .event-menu-row-pair {
         gap: 22px;
     }
 
+    #event-menu-modal .event-menu-row {
+        gap: 24px;
+    }
+
+    #event-menu-modal .event-menu-row-pair {
+        gap: 26px;
+    }
+
     #event-menu-modal .event-menu-category-card {
-        flex: 0 1 118px;
-        max-width: 148px;
-        min-height: 78px;
-        padding: 6px 4px;
-        gap: 7px;
-        font-size: 13px;
+        flex: 0 1 128px;
+        max-width: 156px;
+        min-height: 92px;
+        padding: 8px 5px;
+        gap: 8px;
+        font-size: 13.5px;
     }
 
     #event-menu-modal .event-menu-category-icon {
-        width: 42px;
-        height: 42px;
-    }
-
-    #event-menu-modal #event-menu-list.event-menu-list--categories .event-menu-category-icon {
         width: 48px;
         height: 48px;
     }
 
+    #event-menu-modal #event-menu-list.event-menu-list--categories .event-menu-category-icon {
+        width: 56px;
+        height: 56px;
+    }
+
     #event-menu-modal .event-menu-card {
-        flex: 0 1 118px;
-        max-width: 148px;
-        min-height: 66px;
-        padding: 6px 4px;
-        gap: 4px;
-        font-size: 12.5px;
+        flex: 0 1 128px;
+        max-width: 156px;
+        min-height: 82px;
+        padding: 8px 5px;
+        gap: 7px;
+        font-size: 13.25px;
         overflow: visible;
     }
 
     #event-menu-modal .event-menu-card .event-menu-category-icon {
-        width: 42px;
-        height: 42px;
+        width: 50px;
+        height: 50px;
+    }
+
+    #event-menu-modal .event-menu-card .event-menu-category-icon-wrap--police-letter {
+        width: 46px;
+        height: 46px;
     }
 }
 
