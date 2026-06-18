@@ -1972,9 +1972,20 @@
     return (monthName || 'Bu Ay') + ' Ayı Özet';
   }
 
+  function getMonthlyTodoHomeButtonHtml() {
+    return '<button type="button" class="modal-home" onclick="closeAllModals()" aria-label="Ana sayfaya dön" title="Ana sayfa">' +
+      '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"></path><path d="M5 10v10h14V10"></path></svg>' +
+      '</button>';
+  }
+
   function syncMonthlyTodoModalHeader(modalEl) {
     if (!modalEl) return;
-    var h2 = modalEl.querySelector('.modal-header h2');
+    var header = modalEl.querySelector('.modal-header');
+    if (!header) return;
+    if (!header.querySelector('.modal-home')) {
+      header.insertAdjacentHTML('afterbegin', getMonthlyTodoHomeButtonHtml());
+    }
+    var h2 = header.querySelector('h2');
     if (!h2) return;
     h2.classList.add('premium-title');
     h2.textContent = getMonthlyTodoTitleText();
@@ -1990,6 +2001,7 @@
       el.innerHTML =
         '<div class="modal-container monthly-todo-modal-container">' +
           '<div class="modal-header">' +
+            getMonthlyTodoHomeButtonHtml() +
             '<h2 class="premium-title">' + escapeHtml(getMonthlyTodoTitleText()) + '</h2>' +
             '<button type="button" class="modal-close monthly-todo-modal-close" aria-label="Kapat">' +
               '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>' +
