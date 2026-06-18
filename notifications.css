@@ -322,8 +322,8 @@
 #notifications-dropdown {
   --notif-red: var(--theme-color);
   --notif-red-rgb: var(--theme-color-rgb);
-  --notif-amber: #e8b832;
-  --notif-amber-rgb: 232, 184, 50;
+  --notif-amber: #f49119;
+  --notif-amber-rgb: 244, 145, 25;
   overflow-y: auto !important;
   overflow-x: hidden !important;
   -webkit-overflow-scrolling: touch;
@@ -1921,11 +1921,11 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
 }
 
 #monthly-todo-modal .monthly-todo-task-row--upcoming {
-  border-left-color: #e8b832;
+  border-left-color: #f49119;
 }
 
 #monthly-todo-modal .monthly-todo-task-row--upcoming .monthly-todo-type {
-  color: #e8b832;
+  color: #a0aec0;
 }
 
 #monthly-todo-modal .monthly-todo-task-row > * {
