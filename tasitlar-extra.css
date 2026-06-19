@@ -1037,19 +1037,19 @@
   }
 
   #dinamik-olay-modal #ruhsat-modal-content .vehicle-document-card {
-    flex: 0 1 118px;
-    max-width: 148px;
+    flex: 0 1 124px;
+    max-width: 156px;
     padding: 6px 4px;
   }
 
   #dinamik-olay-modal #ruhsat-modal-content .vehicle-document-icon-wrap {
-    width: 54px;
-    height: 54px;
+    width: 62px;
+    height: 62px;
   }
 
   #dinamik-olay-modal #ruhsat-modal-content .vehicle-document-icon {
-    width: 38px;
-    height: 38px;
+    width: 46px;
+    height: 46px;
   }
 }
 #dinamik-olay-modal #ruhsat-btn-group.ruhsat-single-visible {
