@@ -2498,6 +2498,15 @@
             || (isMobileStokViewport() && activeColumns.length >= 7);
         const printHtml = buildStokPrintIframeDocumentHtml(titleText, dateRangeText, tableMarkup, printTableClass, useLandscape);
 
+        if (
+            typeof window.isIOSPWA === 'function' &&
+            window.isIOSPWA() &&
+            typeof window.openMedisaIosPwaPrintPreview === 'function'
+        ) {
+            window.openMedisaIosPwaPrintPreview(printHtml, 'Stok Raporu Yazdır');
+            return;
+        }
+
         var iframe = document.createElement('iframe');
         applyStokPrintIframeLayout(iframe);
         var done = false;
