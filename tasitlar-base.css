@@ -1604,6 +1604,16 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
         padding-top: 10px !important;
     }
 
+    #event-menu-modal .modal-body:has(.event-menu-row-one .event-menu-card[data-event-id="muayene"]) {
+        flex: 1 1 auto !important;
+        min-height: 0 !important;
+        justify-content: center !important;
+        align-items: center !important;
+        padding-top: 0 !important;
+        padding-bottom: calc(18px + env(safe-area-inset-bottom, 0px)) !important;
+        overflow-y: auto !important;
+    }
+
     #event-menu-modal #event-menu-list.event-menu-list {
         gap: 16px;
         width: 100%;
@@ -1666,6 +1676,16 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     #event-menu-modal .event-menu-card .event-menu-category-icon-wrap--police-letter {
         width: 46px;
         height: 46px;
+    }
+
+    #event-menu-modal .event-menu-row-one .event-menu-card[data-event-id="muayene"] {
+        flex-basis: 136px;
+        min-height: 94px;
+    }
+
+    #event-menu-modal .event-menu-row-one .event-menu-card[data-event-id="muayene"] .event-menu-category-icon {
+        width: 58px;
+        height: 58px;
     }
 }
 
