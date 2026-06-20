@@ -1786,10 +1786,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
     padding-top: 0 !important;
   }
   #monthly-todo-modal .monthly-todo-col-header {
-    position: relative;
-    min-height: 34px;
+    min-height: 42px;
     padding-top: 4px;
-    padding-bottom: 6px;
+    padding-bottom: 5px;
   }
   #monthly-todo-modal .monthly-todo-list-scroll {
     padding-top: 2px;
@@ -1802,40 +1801,39 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
   }
   /* Şube filtresi seçiliyken etiket adı Açıklama ile üst üste binmesin: üstte filtre, altta başlık */
   #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h--desc {
-    position: static;
-    flex-direction: row;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 0;
-    white-space: nowrap;
+    gap: 2px;
+    white-space: normal;
   }
   #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h--desc .monthly-todo-branch-filter {
-    position: absolute;
-    top: 3px;
-    right: 10px;
+    position: static;
+    flex: 0 0 auto;
+    align-self: stretch;
     width: auto;
-    max-width: none;
-    min-height: 16px;
-    justify-content: flex-end;
+    max-width: 100%;
+    min-height: 14px;
+    justify-content: center;
   }
   #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h--desc .monthly-todo-branch-filter-trigger {
     width: auto;
-    max-width: 118px;
-    height: 18px;
-    justify-content: flex-end;
+    max-width: 100%;
+    height: 15px;
+    justify-content: center;
     gap: 2px;
     color: rgba(255, 255, 255, 0.72);
   }
   #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h--desc .monthly-todo-branch-filter-trigger .monthly-todo-branch-filter-label {
     display: block;
-    max-width: 98px;
+    max-width: 100px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
   #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h--desc .monthly-todo-branch-filter-trigger .monthly-todo-branch-filter-icon {
-    width: 15px;
-    height: 15px;
+    width: 13px;
+    height: 13px;
   }
   #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h--desc > span:last-child {
     width: 100%;
