@@ -111,6 +111,7 @@ $result = medisaMutateData(function (&$data) use ($tokenData, $aracId, $vehicleV
         'timestamp' => date('c'),
     ];
 
+    $vehiclePatch = [];
     switch ($eventType) {
         case 'anahtar':
             $durum = isset($payload['durum']) ? (string)$payload['durum'] : 'yok';
@@ -180,6 +181,7 @@ $result = medisaMutateData(function (&$data) use ($tokenData, $aracId, $vehicleV
             }
             $bitisTarihi = addYears($tarih, 1);
             $vehicle['sigortaDate'] = $bitisTarihi;
+            $vehiclePatch['sigortaDate'] = $bitisTarihi;
             $eventBase['type'] = 'sigorta-guncelle';
             $eventBase['date'] = $tarih;
             $eventBase['data'] = [
@@ -198,6 +200,7 @@ $result = medisaMutateData(function (&$data) use ($tokenData, $aracId, $vehicleV
             }
             $bitisTarihi = addYears($tarih, 1);
             $vehicle['kaskoDate'] = $bitisTarihi;
+            $vehiclePatch['kaskoDate'] = $bitisTarihi;
             $eventBase['type'] = 'kasko-guncelle';
             $eventBase['date'] = $tarih;
             $eventBase['data'] = [
@@ -221,6 +224,8 @@ $result = medisaMutateData(function (&$data) use ($tokenData, $aracId, $vehicleV
         'message' => 'Kaydedildi!',
         'vehicleId' => (string)$aracId,
         'vehicleVersion' => $newVehicleVersion,
+        'vehiclePatch' => $vehiclePatch,
+        'event' => $eventBase,
         'vehicleVersions' => [[
             'id' => (string)$aracId,
             'version' => $newVehicleVersion,
