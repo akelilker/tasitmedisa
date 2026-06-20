@@ -667,6 +667,7 @@ select option:active {
     padding: 8px 10px;
     font-size: 12px !important;
     line-height: 1.35;
+    text-align: center;
     color: rgba(232, 236, 241, 0.94);
     background: transparent;
     border-bottom: 1px solid rgba(190, 200, 214, 0.10);
