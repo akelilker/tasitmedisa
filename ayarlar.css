@@ -632,6 +632,18 @@ body.modal-open #info-modal .modal-container {
     color: #7dffae;
 }
 
+#required-documents-modal .required-k2-document-area--drag-over .required-k2-document-picker {
+    border-color: rgba(40, 167, 69, 0.85);
+    background: rgba(40, 167, 69, 0.14);
+    color: #7dffae;
+}
+
+#required-documents-modal .required-k2-document-area--drag-over .required-k2-preview-row {
+    outline: 2px dashed rgba(40, 167, 69, 0.85);
+    outline-offset: 4px;
+    border-radius: 8px;
+}
+
 #required-documents-modal .required-k2-replace-confirm {
     width: min(280px, 100%);
     margin: 0 auto 12px auto;
