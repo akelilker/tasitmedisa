@@ -724,6 +724,77 @@
         }
       }
 
+      function isDesktopDragDropContext() {
+        return typeof window.matchMedia === 'function'
+          && window.matchMedia('(min-width: 641px)').matches;
+      }
+      if (area.dataset.k2DragBound !== '1' && isDesktopDragDropContext()) {
+        var k2DragDepth = 0;
+        function clearK2DocumentDragOverState() {
+          k2DragDepth = 0;
+          area.classList.remove('required-k2-document-area--drag-over');
+        }
+        function isK2DocumentPdfFile(file) {
+          if (!file) return false;
+          var name = String(file.name || '').toLowerCase();
+          return file.type === 'application/pdf' || name.endsWith('.pdf');
+        }
+        function assignK2DocumentFileAndDispatchChange(file) {
+          if (fileInput.disabled) return;
+          if (typeof DataTransfer !== 'function') {
+            alert('Bu tarayıcı sürükle-bırak dosya atamasını desteklemiyor. Dosya Seç ile yükleyin.');
+            return;
+          }
+          var dt = new DataTransfer();
+          dt.items.add(file);
+          fileInput.files = dt.files;
+          fileInput.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+        area.addEventListener('dragenter', function() {
+          if (!isDesktopDragDropContext()) {
+            clearK2DocumentDragOverState();
+            return;
+          }
+          k2DragDepth += 1;
+          area.classList.add('required-k2-document-area--drag-over');
+        });
+        area.addEventListener('dragover', function(event) {
+          event.preventDefault();
+          event.stopPropagation();
+          if (!isDesktopDragDropContext()) {
+            clearK2DocumentDragOverState();
+          }
+        });
+        area.addEventListener('dragleave', function() {
+          if (!isDesktopDragDropContext()) {
+            clearK2DocumentDragOverState();
+            return;
+          }
+          k2DragDepth -= 1;
+          if (k2DragDepth <= 0) clearK2DocumentDragOverState();
+        });
+        area.addEventListener('drop', function(event) {
+          event.preventDefault();
+          event.stopPropagation();
+          clearK2DocumentDragOverState();
+          if (!isDesktopDragDropContext()) return;
+          if (fileInput.disabled) return;
+          var files = event.dataTransfer && event.dataTransfer.files ? event.dataTransfer.files : null;
+          if (!files || !files.length) return;
+          if (files.length > 1) {
+            alert('Yalnızca tek dosya bırakılabilir.');
+            return;
+          }
+          var droppedFile = files[0];
+          if (!isK2DocumentPdfFile(droppedFile)) {
+            alert('Yalnızca PDF dosyası yüklenebilir.');
+            return;
+          }
+          assignK2DocumentFileAndDispatchChange(droppedFile);
+        });
+        area.dataset.k2DragBound = '1';
+      }
+
       if (fileInput.dataset.k2PickerBound === '1') return;
       fileInput.dataset.k2PickerBound = '1';
       fileInput.addEventListener('change', function() {

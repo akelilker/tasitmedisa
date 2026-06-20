@@ -1259,6 +1259,12 @@
   color: #7dffae !important;
   box-shadow: 0 0 12px rgba(40, 167, 69, 0.22);
 }
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-upload-box--drag-over .ruhsat-select-box {
+  border-color: rgba(40, 167, 69, 0.85) !important;
+  background: rgba(40, 167, 69, 0.14) !important;
+  color: #7dffae !important;
+  box-shadow: 0 0 12px rgba(40, 167, 69, 0.18);
+}
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-select-box-icon {
   font-size: 28px;
   line-height: 1;

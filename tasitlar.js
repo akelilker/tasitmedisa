@@ -6862,6 +6862,76 @@
       requestAnimationFrame(function() { applyDinamikOlayFormDateHelpers(modal); });
     }
     setRuhsatSaveBtnVisibility(saveBtn, false);
+
+    function isDesktopDragDropContext() {
+      return typeof window.matchMedia === 'function'
+        && window.matchMedia('(min-width: 641px)').matches;
+    }
+    var dragDepth = 0;
+    function clearRuhsatUploadDragOverState() {
+      dragDepth = 0;
+      uploadBox.classList.remove('ruhsat-upload-box--drag-over');
+    }
+    function isRuhsatUploadPdfFile(file) {
+      if (!file) return false;
+      var name = String(file.name || '').toLowerCase();
+      return file.type === 'application/pdf' || name.endsWith('.pdf');
+    }
+    function assignRuhsatUploadFileAndDispatchChange(file) {
+      if (input.disabled) return;
+      if (typeof DataTransfer !== 'function') {
+        alert('Bu tarayıcı sürükle-bırak dosya atamasını desteklemiyor. Dosya Seç ile yükleyin.');
+        return;
+      }
+      var dt = new DataTransfer();
+      dt.items.add(file);
+      input.files = dt.files;
+      input.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+    if (isDesktopDragDropContext()) {
+      uploadBox.addEventListener('dragenter', function() {
+        if (!isDesktopDragDropContext()) {
+          clearRuhsatUploadDragOverState();
+          return;
+        }
+        dragDepth += 1;
+        uploadBox.classList.add('ruhsat-upload-box--drag-over');
+      });
+      uploadBox.addEventListener('dragover', function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        if (!isDesktopDragDropContext()) {
+          clearRuhsatUploadDragOverState();
+        }
+      });
+      uploadBox.addEventListener('dragleave', function() {
+        if (!isDesktopDragDropContext()) {
+          clearRuhsatUploadDragOverState();
+          return;
+        }
+        dragDepth -= 1;
+        if (dragDepth <= 0) clearRuhsatUploadDragOverState();
+      });
+      uploadBox.addEventListener('drop', function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        clearRuhsatUploadDragOverState();
+        if (!isDesktopDragDropContext()) return;
+        if (input.disabled) return;
+        var files = event.dataTransfer && event.dataTransfer.files ? event.dataTransfer.files : null;
+        if (!files || !files.length) return;
+        if (files.length > 1) {
+          alert('Yalnızca tek dosya bırakılabilir.');
+          return;
+        }
+        var droppedFile = files[0];
+        if (!isRuhsatUploadPdfFile(droppedFile)) {
+          alert('Yalnızca PDF dosyası yüklenebilir.');
+          return;
+        }
+        assignRuhsatUploadFileAndDispatchChange(droppedFile);
+      });
+    }
   }
 
   function setRuhsatUploadProgressVisible(visible, percent, indeterminate) {
