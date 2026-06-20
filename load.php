@@ -33,6 +33,15 @@ if (!$context) {
     exit;
 }
 
+$sessionOnly = isset($_GET['session']) && (string)$_GET['session'] === '1';
+if ($sessionOnly) {
+    echo json_encode([
+        'success' => true,
+        'session' => medisaBuildSessionPayload($context),
+    ], JSON_UNESCAPED_UNICODE);
+    exit;
+}
+
 $filtered = medisaFilterDataForContext($data, $context);
 echo json_encode($filtered, JSON_UNESCAPED_UNICODE);
 ?>
