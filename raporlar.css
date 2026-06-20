@@ -1852,6 +1852,7 @@ margin-left: 0 !important;
 }
 /* Masaüstü düzenleme: Sol ok + Raporlar üstte, Detay Ekleme altta ve sola yaslı */
 #reports-modal .modal-container {
+margin-top: 2px !important;
 overflow: hidden !important;
 border-bottom: 1px solid var(--border-medium) !important;
 border-bottom-left-radius: var(--modal-radius, 10px) !important;
