@@ -528,7 +528,6 @@ body.dashboard-page {
   height: 24px;
 }
 
-.driver-below-hero-row .driver-btn-history,
 .driver-below-hero-row .driver-btn-password,
 .driver-below-hero-row .driver-btn-header-logout {
   width: auto;
@@ -544,9 +543,6 @@ body.dashboard-page {
   appearance: none;
   -webkit-tap-highlight-color: transparent;
 }
-.driver-below-hero-row .driver-btn-history:hover,
-.driver-below-hero-row .driver-btn-history:focus,
-.driver-below-hero-row .driver-btn-history:active,
 .driver-below-hero-row .driver-btn-password:hover,
 .driver-below-hero-row .driver-btn-password:focus,
 .driver-below-hero-row .driver-btn-password:active,
@@ -684,7 +680,6 @@ body.dashboard-page {
   .dashboard-page .driver-header-fixed {
     padding-bottom: 0 !important;
   }
-  .dashboard-page .driver-below-hero-row .driver-btn-history,
   .dashboard-page .driver-below-hero-row .driver-btn-password,
   .dashboard-page .driver-below-hero-row .driver-btn-header-logout {
     margin: 0 !important;
@@ -725,10 +720,6 @@ body.dashboard-page {
   .dashboard-page .driver-status-icon-slot-warning .driver-warning-icon-engine {
     transition: transform 0.18s ease;
     transform-origin: center center;
-  }
-  .dashboard-page .driver-below-hero-row .driver-btn-history .driver-btn-history-icon {
-    width: 23px !important;
-    height: 23px !important;
   }
   .dashboard-page .driver-below-hero-row .driver-btn-header-logout .driver-btn-header-logout-icon {
     width: 24px !important;
@@ -944,11 +935,6 @@ body.dashboard-page {
     transform: scale(1.18);
     filter: drop-shadow(0 0 3px rgba(238, 246, 255, 0.2));
   }
-  .dashboard-page .driver-status-icon-slot-history .driver-btn-history,
-  .dashboard-page .driver-action-feedback-slot.driver-request-fab-row .driver-documents-fab,
-  .dashboard-page .driver-action-feedback-slot.driver-request-fab-row .driver-feedback-fab {
-    display: none !important;
-  }
   /* Masaüstü Kaza Formu: Tutar kutusu ve Şema ana dış kutusunun alt boşluklarını 4px'e eziyoruz */
   .dashboard-page .driver-report-block-kaza .form-group:has(label[for^="kaza-tutar-"]),
   .dashboard-page .driver-report-block-kaza .form-group:has(.driver-kaporta-container) {
@@ -1048,18 +1034,12 @@ body.dashboard-page {
     padding-top: 2px !important;
     padding-bottom: 2px !important;
   }
-  /* Masaüstü: Talep/şikayet FAB satırı doğal akışta kalır; ekstra alt tampon yok. */
   /* Bildir ile FAB: boşken status kutusu yer kaplamasın (yardımcı aksiyon Bildir'e yakın kalsın) */
   .dashboard-page .driver-action-footer .status-message:empty {
     margin-top: 0;
     padding: 0;
     min-height: 0;
     border: none;
-  }
-  /* Masaüstü: Talep/şikayet FAB, Bildir butonundan sonra kontrollü aksın */
-  .dashboard-page .driver-action-feedback-slot.driver-request-fab-row {
-    margin-top: 4px;
-    margin-bottom: 0;
   }
 }
 
@@ -1307,11 +1287,6 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
 .driver-sliding-warning.driver-sliding-warning-orange .driver-warning-icon {
   color: var(--orange-warn);
 }
-@media (prefers-reduced-motion: reduce) {
-  .driver-action-btn-feedback.driver-request-fab .driver-action-btn-feedback-icon {
-    animation: none;
-  }
-}
 .driver-warning-icon {
   color: var(--theme-color);
   display: inline-flex;
@@ -1478,113 +1453,8 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
 .driver-vehicle-shortcuts {
   display: none;
 }
-.dashboard-page .driver-status-icon-slot-history .driver-btn-history {
-  display: none !important;
-}
-/* Sağ kolon: Belgeler + Talep Gönder mini FAB satırı (Bildir altında sağda) */
-.driver-request-fab-row {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 10px;
-  width: 100%;
-  margin-top: 3px;
-  min-height: 28px;
-}
-.dashboard-page .driver-action-group.driver-action-feedback-slot.driver-request-fab-row {
-  display: none !important;
-}
-.driver-request-fab-row .driver-btn-logout.driver-request-fab {
-  color: rgba(186, 92, 92, 0.88);
-}
-.driver-request-fab-row .driver-btn-logout.driver-request-fab:hover,
-.driver-request-fab-row .driver-btn-logout.driver-request-fab:focus-visible {
-  color: rgba(200, 108, 108, 0.95);
-  width: 96px;
-  filter: drop-shadow(0 0 3px rgba(186, 92, 92, 0.18));
-}
-.driver-action-btn-feedback.driver-request-fab {
-  display: inline-flex;
-  align-items: center;
-  justify-content: flex-end;
-  flex-direction: row;
-  gap: 6px;
-  width: 40px;
-  min-width: 40px;
-  height: 40px;
-  padding: 0;
-  border: none;
-  background: transparent;
-  box-shadow: none;
-  color: rgba(200, 210, 222, 0.74);
-  cursor: pointer;
-  overflow: hidden;
-  white-space: nowrap;
-  transition: width .18s ease, color .18s ease, background .18s ease, transform .18s ease;
-  margin-left: 0;
-  transform: translateX(4px);
-}
-.driver-action-btn-feedback.driver-request-fab .driver-action-btn-feedback-icon {
-  width: 29px;
-  height: 29px;
-  flex: 0 0 auto;
-  color: currentColor;
-  opacity: 0.9;
-  transform-origin: center center;
-  animation: none;
-}
-@keyframes driver-feedback-fab-pulse {
-  0%, 82%, 100% {
-    transform: scale(1);
-    filter: drop-shadow(0 0 0 rgba(238, 246, 255, 0));
-  }
-  87% {
-    transform: scale(1.08);
-    filter: drop-shadow(0 0 7px rgba(238, 246, 255, 0.34));
-  }
-  92% {
-    transform: scale(1);
-    filter: drop-shadow(0 0 0 rgba(238, 246, 255, 0));
-  }
-}
-.driver-request-fab-label {
-  opacity: 0;
-  max-width: 0;
-  overflow: hidden;
-  transition: opacity .18s ease, max-width .18s ease;
-}
-.driver-action-btn-feedback.driver-request-fab:hover,
-.driver-action-btn-feedback.driver-request-fab:focus-visible {
-  width: 132px;
-  padding: 0 10px;
-  color: rgba(225, 232, 242, 0.9);
-  background: transparent;
-  box-shadow: none;
-  border-radius: 8px;
-}
-
-.driver-action-btn-feedback.driver-request-fab:hover .driver-action-btn-feedback-icon,
-.driver-action-btn-feedback.driver-request-fab:focus-visible .driver-action-btn-feedback-icon {
-  animation: none;
-  transform: scale(1.04);
-  filter: drop-shadow(0 0 3px rgba(180, 192, 210, 0.16));
-}
-.driver-action-btn-feedback.driver-request-fab:hover .driver-request-fab-label,
-.driver-action-btn-feedback.driver-request-fab:focus-visible .driver-request-fab-label {
-  opacity: 1;
-  max-width: 96px;
-}
-.driver-action-btn-feedback.driver-documents-fab:hover,
-.driver-action-btn-feedback.driver-documents-fab:focus-visible {
-  width: 112px;
-}
 
 @media (max-width: 768px) {
-  .dashboard-page .driver-request-fab-row {
-    justify-content: flex-end !important;
-    padding-right: 3px !important;
-    box-sizing: border-box !important;
-  }
   .dashboard-page .driver-left-quick-actions {
     display: grid;
     flex: 0 0 auto;
@@ -1636,23 +1506,6 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
   .dashboard-page .driver-left-quick-action:focus-visible .driver-left-quick-action-icon {
     transform: scale(1.14);
     filter: drop-shadow(0 0 3px rgba(238, 246, 255, 0.18));
-  }
-  .dashboard-page .driver-action-btn-feedback.driver-request-fab {
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    transform: translateX(0) !important;
-  }
-  .driver-action-btn-feedback.driver-request-fab:focus,
-  .driver-action-btn-feedback.driver-request-fab:active {
-    width: 132px;
-    padding: 0 10px;
-    background: transparent;
-    box-shadow: none;
-  }
-  .driver-action-btn-feedback.driver-request-fab:focus .driver-request-fab-label,
-  .driver-action-btn-feedback.driver-request-fab:active .driver-request-fab-label {
-    opacity: 1;
-    max-width: 96px;
   }
   /* Mobil: orijinal ikonu (driver-left-panel-content içindeki) gizle */
   .dashboard-page .driver-left-panel-content .driver-left-quick-actions {
@@ -2065,29 +1918,6 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
   gap: 6px;
   margin-bottom: 10px;
 }
-.driver-action-group.driver-action-feedback-slot.driver-request-fab-row {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 10px;
-  overflow: visible;
-}
-.driver-action-group.driver-action-feedback-slot.driver-request-fab-row > .driver-request-fab {
-  flex: 0 0 auto;
-  display: inline-flex;
-  width: 40px;
-  min-width: 40px;
-  height: 40px;
-}
-.driver-action-group.driver-action-feedback-slot.driver-request-fab-row > .driver-request-fab:hover,
-.driver-action-group.driver-action-feedback-slot.driver-request-fab-row > .driver-request-fab:focus-visible {
-  width: 132px;
-}
-.driver-action-group.driver-action-feedback-slot.driver-request-fab-row > .driver-documents-fab:hover,
-.driver-action-group.driver-action-feedback-slot.driver-request-fab-row > .driver-documents-fab:focus-visible {
-  width: 112px;
-}
 .driver-action-group:last-child { margin-bottom: 0; }
 .driver-action-group .driver-report-block {
   margin-top: 4px;
@@ -2352,16 +2182,6 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
     min-height: 0;
     border: none;
     background: transparent;
-  }
-  .driver-action-btn-feedback.driver-request-fab,
-  .driver-action-btn-feedback.driver-request-fab.driver-documents-fab {
-    width: 44px;
-    min-width: 44px;
-    height: 44px;
-  }
-  .driver-action-btn-feedback.driver-request-fab .driver-action-btn-feedback-icon {
-    width: 32px;
-    height: 32px;
   }
   .driver-action-btn.saved,
   .driver-action-btn.data-entered,
@@ -3403,48 +3223,6 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
 .driver-history-bar {
   margin-top: 16px;
   margin-bottom: 12px;
-}
-
-.driver-btn-history {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0;
-  padding: 2px;
-  background: transparent !important;
-  background-color: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-  outline: none !important;
-  cursor: pointer;
-  transition: opacity 0.2s;
-  -webkit-appearance: none;
-  appearance: none;
-  -webkit-tap-highlight-color: transparent;
-}
-.driver-btn-history:hover,
-.driver-btn-history:focus,
-.driver-btn-history:active {
-  background: transparent !important;
-  background-color: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-  outline: none !important;
-  opacity: 1;
-  transform: scale(1.08);
-}
-.driver-btn-history .driver-btn-history-icon {
-  width: 22px;
-  height: 22px;
-  color: var(--muted);
-  opacity: 0.9;
-}
-.driver-btn-history:hover .driver-btn-history-icon,
-.driver-btn-history:focus .driver-btn-history-icon,
-.driver-btn-history:active .driver-btn-history-icon {
-  opacity: 1;
-  color: rgba(238, 246, 255, 0.98);
-  filter: drop-shadow(0 0 5px rgba(238, 246, 255, 0.34));
 }
 
 /* =========================================
@@ -4680,11 +4458,13 @@ body.login-page.driver-feedback-modal-open #app-footer.login-footer {
 }
 
 .history-selected-plate {
+  display: inline-block;
   color: rgba(var(--theme-color-rgb), 0.92);
   font-size: 13px;
   font-weight: 800;
   letter-spacing: 0.2px;
   line-height: 1.05;
+  transform: translateY(1px);
   white-space: nowrap;
 }
 
@@ -5720,12 +5500,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   letter-spacing: 2px;
 }
 
-/* Geçmiş simgesi büyüt */
-.driver-btn-history .driver-btn-history-icon {
-  width: 24px !important;
-  height: 24px !important;
-}
-
 /* Çıkış butonu büyüt */
 .driver-btn-password,
 .driver-btn-logout {
@@ -6243,11 +6017,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .dashboard-page .vehicle-card .btn-save,
   .dashboard-page .driver-report-item {
     max-width: 100% !important;
-  }
-
-  /* Geçmiş simgesi 2px aşağı */
-  .dashboard-page .driver-btn-history .driver-btn-history-icon {
-    transform: translateY(2px) !important;
   }
 
   /* Üst anahtar + çıkış ikonları */
@@ -7275,9 +7044,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
         margin-top: 8px;
         margin-bottom: 0;
     }
-    .dashboard-page .driver-action-area-inner .driver-action-feedback-slot.driver-request-fab-row {
-        margin-top: 2px;
-    }
     .dashboard-page .driver-action-area .driver-action-group > .driver-action-btn {
         display: flex;
         align-items: center;
@@ -7369,64 +7135,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     padding-bottom: 6px !important;
     min-height: 36px !important;
   }
-
-  /* Belgeler + Talep mini FAB: hover'da layout oynamasın; etiket kendi altında açılsın */
-  .dashboard-page .driver-action-group.driver-action-feedback-slot.driver-request-fab-row {
-    gap: 10px !important;
-    margin-top: 8px !important;
-    padding-bottom: 0 !important;
-  }
-  .dashboard-page .driver-action-btn-feedback.driver-request-fab {
-    position: relative !important;
-    width: 40px !important;
-    min-width: 40px !important;
-    padding: 0 !important;
-    justify-content: center !important;
-    flex-direction: column !important;
-    gap: 0 !important;
-    overflow: visible !important;
-    transform: translateY(0) !important;
-    transition: color .18s ease, background .18s ease, filter .18s ease, transform .18s ease !important;
-  }
-  .dashboard-page .driver-action-group.driver-action-feedback-slot.driver-request-fab-row > .driver-request-fab:hover,
-  .dashboard-page .driver-action-group.driver-action-feedback-slot.driver-request-fab-row > .driver-request-fab:focus-visible,
-  .dashboard-page .driver-action-btn-feedback.driver-request-fab:hover,
-  .dashboard-page .driver-action-btn-feedback.driver-request-fab:focus-visible,
-  .dashboard-page .driver-action-btn-feedback.driver-documents-fab:hover,
-  .dashboard-page .driver-action-btn-feedback.driver-documents-fab:focus-visible {
-    width: 40px !important;
-    min-width: 40px !important;
-    padding: 0 !important;
-    transform: translateY(0) !important;
-  }
-  .dashboard-page .driver-action-btn-feedback.driver-request-fab .driver-request-fab-label {
-    position: static !important;
-    left: 50% !important;
-    top: auto !important;
-    margin-top: 4px !important;
-    transform: scale(1) !important;
-    opacity: 0 !important;
-    max-width: none !important;
-    overflow: visible !important;
-    white-space: nowrap !important;
-    pointer-events: none !important;
-    text-align: center !important;
-    color: rgba(200, 210, 222, 0.78) !important;
-    text-shadow: 0 0 4px rgba(180, 192, 210, 0.14) !important;
-    transition: opacity .18s ease, color .18s ease, transform .18s ease !important;
-  }
-  .dashboard-page .driver-action-btn-feedback.driver-request-fab:hover .driver-request-fab-label,
-  .dashboard-page .driver-action-btn-feedback.driver-request-fab:focus-visible .driver-request-fab-label {
-    opacity: 1 !important;
-    max-width: none !important;
-    color: rgba(225, 232, 242, 0.9) !important;
-    transform: scale(1.06) !important;
-  }
-  .dashboard-page .driver-action-btn-feedback.driver-request-fab:hover .driver-action-btn-feedback-icon,
-  .dashboard-page .driver-action-btn-feedback.driver-request-fab:focus-visible .driver-action-btn-feedback-icon {
-    transform: scale(1.08) !important;
-    filter: drop-shadow(0 0 3px rgba(180, 192, 210, 0.16)) !important;
-  }
 }
 
 /* Masaüstü kısa ekran: kullanıcı paneli footer'a taşmadan tam sığsın */
@@ -7484,12 +7192,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .dashboard-page .driver-action-btn {
     padding: 4px 8px;
     line-height: 1.08;
-  }
-
-  .dashboard-page .driver-action-feedback-slot.driver-request-fab-row {
-    margin-top: 1px;
-    padding-bottom: 0;
-    min-height: 24px;
   }
 
   .dashboard-page .driver-action-footer {
