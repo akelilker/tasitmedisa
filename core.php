@@ -1464,6 +1464,52 @@ function medisaGetVehicleDocumentConfig(string $documentType): ?array {
     return $configs[$type] ?? null;
 }
 
+function medisaResolveVehicleDocumentCandidatePath($rawPath, array $config) {
+    $raw = trim((string)$rawPath);
+    if ($raw === '') {
+        return null;
+    }
+
+    $expectedDir = trim((string)($config['dir'] ?? ''), '/');
+    if ($expectedDir === '') {
+        return null;
+    }
+
+    $relative = ltrim(str_replace('\\', '/', $raw), '/');
+    if (strpos($relative, 'data/') === 0) {
+        $relative = substr($relative, 5);
+    }
+
+    $segments = explode('/', $relative);
+    foreach ($segments as $segment) {
+        if ($segment === '' || $segment === '.' || $segment === '..') {
+            return null;
+        }
+    }
+
+    if (strpos($relative, $expectedDir . '/') !== 0) {
+        return null;
+    }
+
+    $baseDir = realpath(getDataDirPath() . DIRECTORY_SEPARATOR . $expectedDir);
+    if ($baseDir === false) {
+        return null;
+    }
+
+    $candidatePath = getDataDirPath() . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $relative);
+    $realCandidate = realpath($candidatePath);
+    if ($realCandidate === false || !is_file($realCandidate)) {
+        return null;
+    }
+
+    $basePrefix = rtrim($baseDir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+    if (strpos($realCandidate, $basePrefix) !== 0) {
+        return null;
+    }
+
+    return $realCandidate;
+}
+
 function medisaResolveVehicleDocumentFilePath($vehicle, string $documentType, $data = null) {
     if (!is_array($vehicle)) {
         return null;
@@ -1482,21 +1528,19 @@ function medisaResolveVehicleDocumentFilePath($vehicle, string $documentType, $d
             $settingsPathField = (string)($config['settingsPathField'] ?? 'documentPath');
             $rawSettingsPath = trim((string)($settingsDoc[$settingsPathField] ?? ''));
             if ($rawSettingsPath !== '') {
-                $normalizedSettings = ltrim(str_replace('\\', '/', $rawSettingsPath), '/');
-                if (strpos($normalizedSettings, 'data/') !== 0) {
-                    $normalizedSettings = 'data/' . $normalizedSettings;
+                $settingsCandidate = medisaResolveVehicleDocumentCandidatePath($rawSettingsPath, $config);
+                if ($settingsCandidate !== null) {
+                    $candidates[] = $settingsCandidate;
                 }
-                $candidates[] = __DIR__ . '/' . $normalizedSettings;
             }
         }
     }
     $rawPath = trim((string)($vehicle[$config['pathField']] ?? ''));
     if ($rawPath !== '') {
-        $normalized = ltrim(str_replace('\\', '/', $rawPath), '/');
-        if (strpos($normalized, 'data/') !== 0) {
-            $normalized = 'data/' . $normalized;
+        $documentCandidate = medisaResolveVehicleDocumentCandidatePath($rawPath, $config);
+        if ($documentCandidate !== null) {
+            $candidates[] = $documentCandidate;
         }
-        $candidates[] = __DIR__ . '/' . $normalized;
     }
 
     $safeId = preg_replace('/[^a-zA-Z0-9_-]/', '', (string)($vehicle['id'] ?? ''));
