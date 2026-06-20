@@ -3949,6 +3949,17 @@ body.login-page.driver-feedback-modal-open #app-footer.login-footer {
 }
 
 @media (min-width: 641px) {
+  #driver-documents-modal .modal-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #driver-documents-modal .driver-documents-list {
+    flex: 0 0 auto;
+  }
+
   #driver-documents-modal .driver-document-icon-wrap,
   #driver-documents-modal .driver-document-title,
   #driver-documents-modal .driver-document-action {
@@ -4657,12 +4668,31 @@ body.login-page.driver-feedback-modal-open #app-footer.login-footer {
 }
 
 .history-vehicle-trigger-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   flex: 1 1 auto;
   min-width: 0;
   max-width: 100%;
   white-space: normal;
   overflow-wrap: anywhere;
   line-height: 1.18;
+}
+
+.history-selected-plate {
+  color: rgba(var(--theme-color-rgb), 0.92);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+  line-height: 1.05;
+  white-space: nowrap;
+}
+
+.history-selected-model {
+  color: rgba(222, 229, 238, 0.82);
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.12;
 }
 
 #history-modal .history-vehicle-trigger.history-all-selected .history-vehicle-trigger-text {
@@ -6656,10 +6686,10 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     align-items: flex-start !important;
   }
   #history-modal .history-vehicle-trigger-text {
-    display: block !important;
+    display: inline-flex !important;
     white-space: normal !important;
     overflow-wrap: anywhere !important;
-    font-size: 15px !important;
+    font-size: 14px !important;
     line-height: 1.16 !important;
     max-height: 2.32em !important;
     overflow: hidden !important;

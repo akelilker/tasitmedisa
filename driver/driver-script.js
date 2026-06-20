@@ -2983,6 +2983,21 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       return [formatDriverPlaka(v.plaka), brandModel].filter(Boolean).join(' - ');
   }
 
+  function renderHistoryVehicleTrigger(value, text, vehicle) {
+      var triggerText = document.querySelector('.history-vehicle-trigger-text');
+      if (!triggerText) return;
+      if (value === '' || value == null || !vehicle) {
+          triggerText.textContent = text || 'Tüm Taşıtlar';
+          return;
+      }
+      var raw = vehicle.brandModel || [vehicle.marka, vehicle.model].filter(Boolean).join(' ');
+      var brandModel = (typeof window.formatBrandModel === 'function' ? window.formatBrandModel : (typeof window.toTitleCase === 'function' ? window.toTitleCase : function(x){ return x; }))(raw || '') || '';
+      var plate = formatDriverPlaka(vehicle.plaka);
+      triggerText.innerHTML =
+          '<span class="history-selected-plate">' + escapeHtmlDriver(plate) + '</span>' +
+          (brandModel ? '<span class="history-selected-model">' + escapeHtmlDriver(brandModel) + '</span>' : '');
+  }
+
   function updateHistoryTriggerTone(selectedValue) {
       const trigger = document.querySelector('.history-vehicle-trigger');
       if (!trigger) return;
@@ -3009,7 +3024,6 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
   window.showHistory = function() {
       var modal = document.getElementById('history-modal');
       var hiddenInput = document.getElementById('history-vehicle-filter');
-      var triggerText = document.querySelector('.history-vehicle-trigger-text');
       var dropdown = document.getElementById('history-vehicle-dropdown');
       if (!modal || !hiddenInput || !dropdown) return;
       dropdown.innerHTML = '';
@@ -3031,18 +3045,21 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       });
       var defaultVal = '';
       var defaultText = 'Tüm Taşıtlar';
+      var defaultVehicle = null;
       if (allHistoryVehicles && allHistoryVehicles.length === 1) {
           defaultVal = String(allHistoryVehicles[0].id);
           defaultText = formatHistoryVehicleTriggerLabel(allHistoryVehicles[0]);
+          defaultVehicle = allHistoryVehicles[0];
       } else if (allHistoryVehicles && allHistoryVehicles.length > 1 && selectedVehicleId != null && String(selectedVehicleId) !== '') {
           var selForHistory = allHistoryVehicles.find(function(v) { return String(v.id) === String(selectedVehicleId); });
           if (selForHistory) {
               defaultVal = String(selForHistory.id);
               defaultText = formatHistoryVehicleTriggerLabel(selForHistory);
+              defaultVehicle = selForHistory;
           }
       }
       hiddenInput.value = defaultVal;
-      if (triggerText) triggerText.textContent = defaultText;
+      renderHistoryVehicleTrigger(defaultVal, defaultText, defaultVehicle);
       updateHistoryTriggerTone(defaultVal);
       setHistoryVehicleDropdownOpen(false);
       modal.classList.add('show');
@@ -3062,9 +3079,9 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
 
   function selectHistoryVehicle(value, text) {
       const hiddenInput = document.getElementById('history-vehicle-filter');
-      const triggerText = document.querySelector('.history-vehicle-trigger-text');
       if (hiddenInput) hiddenInput.value = value;
-      if (triggerText) triggerText.textContent = text;
+      var selectedVehicle = value ? (allHistoryVehicles || []).find(function(v) { return String(v.id) === String(value); }) : null;
+      renderHistoryVehicleTrigger(value, text, selectedVehicle);
       updateHistoryTriggerTone(value);
       setHistoryVehicleDropdownOpen(false);
       renderHistoryList();
