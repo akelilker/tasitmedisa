@@ -1814,13 +1814,13 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
     width: auto;
     max-width: 100%;
     min-height: 14px;
-    justify-content: center;
+    justify-content: flex-end;
   }
   #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h--desc .monthly-todo-branch-filter-trigger {
     width: auto;
     max-width: 100%;
     height: 15px;
-    justify-content: center;
+    justify-content: flex-end;
     gap: 2px;
     color: rgba(255, 255, 255, 0.72);
   }
