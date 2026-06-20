@@ -164,6 +164,7 @@ $result = medisaMutateData(function (&$data) use ($tokenData, $aracId, $vehicleV
             }
             $vehicle['muayeneDate'] = $bitisTarihi;
             $vehicle['egzozMuayeneDate'] = $egzozMuayeneDate;
+            $vehiclePatch['muayeneDate'] = $bitisTarihi;
             $eventBase['type'] = 'muayene-guncelle';
             $eventBase['date'] = $tarih;
             $eventBase['data'] = [

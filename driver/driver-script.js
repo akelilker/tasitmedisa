@@ -2574,6 +2574,25 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       pendingMuayeneVehicleId = null;
   };
 
+  function refreshDriverMuayeneLocally(vehicleId, result) {
+      const localVehicle = (allHistoryVehicles || []).find(function(v) { return String(v.id) === String(vehicleId); });
+      if (!localVehicle) return false;
+      const vehiclePatch = result && result.vehiclePatch && typeof result.vehiclePatch === 'object' ? result.vehiclePatch : {};
+      localVehicle.muayeneDate = vehiclePatch.muayeneDate || localVehicle.muayeneDate || '';
+      if (!Array.isArray(localVehicle.events)) localVehicle.events = [];
+      if (result && result.event && typeof result.event === 'object') {
+          localVehicle.events.unshift(result.event);
+      }
+      if (allHistoryVehicles && allHistoryVehicles.length > 1) {
+          setupPlateDropdown(allHistoryVehicles);
+      }
+      var historyModal = document.getElementById('history-modal');
+      if (historyModal && historyModal.classList.contains('show')) {
+          renderHistoryList();
+      }
+      return switchDriverDashboardVehicle(vehicleId);
+  }
+
   window.confirmMuayeneSubmit = async function() {
       if (!ensureDriverOnlineForWrite()) return;
       if (!pendingMuayeneVehicleId) return;
@@ -2595,7 +2614,9 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
               applyVehicleVersionUpdate(vid, result.vehicleVersion);
               lastCompletedActionInSession = { action: 'muayene', vehicleId: vid };
               cancelDriverActionForm('muayene', vid);
-              await loadDashboard();
+              if (!refreshDriverMuayeneLocally(vid, result)) {
+                  await loadDashboard();
+              }
           } else {
               alert(result.message || 'Kayıt başarısız!');
           }
@@ -2692,6 +2713,10 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
                           await loadDashboard();
                       }
                   } else {
+                      await loadDashboard();
+                  }
+              } else if (type === 'muayene') {
+                  if (!refreshDriverMuayeneLocally(vehicleId, result)) {
                       await loadDashboard();
                   }
               } else if (type === 'sigorta' || type === 'kasko') {
