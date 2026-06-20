@@ -3889,6 +3889,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
    algılanıyor ve header altında koyu bant hissi oluşuyordu; sadece kart içeriği nefes alsın,
    modal kabuğu ortak tasarımda kalsın. */
 #vehicles-modal.tasitlar-modal-overlay .modal-container {
+    margin-top: 2px !important;
     overflow: hidden !important;
     background: var(--modal-bg) !important;
     background-color: var(--modal-bg) !important;
