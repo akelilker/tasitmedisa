@@ -1958,9 +1958,11 @@
     if (modal) {
       setVehiclesDetailUnderlay(false);
       resetModalState(modal);
+      if (typeof window.markModalClosing === 'function') window.markModalClosing(modal);
       modal.classList.remove('active');
       setTimeout(() => {
         modal.style.display = 'none';
+        if (typeof window.clearModalClosing === 'function') window.clearModalClosing(modal);
         closeSearchBox(true);
         syncVehiclesListModeClass(false);
         // X butonu sadece modalı kapatır, geri gitme işlemi yapmaz

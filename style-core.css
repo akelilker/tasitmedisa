@@ -647,6 +647,10 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
     z-index: 2;
 }
 
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-returning .app-container::after {
+    opacity: 0;
+}
+
 /* İÇERİK ALANI - Havada durma (yan kırmızı çerçeve), taşma yok */
 .content-wrap {
     flex: 1;
@@ -3018,6 +3022,10 @@ body.modal-open .app-container {
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page):not(.modal-open) .app-container::before,
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page):not(.modal-open) .app-container::after {
     bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0));
+  }
+
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-returning .app-container::before {
+    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
   }
 
   /* Omnidirectional kırmızımsı halo footer köşelerinde birikmez */
