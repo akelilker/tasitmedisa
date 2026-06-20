@@ -320,8 +320,8 @@
 
 /* Bildirim dropdown: kaydırılabilir, scrollbar gizli; kartlar arası dikey 6px (çifte margin yok) */
 #notifications-dropdown {
-  --notif-red: #a80012;
-  --notif-red-rgb: 168, 0, 18;
+  --notif-red: #c40016;
+  --notif-red-rgb: 196, 0, 22;
   --notif-amber: #e07000;
   --notif-amber-rgb: 224, 112, 0;
   overflow-y: auto !important;
@@ -1958,7 +1958,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
 }
 
 #monthly-todo-modal .monthly-todo-task-row--past {
-  border-left-color: #a80012;
+  border-left-color: #c40016;
 }
 
 /* Açıklama metni: Taşıtlar listesi ile aynı veri gri; aciliyet sol şeritte (border-left) */
