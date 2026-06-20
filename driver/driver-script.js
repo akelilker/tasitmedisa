@@ -2694,6 +2694,37 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
                   } else {
                       await loadDashboard();
                   }
+              } else if (type === 'sigorta' || type === 'kasko') {
+                  const localVehicle = (allHistoryVehicles || []).find(function(v) { return String(v.id) === String(vehicleId); });
+                  if (localVehicle) {
+                      const vehiclePatch = result.vehiclePatch && typeof result.vehiclePatch === 'object' ? result.vehiclePatch : {};
+                      if (type === 'sigorta') {
+                          localVehicle.sigortaDate = vehiclePatch.sigortaDate || '';
+                      } else {
+                          localVehicle.kaskoDate = vehiclePatch.kaskoDate || '';
+                      }
+                      if (!Array.isArray(localVehicle.events)) localVehicle.events = [];
+                      const eventTimestamp = new Date().toISOString();
+                      localVehicle.events.unshift(result.event && typeof result.event === 'object' ? result.event : {
+                          id: 'driver-' + type + '-' + Date.now(),
+                          type: type === 'sigorta' ? 'sigorta-guncelle' : 'kasko-guncelle',
+                          date: data.tarih || eventTimestamp.slice(0, 10),
+                          timestamp: eventTimestamp,
+                          data: Object.assign({}, data, { bitisTarihi: type === 'sigorta' ? localVehicle.sigortaDate : localVehicle.kaskoDate })
+                      });
+                      if (allHistoryVehicles && allHistoryVehicles.length > 1) {
+                          setupPlateDropdown(allHistoryVehicles);
+                      }
+                      var historyModal = document.getElementById('history-modal');
+                      if (historyModal && historyModal.classList.contains('show')) {
+                          renderHistoryList();
+                      }
+                      if (!switchDriverDashboardVehicle(vehicleId)) {
+                          await loadDashboard();
+                      }
+                  } else {
+                      await loadDashboard();
+                  }
               } else {
                   await loadDashboard();
               }
