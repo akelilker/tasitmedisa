@@ -1819,13 +1819,19 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
     justify-content: flex-end;
   }
   #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h--desc .monthly-todo-branch-filter-trigger {
-    width: 18px;
+    width: auto;
+    max-width: 118px;
     height: 18px;
-    justify-content: center;
+    justify-content: flex-end;
+    gap: 2px;
     color: rgba(255, 255, 255, 0.72);
   }
   #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h--desc .monthly-todo-branch-filter-trigger .monthly-todo-branch-filter-label {
-    display: none;
+    display: block;
+    max-width: 98px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h--desc .monthly-todo-branch-filter-trigger .monthly-todo-branch-filter-icon {
     width: 15px;
