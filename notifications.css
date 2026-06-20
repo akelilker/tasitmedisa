@@ -1786,7 +1786,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
     padding-top: 0 !important;
   }
   #monthly-todo-modal .monthly-todo-col-header {
-    padding-bottom: 2px;
+    min-height: 38px;
+    padding-top: 5px;
+    padding-bottom: 5px;
   }
   #monthly-todo-modal .monthly-todo-list-scroll {
     padding-top: 2px;
@@ -1800,18 +1802,31 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
   /* Şube filtresi seçiliyken etiket adı Açıklama ile üst üste binmesin: üstte filtre, altta başlık */
   #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h--desc {
     flex-direction: column;
-    align-items: stretch;
-    gap: 4px;
+    align-items: center;
+    justify-content: center;
+    gap: 1px;
     white-space: normal;
   }
   #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h--desc .monthly-todo-branch-filter {
     position: static;
-    align-self: flex-end;
+    flex: 0 0 auto;
+    align-self: stretch;
     width: 100%;
     max-width: 100%;
+    min-height: 14px;
+    justify-content: center;
+  }
+  #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h--desc .monthly-todo-branch-filter-trigger {
+    max-width: 100%;
+    justify-content: center;
+  }
+  #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h--desc .monthly-todo-branch-filter-label {
+    max-width: calc(100% - 18px);
   }
   #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h--desc > span:last-child {
+    flex: 0 0 auto;
     width: 100%;
+    line-height: 1.05;
     text-align: center;
   }
 }
