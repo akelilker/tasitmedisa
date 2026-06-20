@@ -2139,18 +2139,12 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
   const driverNotificationEmptyStateHtml = '<div class="driver-notification-empty">Aktif bildirim bulunmuyor.</div>';
   let driverNotificationsResizeHandler = null;
 
-  function removeLegacyDriverNotificationModal() {
-      var legacyModal = document.getElementById('driver-notification-modal');
-      if (legacyModal) legacyModal.remove();
-  }
-
   function removeOrphanDriverNotificationsDropdown() {
       var orphan = document.getElementById(DRIVER_NOTIFICATIONS_DROPDOWN_ID);
       if (orphan && orphan.parentNode && orphan.parentNode.id === 'driver-sliding-warning') orphan.remove();
   }
 
   function ensureDriverNotificationsUi() {
-      removeLegacyDriverNotificationModal();
       removeOrphanDriverNotificationsDropdown();
 
       var backdrop = document.getElementById(DRIVER_NOTIFICATIONS_BACKDROP_ID);
@@ -2377,7 +2371,6 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
   };
 
   function renderSlidingWarning(vehicles, records) {
-      removeLegacyDriverNotificationModal();
       removeOrphanDriverNotificationsDropdown();
       const el = document.getElementById('driver-sliding-warning');
       if (!el) return;
@@ -2462,14 +2455,6 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
   }
 
   function setupEkstraNotAutoResize() {
-      document.querySelectorAll('.driver-action-area textarea.driver-ekstra-not').forEach(ta => {
-          function resize() {
-              ta.style.height = 'auto';
-              ta.style.height = ta.scrollHeight + 'px';
-          }
-          ta.addEventListener('input', resize);
-          resize();
-      });
       document.querySelectorAll('.driver-action-area textarea.driver-report-textarea-auto').forEach(ta => {
           function resize() {
               ta.style.height = 'auto';
