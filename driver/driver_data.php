@@ -183,8 +183,10 @@ if (count($vehicles) === 0 && !empty($user['zimmetli_araclar'])) {
 $currentPeriod = date('Y-m');
 $records = [];
 $assignedVehicleIds = array_map(function ($v) { return $v['id']; }, $vehicles);
+$assignedVehicleIdSet = array_fill_keys(array_map('strval', $assignedVehicleIds), true);
 foreach ($data['arac_aylik_hareketler'] ?? [] as $kayit) {
-    if (isset($kayit['surucu_id']) && (string)$kayit['surucu_id'] === (string)$user['id'] && in_array((string)$kayit['arac_id'], array_map('strval', $assignedVehicleIds), true)) {
+    $vehicleId = (string)($kayit['arac_id'] ?? '');
+    if (isset($kayit['surucu_id']) && (string)$kayit['surucu_id'] === (string)$user['id'] && isset($assignedVehicleIdSet[$vehicleId])) {
         $records[] = $kayit;
     }
 }
