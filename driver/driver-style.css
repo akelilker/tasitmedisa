@@ -1060,7 +1060,6 @@ body.dashboard-page {
 
 /* Scroll alanı öğelerinde üst çizgi yok */
 .driver-scroll-area #loading-spinner,
-.driver-scroll-area .driver-vehicles-list,
 .driver-scroll-area .driver-empty-state {
   border-top: none !important;
 }
@@ -1888,10 +1887,6 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
   margin: 0 !important;
 }
 
-.driver-input-area {
-  min-height: 0;
-}
-
 /* Aksiyon alanı: buton + form/blok yatayda yan yana (her grup buton altında form) */
 .driver-action-area {
   display: flex;
@@ -2019,8 +2014,6 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
 }
 
 /* Input tema uyumu - koyu arka plan */
-#driver-input-area .form-group input,
-#driver-input-area .form-group textarea,
 .driver-action-area .form-group input,
 .driver-action-area .form-group textarea {
   width: 100%;
@@ -2036,31 +2029,23 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
   transition: box-shadow 0.2s;
   box-sizing: border-box;
 }
-#driver-input-area .form-group input,
 .driver-action-area .form-group input {
   padding: 0 16px;
   min-height: 26px;
 }
-#driver-input-area .form-group input:focus,
-#driver-input-area .form-group textarea:focus,
 .driver-action-area .form-group input:focus,
 .driver-action-area .form-group textarea:focus {
   outline: none;
   box-shadow: inset 0 0 0 0.5px var(--theme-color) !important;
 }
-#driver-input-area .form-group input.driver-km-input,
-#driver-input-area .form-group textarea.driver-ekstra-not,
 .driver-action-area .form-group input.driver-km-input,
 .driver-action-area .form-group textarea.driver-ekstra-not {
   box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.38) !important;
 }
-#driver-input-area .form-group input.driver-km-input:focus,
-#driver-input-area .form-group textarea.driver-ekstra-not:focus,
 .driver-action-area .form-group input.driver-km-input:focus,
 .driver-action-area .form-group textarea.driver-ekstra-not:focus {
   box-shadow: inset 0 0 0 0.5px var(--theme-color) !important;
 }
-#driver-input-area .form-group textarea.driver-ekstra-not,
 .driver-action-area .form-group textarea.driver-ekstra-not {
   min-height: calc(1.1em - 10px);
   height: calc(1.1em - 10px);
@@ -2069,15 +2054,12 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
-#driver-input-area .form-group textarea.driver-ekstra-not::-webkit-scrollbar,
 .driver-action-area .form-group textarea.driver-ekstra-not::-webkit-scrollbar {
   display: none;
 }
-#driver-input-area .form-group textarea.driver-ekstra-not::placeholder,
 .driver-action-area .form-group textarea.driver-ekstra-not::placeholder {
   color: rgba(255, 255, 255, 0.18) !important;
 }
-#driver-input-area .form-group label,
 .driver-action-area .form-group label {
   display: block;
   margin-bottom: 6px;
@@ -2085,8 +2067,6 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
   color: var(--form-label-color, #ffffff);
   font-weight: 500;
 }
-#driver-input-area .driver-report-block .form-group input,
-#driver-input-area .driver-report-block .form-group textarea,
 .driver-action-area .driver-report-block .form-group input,
 .driver-action-area .driver-report-block .form-group textarea {
   background: #0f1418 !important;
@@ -2104,12 +2084,10 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
   box-shadow: inset 0 0 0 0.5px var(--theme-color) !important;
   outline: none !important;
 }
-#driver-input-area .driver-km-input-wrap,
 .driver-action-area .driver-km-input-wrap {
   position: relative;
   width: 100%;
 }
-#driver-input-area .driver-km-fake-placeholder,
 .driver-action-area .driver-km-fake-placeholder {
   position: absolute;
   left: 16px;
@@ -2205,21 +2183,13 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
     line-height: 1.08;
   }
   .hero-subtitle { font-size: 13.5px; }
-  .driver-info-row { font-size: 13.5px; }
-  .vehicle-header h3 { font-size: 20.5px; }
-  .vehicle-header p { font-size: 14.5px; }
   .driver-plate-chevron { font-size: 19.5px; }
   .driver-footer-back-wrap .universal-back-label { font-size: 14.5px; }
   .driver-btn-password,
   .driver-btn-logout { font-size: 12.5px; }
-  #driver-input-area .form-group label,
   .driver-action-area .form-group label { font-size: 14px; }
-  #driver-input-area .form-group input,
-  #driver-input-area .form-group textarea,
   .driver-action-area .form-group input,
   .driver-action-area .form-group textarea { font-size: 15px; }
-  #driver-input-area .form-group input,
-  #driver-input-area .form-group textarea,
   .driver-action-area .form-group input,
   .driver-action-area .form-group textarea {
     padding-left: 15px !important;
@@ -2263,7 +2233,6 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
     .dashboard-page .driver-panels-inner,
     .dashboard-page .driver-action-area-inner,
     .dashboard-page .driver-action-area,
-    .dashboard-page .vehicle-card,
     .dashboard-page .driver-report-block,
     .dashboard-page .driver-action-area .form-group,
     .dashboard-page .driver-action-area .driver-date-wrap {
@@ -2299,7 +2268,6 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
     }
   }
 
-  #driver-input-area .driver-km-fake-placeholder,
   .driver-action-area .driver-km-fake-placeholder { font-size: 15px; }
   .driver-km-error { font-size: 13px; }
   .driver-success-msg { font-size: 13px; }
@@ -2549,73 +2517,6 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
   to { transform: rotate(360deg); }
 }
 
-/* --- TAŞIT KARTLARI --- */
-.driver-vehicles-list {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  margin-top: 0; /* Plaka header'a 12px mesafede */
-}
-
-.vehicle-card {
-  background: linear-gradient(180deg, var(--hero-gradient-start), var(--hero-gradient-end));
-  border: none;
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2), 0 4px 16px rgba(var(--theme-color-rgb), 0.08);
-}
-
-/* İlk kart: Kullanıcı Paneli ile plaka arası 12px */
-.driver-vehicles-list .vehicle-card:first-child {
-  padding-top: 0;
-}
-
-/* Kart Başlığı (Plaka ortalan, çizgi yok) - Güncel KM 12px altında */
-.vehicle-header {
-  border-bottom: none;
-  padding-bottom: 0;
-  margin-bottom: 12px;
-  text-align: center;
-}
-
-.vehicle-header h3 {
-  font-size: 20px;
-  font-weight: 700;
-  color: #e5e5e5;
-  margin: 0 0 4px 0;
-}
-
-.vehicle-header p {
-  font-size: 14px;
-  color: var(--muted);
-  margin: 0;
-}
-
-/* Bilgi satırları: Yedek Anahtar, Lastik, UTTS, Muayene */
-.driver-info-rows {
-  margin-bottom: 12px;
-  padding: 10px 12px;
-  background: rgba(15, 20, 24, 0.6);
-  border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-}
-.driver-info-row {
-  font-size: 13px;
-  color: var(--muted);
-  margin-bottom: 4px;
-}
-.driver-info-row:last-child {
-  margin-bottom: 0;
-}
-.driver-info-label {
-  color: var(--txt);
-  margin-right: 4px;
-}
-.driver-info-value {
-  color: rgba(255, 255, 255, 0.5);
-}
-
 /* Event modalleri: radio butonları */
 .driver-radio-row {
   display: flex;
@@ -2676,47 +2577,6 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
 .driver-radio-btn[data-group="anahtar"].active,
 .driver-radio-btn[data-group="lastik"].active {
   text-decoration: none; /* Var/Yok: border+arka plan yeterli */
-}
-/* Birden fazla taşıt: plaka satırı + sağda işaret (dropdown), liste plaka altında/ortada */
-.driver-multi-vehicle-wrap {
-  position: relative;
-}
-.driver-plate-row {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  margin-bottom: 12px;
-  text-align: center;
-  position: relative;
-}
-.driver-current-plaka {
-  font-size: 19px; /* 20px - 1pt */
-  font-weight: 700;
-  color: #e5e5e5;
-  margin: 0;
-}
-.driver-plate-trigger {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: auto;
-  height: auto;
-  padding: 0;
-  margin-left: 0;
-  background: transparent;
-  border: none;
-  color: var(--theme-color);
-  cursor: pointer;
-  transition: color 0.2s, opacity 0.2s;
-}
-.driver-plate-trigger:hover {
-  color: var(--theme-color);
-  opacity: 0.95;
-}
-.driver-plate-chevron {
-  font-size: 34px; /* 100–160 (1.6x): 21px → 34px */
-  line-height: 1;
 }
 .driver-plate-dropdown {
   position: absolute;
@@ -2814,127 +2674,6 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
 }
 .driver-plate-dropdown-item:nth-child(even):not(:hover):not(:focus):not([aria-selected="true"]) {
   background: rgba(255, 255, 255, 0.045);
-}
-.driver-cards-inner .vehicle-card.driver-card-hidden {
-  display: none !important;
-}
-.driver-multi-vehicle-wrap .vehicle-header h3 {
-  display: none;
-}
-.driver-multi-vehicle-wrap .vehicle-header {
-  margin-bottom: 8px;
-}
-
-.vehicle-card .form-group {
-  margin-bottom: 16px;
-}
-
-/* KM input, Bakım/Kaza, Ekstra Not, Kaydet – aynı genişlik (280px), yatayda hizalı */
-.vehicle-card .driver-km-input-wrap {
-  position: relative;
-  width: 100%;
-}
-.vehicle-card .driver-km-fake-placeholder {
-  position: absolute;
-  left: 16px;
-  top: 50%;
-  transform: translateY(-50%);
-  pointer-events: none;
-  font-size: 16px;
-  font-family: inherit;
-  color: rgba(255, 255, 255, 0.12) !important;
-  line-height: 1;
-  white-space: nowrap;
-}
-.vehicle-card .form-group.driver-km-form,
-.vehicle-card .driver-report-actions,
-.vehicle-card .form-group.driver-ekstra-not-form,
-.vehicle-card .btn-save {
-  max-width: 280px !important;
-  margin-left: auto !important;
-  margin-right: auto !important;
-  width: 100%;
-  box-sizing: border-box;
-}
-.vehicle-card .driver-report-actions {
-  margin-bottom: 12px;
-}
-.vehicle-card .driver-report-btn {
-  max-width: none;
-}
-
-.vehicle-card .form-group label {
-  display: block;
-  margin-bottom: 6px;
-  font-size: 14px; /* +1 punto (13–14) */
-  color: var(--form-label-color, #ffffff);
-  font-weight: 500;
-}
-
-.vehicle-card .form-group input,
-.vehicle-card .form-group textarea {
-  width: 100%;
-  padding: 8px 16px;
-  background: #0f1418 !important;
-  background-color: #0f1418 !important;
-  border: none !important;
-  box-shadow: inset 0 0 0 0.5px rgba(var(--theme-color-rgb), 0.85) !important;
-  border-radius: 8px;
-  color: var(--data-value-color, #a0aec0);
-  font-size: 16px;
-  font-family: inherit;
-  transition: box-shadow 0.2s;
-  box-sizing: border-box;
-}
-
-.vehicle-card .form-group input {
-  padding: 5px 16px;
-}
-
-.vehicle-card .form-group input:focus,
-.vehicle-card .form-group textarea:focus {
-  outline: none;
-  box-shadow: inset 0 0 0 0.5px var(--theme-color) !important;
-}
-
-/* KM ve Ekstra Not: gri çerçeve, tıklayınca kırmızı */
-.vehicle-card .form-group input.driver-km-input,
-.vehicle-card .form-group textarea.driver-ekstra-not {
-  box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.38) !important;
-}
-.vehicle-card .form-group input.driver-km-input:focus,
-.vehicle-card .form-group textarea.driver-ekstra-not:focus {
-  box-shadow: inset 0 0 0 0.5px var(--theme-color) !important;
-}
-
-.vehicle-card .form-group textarea {
-  resize: vertical;
-  min-height: 80px;
-}
-
-/* Ekstra Not: etiket ve içerik sola yaslı; tek satır, yazı girildikçe uzar, scrollbar gizli */
-.vehicle-card .form-group.driver-ekstra-not-form label {
-  text-align: left;
-}
-.vehicle-card .form-group textarea.driver-ekstra-not {
-  min-height: calc(1.1em - 3px);
-  height: calc(1.1em - 3px);
-  resize: none;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  text-align: left;
-  color: rgba(255, 255, 255, 0.7) !important;
-}
-.vehicle-card .form-group textarea.driver-ekstra-not::placeholder {
-  color: rgba(255, 255, 255, 0.18) !important;
-  opacity: 1;
-}
-.vehicle-card .form-group textarea.driver-ekstra-not::-webkit-scrollbar {
-  display: none;
-}
-.vehicle-card .form-group textarea.driver-ekstra-not:focus::placeholder {
-  color: transparent !important;
-  opacity: 0 !important;
 }
 
 /* YENİ BUTONLAR (Bakım/Kaza Bildir) – alt alta eşit genişlik (KM input ile uyumlu) */
@@ -5488,17 +5227,8 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .dashboard-page .hero-title-block .hero-panel-subtitle {
     font-size: calc(22px - 0.7pt - 0.5pt);
   }
-  .vehicle-header h3 {
-    font-size: 18px;
-  }
 }
 /* === MOBİL GÜNCELLEMELER 2026.01.31 === */
-
-/* Güncel KM etiketi sola yaslı, harfler arası 2px boşluk */
-.vehicle-card .form-group.driver-km-form label {
-  text-align: left !important;
-  letter-spacing: 2px;
-}
 
 /* Çıkış butonu büyüt */
 .driver-btn-password,
@@ -5506,50 +5236,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   font-size: 14px !important;
 }
 
-/* KM input yükseklik (4px daraltıldı), placeholder ve metin sola yaslı, sağdaki spin simgeleri gizli */
-.vehicle-card .form-group input.driver-km-input,
-.vehicle-card .form-group input.driver-km-input:invalid,
-.vehicle-card .form-group input.driver-km-input:placeholder-shown {
-  padding: 5px 16px !important;
-  text-align: left !important;
-  color: rgba(255, 255, 255, 0.7) !important;
-  -webkit-text-fill-color: rgba(255, 255, 255, 0.7) !important;
-  box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.38) !important;
-}
-.vehicle-card .form-group input.driver-km-input:focus {
-  box-shadow: inset 0 0 0 0.5px var(--theme-color) !important;
-  color: rgba(255, 255, 255, 0.7) !important;
-  -webkit-text-fill-color: rgba(255, 255, 255, 0.7) !important;
-}
-.vehicle-card .form-group input.driver-km-input::placeholder,
-.vehicle-card .form-group input.driver-km-input::-webkit-input-placeholder,
-.vehicle-card .form-group input.driver-km-input::-moz-placeholder {
-  color: rgba(255, 255, 255, 0.15) !important;
-  opacity: 1;
-}
-
-.vehicle-card .form-group input.driver-km-input:-webkit-autofill,
-.vehicle-card .form-group input.driver-km-input:-webkit-autofill:hover,
-.vehicle-card .form-group input.driver-km-input:-webkit-autofill:focus {
-  -webkit-box-shadow: 0 0 0 30px #0f1418 inset !important;
-  box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.38) !important;
-  -webkit-text-fill-color: rgba(255, 255, 255, 0.7) !important;
-  transition: background-color 5000s ease-in-out 0s;
-}
-
 /* Autofill: Bakım/Kaza ve modal inputları – beyaz arka planı önle, temaya uyumlu */
-.vehicle-card .form-group input.driver-bakim-input:-webkit-autofill,
-.vehicle-card .form-group input.driver-bakim-input:-webkit-autofill:hover,
-.vehicle-card .form-group input.driver-bakim-input:-webkit-autofill:focus,
-.vehicle-card .form-group input.driver-kaza-input:-webkit-autofill,
-.vehicle-card .form-group input.driver-kaza-input:-webkit-autofill:hover,
-.vehicle-card .form-group input.driver-kaza-input:-webkit-autofill:focus,
-.vehicle-card .form-group textarea.driver-bakim-textarea:-webkit-autofill,
-.vehicle-card .form-group textarea.driver-bakim-textarea:-webkit-autofill:hover,
-.vehicle-card .form-group textarea.driver-bakim-textarea:-webkit-autofill:focus,
-.vehicle-card .form-group textarea.driver-kaza-textarea:-webkit-autofill,
-.vehicle-card .form-group textarea.driver-kaza-textarea:-webkit-autofill:hover,
-.vehicle-card .form-group textarea.driver-kaza-textarea:-webkit-autofill:focus,
 .driver-modal .form-group input:-webkit-autofill,
 .driver-modal .form-group input:-webkit-autofill:hover,
 .driver-modal .form-group textarea:-webkit-autofill,
@@ -5572,34 +5259,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 /* Bakım/Kaza butonları yükseklik (4px daraltıldı) */
 .driver-report-btn {
   padding: 6px 12px !important;
-}
-
-/* Bakım paneli input/textarea: odakta kırmızı çerçeve, metin beyaz */
-.vehicle-card .form-group input.driver-bakim-input:focus,
-.vehicle-card .form-group textarea.driver-bakim-textarea:focus {
-  box-shadow: inset 0 0 0 0.5px var(--theme-color) !important;
-  color: var(--txt) !important;
-  -webkit-text-fill-color: var(--txt) !important;
-  outline: none !important;
-}
-.vehicle-card .form-group input.driver-bakim-input:focus::placeholder,
-.vehicle-card .form-group textarea.driver-bakim-textarea:focus::placeholder {
-  color: transparent !important;
-  opacity: 0 !important;
-}
-
-/* Kaza paneli input/textarea: odakta kırmızı çerçeve, metin beyaz */
-.vehicle-card .form-group input.driver-kaza-input:focus,
-.vehicle-card .form-group textarea.driver-kaza-textarea:focus {
-  box-shadow: inset 0 0 0 0.5px var(--theme-color) !important;
-  color: var(--txt) !important;
-  -webkit-text-fill-color: var(--txt) !important;
-  outline: none !important;
-}
-.vehicle-card .form-group input.driver-kaza-input:focus::placeholder,
-.vehicle-card .form-group textarea.driver-kaza-textarea:focus::placeholder {
-  color: transparent !important;
-  opacity: 0 !important;
 }
 
 /* #history-modal, #edit-request-modal, Driver overlay modalları mobil: overlay-bottom stratejisi (style-core ile uyumlu) */
@@ -5824,10 +5483,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .dashboard-page .driver-scroll-area {
     background: var(--bg) !important;
   }
-  .dashboard-page .vehicle-card {
-    background: var(--bg) !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25) !important;
-  }
   /* Mobil/PWA: tüm çerçeve ::before'da (0.99px), köşe birleşme sorunu yok */
   .dashboard-page .driver-header-fixed,
   .login-page .driver-header-fixed {
@@ -6006,15 +5661,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     overflow-x: visible !important;
   }
 
-  /* Elemanlar yatay genişlik artır – çerçeveye yaklaş */
-  .dashboard-page .vehicle-card {
-    padding-left: 12px !important;
-    padding-right: 12px !important;
-  }
-  .dashboard-page .vehicle-card .form-group.driver-km-form,
-  .dashboard-page .vehicle-card .driver-report-actions,
-  .dashboard-page .vehicle-card .form-group.driver-ekstra-not-form,
-  .dashboard-page .vehicle-card .btn-save,
   .dashboard-page .driver-report-item {
     max-width: 100% !important;
   }
@@ -6033,38 +5679,11 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     transform: translateY(-3px) !important;
   }
 
-  /* Vehicle card içi: elementler arası +3px (12→15) */
-  .dashboard-page .vehicle-card .form-group {
-    margin-bottom: 15px !important;
-  }
-  .dashboard-page .vehicle-card .driver-report-actions {
-    margin-bottom: 15px !important;
-    gap: 15px !important;
-  }
   .dashboard-page .driver-report-block {
     margin-top: 0 !important;
   }
-  .dashboard-page .vehicle-card .btn-save {
-    margin-top: calc(15px + 2em) !important;
-  }
 
   /* Gri çerçevelere parlaklık (sadece varsayılan, focus kırmızı/yeşil kalır) */
-  .dashboard-page .vehicle-card .form-group input.driver-km-input:not(:focus),
-  .dashboard-page .vehicle-card .form-group input.driver-km-input:invalid:not(:focus),
-  .dashboard-page .vehicle-card .form-group textarea.driver-ekstra-not:not(:focus) {
-    box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.48) !important;
-  }
-  .dashboard-page .vehicle-card .form-group input.driver-km-input,
-  .dashboard-page .vehicle-card .form-group input.driver-km-input:focus {
-    color: rgba(255, 255, 255, 0.7) !important;
-    -webkit-text-fill-color: rgba(255, 255, 255, 0.7) !important;
-  }
-  .dashboard-page .vehicle-card .form-group input.driver-km-input::placeholder,
-  .dashboard-page .vehicle-card .form-group input.driver-km-input::-webkit-input-placeholder,
-  .dashboard-page .vehicle-card .form-group input.driver-km-input::-moz-placeholder {
-    color: rgba(255, 255, 255, 0.12) !important;
-    opacity: 1;
-  }
   .dashboard-page .driver-report-btn {
     border-color: rgba(255, 255, 255, 0.35) !important;
   }
@@ -6073,417 +5692,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.35) !important;
   }
 
-  /* Foto 4: Kaza sema mobil - metin/sema arasi 5px; sema yatay -4px, dikey -8px */
-  .dashboard-page .driver-report-block-kaza .form-group:nth-of-type(3) {
-    margin-bottom: 2px !important;
-  }
-  .dashboard-page .driver-report-block-kaza .form-group:has(.driver-kaporta-container) {
-    margin-top: 0 !important;
-    padding-left: 10px !important;
-    padding-right: 10px !important;
-  }
-  .dashboard-page .driver-report-block-kaza .driver-kaporta-container {
-    margin-top: 0 !important;
-    margin-bottom: 0 !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-  }
-  /* Üstündeki açıklama metnine 0px boşluk (boşluğu sadece wrapper verecek) */
-  .dashboard-page .driver-report-block-kaza .form-group .driver-kaporta-label {
-    margin-bottom: 0 !important;
-    position: relative;
-    z-index: 2;
-  }
-
-  /* Altındaki bilgi alanları (legend): şema ile arası 0px (boşluğu sadece wrapper verecek) */
-  .dashboard-page .driver-report-block-kaza .driver-kaporta-container .boya-legend {
-    display: flex !important;
-    justify-content: center;
-    flex-wrap: wrap;
-    width: 100% !important;
-    margin-top: 0 !important;
-    position: relative;
-    z-index: 2;
-  }
-
-  /* Mobil: Taşıt şeması üst/alt tam 4px boşluk - Dönen SVG'nin (ghost) yüksekliği sıfırlandı */
-  .dashboard-page .driver-report-block-kaza .driver-kaporta-container .driver-kaporta-schema-wrapper {
-    position: relative !important;
-    width: 100% !important;
-    height: 126px !important; 
-    margin-top: 4px !important;
-    margin-bottom: 4px !important;
-    display: block !important;
-  }
-  .dashboard-page .driver-report-block-kaza .driver-kaporta-container .driver-kaporta-schema-wrapper svg {
-    position: absolute !important;
-    top: 50% !important;
-    left: 50% !important;
-    width: 126px !important;
-    height: 204px !important;
-    margin: 0 !important;
-    transform: translate(-50%, -50%) rotate(90deg) !important;
-    transform-origin: center center !important;
-    max-width: none !important;
-    max-height: none !important;
-    z-index: 1;
-  }
-
-  /* Not input: placeholder yatay+dikey ortala, iç dikey 3px daraltıldı */
-  .dashboard-page .vehicle-card .form-group textarea.driver-ekstra-not {
-    line-height: 1.4 !important;
-    padding: calc(0.35em - 1.5px) 16px !important;
-    box-sizing: border-box !important;
-  }
-  .dashboard-page .vehicle-card .form-group textarea.driver-ekstra-not::placeholder {
-    font-size: 15px !important;
-    color: rgba(255, 255, 255, 0.14) !important;
-    opacity: 1;
-  }
-  .dashboard-page .vehicle-card .form-group textarea.driver-ekstra-not:placeholder-shown,
-  .dashboard-page .vehicle-card .form-group textarea.driver-ekstra-not:not(:placeholder-shown) {
-    text-align: left !important;
-  }
-
-  /* 1. İsim/şifre ekranı –  tüm metinler +1pt */
-  .login-form .form-group label {
-    font-size: 17px !important;
-  }
-  .form-group-checkbox label {
-    font-size: 17px !important;
-  }
-  .login-form .form-group input {
-    font-size: 17px !important;
-  }
-  .login-page .error-message {
-    font-size: 15px !important;
-  }
-  .login-page .btn-login {
-    font-size: 16px !important;
-  }
-  .login-page .login-card-title {
-    font-size: 23px !important;
-  }
-  /* .login-page .hero h1: ≤640px ana uygulama ile üst blokta (.login-page .hero h1); burada tekrarlama ezmesin diye kaldırıldı */
-  .login-page .hero-panel-subtitle {
-    font-size: calc(20px - 0.5pt) !important; /* h1'e göre 1pt küçük − 0.5pt */
-  }
-  .login-page #app-footer.login-footer .footer-content {
-    font-size: 14px !important;
-  }
-
-  /* 2. Kullanıcı paneli – tüm metinler +1pt (paneldeki bütün harfler 1 punto büyük) */
-  /* .label, .value, .driver-current-plaka – aşağıdaki Sol panel bloğunda */
-  .dashboard-page .driver-action-btn {
-    font-size: 14px !important;
-    white-space: normal !important;
-    overflow: visible !important;
-    text-align: center !important;
-  }
-  .dashboard-page .vehicle-card .form-group label {
-    font-size: 17px !important;
-  }
-  .dashboard-page .vehicle-card .form-group input,
-  .dashboard-page .vehicle-card .form-group textarea {
-    font-size: 17px !important;
-  }
-  .dashboard-page .vehicle-header h3 {
-    font-size: 21px !important;
-  }
-  .dashboard-page .vehicle-header p {
-    font-size: 16px !important;
-  }
-  .dashboard-page .driver-report-btn {
-    font-size: 16px !important;
-    white-space: normal !important;
-    overflow: visible !important;
-  }
-  .dashboard-page .driver-report-btn .driver-report-btn-text {
-    white-space: normal !important;
-    overflow: visible !important;
-  }
-  .dashboard-page .driver-action-area .universal-btn-save,
-  .dashboard-page .driver-action-area .universal-btn-cancel {
-    font-size: 15.5px !important;
-  }
-  .dashboard-page .driver-action-area .universal-btn-save {
-    color: rgba(74, 222, 128, 0.96) !important;
-    border-color: rgba(40, 167, 69, 0.62) !important;
-  }
-  .dashboard-page .driver-action-area .universal-btn-cancel {
-    color: var(--theme-color) !important;
-    border-color: rgba(var(--theme-color-rgb), 0.62) !important;
-  }
-  .dashboard-page .hero-title-wrap .hero-panel-subtitle,
-  .dashboard-page .hero-title-block .hero-panel-subtitle {
-    font-size: clamp(17px, 4.4vw, 18.5px) !important;
-    letter-spacing: clamp(1.6px, 0.58vw, 2.6px) !important;
-    line-height: 1.08 !important;
-  }
-  .dashboard-page .hero.hero-two-rows .hero-title-block .hero-title-line {
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
-    font-size: clamp(18px, 4.75vw, 20px) !important;
-    letter-spacing: clamp(0.6px, 0.45vw, 1.8px) !important;
-    line-height: 1.08 !important;
-    white-space: nowrap !important;
-    overflow: hidden !important;
-    text-overflow: clip !important;
-    text-align: center !important;
-  }
-  .dashboard-page .driver-report-block .form-group label {
-    font-size: 15px !important;
-  }
-  .dashboard-page .driver-report-block .form-group input,
-  .dashboard-page .driver-report-block .form-group textarea {
-    font-size: 15px !important;
-  }
-  .dashboard-page .driver-report-block .form-group input::placeholder,
-  .dashboard-page .driver-report-block .form-group textarea::placeholder {
-    font-size: 15px !important;
-  }
-  .dashboard-page .history-period {
-    font-size: 17px !important;
-    color: var(--form-label-color, #fff) !important;
-  }
-  #history-modal .history-details strong {
-    color: #ffffff !important;
-  }
-  .dashboard-page .history-vehicle {
-    font-size: 16px !important;
-  }
-  .dashboard-page .history-details p {
-    font-size: 16px !important;
-  }
-  .dashboard-page .history-edit-icon {
-    width: 44px;
-    height: 44px;
-  }
-  /* Sol panel: etiket ve açıklama aynı boyut, aynı satırda hizalı; +1pt (mobil sol grid) */
-  .dashboard-page .driver-left-panel .driver-info-item .label {
-    font-size: 15px !important;
-    text-transform: none !important;
-  }
-  .dashboard-page .driver-left-panel .driver-info-item .value {
-    font-size: 15px !important;
-  }
-  .dashboard-page .driver-left-panel .driver-current-plaka {
-    font-size: calc(15px - 1pt) !important; /* Plaka 1pt küçük */
-  }
-  .dashboard-page .driver-left-panel .driver-plate-subtitle {
-    font-size: calc(16px - 1pt) !important; /* Marka/model 1pt küçük */
-  }
-  .dashboard-page .driver-sliding-warning {
-    font-size: 15px !important;
-  }
-  .dashboard-page .driver-plate-dropdown-item {
-    font-size: 14px !important;
-  }
-  .dashboard-page .driver-footer-back-wrap .universal-back-label {
-    font-size: 16px !important;
-  }
-
-  #history-modal .history-filter-label,
-  #history-modal .history-vehicle-trigger {
-    font-size: 15px !important;
-  }
-  #history-modal .universal-back-btn,
-  #edit-request-modal .universal-back-btn {
-    padding: 10px !important;
-    min-width: 44px !important;
-    min-height: 44px !important;
-  }
-  #history-modal .back-icon-svg,
-  #edit-request-modal .back-icon-svg {
-    width: 28px !important;
-    height: 28px !important;
-  }
-  #edit-request-modal .form-group label {
-    font-size: 14px !important;
-    color: #ffffff !important;
-    -webkit-text-fill-color: #ffffff !important;
-  }
-  #edit-request-modal .form-group input,
-  #edit-request-modal .form-group textarea {
-    font-size: 17px !important;
-    color: #a0aec0 !important;
-    -webkit-text-fill-color: #a0aec0 !important;
-  }
-  #edit-request-modal .form-group input:focus,
-  #edit-request-modal .form-group textarea:focus {
-    color: #b8c5d0 !important;
-    -webkit-text-fill-color: #b8c5d0 !important;
-  }
-  #edit-request-modal .driver-current-km {
-    color: #ffffff !important;
-    -webkit-text-fill-color: #ffffff !important;
-  }
-  #edit-request-modal .driver-current-km strong {
-    color: #a0aec0 !important;
-    -webkit-text-fill-color: #a0aec0 !important;
-  }
-  #edit-request-modal .form-group input::placeholder,
-  #edit-request-modal .form-group textarea::placeholder {
-    color: rgba(160, 174, 192, 0.55) !important;
-    -webkit-text-fill-color: rgba(160, 174, 192, 0.55) !important;
-  }
-  #edit-request-modal .btn-submit {
-    font-size: 17px !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    align-self: center !important;
-    width: calc(100% - 30px) !important;
-    max-width: calc(100% - 30px) !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
-    margin-top: 8px !important;
-  }
-  /* 3. Input ve buton dikey yükseklik +4px (login + panel) */
-  .login-form .form-group input {
-    padding: 14px 16px !important;
-  }
-  .login-page .btn-login {
-    padding: 16px !important;
-  }
-  .form-group-checkbox input[type="checkbox"] {
-    width: 22px !important;
-    height: 22px !important;
-  }
-  .dashboard-page .vehicle-card .form-group input.driver-km-input {
-    padding: 9px 16px !important;
-  }
-  .dashboard-page .vehicle-card .form-group textarea {
-    padding: 12px 16px !important;
-  }
-  .dashboard-page .vehicle-card .form-group textarea.driver-ekstra-not {
-    min-height: calc(1.4em + 10px) !important;
-    height: calc(1.4em + 10px) !important;
-  }
-  .dashboard-page .driver-report-btn {
-    padding: 10px 12px !important;
-  }
-  .dashboard-page .vehicle-card .btn-save {
-    padding: 12px 14px !important;
-  }
-  .dashboard-page .driver-report-block .form-group input,
-  .dashboard-page .driver-report-block .form-group textarea {
-    padding: 10px 10px !important;
-  }
-  .dashboard-page .driver-report-block .form-group textarea.driver-report-textarea-auto {
-    min-height: 2.6em !important;
-    height: 2.6em !important;
-  }
-  #edit-request-modal .form-group input,
-  #edit-request-modal .form-group textarea {
-    padding: 5px 16px !important;
-  }
-  #edit-request-modal .btn-submit {
-    padding: 10px 3px 11px !important;
-  }
-
-  /* 3. Beni Hatırla checkbox mobilde 22px (base'de zaten gri + kırmızı) */
-  .login-page .form-group-checkbox input[type="checkbox"] {
-    width: 22px !important;
-    height: 22px !important;
-  }
-
-  /* 4. Footer: üst çizgi + glow; mobilde yan çerçeve yok */
-  .login-page #app-footer.login-footer {
-    border-top: 1px solid rgba(255, 255, 255, 0.40) !important;
-    border-left: none !important;
-    border-right: none !important;
-    box-shadow:
-      0 -1px 0 rgba(255, 255, 255, 0.12),
-      0 -16px 30px rgba(var(--theme-color-rgb), 0.42) !important;
-  }
-
-  .dashboard-page #app-footer {
-    border-top: 1px solid rgba(128, 128, 128, 0.52) !important;
-    border-left: none !important;
-    border-right: none !important;
-    box-shadow: 0 -11px 28px rgba(var(--theme-color-rgb), 0.58) !important;
-  }
-  .login-page #app-footer.login-footer .footer-content {
-    padding: 6px 12px !important;
-    padding-bottom: max(6px, env(safe-area-inset-bottom, 0)) !important;
-  }
-
-  /* 5. Şifre ekranı header: kullanıcı paneli ile aynı (yan çizgiler container'da, padding panel ile aynı) */
-  .login-page .driver-header-fixed {
-    border-left: none !important;
-    border-right: none !important;
-  }
-  .login-page .driver-scroll-area {
-    padding-left: 4px !important;
-    padding-right: 4px !important;
-    padding-top: 12px !important;
-  }
-
-  /* 7. History kartı: mobilde metin-çerçeve dikey boşlukları sıkılaştır */
-  #history-modal .history-card {
-    padding: 4px 12px !important;
-    gap: 2px !important;
-  }
-  #history-modal .history-header {
-    margin-bottom: 1px !important;
-  }
-  #history-modal .history-details p + p {
-    margin-top: 1px !important;
-  }
-  #history-modal .history-edit-icon {
-    width: 22px !important;
-    height: 22px !important;
-    align-self: flex-start !important;
-  }
-  #history-modal .history-vehicle-dropdown-wrap {
-    align-items: flex-start !important;
-    gap: 6px !important;
-  }
-  #history-modal .history-filter-label {
-    line-height: 1.18 !important;
-    padding-top: 1px !important;
-  }
-  #history-modal .history-vehicle-trigger {
-    flex: 1 1 auto !important;
-    min-width: 0 !important;
-    max-width: calc(100% - 58px) !important;
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
-    align-items: flex-start !important;
-  }
-  #history-modal .history-vehicle-trigger-text {
-    display: inline-flex !important;
-    white-space: normal !important;
-    overflow-wrap: anywhere !important;
-    font-size: 14px !important;
-    line-height: 1.16 !important;
-    max-height: 2.32em !important;
-    overflow: hidden !important;
-  }
-  #history-modal .history-vehicle-chevron {
-    margin-top: 2px !important;
-  }
-  #history-modal .history-period {
-    font-size: 16px !important;
-  }
-  #history-modal .history-vehicle {
-    font-size: 15px !important;
-  }
-  #history-modal .history-details p {
-    font-size: 15px !important;
-    line-height: 1.18 !important;
-  }
-
-  /* Foto 4: Kullanıcı adı-plaka arası boşluk yarıya (12px -> 6px) */
-  .dashboard-page .driver-vehicles-list {
-    margin-top: -6px !important;
-  }
-  .dashboard-page .driver-multi-vehicle-wrap .driver-plate-row {
-    margin-bottom: 6px !important;
-  }
 /* Masaüstü: plaka yatayda ortada (kırmızı ok hesaba katılmaz), ok çerçeve dışında */
 @media (min-width: 641px) {
   .dashboard-page .driver-plate-dropdown-row {
@@ -6551,13 +5759,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     padding-right: 6px;
   }
 
-  /* Foto 4: KM input dikey yükseklik %15 daralsın */
-  .dashboard-page .vehicle-card .form-group input.driver-km-input,
-  .dashboard-page .vehicle-card .form-group input.driver-km-input:invalid,
-  .dashboard-page .vehicle-card .form-group input.driver-km-input:placeholder-shown {
-    padding: 9px 16px !important;
-  }
-
   /* Foto 4: Bakım/Kaza – tıklanmamış durumda da genişlemiş genişlikte (layout shift yok) */
   .dashboard-page .driver-report-actions {
     flex-direction: column !important;
@@ -6618,11 +5819,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .dashboard-page .driver-report-btn {
     padding: 2px 12px !important;
     min-height: 66px !important;
-  }
-  /* Not input: masaüstü 0.9cm – 3px yükseklik */
-  .dashboard-page .vehicle-card .form-group textarea.driver-ekstra-not {
-    min-height: calc(0.9cm - 3px) !important;
-    height: calc(0.9cm - 3px) !important;
   }
 }
 
@@ -7111,11 +6307,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
         color: var(--txt-white, #fff) !important;
         box-shadow: 0 0 9px rgba(238, 246, 255, 0.16) !important;
         text-shadow: 0 0 5px rgba(238, 246, 255, 0.34) !important;
-    }
-    .dashboard-page .vehicle-card .btn-save {
-        padding-top: 9px !important;
-        padding-bottom: 9px !important;
-        margin-top: 0 !important;
     }
     .dashboard-page .driver-action-area .universal-btn-save,
     .dashboard-page .driver-action-area .universal-btn-cancel {
