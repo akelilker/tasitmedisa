@@ -303,6 +303,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
   let lastCompletedActionInSession = null;
   /** Query ile Talep prefill bir kez işlensin (loadDashboard tekrarlarında tekrar açılmasın). */
   let driverFeedbackPrefillHandled = false;
+  let driverKaportaSvgPromise = null;
 
   function clearSessionGreenFeedback() { lastCompletedActionInSession = null; }
   window.addEventListener('pagehide', clearSessionGreenFeedback);
@@ -2301,6 +2302,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       renderSlidingWarning(allHistoryVehicles, allHistoryRecords);
       setupEkstraNotAutoResize();
       setupKmInputs();
+      bindDriverDashboardTitleCase(document.getElementById('driver-action-area'));
       return true;
   }
 
@@ -2795,9 +2797,18 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       const container = document.getElementById('kaza-kaporta-' + vehicleId);
       if (!container) return;
       boyaliParcalar = boyaliParcalar || {};
-      const url = ICON_BASE + 'kaporta.svg';
-      fetch(url)
-          .then(function(res) { return res.text(); })
+      if (!driverKaportaSvgPromise) {
+          driverKaportaSvgPromise = fetch(ICON_BASE + 'kaporta.svg')
+              .then(function(res) {
+                  if (!res.ok) throw new Error('Kaporta SVG yuklenemedi.');
+                  return res.text();
+              })
+              .catch(function(err) {
+                  driverKaportaSvgPromise = null;
+                  throw err;
+              });
+      }
+      driverKaportaSvgPromise
           .then(function(svgText) {
               const parser = new DOMParser();
               const svgDoc = parser.parseFromString(svgText, 'image/svg+xml');
