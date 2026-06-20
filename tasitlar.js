@@ -6759,7 +6759,7 @@
       var hintEl = document.createElement('p');
       hintEl.className = 'ruhsat-upload-hint';
       hintEl.id = 'ruhsat-upload-hint';
-      hintEl.textContent = 'Dosya seçildiğinde mevcut belge için onay alınır.';
+      hintEl.textContent = 'Sürükle Bırak veya Ekle.';
       content.appendChild(hintEl);
     }
     var replaceConfirm = document.createElement('div');
