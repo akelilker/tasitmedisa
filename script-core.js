@@ -992,7 +992,8 @@ window.updateFooterDim = function() {
     if (
       modal.classList.contains('active') ||
       modal.classList.contains('open') ||
-      modal.style.display === 'flex'
+      modal.style.display === 'flex' ||
+      modal.dataset.modalClosing === 'true'
     ) {
       isAnyModalOpen = true;
     }
@@ -1004,6 +1005,23 @@ window.updateFooterDim = function() {
     document.body.classList.remove('modal-open');
   }
 }
+
+window.markModalClosing = function(modal) {
+  if (!modal) return;
+  document.body.classList.add('modal-returning');
+  modal.dataset.modalClosing = 'true';
+  if (typeof window.updateFooterDim === 'function') window.updateFooterDim();
+};
+
+window.clearModalClosing = function(modal) {
+  if (!modal) return;
+  delete modal.dataset.modalClosing;
+  if (typeof window.updateFooterDim === 'function') window.updateFooterDim();
+  clearTimeout(window.__modalReturningTimer);
+  window.__modalReturningTimer = setTimeout(function() {
+    document.body.classList.remove('modal-returning');
+  }, 260);
+};
 
 /** Taşıt Detay'a dön - tasitlar.js override eder; yoksa modalları kapat (fallback) */
 window.backToVehicleDetail = function() {
@@ -1072,9 +1090,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Lazy modül asset sürümleri — tek nesne; index.html içindeki style-core ?v= ile tasitlar sürümü uyumlu kalmalı
 var MEDISA_MODULE_VERSIONS = {
-  tasitlar: '20260620.1',
+  tasitlar: '20260620.3',
   notifications: '20260620.6',
-  raporlar: '20260620.1',
+  raporlar: '20260620.3',
   kayitJs: '20260607.1',
   kayitCss: '20260612.10',
   ayarlarJs: '20260607.1',
@@ -1418,10 +1436,11 @@ window.ensureMedisaVehicleNotificationDomainReady = function() {
   window.closeVehiclesModal = function() {
     const modal = document.getElementById('vehicles-modal');
     if (modal) {
+      window.markModalClosing(modal);
       modal.classList.remove('active');
       setTimeout(() => {
         modal.style.display = 'none';
-        setTimeout(() => window.updateFooterDim(), 100);
+        window.clearModalClosing(modal);
       }, 300);
     }
   };
@@ -1429,10 +1448,11 @@ window.ensureMedisaVehicleNotificationDomainReady = function() {
   window.closeReportsModal = function() {
     const modal = document.getElementById('reports-modal');
     if (modal) {
+      window.markModalClosing(modal);
       modal.classList.remove('active');
       setTimeout(() => {
         modal.style.display = 'none';
-        setTimeout(() => window.updateFooterDim(), 100);
+        window.clearModalClosing(modal);
       }, 300);
     }
   };

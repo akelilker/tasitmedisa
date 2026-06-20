@@ -207,11 +207,13 @@
             if (stokDetailMenuOpen) stokDetailMenuOpen = false;
             setReportsModalStokDetailMenuLayoutOpen(false);
             setReportsModalStokListLayoutActive(false);
+            if (typeof window.markModalClosing === 'function') window.markModalClosing(modal);
             modal.classList.remove('active');
             modal.style.pointerEvents = '';
             setTimeout(() => {
                 modal.style.display = 'none';
-                document.body.classList.remove('modal-open');
+                if (typeof window.clearModalClosing === 'function') window.clearModalClosing(modal);
+                else document.body.classList.remove('modal-open');
             }, 300);
         }
     };
