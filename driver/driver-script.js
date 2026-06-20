@@ -1521,7 +1521,9 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
               const vid = this.getAttribute('data-vehicle-id');
               if (vid == null || vid === '') return;
               setDriverPlateDropdownVisibility(dropdown, false);
-              switchDriverDashboardVehicle(vid);
+              if (!switchDriverDashboardVehicle(vid)) {
+                  loadDashboard();
+              }
           });
       });
 
@@ -2651,7 +2653,34 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
               applyVehicleVersionUpdate(vehicleId, result.vehicleVersion);
               lastCompletedActionInSession = { action: type, vehicleId: vehicleId };
               cancelDriverActionForm(type, vehicleId);
-              await loadDashboard();
+              if (type === 'anahtar' || type === 'lastik') {
+                  const localVehicle = (allHistoryVehicles || []).find(function(v) { return String(v.id) === String(vehicleId); });
+                  if (localVehicle) {
+                      if (type === 'anahtar') {
+                          localVehicle.anahtar = data.durum;
+                          localVehicle.anahtarNerede = data.detay || '';
+                      } else {
+                          localVehicle.lastikDurumu = data.durum;
+                          localVehicle.lastikAdres = data.adres || '';
+                      }
+                      if (!Array.isArray(localVehicle.events)) localVehicle.events = [];
+                      const eventTimestamp = new Date().toISOString();
+                      localVehicle.events.unshift({
+                          id: 'driver-' + type + '-' + Date.now(),
+                          type: type === 'anahtar' ? 'anahtar-guncelle' : 'lastik-guncelle',
+                          date: formatDateDDMMYYYY(eventTimestamp.slice(0, 10)),
+                          timestamp: eventTimestamp,
+                          data: Object.assign({}, data, { surucu: currentUser && (currentUser.isim || currentUser.name) ? (currentUser.isim || currentUser.name) : '' })
+                      });
+                      if (!switchDriverDashboardVehicle(vehicleId)) {
+                          await loadDashboard();
+                      }
+                  } else {
+                      await loadDashboard();
+                  }
+              } else {
+                  await loadDashboard();
+              }
           } else {
               alert(result.message || 'Kayıt başarısız!');
           }
