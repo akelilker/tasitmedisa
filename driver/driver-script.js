@@ -131,7 +131,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
   async function fetchCurrentPortalSession(token) {
     if (!token) return null;
     try {
-      const response = await fetch(MAIN_SESSION_URL + '?_=' + Date.now(), {
+      const response = await fetch(MAIN_SESSION_URL + '?session=1&_=' + Date.now(), {
         headers: { 'Authorization': 'Bearer ' + token },
         cache: 'no-store'
       });
@@ -765,7 +765,10 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
   }
 
   if (document.getElementById('driver-two-panel')) {
-    const run = () => { initDriverSplash(function() { loadDashboard(); }); };
+    const run = () => {
+      loadDashboard();
+      initDriverSplash();
+    };
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', run);
     } else {
@@ -1517,11 +1520,8 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
               ev.stopPropagation();
               const vid = this.getAttribute('data-vehicle-id');
               if (vid == null || vid === '') return;
-              selectedVehicleId = vid;
-              const sel = getSelectedVehicle();
-              if (sel) currentPlakaEl.textContent = formatDriverPlaka(sel.plaka);
               setDriverPlateDropdownVisibility(dropdown, false);
-              loadDashboard();
+              switchDriverDashboardVehicle(vid);
           });
       });
 
