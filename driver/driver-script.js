@@ -2029,12 +2029,26 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
               if (successMsg) successMsg.classList.add('show');
               const period = (currentPeriod || new Date().toISOString().slice(0, 7)).toString().trim();
               allHistoryRecords = allHistoryRecords || [];
-              allHistoryRecords.push({
+              allHistoryRecords.push(data.record && typeof data.record === 'object' ? data.record : {
                   arac_id: vid,
                   donem: period,
                   guncel_km: km,
                   kayit_tarihi: new Date().toISOString()
               });
+              var localVehicle = (allHistoryVehicles || []).find(function(v) { return String(v.id) === String(vid); });
+              if (localVehicle) {
+                  var vehiclePatch = data.vehiclePatch && typeof data.vehiclePatch === 'object' ? data.vehiclePatch : {};
+                  localVehicle.guncelKm = vehiclePatch.guncelKm != null ? vehiclePatch.guncelKm : km;
+                  localVehicle.km_state = vehiclePatch.km_state || 'OK';
+                  localVehicle.km_state_reason = vehiclePatch.km_state_reason || 'period_km_exists';
+                  if (allHistoryVehicles && allHistoryVehicles.length > 1) {
+                      setupPlateDropdown(allHistoryVehicles);
+                  }
+                  var historyModal = document.getElementById('history-modal');
+                  if (historyModal && historyModal.classList.contains('show')) {
+                      renderHistoryList();
+                  }
+              }
               renderSlidingWarning(allHistoryVehicles || [], allHistoryRecords);
               setTimeout(function() {
                   const block = document.getElementById('km-block-' + vid);
@@ -2048,7 +2062,9 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
                   if (successMsg) successMsg.classList.remove('show');
                   const kmBtn = inner ? inner.querySelector('.driver-action-btn[data-action="km"]') : null;
                   if (kmBtn) kmBtn.classList.add('saved');
-                  loadDashboard();
+                  if (!switchDriverDashboardVehicle(vid)) {
+                      loadDashboard();
+                  }
               }, 4000);
           } else {
               if (errorEl) { errorEl.textContent = data.message || 'Kayıt yapılamadı.'; errorEl.classList.add('show'); }
