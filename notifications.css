@@ -320,10 +320,10 @@
 
 /* Bildirim dropdown: kaydırılabilir, scrollbar gizli; kartlar arası dikey 6px (çifte margin yok) */
 #notifications-dropdown {
-  --notif-red: var(--theme-color);
-  --notif-red-rgb: var(--theme-color-rgb);
-  --notif-amber: #f49119;
-  --notif-amber-rgb: 244, 145, 25;
+  --notif-red: #a80012;
+  --notif-red-rgb: 168, 0, 18;
+  --notif-amber: #e07000;
+  --notif-amber-rgb: 224, 112, 0;
   overflow-y: auto !important;
   overflow-x: hidden !important;
   -webkit-overflow-scrolling: touch;
@@ -1958,7 +1958,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
 }
 
 #monthly-todo-modal .monthly-todo-task-row--past {
-  border-left-color: var(--theme-color);
+  border-left-color: #a80012;
 }
 
 /* Açıklama metni: Taşıtlar listesi ile aynı veri gri; aciliyet sol şeritte (border-left) */
@@ -1967,7 +1967,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
 }
 
 #monthly-todo-modal .monthly-todo-task-row--upcoming {
-  border-left-color: #f49119;
+  border-left-color: #e07000;
 }
 
 #monthly-todo-modal .monthly-todo-task-row--upcoming .monthly-todo-type {
