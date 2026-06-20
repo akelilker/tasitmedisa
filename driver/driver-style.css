@@ -1017,10 +1017,6 @@ body.dashboard-page {
   .dashboard-page .driver-action-btn.data-entered {
     border-color: rgba(238, 246, 255, 0.46);
   }
-  .dashboard-page .driver-action-footer {
-    margin-top: auto;
-    margin-bottom: 0;
-  }
   .dashboard-page .driver-action-area .form-group label {
     margin-bottom: 4px !important;
   }
@@ -1028,13 +1024,6 @@ body.dashboard-page {
   .dashboard-page .driver-action-area .driver-radio-btn {
     height: auto !important;
     min-height: 26px !important;
-  }
-  /* Bildir ile FAB: boşken status kutusu yer kaplamasın (yardımcı aksiyon Bildir'e yakın kalsın) */
-  .dashboard-page .driver-action-footer .status-message:empty {
-    margin-top: 0;
-    padding: 0;
-    min-height: 0;
-    border: none;
   }
 }
 
@@ -1921,15 +1910,6 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
 .driver-action-group .driver-action-block:not(.show) {
   display: none;
 }
-.driver-action-footer {
-  margin-top: 0;
-  margin-bottom: 0;
-  padding-top: 0;
-  gap: 3px;
-}
-.driver-action-footer .form-group label {
-  margin-bottom: 3px !important;
-}
 
 /* Km (veya tek aksiyon) açıkken sadece o grubu göster */
 .driver-egzoz-muayene-check {
@@ -2132,13 +2112,6 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
     justify-content: center;
     text-align: center;
     border: 1px solid rgba(255, 255, 255, 0.25);
-  }
-  .driver-action-footer .status-message:empty {
-    margin-top: 0;
-    padding: 0;
-    min-height: 0;
-    border: none;
-    background: transparent;
   }
   .driver-action-btn.saved,
   .driver-action-btn.data-entered,
@@ -2777,74 +2750,10 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
   }
 }
 
-/* Bildir Butonu: çerçevesiz, arka plansız; ince yeşil metin + çok ince yeşil çerçeve */
-.btn-save {
-  display: block;
-  width: 100%;
-  padding: 8px 14px;
-  background: transparent;
-  color: rgba(74, 222, 128, 0.85);
-  border: 0.5px solid rgba(74, 222, 128, 0.5);
-  border-radius: 8px;
-  font-size: 15px;
-  font-weight: 300;
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.2s;
-  margin-top: 8px;
-  box-shadow: none;
-}
-
-.btn-save:hover {
-  background: rgba(74, 222, 128, 0.12);
-  color: rgba(74, 222, 128, 0.95);
-  border-color: rgba(74, 222, 128, 0.7);
-  transform: translateY(-1px);
-  box-shadow: none;
-}
-
-.btn-save:active {
-  transform: translateY(0);
-}
-
-.btn-save:disabled {
-  background: transparent;
-  color: var(--muted);
-  border-color: var(--muted);
-  cursor: not-allowed;
-  transform: none;
-}
-
 /* Sağ grid: Bildir / Vazgeç butonları – çerçeveye dokunmadan metin 1pt büyük */
 .dashboard-page .driver-action-area .universal-btn-save,
 .dashboard-page .driver-action-area .universal-btn-cancel {
   font-size: 16px !important;
-}
-
-.status-message {
-  margin-top: 12px;
-  padding: 12px;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  text-align: center;
-}
-
-.status-message.success {
-  background: rgba(74, 222, 128, 0.12);
-  border-left: 3px solid var(--green);
-  color: var(--green);
-}
-
-.status-message.error {
-  background: rgba(239, 68, 68, 0.12);
-  border-left: 3px solid var(--red);
-  color: var(--red);
-}
-
-.status-message.warning {
-  background: rgba(255, 193, 7, 0.12);
-  border-left: 3px solid #ffc107;
-  color: #ffc107;
 }
 
 /* --- BOŞ DURUM --- */
@@ -6095,10 +6004,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     .dashboard-page .driver-action-area-inner > .driver-action-group {
         margin-bottom: 0;
     }
-    .dashboard-page .driver-action-area-inner .driver-action-footer.driver-action-group {
-        margin-top: 8px;
-        margin-bottom: 0;
-    }
     .dashboard-page .driver-action-area .driver-action-group > .driver-action-btn {
         display: flex;
         align-items: center;
@@ -6108,9 +6013,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
         line-height: 1.1;
         padding-top: 9px;
         padding-bottom: 9px;
-    }
-    .dashboard-page .driver-action-area .driver-action-footer .universal-btn-save {
-        height: 36px !important;
     }
     .dashboard-page .driver-left-panel {
         margin-bottom: 0 !important;
@@ -6128,10 +6030,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     }
     .dashboard-page .driver-action-area-inner {
         min-height: 100%;
-    }
-    .dashboard-page .driver-action-area-inner .driver-action-footer.driver-action-group {
-        margin-top: 8px !important;
-        margin-bottom: 0;
     }
 }
 
@@ -6242,11 +6140,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .dashboard-page .driver-action-btn {
     padding: 4px 8px;
     line-height: 1.08;
-  }
-
-  .dashboard-page .driver-action-footer {
-    margin-top: 2px;
-    margin-bottom: 0;
   }
 }
 
