@@ -213,8 +213,9 @@ $result = medisaMutateData(function (&$data) use (
     if (!isset($vehicle['events']) || !is_array($vehicle['events'])) {
         $vehicle['events'] = [];
     }
+    $createdEvents = [];
 
-    array_unshift($vehicle['events'], [
+    $kmEvent = [
         'id' => (string)(time() . $vehicleIndex . 'km'),
         'type' => 'km-revize',
         'date' => date('Y-m-d'),
@@ -224,11 +225,13 @@ $result = medisaMutateData(function (&$data) use (
             'yeniKm' => (string)$guncelKm,
             'surucu' => $kullaniciAdi,
         ],
-    ]);
+    ];
+    array_unshift($vehicle['events'], $kmEvent);
+    array_unshift($createdEvents, $kmEvent);
 
     if ($bakimDurumu && $bakimAciklama !== '') {
         $eventDate = $bakimTarih !== '' ? $bakimTarih : date('Y-m-d');
-        array_unshift($vehicle['events'], [
+        $bakimEvent = [
             'id' => (string)(time() . $vehicleIndex . 'b'),
             'type' => 'bakim',
             'date' => $eventDate,
@@ -240,7 +243,9 @@ $result = medisaMutateData(function (&$data) use (
                 'km' => $bakimKm,
                 'tutar' => $bakimTutar,
             ],
-        ]);
+        ];
+        array_unshift($vehicle['events'], $bakimEvent);
+        array_unshift($createdEvents, $bakimEvent);
     }
 
     if ($kazaDurumu && $kazaAciklama !== '') {
@@ -253,20 +258,22 @@ $result = medisaMutateData(function (&$data) use (
         if (!empty($boyaParcalar)) {
             $kazaData['hasarParcalari'] = $boyaParcalar;
         }
-        array_unshift($vehicle['events'], [
+        $kazaEvent = [
             'id' => (string)(time() . $vehicleIndex . 'k'),
             'type' => 'kaza',
             'date' => $eventDate,
             'timestamp' => date('c'),
             'data' => $kazaData,
-        ]);
+        ];
+        array_unshift($vehicle['events'], $kazaEvent);
+        array_unshift($createdEvents, $kazaEvent);
     }
 
     if ($hasEkstraNot) {
         $vehicle['sonEkstraNot'] = $ekstraNot;
         $vehicle['sonEkstraNotDonem'] = $donem;
         if ($ekstraNot !== '') {
-            array_unshift($vehicle['events'], [
+            $noteEvent = [
                 'id' => (string)(time() . $vehicleIndex . 'n'),
                 'type' => 'not-guncelle',
                 'date' => date('Y-m-d'),
@@ -276,7 +283,9 @@ $result = medisaMutateData(function (&$data) use (
                     'donem' => $donem,
                     'surucu' => $kullaniciAdi,
                 ],
-            ]);
+            ];
+            array_unshift($vehicle['events'], $noteEvent);
+            array_unshift($createdEvents, $noteEvent);
         }
     }
 
@@ -292,7 +301,10 @@ $result = medisaMutateData(function (&$data) use (
             'guncelKm' => $guncelKm,
             'km_state' => 'OK',
             'km_state_reason' => 'period_km_exists',
+            'boyaliParcalar' => $vehicle['boyaliParcalar'] ?? [],
+            'boya' => $vehicle['boya'] ?? '',
         ],
+        'events' => $createdEvents,
         'vehicleVersions' => [[
             'id' => (string)$aracId,
             'version' => $newVehicleVersion,
