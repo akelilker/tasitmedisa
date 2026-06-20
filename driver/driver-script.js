@@ -1319,6 +1319,13 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       return level;
   }
 
+  function formatDriverBrandModel(raw) {
+      const formatter = typeof window.formatBrandModel === 'function'
+          ? window.formatBrandModel
+          : (typeof window.toTitleCase === 'function' ? window.toTitleCase : function(x) { return x; });
+      return formatter(raw || '') || '';
+  }
+
   function syncDriverHeaderUserName() {
       const nameEl = document.getElementById('main-header-user-name');
       if (!nameEl) return;
@@ -1334,7 +1341,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       const plakaEl = document.getElementById('driver-current-plaka');
       if (plakaEl) plakaEl.textContent = formatDriverPlaka(vehicle.plaka);
       const subtitleEl = document.getElementById('driver-plate-subtitle');
-      if (subtitleEl) subtitleEl.textContent = (typeof window.formatBrandModel === 'function' ? window.formatBrandModel : (typeof window.toTitleCase === 'function' ? window.toTitleCase : function(x){ return x; }))(vehicle.brandModel || [vehicle.marka, vehicle.model].filter(Boolean).join(' ') || '') || '';
+      if (subtitleEl) subtitleEl.textContent = formatDriverBrandModel(vehicle.brandModel || [vehicle.marka, vehicle.model].filter(Boolean).join(' ') || '');
 
       const existingRecord = getExistingRecord(vehicle.id);
       const kmVal = vehicle.guncelKm || (existingRecord && existingRecord.guncel_km) || '-';
@@ -1489,7 +1496,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
 
       dropdown.innerHTML = vehicles.map(v => {
           const raw = v.brandModel || [v.marka, v.model].filter(Boolean).join(' ');
-          const brandModel = (typeof window.formatBrandModel === 'function' ? window.formatBrandModel : (typeof window.toTitleCase === 'function' ? window.toTitleCase : function(x){ return x; }))(raw || '') || '';
+          const brandModel = formatDriverBrandModel(raw || '');
           const plate = escapeHtmlDriver(formatDriverPlaka(v.plaka));
           const brandModelHtml = escapeHtmlDriver(brandModel);
           const hasBrandModel = !!brandModel;
@@ -1561,11 +1568,6 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           kmBtnClass, kazaBtnClass, bakimBtnClass, sigortaBtnClass, kaskoBtnClass, muayeneBtnClass, anahtarBtnClass, lastikBtnClass, vid
       });
       initDriverDateDisplays(areaEl);
-
-      const kaportaContainer = document.getElementById('kaza-kaporta-' + vid);
-      if (kaportaContainer && vehicle) {
-          initKaportaForDriver(kaportaContainer, vehicle);
-      }
   }
 
   function buildDriverActionArea(vehicle, existingRecord, bakimVar, kazaVar, opts) {
@@ -1728,7 +1730,6 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
                   </div>
               </div>
               <div class="driver-action-group driver-action-footer"><button type="button" onclick="saveVehicleData('${vid}')" class="universal-btn-save" id="btn-save-${vid}">Bildir</button><div id="status-${vid}" class="status-message"></div></div>
-              <div class="driver-action-group driver-action-feedback-slot driver-request-fab-row"><button type="button" class="driver-action-btn-feedback driver-request-fab driver-documents-fab" onclick="openDriverDocumentsModal()" aria-label="Belgeler"><svg class="driver-action-btn-feedback-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.05" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h7l5 5v13H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"></path><path d="M14 3v5h5"></path><line x1="8" y1="13" x2="16" y2="13"></line><line x1="8" y1="17" x2="14" y2="17"></line></svg><span class="driver-request-fab-label">Belgeler</span></button><button type="button" class="driver-action-btn-feedback driver-request-fab driver-feedback-fab" onclick="openDriverFeedbackModal()" aria-label="Talep, şikayet veya öneri gönder"><svg class="driver-action-btn-feedback-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.05" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.5 5.5h9a4.5 4.5 0 0 1 0 9h-3.2L9 18.5v-4H7.5a4.5 4.5 0 0 1 0-9z"></path><circle cx="9" cy="10" r="0.7" fill="currentColor" stroke="none"></circle><circle cx="12" cy="10" r="0.7" fill="currentColor" stroke="none"></circle><circle cx="15" cy="10" r="0.7" fill="currentColor" stroke="none"></circle></svg><span class="driver-request-fab-label">Talep Gönder</span></button><button type="button" class="driver-action-btn-feedback driver-request-fab driver-btn-logout" onclick="logout()" title="Çıkış" aria-label="Çıkış"><svg class="driver-btn-logout-icon driver-action-btn-feedback-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg><span class="driver-request-fab-label">Çıkış</span></button></div>
           </div>
       `;
   }
@@ -2420,12 +2421,6 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       }
   }
 
-  function initKaportaForDriver(container, vehicle) {
-      if (typeof initKaporta === 'function') {
-          initKaporta(container, vehicle);
-      }
-  }
-
   function formatDriverDate(val) {
       if (!val) return '-';
       if (/^\d{4}-\d{2}-\d{2}$/.test(val)) {
@@ -2442,7 +2437,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
   }
 
   function setupKmInputs() {
-      document.querySelectorAll('.vehicle-card input.driver-km-input, #driver-input-area input.driver-km-input, .driver-action-area input.driver-km-input').forEach(input => {
+      document.querySelectorAll('.driver-action-area input.driver-km-input').forEach(input => {
           var ph = input.parentElement && input.parentElement.querySelector('.driver-km-fake-placeholder');
           function togglePlaceholder() {
               if (ph) ph.style.visibility = (input.value || document.activeElement === input) ? 'hidden' : 'visible';
@@ -2467,7 +2462,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
   }
 
   function setupEkstraNotAutoResize() {
-      document.querySelectorAll('.vehicle-card textarea.driver-ekstra-not, #driver-input-area textarea.driver-ekstra-not, .driver-action-area textarea.driver-ekstra-not').forEach(ta => {
+      document.querySelectorAll('.driver-action-area textarea.driver-ekstra-not').forEach(ta => {
           function resize() {
               ta.style.height = 'auto';
               ta.style.height = ta.scrollHeight + 'px';
@@ -2475,7 +2470,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           ta.addEventListener('input', resize);
           resize();
       });
-      document.querySelectorAll('.vehicle-card textarea.driver-report-textarea-auto, #driver-input-area textarea.driver-report-textarea-auto, .driver-action-area textarea.driver-report-textarea-auto').forEach(ta => {
+      document.querySelectorAll('.driver-action-area textarea.driver-report-textarea-auto').forEach(ta => {
           function resize() {
               ta.style.height = 'auto';
               ta.style.height = ta.scrollHeight + 'px';
@@ -2679,42 +2674,6 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       } catch (err) {
           console.error(err);
           alert('Bağlantı hatası!');
-      }
-  };
-
-  // Blok Aç/Kapa (aksiyon butonlarından çağrılır)
-  window.toggleAndScrollToBlock = function(type, vehicleId) {
-      toggleReportBlock(type, vehicleId);
-      const block = document.getElementById(type + '-block-' + vehicleId);
-      if (block) block.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  };
-
-  window.toggleReportBlock = function(type, vehicleId) {
-      const block = document.getElementById(`${type}-block-${vehicleId}`);
-      if (!block) return;
-
-      const isShown = block.classList.contains('show');
-      if (isShown) {
-          block.classList.remove('show');
-      } else {
-          block.classList.add('show');
-          // Açılınca tarih boşsa bugünün tarihini ver
-          const dateEl = document.getElementById(`${type}-tarih-${vehicleId}`);
-          if(dateEl && !dateEl.value) {
-               dateEl.value = new Date().toISOString().split('T')[0];
-          }
-          // Kaza bloku açıldığında kaporta SVG'yi ilk kez yükle (container boşsa)
-          if (type === 'kaza') {
-              const container = document.getElementById('kaza-kaporta-' + vehicleId);
-              if (container && !container.querySelector('svg')) {
-                  let boyaliParcalar = {};
-                  try {
-                      const raw = container.getAttribute('data-boyali-parcalar');
-                      if (raw) boyaliParcalar = JSON.parse(raw);
-                  } catch (e) {}
-                  initDriverKaporta(vehicleId, boyaliParcalar);
-              }
-          }
       }
   };
 
@@ -2979,7 +2938,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
   function formatHistoryVehicleTriggerLabel(v) {
       if (!v) return 'Tüm Taşıtlar';
       var raw = v.brandModel || [v.marka, v.model].filter(Boolean).join(' ');
-      var brandModel = (typeof window.formatBrandModel === 'function' ? window.formatBrandModel : (typeof window.toTitleCase === 'function' ? window.toTitleCase : function(x){ return x; }))(raw || '') || '';
+      var brandModel = formatDriverBrandModel(raw || '');
       return [formatDriverPlaka(v.plaka), brandModel].filter(Boolean).join(' - ');
   }
 
@@ -2991,7 +2950,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           return;
       }
       var raw = vehicle.brandModel || [vehicle.marka, vehicle.model].filter(Boolean).join(' ');
-      var brandModel = (typeof window.formatBrandModel === 'function' ? window.formatBrandModel : (typeof window.toTitleCase === 'function' ? window.toTitleCase : function(x){ return x; }))(raw || '') || '';
+      var brandModel = formatDriverBrandModel(raw || '');
       var plate = formatDriverPlaka(vehicle.plaka);
       triggerText.innerHTML =
           '<span class="history-selected-plate">' + escapeHtmlDriver(plate) + '</span>' +
@@ -3038,7 +2997,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           opt.className = 'history-vehicle-option';
           opt.dataset.value = String(v.id);
           var raw = v.brandModel || [v.marka, v.model].filter(Boolean).join(' ');
-          var brandModel = (typeof window.formatBrandModel === 'function' ? window.formatBrandModel : (typeof window.toTitleCase === 'function' ? window.toTitleCase : function(x){ return x; }))(raw || '') || '';
+          var brandModel = formatDriverBrandModel(raw || '');
           opt.textContent = [formatDriverPlaka(v.plaka), brandModel].filter(Boolean).join(' - ');
           opt.onclick = function() { selectHistoryVehicle(String(v.id), opt.textContent); };
           dropdown.appendChild(opt);
