@@ -287,6 +287,12 @@ $result = medisaMutateData(function (&$data) use (
         'warning' => $warning,
         'vehicleId' => (string)$aracId,
         'vehicleVersion' => $newVehicleVersion,
+        'record' => $kayitData,
+        'vehiclePatch' => [
+            'guncelKm' => $guncelKm,
+            'km_state' => 'OK',
+            'km_state_reason' => 'period_km_exists',
+        ],
         'vehicleVersions' => [[
             'id' => (string)$aracId,
             'version' => $newVehicleVersion,
