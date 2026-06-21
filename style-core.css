@@ -1798,10 +1798,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
         var(--footer-red-glow) !important;
 }
 
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #app-footer {
-    z-index: 10060 !important;
-}
-
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.active,
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.open {
     isolation: isolate !important; /* Modal dekor/pseudo katmanlarını kendi stack içinde kilitle */
