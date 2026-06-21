@@ -742,33 +742,77 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
   }
 
   /* =========================================
-     SPLASH (3 sn) + DASHBOARD / LOGIN
+     SPLASH + DASHBOARD / LOGIN
      ========================================= */
 
-  /** Splash 2 sn göster, sonra gizle ve normal akışa devam et */
-  function initDriverSplash(onComplete) {
+  var driverSplashNotifyReady = null;
+
+  /** Splash: min 600ms marka, veri hazır olunca kapanır; en geç 2.4 sn */
+  function initDriverSplash() {
     const splash = document.getElementById('driver-splash');
+    const MIN_SPLASH_MS = 600;
+    const MAX_SPLASH_MS = 2400;
+    const FADE_MS = 400;
+
     if (!splash) {
+      driverSplashNotifyReady = null;
       if (document.body) document.body.classList.remove('driver-splash-active');
-      if (typeof onComplete === 'function') onComplete();
       return;
     }
+
     if (document.body) document.body.classList.add('driver-splash-active');
-    setTimeout(function() {
+    var startedAt = Date.now();
+    var dataReady = false;
+    var dismissed = false;
+
+    function hideSplash() {
+      if (dismissed) return;
+      dismissed = true;
+      driverSplashNotifyReady = null;
       splash.classList.add('hidden');
       splash.setAttribute('aria-hidden', 'true');
       setTimeout(function() {
         splash.style.display = 'none';
         if (document.body) document.body.classList.remove('driver-splash-active');
-        if (typeof onComplete === 'function') onComplete();
-      }, 400);
-    }, 2000);
+      }, FADE_MS);
+    }
+
+    function tryDismissSplash() {
+      if (dismissed) return;
+      var elapsed = Date.now() - startedAt;
+      if (dataReady && elapsed >= MIN_SPLASH_MS) {
+        hideSplash();
+        return;
+      }
+      if (elapsed >= MAX_SPLASH_MS) {
+        hideSplash();
+      }
+    }
+
+    setTimeout(tryDismissSplash, MAX_SPLASH_MS);
+
+    driverSplashNotifyReady = function markDriverSplashReady() {
+      if (dismissed) return;
+      dataReady = true;
+      var remaining = MIN_SPLASH_MS - (Date.now() - startedAt);
+      if (remaining <= 0) {
+        tryDismissSplash();
+      } else {
+        setTimeout(tryDismissSplash, remaining);
+      }
+    };
+  }
+
+  function notifyDriverSplashReady() {
+    if (typeof driverSplashNotifyReady === 'function') {
+      driverSplashNotifyReady();
+    }
   }
 
   if (document.getElementById('driver-two-panel')) {
     const run = () => {
-      loadDashboard();
       initDriverSplash();
+      loadDashboard();
     };
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', run);
@@ -942,25 +986,25 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
 
   async function loadDashboard() {
       setDriverPlateListOpenState(false);
-      const token = getStoredPortalToken();
-
-      if (!token) {
-          window.location.href = DRIVER_PAGE_BASE + 'index.html';
-          return;
-      }
-
-      var tokenPayload = decodeDriverTokenPayload(token);
-      var currentSession = await fetchCurrentPortalSession(token);
-      var accessContext = buildPortalAccessContext(tokenPayload, false, currentSession);
-      if (!canOpenDriverDashboard(accessContext)) {
-          window.location.href = MAIN_APP_URL;
-          return;
-      }
-      syncDashboardHomeLinkVisibility(accessContext);
-
-      currentToken = token;
-
       try {
+          const token = getStoredPortalToken();
+
+          if (!token) {
+              window.location.href = DRIVER_PAGE_BASE + 'index.html';
+              return;
+          }
+
+          var tokenPayload = decodeDriverTokenPayload(token);
+          var currentSession = await fetchCurrentPortalSession(token);
+          var accessContext = buildPortalAccessContext(tokenPayload, false, currentSession);
+          if (!canOpenDriverDashboard(accessContext)) {
+              window.location.href = MAIN_APP_URL;
+              return;
+          }
+          syncDashboardHomeLinkVisibility(accessContext);
+
+          currentToken = token;
+
           const response = await fetch(API_BASE + 'driver_data.php?_=' + Date.now(), {
               headers: { 'Authorization': 'Bearer ' + token },
               cache: 'no-store'
@@ -1048,6 +1092,8 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
               const icon = emptyEl.querySelector('.driver-empty-icon');
               if (icon) icon.textContent = '🚗';
           }
+      } finally {
+          notifyDriverSplashReady();
       }
   }
 
