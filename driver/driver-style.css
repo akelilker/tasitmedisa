@@ -4730,6 +4730,12 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     padding: 3px 12px !important;
     padding-bottom: max(4px, env(safe-area-inset-bottom, 0)) !important;
   }
+  /* Masaüstü: footer MEDISA logosu ana uygulama ile aynı (14px) */
+  .dashboard-page #app-footer .brand img,
+  .login-page #app-footer.login-footer .brand img {
+    height: 14px !important;
+    max-height: 14px !important;
+  }
   /* Masaüstü: kırmızı çizgiler footer'ın tam üstünde biter */
   .dashboard-page .driver-dashboard-container::before,
   .login-page .driver-dashboard-container::before {
