@@ -119,6 +119,7 @@ body::-webkit-scrollbar,
   :root {
     --app-footer-height: 34px;
     --app-footer-real-height: 42px;
+    --app-footer-gap: 14px;
     --modal-gap-above-footer: 1px;
   }
 }
