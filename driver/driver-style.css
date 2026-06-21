@@ -6050,6 +6050,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
         line-height: 1.1;
         padding-top: 9px;
         padding-bottom: 9px;
+        border-radius: 8px;
     }
     .dashboard-page .driver-left-panel {
         margin-bottom: 0 !important;
