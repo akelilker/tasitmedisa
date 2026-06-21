@@ -1176,16 +1176,16 @@
     padding: 0 !important;
   }
   #dinamik-olay-modal #ruhsat-modal-content .ruhsat-add-btn {
-    font-size: 42px;
+    font-size: 30px !important;
     min-width: 48px;
     width: 48px !important;
     min-height: 48px;
     height: 48px !important;
     padding: 0 !important;
     display: inline-flex !important;
-    align-items: center;
-    justify-content: center;
-    line-height: 1;
+    align-items: center !important;
+    justify-content: center !important;
+    line-height: 1 !important;
   }
   #dinamik-olay-modal #ruhsat-modal-content .universal-btn-group.ruhsat-preview-row .ruhsat-add-btn,
   #dinamik-olay-modal #ruhsat-modal-content .universal-btn-group:has(.ruhsat-preview-link) .ruhsat-add-btn {
@@ -1198,6 +1198,11 @@
     max-width: 48px !important;
     transform: none !important;
     margin-left: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
   }
   #dinamik-olay-modal #ruhsat-modal-content .ruhsat-inline-frame-wrap {
     height: min(66vh, 620px);
@@ -2083,14 +2088,21 @@
   /* Belge upload: mobil Olay Ekle 17px input override'ından muaf — 36px kutu + 12px metin */
   #dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack .form-input,
   #dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack .olay-date-mobile-text {
+    width: 100% !important;
+    max-width: 100% !important;
     font-size: 12px !important;
     height: 36px !important;
     min-height: 36px !important;
     max-height: 36px !important;
     line-height: 36px !important;
+    border-radius: 8px !important;
+    text-align: center !important;
   }
 
   #dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack .olay-date-mobile-wrap {
+    width: min(100%, 280px) !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
     height: 36px !important;
     min-height: 36px !important;
     max-height: 36px !important;
