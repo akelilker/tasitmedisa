@@ -1202,6 +1202,18 @@ button.driver-warning-panel-item:focus-visible {
     color: #cbd5e0;
   }
 }
+@media (max-width: 768px) {
+  /* Mobil: bildirim metinleri blur arka planda kaybolmasın — beyaz + 0.5pt */
+  .dashboard-page .driver-notifications-dropdown .driver-warning-panel-text,
+  .dashboard-page .driver-notifications-dropdown .driver-notification-empty {
+    color: #ffffff;
+    font-size: calc(12px + 0.5pt);
+  }
+  .dashboard-page .driver-notifications-dropdown .driver-warning-panel-item,
+  .dashboard-page .driver-notifications-dropdown button.driver-warning-panel-item {
+    font-size: calc(12px + 0.5pt);
+  }
+}
 .driver-notification-empty {
   padding: 10px 8px;
   border-radius: 6px;
