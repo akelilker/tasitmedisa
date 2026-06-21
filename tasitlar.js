@@ -3081,39 +3081,17 @@
       if (searchMode === 'local') {
           renderVehicles(val);
       } else {
-          // Genel arama: sonuç listesi gösterilir (dashboard yerine).
+          // Genel arama: şube dashboard yerine mevcut kolonlu taşıt listesini filtreli göster.
           if (!val) {
               renderBranchDashboard();
               return;
           }
-          const all = readVehicles();
           const q = normalizeVehicleSearchText(val);
-          let filtered = all.filter(v => vehicleMatchesSearchQuery(v, q));
-          if (transmissionFilter) {
-            filtered = filtered.filter(v => v.transmission === transmissionFilter);
-          }
-          
-          // Sonuçları mevcut liste sarmalayıcısında göster (event delegation + mobil dokunma aynı kalsın).
-          let html = `<div style="padding:10px; color:#aaa; font-size:12px;">GENEL ARAMA SONUÇLARI (${filtered.length})</div>`;
-          html += `<div class="vehicles-list-scroll"><div class="view-list">` + filtered.map(v => {
-              const vid = v.id != null ? String(v.id).replace(/"/g, '&quot;') : '';
-              const gh = getVehicleSearchFieldHits(v, val);
-              const brandLine = maybeHighlightCell(formatBrandModel(v.brandModel || '-'), val, gh.brand, 'brand');
-              const yearLine = maybeHighlightCell(String(v.year != null ? v.year : '-'), val, gh.year, 'year');
-              const tahsisLine = String(v.tahsisKisi || 'Boşta');
-              const userLine = maybeHighlightCell(tahsisLine, val, gh.user, 'user');
-              return `
-              <div class="list-item" data-vehicle-id="${vid}" style="cursor:pointer">
-                <div class="list-info">
-                  <h4>${brandLine}</h4>
-                  <span>${yearLine} • ${userLine}</span>
-                </div>
-              </div>
-          `}).join('') + `</div></div>`;
-          
-          modalContent.innerHTML = html;
+          currentView = 'dashboard';
+          activeBranchId = 'all';
+          viewMode = 'list';
+          renderVehicles(q);
           modalContent.dataset.renderScope = 'search-global';
-          modalContent.dataset.renderSignature = q + '__' + filtered.length;
           syncVehiclesListModeClass(true);
       }
   };
