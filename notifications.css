@@ -1308,9 +1308,9 @@ body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-
 }
 @media (max-width: 640px) {
     #monthly-todo-header-btn .monthly-todo-header-badge {
-        top: -5px;
-        right: -8px;
-        font-size: 14px;
+        top: -2px;
+        right: -2px;
+        font-size: 15px;
         font-weight: 800;
         line-height: 1;
     }
@@ -1575,13 +1575,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
     align-items: center;
     justify-content: center;
     justify-items: center;
-  }
-
-  #monthly-todo-modal .monthly-todo-task-row .monthly-todo-middle-col .monthly-todo-user:not(:has(.monthly-todo-wa-link)) {
-    --monthly-todo-wa-track: 0px;
-    --monthly-todo-wa-gap: 0px;
-    grid-template-columns: minmax(0, 1fr);
-    column-gap: 0;
   }
 
   #monthly-todo-modal .monthly-todo-task-row .monthly-todo-middle-col .monthly-todo-user-name {
@@ -2060,11 +2053,13 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
   color: #a0aec0;
 }
 
-#monthly-todo-modal .monthly-todo-middle-col .monthly-todo-user:not(:has(.monthly-todo-wa-link)) {
-  --monthly-todo-wa-track: 0px;
-  --monthly-todo-wa-gap: 0px;
-  grid-template-columns: minmax(0, 1fr);
-  column-gap: 0;
+@media (min-width: 641px) {
+  #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-user:not(:has(.monthly-todo-wa-link)) {
+    --monthly-todo-wa-track: 0px;
+    --monthly-todo-wa-gap: 0px;
+    grid-template-columns: minmax(0, 1fr);
+    column-gap: 0;
+  }
 }
 
 #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-user-name {
