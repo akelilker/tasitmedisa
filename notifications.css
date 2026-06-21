@@ -1799,20 +1799,20 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
   #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h-line--sub {
     font-size: 12px;
   }
-  /* Şube filtresi seçiliyken etiket adı Açıklama ile üst üste binmesin: üstte filtre, altta başlık */
   #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h--desc {
     position: relative;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-end;
+    justify-content: center;
     gap: 0;
-    padding-top: 14px;
+    padding-top: 0;
     white-space: nowrap;
   }
   #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h--desc .monthly-todo-branch-filter {
     position: absolute;
-    top: -1px;
+    top: 50%;
     right: 0;
+    transform: translateY(-50%);
     width: auto;
     max-width: 118px;
     min-height: 16px;
@@ -1840,7 +1840,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
   #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h--desc > span:last-child {
     width: 100%;
     padding-right: 0;
-    line-height: 1.05;
+    line-height: 1.25;
     text-align: center;
   }
 }
