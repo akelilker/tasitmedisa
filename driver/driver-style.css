@@ -1202,6 +1202,18 @@ button.driver-warning-panel-item:focus-visible {
     color: #cbd5e0;
   }
 }
+@media (max-width: 768px) {
+  /* Mobil: bildirim metinleri blur arka planda kaybolmasın — beyaz + 0.5pt */
+  .dashboard-page .driver-notifications-dropdown .driver-warning-panel-text,
+  .dashboard-page .driver-notifications-dropdown .driver-notification-empty {
+    color: #ffffff;
+    font-size: calc(12px + 0.5pt);
+  }
+  .dashboard-page .driver-notifications-dropdown .driver-warning-panel-item,
+  .dashboard-page .driver-notifications-dropdown button.driver-warning-panel-item {
+    font-size: calc(12px + 0.5pt);
+  }
+}
 .driver-notification-empty {
   padding: 10px 8px;
   border-radius: 6px;
@@ -2150,7 +2162,7 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
   .driver-action-btn.warning:not(.warning-orange):hover {
     border-color: rgba(255, 255, 255, 0.5);
   }
-  .driver-current-plaka { font-size: 13.5px; } /* 14.5 - 1pt */
+  .driver-current-plaka { font-size: 14.5px; }
   .driver-plate-subtitle { font-size: 14.5px; }
   .driver-user-plate-in-panel .driver-plate-subtitle { font-size: calc(15.5px + 0.67px); }
   .driver-user-plate-in-panel { gap: 1px; margin-bottom: 3px; }
@@ -2290,7 +2302,7 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
     margin-top: 0 !important;
     margin-left: 0 !important;
     overflow: visible !important;
-    transform: translateY(8px) !important;
+    transform: translateY(6px) !important;
   }
   .dashboard-page .hero.hero-two-rows .hero-logo picture {
     display: block !important;
@@ -5406,7 +5418,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     text-overflow: clip !important;
     padding-left: 18px !important;
     padding-right: 18px !important;
-    font-size: calc(13px - 1pt) !important; /* 14px - 2pt */
+    font-size: calc(14px - 1pt) !important;
   }
   .dashboard-page .driver-plate-dropdown-row .driver-plate-trigger {
     right: -8px !important;
@@ -6030,13 +6042,13 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 
 /* 2. Ortadaki kırmızı dikey çizgi footera değmeden Bildir butonu hizasında kesilsin (Mobil) */
 @media (max-width: 768px) {
-    /* Mobil aksiyon ritmi tek owner: genel 5px, Lastik -> Bildir net 4px */
+    /* Mobil aksiyon ritmi tek owner: genel 6px, Lastik -> Bildir net 4px */
     .dashboard-page .driver-action-area {
         padding-top: 4px;
     }
     .dashboard-page .driver-action-area-inner {
         justify-content: flex-start;
-        gap: 5px;
+        gap: 6px;
     }
     .dashboard-page .driver-action-area-inner > .driver-action-group {
         margin-bottom: 0;
@@ -6050,6 +6062,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
         line-height: 1.1;
         padding-top: 9px;
         padding-bottom: 9px;
+        border-radius: 8px;
     }
     .dashboard-page .driver-left-panel {
         margin-bottom: 0 !important;
