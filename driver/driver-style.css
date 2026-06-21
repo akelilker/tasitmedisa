@@ -694,11 +694,32 @@ body.dashboard-page {
   .dashboard-page .driver-below-hero-row .driver-btn-header-logout:focus {
     color: #ff2b2b !important;
   }
-  /* Üst durum ikonları arası 8px (masaüstü) */
+  /* PWA: absolute sol overlay — icon row tam genişlik kalır, çıkış kapısı oynamaz */
   .dashboard-page .driver-below-hero-row {
+    position: relative !important;
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
     gap: 8px !important;
   }
+  .dashboard-page .driver-below-hero-pwa-slot {
+    position: absolute !important;
+    left: 0 !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    z-index: 2 !important;
+    max-width: min(168px, 42%) !important;
+    min-width: 0 !important;
+  }
   .dashboard-page .driver-status-icon-row {
+    flex: 1 1 auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
     gap: 8px !important;
   }
   .dashboard-page .driver-status-icon-slot {
@@ -1174,6 +1195,12 @@ button.driver-warning-panel-item:focus-visible {
   font-size: 12px;
   overflow-wrap: anywhere;
   white-space: normal;
+}
+@media (min-width: 769px) {
+  /* Masaüstü: bildirim metni biraz daha okunaklı; boyut/layout aynı */
+  .driver-notifications-dropdown .driver-warning-panel-text {
+    color: #cbd5e0;
+  }
 }
 .driver-notification-empty {
   padding: 10px 8px;
@@ -4385,22 +4412,26 @@ body.dashboard-page.driver-history-vehicle-dropdown-open #history-modal .history
   .login-page .pwa-install-bar .pwa-install-close {
     margin-left: 0 !important;
   }
-  /* PWA Butonu Masaüstü: driver-below-hero-row içinde, üst durum ikonları ile aynı satırda */
+  /* PWA Butonu Masaüstü: sol sütunda, durum ikonları ortada sabit */
   .dashboard-page .driver-below-hero-pwa-slot #pwa-install-wrapper {
     display: flex !important;
-    justify-content: center !important;
+    justify-content: flex-start !important;
     align-items: center !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
   }
 
   .dashboard-page .driver-below-hero-pwa-slot .pwa-install-bar {
     background: transparent !important;
     border: none !important;
-    padding: 4px 8px !important;
-    padding-right: 14px !important;
+    padding: 4px 0 4px 8px !important;
     border-radius: 6px !important;
     width: auto !important;
     max-width: 100% !important;
+    min-width: 0 !important;
     gap: 4px !important;
+    box-sizing: border-box !important;
   }
 
   .dashboard-page .driver-below-hero-pwa-slot .pwa-install-btn {
