@@ -1522,7 +1522,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
 #monthly-todo-modal .monthly-todo-col-header,
 #monthly-todo-modal .monthly-todo-task-row {
   display: grid;
-  grid-template-columns: minmax(0, 30%) minmax(0, 25%) minmax(0, 45%);
+  grid-template-columns: minmax(0, 29%) minmax(0, 24%) minmax(0, 47%);
   column-gap: 8px;
   align-items: center;
 }
@@ -1533,20 +1533,21 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
   }
 
   #monthly-todo-modal .monthly-todo-col-header {
-    grid-template-columns: minmax(0, 29%) minmax(0, 28%) minmax(0, 43%);
-    column-gap: 6px;
+    grid-template-columns: minmax(0, 28%) minmax(0, 24%) minmax(0, 48%);
+    column-gap: 5px;
     align-items: start;
   }
 
   #monthly-todo-modal .monthly-todo-task-row {
-    grid-template-columns: minmax(0, 29%) minmax(0, 28%) minmax(0, 43%);
-    column-gap: 6px;
+    grid-template-columns: minmax(0, 28%) minmax(0, 24%) minmax(0, 48%);
+    column-gap: 5px;
     align-items: center;
   }
 
   #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h {
-    font-size: 13px;
+    font-size: 13.5px;
     align-self: start;
+    letter-spacing: 0.03em;
   }
 
   #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h--middle {
@@ -1560,7 +1561,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
   }
 
   #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h-line--sub {
-    font-size: 12px;
+    font-size: 12.5px;
   }
 
   #monthly-todo-modal .monthly-todo-task-row .monthly-todo-middle-col .monthly-todo-user {
@@ -1636,11 +1637,11 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
   text-align: center;
   justify-self: stretch;
   align-self: stretch;
-  font-size: 12px;
+  font-size: 13.5px;
   font-weight: 700;
   line-height: 1.25;
   color: #ffffff;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.03em;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -1668,9 +1669,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
 }
 
 #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h-line--sub {
-  font-size: 11px;
+  font-size: 12.5px;
   font-weight: 600;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.02em;
 }
 
 #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h--desc {
