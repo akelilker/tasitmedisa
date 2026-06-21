@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../core.php';
+require_once __DIR__ . '/driver_common.php';
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, OPTIONS');
@@ -24,6 +24,13 @@ $data = loadData();
 if (!$data) {
     http_response_code(500);
     echo json_encode(['success' => false, 'message' => 'Veri okunamadı!'], JSON_UNESCAPED_UNICODE);
+    exit;
+}
+
+$context = medisaDriverResolveContext($data, $tokenData);
+if (!$context) {
+    http_response_code(403);
+    echo json_encode(['success' => false, 'message' => 'Kullanıcı paneli erişiminiz yok!'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
@@ -79,7 +86,7 @@ function buildVehicleForDriver($tasit, $branches = [], $k2Belgesi = []) {
         'lastikAdres' => $tasit['lastikAdres'] ?? '',
         'uttsTanimlandi' => $tasit['uttsTanimlandi'] ?? false,
         'muayeneDate' => $tasit['muayeneDate'] ?? '',
-        'events' => $tasit['events'] ?? [],
+        'events' => [],
         'createdAt' => $tasit['createdAt'] ?? null
     ];
 }
@@ -140,20 +147,7 @@ if (!function_exists('medisaComputeKmState')) {
     }
 }
 
-// Kullanıcıyı bul
-$user = null;
-foreach ($data['users'] as $u) {
-    if ($u['id'] === $tokenData['user_id']) {
-        $user = $u;
-        break;
-    }
-}
-
-if (!$user) {
-    http_response_code(404);
-    echo json_encode(['success' => false, 'message' => 'Kullanıcı bulunamadı!'], JSON_UNESCAPED_UNICODE);
-    exit;
-}
+$user = $context['user'];
 
 // Atanmış taşıtları bul (tek kaynak: tasit.assignedUserId)
 $branches = $data['branches'] ?? [];
@@ -179,21 +173,23 @@ if (count($vehicles) === 0 && !empty($user['zimmetli_araclar'])) {
     }
 }
 
-// Bu ay için mevcut kayıtları bul
+// Dashboard için yalnızca bu ayın kayıtlarını gönder; tam geçmiş driver_history.php ile açılır.
 $currentPeriod = date('Y-m');
-$records = [];
-$assignedVehicleIds = array_map(function ($v) { return $v['id']; }, $vehicles);
-$assignedVehicleIdSet = array_fill_keys(array_map('strval', $assignedVehicleIds), true);
-foreach ($data['arac_aylik_hareketler'] ?? [] as $kayit) {
-    $vehicleId = (string)($kayit['arac_id'] ?? '');
-    if (isset($kayit['surucu_id']) && (string)$kayit['surucu_id'] === (string)$user['id'] && isset($assignedVehicleIdSet[$vehicleId])) {
-        $records[] = $kayit;
-    }
-}
-
+$assignedVehicleIdSet = medisaDriverBuildAssignedVehicleIdSet($vehicles);
+$stateRecords = medisaDriverFilterRecordsForVehicles(
+    $data['arac_aylik_hareketler'] ?? [],
+    $user['id'] ?? '',
+    $assignedVehicleIdSet
+);
+$records = medisaDriverFilterRecordsForVehicles(
+    $data['arac_aylik_hareketler'] ?? [],
+    $user['id'] ?? '',
+    $assignedVehicleIdSet,
+    $currentPeriod
+);
 $currentDay = (int)date('j');
 $recordsByVehicle = [];
-foreach ($records as $record) {
+foreach ($stateRecords as $record) {
     $vehicleId = (string)($record['arac_id'] ?? '');
     if ($vehicleId === '') continue;
     if (!isset($recordsByVehicle[$vehicleId])) $recordsByVehicle[$vehicleId] = [];
@@ -238,6 +234,7 @@ echo json_encode([
         'id' => $user['id'],
         'isim' => $user['isim'] ?? $user['name'] ?? ''
     ],
+    'session' => medisaBuildSessionPayload($context),
     'vehicles' => $vehicles,
     'records' => $records,
     'current_period' => $currentPeriod
