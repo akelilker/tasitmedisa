@@ -1213,7 +1213,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     font-weight: 800;
     line-height: 1;
     letter-spacing: 0;
-    color: #ffffff;
+    color: currentColor;
     text-shadow: 0 0 5px rgba(0, 0, 0, 0.72), 0 0 6px currentColor;
     pointer-events: none;
 }
