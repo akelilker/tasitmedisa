@@ -3901,6 +3901,10 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     box-shadow: none !important;
 }
 
+:is(#vehicle-detail-modal, #event-menu-modal, #dinamik-olay-modal, #vehicle-history-modal).tasitlar-modal-overlay .modal-container {
+    margin-top: 2px !important;
+}
+
 #vehicles-modal.tasitlar-modal-overlay .modal-header {
     background: var(--modal-header-red-gradient) !important;
     border-bottom: none !important;
