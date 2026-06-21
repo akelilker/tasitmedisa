@@ -297,6 +297,8 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
   let pendingMuayeneVehicleId = null;
   let currentPeriod = '';
   let selectedVehicleId = null;
+  let driverHistoryLoaded = false;
+  let driverHistoryPromise = null;
   /** dashboard.html?action=km deep-link bir kez işlensin (yenilemede tekrar açılmasın). */
   let driverKmActionHandled = false;
   /** Bu oturumda (ekran kapanana kadar) son bildirilen aksiyon: { action, vehicleId }. Ekran kapanınca temizlenir, yeşil geri bildirim beyaz/griye döner. */
@@ -995,13 +997,12 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           }
 
           var tokenPayload = decodeDriverTokenPayload(token);
-          var currentSession = await fetchCurrentPortalSession(token);
-          var accessContext = buildPortalAccessContext(tokenPayload, false, currentSession);
-          if (!canOpenDriverDashboard(accessContext)) {
-              window.location.href = MAIN_APP_URL;
+          var nowTs = Math.floor(Date.now() / 1000);
+          if (!tokenPayload || !tokenPayload.exp || Number(tokenPayload.exp) < nowTs) {
+              clearStoredPortalTokens();
+              window.location.href = DRIVER_PAGE_BASE + 'index.html';
               return;
           }
-          syncDashboardHomeLinkVisibility(accessContext);
 
           currentToken = token;
 
@@ -1024,15 +1025,29 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           if (!data.success) {
               const spinner = document.getElementById('loading-spinner');
               if (spinner) spinner.style.display = 'none';
+              if (response.status === 403) {
+                  window.location.href = MAIN_APP_URL;
+                  return;
+              }
               alert('Oturum süresi doldu! Lütfen tekrar giriş yapın.');
               logout();
               return;
           }
 
+          var currentSession = data.session && typeof data.session === 'object' ? data.session : null;
+          var accessContext = buildPortalAccessContext(tokenPayload, false, currentSession);
+          if (!canOpenDriverDashboard(accessContext)) {
+              window.location.href = MAIN_APP_URL;
+              return;
+          }
+          syncDashboardHomeLinkVisibility(accessContext);
+
           currentUser = data.user;
           syncDriverHeaderUserName();
           allHistoryRecords = data.records || [];
           allHistoryVehicles = data.vehicles || [];
+          driverHistoryLoaded = false;
+          driverHistoryPromise = null;
           currentPeriod = data.current_period || '';
 
           const spinnerEl = document.getElementById('loading-spinner');
@@ -3004,6 +3019,46 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       );
   }
 
+  async function loadDriverHistoryIfNeeded() {
+      if (driverHistoryLoaded) return true;
+      if (driverHistoryPromise) return driverHistoryPromise;
+      if (!currentToken) return false;
+
+      driverHistoryPromise = fetch(API_BASE + 'driver_history.php?_=' + Date.now(), {
+          headers: { 'Authorization': 'Bearer ' + currentToken },
+          cache: 'no-store'
+      })
+          .then(function(response) {
+              return response.text().then(function(text) {
+                  var payload = text ? JSON.parse(text) : {};
+                  if (!response.ok || !payload || payload.success !== true) {
+                      throw new Error((payload && payload.message) || 'Geçmiş kayıtları alınamadı.');
+                  }
+                  return payload;
+              });
+          })
+          .then(function(payload) {
+              allHistoryRecords = Array.isArray(payload.records) ? payload.records : [];
+              var eventsByVehicle = payload.eventsByVehicle && typeof payload.eventsByVehicle === 'object' ? payload.eventsByVehicle : {};
+              (allHistoryVehicles || []).forEach(function(vehicle) {
+                  var vehicleId = String(vehicle && vehicle.id != null ? vehicle.id : '');
+                  vehicle.events = Array.isArray(eventsByVehicle[vehicleId]) ? eventsByVehicle[vehicleId] : [];
+              });
+              driverHistoryLoaded = true;
+              return true;
+          })
+          .catch(function(error) {
+              console.error('Geçmiş kayıtları yüklenemedi:', error);
+              driverHistoryLoaded = false;
+              return false;
+          })
+          .finally(function() {
+              driverHistoryPromise = null;
+          });
+
+      return driverHistoryPromise;
+  }
+
   // Geçmiş kayıtlar - custom dropdown
   window.showHistory = function() {
       var modal = document.getElementById('history-modal');
@@ -3048,8 +3103,14 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       setHistoryVehicleDropdownOpen(false);
       modal.classList.add('show');
       updateDriverModalBodyClass();
+      var listEl = document.getElementById('history-list');
+      if (listEl && !driverHistoryLoaded) {
+          listEl.innerHTML = '<p class="history-empty">Geçmiş kayıtlar yükleniyor...</p>';
+      }
       requestAnimationFrame(function() {
-          renderHistoryList();
+          loadDriverHistoryIfNeeded().then(function() {
+              renderHistoryList();
+          });
       });
   };
 
