@@ -677,7 +677,7 @@
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack {
   width: 100%;
   max-width: 280px;
-  margin: 0 auto 10px auto;
+  margin: 0 auto 12px auto;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -720,6 +720,7 @@
   padding: 0 8px !important;
   line-height: 36px !important;
   text-align: center !important;
+  border-radius: 8px !important;
   box-sizing: border-box;
 }
 
@@ -1125,13 +1126,32 @@
 @media (max-width: 640px) {
   /* Mobilde ön izleme yok: sadece Yazdır butonu (ruhsat simgesi + metin) */
   #dinamik-olay-modal #ruhsat-modal-content .ruhsat-preview-link.ruhsat-preview-mobile-btn {
-    height: 48px !important;    min-height: 48px !important;
+    width: auto !important;
+    min-width: 128px !important;
+    height: 48px !important;
+    min-height: 48px !important;
+    padding: 0 14px !important;
     display: flex !important;
+    flex-direction: row !important;
     justify-content: center !important;
     align-items: center !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    border-radius: 8px !important;
+    gap: 8px !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
     overflow: hidden !important;
+  }
+  #dinamik-olay-modal #ruhsat-modal-content .ruhsat-preview-link.ruhsat-preview-mobile-btn svg {
+    flex: 0 0 auto !important;
+    color: var(--theme-color, #d40000) !important;
+  }
+  #dinamik-olay-modal #ruhsat-modal-content .ruhsat-preview-link.ruhsat-preview-mobile-btn span {
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.02em !important;
+    color: #ffffff !important;
   }
   #dinamik-olay-modal #ruhsat-modal-content .ruhsat-preview-link.ruhsat-preview-mobile-btn iframe,
   #dinamik-olay-modal #ruhsat-modal-content .ruhsat-preview-link.ruhsat-preview-mobile-btn .ruhsat-preview-image,
@@ -1152,23 +1172,30 @@
     max-width: none !important;
     align-items: center !important;
     justify-content: center !important;
-    gap: 12px !important;
+    gap: 10px !important;
     padding: 0 !important;
   }
   #dinamik-olay-modal #ruhsat-modal-content .ruhsat-add-btn {
-    font-size: 64px;
-    min-width: 72px;
-    min-height: 72px;
+    font-size: 42px;
+    min-width: 48px;
+    width: 48px !important;
+    min-height: 48px;
+    height: 48px !important;
     padding: 0 !important;
     display: inline-flex !important;
     align-items: center;
     justify-content: center;
+    line-height: 1;
   }
   #dinamik-olay-modal #ruhsat-modal-content .universal-btn-group.ruhsat-preview-row .ruhsat-add-btn,
   #dinamik-olay-modal #ruhsat-modal-content .universal-btn-group:has(.ruhsat-preview-link) .ruhsat-add-btn {
     position: static !important;
     left: auto !important;
     top: auto !important;
+    flex: 0 0 48px !important;
+    width: 48px !important;
+    min-width: 48px !important;
+    max-width: 48px !important;
     transform: none !important;
     margin-left: 0 !important;
   }
@@ -2470,7 +2497,7 @@
   }
 
   .list-header-row .list-cell.list-branch {
-    display: flex !important;
+    display: grid !important;
     padding-left: 3px !important; /* şube yatay boşluk az (3px); 3px kullanıcıya verildi */
   }
   .list-header-row .list-cell.list-user {
@@ -2489,7 +2516,7 @@
     color: var(--form-label-color) !important; /* Kayıt etiketleri ile aynı beyaz */
     opacity: 1 !important;
     display: flex !important;
-    align-items: flex-start !important;
+    align-items: center !important;
     overflow: visible !important;
     text-overflow: clip !important;
     white-space: normal !important;
@@ -2514,10 +2541,10 @@
     font-size: var(--list-header-font-size, 14px) !important;
   }
 
-  /* Sıralanabilir başlık: üst hizalı, metin ikinci satıra geçebilir (ilk satır hep aynı hizada) */
+  /* Sıralanabilir başlık: base grid kontratı; metin ikinci satıra geçebilir */
   .list-header-row .sortable-header {
-    align-items: flex-start !important;
-    flex-wrap: wrap !important;
+    align-items: center !important;
+    flex-wrap: nowrap !important;
     justify-content: center !important;
   }
   .list-header-row .sortable-header span {

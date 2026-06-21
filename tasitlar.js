@@ -6648,16 +6648,15 @@
       previewBtn.setAttribute('aria-label', cfg.label + ' Yazdır');
       if (isMobileViewport) {
         previewBtn.classList.add('ruhsat-preview-mobile-btn');
-        previewBtn.style.cssText = 'background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.2); cursor: pointer; display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 8px; width: auto; min-width: 140px; height: 48px; border-radius: 8px; padding: 0 16px;';
         previewBtn.innerHTML = `
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; color:#d40000;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
             <polyline points="14 2 14 8 20 8"></polyline>
             <line x1="16" y1="13" x2="8" y2="13"></line>
             <line x1="16" y1="17" x2="8" y2="17"></line>
             <polyline points="10 9 9 9 8 9"></polyline>
           </svg>
-          <span style="font-size:15px; font-weight:600; color:#fff; letter-spacing:0.5px;">Yazdır</span>
+          <span>Yazdır</span>
         `;
         previewBtn.onclick = function(e) {
           e.preventDefault();
