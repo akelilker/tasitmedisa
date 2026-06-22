@@ -87,6 +87,13 @@ jobs:
               ok=0
               ;;
           esac
+          case "$FTP_SECURITY" in
+            strict|loose) ;;
+            *)
+              echo "::error::FTP_SECURITY geçersiz. İzin verilen değerler: strict, loose."
+              ok=0
+              ;;
+          esac
           [ "$ok" -eq 1 ] || exit 1
           echo "FTP_REMOTE_DIR uzunluk: ${#FTP_REMOTE_DIR} (host köküne göre doğru klasör olduğundan emin olun)"
           echo "FTP bağlantı modu: protocol=$FTP_PROTOCOL port=$FTP_PORT security=$FTP_SECURITY"
@@ -111,6 +118,30 @@ jobs:
       succeeded: ${{ steps.attempt_result.outputs.succeeded }}
     steps:
       - uses: actions/checkout@v6
+
+      - name: Network diagnostics before FTP attempt 1
+        shell: bash
+        env:
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+        run: |
+          set +e
+          echo "Runner public IPv4:"
+          curl -4 --fail --silent --show-error --connect-timeout 8 --max-time 12 https://api.ipify.org || \
+            curl -4 --fail --silent --show-error --connect-timeout 8 --max-time 12 https://checkip.amazonaws.com || \
+            echo "public IPv4 lookup failed"
+          echo
+          echo "FTP control port probe: ${FTP_SERVER}:${FTP_PORT}"
+          if timeout 15 bash -c 'cat < /dev/null > /dev/tcp/${FTP_SERVER}/${FTP_PORT}'; then
+            echo "FTP control port reachable."
+          else
+            echo "::warning::FTP control port probe failed or timed out before deploy attempt 1."
+          fi
+          echo "HTTPS port probe: karmotors.com.tr:443"
+          if timeout 15 bash -c 'cat < /dev/null > /dev/tcp/karmotors.com.tr/443'; then
+            echo "HTTPS port reachable."
+          else
+            echo "::warning::HTTPS port probe failed or timed out before deploy attempt 1."
+          fi
 
       - name: Sync via FTP
         id: ftp_deploy
@@ -183,7 +214,31 @@ jobs:
       - uses: actions/checkout@v6
 
       - name: Retry backoff
-        run: sleep 10
+        run: sleep 45
+
+      - name: Network diagnostics before FTP attempt 2
+        shell: bash
+        env:
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+        run: |
+          set +e
+          echo "Runner public IPv4:"
+          curl -4 --fail --silent --show-error --connect-timeout 8 --max-time 12 https://api.ipify.org || \
+            curl -4 --fail --silent --show-error --connect-timeout 8 --max-time 12 https://checkip.amazonaws.com || \
+            echo "public IPv4 lookup failed"
+          echo
+          echo "FTP control port probe: ${FTP_SERVER}:${FTP_PORT}"
+          if timeout 15 bash -c 'cat < /dev/null > /dev/tcp/${FTP_SERVER}/${FTP_PORT}'; then
+            echo "FTP control port reachable."
+          else
+            echo "::warning::FTP control port probe failed or timed out before deploy attempt 2."
+          fi
+          echo "HTTPS port probe: karmotors.com.tr:443"
+          if timeout 15 bash -c 'cat < /dev/null > /dev/tcp/karmotors.com.tr/443'; then
+            echo "HTTPS port reachable."
+          else
+            echo "::warning::HTTPS port probe failed or timed out before deploy attempt 2."
+          fi
 
       - name: Sync via FTP
         id: ftp_deploy
@@ -258,7 +313,31 @@ jobs:
       - uses: actions/checkout@v6
 
       - name: Retry backoff
-        run: sleep 10
+        run: sleep 120
+
+      - name: Network diagnostics before FTP attempt 3
+        shell: bash
+        env:
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+        run: |
+          set +e
+          echo "Runner public IPv4:"
+          curl -4 --fail --silent --show-error --connect-timeout 8 --max-time 12 https://api.ipify.org || \
+            curl -4 --fail --silent --show-error --connect-timeout 8 --max-time 12 https://checkip.amazonaws.com || \
+            echo "public IPv4 lookup failed"
+          echo
+          echo "FTP control port probe: ${FTP_SERVER}:${FTP_PORT}"
+          if timeout 15 bash -c 'cat < /dev/null > /dev/tcp/${FTP_SERVER}/${FTP_PORT}'; then
+            echo "FTP control port reachable."
+          else
+            echo "::warning::FTP control port probe failed or timed out before deploy attempt 3."
+          fi
+          echo "HTTPS port probe: karmotors.com.tr:443"
+          if timeout 15 bash -c 'cat < /dev/null > /dev/tcp/karmotors.com.tr/443'; then
+            echo "HTTPS port reachable."
+          else
+            echo "::warning::HTTPS port probe failed or timed out before deploy attempt 3."
+          fi
 
       - name: Sync via FTP
         id: ftp_deploy
