@@ -1561,6 +1561,326 @@ function medisaResolveVehicleRuhsatFilePath($vehicle) {
     return medisaResolveVehicleDocumentFilePath($vehicle, 'ruhsat');
 }
 
+/** Kısa ömürlü belge görüntüleme token süresi (saniye). */
+define('MEDISA_DOCUMENT_TOKEN_TTL_SECONDS', 300);
+
+function medisaDocumentTokenHeader(): array {
+    return ['alg' => 'HS256', 'typ' => 'DOC'];
+}
+
+function medisaEncodeSignedDocToken(array $payload): string {
+    $header = medisaDocumentTokenHeader();
+    $encodedHeader = medisaBase64UrlEncode(json_encode($header, JSON_UNESCAPED_UNICODE));
+    $encodedPayload = medisaBase64UrlEncode(json_encode($payload, JSON_UNESCAPED_UNICODE));
+    $signature = hash_hmac('sha256', $encodedHeader . '.' . $encodedPayload, medisaGetTokenSecret(), true);
+    $encodedSignature = medisaBase64UrlEncode($signature);
+
+    return $encodedHeader . '.' . $encodedPayload . '.' . $encodedSignature;
+}
+
+function medisaCreateDocumentToken(array $claims, int $ttlSeconds = MEDISA_DOCUMENT_TOKEN_TTL_SECONDS): string {
+    $now = time();
+    $ttlSeconds = max(1, (int)$ttlSeconds);
+    $payload = array_merge($claims, [
+        'typ' => 'DOC',
+        'purpose' => 'document_view',
+        'iat' => $now,
+        'exp' => $now + $ttlSeconds,
+    ]);
+    $payload['typ'] = 'DOC';
+    $payload['purpose'] = 'document_view';
+
+    return medisaEncodeSignedDocToken($payload);
+}
+
+function medisaValidateDocumentToken(string $token): ?array {
+    $token = trim($token);
+    if ($token === '' || strpos($token, '.') === false) {
+        return null;
+    }
+
+    $parts = explode('.', $token);
+    if (count($parts) !== 3) {
+        return null;
+    }
+
+    [$encodedHeader, $encodedPayload, $encodedSignature] = $parts;
+    $expectedSignature = medisaBase64UrlEncode(hash_hmac('sha256', $encodedHeader . '.' . $encodedPayload, medisaGetTokenSecret(), true));
+    if (!hash_equals($expectedSignature, $encodedSignature)) {
+        return null;
+    }
+
+    $header = json_decode((string)medisaBase64UrlDecode($encodedHeader), true);
+    if (!is_array($header) || ($header['typ'] ?? '') !== 'DOC') {
+        return null;
+    }
+
+    $decoded = json_decode((string)medisaBase64UrlDecode($encodedPayload), true);
+    if (!is_array($decoded)) {
+        return null;
+    }
+    if (($decoded['typ'] ?? '') !== 'DOC' || ($decoded['purpose'] ?? '') !== 'document_view') {
+        return null;
+    }
+    if (!isset($decoded['exp']) || (int)$decoded['exp'] < time()) {
+        return null;
+    }
+
+    return $decoded;
+}
+
+function medisaMintDocumentAccessToken(array $data, array $context, string $vehicleId, string $documentType): array {
+    $documentType = strtolower(trim($documentType));
+    if ($documentType === '') {
+        $documentType = 'ruhsat';
+    }
+
+    $config = medisaGetVehicleDocumentConfig($documentType);
+    if (!$config) {
+        return [
+            'success' => false,
+            'status' => 400,
+            'message' => 'Geçersiz belge tipi',
+        ];
+    }
+
+    $role = medisaNormalizeRoleValue($context['role'] ?? 'kullanici');
+    $userId = trim((string)($context['user_id'] ?? ''));
+    if ($userId === '') {
+        return [
+            'success' => false,
+            'status' => 403,
+            'message' => 'Bu belge için yetkiniz yok.',
+        ];
+    }
+
+    $isSettingsDocument = !empty($config['settingsKey']);
+    if ($isSettingsDocument) {
+        if (!medisaHasMainAppAccessRole($role)) {
+            return [
+                'success' => false,
+                'status' => 403,
+                'message' => 'Bu belge için yetkiniz yok.',
+            ];
+        }
+
+        $claims = [
+            'sub' => $userId,
+            'role' => $role,
+            'vid' => 'settings',
+            'dtype' => $documentType,
+            'scope' => 'settings',
+        ];
+    } else {
+        $vehicleId = trim($vehicleId);
+        if ($vehicleId === '') {
+            return [
+                'success' => false,
+                'status' => 400,
+                'message' => 'id parametresi gerekli',
+            ];
+        }
+
+        $vehicleIndex = medisaFindVehicleIndex($data, $vehicleId);
+        if ($vehicleIndex < 0) {
+            return [
+                'success' => false,
+                'status' => 403,
+                'message' => 'Bu belge için yetkiniz yok.',
+            ];
+        }
+
+        $vehicle = $data['tasitlar'][$vehicleIndex];
+        if (!medisaCanViewVehicleRecord($vehicle, $context)) {
+            return [
+                'success' => false,
+                'status' => 403,
+                'message' => 'Bu belge için yetkiniz yok.',
+            ];
+        }
+
+        $claims = [
+            'sub' => $userId,
+            'role' => $role,
+            'vid' => $vehicleId,
+            'dtype' => $documentType,
+            'scope' => 'vehicle',
+        ];
+    }
+
+    $ttl = MEDISA_DOCUMENT_TOKEN_TTL_SECONDS;
+    $now = time();
+    $exp = $now + $ttl;
+
+    return [
+        'success' => true,
+        'token' => medisaCreateDocumentToken($claims, $ttl),
+        'expiresAt' => $exp,
+    ];
+}
+
+function medisaResolveDocumentAccessContext(array $data, string $vehicleId, string $documentType): array {
+    $documentType = strtolower(trim($documentType));
+    if ($documentType === '') {
+        $documentType = 'ruhsat';
+    }
+
+    $config = medisaGetVehicleDocumentConfig($documentType);
+    if (!$config) {
+        return [
+            'success' => false,
+            'status' => 400,
+            'message' => 'Geçersiz belge tipi',
+        ];
+    }
+
+    $isSettingsDocument = !empty($config['settingsKey']);
+
+    $bearerToken = medisaExtractBearerTokenValue(medisaReadAuthorizationHeader());
+    if ($bearerToken !== '') {
+        $sessionData = validateToken(false);
+        if (!$sessionData) {
+            return [
+                'success' => false,
+                'status' => 401,
+                'message' => 'Oturum gerekli.',
+            ];
+        }
+
+        $context = medisaBuildAccessContext($data, $sessionData);
+        if (!$context) {
+            return [
+                'success' => false,
+                'status' => 403,
+                'message' => 'Bu işlem için yetkiniz yok.',
+            ];
+        }
+
+        return [
+            'success' => true,
+            'context' => $context,
+            'auth_method' => 'bearer',
+        ];
+    }
+
+    $legacyQueryToken = trim((string)($_GET['token'] ?? ''));
+    if ($legacyQueryToken !== '') {
+        return [
+            'success' => false,
+            'status' => 401,
+            'message' => 'Geçersiz oturum. Belge erişim anahtarı gerekli.',
+        ];
+    }
+
+    $docTokenRaw = trim((string)($_GET['doc'] ?? ''));
+    if ($docTokenRaw === '') {
+        return [
+            'success' => false,
+            'status' => 401,
+            'message' => 'Oturum gerekli.',
+        ];
+    }
+
+    $docClaims = medisaValidateDocumentToken($docTokenRaw);
+    if (!$docClaims) {
+        return [
+            'success' => false,
+            'status' => 401,
+            'message' => 'Geçersiz veya süresi dolmuş belge erişim anahtarı.',
+        ];
+    }
+
+    $tokenDtype = strtolower(trim((string)($docClaims['dtype'] ?? '')));
+    if ($tokenDtype !== $documentType) {
+        return [
+            'success' => false,
+            'status' => 403,
+            'message' => 'Belge erişim anahtarı uyuşmuyor.',
+        ];
+    }
+
+    $scope = strtolower(trim((string)($docClaims['scope'] ?? 'vehicle')));
+    if ($isSettingsDocument) {
+        if ($scope !== 'settings') {
+            return [
+                'success' => false,
+                'status' => 403,
+                'message' => 'Belge erişim anahtarı uyuşmuyor.',
+            ];
+        }
+    } else {
+        if ($scope !== 'vehicle') {
+            return [
+                'success' => false,
+                'status' => 403,
+                'message' => 'Belge erişim anahtarı uyuşmuyor.',
+            ];
+        }
+
+        $requestVehicleId = trim($vehicleId);
+        $tokenVehicleId = trim((string)($docClaims['vid'] ?? ''));
+        if ($requestVehicleId === '' || $tokenVehicleId === '' || !hash_equals($tokenVehicleId, $requestVehicleId)) {
+            return [
+                'success' => false,
+                'status' => 403,
+                'message' => 'Belge erişim anahtarı uyuşmuyor.',
+            ];
+        }
+    }
+
+    $userId = trim((string)($docClaims['sub'] ?? ''));
+    if ($userId === '') {
+        return [
+            'success' => false,
+            'status' => 401,
+            'message' => 'Geçersiz belge erişim anahtarı.',
+        ];
+    }
+
+    $context = medisaBuildAccessContext($data, ['user_id' => $userId]);
+    if (!$context) {
+        return [
+            'success' => false,
+            'status' => 403,
+            'message' => 'Bu işlem için yetkiniz yok.',
+        ];
+    }
+
+    if ($isSettingsDocument) {
+        if (!medisaHasMainAppAccessRole($context['role'] ?? 'kullanici')) {
+            return [
+                'success' => false,
+                'status' => 403,
+                'message' => 'Bu belge için yetkiniz yok.',
+            ];
+        }
+    } else {
+        $vehicleIndex = medisaFindVehicleIndex($data, $vehicleId);
+        if ($vehicleIndex < 0) {
+            return [
+                'success' => false,
+                'status' => 404,
+                'message' => 'Taşıt bulunamadı',
+            ];
+        }
+
+        $vehicle = $data['tasitlar'][$vehicleIndex];
+        if (!medisaCanViewVehicleRecord($vehicle, $context)) {
+            return [
+                'success' => false,
+                'status' => 403,
+                'message' => 'Bu belge için yetkiniz yok.',
+            ];
+        }
+    }
+
+    return [
+        'success' => true,
+        'context' => $context,
+        'auth_method' => 'doc_token',
+    ];
+}
+
 function medisaCreateSignedToken($payload, $ttlSeconds = 2592000) {
     $now = time();
     if (!isset($payload['iat'])) {
@@ -1597,8 +1917,16 @@ function validateToken($allowQueryToken = false) {
         return null;
     }
 
+    $header = json_decode((string)medisaBase64UrlDecode($encodedHeader), true);
+    if (is_array($header) && ($header['typ'] ?? '') === 'DOC') {
+        return null;
+    }
+
     $decoded = json_decode((string)medisaBase64UrlDecode($encodedPayload), true);
     if (!$decoded || !isset($decoded['exp']) || (int)$decoded['exp'] < time()) {
+        return null;
+    }
+    if (($decoded['typ'] ?? '') === 'DOC' || ($decoded['purpose'] ?? '') === 'document_view') {
         return null;
     }
 

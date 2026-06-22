@@ -53,7 +53,7 @@ if (!is_array($data)) {
     ruhsatRespondTextError(500, 'Veri okunamadı');
 }
 
-$auth = medisaResolveAuthorizedContext($data, '', true);
+$auth = medisaResolveDocumentAccessContext($data, $vehicleId, $documentType);
 if (($auth['success'] ?? false) !== true) {
     ruhsatRespondTextError((int)($auth['status'] ?? 403), $auth['message'] ?? 'Bu işlem için yetkiniz yok.');
 }
