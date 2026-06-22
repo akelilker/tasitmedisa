@@ -1026,21 +1026,25 @@
   }
 
   #dinamik-olay-modal #ruhsat-modal-content .vehicle-document-picker {
-    gap: 18px;
+    gap: 24px;
   }
 
   #dinamik-olay-modal #ruhsat-modal-content .vehicle-documents-row {
     gap: 20px;
   }
 
+  #dinamik-olay-modal #ruhsat-modal-content .vehicle-documents-row-single {
+    margin-bottom: 4px;
+  }
+
   #dinamik-olay-modal #ruhsat-modal-content .vehicle-documents-row-pair {
-    gap: 22px;
+    gap: 30px;
   }
 
   #dinamik-olay-modal #ruhsat-modal-content .vehicle-document-card {
     flex: 0 1 124px;
     max-width: 156px;
-    padding: 6px 4px;
+    padding: 8px 6px;
   }
 
   #dinamik-olay-modal #ruhsat-modal-content .vehicle-document-icon-wrap {
@@ -1904,6 +1908,20 @@
   #vehicle-detail-modal .detail-notes-edit-btn svg {
     width: 18px !important;
     height: 18px !important;
+  }
+  #vehicle-detail-modal .detail-row-notes .detail-row-header-notes {
+    position: relative;
+    align-items: baseline;
+    padding-right: 48px;
+    min-height: 0;
+  }
+  #vehicle-detail-modal .detail-row-notes .detail-notes-edit-btn {
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+  #vehicle-detail-modal .detail-row-notes.detail-row-block {
+    gap: 2px;
   }
   #vehicle-detail-modal textarea.detail-notes-inline-textarea {
     font-size: 16px;
