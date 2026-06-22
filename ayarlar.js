@@ -576,13 +576,128 @@
       hideZorunluEvraklarK2ReplaceConfirm();
     }
 
-    function buildZorunluEvraklarK2PreviewUrl() {
+    var zorunluEvrakK2DocTokenCache = null;
+    var ZORUNLU_EVRAK_K2_DOC_TOKEN_MARGIN_MS = 30000;
+
+    function buildZorunluEvraklarK2BasePreviewUrl() {
       const url = new URL('ruhsat_preview.php', window.location.href);
       url.searchParams.set('documentType', 'k2');
       url.searchParams.set('page', '0');
-      const token = getZorunluEvraklarAuthToken();
-      if (token) url.searchParams.set('token', token);
-      return url.toString();
+      return url;
+    }
+
+    function buildZorunluEvraklarK2BaseViewUrl() {
+      const url = new URL('ruhsat.php', window.location.href);
+      url.searchParams.set('documentType', 'k2');
+      return url;
+    }
+
+    function appendDocTokenToZorunluEvrakUrl(rawUrl, docToken) {
+      const base = rawUrl instanceof URL ? rawUrl.href : String(rawUrl || '');
+      if (!base) return '';
+      try {
+        const url = new URL(base, window.location.href);
+        url.searchParams.delete('token');
+        if (docToken) {
+          url.searchParams.set('doc', docToken);
+        } else {
+          url.searchParams.delete('doc');
+        }
+        return url.toString();
+      } catch (e) {
+        return base;
+      }
+    }
+
+    function mintZorunluEvraklarK2DocumentToken() {
+      const now = Date.now();
+      if (zorunluEvrakK2DocTokenCache
+        && zorunluEvrakK2DocTokenCache.token
+        && zorunluEvrakK2DocTokenCache.expiresAtMs > now + ZORUNLU_EVRAK_K2_DOC_TOKEN_MARGIN_MS) {
+        return Promise.resolve(zorunluEvrakK2DocTokenCache);
+      }
+
+      const sessionToken = getZorunluEvraklarAuthToken();
+      if (!sessionToken) {
+        return Promise.reject(new Error('Oturum gerekli.'));
+      }
+
+      return fetch('document_token.php', {
+        method: 'POST',
+        cache: 'no-store',
+        headers: buildZorunluEvraklarAuthHeaders({ 'Content-Type': 'application/json' }),
+        body: JSON.stringify({ documentType: 'k2' })
+      })
+        .then(function(response) {
+          return response.json().then(function(data) {
+            if (!response.ok || !data || data.ok !== true || !data.token) {
+              const err = new Error((data && data.message) ? data.message : 'Belge erişim anahtarı alınamadı.');
+              err.httpStatus = response.status;
+              throw err;
+            }
+            zorunluEvrakK2DocTokenCache = {
+              token: String(data.token),
+              expiresAtMs: Number(data.expiresAt) > 0 ? Number(data.expiresAt) * 1000 : (now + 300000)
+            };
+            return zorunluEvrakK2DocTokenCache;
+          });
+        });
+    }
+
+    function resolveZorunluEvraklarK2PreviewUrl() {
+      const baseUrl = buildZorunluEvraklarK2BasePreviewUrl();
+      if (!getZorunluEvraklarAuthToken()) {
+        return Promise.resolve(baseUrl.toString());
+      }
+      return mintZorunluEvraklarK2DocumentToken()
+        .then(function(entry) {
+          return appendDocTokenToZorunluEvrakUrl(baseUrl, entry.token);
+        });
+    }
+
+    function resolveZorunluEvraklarK2ViewUrl() {
+      const baseUrl = buildZorunluEvraklarK2BaseViewUrl();
+      if (!getZorunluEvraklarAuthToken()) {
+        return Promise.resolve(baseUrl.toString());
+      }
+      return mintZorunluEvraklarK2DocumentToken()
+        .then(function(entry) {
+          return appendDocTokenToZorunluEvrakUrl(baseUrl, entry.token);
+        });
+    }
+
+    function openZorunluEvrakK2BlankTab() {
+      try {
+        return window.open('about:blank', '_blank', 'noopener,noreferrer');
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function showZorunluEvrakK2TabError(tabWindow, message) {
+      if (!tabWindow || tabWindow.closed) return;
+      const safeMessage = String(message || 'Belge açılamadı.').replace(/[<>&"]/g, function(ch) {
+        return ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' })[ch] || ch;
+      });
+      try {
+        tabWindow.document.open();
+        tabWindow.document.write('<!DOCTYPE html><html lang="tr"><head><meta charset="utf-8"><title>Belge</title></head><body><p>' + safeMessage + '</p></body></html>');
+        tabWindow.document.close();
+      } catch (e) {}
+    }
+
+    function loadZorunluEvraklarK2PreviewImage(image) {
+      if (!image) return;
+      image.removeAttribute('src');
+      resolveZorunluEvraklarK2PreviewUrl()
+        .then(function(previewUrl) {
+          if (!image.isConnected) return;
+          image.src = previewUrl;
+        })
+        .catch(function() {
+          if (!image.isConnected) return;
+          image.remove();
+        });
     }
 
     function renderZorunluEvraklarK2Picker(fileName) {
@@ -660,10 +775,10 @@
       image.className = 'required-k2-preview-image';
       image.alt = '';
       image.loading = 'lazy';
-      image.src = buildZorunluEvraklarK2PreviewUrl();
       image.addEventListener('error', function() {
         image.remove();
       }, { once: true });
+      loadZorunluEvraklarK2PreviewImage(image);
 
       const hint = document.createElement('span');
       hint.className = 'required-k2-preview-hint';
@@ -867,11 +982,25 @@
         alert('K2 belgesi henüz yüklenmedi.');
         return;
       }
-      const url = new URL('ruhsat.php', window.location.href);
-      url.searchParams.set('documentType', 'k2');
-      const token = getZorunluEvraklarAuthToken();
-      if (token) url.searchParams.set('token', token);
-      window.open(url.toString(), '_blank', 'noopener');
+      const blankTab = openZorunluEvrakK2BlankTab();
+      resolveZorunluEvraklarK2ViewUrl()
+        .then(function(targetUrl) {
+          if (blankTab && !blankTab.closed) {
+            try {
+              blankTab.location.href = targetUrl;
+              blankTab.focus();
+              return;
+            } catch (e) {}
+          }
+          window.open(targetUrl, '_blank', 'noopener,noreferrer');
+        })
+        .catch(function(err) {
+          if (blankTab && !blankTab.closed) {
+            showZorunluEvrakK2TabError(blankTab, err && err.message ? err.message : 'Belge açılamadı.');
+            return;
+          }
+          alert((err && err.message) ? err.message : 'Belge açılamadı.');
+        });
     };
 
     window.saveZorunluEvraklarK2 = async function saveZorunluEvraklarK2(options) {
