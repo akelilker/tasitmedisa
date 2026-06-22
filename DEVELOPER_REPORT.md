@@ -1,19 +1,24 @@
-# Taşıt Yönetim Sistemi V3 - Geliştirici Raporu
-**Tarih:** 22 Haziran 2026  
-**Sistem:** Medisa Taşıt Yönetim Sistemi  
-**Dil Bileşimi:** JavaScript (52.2%), CSS (36.2%), PHP (6.9%), HTML (4.6%), PowerShell (0.1%)  
+﻿# Taşıt Yönetim Sistemi V3 - Geliştirici Raporu
+**Tarih:** 22 Haziran 2026
+**Doğrulama:** 22 Haziran 2026 (güncel `main` kod incelemesi)
+**Sistem:** Medisa Taşıt Yönetim Sistemi
+**Dil Bileşimi:** JavaScript (52.2%), CSS (36.2%), PHP (6.9%), HTML (4.6%), PowerShell (0.1%)
 **Repository:** akelilker/tasitmedisa
 
 ---
 
-## 📋 YÖNETİCİ ÖZETI
+## 📋 YÖNETİCİ ÖZETİ
 
-Sistemin genel durumu **UYGUN** olup, çoğunluk sorun giderilmiştir. Ancak **7 madde** gözden geçirilmesi gereken eksiklik bulunmaktadır. Kritik sorun **BULUNMAMAKTA**, tüm sorunlar **ORTA veya DÜŞÜK** önceliklidirler.
+Güncel `main` branch kod incelemesi sonucu **doğrulanmış aktif ORTA güvenlik riski bulunmamaktadır.**
 
-**Genel Puanlandırma:**
-- 🟢 Güvenlik: **95%**
-- 🟢 Erişilebilirlik: **80%**
-- 🟢 Veri İzolasyonu: **90%**
+Doc-token güvenlik fazı ile belge URL'lerinde ana session JWT taşınması kapatılmıştır. Şube veri izolasyonu bulgusu kod akışına göre **yanlış alarm** olarak sınıflandırılmıştır.
+
+Kalan işler **düşük öncelikli UX, hijyen ve backlog** kalemleridir.
+
+**Genel Puanlandırma (revize):**
+- 🟢 Güvenlik: **97%** (doc-token fazı + mevcut filtreleme)
+- 🟢 Veri İzolasyonu: **95%** (şube filtresi mevcut owner akışında çalışıyor)
+- 🟢 Erişilebilirlik: **80%** (driver login ARIA eksik)
 - 🟢 Kod Kalitesi: **88%**
 
 ---
@@ -24,416 +29,114 @@ Sistemin genel durumu **UYGUN** olup, çoğunluk sorun giderilmiştir. Ancak **7
 
 ---
 
-## 🟠 ORTA ÖNCELİKLİ SORUNLAR
+## 🟠 ORTA ÖNCELİKLİ SORUNLAR (AKTİF)
 
-### 1. Query Token Güvenliği (XSS Riski - ORTA)
+**Bulunmamıştır.** ✅
 
-**Dosya:** `core.php`  
-**Satır:** 548-564  
-**Sorun:** URL query parametresinden token okunuyor. XSS veya man-in-the-middle saldırısında token expose olabilir.
-
-**Etkilenen Kod:**
-```php
-function medisaReadAccessToken($allowQueryToken = false) {
-    $token = medisaExtractBearerTokenValue(medisaReadAuthorizationHeader());
-    if ($token !== '') {
-        return $token;
-    }
-
-    if (!$allowQueryToken) {
-        return '';
-    }
-
-    // ⚠️ RISK: Query stringden token okuyan kod
-    $queryToken = trim((string)($_GET['token'] ?? $_POST['token'] ?? ''));
-    if ($queryToken === '' || strpos($queryToken, '.') === false) {
-        return '';
-    }
-
-    return $queryToken;
-}
-```
-
-**Mevcut Durum:**  
-- ✅ Yeni `medisaCreateDocumentToken()` (satır 1564+) kısa ömürlü belge tokeni sağlıyor
-- ✅ Bearer auth tercih ediliyor
-- ⚠️ Legacy uyumluluk için query token hala etkindir
-
-**Öneriler:**
-1. **Uzun vadeli:** `allowQueryToken` parametresini kaldır, yalnızca Bearer auth kullan
-2. **Kısa vadeli:** Query tokenler sadece belge indirme işlemleri (PDF, Excel) için sınırla
-3. **Denetim Ekle:** Query token kullanımını log'la:
-
-```php
-if ($allowQueryToken && $queryToken !== '') {
-    error_log('[Security] Query token used from: ' . $_SERVER['REQUEST_URI'] . 
-              ' - User-Agent: ' . ($_SERVER['HTTP_USER_AGENT'] ?? 'unknown'));
-}
-```
-
-**Risk Seviyesi:** ORTA (Sınırlı scope, kısa ömürlü token)  
-**Düzeltme Süresi:** 2-3 saat
+Önceki rapordaki ORTA maddeler (Query Token, Şube İzolasyonu, JSON UTF-8 Verify) güncel kod incelemesinde sırasıyla **çözülmüş/stale**, **yanlış alarm** ve **düşük değerli backlog** olarak yeniden sınıflandırılmıştır.
 
 ---
 
-### 2. Şube Veri İzolasyonu Eksikliği (Veri Sızıntısı Riski - ORTA)
+## ✅ ÇÖZÜLMÜŞ / STALE
 
-**Dosya:** `core.php`  
-**Satır:** 1158-1177  
-**Sorun:** Aylık hareket (arac_aylik_hareketler) ve düzeltme talepleri (duzeltme_talepleri) için şube-seviye filtreleme eksik.
+### 1. Query Token — URL Token Exposure (önceki rapor: "Query Token XSS / ORTA")
 
-**Etkilenen Kod:**
-```php
-// Aylık hareketler - TAŞIT kontrol var ama ŞUBE kontrolü yok
-$visibleAylikKayitlar = array_values(array_filter($data['arac_aylik_hareketler'] ?? [], 
-    function ($record) use ($visibleVehicleIds) {
-        $vehicleId = (string)($record['arac_id'] ?? '');
-        return isset($visibleVehicleIds[$vehicleId]); // ✓ Sadece taşıt ID kontrolü
-    }
-));
+**Dosya:** `core.php`, `ruhsat.php`, `ruhsat_preview.php`, `tasitlar.js`, `ayarlar.js`, `driver/driver-script.js`
+**Durum:** **ÇÖZÜLDÜ / STALE**
 
-// Düzeltme talepleri - BENZER SORUN
-$visibleTalepler = array_values(array_filter($data['duzeltme_talepleri'] ?? [], 
-    function ($request) use ($visibleAylikKayitIds, $visibleVehicleIds) {
-        $requestVehicleId = (string)($request['arac_id'] ?? '');
-        if ($requestVehicleId !== '' && isset($visibleVehicleIds[$requestVehicleId])) {
-            return true;
-        }
-        return isset($visibleAylikKayitIds[(string)($request['kayit_id'] ?? '')]);
-    }
-));
-```
+**Sınıflandırma düzeltmesi:**
+- Önceki rapordaki **XSS sınıflandırması yanlıştı**.
+- Doğru risk sınıfı: **URL token exposure** (history, referrer, log sızıntısı).
 
-**Neden Sorun:**
-Bir şube müdürü başka şubeye ait taşıtların aylık hareketlerini görebilir (teorik risk).
+**Güncel doğrulama (main):**
+- Belge URL'lerinde ana session JWT **taşınmıyor**.
+- `?token=` belge akışı **kaldırıldı**; eski `?token=` istekleri **401** ile reddediliyor (`medisaResolveDocumentAccessContext`).
+- Belge erişimi `?doc=` üzerinden **kısa ömürlü DOC JWT** (`typ: DOC`, `purpose: document_view`) ile yapılıyor.
+- `validateToken()` DOC token'ları session olarak **kabul etmiyor**.
+- Repo genelinde `searchParams.set('token')`, `appendMedisaDocumentAuthToUrl` ve `allowQueryToken=true` çağrısı **yok**.
+- Tüm API uçları `validateToken()` / `validateToken(false)` ile Bearer-only çalışıyor.
 
-**Mevcut Durum:**
-- ✅ `$visibleVehicleIds` zaten filtrelenmiş
-- ✅ Taşıtlara şube kontrolü var (satır 851)
-- ⚠️ İkinci seviye filtreleme (explicit şube kontrolü) eksik
-
-**Öneriler:**
-
-**Hızlı Fix:**
-```php
-// Satır 1156-1161 - context'i closure'a ekle
-$visibleAylikKayitlar = array_values(array_filter($data['arac_aylik_hareketler'] ?? [], 
-    function ($record) use ($visibleVehicleIds, $context) {
-        $vehicleId = (string)($record['arac_id'] ?? '');
-        
-        // Ekstra güvenlik: Şube müdürülerinin kendi şubelerine ait kayıtlara erişimi kontrol et
-        if (medisaIsBranchManagerRole($context['role'] ?? 'kullanici')) {
-            // Record'un taşıtının şube ID'sini kontrol et
-            // ... şube kontrolü ekle
-        }
-        
-        return isset($visibleVehicleIds[$vehicleId]);
-    }
-));
-```
-
-**Uzun Vadeli Fix:**
-- `arac_aylik_hareketler` tablosuna `sube_id` alanı ekle
-- `duzeltme_talepleri` tablosuna `sube_id` alanı ekle
-- Filtreleme mantığını basitleştir
-
-**Risk Seviyesi:** ORTA (Teorik, gerçek senaryoda şubeler izole taşıtlarla çalıştığından minimize edilmiş)  
-**Düzeltme Süresi:** 3-4 saat
+**Kalan iş (hijyen backlog, canlı risk değil):**
+- `medisaReadAccessToken($allowQueryToken)` ve `allowQueryToken` parametresi ölü kod olarak duruyor; hiçbir çağrıda `true` geçilmiyor.
+- Uzun vadede parametre ve `$_GET['token']` branch'i kaldırılabilir.
 
 ---
 
-### 3. JSON UTF-8 Doğrulama Eksikliği (Veri Bozulması Riski - ORTA)
+## ❌ YANLIŞ ALARM
 
-**Dosya:** `core.php`  
-**Satır:** 220-253  
-**Sorun:** JSON encode başarılı olsa bile, dosya yazımı sonrası verinin integrity'si kontrol edilmiyor. Yarım yazma veya encoding sorunları tespit edilemiyor.
+### 2. Şube Veri İzolasyonu Eksikliği (önceki rapor: "Veri Sızıntısı / ORTA")
 
-**Etkilenen Kod:**
-```php
-function saveData($data) {
-    // ... code ...
-    $json = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
-    if ($json === false) {
-        error_log('[Medisa] saveData: json_encode başarısız');
-        return false;
-    }
+**Dosya:** `core.php` — `medisaFilterDataForContextWithUserPredicate()`
+**Durum:** **YANLIŞ ALARM** — kod değişikliği önerilmez.
 
-    // ... backup code ...
+**Güncel doğrulama (main):**
+- `visibleVehicles` zaten `medisaCanViewVehicleRecord()` ile rol/şube filtreli oluşuyor.
+- `visibleVehicleIds` yalnızca bu filtreli taşıtlardan üretiliyor.
+- `arac_aylik_hareketler` → `visibleVehicleIds` dışına çıkamıyor.
+- `duzeltme_talepleri` → `visibleVehicleIds` veya `visibleAylikKayitIds` üzerinden filtreleniyor (`visibleAylikKayitIds` de filtreli aylık kayıtlardan geliyor).
+- Şube yöneticisi başka şubenin taşıtına erişemez → o taşıt `visibleVehicleIds`'de olmaz → ilgili aylık kayıt ve düzeltme talebi de gelmez.
 
-    if (!medisaAtomicWriteFile($path, $json)) {
-        error_log('[Medisa] saveData: atomik yazım başarısız');
-        return false;
-    }
-    // ⚠️ SORUN: Yazım sonrası verify yok
-    return true;
-}
-```
-
-**Neden Sorun:**
-Dosya yazılsa bile, encoding hatası veya disk yazma hatası silent olarak kalabilir.
-
-**Öneriler:**
-
-```php
-function saveData($data) {
-    $path = getDataFilePath();
-    $dir = dirname($path);
-    
-    if (!is_dir($dir) && !mkdir($dir, 0755, true)) {
-        error_log('[Medisa] saveData: data dizini oluşturulamadı');
-        return false;
-    }
-
-    unset($data['kaskoDegerListesi']);
-
-    $json = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
-    if ($json === false) {
-        error_log('[Medisa] saveData: json_encode başarısız: ' . json_last_error_msg());
-        return false;
-    }
-
-    if (file_exists($path)) {
-        $br = backupDataFileBeforeWrite();
-        if ($br['error'] !== null) {
-            return false;
-        }
-        if (!$br['backup_main'] && !$br['snapshot']) {
-            error_log('[Medisa] saveData: yazımdan önce yedek alınamadı');
-            return false;
-        }
-    }
-
-    if (!medisaAtomicWriteFile($path, $json)) {
-        error_log('[Medisa] saveData: atomik yazım başarısız');
-        return false;
-    }
-
-    // ✅ YENİ: Yazım sonrası verify
-    $written = @file_get_contents($path);
-    if ($written === false) {
-        error_log('[Medisa] saveData: Dosya okunamadı (yazım başarısız olmuş olabilir)');
-        return false;
-    }
-    
-    $decoded = json_decode($written, true);
-    if (!is_array($decoded)) {
-        error_log('[Medisa] saveData: Yazılan JSON geçersiz: ' . json_last_error_msg());
-        // Backup'tan restore et
-        if (file_exists(getMainBackupFilePath())) {
-            @copy(getMainBackupFilePath(), $path);
-        }
-        return false;
-    }
-
-    return true;
-}
-```
-
-**Risk Seviyesi:** ORTA (Nadir, atomik yazım bu riski minimize ediyor)  
-**Düzeltme Süresi:** 1 saat
+**Sonuç:** Önerilen ikinci seviye `sube_id` filtresi **redundant**. Owner fonksiyon mevcut haliyle yeterli.
 
 ---
 
-## 🟡 DÜŞÜK ÖNCELİKLİ SORUNLAR
+## 📦 BACKLOG (DÜŞÜK ÖNCELİK)
 
-### 4. Erişilebilirlik - ARIA Eksikleri (A11Y - DÜŞÜK)
+### 3. JSON UTF-8 — Yazım Sonrası Verify
 
-**Dosya:** `driver/index.html`  
-**Satır:** 91  
-**Sorun:** Hata mesajı div'i ARIA özellikleri olmadan render ediliyor.
+**Dosya:** `core.php` — `saveData()`, `medisaAtomicWriteFile()`, `backupDataFileBeforeWrite()`, `loadData()`
+**Durum:** **BACKLOG** (gerçek ama düşük değerli)
 
-**Etkilenen Kod:**
-```html
-<div id="error-message" class="error-message"></div>
-```
+**Mevcut koruma:**
+- `loadData()`: `json_decode` + `json_last_error` kontrolü
+- `saveData()`: `json_encode` false check, yazım öncesi backup
+- `medisaAtomicWriteFile()`: `LOCK_EX`, yazılan byte = `strlen($content)` doğrulaması
 
-**Öneriler:**
-
-```html
-<!-- ✅ DÜZELT -->
-<div id="error-message" class="error-message" role="alert" aria-live="polite" aria-hidden="true"></div>
-```
-
-**JavaScript'te ekle:**
-```javascript
-// Hata mesajı gösterilirken
-document.getElementById('error-message').setAttribute('aria-hidden', 'false');
-
-// Hata mesajı gizlenirken
-document.getElementById('error-message').setAttribute('aria-hidden', 'true');
-```
-
-**Etkilenen Kullanıcılar:** Ekran okuyucu kullananlar  
-**WCAG Uyum:** WCAG 2.1 AA kriterleri  
-**Düzeltme Süresi:** 30 dakika
+**Değerlendirme:** Her save sonrası `json_decode` verify eklemek ek IO/parse maliyeti getirir; mevcut atomic write + backup riski zaten ciddi ölçüde azaltıyor. İhtiyaç halinde tasarım backlog'unda tutulabilir.
 
 ---
 
-### 5. Form Button Type Eksikliği (HTML Semantik - DÜŞÜK)
+### 4. Driver ARIA Eksikleri
 
-**Dosya:** `index.html`  
-**Satır:** 495-496  
-**Sorun:** Kaydet/İptal butonları `type` attribute'ü belirtmeden kullanılıyor (varsayılan `submit`).
+**Dosya:** `driver/index.html` (satır ~91), `driver/driver-script.js` (login hata akışı)
+**Durum:** **BACKLOG** — güvenlik değil, **UX/A11Y** mini iş
 
-**Etkilenen Kod:**
-```html
-<div class="universal-btn-group">
-    <button class="universal-btn-save" onclick="saveVehicleRecord()">Kaydet</button>
-    <!-- ⚠️ type attribute yok - varsayılan 'submit' -->
-    <button class="universal-btn-cancel" onclick="closeVehicleModal()">Vazgeç</button>
-</div>
-```
-
-**Öneriler:**
-
-```html
-<!-- ✅ DÜZELT -->
-<div class="universal-btn-group">
-    <button type="button" class="universal-btn-save" onclick="saveVehicleRecord()">Kaydet</button>
-    <button type="button" class="universal-btn-cancel" onclick="closeVehicleModal()">Vazgeç</button>
-</div>
-```
-
-**Not:** Form içinde değilse `type="button"` zorunludur. Form içindeyse `type="submit"` veya `type="button"` olabilir.
-
-**Etkilenen Davranış:** Enter tuşu modalı kapatabilir  
-**Düzeltme Süresi:** 15 dakika
+`#error-message` div'inde `role="alert"` / `aria-live` yok. Düşük riskli; ekran okuyucu kullanıcıları için iyileştirme.
 
 ---
 
-### 6. İşletim Sistemi Uyumluluğu - Windows Path Handling (DÜŞÜK)
+### 5. Form Button Type — Vehicle Modal
 
-**Dosya:** `core.php`  
-**Satır:** 198-203  
-**Sorun:** Windows'ta dosya silme başarısız olursa, temp dosya bırakılabiliyor.
+**Dosya:** `index.html` (satır ~495-496)
+**Durum:** **KISMEN STALE / MİNİ BACKLOG**
 
-**Etkilenen Kod:**
-```php
-if (file_exists($path) && PHP_OS_FAMILY === 'Windows') {
-    if (!@unlink($path)) {
-        @unlink($tmp);  // ⚠️ tmp silme başarısız olabilir
-        return false;
-    }
-}
-```
-
-**Mevcut Durum:**
-- ✅ Yeniden denemesi var
-- ✅ Copy fallback var (satır 208-211)
-- ⚠️ Temp dosya cleanup'ı güvenli değil
-
-**Öneriler:**
-
-```php
-function medisaAtomicWriteFile($path, $content) {
-    $dir = dirname($path);
-    if (!is_dir($dir) && !mkdir($dir, 0755, true)) {
-        return false;
-    }
-    
-    $tmp = $dir . DIRECTORY_SEPARATOR . '.write.' . bin2hex(random_bytes(8)) . '.tmp';
-    $written = file_put_contents($tmp, $content, LOCK_EX);
-    
-    if ($written === false) {
-        @unlink($tmp);
-        return false;
-    }
-    
-    $len = strlen($content);
-    if ($written !== $len) {
-        @unlink($tmp);
-        return false;
-    }
-
-    clearstatcache(true, $path);
-    
-    if (file_exists($path)) {
-        // Windows: File locking sorunları nedeniyle rename yerine copy+delete dene
-        if (PHP_OS_FAMILY === 'Windows') {
-            if (!@copy($tmp, $path)) {
-                @unlink($tmp);
-                return false;
-            }
-            @unlink($tmp);
-            return true;
-        }
-    }
-
-    // Unix: Atomic rename
-    if (@rename($tmp, $path)) {
-        return true;
-    }
-    
-    // Fallback: Copy
-    if (@copy($tmp, $path)) {
-        @unlink($tmp);
-        return true;
-    }
-    
-    // Başarısız - temp dosyayı cleanup et
-    error_log('[Medisa] Atomik yazım başarısız, temp dosya: ' . $tmp);
-    @unlink($tmp);
-    return false;
-}
-```
-
-**Etkilenen Sistem:** Windows hosting  
-**Düzeltme Süresi:** 1 saat
+İşaretlenen Kaydet/Vazgeç butonları `<form>` içinde **değil** (`vehicle-modal` → `div.modal-body`). Gerçek submit riski **yok**. Semantik tutarlılık için `type="button"` eklenebilir; `branch-form` ve `user-form` içindeki butonlar zaten `type="button"` kullanıyor.
 
 ---
 
-### 7. Notification Scope Migration - Ambigu Anahtarlar (DÜŞÜK)
+### 6. Windows Atomic Write
 
-**Dosya:** `core.php`  
-**Satır:** 941-991  
-**Sorun:** Legacy localStorage'dan migration sırasında `scope:*` anahtarları ambigü olabilir.
+**Dosya:** `core.php` — `medisaAtomicWriteFile()` (satır ~198-203)
+**Durum:** **BACKLOG**
 
-**Etkilenen Kod:**
-```php
-function medisaBuildNotificationScopeDescriptor(array $context): array {
-    // ...
-    $sharedLegacyKeys = [];
-    if ($role !== '' && !empty($branchIds)) {
-        $sharedLegacyKeys[] = 'scope:' . $role . ':' . implode(',', $branchIds);
-    }
-    if ($role !== '') {
-        $sharedLegacyKeys[] = 'scope:' . $role;  // ⚠️ Ambigü - tüm roller için geçerli
-    }
-    // ...
-}
-```
+- Canlı ortam Linux/cPanel → Windows branch **prod riski yok**.
+- Lokal Windows geliştirmede nadir yazım hatası / temp kalıntısı mümkün.
+- `core.php` write fonksiyonuna **şu an dokunulmamalı**.
 
-**Sorun Senaryosu:**
-- `scope:sube_yonetici` anahtarı tüm şube yöneticileri için geçerli
-- İki şube müdürü birbirinin notification state'ini görebilir (teorik risk)
+---
 
-**Öneriler:**
+### 7. Notification Scope Migration
 
-```php
-// Yalnızca explicit branch scope kullan
-$sharedLegacyKeys = [];
-if ($role !== '' && !empty($branchIds)) {
-    // ✅ Branch-specific scope kullan
-    $sharedLegacyKeys[] = 'scope:' . $role . ':' . implode(',', $branchIds);
-}
-// ⚠️ Generic 'scope:role' key'ini kaldır veya deprecate et
+**Dosya:** `core.php` — `medisaBuildNotificationScopeDescriptor`, `medisaProjectNotificationReadStateForContext`; `save.php` merge
+**Durum:** **BACKLOG / HİJYEN** — güvenlik açığı değil
 
-// Load phase'de explicit scope'u validate et
-if (!empty($sharedLegacyKeys)) {
-    // Sadece canonical key + branch-specific key'leri kabul et
-    foreach ($sharedLegacyKeys as $key) {
-        if (strpos($key, ':') === false) {
-            // Generic scope - atla
-            error_log('[Warning] Ambiguous scope key skipped: ' . $key);
-            continue;
-        }
-        // Branch-specific scope - kabul et
-    }
-}
-```
+**Güncel doğrulama:**
+- Canonical key: `user:<id>|role:<role>|branches:<scope>`
+- Aktif client (`notifications.js`) canonical key kullanıyor; `scope:*` üretmiyor.
+- Load projection: `scope:*` anahtarları **okunmaz, merge edilmez, response'a konmaz**.
+- `save.php` geriye dönük uyumluluk için legacy `scope:*` yazımına izin verebilir; bu bildirim okundu/gizlendi state'i içindir, iş verisi veya yetki bypass değildir.
 
-**Risk Seviyesi:** DÜŞÜK (Production'da nadir)  
-**Düzeltme Süresi:** 1-2 saat
+**Kalan iş:** Eski `data.json` içindeki generic `scope:role` kayıtlarının temizlenmesi / deprecate edilmesi (migration hijyeni).
 
 ---
 
@@ -441,87 +144,86 @@ if (!empty($sharedLegacyKeys)) {
 
 | Sorun | Dosya | Durum |
 |-------|-------|-------|
-| Atomic File Writing | core.php (180-214) | ✅ DÜZELTILDI |
-| Document Token System | core.php (1564+) | ✅ EKLENDI |
-| Form Button Semantics (çoğunluk) | index.html | ✅ DÜZELTILDI |
-| Bearer Token Priority | core.php (548+) | ✅ DÜZELTILDI |
+| Query Token / URL Token Exposure (belge akışı) | core.php, ruhsat*.php, tasitlar.js, ayarlar.js, driver-script.js | ✅ ÇÖZÜLDÜ (doc-token fazı) |
+| Atomic File Writing | core.php (180-214) | ✅ MEVCUT |
+| Document Token System (`?doc=` DOC JWT) | core.php (1564+), document_token.php | ✅ MEVCUT |
+| Bearer Token Priority | core.php (548+) | ✅ MEVCUT |
+| Şube veri izolasyonu (load filtresi) | core.php medisaFilterDataForContextWithUserPredicate | ✅ ÇALIŞIYOR (yanlış alarm kapatıldı) |
+| Form Button Semantics (çoğunluk) | index.html | ✅ MEVCUT (branch/user formları) |
 
 ---
 
-## 📊 ÖZETLEŞTİRİLMİŞ SORUN LİSTESİ
+## 📊 ÖZETLEŞTİRİLMİŞ SORUN LİSTESİ (REVİZE)
 
-| No | Sorun | Dosya | Satır | Öncelik | Süre | Durum |
-|----|-------|-------|-------|---------|------|-------|
-| 1 | Query Token XSS | core.php | 548-564 | ORTA | 2-3h | TODO |
-| 2 | Şube Isolasyonu | core.php | 1158-1177 | ORTA | 3-4h | TODO |
-| 3 | JSON UTF-8 Verify | core.php | 220-253 | ORTA | 1h | TODO |
-| 4 | ARIA Eksikleri | driver/index.html | 91 | DÜŞÜK | 30m | TODO |
-| 5 | Button Type | index.html | 495-496 | DÜŞÜK | 15m | TODO |
-| 6 | Windows Path | core.php | 198-203 | DÜŞÜK | 1h | TODO |
-| 7 | Notification Scope | core.php | 941-991 | DÜŞÜK | 1-2h | TODO |
-
----
-
-## 🎯 YAPILACAK İŞLER ÖNCELIK SIRASI
-
-### Hafta 1 (Kısa Dönem)
-- [ ] **ORTA-1:** Query Token XSS (güvenlik)
-- [ ] **ORTA-3:** JSON UTF-8 Verify (veri bütünlüğü)
-- [ ] **DÜŞÜK-4:** ARIA Eksikleri (erişilebilirlik)
-
-### Hafta 2-3 (Orta Dönem)
-- [ ] **ORTA-2:** Şube Isolasyonu (veri güvenliği)
-- [ ] **DÜŞÜK-5:** Button Type (semantik)
-- [ ] **DÜŞÜK-6:** Windows Path (platform uyumluluğu)
-
-### Hafta 4 (Uzun Dönem)
-- [ ] **DÜŞÜK-7:** Notification Scope Migration (refactor)
+| No | Sorun | Dosya | Öncelik (eski) | Durum (güncel) | Aksiyon |
+|----|-------|-------|----------------|----------------|---------|
+| 1 | Query Token / URL exposure | core.php + belge akışı | ORTA | **ÇÖZÜLDÜ / STALE** | `allowQueryToken` hijyen backlog |
+| 2 | Şube izolasyonu | core.php 1120-1177 | ORTA | **YANLIŞ ALARM** | Kod değişikliği yok |
+| 3 | JSON UTF-8 verify | core.php saveData | ORTA | **BACKLOG** | Tasarım backlog |
+| 4 | Driver ARIA | driver/index.html | DÜŞÜK | **BACKLOG (A11Y)** | Mini UX fix |
+| 5 | Button type | index.html 495-496 | DÜŞÜK | **KISMEN STALE** | Semantik mini fix |
+| 6 | Windows atomic write | core.php 198-203 | DÜŞÜK | **BACKLOG** | Windows dev only |
+| 7 | Notification scope | core.php 941-991 | DÜŞÜK | **BACKLOG / HİJYEN** | Legacy cleanup |
 
 ---
 
-## 📈 KALİTE METRİKLERİ
+## 🎯 ÖNERİLEN ÖNCELİK SIRASI (GÜNCEL)
+
+1. **Driver ARIA** mini UX fix (`driver/index.html` + `driver-script.js`)
+2. **Vehicle modal** `type="button"` semantik mini fix (`index.html` ~495-496)
+3. **`allowQueryToken` dead code cleanup** tasarımı (`core.php` hijyen)
+4. **Notification scope** legacy cleanup (`data.json` + save merge hijyeni)
+5. **`saveData` post-write verify** tasarımı (maliyet/fayda değerlendirmesi sonrası)
+6. **Windows atomic write** iyileştirmesi (yalnızca Windows dev sorun çıkarırsa)
+
+---
+
+## 📈 KALİTE METRİKLERİ (REVİZE)
 
 ```
-Güvenlik Puanı:          95/100  ████████████████████░
+Güvenlik Puanı:          97/100  ███████████████████░░
 Kod Kalitesi:            88/100  █████████████████░░░
 Erişilebilirlik:         80/100  ████████████████░░░░
 Veri Bütünlüğü:          92/100  ██████████████████░░
+Veri İzolasyonu:         95/100  ███████████████████░
 Performans:              94/100  ██████████████████░░
 ─────────────────────────────────────────────────────
-Genel Puanlandırma:      89.8/100 ██████████████████░░
+Genel Puanlandırma:      91.0/100 ██████████████████░░
 Durum: PRODUCTION READY ✅
 ```
 
 ---
 
-## 💡 GENEL ÖNERILER
+## 💡 GENEL ÖNERİLER (REVİZE)
 
-### Teknik Borç
-- Query token sistemini yeniden tasarla (Bearer auth'a geçiş)
-- Şube isolasyonunu formalize et (veritabanında)
-- Notification scope'u simplify et
+### Kısa Vadeli (düşük risk)
+- Driver login hata mesajına ARIA ekle
+- Vehicle modal butonlarına `type="button"` ekle
 
-### Uzun Vadeli Iyileştirmeler
-1. Veritabanı migration (JSON → SQLite/MySQL)
-2. API rate limiting ekle
-3. Request logging & monitoring
-4. Unit test coverage artır (mevcut: ?%)
+### Orta Vadeli (hijyen)
+- `allowQueryToken` ölü kodunu kaldır
+- Notification `scope:*` legacy kayıtlarını temizle
+
+### Uzun Vadeli (opsiyonel)
+- `saveData` post-write verify (maliyet analizi sonrası)
+- Windows geliştirme ortamı için atomic write iyileştirmesi
+- Veritabanı migration (JSON → SQLite/MySQL) değerlendirmesi
 
 ### DevOps
-1. Production ortamında error logging'i güçlendir
-2. Backup rotasyonunu automate et
-3. Security headers ekle (CSP, X-Frame-Options, vb.)
+- Production error logging
+- Backup rotasyonu
+- Security headers (CSP, X-Frame-Options, vb.)
 
 ---
 
 ## 📞 İletişim & Sorular
 
-**Rapor Hazırlayan:** GitHub Copilot  
-**Tarih:** 22 Haziran 2026  
-**Sistem:** Medisa Taşıt Yönetim Sistemi V3  
+**İlk Rapor:** GitHub Copilot (22 Haziran 2026)
+**Doğrulama & Revizyon:** Kod incelemesi (22 Haziran 2026, `main` branch)
+**Sistem:** Medisa Taşıt Yönetim Sistemi V3
 
 Herhangi bir sorun veya açıklama için repository'de issue açabilirsiniz.
 
 ---
 
-**Son Güncelleme:** 2026-06-22
+**Son Güncelleme:** 2026-06-22 (doğrulama revizyonu)
