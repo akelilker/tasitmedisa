@@ -5536,23 +5536,138 @@
     return cleanFragment ? (cleanBase + '#' + cleanFragment) : cleanBase;
   }
 
-  /** ruhsat.php GET ile açılırken Bearer yerine ?token= (core.php allowQueryToken) — sekme/PDF başlığında dosya adı için blob yerine HTTP yanıtı kullanılır. */
-  function appendMedisaDocumentAuthToUrl(rawUrl) {
+  /** Kısa ömürlü belge doc-token önbelleği (vehicleId::documentType veya settings::dtype). */
+  var medisaDocTokenCache = new Map();
+  var MEDISA_DOC_TOKEN_CACHE_MARGIN_MS = 30000;
+
+  function getMedisaDocumentTokenCacheKey(vehicleId, documentType) {
+    const dt = String(documentType || 'ruhsat').trim() || 'ruhsat';
+    const cfg = getVehicleDocumentConfig(dt);
+    if (cfg.scope === 'settings') {
+      return 'settings::' + dt;
+    }
+    const vid = String(vehicleId || '').trim();
+    if (!vid) return '';
+    return vid + '::' + dt;
+  }
+
+  function parseMedisaDocumentUrlContext(rawUrl) {
+    try {
+      const u = new URL(String(rawUrl || '').trim(), window.location.href);
+      return {
+        vehicleId: String(u.searchParams.get('id') || '').trim(),
+        documentType: String(u.searchParams.get('documentType') || 'ruhsat').trim() || 'ruhsat'
+      };
+    } catch (e) {
+      return { vehicleId: '', documentType: 'ruhsat' };
+    }
+  }
+
+  function appendDocTokenToDocumentUrl(rawUrl, docToken) {
     const base = String(rawUrl || '').trim();
     if (!base) return '';
-    const token = getMedisaPortalToken();
-    if (!token) return toAbsoluteRuhsatUrl(base);
     try {
       const u = new URL(base, window.location.href);
-      u.searchParams.set('token', token);
+      u.searchParams.delete('token');
+      if (docToken) {
+        u.searchParams.set('doc', docToken);
+      } else {
+        u.searchParams.delete('doc');
+      }
       return u.toString();
     } catch (e) {
       return toAbsoluteRuhsatUrl(base);
     }
   }
 
+  function mintMedisaDocumentToken(vehicleId, documentType) {
+    const dt = String(documentType || 'ruhsat').trim() || 'ruhsat';
+    const cfg = getVehicleDocumentConfig(dt);
+    const cacheKey = getMedisaDocumentTokenCacheKey(vehicleId, dt);
+    const now = Date.now();
+    if (cacheKey) {
+      const cached = medisaDocTokenCache.get(cacheKey);
+      if (cached && cached.token && cached.expiresAtMs > now + MEDISA_DOC_TOKEN_CACHE_MARGIN_MS) {
+        return Promise.resolve(cached);
+      }
+    }
+
+    const body = { documentType: dt };
+    if (cfg.scope !== 'settings') {
+      const vid = String(vehicleId || '').trim();
+      if (!vid) {
+        return Promise.reject(new Error('document-id-missing'));
+      }
+      body.vehicleId = vid;
+    }
+
+    return fetch('document_token.php', {
+      method: 'POST',
+      cache: 'no-store',
+      headers: Object.assign({ 'Content-Type': 'application/json' }, buildMedisaAuthHeaders()),
+      body: JSON.stringify(body)
+    })
+      .then(function(response) {
+        return response.json().then(function(data) {
+          if (!response.ok || !data || data.ok !== true || !data.token) {
+            const err = new Error('document-token-mint-failed');
+            err.httpStatus = response.status;
+            err.message = (data && data.message) ? data.message : 'Belge erişim anahtarı alınamadı.';
+            throw err;
+          }
+          const entry = {
+            token: String(data.token),
+            expiresAtMs: Number(data.expiresAt) > 0 ? Number(data.expiresAt) * 1000 : (now + 300000)
+          };
+          if (cacheKey) {
+            medisaDocTokenCache.set(cacheKey, entry);
+          }
+          return entry;
+        });
+      });
+  }
+
+  function resolveMedisaDocumentAccessUrl(rawUrl, vehicleId, documentType) {
+    const base = String(rawUrl || '').trim();
+    if (!base) {
+      return Promise.reject(new Error('document-url-missing'));
+    }
+    if (!getMedisaPortalToken()) {
+      return Promise.resolve(toAbsoluteRuhsatUrl(base));
+    }
+
+    const parsed = parseMedisaDocumentUrlContext(base);
+    const dt = String(documentType || parsed.documentType || 'ruhsat').trim() || 'ruhsat';
+    const cfg = getVehicleDocumentConfig(dt);
+    const vid = cfg.scope === 'settings'
+      ? ''
+      : String(vehicleId || parsed.vehicleId || window.currentDetailVehicleId || '').trim();
+
+    return mintMedisaDocumentToken(vid, dt).then(function(entry) {
+      return appendDocTokenToDocumentUrl(base, entry.token);
+    });
+  }
+
+  function openBlankDocumentTab() {
+    try {
+      return window.open('about:blank', '_blank', 'noopener,noreferrer');
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function showDocumentTabError(tabWindow, message) {
+    if (!tabWindow || tabWindow.closed) return;
+    const safeMessage = escapeHtml(message || 'Belge açılamadı.');
+    try {
+      tabWindow.document.open();
+      tabWindow.document.write('<!DOCTYPE html><html lang="tr"><head><meta charset="utf-8"><title>Belge</title></head><body><p>' + safeMessage + '</p></body></html>');
+      tabWindow.document.close();
+    } catch (e) {}
+  }
+
   /**
-   * Belgeyi yeni sekmede açar. Oturum token'ı varsa doğrudan ruhsat.php (+token) ile açılır (doğru sekme/dosya adı).
+   * Belgeyi yeni sekmede açar. Oturum varsa doc-token ile ruhsat.php açılır (doğru sekme/dosya adı).
    * Token yoksa mevcut fetch + blob yedeği.
    */
   function openVehicleDocumentInNewTab(vehicleId, documentUrl, documentType, pdfViewerFragment) {
@@ -5568,10 +5683,30 @@
     const fragment = typeof pdfViewerFragment === 'string' ? pdfViewerFragment : '';
 
     if (getMedisaPortalToken()) {
-      const authed = appendMedisaDocumentAuthToUrl(docUrl);
-      const target = fragment !== '' ? buildPdfViewerUrl(authed, fragment) : authed;
-      openUrlInNewTab(target);
-      return Promise.resolve();
+      const blankTab = openBlankDocumentTab();
+      return resolveMedisaDocumentAccessUrl(docUrl, vid, dt)
+        .then(function(authed) {
+          const target = fragment !== '' ? buildPdfViewerUrl(authed, fragment) : authed;
+          if (blankTab && !blankTab.closed) {
+            try {
+              blankTab.location.href = target;
+              blankTab.focus();
+            } catch (e) {
+              openUrlInNewTab(target, blankTab);
+            }
+            return;
+          }
+          openUrlInNewTab(target);
+        })
+        .catch(function(err) {
+          if (blankTab && !blankTab.closed) {
+            try { blankTab.close(); } catch (closeErr) {}
+          }
+          return fetchRuhsatDocumentObjectUrl(vid, docUrl, dt).then(function(objectUrl) {
+            const target = fragment !== '' ? buildPdfViewerUrl(objectUrl, fragment) : objectUrl;
+            openUrlInNewTab(target);
+          });
+        });
     }
 
     return fetchRuhsatDocumentObjectUrl(vid, docUrl, dt).then(function(objectUrl) {
@@ -6354,11 +6489,16 @@
         if (typeof console !== 'undefined' && console.warn) console.warn('Ruhsat print failed', e);
         if (fallbackOpenUrl) {
           if (getMedisaPortalToken()) {
-            const authedFb = appendMedisaDocumentAuthToUrl(documentUrl);
-            const fbTarget = isImage
-              ? authedFb
-              : buildPdfViewerUrl(authedFb, 'toolbar=0&navpanes=0&zoom=page-width&view=FitH');
-            openUrlInNewTab(fbTarget);
+            resolveMedisaDocumentAccessUrl(documentUrl, vehicleId, dt)
+              .then(function(authedFb) {
+                const fbTarget = isImage
+                  ? authedFb
+                  : buildPdfViewerUrl(authedFb, 'toolbar=0&navpanes=0&zoom=page-width&view=FitH');
+                openUrlInNewTab(fbTarget);
+              })
+              .catch(function() {
+                openUrlInNewTab(fallbackOpenUrl);
+              });
           } else {
             openUrlInNewTab(fallbackOpenUrl);
           }
@@ -6372,12 +6512,36 @@
 
     if (isPdf) {
       if (getMedisaPortalToken()) {
-        loadPdfForPrint(
-          buildPdfViewerUrl(
-            appendMedisaDocumentAuthToUrl(documentUrl),
-            'toolbar=0&navpanes=0&zoom=page-width&view=FitH'
-          )
-        );
+        resolveMedisaDocumentAccessUrl(documentUrl, vehicleId, dt)
+          .then(function(authedUrl) {
+            if (window.__ruhsatPrintToken !== printToken) {
+              return;
+            }
+            loadPdfForPrint(
+              buildPdfViewerUrl(
+                authedUrl,
+                'toolbar=0&navpanes=0&zoom=page-width&view=FitH'
+              )
+            );
+          })
+          .catch(function() {
+            if (window.__ruhsatPrintToken !== printToken) {
+              return;
+            }
+            fetchRuhsatDocumentObjectUrl(vehicleId, documentUrl, dt)
+              .then(function(documentObjectUrl) {
+                if (window.__ruhsatPrintToken !== printToken) {
+                  return;
+                }
+                loadPdfForPrint(buildPdfViewerUrl(documentObjectUrl, 'toolbar=0&navpanes=0&zoom=page-width&view=FitH'));
+              })
+              .catch(function() {
+                if (window.__ruhsatPrintToken !== printToken) {
+                  return;
+                }
+                if (typeof window.viewRuhsatPdf === 'function') window.viewRuhsatPdf(vehicleId, dt, { skipIosPwaPrintRoute: true });
+              });
+          });
         return;
       }
       fetchRuhsatDocumentObjectUrl(vehicleId, documentUrl, dt)
@@ -6397,8 +6561,31 @@
     }
 
     if (getMedisaPortalToken()) {
-      const authedImageUrl = appendMedisaDocumentAuthToUrl(documentUrl);
-      loadImageForPrint(authedImageUrl);
+      resolveMedisaDocumentAccessUrl(documentUrl, vehicleId, dt)
+        .then(function(authedImageUrl) {
+          if (window.__ruhsatPrintToken !== printToken) {
+            return;
+          }
+          loadImageForPrint(authedImageUrl);
+        })
+        .catch(function() {
+          if (window.__ruhsatPrintToken !== printToken) {
+            return;
+          }
+          fetchRuhsatDocumentObjectUrl(vehicleId, documentUrl, dt)
+            .then(function(documentObjectUrl) {
+              if (window.__ruhsatPrintToken !== printToken) {
+                return;
+              }
+              loadImageForPrint(documentObjectUrl);
+            })
+            .catch(function() {
+              if (window.__ruhsatPrintToken !== printToken) {
+                return;
+              }
+              if (typeof window.viewRuhsatPdf === 'function') window.viewRuhsatPdf(vehicleId, dt, { skipIosPwaPrintRoute: true });
+            });
+        });
       return;
     }
     fetchRuhsatDocumentObjectUrl(vehicleId, documentUrl, dt)
@@ -6497,10 +6684,33 @@
         const fallbackUrl = loadedPrintUrl || '';
         if (viewerOptions.forceExternalPrint) {
           if (getMedisaPortalToken()) {
-            const op = appendMedisaDocumentAuthToUrl(documentUrl);
-            openUrlInNewTab(
-              isImage ? op : buildPdfViewerUrl(op, 'toolbar=1&navpanes=0&zoom=page-width&view=FitH')
-            );
+            const printTab = openBlankDocumentTab();
+            resolveMedisaDocumentAccessUrl(documentUrl, vehicleId, dt)
+              .then(function(op) {
+                const target = isImage
+                  ? op
+                  : buildPdfViewerUrl(op, 'toolbar=1&navpanes=0&zoom=page-width&view=FitH');
+                if (printTab && !printTab.closed) {
+                  try {
+                    printTab.location.href = target;
+                    printTab.focus();
+                  } catch (e) {
+                    openUrlInNewTab(target, printTab);
+                  }
+                  return;
+                }
+                openUrlInNewTab(target);
+              })
+              .catch(function() {
+                if (printTab && !printTab.closed) {
+                  try { printTab.close(); } catch (closeErr) {}
+                }
+                if (fallbackUrl) {
+                  openUrlInNewTab(fallbackUrl);
+                } else if (typeof window.viewRuhsatPdf === 'function') {
+                  window.viewRuhsatPdf(vehicleId, dt);
+                }
+              });
           } else if (fallbackUrl) {
             openUrlInNewTab(fallbackUrl);
           } else if (typeof window.viewRuhsatPdf === 'function') {
@@ -6518,10 +6728,33 @@
           console.warn('Inline print failed, fallback to new tab', e);
         }
         if (getMedisaPortalToken()) {
-          const op2 = appendMedisaDocumentAuthToUrl(documentUrl);
-          openUrlInNewTab(
-            isImage ? op2 : buildPdfViewerUrl(op2, 'toolbar=1&navpanes=0&zoom=page-width&view=FitH')
-          );
+          const printTab2 = openBlankDocumentTab();
+          resolveMedisaDocumentAccessUrl(documentUrl, vehicleId, dt)
+            .then(function(op2) {
+              const target = isImage
+                ? op2
+                : buildPdfViewerUrl(op2, 'toolbar=1&navpanes=0&zoom=page-width&view=FitH');
+              if (printTab2 && !printTab2.closed) {
+                try {
+                  printTab2.location.href = target;
+                  printTab2.focus();
+                } catch (e) {
+                  openUrlInNewTab(target, printTab2);
+                }
+                return;
+              }
+              openUrlInNewTab(target);
+            })
+            .catch(function() {
+              if (printTab2 && !printTab2.closed) {
+                try { printTab2.close(); } catch (closeErr) {}
+              }
+              if (fallbackUrl) {
+                openUrlInNewTab(fallbackUrl);
+              } else if (typeof window.viewRuhsatPdf === 'function') {
+                window.viewRuhsatPdf(vehicleId, dt);
+              }
+            });
         } else if (fallbackUrl) {
           openUrlInNewTab(fallbackUrl);
         } else if (typeof window.viewRuhsatPdf === 'function') {
@@ -6546,11 +6779,33 @@
     }
 
     if (getMedisaPortalToken()) {
-      const authedInline = appendMedisaDocumentAuthToUrl(documentUrl);
-      const targetUrl = isImage
-        ? authedInline
-        : buildPdfViewerUrl(authedInline, 'toolbar=1&navpanes=0&zoom=page-fit&view=FitH');
-      loadInlineViewerTarget(targetUrl);
+      resolveMedisaDocumentAccessUrl(documentUrl, vehicleId, dt)
+        .then(function(authedInline) {
+          if (!frame.isConnected) return;
+          const targetUrl = isImage
+            ? authedInline
+            : buildPdfViewerUrl(authedInline, 'toolbar=1&navpanes=0&zoom=page-fit&view=FitH');
+          loadInlineViewerTarget(targetUrl);
+        })
+        .catch(function(err) {
+          fetchRuhsatDocumentObjectUrl(vehicleId, documentUrl, dt)
+            .then(function(objectUrl) {
+              if (!frame.isConnected) return;
+              const targetUrl = isImage
+                ? objectUrl
+                : buildPdfViewerUrl(objectUrl, 'toolbar=1&navpanes=0&zoom=page-fit&view=FitH');
+              loadInlineViewerTarget(targetUrl);
+            })
+            .catch(function(fetchErr) {
+              console.error(cfg.label + ' görüntüleme hazırlanamadı', fetchErr || err);
+              var st = (fetchErr && fetchErr.httpStatus) || (err && err.httpStatus);
+              if (st === 404) {
+                alert(cfg.label + ' veya taşıt kaydı sunucuda bulunamadı (dosya eksik veya veri senkron değil). Sayfayı yenileyip tekrar deneyin.');
+              } else if (st === 401 || st === 403) {
+                alert('Bu belge için oturum veya yetki yetersiz. Tekrar giriş yapmayı deneyin.');
+              }
+            });
+        });
     } else {
       fetchRuhsatDocumentObjectUrl(vehicleId, documentUrl, dt)
       .then(function(objectUrl) {

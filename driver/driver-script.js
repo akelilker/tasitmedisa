@@ -1174,10 +1174,95 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       const url = new URL(APP_ROOT + 'ruhsat.php', window.location.origin);
       url.searchParams.set('id', rawId);
       url.searchParams.set('documentType', String(documentType || 'ruhsat').trim() || 'ruhsat');
-      if (currentToken) {
-          url.searchParams.set('token', currentToken);
-      }
       return url.toString();
+  }
+
+  function showDriverDocumentTabError(tabWindow, message) {
+      if (!tabWindow || tabWindow.closed) return;
+      const safeMessage = String(message || 'Belge açılamadı.').replace(/[<>&"]/g, function(ch) {
+          return ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' })[ch] || ch;
+      });
+      try {
+          tabWindow.document.open();
+          tabWindow.document.write('<!DOCTYPE html><html lang="tr"><head><meta charset="utf-8"><title>Belge</title></head><body><p>' + safeMessage + '</p></body></html>');
+          tabWindow.document.close();
+      } catch (e) {}
+  }
+
+  function mintDriverDocumentToken(vehicleId, documentType) {
+      const rawId = String(vehicleId || '').trim();
+      const dt = String(documentType || 'ruhsat').trim() || 'ruhsat';
+      if (!rawId || !currentToken) {
+          return Promise.reject(new Error('driver-document-auth-missing'));
+      }
+      return fetch(APP_ROOT + 'document_token.php', {
+          method: 'POST',
+          cache: 'no-store',
+          headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + currentToken
+          },
+          body: JSON.stringify({ vehicleId: rawId, documentType: dt })
+      })
+          .then(function(response) {
+              return response.json().then(function(data) {
+                  if (!response.ok || !data || data.ok !== true || !data.token) {
+                      const err = new Error('driver-document-token-failed');
+                      err.httpStatus = response.status;
+                      err.message = (data && data.message) ? data.message : 'Belge erişim anahtarı alınamadı.';
+                      throw err;
+                  }
+                  return {
+                      token: String(data.token),
+                      expiresAt: Number(data.expiresAt) || 0
+                  };
+              });
+          });
+  }
+
+  function openDriverDocumentInNewTab(vehicleId, documentType) {
+      const baseUrl = buildDriverDocumentUrl(vehicleId, documentType);
+      if (!baseUrl) {
+          setDriverDocumentsMessage('Taşıt bilgisi bulunamadı.', true);
+          return;
+      }
+      if (!currentToken) {
+          setDriverDocumentsMessage('Oturumunuz sona erdi.', true);
+          return;
+      }
+
+      let blankTab = null;
+      try {
+          blankTab = window.open('about:blank', '_blank', 'noopener,noreferrer');
+      } catch (e) {}
+
+      mintDriverDocumentToken(vehicleId, documentType)
+          .then(function(entry) {
+              let targetUrl;
+              try {
+                  targetUrl = new URL(baseUrl);
+                  targetUrl.searchParams.delete('token');
+                  targetUrl.searchParams.set('doc', entry.token);
+              } catch (urlErr) {
+                  throw urlErr;
+              }
+              const finalUrl = targetUrl.toString();
+              if (blankTab && !blankTab.closed) {
+                  try {
+                      blankTab.location.href = finalUrl;
+                      blankTab.focus();
+                      return;
+                  } catch (navErr) {}
+              }
+              window.open(finalUrl, '_blank', 'noopener');
+          })
+          .catch(function(err) {
+              if (blankTab && !blankTab.closed) {
+                  showDriverDocumentTabError(blankTab, err && err.message ? err.message : 'Belge açılamadı.');
+                  return;
+              }
+              setDriverDocumentsMessage((err && err.message) ? err.message : 'Belge açılamadı.', true);
+          });
   }
 
   function setDriverDocumentsMessage(message, isError) {
@@ -1276,7 +1361,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
                   return;
               }
               setDriverDocumentsMessage('', false);
-              window.open(url, '_blank', 'noopener');
+              openDriverDocumentInNewTab(vehicleId, documentType);
           });
       });
   }
