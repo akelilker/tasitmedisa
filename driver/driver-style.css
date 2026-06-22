@@ -4,12 +4,11 @@
    ========================================= */
 
 /* --- Scrollbar Gizleme (html/body/modal style-core'da; sadece driver-spesifik) --- */
-.driver-scroll-area, .history-list, .history-container, #history-list {
+.driver-scroll-area, .history-container, #history-list {
   scrollbar-width: none !important;
   -ms-overflow-style: none !important;
 }
 .driver-scroll-area::-webkit-scrollbar,
-.history-list::-webkit-scrollbar,
 .history-container::-webkit-scrollbar,
 #history-list::-webkit-scrollbar {
   display: none !important;
@@ -262,19 +261,6 @@ body.dashboard-page {
   display: none;
 }
 
-.hero-title-wrap {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 2px;
-  min-width: 0;
-}
-.hero-title-wrap h1 {
-  text-align: center !important;
-}
-
 /* Driver: Başlık alanı – 3 sütunlu grid (logo | başlık bloğu | spacer), tam ortalama */
 .hero.hero-two-rows {
   display: grid !important;
@@ -415,21 +401,6 @@ body.dashboard-page {
 }
 .hero.hero-two-rows .hero-title-block .hero-panel-subtitle {
   margin: 0;
-}
-
-.hero-subtitle {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--muted);
-  margin: 0;
-  letter-spacing: 0.05em;
-}
-
-.driver-hero-right {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-shrink: 0;
 }
 
 /* --- Üst durum ikonları (geçmiş / motor uyarı / anahtar) - 8px çerçeve boşluğu --- */
@@ -577,7 +548,6 @@ body.dashboard-page {
 }
 
 /* KULLANICI PANELİ: h1 altında, 1pt küçük, aynı renk (metalik gradient) */
-.hero-title-wrap .hero-panel-subtitle,
 .hero-title-block .hero-panel-subtitle {
   font-size: calc(17px - 0.5pt);
   font-weight: 800;
@@ -603,7 +573,6 @@ body.dashboard-page {
 }
 
 /* Sadece kullanıcı paneli: alt başlık (KULLANICI PANELİ) 0.7 pt küçük; üst satıra dokunulmaz */
-.dashboard-page .hero-title-wrap .hero-panel-subtitle,
 .dashboard-page .hero-title-block .hero-panel-subtitle {
   font-size: calc(17px - 0.7pt - 0.5pt);
 }
@@ -654,12 +623,10 @@ body.dashboard-page {
 
 /* Masaüstü: Kullanıcı Paneli başlığı, driver-below-hero boşluk, çerçeve kalınlığı, logo boyutu */
 @media (min-width: 769px) {
-  .hero-title-wrap .hero-panel-subtitle,
   .hero-title-block .hero-panel-subtitle {
     font-size: calc(17px - 0.5pt);
     letter-spacing: 3px;
   }
-  .dashboard-page .hero-title-wrap .hero-panel-subtitle,
   .dashboard-page .hero-title-block .hero-panel-subtitle {
     font-size: calc(17px - 0.7pt - 0.5pt);
   }
@@ -1819,11 +1786,6 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
 .driver-left-panel .driver-info-item .label { font-size: 13px; }
 .driver-left-panel .driver-info-item .value { font-size: 13px; }
 
-.driver-action-buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
 .driver-action-btn {
   background: transparent !important;
   border: 1px solid rgba(238, 246, 255, 0.34);
@@ -2071,12 +2033,10 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
   background-color: #0f1418 !important;
   color: var(--data-value-color, #a0aec0);
 }
-.driver-action-area .driver-km-block .form-group input.driver-km-input,
 .driver-action-area .driver-report-block .form-group input,
 .driver-action-area .driver-report-block .form-group textarea {
   box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.35) !important;
 }
-.driver-action-area .driver-km-block .form-group input.driver-km-input:focus,
 .driver-action-area .driver-report-block .form-group input:focus,
 .driver-action-area .driver-report-block .form-group textarea:focus {
   box-shadow: inset 0 0 0 0.5px var(--theme-color) !important;
@@ -2173,11 +2133,9 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
     white-space: normal;
     line-height: 1.08;
   }
-  .hero-subtitle { font-size: 13.5px; }
   .driver-plate-chevron { font-size: 19.5px; }
   .driver-footer-back-wrap .universal-back-label { font-size: 14.5px; }
-  .driver-btn-password,
-  .driver-btn-logout { font-size: 12.5px; }
+  .driver-btn-password { font-size: 12.5px; }
   .driver-action-area .form-group label { font-size: 14px; }
   .driver-action-area .form-group input,
   .driver-action-area .form-group textarea { font-size: 15px; }
@@ -2437,8 +2395,7 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
 
 }
 
-.driver-btn-password,
-.driver-btn-logout {
+.driver-btn-password {
   padding: 6px 8px;
   background: transparent !important;
   border: none !important;
@@ -2450,15 +2407,9 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-.driver-btn-password {
   color: #5889b5;
 }
-.driver-btn-logout {
-  color: var(--theme-color) !important;
-}
-.driver-btn-password .driver-btn-password-icon,
-.driver-btn-logout .driver-btn-logout-icon {
+.driver-btn-password .driver-btn-password-icon {
   width: 20px;
   height: 20px;
 }
@@ -2471,15 +2422,6 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
   border: none !important;
   transform: scale(1.12);
   filter: drop-shadow(0 0 4px rgba(106, 155, 196, 0.22));
-}
-.driver-btn-logout:hover,
-.driver-btn-logout:focus,
-.driver-btn-logout:active {
-  color: var(--theme-color) !important;
-  background: transparent !important;
-  border: none !important;
-  transform: scale(1.12);
-  filter: drop-shadow(0 0 6px rgba(var(--theme-color-rgb), 0.45));
 }
 
 /* --- YÜKLEME --- */
@@ -2953,11 +2895,7 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
   body.dashboard-page #history-modal.driver-modal,
   body.dashboard-page #edit-request-modal.driver-modal,
   body.dashboard-page #driver-feedback-modal.driver-modal,
-  body.dashboard-page #driver-documents-modal.driver-modal,
-  body.login-page #history-modal.driver-modal,
-  body.login-page #edit-request-modal.driver-modal,
-  body.login-page #driver-feedback-modal.driver-modal,
-  body.login-page #driver-documents-modal.driver-modal {
+  body.dashboard-page #driver-documents-modal.driver-modal {
     bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
   }
 }
@@ -3018,19 +2956,13 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
 /* Geçmiş Kayıtlar / Düzeltme Talebi açıkken footer modalın üstünde, ışıklar sabit ton */
 body.dashboard-page:has(#history-modal.driver-modal.show) #app-footer,
 body.dashboard-page:has(#edit-request-modal.driver-modal.show) #app-footer,
-body.login-page:has(#history-modal.driver-modal.show) #app-footer.login-footer,
-body.login-page:has(#edit-request-modal.driver-modal.show) #app-footer.login-footer,
-body.dashboard-page.driver-history-or-edit-modal-open #app-footer,
-body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
+body.dashboard-page.driver-history-or-edit-modal-open #app-footer {
   z-index: 100020 !important;
 }
 /* Talep/şikayet modalı: footer üstte kalmamalı (iOS’ta form alanları tıklanmıyor) */
 body.dashboard-page:has(#driver-feedback-modal.driver-modal.show) #app-footer,
 body.dashboard-page:has(#driver-documents-modal.driver-modal.show) #app-footer,
-body.login-page:has(#driver-feedback-modal.driver-modal.show) #app-footer.login-footer,
-body.login-page:has(#driver-documents-modal.driver-modal.show) #app-footer.login-footer,
-body.dashboard-page.driver-feedback-modal-open #app-footer,
-body.login-page.driver-feedback-modal-open #app-footer.login-footer {
+body.dashboard-page.driver-feedback-modal-open #app-footer {
   z-index: 10015 !important;
 }
 
@@ -4916,16 +4848,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   overflow-x: hidden;
 }
 
-.login-card-title {
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--txt);
-  text-align: center;
-  margin: 0 0 24px 0;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
 .login-form .form-group {
   margin-bottom: 20px;
   min-width: 0;
@@ -5081,15 +5003,9 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
    RESPONSIVE
    ========================================= */
 @media (max-width: 480px) {
-  .hero-subtitle {
-    font-size: 15px;
-    letter-spacing: 0.05em;
-  }
-  .login-page .hero-title-wrap .hero-panel-subtitle,
   .login-page .hero-title-block .hero-panel-subtitle {
     font-size: calc(22px - 0.5pt); /* h1 (23px) - 1pt küçük − 0.5pt */
   }
-  .dashboard-page .hero-title-wrap .hero-panel-subtitle,
   .dashboard-page .hero-title-block .hero-panel-subtitle {
     font-size: calc(22px - 0.7pt - 0.5pt);
   }
@@ -5097,8 +5013,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 /* === MOBİL GÜNCELLEMELER 2026.01.31 === */
 
 /* Çıkış butonu büyüt */
-.driver-btn-password,
-.driver-btn-logout {
+.driver-btn-password {
   font-size: 14px !important;
 }
 
@@ -5149,59 +5064,39 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     display: none !important;
   }
   /* Modal açıkken footer ve footer ışıkları üstte kalsın */
-  body.driver-modal-open.dashboard-page #app-footer,
-  body.driver-modal-open.login-page #app-footer.login-footer {
+  body.driver-modal-open.dashboard-page #app-footer {
     z-index: 10012 !important;
   }
   /* Geçmiş Kayıtlar / Düzeltme açıkken footer dimmer tonu bozulmasın. */
   body.dashboard-page:has(#history-modal.driver-modal.show) #app-footer .version,
   body.dashboard-page:has(#edit-request-modal.driver-modal.show) #app-footer .version,
-  body.login-page:has(#history-modal.driver-modal.show) #app-footer.login-footer .version,
-  body.login-page:has(#edit-request-modal.driver-modal.show) #app-footer.login-footer .version,
   body.dashboard-page:has(#history-modal.driver-modal.show) #app-footer .version#version-display,
   body.dashboard-page:has(#edit-request-modal.driver-modal.show) #app-footer .version#version-display,
-  body.login-page:has(#history-modal.driver-modal.show) #app-footer.login-footer .version#version-display,
-  body.login-page:has(#edit-request-modal.driver-modal.show) #app-footer.login-footer .version#version-display,
   body.dashboard-page:has(#history-modal.driver-modal.show) #app-footer .status,
   body.dashboard-page:has(#edit-request-modal.driver-modal.show) #app-footer .status,
-  body.login-page:has(#history-modal.driver-modal.show) #app-footer.login-footer .status,
-  body.login-page:has(#edit-request-modal.driver-modal.show) #app-footer.login-footer .status,
   body.dashboard-page:has(#history-modal.driver-modal.show) #app-footer .status.status-ready,
   body.dashboard-page:has(#edit-request-modal.driver-modal.show) #app-footer .status.status-ready,
-  body.login-page:has(#history-modal.driver-modal.show) #app-footer.login-footer .status.status-ready,
-  body.login-page:has(#edit-request-modal.driver-modal.show) #app-footer.login-footer .status.status-ready,
   body.dashboard-page:has(#history-modal.driver-modal.show) #app-footer .status.status-error,
-  body.dashboard-page:has(#edit-request-modal.driver-modal.show) #app-footer .status.status-error,
-  body.login-page:has(#history-modal.driver-modal.show) #app-footer.login-footer .status.status-error,
-  body.login-page:has(#edit-request-modal.driver-modal.show) #app-footer.login-footer .status.status-error {
+  body.dashboard-page:has(#edit-request-modal.driver-modal.show) #app-footer .status.status-error {
     opacity: 0.3 !important;
   }
   body.dashboard-page:has(#history-modal.driver-modal.show) #app-footer .brand img,
-  body.dashboard-page:has(#edit-request-modal.driver-modal.show) #app-footer .brand img,
-  body.login-page:has(#history-modal.driver-modal.show) #app-footer.login-footer .brand img,
-  body.login-page:has(#edit-request-modal.driver-modal.show) #app-footer.login-footer .brand img {
+  body.dashboard-page:has(#edit-request-modal.driver-modal.show) #app-footer .brand img {
     opacity: 0.8 !important;
   }
   /* Geçmiş Kayıtlar / Düzeltme Talebi açıkken modal–footer 6px boşluğunda kırmızı dikey parçalar kalmasın */
   @supports not selector(body:has(*)) {
     body.dashboard-page.driver-history-or-edit-modal-open #app-footer .version,
-    body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer .version,
     body.dashboard-page.driver-history-or-edit-modal-open #app-footer .version#version-display,
-    body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer .version#version-display,
     body.dashboard-page.driver-history-or-edit-modal-open #app-footer .status,
-    body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer .status,
     body.dashboard-page.driver-history-or-edit-modal-open #app-footer .status.status-ready,
-    body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer .status.status-ready,
-    body.dashboard-page.driver-history-or-edit-modal-open #app-footer .status.status-error,
-    body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer .status.status-error {
+    body.dashboard-page.driver-history-or-edit-modal-open #app-footer .status.status-error {
       opacity: 0.3 !important;
     }
-    body.dashboard-page.driver-history-or-edit-modal-open #app-footer .brand img,
-    body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer .brand img {
+    body.dashboard-page.driver-history-or-edit-modal-open #app-footer .brand img {
       opacity: 0.8 !important;
     }
-    body.driver-modal-open.dashboard-page::after,
-    body.driver-modal-open.login-page::after {
+    body.driver-modal-open.dashboard-page::after {
       content: '';
       position: fixed;
       left: 0;
@@ -5608,10 +5503,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
 
   /* Mobil: h1 boyut ve harf aralığı (1pt küçük) */
-  .hero-title-wrap h1 {
-    font-size: calc(22px - 0.5pt) !important; /* 23px - 1pt − 0.5pt */
-    letter-spacing: 2.5px !important;
-  }
   .dashboard-page .hero.hero-two-rows .hero-title-block .hero-title-line {
     font-size: clamp(19px, 5.2vw, 22px) !important;
     letter-spacing: clamp(0.45px, 0.38vw, 1.45px) !important;
@@ -5696,7 +5587,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
 
   /* 1. satıra dokunulmaz. 2. satır (subtitle) 768px'ten 1pt küçük; kullanıcı panelinde ek 0.7pt */
-  .dashboard-page .hero-title-wrap .hero-panel-subtitle,
   .dashboard-page .hero-title-block .hero-panel-subtitle {
     font-size: calc(19px - 0.7pt - 0.5pt) !important; /* 20px - 1pt - 0.7pt − 0.5pt */
   }
@@ -5832,7 +5722,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 }
 
 /* --- h1 Metalik Gradient (anasayfa ile aynı) --- */
-.hero-title-wrap h1,
 .login-page .hero h1,
 .dashboard-page .hero h1 {
   font-size: calc(22px - 0.5pt);
@@ -5909,18 +5798,12 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   body.dashboard-page:has(#history-modal.driver-modal.show)::after,
   body.dashboard-page:has(#edit-request-modal.driver-modal.show)::after,
   body.dashboard-page:has(#driver-documents-modal.driver-modal.show)::after,
-  body.dashboard-page:has(#driver-feedback-modal.driver-modal.show)::after,
-  body.login-page:has(#history-modal.driver-modal.show)::after,
-  body.login-page:has(#edit-request-modal.driver-modal.show)::after,
-  body.login-page:has(#driver-documents-modal.driver-modal.show)::after,
-  body.login-page:has(#driver-feedback-modal.driver-modal.show)::after {
+  body.dashboard-page:has(#driver-feedback-modal.driver-modal.show)::after {
     display: none !important;
   }
   @supports not selector(body:has(*)) {
     body.dashboard-page.driver-history-or-edit-modal-open::after,
-    body.login-page.driver-history-or-edit-modal-open::after,
-    body.dashboard-page.driver-feedback-modal-open::after,
-    body.login-page.driver-feedback-modal-open::after {
+    body.dashboard-page.driver-feedback-modal-open::after {
       display: none !important;
     }
   }
@@ -6315,8 +6198,7 @@ body.dashboard-page:has(.driver-modal.show) .driver-dashboard-container::before 
 }
 
 /* Driver modal açıkken: yan kırmızı çizgi/glow alt köşede birikmesin (mobil + masaüstü) */
-body.dashboard-page:has(.driver-modal.show) .driver-dashboard-container::before,
-body.login-page:has(.driver-modal.show) .driver-dashboard-container::before {
+body.dashboard-page:has(.driver-modal.show) .driver-dashboard-container::before {
   border-left-color: transparent !important;
   border-right-color: transparent !important;
   box-shadow: none !important;
@@ -6325,11 +6207,6 @@ body.login-page:has(.driver-modal.show) .driver-dashboard-container::before {
 @supports not selector(body:has(*)) {
   body.dashboard-page.driver-modal-open .driver-dashboard-container::before {
     bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
-    border-left-color: transparent !important;
-    border-right-color: transparent !important;
-    box-shadow: none !important;
-  }
-  body.login-page.driver-modal-open .driver-dashboard-container::before {
     border-left-color: transparent !important;
     border-right-color: transparent !important;
     box-shadow: none !important;
