@@ -105,16 +105,6 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
     }
   }
 
-  function isMainAppPortalEntry() {
-    try {
-      var search = window.location && window.location.search ? window.location.search : '';
-      if (!search) return false;
-      return new URLSearchParams(search).get('portal') === 'main-app';
-    } catch (e) {
-      return false;
-    }
-  }
-
   function persistSessionToken(token, remember) {
     if (!token) return;
     clearStoredPortalTokens();
