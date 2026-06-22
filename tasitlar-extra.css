@@ -1900,25 +1900,32 @@
     font-weight: 600 !important;
   }
   
-  /* Notlar kalemi: mobilde dokunma alanı */
-  #vehicle-detail-modal .detail-notes-edit-btn {
-    width: 44px !important;
-    height: 44px !important;
+  /* Notlar kalemi: mobilde etiketle aynı satır + dokunma alanı */
+  #vehicle-detail-modal .detail-row-notes .detail-row-header-notes {
+    align-items: center;
+    flex-wrap: nowrap;
+  }
+  #vehicle-detail-modal .detail-row-notes .detail-row-header-notes .detail-row-label {
+    display: inline !important;
+    -webkit-line-clamp: unset !important;
+    line-clamp: unset !important;
+    -webkit-box-orient: unset !important;
+    overflow: visible !important;
+    white-space: nowrap !important;
+  }
+  #vehicle-detail-modal .detail-row-notes .detail-notes-edit-btn {
+    flex-shrink: 0;
+    width: auto !important;
+    height: auto !important;
+    min-width: 44px;
+    min-height: 44px;
+    margin: -10px 0;
+    padding: 10px;
+    box-sizing: border-box;
   }
   #vehicle-detail-modal .detail-notes-edit-btn svg {
     width: 18px !important;
     height: 18px !important;
-  }
-  #vehicle-detail-modal .detail-row-notes .detail-row-header-notes {
-    position: relative;
-    align-items: baseline;
-    padding-right: 48px;
-    min-height: 0;
-  }
-  #vehicle-detail-modal .detail-row-notes .detail-notes-edit-btn {
-    position: absolute;
-    right: 0;
-    top: 0;
   }
   #vehicle-detail-modal .detail-row-notes.detail-row-block {
     gap: 2px;
