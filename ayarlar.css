@@ -319,29 +319,6 @@ body.modal-open #info-modal .modal-container {
     color: var(--txt-muted);
 }
 
-/* Tescil Tarihi Giriş Modal Butonları - Hover Efekti */
-.tescil-tarih-kaydet-btn,
-.tescil-tarih-vazgec-btn {
-    transition: background 0.2s, font-size 0.2s !important;
-    height: 28px !important;
-    overflow: hidden !important;
-    line-height: 1.2 !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    box-sizing: border-box !important;
-}
-
-.tescil-tarih-kaydet-btn:hover {
-    font-size: 15px !important;
-    background: rgba(var(--green-success-rgb), 0.08) !important;
-}
-
-.tescil-tarih-vazgec-btn:hover {
-    font-size: 15px !important;
-    background: rgba(var(--theme-color-rgb), 0.08) !important;
-}
-
 /* Taşıt tarihçesi (#vehicle-history-modal): olay formları tek #dinamik-olay-modal altında; eski çoklu olay modal id'leri kaldırıldı */
 /* style-core modal ölçüsü ile uyum için .modal-container z-index / pointer-events */
 #vehicle-history-modal .modal-container {
@@ -1383,19 +1360,6 @@ body.modal-open #info-modal .modal-container {
 .action-btn.edit:hover { border-color: var(--amber-edit); color: var(--amber-edit); }
 .action-btn.delete:hover { border-color: var(--theme-color); color: var(--theme-color); }
 
-.settings-add-btn {
-    width: 100%;
-    background: var(--border-ultra);
-    border: 1px dashed var(--border-subtle);
-    color: var(--txt-gray);
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 600;
-}
-.settings-add-btn:hover { background: var(--border-ultra); color: var(--txt-white); border-color: var(--txt-white); }
-
 .settings-add-text-btn {
     background: none;
     border: none;
@@ -1430,20 +1394,6 @@ body.modal-open #info-modal .modal-container {
 }
 .settings-add-text-btn:hover { 
     font-size: 16px;
-}
-
-/* Formlar */
-.settings-form-section { margin-bottom: 12px; }
-.settings-form-label { display: block; font-size: 13px; color: #ffffff; font-weight: 500; margin-bottom: 4px; }
-.settings-form-input, .settings-form-select {
-    width: 100%;
-    padding: 8px;
-    background: var(--bg-content);
-    border: 1px solid var(--border-faint);
-    border-radius: 6px;
-    color: var(--txt-white);
-    font-size: 15px;
-    box-sizing: border-box;
 }
 
 /* Select Dropdown Option Stilleri - Normal ve Hover Renkleri */
