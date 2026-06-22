@@ -30,10 +30,6 @@
     }
   }
 
-  const BRANCHES_KEY = "medisa_branches_v1";
-  const VEHICLES_KEY = "medisa_vehicles_v1";
-  const USERS_KEY = "medisa_users_v1";
-
   // --- DİNAMİK DOSYA YÜKLEYİCİ: ortak kural script-core (__medisaLoadScriptOnce) ---
   function loadScript(src) {
     if (typeof window.__medisaLoadScriptOnce === 'function') {
