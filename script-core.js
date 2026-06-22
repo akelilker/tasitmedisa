@@ -41,16 +41,6 @@ function toggleSettingsMenu(e) {
   setNotificationsOpenState(false);
   if (menu) {
     var willOpen = !menu.classList.contains('open');
-    if (willOpen && typeof window.loadAppModule === 'function') {
-      var modVer = window.MEDISA_MODULE_VERSIONS;
-      if (modVer) {
-        var base = getMainAppBasePath();
-        window.loadAppModule(
-          base + 'ayarlar.js?v=' + modVer.ayarlarJs,
-          base + 'ayarlar.css?v=' + modVer.ayarlarCss
-        ).catch(function() {});
-      }
-    }
     menu.classList.toggle('open');
     document.body.classList.toggle('settings-open', menu.classList.contains('open'));
     if (willOpen) {
@@ -1273,6 +1263,28 @@ window.ensureMedisaVehicleNotificationDomainReady = function() {
   var KAYIT_CSS = base + 'kayit.css?v=' + V.kayitCss;
   var AYARLAR_JS = base + 'ayarlar.js?v=' + V.ayarlarJs;
   var AYARLAR_CSS = base + 'ayarlar.css?v=' + V.ayarlarCss;
+  var ayarlarPreloadScheduled = false;
+
+  function preloadAyarlarModuleInIdleTime() {
+    if (ayarlarPreloadScheduled || window._ayarlarLoaded === true) return;
+    ayarlarPreloadScheduled = true;
+
+    var run = function() {
+      if (window._ayarlarLoaded === true || typeof window.loadAppModule !== 'function') return;
+      window.loadAppModule(AYARLAR_JS, AYARLAR_CSS).then(function() {
+        window._ayarlarLoaded = true;
+      }).catch(function(err) {
+        ayarlarPreloadScheduled = false;
+        console.warn('[Medisa] Ayarlar modulu arka planda yuklenemedi:', err);
+      });
+    };
+
+    if (typeof window.requestIdleCallback === 'function') {
+      window.requestIdleCallback(run, { timeout: 3500 });
+    } else {
+      setTimeout(run, 1200);
+    }
+  }
 
   function showTasitlarModuleLoadError() {
     var message = 'Taşıtlar modülü yüklenemedi. Lütfen tekrar deneyin.';
@@ -1432,6 +1444,12 @@ window.ensureMedisaVehicleNotificationDomainReady = function() {
   window.importData = wrapAyarlar('importData');
   window.tsbKaskoListesiIndir = wrapAyarlar('tsbKaskoListesiIndir');
   window.kaskoExcelYukle = wrapAyarlar('kaskoExcelYukle');
+
+  if (document.readyState === 'complete') {
+    preloadAyarlarModuleInIdleTime();
+  } else {
+    window.addEventListener('load', preloadAyarlarModuleInIdleTime, { once: true });
+  }
 
   window.closeVehiclesModal = function() {
     const modal = document.getElementById('vehicles-modal');
