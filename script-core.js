@@ -98,21 +98,6 @@ function toggleNotifications(e) {
 }
 window.toggleNotifications = toggleNotifications;
 
-function showDataSubmenu() {
-  const submenu = getSubmenu();
-  if (submenu) submenu.classList.add('open');
-}
-
-function hideDataSubmenu(e) {
-  const submenu = getSubmenu();
-  if (!submenu) return;
-  const next = e && e.relatedTarget ? e.relatedTarget : null;
-  if (next && (submenu.contains(next) || (e.currentTarget && e.currentTarget.contains(next)))) {
-    return;
-  }
-  submenu.classList.remove('open');
-}
-
 document.addEventListener('click', (e) => {
   const menu = getMenu();
   const notif = getNotif();

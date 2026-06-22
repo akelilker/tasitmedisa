@@ -6,7 +6,6 @@
 
 (function () {
   const STORAGE_KEY = "medisa_vehicles_v1";
-  const BRANCHES_KEY = "medisa_branches_v1";
 
   let isEditMode = false;
   let editingVehicleId = null;
