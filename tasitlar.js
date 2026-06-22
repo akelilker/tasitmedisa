@@ -1152,6 +1152,20 @@
     }
   }
 
+  function openVehicleHistoryFromDetailButton(e, vehicleId, initialTab) {
+    var isPointerTouch = e && (e.type === 'pointerdown' || e.type === 'touchstart');
+    if (e && isPointerTouch) {
+      if (e.cancelable) e.preventDefault();
+      if (typeof e.stopPropagation === 'function') e.stopPropagation();
+    }
+    const now = Date.now();
+    if (now - vehicleHistoryOpenHandledAt < 700) return;
+    vehicleHistoryOpenHandledAt = now;
+    if (typeof window.showVehicleHistory === 'function') {
+      window.showVehicleHistory(vehicleId || window.currentDetailVehicleId || null, initialTab);
+    }
+  }
+
   function buildVehicleUserNameHtml(rawName) {
     const userName = formatAdSoyad(rawName || '-');
     const cleanName = String(userName || '-').trim();
@@ -1336,6 +1350,7 @@
   // Global Detail Vehicle ID (HTML onclick erişimi için)
   window.currentDetailVehicleId = null;
   let vehicleDocumentsOpenHandledAt = 0;
+  let vehicleHistoryOpenHandledAt = 0;
 
   // DOM Cache (statik elementler - init aşamasında bir kere bağlanır)
   const DOM = {};
@@ -1509,7 +1524,7 @@
     ceza: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 2h9l5 5v15H5zM14 2v6h6M8 12h5M8 16h5"/><path d="M17 13v4M17 20h.01"/></svg>',
     bakim: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>',
     lastik: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.7"/><path d="m12 7 1.5 3.5L17 12l-3.5 1.5L12 17l-1.5-3.5L7 12l3.5-1.5zM8 3.9l1 2M16 3.9l-1 2M20.1 8l-2 1M20.1 16l-2-1M16 20.1l-1-2M8 20.1l1-2M3.9 16l2-1M3.9 8l2 1"/></svg>',
-    anahtar: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="7.5" cy="8.5" r="4.5"/><circle cx="7.5" cy="8.5" r="1.5"/><path d="m10.7 11.7 9.3 9.3M15 16l2-2M18 19l2-2"/></svg>',
+    anahtar: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="9" width="9" height="11" rx="2"/><circle cx="8" cy="13" r="1.2"/><path d="M12.5 12h2.2c1.6 0 2.8 1.2 2.8 2.8v1.2"/><path d="M17.5 11v7"/><path d="M19.8 12.5v4"/><path d="M6 6.5a3 3 0 0 1 3-3"/></svg>',
     kaza: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 22 20H2z"/><path d="M12 9v5M12 17h.01"/></svg>',
     kredi: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="9" width="14" height="12" rx="2"/><path d="M8 9V6a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15" r="1.5"/></svg>',
     sube: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 21V8l6-4 6 4v13M6 21v-6h5v6M6 10h.01M10 10h.01"/><path style="fill:currentColor;stroke:none" d="M16 7h4V5l3 3-3 3V9h-4zm6 8h-4v2l-3-3 3-3v2h4z"/></svg>',
@@ -1526,7 +1541,7 @@
     sigorta: { menuLabel: 'Sigorta', modalTitle: 'SİGORTA BİLGİSİ GÜNCELLE', saveHandlerName: 'updateSigortaInfo' },
     kasko: { menuLabel: 'Kasko', modalTitle: 'KASKO BİLGİSİ GÜNCELLE', saveHandlerName: 'updateKaskoInfo' },
     kaskokodu: { menuLabel: 'Kasko Kodu', modalTitle: 'KASKO KODU GÜNCELLEME', saveHandlerName: 'updateKaskoKoduInfo' },
-    takip: { menuLabel: 'Taşıt Takip Cihazı', modalTitle: 'TAŞIT TAKİP CİHAZ BİLGİSİ GÜNCELLE', saveHandlerName: 'updateTakipCihazInfo' },
+    takip: { menuLabel: 'Arvento', modalTitle: 'ARVENTO BİLGİSİ GÜNCELLE', saveHandlerName: 'updateTakipCihazInfo' },
     utts: { menuLabel: 'UTTS', modalTitle: 'UTTS BİLGİSİ GÜNCELLE', saveHandlerName: 'updateUTTSInfo' },
     km: { menuLabel: 'Kilometre', modalTitle: 'KM GÜNCELLE', saveHandlerName: 'updateKmInfo' },
     ceza: { menuLabel: 'Trafik Cezası', modalTitle: 'TRAFİK CEZASI EKLE', saveHandlerName: 'saveCezaEvent' },
@@ -2773,7 +2788,18 @@
       historyBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 22h14"/><path d="M5 2h14"/><path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22"/><path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2"/></svg>';
       historyBtn.title = 'Tarihçe';
       historyBtn.setAttribute('aria-label', 'Tarihçe');
-      historyBtn.onclick = () => showVehicleHistory(null);
+      historyBtn.addEventListener('pointerdown', function(e) {
+        if (e.pointerType && e.pointerType !== 'mouse') {
+          openVehicleHistoryFromDetailButton(e, vehicleId, null);
+        }
+      });
+      historyBtn.addEventListener('touchstart', function(e) {
+        if (typeof window.PointerEvent === 'function') return;
+        openVehicleHistoryFromDetailButton(e, vehicleId, null);
+      }, { passive: false });
+      historyBtn.addEventListener('click', function(e) {
+        openVehicleHistoryFromDetailButton(e, vehicleId, null);
+      });
       toolbarRight.appendChild(historyBtn);
       const ruhsatBtn = document.createElement('button');
       ruhsatBtn.type = 'button';
@@ -3741,9 +3767,9 @@
     const utts = detailBoolEvetHayir(vehicle.uttsTanimlandi);
     html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">UTTS</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(utts)}</span></div>`;
     
-    // Taşıt Takip
+    // Arvento
     const takipCihazi = detailBoolEvetHayir(vehicle.takipCihaziMontaj);
-    html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Taşıt Takip</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(takipCihazi)}</span></div>`;
+    html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Arvento</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(takipCihazi)}</span></div>`;
 
     // Kasko Kodu (sadece taşıt detayda bilgi olarak)
     const kaskoKodu = vehicle.kaskoKodu || '';
@@ -4502,7 +4528,7 @@
           radioRow('UTTS Cihazı Var mı?', 'evet', 'hayir', 'Evet', 'Hayır') + '</div>';
       case 'takip':
         return '<div class="event-form-stack">' +
-          radioRow('Taşıt Takip Cihazı Var mı?', 'evet', 'hayir', 'Evet', 'Hayır') + '</div>';
+          radioRow('Arvento Var mı?', 'evet', 'hayir', 'Evet', 'Hayır') + '</div>';
       case 'kaskokodu':
         return '<div class="event-form-stack">' +
           section('Kasko Kodu', 'kasko-kodu-guncelle-input', 'input', [['type', 'text'], ['placeholder', 'Kod'], ['inputmode', 'numeric'], ['pattern', '[0-9]*'], ['autocomplete', 'off']]) + '</div>';
@@ -8106,7 +8132,7 @@
       vehicleField: 'takipCihaziMontaj',
       eventType: 'takip-cihaz-guncelle',
       modalType: 'takip',
-      successMessage: 'Taşıt takip cihaz bilgisi güncellendi.'
+      successMessage: 'Arvento bilgisi güncellendi.'
     });
   };
 
@@ -8543,7 +8569,7 @@
       summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, UTTS Bilgisini </span><span class="history-detail-inline">' + escapeHtml(ev) + '</span><span class="history-action-text"> Olarak G\u00FCncelledi.</span>';
     } else if (eventType === 'takip-cihaz-guncelle') {
       const dur = (eventData.durum === true || eventData.durum === 'var') ? 'Var' : 'Yok';
-      summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Ta\u015F\u0131t Takip Cihaz\u0131 Bilgisini </span><span class="history-detail-inline">' + escapeHtml(dur) + '</span><span class="history-action-text"> Olarak G\u00FCncelledi.</span>';
+      summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Arvento Bilgisini </span><span class="history-detail-inline">' + escapeHtml(dur) + '</span><span class="history-action-text"> Olarak G\u00FCncelledi.</span>';
     } else if (eventType === 'ceza') {
       const recorder = formatHistoryPerformerUpper(eventData.kaydeden || getRecorderDisplayName());
       const fined = formatHistoryPerformerUpper(eventData.surucu || '');
