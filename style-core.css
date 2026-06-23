@@ -335,7 +335,6 @@ body::-webkit-scrollbar,
 /* Ayarlar/Şube modalları: Olay Ekle standardı – tam genişlik, sol hizalama */
 #branch-form-modal .form-section,
 #user-form-modal .form-section,
-.settings-modal .form-section,
 .ayarlar-modal-overlay .modal-body .form-section,
 .modal-body:has(#branch-name) .form-section {
   width: 100% !important;
@@ -349,7 +348,6 @@ body::-webkit-scrollbar,
 
 #branch-form-modal .form-section.u-hidden,
 #user-form-modal .form-section.u-hidden,
-.settings-modal .form-section.u-hidden,
 .ayarlar-modal-overlay .modal-body .form-section.u-hidden,
 .modal-body:has(#branch-name) .form-section.u-hidden {
   display: none !important;
@@ -357,7 +355,6 @@ body::-webkit-scrollbar,
 
 #branch-form-modal .form-label,
 #user-form-modal .form-label,
-.settings-modal .form-label,
 .ayarlar-modal-overlay .modal-body .form-label,
 .modal-body:has(#branch-name) .form-label {
   text-align: left !important;
@@ -367,7 +364,6 @@ body::-webkit-scrollbar,
 
 #branch-form-modal .form-input,
 #user-form-modal .form-input,
-.settings-modal .form-input,
 .ayarlar-modal-overlay .modal-body .form-input,
 .modal-body:has(#branch-name) .form-input,
 #branch-form-modal .modal-body .form-input,
@@ -385,7 +381,6 @@ body::-webkit-scrollbar,
 /* Buton grubu da tam genişlik (400px kısıtlaması kaldırıldı) */
 #branch-form-modal .universal-btn-group,
 #user-form-modal .universal-btn-group,
-.settings-modal .universal-btn-group,
 .ayarlar-modal-overlay .modal-body .universal-btn-group,
 .modal-body:has(#branch-name) .universal-btn-group {
   max-width: 100% !important;
@@ -408,8 +403,7 @@ body::-webkit-scrollbar,
 #branch-form-modal .settings-btn-delete,
 #user-form-modal .settings-btn-delete,
 .universal-btn-group .settings-btn-delete,
-.universal-btn-group button.settings-btn-delete,
-.universal-btn-group button:nth-child(3) {
+.universal-btn-group button.settings-btn-delete {
   grid-column: 1 / -1 !important;
   width: 100% !important;
   max-width: none !important;
@@ -420,9 +414,7 @@ body::-webkit-scrollbar,
 
 /* Şube/Kullanıcı formu: 3. buton ve Sil aynı satırda kalsın (override) */
 #branch-form-modal .universal-btn-group .settings-btn-delete,
-#branch-form-modal .universal-btn-group button:nth-child(3),
-#user-form-modal .universal-btn-group .settings-btn-delete,
-#user-form-modal .universal-btn-group button:nth-child(3) {
+#user-form-modal .universal-btn-group .settings-btn-delete {
   grid-column: auto !important;
   margin-top: 0 !important;
   width: 100% !important;
@@ -2710,7 +2702,6 @@ body.modal-open .app-container {
     #user-form-modal,
     #branch-modal,
     #user-modal,
-    .settings-modal,
     .modal-overlay:has(#branch-name),
     .modal-overlay:has(#user-form) {
         & .modal-body {
@@ -2726,7 +2717,6 @@ body.modal-open .app-container {
         }
         & .universal-btn-save,
         & .universal-btn-cancel,
-        & .btn-delete,
         & .settings-btn-delete {
             font-size: 12.5px !important;
         }
@@ -2738,7 +2728,6 @@ body.modal-open .app-container {
         }
         & .universal-btn-save,
         & .universal-btn-cancel,
-        & .btn-delete,
         & .settings-btn-delete {
             height: 31px !important;
         }
