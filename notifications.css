@@ -2053,15 +2053,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
   color: #a0aec0;
 }
 
-@media (min-width: 641px) {
-  #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-user:not(:has(.monthly-todo-wa-link)) {
-    --monthly-todo-wa-track: 0px;
-    --monthly-todo-wa-gap: 0px;
-    grid-template-columns: minmax(0, 1fr);
-    column-gap: 0;
-  }
-}
-
 #monthly-todo-modal .monthly-todo-middle-col .monthly-todo-user-name {
   grid-column: 1;
   grid-row: 1;
