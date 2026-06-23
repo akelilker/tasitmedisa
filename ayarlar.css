@@ -1343,20 +1343,6 @@ body.modal-open #info-modal .modal-container {
 }
 .list-item:last-child { border-bottom: none; }
 
-.item-subtitle { font-size: 13px; color: var(--txt-gray-darker); }
-
-.action-btn {
-    background: transparent;
-    border: 1px solid var(--border-faint);
-    color: var(--txt-gray);
-    width: 28px; height: 28px;
-    border-radius: 4px;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer;
-}
-.action-btn.edit:hover { border-color: var(--amber-edit); color: var(--amber-edit); }
-.action-btn.delete:hover { border-color: var(--theme-color); color: var(--theme-color); }
-
 .settings-add-text-btn {
     background: none;
     border: none;
@@ -2265,25 +2251,6 @@ body.modal-open #info-modal .modal-container {
 .settings-card-actions {
     display: none !important;
 }
-
-.settings-action-btn {
-    background: none;
-    border: none;
-    color: var(--txt-gray);
-    width: auto;
-    height: auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    font-size: 14.08px;
-    transition: color 0.2s, transform 0.2s;
-    padding: 0;
-    transform: scale(0.88);
-}
-
-.settings-action-btn.edit:hover { color: #dda410; transform: scale(1.1); }
-.settings-action-btn.delete:hover { color: var(--theme-color); transform: scale(1.1); }
 
 /* === DETAY GÖRÜNÜMÜ === */
 .settings-detail-view { padding: 16px; }
