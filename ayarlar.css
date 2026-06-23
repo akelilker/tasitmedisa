@@ -1343,11 +1343,8 @@ body.modal-open #info-modal .modal-container {
 }
 .list-item:last-child { border-bottom: none; }
 
-.item-info { display: flex; flex-direction: column; }
-.item-title { font-weight: 600; color: var(--txt); font-size: 15px; margin-bottom: 2px; }
 .item-subtitle { font-size: 13px; color: var(--txt-gray-darker); }
 
-.item-actions { display: flex; gap: 8px; }
 .action-btn {
     background: transparent;
     border: 1px solid var(--border-faint);
@@ -2147,9 +2144,6 @@ body.modal-open #info-modal .modal-container {
   #user-modal #user-list .settings-card-gorev.settings-card-gorev--stacked .settings-card-gorev-line {
     display: block;
     line-height: 1.12 !important;
-  }
-  #user-modal #user-list .settings-card-gorev.settings-card-gorev--stacked .settings-card-gorev-line--manager::after {
-    content: '+';
   }
 }
 

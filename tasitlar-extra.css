@@ -344,9 +344,6 @@
     border-bottom: none;
 }
 
-.view-list .list-info h4 { margin: 0; font-size: 14px; color: var(--txt); }
-.view-list .list-info span { font-size: 11px; color: var(--txt-gray-darker); }
-
 .branch-card.unassigned-branch-card {
     border-color: rgba(var(--theme-color-rgb), 0.5) !important;
 }
