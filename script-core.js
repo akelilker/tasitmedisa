@@ -1067,10 +1067,10 @@ document.addEventListener('DOMContentLoaded', () => {
 var MEDISA_MODULE_VERSIONS = {
   tasitlar: '20260623.8',
   notifications: '20260621.3',
-  raporlar: '20260620.3',
-  kayitJs: '20260623.1',
+  raporlar: '20260623.1',
+  kayitJs: '20260623.2',
   kayitCss: '20260612.10',
-  ayarlarJs: '20260622.1',
+  ayarlarJs: '20260623.1',
   ayarlarCss: '20260623.6',
   tasitlarYazici: '20260517.5',
   vehicleNotificationDomain: '20260617.1'

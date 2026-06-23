@@ -1105,16 +1105,6 @@
         }).join('')}</tr>`;
     }
 
-    window.openStokVehicleDetail = function(event, vehicleId) {
-        if (event) {
-            event.preventDefault();
-            event.stopPropagation();
-        }
-
-        // Raporlar > Stok Liste salt görüntüleme ekranıdır; satır tıklaması taşıt detayı açmaz.
-        return;
-    };
-
     // Sıralama uygula
     function applyStokSorting(vehicles) {
         const sortedVehicles = [...vehicles];
