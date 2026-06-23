@@ -76,24 +76,45 @@
 }
 
 /*
-  Footer ışığı taşıt detayda kayboluyordu:
-  - #app-footer z-index 10000
-  - .modal-overlay z-index 10020
-  Bu yüzden footer'ın yukarı glow'u overlay'in opak arka planı altında kalıyordu.
-  Çözüm: sadece taşıt detay overlay'i footer'ın alt katmanına alınır; gerçek footer glow'u görünür.
+  Vehicle detail stack: keep the real footer glow above the reserved footer gap.
+  The detail/event overlays stay above each other, but the footer must paint over
+  their opaque backgrounds so its upward shadow is not swallowed.
 */
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page).tasit-detail-stack-open #app-footer {
+    z-index: 100060 !important;
+}
+
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#vehicle-detail-modal.tasitlar-modal-overlay.active) #app-footer,
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#vehicle-detail-modal.tasitlar-modal-overlay.open) #app-footer,
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#event-menu-modal.tasitlar-modal-overlay.active) #app-footer,
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#event-menu-modal.tasitlar-modal-overlay.open) #app-footer,
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#vehicle-history-modal.tasitlar-modal-overlay.active) #app-footer,
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#vehicle-history-modal.tasitlar-modal-overlay.open) #app-footer,
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#dinamik-olay-modal.tasitlar-modal-overlay.active) #app-footer,
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#dinamik-olay-modal.tasitlar-modal-overlay.open) #app-footer {
+    z-index: 100060 !important;
+}
+
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicles-modal.tasitlar-modal-overlay.active,
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicles-modal.tasitlar-modal-overlay.open {
     z-index: 10020 !important;
 }
 /* Detay açıkken alttaki taşıt listesi sadece arka katman olsun; çifte çerçeve görünmesin */
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicles-modal.modal-overlay.detail-underlay.active,
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicles-modal.modal-overlay.detail-underlay.open {
+    background: transparent !important;
+    background-color: transparent !important;
+}
 #vehicles-modal.detail-underlay::before {
     display: none !important;
     content: none !important;
 }
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicles-modal.modal-overlay.detail-underlay .modal-container,
 #vehicles-modal.detail-underlay .modal-container {
     background: transparent !important;
+    background-color: transparent !important;
     border-color: transparent !important;
+    outline: none !important;
     box-shadow: none !important;
 }
 #vehicles-modal.detail-underlay .modal-header,
