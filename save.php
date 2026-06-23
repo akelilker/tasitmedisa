@@ -202,8 +202,6 @@ $result = medisaMutateData(function (&$data) use ($incomingData) {
             return $normalizeKeys(array_merge(is_array($a) ? $a : [], is_array($b) ? $b : []));
         };
         $scopeDescriptor = medisaBuildNotificationScopeDescriptor($context);
-        $scopeKey = $scopeDescriptor['scopeKey'];
-        $legacyScopeKeys = $scopeDescriptor['legacyScopeKeys'];
         $allowedScopeKeys = $scopeDescriptor['saveAllowedKeys'];
 
         foreach ($allowedScopeKeys as $allowedScopeKey) {
