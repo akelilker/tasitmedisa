@@ -407,10 +407,8 @@ body::-webkit-scrollbar,
 /* Sil butonunu grid'de tam genişlikte, simetrik (3. buton alt satırda tam boy) */
 #branch-form-modal .settings-btn-delete,
 #user-form-modal .settings-btn-delete,
-.settings-modal .btn-delete,
 .universal-btn-group .settings-btn-delete,
 .universal-btn-group button.settings-btn-delete,
-.universal-btn-group button.btn-delete,
 .universal-btn-group button:nth-child(3) {
   grid-column: 1 / -1 !important;
   width: 100% !important;
