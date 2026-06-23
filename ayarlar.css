@@ -2194,23 +2194,6 @@ body.modal-open #info-modal .modal-container {
     }
 }
 
-.settings-card-subtitle {
-    font-size: 12px;
-    font-family: inherit;
-    color: var(--data-value-color, #a0aec0);
-    text-align: center !important; /* Yatayda ortala */
-    margin-top: 0 !important;
-    line-height: 1.2;
-    width: 100%;
-    white-space: normal;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    -webkit-font-smoothing: antialiased;
-}
-
 .settings-card-gorev {
     font-size: 11px;
     font-family: inherit;
@@ -2236,50 +2219,6 @@ body.modal-open #info-modal .modal-container {
     line-height: 1.1;
     width: 100%;
 }
-
-/* Kart hover: kalem/çöp form modal header'da */
-.settings-card-actions {
-    display: none !important;
-}
-
-/* === DETAY GÖRÜNÜMÜ === */
-.settings-detail-view { padding: 16px; }
-
-.settings-detail-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 20px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.settings-detail-title {
-    font-size: 17px;
-    font-weight: 600;
-    color: var(--txt-muted);
-    margin: 0;
-}
-
-.settings-detail-info {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-}
-
-.settings-detail-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 12px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 6px;
-}
-
-.settings-detail-label { font-size: 13px; font-weight: 500; color: #ffffff; }
-.settings-detail-value { font-size: 14px; font-weight: 600; color: var(--data-value-color, #a0aec0); text-align: right; }
-.settings-detail-item { font-size: 16px; font-weight: 600; color: #e0e0e0; padding: 0; margin: 0; text-align: left; line-height: 1.2; }
 
 /* === MASAÜSTÜ AYARLAR === */
 @media (min-width: 641px) {
@@ -2582,9 +2521,6 @@ body.modal-open #info-modal .modal-container {
     .settings-card-title {
         color: #ffffff !important;
     }
-    .settings-card-subtitle {
-        color: rgba(255, 255, 255, 0.85) !important;
-    }
     .settings-card-gorev {
         color: rgba(255, 255, 255, 0.75) !important;
     }
@@ -2800,7 +2736,6 @@ body.modal-open #info-modal .modal-container {
         gap: 3px !important;
     }
     .settings-card-title { font-size: 15px; }
-    .settings-card-subtitle { font-size: 13px; }
     .settings-card-gorev { font-size: 12px; }
     #branch-modal #branch-list .settings-card .settings-card-title {
         display: -webkit-box !important;
@@ -2840,8 +2775,6 @@ body.modal-open #info-modal .modal-container {
         display: inline-block !important;
         white-space: nowrap !important;
     }
-    #branch-modal #branch-list .settings-card .settings-card-subtitle,
-    #user-modal #user-list .settings-card .settings-card-subtitle,
     #user-modal #user-list .settings-card .settings-card-gorev {
         font-size: 14px !important;
         line-height: 1.18 !important;
@@ -2972,19 +2905,6 @@ body.modal-open #info-modal .modal-container {
         bottom: 100% !important;
         margin-top: 0 !important;
         margin-bottom: 6px !important;
-    }
-    /* Kullanıcı yönetimi taşıt tahsis listesi darlık düzeltmesi */
-    .user-management-modal .form-group:has(select#user-assigned-vehicles),
-    .user-management-modal .form-group select#user-assigned-vehicles {
-        width: 60vw !important;
-        max-width: 60vw !important;
-        min-width: 60vw !important;
-        box-sizing: border-box !important;
-    }
-
-    .user-management-modal .form-group select#user-assigned-vehicles option {
-        white-space: normal !important;
-        word-break: break-all !important;
     }
     /*
      * Ayarlar dişlisi (#settings-menu): mobilde tek genişlik kontratı (açık/kapalı dalgalanması yok).
