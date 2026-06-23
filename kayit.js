@@ -1917,24 +1917,6 @@
     }
   };
 
-  // --- Delete Vehicle Function (server-first, dataApi) ---
-  window.deleteVehicle = function(vehicleId) {
-    if (!confirm("Bu taşıtı silmek istediğinize emin misiniz?")) {
-      return;
-    }
-    if (typeof window.dataApi === 'undefined' || typeof window.dataApi.deleteVehicle !== 'function') {
-      alert("Veri servisi kullanılamıyor.");
-      return;
-    }
-    window.dataApi.deleteVehicle(vehicleId).then(function() {
-      if (window.updateNotifications) window.updateNotifications();
-      alert("Taşıt silindi!");
-      if (window.renderVehicles) window.renderVehicles();
-    }).catch(function() {
-      alert("Sunucuya silme kaydedilemedi. Lütfen tekrar deneyin.");
-    });
-  };
-
   // --- Save Function ---
   /**
    * Taşıt kaydını formdan okuyup localStorage'a kaydeder
