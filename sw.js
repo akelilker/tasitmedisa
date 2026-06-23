@@ -1,9 +1,9 @@
 // Service Worker - Medisa Taşıt Yönetim Sistemi
 // Version 2.15 - Güvenli offline okuma kabuğu
 
-const CACHE_VERSION = 'medisa-v2.189';
+const CACHE_VERSION = 'medisa-v2.190';
 // Raporlar modülü (raporlar.js / raporlar.css): ana shell cache'inden ayrı; MEDISA_MODULE_VERSIONS.raporlar ile senkron tut
-const CACHE_RAPORLAR_VERSION = 'medisa-raporlar-20260523.4';
+const CACHE_RAPORLAR_VERSION = 'medisa-raporlar-20260623.1';
 
 function isRaporlarModuleAssetUrl(u) {
   return /\/raporlar\.(js|css)$/i.test(u.pathname);

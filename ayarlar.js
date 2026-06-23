@@ -3227,8 +3227,6 @@
         function showKaskoError(msg) {
           if (typeof window.showCenteredInfoBox === 'function') {
             window.showCenteredInfoBox(msg);
-          } else if (typeof window.showErrorModal === 'function') {
-            window.showErrorModal(msg);
           } else if (typeof window.showInfoModal === 'function') {
             window.showInfoModal(msg);
           } else {
@@ -3317,8 +3315,6 @@
                     variant: 'bare-text',
                     autoCloseMs: 3000
                   });
-                } else if (typeof window.showSuccessModal === 'function') {
-                  window.showSuccessModal('Kasko listesi başarıyla güncellendi!');
                 } else if (typeof window.showInfoModal === 'function') {
                   window.showInfoModal('Kasko listesi başarıyla güncellendi!');
                 } else {
@@ -3402,10 +3398,6 @@
       }
       if (!isError && typeof window.showInfoModal === 'function') {
         window.showInfoModal(message);
-        return;
-      }
-      if (isError && typeof window.showErrorModal === 'function') {
-        window.showErrorModal(message);
         return;
       }
       console[isError ? 'error' : 'info'](message);
