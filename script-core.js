@@ -1077,6 +1077,66 @@ var MEDISA_MODULE_VERSIONS = {
 };
 window.MEDISA_MODULE_VERSIONS = MEDISA_MODULE_VERSIONS;
 
+function medisaResolveRecorderDisplayName() {
+  function localTitleCase(value) {
+    return String(value == null ? '' : value)
+      .toLocaleLowerCase('tr-TR')
+      .replace(/(^|\s|[-/])([a-zçğıöşü])/g, function(match, separator, char) {
+        return separator + char.toLocaleUpperCase('tr-TR');
+      });
+  }
+
+  function localFormatAdSoyad(value) {
+    var raw = String(value == null ? '' : value).trim();
+    if (!raw) return '';
+    if (typeof window.formatAdSoyad === 'function') return window.formatAdSoyad(raw);
+    return localTitleCase(raw);
+  }
+
+  try {
+    var sess = typeof window.medisaSession === 'object' && window.medisaSession ? window.medisaSession : null;
+    if (sess && sess.authenticated) {
+      var u = sess.user || {};
+      var sessionName = String(u.name || u.isim || '').trim();
+      if (!sessionName && u.id) {
+        var users = [];
+        if (typeof window.getMedisaUsers === 'function') {
+          users = window.getMedisaUsers() || [];
+        } else if (window.appData && Array.isArray(window.appData.users)) {
+          users = window.appData.users;
+        }
+        var found = Array.isArray(users) ? users.find(function(x) {
+          return String(x && x.id) === String(u.id);
+        }) : null;
+        if (found) sessionName = String(found.name || found.isim || '').trim();
+      }
+      if (sessionName) return localFormatAdSoyad(sessionName);
+    }
+  } catch (e0) { /* ignore */ }
+
+  try {
+    var ad = window.appData && (window.appData.recorderDisplayName || window.appData.fleetOperatorName || window.appData.operatorName);
+    if (ad && String(ad).trim()) {
+      if (typeof window.toTitleCase === 'function') return window.toTitleCase(String(ad).trim());
+      return localTitleCase(String(ad).trim());
+    }
+  } catch (e1) { /* ignore */ }
+
+  try {
+    var ls = typeof localStorage !== 'undefined' ? localStorage.getItem('medisa_recorder_display_name') : '';
+    if (ls && String(ls).trim()) {
+      if (typeof window.toTitleCase === 'function') return window.toTitleCase(String(ls).trim());
+      return localTitleCase(String(ls).trim());
+    }
+  } catch (e2) { /* ignore */ }
+
+  return 'Yönetim';
+}
+
+if (typeof window.getRecorderDisplayName !== 'function') {
+  window.getRecorderDisplayName = medisaResolveRecorderDisplayName;
+}
+
 var MEDISA_VEHICLE_NOTIFICATION_DOMAIN_KEYS = [
   'vehicleNeedsK2Belgesi',
   'vehicleNeedsTakograf',
