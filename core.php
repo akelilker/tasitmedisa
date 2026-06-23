@@ -194,14 +194,6 @@ function medisaAtomicWriteFile($path, $content) {
         return false;
     }
 
-    clearstatcache(true, $path);
-    if (file_exists($path) && PHP_OS_FAMILY === 'Windows') {
-        if (!@unlink($path)) {
-            @unlink($tmp);
-            return false;
-        }
-    }
-
     if (@rename($tmp, $path)) {
         return true;
     }
@@ -249,6 +241,18 @@ function saveData($data) {
         error_log('[Medisa] saveData: atomik yazım başarısız');
         return false;
     }
+
+    $writtenJson = @file_get_contents($path);
+    if ($writtenJson === false) {
+        error_log('[Medisa] saveData: yazım sonrası doğrulama okunamadı');
+        return false;
+    }
+    json_decode($writtenJson, true);
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        error_log('[Medisa] saveData: yazım sonrası JSON doğrulama başarısız: ' . json_last_error_msg());
+        return false;
+    }
+
     return true;
 }
 
@@ -545,22 +549,13 @@ function medisaExtractBearerTokenValue($authHeader) {
     return $token;
 }
 
-function medisaReadAccessToken($allowQueryToken = false) {
+function medisaReadAccessToken() {
     $token = medisaExtractBearerTokenValue(medisaReadAuthorizationHeader());
     if ($token !== '') {
         return $token;
     }
 
-    if (!$allowQueryToken) {
-        return '';
-    }
-
-    $queryToken = trim((string)($_GET['token'] ?? $_POST['token'] ?? ''));
-    if ($queryToken === '' || strpos($queryToken, '.') === false) {
-        return '';
-    }
-
-    return $queryToken;
+    return '';
 }
 
 function medisaIsYoneticiOnlyUser($user) {
@@ -765,8 +760,8 @@ function medisaBuildAccessContext($data, $tokenData) {
     return $context;
 }
 
-function medisaResolveAuthorizedContext($data, $requiredPermission = '', $allowQueryToken = false) {
-    $tokenData = validateToken($allowQueryToken);
+function medisaResolveAuthorizedContext($data, $requiredPermission = '') {
+    $tokenData = validateToken();
     if (!$tokenData) {
         return [
             'success' => false,
@@ -935,7 +930,7 @@ function medisaCanViewReportUserRecord($user, $context) {
 
 /**
  * Bildirim scope anahtarı üretimi — load projection ve save merge için tek owner.
- * sharedLegacyKeys / saveAllowedKeys: save geriye dönük uyumluluk (scope:* yazılabilir).
+ * saveAllowedKeys: yalnızca kanonik + kullanıcı legacy; scope:* artık yazılamaz.
  * loadMergeKeys: yalnızca user:<id> + kanonik; scope:* load projection kaynağı olamaz.
  */
 function medisaBuildNotificationScopeDescriptor(array $context): array {
@@ -958,13 +953,6 @@ function medisaBuildNotificationScopeDescriptor(array $context): array {
         . '|branches:'
         . $branchScope;
     $userLegacyKey = $userId !== '' ? 'user:' . $userId : '';
-    $sharedLegacyKeys = [];
-    if ($role !== '' && !empty($branchIds)) {
-        $sharedLegacyKeys[] = 'scope:' . $role . ':' . implode(',', $branchIds);
-    }
-    if ($role !== '') {
-        $sharedLegacyKeys[] = 'scope:' . $role;
-    }
     $loadMergeKeys = [];
     if ($userLegacyKey !== '') {
         $loadMergeKeys[] = $userLegacyKey;
@@ -974,15 +962,12 @@ function medisaBuildNotificationScopeDescriptor(array $context): array {
     if ($userLegacyKey !== '') {
         $legacyScopeKeys[] = $userLegacyKey;
     }
-    foreach ($sharedLegacyKeys as $sharedLegacyKey) {
-        $legacyScopeKeys[] = $sharedLegacyKey;
-    }
     $saveAllowedKeys = array_values(array_unique(array_merge([$canonicalKey], $legacyScopeKeys)));
 
     return [
         'canonicalKey' => $canonicalKey,
         'userLegacyKey' => $userLegacyKey,
-        'sharedLegacyKeys' => $sharedLegacyKeys,
+        'sharedLegacyKeys' => [],
         'loadMergeKeys' => $loadMergeKeys,
         'saveAllowedKeys' => $saveAllowedKeys,
         'scopeKey' => $canonicalKey,
@@ -1738,7 +1723,7 @@ function medisaResolveDocumentAccessContext(array $data, string $vehicleId, stri
 
     $bearerToken = medisaExtractBearerTokenValue(medisaReadAuthorizationHeader());
     if ($bearerToken !== '') {
-        $sessionData = validateToken(false);
+        $sessionData = validateToken();
         if (!$sessionData) {
             return [
                 'success' => false,
@@ -1900,8 +1885,8 @@ function medisaCreateSignedToken($payload, $ttlSeconds = 2592000) {
 }
 
 /** Bearer token doğrula. Geçerliyse decode edilmiş token, değilse null döner. */
-function validateToken($allowQueryToken = false) {
-    $token = medisaReadAccessToken($allowQueryToken);
+function validateToken() {
+    $token = medisaReadAccessToken();
     if ($token === '') {
         return null;
     }
