@@ -1397,8 +1397,6 @@ body.modal-open #info-modal .modal-container {
 }
 
 /* Select Dropdown Option Stilleri - Normal ve Hover Renkleri */
-.settings-form-select option,
-select.settings-form-select option,
 #user-role option,
 #user-branch option {
     background-color: var(--bg) !important;
@@ -1611,32 +1609,24 @@ select.settings-form-select option,
     color: var(--txt-white, #ffffff) !important;
 }
 
-.settings-form-select option:checked,
-select.settings-form-select option:checked,
 #user-role option:checked,
 #user-branch option:checked {
     background: var(--bg) !important;
     color: #fff !important;
 }
 
-.settings-form-select option:hover,
-select.settings-form-select option:hover,
 #user-role option:hover,
 #user-branch option:hover {
     background: var(--border-ultra) !important;
     color: #fff !important;
 }
 
-.settings-form-select option:focus,
-select.settings-form-select option:focus,
 #user-role option:focus,
 #user-branch option:focus {
     background: var(--border-ultra) !important;
     color: #fff !important;
 }
 
-.settings-form-select option:active,
-select.settings-form-select option:active,
 #user-role option:active,
 #user-branch option:active {
     background: var(--border-faint-15) !important;
@@ -1644,8 +1634,6 @@ select.settings-form-select option:active,
 }
 
 /* Select element için accent-color (bazı tarayıcılarda çalışır) */
-.settings-form-select,
-select.settings-form-select,
 #user-role,
 #user-branch {
     accent-color: var(--border-ultra) !important;
@@ -1653,10 +1641,6 @@ select.settings-form-select,
 }
 
 /* Autofill (Otomatik Tamamlama) Stilleri - Beyaz Arka Planı Önle */
-input.settings-form-input:-webkit-autofill,
-input.settings-form-input:-webkit-autofill:hover,
-input.settings-form-input:-webkit-autofill:focus,
-input.settings-form-input:-webkit-autofill:active,
 #user-name:-webkit-autofill,
 #user-name:-webkit-autofill:hover,
 #user-name:-webkit-autofill:focus,
@@ -1687,7 +1671,6 @@ input.settings-form-input:-webkit-autofill:active,
 }
 
 /* Firefox için autofill */
-input.settings-form-input:-moz-autofill,
 #user-name:-moz-autofill,
 #user-phone:-moz-autofill,
 #user-email:-moz-autofill,
