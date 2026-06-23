@@ -82,13 +82,6 @@
 */
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).tasit-detail-stack-open #app-footer {
     z-index: 100060 !important;
-    box-shadow: 0 -1px 0 var(--footer-top-highlight) !important;
-}
-
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page).tasit-detail-stack-open #app-footer::before {
-    display: none !important;
-    height: 0 !important;
-    opacity: 0 !important;
 }
 
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#vehicle-detail-modal.tasitlar-modal-overlay.active) #app-footer,
@@ -100,20 +93,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#vehicle-
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#dinamik-olay-modal.tasitlar-modal-overlay.active) #app-footer,
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#dinamik-olay-modal.tasitlar-modal-overlay.open) #app-footer {
     z-index: 100060 !important;
-    box-shadow: 0 -1px 0 var(--footer-top-highlight) !important;
-}
-
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#vehicle-detail-modal.tasitlar-modal-overlay.active) #app-footer::before,
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#vehicle-detail-modal.tasitlar-modal-overlay.open) #app-footer::before,
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#event-menu-modal.tasitlar-modal-overlay.active) #app-footer::before,
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#event-menu-modal.tasitlar-modal-overlay.open) #app-footer::before,
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#vehicle-history-modal.tasitlar-modal-overlay.active) #app-footer::before,
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#vehicle-history-modal.tasitlar-modal-overlay.open) #app-footer::before,
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#dinamik-olay-modal.tasitlar-modal-overlay.active) #app-footer::before,
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#dinamik-olay-modal.tasitlar-modal-overlay.open) #app-footer::before {
-    display: none !important;
-    height: 0 !important;
-    opacity: 0 !important;
 }
 
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicles-modal.tasitlar-modal-overlay.active,
