@@ -1520,7 +1520,7 @@
     ceza: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 2h9l5 5v15H5zM14 2v6h6M8 12h5M8 16h5"/><path d="M17 13v4M17 20h.01"/></svg>',
     bakim: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>',
     lastik: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.7"/><path d="m12 7 1.5 3.5L17 12l-3.5 1.5L12 17l-1.5-3.5L7 12l3.5-1.5zM8 3.9l1 2M16 3.9l-1 2M20.1 8l-2 1M20.1 16l-2-1M16 20.1l-1-2M8 20.1l1-2M3.9 16l2-1M3.9 8l2 1"/></svg>',
-    anahtar: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="9" width="9" height="11" rx="2"/><circle cx="8" cy="13" r="1.2"/><path d="M12.5 12h2.2c1.6 0 2.8 1.2 2.8 2.8v1.2"/><path d="M17.5 11v7"/><path d="M19.8 12.5v4"/><path d="M6 6.5a3 3 0 0 1 3-3"/></svg>',
+    anahtar: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="7.5" cy="12" r="4.5"/><circle cx="7.5" cy="12" r="1.4"/><path d="M12 12h8"/><path d="M16.5 12v3"/><path d="M20 12v4"/></svg>',
     kaza: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 22 20H2z"/><path d="M12 9v5M12 17h.01"/></svg>',
     kredi: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="9" width="14" height="12" rx="2"/><path d="M8 9V6a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15" r="1.5"/></svg>',
     sube: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 21V8l6-4 6 4v13M6 21v-6h5v6M6 10h.01M10 10h.01"/><path style="fill:currentColor;stroke:none" d="M16 7h4V5l3 3-3 3V9h-4zm6 8h-4v2l-3-3 3-3v2h4z"/></svg>',
