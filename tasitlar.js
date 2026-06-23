@@ -5377,8 +5377,7 @@
     if (cfg.key === 'kasko') {
       return svgOpen +
         '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>' +
-        '<path d="M7 14h.01"></path><path d="M17 14h.01"></path>' +
-        '<path d="M6 14h12l-1.4-4.2a1 1 0 0 0-.95-.8H7.35a1 1 0 0 0-.95.8L6 14z"></path>' +
+        '<path d="M8 12h8"></path>' +
         svgClose;
     }
     return svgOpen +
@@ -8718,9 +8717,9 @@
       const acente = (eventData.acente || '').trim();
       const iletisim = (eventData.iletisim || '').trim();
       if (bitis) {
-        summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Kasko Poli\u00e7esi Biti\u015F Tarihini </span><span class="history-detail-inline">' + escapeHtml(bitis) + '</span><span class="history-action-text"> Olarak G\u00FCncelledi.</span>';
+        summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Kasko Poli\u00e7esi Yenileme Tarihini </span><span class="history-detail-inline">' + escapeHtml(bitis) + '</span><span class="history-action-text"> Olarak G\u00FCncelledi.</span>';
       } else {
-        summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Kasko Poli\u00e7esi Biti\u015F Tarihini G\u00FCncelledi.</span>';
+        summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Kasko Poli\u00e7esi Yenileme Tarihini G\u00FCncelledi.</span>';
       }
       if (firma) pushDetail('Firma', toTitleCase(firma));
       if (acente) pushDetail('Acente', toTitleCase(acente));
@@ -8731,9 +8730,9 @@
       const acente = (eventData.acente || '').trim();
       const iletisim = (eventData.iletisim || '').trim();
       if (bitis) {
-        summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Sigorta Poli\u00e7esi Biti\u015F Tarihini </span><span class="history-detail-inline">' + escapeHtml(bitis) + '</span><span class="history-action-text"> Olarak G\u00FCncelledi.</span>';
+        summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Sigorta Poli\u00e7esi Yenileme Tarihini </span><span class="history-detail-inline">' + escapeHtml(bitis) + '</span><span class="history-action-text"> Olarak G\u00FCncelledi.</span>';
       } else {
-        summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Sigorta Poli\u00e7esi Biti\u015F Tarihini G\u00FCncelledi.</span>';
+        summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Sigorta Poli\u00e7esi Yenileme Tarihini G\u00FCncelledi.</span>';
       }
       if (firma) pushDetail('Firma', toTitleCase(firma));
       if (acente) pushDetail('Acente', toTitleCase(acente));
