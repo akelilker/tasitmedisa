@@ -1333,16 +1333,6 @@ body.modal-open #info-modal .modal-container {
   font-size: calc(17px + 1pt) !important;
 }
 
-.list-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px;
-    border-bottom: 1px solid var(--border-ultra);
-    background: var(--border-faint-02);
-}
-.list-item:last-child { border-bottom: none; }
-
 .settings-add-text-btn {
     background: none;
     border: none;
