@@ -76,9 +76,8 @@
 }
 
 /*
-  Vehicle detail stack: keep the real footer glow above the reserved footer gap.
-  The detail/event overlays stay above each other, but the footer must paint over
-  their opaque backgrounds so its upward shadow is not swallowed.
+  Vehicle detail stack: the footer stays above opaque modal layers, but its red
+  light is clipped to the footer gap so it never paints into the modal border.
 */
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).tasit-detail-stack-open #app-footer {
     z-index: 100060 !important;
@@ -86,9 +85,17 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).tasit-detail-
 }
 
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).tasit-detail-stack-open #app-footer::before {
-    display: none !important;
-    height: 0 !important;
-    opacity: 0 !important;
+    display: block !important;
+    bottom: calc(100% + 1px) !important;
+    height: max(0px, calc(var(--app-footer-gap) - 3px)) !important;
+    opacity: 1 !important;
+    background: radial-gradient(
+        ellipse at center bottom,
+        rgba(var(--footer-glow-rgb), 0.42) 0%,
+        rgba(var(--footer-glow-rgb), 0.24) 42%,
+        rgba(var(--footer-glow-rgb), 0.08) 72%,
+        rgba(var(--footer-glow-rgb), 0) 100%
+    ) !important;
 }
 
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#vehicle-detail-modal.tasitlar-modal-overlay.active) #app-footer,
@@ -111,9 +118,17 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#vehicle-
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#vehicle-history-modal.tasitlar-modal-overlay.open) #app-footer::before,
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#dinamik-olay-modal.tasitlar-modal-overlay.active) #app-footer::before,
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#dinamik-olay-modal.tasitlar-modal-overlay.open) #app-footer::before {
-    display: none !important;
-    height: 0 !important;
-    opacity: 0 !important;
+    display: block !important;
+    bottom: calc(100% + 1px) !important;
+    height: max(0px, calc(var(--app-footer-gap) - 3px)) !important;
+    opacity: 1 !important;
+    background: radial-gradient(
+        ellipse at center bottom,
+        rgba(var(--footer-glow-rgb), 0.42) 0%,
+        rgba(var(--footer-glow-rgb), 0.24) 42%,
+        rgba(var(--footer-glow-rgb), 0.08) 72%,
+        rgba(var(--footer-glow-rgb), 0) 100%
+    ) !important;
 }
 
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicles-modal.tasitlar-modal-overlay.active,
