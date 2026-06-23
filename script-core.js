@@ -1065,8 +1065,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Lazy modül asset sürümleri — tek nesne; index.html içindeki style-core ?v= ile tasitlar sürümü uyumlu kalmalı
 var MEDISA_MODULE_VERSIONS = {
-  tasitlar: '20260623.8',
-  notifications: '20260621.3',
+  tasitlar: '20260624.1',
+  notifications: '20260624.1',
   raporlar: '20260623.1',
   kayitJs: '20260623.2',
   kayitCss: '20260612.10',

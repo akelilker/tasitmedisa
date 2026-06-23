@@ -1646,7 +1646,7 @@
     return html;
   }
 
-  function buildMonthlyTodoDescriptionHtml(descriptionPrefix, daysVal, dateRaw, dateShown, isPast) {
+  function buildMonthlyTodoDescriptionHtml(descriptionPrefix, daysVal, dateRaw, dateShown, isPast, dateLabel) {
     var kindHtml = '<span class="monthly-todo-type-kind">' + escapeHtml(descriptionPrefix) + '</span>';
     if (!dateRaw || daysVal === null) {
       return '<span class="monthly-todo-type">' + kindHtml + '<span class="monthly-todo-type-detail"> Geçerlilik Süresi Eksiktir.</span></span>';
@@ -1660,9 +1660,10 @@
       detailText = ' Geçerlilik Süresi ' + daysVal + ' Gün Sonra Bitecektir.';
     }
     var metaPastClass = isPast ? ' monthly-todo-description-meta--past' : '';
+    var metaLabel = String(dateLabel || 'Bitiş Tarihi').trim() || 'Bitiş Tarihi';
     return '<span class="monthly-todo-type">' + kindHtml +
       '<span class="monthly-todo-type-detail">' + escapeHtml(detailText) + '</span>' +
-      '<br><span class="monthly-todo-description-meta' + metaPastClass + '">Bitiş Tarihi: <span class="monthly-todo-description-date">' + dateShown + '</span></span></span>';
+      '<br><span class="monthly-todo-description-meta' + metaPastClass + '">' + escapeHtml(metaLabel) + ': <span class="monthly-todo-description-date">' + dateShown + '</span></span></span>';
   }
 
   function buildMonthlyTodoTaskRowHtml(t, userMap, typeDescriptionMap, branchNameMap) {
@@ -1718,7 +1719,8 @@
     rowHtml += '</span>';
     rowHtml += '</span>';
     rowHtml += '<span class="monthly-todo-cell monthly-todo-desc-col">';
-    rowHtml += buildMonthlyTodoDescriptionHtml(descriptionPrefix, daysVal, dateRaw, dateShown, past);
+    var descriptionDateLabel = (typeText === 'Sigorta' || typeText === 'Kasko' || typeText === 'Sigorta + Kasko') ? 'Yenileme Tarihi' : 'Bitiş Tarihi';
+    rowHtml += buildMonthlyTodoDescriptionHtml(descriptionPrefix, daysVal, dateRaw, dateShown, past, descriptionDateLabel);
     rowHtml += '</span>';
     rowHtml += '</div>';
     return rowHtml;
