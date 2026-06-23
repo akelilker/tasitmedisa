@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-$sessionData = validateToken(false);
+$sessionData = validateToken();
 if (!$sessionData) {
     http_response_code(401);
     echo json_encode(['ok' => false, 'message' => 'Oturum gerekli.'], JSON_UNESCAPED_UNICODE);
