@@ -3,9 +3,6 @@
    ========================================= */
 
    (function () {
-    const BRANCHES_KEY = "medisa_branches_v1";
-    const USERS_KEY = "medisa_users_v1";
-    const VEHICLES_KEY = "medisa_vehicles_v1";
   
     function $(sel, root = document) { return root.querySelector(sel); }
     function $all(sel, root = document) { return Array.from(root.querySelectorAll(sel)); }
@@ -421,9 +418,31 @@
     // Şube YÖNETİMİ
     // ========================================
   
-    function readBranches() { return (typeof window.getMedisaBranches === 'function' ? window.getMedisaBranches() : null) || (function() { try { var r = localStorage.getItem(BRANCHES_KEY); return r ? JSON.parse(r) : []; } catch (e) { return []; } })(); }
-    function writeBranches(arr) { if (typeof window.writeBranches === 'function') { window.writeBranches(arr); return; } localStorage.setItem(BRANCHES_KEY, JSON.stringify(arr)); if (window.appData) { window.appData.branches = arr; if (window.saveDataToServer) window.saveDataToServer().catch(function(err) { console.error('Sunucuya kaydetme hatası (sessiz):', err); }); } }
-    function readVehicles() { return (typeof window.getMedisaVehicles === 'function' ? window.getMedisaVehicles() : null) || (function() { try { var r = localStorage.getItem(VEHICLES_KEY); return r ? JSON.parse(r) : []; } catch (e) { return []; } })(); }
+    function readBranches() {
+      if (typeof window.getMedisaBranches === 'function') {
+        var result = window.getMedisaBranches();
+        return Array.isArray(result) ? result.slice() : [];
+      }
+      if (window.appData && Array.isArray(window.appData.branches)) {
+        return window.appData.branches.slice();
+      }
+      return [];
+    }
+    function writeBranches(arr) {
+      if (typeof window.writeBranches === 'function') {
+        window.writeBranches(arr);
+      }
+    }
+    function readVehicles() {
+      if (typeof window.getMedisaVehicles === 'function') {
+        var result = window.getMedisaVehicles();
+        return Array.isArray(result) ? result.slice() : [];
+      }
+      if (window.appData && Array.isArray(window.appData.tasitlar)) {
+        return window.appData.tasitlar.slice();
+      }
+      return [];
+    }
 
     function getZorunluEvraklarK2State() {
       if (!window.appData || typeof window.appData !== 'object') window.appData = {};
@@ -1477,12 +1496,11 @@
         var result = window.getMedisaUsers();
         return Array.isArray(result) ? result.slice() : [];
       }
-      try {
-        var raw = localStorage.getItem(USERS_KEY);
-        var arr = raw ? JSON.parse(raw) : [];
-        if (!Array.isArray(arr)) return [];
-        return (typeof window.normalizeUsers === 'function' ? window.normalizeUsers(arr) : arr);
-      } catch (e) { return []; }
+      if (window.appData && Array.isArray(window.appData.users)) {
+        var users = window.appData.users.slice();
+        return (typeof window.normalizeUsers === 'function' ? window.normalizeUsers(users) : users);
+      }
+      return [];
     }
 
     function readAllUsers() {
@@ -1490,38 +1508,25 @@
         const allUsers = window.appData.users.slice();
         return (typeof window.normalizeUsers === 'function' ? window.normalizeUsers(allUsers) : allUsers);
       }
-      try {
-        var raw = localStorage.getItem(USERS_KEY);
-        var arr = raw ? JSON.parse(raw) : [];
-        if (!Array.isArray(arr)) return [];
-        return (typeof window.normalizeUsers === 'function' ? window.normalizeUsers(arr) : arr);
-      } catch (e) { return []; }
+      return [];
     }
 
     function readAllVehicles() {
       if (window.appData && Array.isArray(window.appData.tasitlar)) {
         return window.appData.tasitlar.slice();
       }
-      try {
-        var raw = localStorage.getItem(VEHICLES_KEY);
-        var arr = raw ? JSON.parse(raw) : [];
-        return Array.isArray(arr) ? arr : [];
-      } catch (e) { return []; }
+      return [];
     }
 
     function readAllBranches() {
       if (window.appData && Array.isArray(window.appData.branches)) {
         return window.appData.branches.slice();
       }
-      try {
-        var raw = localStorage.getItem(BRANCHES_KEY);
-        var arr = raw ? JSON.parse(raw) : [];
-        return Array.isArray(arr) ? arr : [];
-      } catch (e) { return []; }
+      return [];
     }
 
     /**
-     * localStorage Kullanıcı listesini appData.users formatına dönüştürüp senkron eder.
+     * Kullanıcı listesini appData.users formatına dönüştürüp senkron eder.
      * Portal girişi (`driver_login.php`) ve raporlar tek kaynaktan (appData) okur.
      * zimmetli_araclar: portal kayıt akışı (`driver_save.php`) için atanmış Taşıt ID'leri (assignedUserId eşleşen Taşıtlar)
      */
@@ -1759,16 +1764,10 @@
     }
   
     function writeUsers(arr) {
-      if (window.appData) {
-        syncUsersToAppData(arr, { skipServerSave: true });
-        if (typeof window.writeUsers === 'function') {
-          window.writeUsers(window.appData.users);
-          return;
-        }
-      }
-      localStorage.setItem(USERS_KEY, JSON.stringify(arr));
-      if (window.appData) {
-        syncUsersToAppData(arr);
+      if (!window.appData) return;
+      syncUsersToAppData(arr, { skipServerSave: true });
+      if (typeof window.writeUsers === 'function') {
+        window.writeUsers(window.appData.users);
       }
     }
 
@@ -1781,12 +1780,9 @@
     }
 
     function setUserManagementLocalState(users, vehicles) {
-      localStorage.setItem(USERS_KEY, JSON.stringify(Array.isArray(users) ? users : []));
-      localStorage.setItem(VEHICLES_KEY, JSON.stringify(Array.isArray(vehicles) ? vehicles : []));
-      if (window.appData) {
-        window.appData.tasitlar = Array.isArray(vehicles) ? vehicles : [];
-        syncUsersToAppData(Array.isArray(users) ? users : [], { skipServerSave: true });
-      }
+      if (!window.appData) return;
+      window.appData.tasitlar = Array.isArray(vehicles) ? vehicles : [];
+      syncUsersToAppData(Array.isArray(users) ? users : [], { skipServerSave: true });
     }
 
     async function persistUserManagementState(users, vehicles) {
@@ -3480,7 +3476,11 @@
     function applyRestoredBackup(backup) {
       writeBranches(backup.branches);
       writeUsers(backup.users);
-      localStorage.setItem(VEHICLES_KEY, JSON.stringify(backup.vehicles));
+      if (typeof window.writeVehicles === 'function') {
+        window.writeVehicles(backup.vehicles);
+      } else if (window.appData) {
+        window.appData.tasitlar = Array.isArray(backup.vehicles) ? backup.vehicles : [];
+      }
 
       const existingApp = window.appData || {};
       const normalizedUsers = (window.appData && Array.isArray(window.appData.users)) ? window.appData.users : backup.users;
@@ -3794,10 +3794,30 @@
           return;
         }
   
-        // Uygulama anahtarları silinir; medisa_server_backup kalır
-        [BRANCHES_KEY, USERS_KEY, VEHICLES_KEY].forEach(k => localStorage.removeItem(k));
-        // Diğer uygulama state anahtarlarını da temizle
-        ['vehicle_column_order', 'stok_active_columns', 'stok_column_order', 'stok_base_column_order'].forEach(k => localStorage.removeItem(k));
+        var legacyLocalStorageKeys = [
+          'medisa_branches_v1',
+          'medisa_users_v1',
+          'medisa_vehicles_v1',
+          'medisa_notif_read_keys_v1',
+          'vehicle_column_order',
+          'stok_active_columns',
+          'stok_column_order',
+          'stok_base_column_order'
+        ];
+        legacyLocalStorageKeys.forEach(function(k) { localStorage.removeItem(k); });
+        try {
+          var migrationFlags = [];
+          for (var li = 0; li < localStorage.length; li++) {
+            var storageKey = localStorage.key(li);
+            if (storageKey && storageKey.indexOf('medisa_notif_read_migrated_') === 0) {
+              migrationFlags.push(storageKey);
+            }
+          }
+          migrationFlags.forEach(function(k) { localStorage.removeItem(k); });
+        } catch (purgeErr) {}
+        try {
+          sessionStorage.removeItem('notifViewedKeysV2');
+        } catch (sessionPurgeErr) {}
         
         const backupResultMessage = result.serverBackup
           ? 'Veriler sunucuya yedeklendi ve tarayıcı belleği temizlendi.'
