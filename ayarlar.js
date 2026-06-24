@@ -1520,8 +1520,6 @@
       } catch (e) { return []; }
     }
 
-    function writeVehicles(arr) { if (typeof window.writeVehicles === 'function') { window.writeVehicles(arr); return; } localStorage.setItem(VEHICLES_KEY, JSON.stringify(arr)); if (window.appData) { window.appData.tasitlar = arr; if (window.saveDataToServer) window.saveDataToServer().catch(function(err) { console.error('Sunucuya kaydetme hatası (sessiz):', err); }); } }
-  
     /**
      * localStorage Kullanıcı listesini appData.users formatına dönüştürüp senkron eder.
      * Portal girişi (`driver_login.php`) ve raporlar tek kaynaktan (appData) okur.
@@ -1761,6 +1759,13 @@
     }
   
     function writeUsers(arr) {
+      if (window.appData) {
+        syncUsersToAppData(arr, { skipServerSave: true });
+        if (typeof window.writeUsers === 'function') {
+          window.writeUsers(window.appData.users);
+          return;
+        }
+      }
       localStorage.setItem(USERS_KEY, JSON.stringify(arr));
       if (window.appData) {
         syncUsersToAppData(arr);
@@ -3942,27 +3947,5 @@
       if (typeof originalCloseCenteredInfoBox === 'function') {
         originalCloseCenteredInfoBox();
       }
-    };
-  
-    // ========================================
-    // EXPORT STORAGE ACCESS
-    // ========================================
-  
-    window.__medisaBranchesStorage = {
-      key: BRANCHES_KEY,
-      read: readBranches,
-      write: writeBranches
-    };
-  
-    window.__medisaUsersStorage = {
-      key: USERS_KEY,
-      read: readUsers,
-      write: writeUsers
-    };
-
-    window.__medisaVehiclesStorage = {
-      key: VEHICLES_KEY,
-      read: readVehicles,
-      write: writeVehicles
     };
   })();
