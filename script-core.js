@@ -86,13 +86,7 @@ function toggleNotifications(e) {
     var willOpen = !notif.classList.contains('open');
     setNotificationsOpenState(willOpen);
     if (willOpen && typeof window.syncMobileNotificationsDropdownHeight === 'function') {
-      requestAnimationFrame(function() {
-        window.syncMobileNotificationsDropdownHeight();
-        requestAnimationFrame(function() {
-          window.syncMobileNotificationsDropdownHeight();
-          requestAnimationFrame(window.syncMobileNotificationsDropdownHeight);
-        });
-      });
+      scheduleNotificationsDropdownSync();
     }
   }
 }
@@ -509,24 +503,30 @@ window.medisaFitTextWithinBox = function(root, selector, options) {
 
   requestAnimationFrame(function() {
     var elements = scope.querySelectorAll(selector);
+    var jobs = [];
     Array.prototype.forEach.call(elements, function(el) {
       if (!el || !el.getClientRects || el.getClientRects().length === 0) return;
-
       el.style.removeProperty('font-size');
+      jobs.push(el);
+    });
+    if (!jobs.length) return;
+
+    var measurements = jobs.map(function(el) {
       var computed = window.getComputedStyle ? window.getComputedStyle(el) : null;
       var baseSize = computed ? parseFloat(computed.fontSize) : 0;
-      if (!Number.isFinite(baseSize) || baseSize <= 0) return;
-
+      if (!Number.isFinite(baseSize) || baseSize <= 0) return null;
       var reduction = Number.isFinite(maxReduction) && maxReduction > 0 ? maxReduction : 4;
       var floorSize = Number.isFinite(minFontSize) && minFontSize > 0 ? minFontSize : Math.max(9.5, baseSize - reduction);
-      var currentSize = baseSize;
+      return { el: el, floorSize: floorSize, currentSize: baseSize };
+    }).filter(Boolean);
 
+    measurements.forEach(function(job) {
       while (
-        currentSize > floorSize &&
-        (el.scrollWidth > el.clientWidth + tolerance || el.scrollHeight > el.clientHeight + tolerance)
+        job.currentSize > job.floorSize &&
+        (job.el.scrollWidth > job.el.clientWidth + tolerance || job.el.scrollHeight > job.el.clientHeight + tolerance)
       ) {
-        currentSize = Math.max(floorSize, currentSize - step);
-        el.style.setProperty('font-size', currentSize + 'px', 'important');
+        job.currentSize = Math.max(job.floorSize, job.currentSize - step);
+        job.el.style.setProperty('font-size', job.currentSize + 'px', 'important');
       }
     });
   });
@@ -876,7 +876,6 @@ function showModuleSpinner() {
   _moduleSpinnerDepth++;
   if (_moduleSpinnerEl) {
     _moduleSpinnerEl.classList.add('active');
-    _moduleSpinnerEl.style.pointerEvents = '';
     return;
   }
   var wrap = document.createElement('div');
@@ -894,12 +893,6 @@ function hideModuleSpinner() {
   if (_moduleSpinnerDepth > 0) return;
   if (!_moduleSpinnerEl) return;
   _moduleSpinnerEl.classList.remove('active');
-  _moduleSpinnerEl.style.pointerEvents = 'none';
-  setTimeout(function() {
-    if (_moduleSpinnerEl && !_moduleSpinnerEl.classList.contains('active')) {
-      _moduleSpinnerEl.style.visibility = 'hidden';
-    }
-  }, 200);
 }
 
 /** Kaporta SVG metni - tek fetch, cache paylaşımı (tasitlar + kayit) */
@@ -928,6 +921,47 @@ function getFooter() { return _cachedFooter || (_cachedFooter = document.getElem
 var _cachedModalOverlays = null;
 function refreshModalOverlays() { _cachedModalOverlays = document.querySelectorAll('.modal-overlay'); return _cachedModalOverlays; }
 function getModalOverlays() { return _cachedModalOverlays || refreshModalOverlays(); }
+
+var _footerDimScheduled = false;
+var _footerDimModalOpen = null;
+var _modalClassObserver = null;
+
+function isModalOverlayOpen(modal) {
+  return !!(
+    modal &&
+    (
+      modal.classList.contains('active') ||
+      modal.classList.contains('open') ||
+      modal.dataset.modalClosing === 'true'
+    )
+  );
+}
+
+function observeModalOverlayClass(modal) {
+  if (!modal || !_modalClassObserver) return;
+  _modalClassObserver.observe(modal, { attributes: true, attributeFilter: ['class'] });
+}
+
+function scheduleUpdateFooterDim() {
+  if (_footerDimScheduled) return;
+  _footerDimScheduled = true;
+  requestAnimationFrame(function() {
+    _footerDimScheduled = false;
+    window.updateFooterDim();
+  });
+}
+
+function scheduleNotificationsDropdownSync() {
+  if (window.__medisaNotifSyncScheduled) return;
+  window.__medisaNotifSyncScheduled = true;
+  requestAnimationFrame(function() {
+    window.__medisaNotifSyncScheduled = false;
+    if (typeof window.syncMobileNotificationsDropdownHeight === 'function') {
+      window.syncMobileNotificationsDropdownHeight();
+    }
+  });
+}
+window.scheduleNotificationsDropdownSync = scheduleNotificationsDropdownSync;
 
 // Sayfa yüklendiğinde footer animasyonunu başlat
 function startFooterAnimation() {
@@ -961,37 +995,32 @@ function startFooterAnimation() {
 window.updateFooterDim = function() {
   const footer = getFooter();
   if (!footer) return;
-  
-  let isAnyModalOpen = false;
-  getModalOverlays().forEach(modal => {
-    if (
-      modal.classList.contains('active') ||
-      modal.classList.contains('open') ||
-      modal.style.display === 'flex' ||
-      modal.dataset.modalClosing === 'true'
-    ) {
-      isAnyModalOpen = true;
-    }
-  });
 
-  if (isAnyModalOpen) {
-    document.body.classList.add('modal-open');
-  } else {
-    document.body.classList.remove('modal-open');
+  let isAnyModalOpen = false;
+  const overlays = getModalOverlays();
+  for (let i = 0; i < overlays.length; i++) {
+    if (isModalOverlayOpen(overlays[i])) {
+      isAnyModalOpen = true;
+      break;
+    }
   }
-}
+
+  if (_footerDimModalOpen === isAnyModalOpen) return;
+  _footerDimModalOpen = isAnyModalOpen;
+  document.body.classList.toggle('modal-open', isAnyModalOpen);
+};
 
 window.markModalClosing = function(modal) {
   if (!modal) return;
   document.body.classList.add('modal-returning');
   modal.dataset.modalClosing = 'true';
-  if (typeof window.updateFooterDim === 'function') window.updateFooterDim();
+  scheduleUpdateFooterDim();
 };
 
 window.clearModalClosing = function(modal) {
   if (!modal) return;
   delete modal.dataset.modalClosing;
-  if (typeof window.updateFooterDim === 'function') window.updateFooterDim();
+  scheduleUpdateFooterDim();
   clearTimeout(window.__modalReturningTimer);
   window.__modalReturningTimer = setTimeout(function() {
     document.body.classList.remove('modal-returning');
@@ -1016,10 +1045,7 @@ window.closeHistoryToHomeAndOpenNotifications = function() {
     window.closeAllModals();
   }
   if (setNotificationsOpenState(true) && typeof window.syncMobileNotificationsDropdownHeight === 'function') {
-    requestAnimationFrame(function() {
-      window.syncMobileNotificationsDropdownHeight();
-      requestAnimationFrame(window.syncMobileNotificationsDropdownHeight);
-    });
+    scheduleNotificationsDropdownSync();
   }
 };
 
@@ -1027,8 +1053,7 @@ document.addEventListener('keydown', function(e) {
   if (e.key !== 'Escape') return;
   var historyModal = document.getElementById('vehicle-history-modal');
   if (!historyModal) return;
-  var isVisible = historyModal.style.display === 'flex' || (historyModal.style.display !== 'none' && historyModal.offsetParent !== null);
-  if (isVisible && historyModal.classList.contains('active')) {
+  if (historyModal.classList.contains('active')) {
     e.preventDefault();
     e.stopPropagation();
   }
