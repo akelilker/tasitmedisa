@@ -601,9 +601,7 @@ window.debounce = function(fn, ms) {
 window.medisaIsVehicleDetailModalOpen = function() {
   var modal = document.getElementById('vehicle-detail-modal');
   if (!modal) return false;
-  if (modal.classList.contains('active') || modal.classList.contains('open')) return true;
-  var d = (modal.style && modal.style.display != null) ? String(modal.style.display) : '';
-  return d === 'flex' || d === 'block';
+  return modal.classList.contains('active') || modal.classList.contains('open') || modal.dataset.modalClosing === 'true';
 };
 
 /**
@@ -1072,19 +1070,33 @@ document.addEventListener('DOMContentLoaded', () => {
   // Modal kontrolü için ilk kontrol
   window.updateFooterDim();
 
-  // Modal Observer: class/style veya DOM değişince footer dim + overlay önbelleği
-  const modalObserver = new MutationObserver(() => {
-    refreshModalOverlays();
-    window.updateFooterDim();
+  _modalClassObserver = new MutationObserver(function() {
+    scheduleUpdateFooterDim();
   });
 
-  // Modal attribute değişikliklerini izle (footer dim, body.modal-open)
   const allModals = refreshModalOverlays();
-  allModals.forEach(modal => {
-    modalObserver.observe(modal, { attributes: true, attributeFilter: ['class', 'style'] });
+  allModals.forEach(function(modal) {
+    observeModalOverlayClass(modal);
   });
 
-  modalObserver.observe(document.body, { childList: true, subtree: true });
+  var bodyModalObserver = new MutationObserver(function(mutations) {
+    var needsRefresh = false;
+    mutations.forEach(function(m) {
+      if (m.type !== 'childList') return;
+      var added = m.addedNodes;
+      for (var i = 0; i < added.length; i++) {
+        var node = added[i];
+        if (node.nodeType !== 1) continue;
+        if (node.classList && node.classList.contains('modal-overlay')) {
+          observeModalOverlayClass(node);
+          needsRefresh = true;
+        }
+      }
+    });
+    if (needsRefresh) refreshModalOverlays();
+    scheduleUpdateFooterDim();
+  });
+  bodyModalObserver.observe(document.body, { childList: true, subtree: false });
 });
 
 
@@ -1526,8 +1538,8 @@ window.ensureMedisaVehicleNotificationDomainReady = function() {
     if (modal) {
       window.markModalClosing(modal);
       modal.classList.remove('active');
-      setTimeout(() => {
-        modal.style.display = 'none';
+      setTimeout(function() {
+        modal.style.removeProperty('display');
         window.clearModalClosing(modal);
       }, 300);
     }
@@ -1538,8 +1550,8 @@ window.ensureMedisaVehicleNotificationDomainReady = function() {
     if (modal) {
       window.markModalClosing(modal);
       modal.classList.remove('active');
-      setTimeout(() => {
-        modal.style.display = 'none';
+      setTimeout(function() {
+        modal.style.removeProperty('display');
         window.clearModalClosing(modal);
       }, 300);
     }

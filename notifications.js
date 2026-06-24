@@ -132,14 +132,9 @@
     return 0;
   }
 
-  const NOTIF_READ_STORAGE_KEY = 'medisa_notif_read_keys_v1';
-  const LEGACY_NOTIF_READ_SESSION_KEY = 'notifViewedKeysV2';
-  const NOTIF_LOCAL_MIGRATION_FLAG_PREFIX = 'medisa_notif_read_migrated_';
   const NOTIF_STATE_MAX_KEYS = 500;
   const NOTIF_STATE_MAX_AGE_MS = 90 * 24 * 60 * 60 * 1000;
   const NOTIF_FIRST_SEEN_STORAGE_KEY = 'medisa_notif_first_seen_dates_v1';
-  let notifReadStateMigrationAttempted = false;
-  let notifReadStateSaveInFlight = false;
   let notifFirstSeenBatchContext = null;
 
   function getCurrentNotifScopeKey() {
@@ -251,44 +246,14 @@
     };
   }
 
-  function migrateLegacyNotificationReadStateForScope(scopeKey) {
-    if (notifReadStateMigrationAttempted || !scopeKey) return;
-    notifReadStateMigrationAttempted = true;
-    const state = ensureNotificationReadStateObject();
-    const scoped = getNotificationScopeState(scopeKey);
-    const hasCentralForScope = scoped.readKeys.length > 0 || scoped.dismissedKeys.length > 0 || Object.keys(scoped.firstSeenDates || {}).length > 0 || scoped.migratedFromLocalStorage === true;
-    if (hasCentralForScope) return;
-    try {
-      if (localStorage.getItem(NOTIF_LOCAL_MIGRATION_FLAG_PREFIX + scopeKey) === 'true') return;
-    } catch (err) {}
-    let legacy = [];
-    try {
-      const localRaw = localStorage.getItem(NOTIF_READ_STORAGE_KEY);
-      const localParsed = localRaw ? JSON.parse(localRaw) : [];
-      if (Array.isArray(localParsed)) legacy = legacy.concat(localParsed);
-    } catch (err) {}
-    try {
-      const sessionRaw = sessionStorage.getItem(LEGACY_NOTIF_READ_SESSION_KEY);
-      const sessionParsed = sessionRaw ? JSON.parse(sessionRaw) : [];
-      if (Array.isArray(sessionParsed)) legacy = legacy.concat(sessionParsed);
-    } catch (err) {}
-    const unique = pruneNotificationKeys(legacy);
-    scoped.migratedFromLocalStorage = true;
-    scoped.updatedAt = new Date().toISOString();
-    if (unique.length) scoped.readKeys = unique;
-    state[scopeKey] = scoped;
-    if (typeof window.saveDataToServer !== 'function' || notifReadStateSaveInFlight) return;
-    notifReadStateSaveInFlight = true;
-    window.saveDataToServer()
-      .then(function(ok) {
-        if (ok !== false) {
-          try {
-            localStorage.setItem(NOTIF_LOCAL_MIGRATION_FLAG_PREFIX + scopeKey, 'true');
-          } catch (err) {}
-        }
-      })
-      .catch(function() {})
-      .finally(function() { notifReadStateSaveInFlight = false; });
+  function getViewedNotificationKeys() {
+    const scopeKey = getCurrentNotifScopeKey();
+    return getNotificationScopeState(scopeKey).readKeys;
+  }
+
+  function getDismissedNotificationKeys() {
+    const scopeKey = getCurrentNotifScopeKey();
+    return getNotificationScopeState(scopeKey).dismissedKeys;
   }
 
   function getKaskoState() {
@@ -298,35 +263,6 @@
     }
     if (!Array.isArray(window.appData.kaskoDegerListesi.rows)) window.appData.kaskoDegerListesi.rows = [];
     return window.appData.kaskoDegerListesi;
-  }
-
-  function getViewedNotificationKeys() {
-    const scopeKey = getCurrentNotifScopeKey();
-    if (scopeKey) {
-      migrateLegacyNotificationReadStateForScope(scopeKey);
-      return getNotificationScopeState(scopeKey).readKeys;
-    }
-    try {
-      const raw = localStorage.getItem(NOTIF_READ_STORAGE_KEY);
-      const parsed = raw ? JSON.parse(raw) : [];
-      if (Array.isArray(parsed)) return parsed;
-    } catch (err) {}
-    try {
-      const legacyRaw = sessionStorage.getItem(LEGACY_NOTIF_READ_SESSION_KEY);
-      const legacyParsed = legacyRaw ? JSON.parse(legacyRaw) : [];
-      return Array.isArray(legacyParsed) ? legacyParsed : [];
-    } catch (err) {
-      return [];
-    }
-  }
-
-  function getDismissedNotificationKeys() {
-    const scopeKey = getCurrentNotifScopeKey();
-    if (scopeKey) {
-      migrateLegacyNotificationReadStateForScope(scopeKey);
-      return getNotificationScopeState(scopeKey).dismissedKeys;
-    }
-    return [];
   }
 
   function saveNotificationScopeStateWithRollback(scopeKey, previousScoped) {
@@ -457,49 +393,36 @@
     const incoming = Array.isArray(keys) ? keys : [];
     if (!incoming.length) return;
     const scopeKey = getCurrentNotifScopeKey();
-    if (scopeKey) {
-      const state = ensureNotificationReadStateObject();
-      const scoped = getNotificationScopeState(scopeKey);
-      const previousScoped = cloneNotificationScopeState(scoped);
-      const readSet = {};
-      const dismissedSet = {};
-      scoped.readKeys.forEach(function(key) { readSet[key] = true; });
-      scoped.dismissedKeys.forEach(function(key) { dismissedSet[key] = true; readSet[key] = true; });
-      let changed = false;
-      incoming.forEach(function(key) {
-        const normalizedKey = String(key || '').trim();
-        if (!normalizedKey) return;
-        if (!readSet[normalizedKey]) {
-          readSet[normalizedKey] = true;
-          changed = true;
-        }
-        if (mode === 'dismiss' && !dismissedSet[normalizedKey]) {
-          dismissedSet[normalizedKey] = true;
-          changed = true;
-        }
-      });
-      if (!changed) return;
-      scoped.readKeys = pruneNotificationKeys(Object.keys(readSet));
-      scoped.dismissedKeys = pruneNotificationKeys(Object.keys(dismissedSet));
-      scoped.dismissedKeys.forEach(function(key) {
-        if (scoped.readKeys.indexOf(key) === -1) scoped.readKeys.push(key);
-      });
-      scoped.readKeys = pruneNotificationKeys(scoped.readKeys);
-      scoped.updatedAt = new Date().toISOString();
-      state[scopeKey] = scoped;
-      saveNotificationScopeStateWithRollback(scopeKey, previousScoped);
-      return;
-    }
-    try {
-      const viewed = getViewedNotificationKeys();
-      incoming.forEach(function(key) {
-        const normalizedKey = String(key || '').trim();
-        if (normalizedKey && viewed.indexOf(normalizedKey) === -1) viewed.push(normalizedKey);
-      });
-      localStorage.setItem(NOTIF_READ_STORAGE_KEY, JSON.stringify(viewed));
-      sessionStorage.removeItem(LEGACY_NOTIF_READ_SESSION_KEY);
-    } catch (err) { return; }
-    if (typeof window.updateNotifications === 'function') window.updateNotifications();
+    const state = ensureNotificationReadStateObject();
+    const scoped = getNotificationScopeState(scopeKey);
+    const previousScoped = cloneNotificationScopeState(scoped);
+    const readSet = {};
+    const dismissedSet = {};
+    scoped.readKeys.forEach(function(key) { readSet[key] = true; });
+    scoped.dismissedKeys.forEach(function(key) { dismissedSet[key] = true; readSet[key] = true; });
+    let changed = false;
+    incoming.forEach(function(key) {
+      const normalizedKey = String(key || '').trim();
+      if (!normalizedKey) return;
+      if (!readSet[normalizedKey]) {
+        readSet[normalizedKey] = true;
+        changed = true;
+      }
+      if (mode === 'dismiss' && !dismissedSet[normalizedKey]) {
+        dismissedSet[normalizedKey] = true;
+        changed = true;
+      }
+    });
+    if (!changed) return;
+    scoped.readKeys = pruneNotificationKeys(Object.keys(readSet));
+    scoped.dismissedKeys = pruneNotificationKeys(Object.keys(dismissedSet));
+    scoped.dismissedKeys.forEach(function(key) {
+      if (scoped.readKeys.indexOf(key) === -1) scoped.readKeys.push(key);
+    });
+    scoped.readKeys = pruneNotificationKeys(scoped.readKeys);
+    scoped.updatedAt = new Date().toISOString();
+    state[scopeKey] = scoped;
+    saveNotificationScopeStateWithRollback(scopeKey, previousScoped);
   }
 
   function markNotificationKeysAsViewed(keys) {
