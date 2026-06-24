@@ -734,31 +734,13 @@
   }
 
   function writeVehicles(arr) {
-    function notifyIfAvailable() {
-      if (typeof window.updateNotifications === 'function') {
-        window.updateNotifications();
-      }
+    if (typeof window.writeVehicles === 'function') {
+      return window.writeVehicles(arr);
     }
     if (window.dataApi && typeof window.dataApi.saveVehiclesList === 'function') {
-      return window.dataApi.saveVehiclesList(arr)
-        .then(function(result) {
-          if (typeof window.invalidateVehicleDateTasksCache === 'function') {
-            window.invalidateVehicleDateTasksCache();
-          }
-          notifyIfAvailable();
-          return result;
-        })
-        .catch(function(err) {
-          if (err && err.conflict) return Promise.reject(err);
-          console.warn('[Medisa] Sunucuya kayıt yapılamadı:', err && err.message);
-          return Promise.reject(err);
-        });
+      return window.dataApi.saveVehiclesList(arr);
     }
     if (window.appData) window.appData.tasitlar = Array.isArray(arr) ? arr : [];
-    if (typeof window.invalidateVehicleDateTasksCache === 'function') {
-            window.invalidateVehicleDateTasksCache();
-          }
-    notifyIfAvailable();
     return Promise.resolve();
   }
 
@@ -1369,15 +1351,6 @@
     DOM.dinamikOlayKaydetBtn = document.getElementById('dinamik-olay-kaydet-btn');
   }
   bindDOM();
-
-  function getKaskoState() {
-    if (!window.appData || typeof window.appData !== 'object') window.appData = {};
-    if (!window.appData.kaskoDegerListesi || typeof window.appData.kaskoDegerListesi !== 'object') {
-      window.appData.kaskoDegerListesi = { updatedAt: '', period: '', sourceFileName: '', rows: [] };
-    }
-    if (!Array.isArray(window.appData.kaskoDegerListesi.rows)) window.appData.kaskoDegerListesi.rows = [];
-    return window.appData.kaskoDegerListesi;
-  }
 
   const DINAMIK_OLAY_MODAL_ID = 'dinamik-olay-modal';
   function setVehiclesDetailUnderlay(active) {
@@ -3781,7 +3754,9 @@
       kaskoDegeri = 'Excel yüklenmedi';
     }
     let isKaskoOutdated = true;
-    const kaskoState = getKaskoState();
+    const kaskoState = (typeof window.getKaskoDegerListesiState === 'function')
+      ? window.getKaskoDegerListesiState()
+      : { updatedAt: '' };
     const kaskoTarihKaynak = vehicle.kaskoDegeriYuklemeTarihi || kaskoState.updatedAt || '';
     if (kaskoTarihKaynak) {
       const uploadDate = new Date(kaskoTarihKaynak);
@@ -9443,7 +9418,6 @@
     });
   }
 
-  // kayit.js deleteVehicle sonrası liste yenilemesi için global erişim
   window.renderVehicles = renderVehicles;
 
   // Taşıt detay: muayene tooltip (hover ile açık kalır, gecikmeli kapatma) + ünlem/link tıklama

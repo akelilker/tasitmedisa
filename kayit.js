@@ -5,8 +5,6 @@
    ========================================= */
 
 (function () {
-  const STORAGE_KEY = "medisa_vehicles_v1";
-
   let isEditMode = false;
   let editingVehicleId = null;
   let editingVehicleVersion = 1; // Çakışma kontrolü (Phase 3) – düzenleme açıldığında kaydedilir
@@ -1197,17 +1195,9 @@
   }
 
   /**
-   * Şube dropdown listesini localStorage'dan okunan şubelerle doldurur
+   * Şube dropdown listesini appData / getMedisaBranches ile doldurur
    *
    * @param {string} [selectedId=""] - Seçili olarak gösterilecek şube ID'si (opsiyonel)
-   * 
-   * Mantık:
-   * 1. "vehicle-branch-select" elementi bulunur
-   * 2. İlk option "Seçiniz" olarak eklenir
-   * 3. localStorage'dan şubeler okunur
-   * 4. Şube yoksa "Önce Şube Ekleyiniz" mesajı gösterilir
-   * 5. Şubeler varsa alfabetik sırayla option olarak eklenir
-   * 6. selectedId parametresi varsa o şube seçili olur
    */
   function populateBranchSelect(selectedId = "") {
     try {
@@ -1522,60 +1512,10 @@
     return true;
   }
 
-  /** type=date .value: yalnızca tam yyyy-mm-dd iken egzoz sorusu açılır */
-  function isCompleteIsoDate(value) {
-    if (!value || typeof value !== 'string') return false;
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
-    var parts = value.split('-');
-    var y = parseInt(parts[0], 10);
-    var m = parseInt(parts[1], 10);
-    var d = parseInt(parts[2], 10);
-    if (!Number.isFinite(y) || !Number.isFinite(m) || !Number.isFinite(d)) return false;
-    var dt = new Date(y, m - 1, d);
-    return dt.getFullYear() === y && dt.getMonth() === m - 1 && dt.getDate() === d;
-  }
-
-  /** Gün/ay/yıl bileşeninden yyyy-mm-dd (geçersiz takvim → null) */
-  function normalizeYmdToIso(y, mo, d) {
-    if (!Number.isFinite(y) || !Number.isFinite(mo) || !Number.isFinite(d)) return null;
-    if (mo < 1 || mo > 12 || d < 1 || d > 31 || y < 1000 || y > 9999) return null;
-    var dt = new Date(y, mo - 1, d);
-    if (dt.getFullYear() !== y || dt.getMonth() !== mo - 1 || dt.getDate() !== d) return null;
-    var mm = mo < 10 ? '0' + mo : String(mo);
-    var dd = d < 10 ? '0' + d : String(d);
-    return y + '-' + mm + '-' + dd;
-  }
-
-  /**
-   * Ham tarih dizgesini yyyy-mm-dd yapar (TR: gg.aa.yyyy / gg/aa/yyyy / gg-aa-yyyy / 8 hane ggmmaaaa).
-   * Tek kaynak: window.parseVehicleDateRawToIso (data-manager.js); yoksa bu bloktaki ile aynı mantık.
-   */
+  /** Tek kaynak: window.parseVehicleDateRawToIso (data-manager.js) */
   function parseVehicleDateRawToIso(raw) {
     if (typeof window.parseVehicleDateRawToIso === 'function') {
       return window.parseVehicleDateRawToIso(raw);
-    }
-    if (raw === undefined) return null;
-    if (raw === null) return null;
-    if (typeof raw !== 'string') return null;
-    var s = raw.trim();
-    if (!s) return null;
-    if (/^\d{4}-\d{2}-\d{2}$/.test(s)) {
-      return isCompleteIsoDate(s) ? s : null;
-    }
-    var dm = /^(\d{1,2})[./-](\d{1,2})[./-](\d{4})$/.exec(s);
-    if (dm) {
-      var d = parseInt(dm[1], 10);
-      var mo = parseInt(dm[2], 10);
-      var y = parseInt(dm[3], 10);
-      var isoDm = normalizeYmdToIso(y, mo, d);
-      return isoDm === null ? null : isoDm;
-    }
-    if (/^\d{8}$/.test(s)) {
-      var d8 = parseInt(s.slice(0, 2), 10);
-      var m8 = parseInt(s.slice(2, 4), 10);
-      var y8 = parseInt(s.slice(4, 8), 10);
-      var isoD8 = normalizeYmdToIso(y8, m8, d8);
-      return isoD8 === null ? null : isoD8;
     }
     return null;
   }
@@ -1919,18 +1859,7 @@
 
   // --- Save Function ---
   /**
-   * Taşıt kaydını formdan okuyup localStorage'a kaydeder
-   * 
-   * Validasyon + Kaydetme işlemi:
-   * 1. Zorunlu alanları kontrol et (plaka, yıl, marka/model, km, şanzıman, tramer)
-   * 2. Hata varsa kullanıcıya uyarı göster ve ilk hatalı alana focus yap
-   * 3. Tüm form verilerini oku (tarihler, radio button'lar, select'ler, textarea'lar)
-   * 4. Kayıt objesi oluştur (id, timestamps ile)
-   * 5. Edit modunda mevcut kaydı güncelle, yeni modunda ekle
-   * 6. localStorage'a yaz ve kullanıcıya bilgi ver
-   * 
-   * @throws {Error} localStorage yazma hatası durumunda uygulama crash olabilir
-   * (Hata yakalama henüz eklenmedi - rapor önerisi #6)
+   * Taşıt kaydını formdan okuyup sunucuya kaydeder (dataApi.saveVehiclesList).
    */
   window.saveVehicleRecord = async function() {
     const modal = getModal();

@@ -1203,13 +1203,6 @@ function getVisibleBranches(branches) {
     });
 }
 
-function getVisibleEvents(vehicles) {
-    return getVisibleVehicles(vehicles).reduce(function(all, vehicle) {
-        var events = Array.isArray(vehicle && vehicle.events) ? vehicle.events.slice() : [];
-        return all.concat(events);
-    }, []);
-}
-
 function getMedisaData(key) {
     if (window.appData && Array.isArray(window.appData[key])) {
         return window.appData[key];
@@ -1229,16 +1222,6 @@ function getMedisaUsers() {
     return getVisibleUsers(getMedisaData('users'));
 }
 
-window.saveTasit = async function(tasit) {
-    return await genericSaveData('tasitlar', tasit);
-};
-
-window.deleteTasit = async function(tasitId) {
-    window.appData.tasitlar = window.appData.tasitlar.filter(function(tasit) { return tasit.id !== tasitId; });
-    syncDataLoadState();
-    return await saveDataToServer();
-};
-
 window.saveAyarlar = async function(ayarlar) {
     window.appData.ayarlar = ayarlar;
     syncDataLoadState();
@@ -1257,21 +1240,38 @@ window.deleteSifre = async function(sifreId) {
 
 window.writeVehicles = function(arr) {
     if (!window.appData) window.appData = getDefaultAppData();
+    applyMainAppSessionUiState();
+    if (window.dataApi && typeof window.dataApi.saveVehiclesList === 'function') {
+        return window.dataApi.saveVehiclesList(arr)
+            .then(function(result) {
+                syncDataLoadState();
+                return result;
+            })
+            .catch(function(err) {
+                if (err && err.conflict) {
+                    if (typeof window.onMedisaConflict === 'function') window.onMedisaConflict();
+                    else alert('Dikkat! Veri başka biri tarafından güncellenmiş. Lütfen sayfayı yenileyin.');
+                    return Promise.reject(err);
+                }
+                console.error('Sunucuya kaydetme hatası:', err);
+                return Promise.reject(err);
+            });
+    }
     window.appData.tasitlar = Array.isArray(arr) ? arr : [];
     syncDataLoadState();
-    applyMainAppSessionUiState();
     if (typeof window.saveDataToServer === 'function') {
-        window.saveDataToServer().catch(function(err) {
+        return window.saveDataToServer().catch(function(err) {
             if (err && err.conflict) {
                 if (typeof window.onMedisaConflict === 'function') window.onMedisaConflict();
                 else alert('Dikkat! Veri başka biri tarafından güncellenmiş. Lütfen sayfayı yenileyin.');
-                return;
+                return Promise.reject(err);
             }
             console.error('Sunucuya kaydetme hatası:', err);
+            return Promise.reject(err);
         });
-    } else {
-        medisaInvalidateVehicleDateTasksCacheIfAvailable();
     }
+    medisaInvalidateVehicleDateTasksCacheIfAvailable();
+    return Promise.resolve();
 };
 
 window.writeBranches = function(arr) {
@@ -1300,10 +1300,6 @@ window.writeUsers = function(arr) {
 window.getMedisaVehicles = getMedisaVehicles;
 window.getMedisaBranches = getMedisaBranches;
 window.getMedisaUsers = getMedisaUsers;
-window.getVisibleVehicles = getVisibleVehicles;
-window.getVisibleBranches = getVisibleBranches;
-window.getVisibleUsers = getVisibleUsers;
-window.getVisibleEvents = getVisibleEvents;
 window.normalizeUsers = normalizeUsers;
 window.getMedisaSession = function() { return window.medisaSession || getDefaultSession(); };
 window.loadDataFromServer = loadDataFromServer;
