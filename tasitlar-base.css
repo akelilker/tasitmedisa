@@ -50,11 +50,10 @@
     overflow: visible !important;
 }
 
-/* Vehicle Detail Modal: scroll modal-body'de, yan taşmaya izin (ortak kurallar style-core'da).
+/* Vehicle Detail Modal: scroll modal-body / scroll-wrap içinde; yan taşmaya izin (ortak kurallar style-core'da).
    max-height 90vh kullanma: overlay yüksekliği footer için zaten kısaltılmış; 90vh tam viewport
    referans aldığı için modal alttan taşar, .tasitlar-modal-overlay overflow:hidden alt çerçeveyi keser.
-   height:auto yalnızca masaüstü: mobilde ID özgüllüğüyle tüm genişliklerde auto vermek style-core
-   height:100%'ü ezerdi; çerçeve içerik kadar kalıp altta boşluk bırakıyordu. */
+   Masaüstü: container overlay yüksekliğini doldurur; alt boşlukta arka liste sızmasın (iç scroll scroll-wrap'te). */
 #vehicle-detail-modal .modal-container {
     max-height: 100% !important;
     min-height: 0 !important;
@@ -63,7 +62,8 @@
 }
 @media (min-width: 641px) {
     #vehicle-detail-modal .modal-container {
-        height: auto !important;
+        height: 100%;
+        min-height: 0;
     }
 }
 
