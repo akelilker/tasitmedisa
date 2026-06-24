@@ -1320,18 +1320,17 @@
   
     // CRUD İşlemleri
     /**
-     * Şube kaydını formdan okuyup localStorage'a kaydeder (Create/Update)
+     * Şube kaydını formdan okuyup appData üzerinden sunucuya kaydeder (Create/Update)
      * 
      * Validasyon + Kaydetme akışı:
      * 1. Form alanlarını oku (id, name, city)
      * 2. Şube Adı validasyonu yap (zorunlu alan)
      * 3. ID varsa güncelleme, yoksa yeni ekleme modu
-     * 4. localStorage'a yaz
+     * 4. appData'ya yaz ve sunucu kaydını bekle
      * 5. Form modalını kapat ve ana listeyi güncelle
      * 6. Kullanıcıya başarı mesajı göster
      * 
-     * @throws {Error} localStorage yazma hatası durumunda uygulama crash olabilir
-     * (Hata yakalama henüz eklenmedi - rapor önerisi #6)
+     * Sunucu kaydı başarısız olursa modal açık kalır ve başarı mesajı gösterilmez.
      */
     window.saveBranch = async function saveBranch() {
       const modal = document.getElementById('branch-form-modal');
@@ -2570,18 +2569,17 @@
   
     // CRUD İşlemleri
     /**
-     * Kullanıcı kaydını formdan okuyup localStorage'a kaydeder (Create/Update)
+     * Kullanıcı kaydını formdan okuyup appData üzerinden sunucuya kaydeder (Create/Update)
      * 
      * Validasyon + Kaydetme akışı:
      * 1. Form alanlarını oku (id, name, branchId, phone, email, role)
      * 2. Ad Soyad ve Şube validasyonu yap (zorunlu alanlar)
      * 3. ID varsa güncelleme, yoksa yeni ekleme modu
-     * 4. localStorage'a yaz
+     * 4. appData'ya yaz ve sunucu kaydını bekle
      * 5. Form modalını kapat ve ana listeyi güncelle
      * 6. Kullanıcıya başarı mesajı göster
      * 
-     * @throws {Error} localStorage yazma hatası durumunda uygulama crash olabilir
-     * (Hata yakalama henüz eklenmedi - rapor önerisi #6)
+     * Sunucu kaydı başarısız olursa modal açık kalır ve başarı mesajı gösterilmez.
      */
     function formatUserFullName(rawName) {
       const cleaned = (rawName || '').trim().replace(/\s+/g, ' ');
