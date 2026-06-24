@@ -1275,26 +1275,30 @@ window.writeVehicles = function(arr) {
 };
 
 window.writeBranches = function(arr) {
-    if (!window.appData) return;
+    if (!window.appData) return Promise.resolve(false);
     window.appData.branches = Array.isArray(arr) ? arr : [];
     syncDataLoadState();
     if (typeof window.saveDataToServer === 'function') {
-        window.saveDataToServer().catch(function(err) {
+        return window.saveDataToServer().catch(function(err) {
             console.error('Sunucuya kaydetme hatası:', err);
+            return false;
         });
     }
+    return Promise.resolve(true);
 };
 
 window.writeUsers = function(arr) {
-    if (!window.appData) return;
+    if (!window.appData) return Promise.resolve(false);
     window.appData.users = Array.isArray(arr) ? arr : [];
     syncDataLoadState();
     applyMainAppSessionUiState();
     if (typeof window.saveDataToServer === 'function') {
-        window.saveDataToServer().catch(function(err) {
+        return window.saveDataToServer().catch(function(err) {
             console.error('Sunucuya kaydetme hatası:', err);
+            return false;
         });
     }
+    return Promise.resolve(true);
 };
 
 window.getMedisaVehicles = getMedisaVehicles;
