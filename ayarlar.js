@@ -430,8 +430,9 @@
     }
     function writeBranches(arr) {
       if (typeof window.writeBranches === 'function') {
-        window.writeBranches(arr);
+        return window.writeBranches(arr);
       }
+      return Promise.resolve(false);
     }
     function readVehicles() {
       if (typeof window.getMedisaVehicles === 'function') {
@@ -1332,12 +1333,13 @@
      * @throws {Error} localStorage yazma hatası durumunda uygulama crash olabilir
      * (Hata yakalama henüz eklenmedi - rapor önerisi #6)
      */
-    window.saveBranch = function saveBranch() {
+    window.saveBranch = async function saveBranch() {
       const modal = document.getElementById('branch-form-modal');
       if (!modal) return;
       const saveBtn = modal.querySelector('.universal-btn-save[onclick*="saveBranch"]') || modal.querySelector('.universal-btn-save');
       if (saveBtn && saveBtn.disabled) return;
       if (saveBtn) saveBtn.disabled = true;
+      let previousBranches = null;
       try {
         const idInput = $('#branch-id', modal);
       const nameInput = $('#branch-name', modal);
@@ -1354,7 +1356,8 @@
         return;
       }
   
-      const branches = readBranches();
+      previousBranches = readBranches();
+      const branches = previousBranches.slice();
   
       if (id) {
         // güncelleME
@@ -1375,7 +1378,13 @@
         branches.push(newBranch);
       }
   
-        writeBranches(branches);
+        const persisted = await writeBranches(branches);
+        if (persisted !== true) {
+          if (window.appData) window.appData.branches = previousBranches;
+          renderBranchList();
+          alert('Şube sunucuya kaydedilemedi. Lütfen tekrar deneyin.');
+          return;
+        }
   
         // Form modalını kapat
         closeBranchFormModal();
@@ -1385,6 +1394,10 @@
   
         alert(id ? 'Şube güncellendi.' : 'Şube Eklendi.');
       } catch (error) {
+        if (previousBranches && window.appData) {
+          window.appData.branches = previousBranches;
+          renderBranchList();
+        }
         alert('Şube kaydı sırasında bir hata Oluştu! Lütfen tekrar deneyin.');
       } finally {
         if (saveBtn) saveBtn.disabled = false;
@@ -1395,7 +1408,7 @@
       openBranchFormModal(id);
     };
   
-    window.deleteBranch = function deleteBranch(id) {
+    window.deleteBranch = async function deleteBranch(id) {
       if (!id) return; // ID yoksa işlem yapma
       
       // Taşıt kontrolü
@@ -1421,7 +1434,20 @@
   
       const branches = readBranches();
       const filtered = branches.filter(b => b.id !== id);
-      writeBranches(filtered);
+      try {
+        const persisted = await writeBranches(filtered);
+        if (persisted !== true) {
+          if (window.appData) window.appData.branches = branches;
+          renderBranchList();
+          alert('Şube silme işlemi sunucuya kaydedilemedi. Lütfen tekrar deneyin.');
+          return;
+        }
+      } catch (error) {
+        if (window.appData) window.appData.branches = branches;
+        renderBranchList();
+        alert('Şube silinirken bir hata oluştu! Lütfen tekrar deneyin.');
+        return;
+      }
       
       // Form modalını kapat
       closeBranchFormModal();
@@ -1764,11 +1790,12 @@
     }
   
     function writeUsers(arr) {
-      if (!window.appData) return;
+      if (!window.appData) return Promise.resolve(false);
       syncUsersToAppData(arr, { skipServerSave: true });
       if (typeof window.writeUsers === 'function') {
-        window.writeUsers(window.appData.users);
+        return window.writeUsers(window.appData.users);
       }
+      return Promise.resolve(false);
     }
 
     function cloneStorageState(arr) {
