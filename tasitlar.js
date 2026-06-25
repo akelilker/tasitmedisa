@@ -1814,21 +1814,23 @@
     window.addEventListener('resize', onResize);
   }
 
-  // Toolbar Container Oluştur (Eğer yoksa)
+  // Toolbar Container Oluştur — modal-body içinde, #vehicles-modal-content önünde
   function ensureToolbar() {
-    const modalContainer = DOM.vehiclesModalContainer;
-    const header = DOM.vehiclesModalHeader;
-    
-    // Toolbar
-    let toolbar = document.querySelector('.vehicles-toolbar');
-    if (!toolbar && header) {
-        toolbar = document.createElement('div');
-        toolbar.className = 'vehicles-toolbar';
-        // Header'ın hemen altına ekle
-        header.after(toolbar);
+    const modal = DOM.vehiclesModal;
+    const modalBody = modal ? modal.querySelector('.modal-body') : null;
+    const contentEl = DOM.vehiclesModalContent;
+
+    if (!modal || !modalBody || !contentEl) return { toolbar: null };
+
+    let toolbar = modal.querySelector('.vehicles-toolbar');
+    if (!toolbar) {
+      toolbar = document.createElement('div');
+      toolbar.className = 'vehicles-toolbar';
     }
 
-    // Arama kutusu artık toolbar içinde (v-search-container)
+    if (toolbar.parentElement !== modalBody || toolbar.nextElementSibling !== contentEl) {
+      modalBody.insertBefore(toolbar, contentEl);
+    }
 
     return { toolbar };
   }
