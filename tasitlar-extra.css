@@ -1942,10 +1942,10 @@
     font-size: 19px !important; /* +1pt (base 15→16 civarı mobil) */
   }
   
-  /* Mobil: çerçeve ile içerik arası 3px, alt boşluk 8px */
+  /* Mobil: yan çerçeve 3px, alt boşluk 8px; üst padding yok (toolbar içeride sticky) */
   #vehicles-modal .modal-body {
-    padding: 10px 3px 8px 3px !important;
-    overflow-x: hidden !important; /* Saşa sola kaymayı engelle */
+    padding: 0 3px 8px 3px !important;
+    overflow-x: hidden !important; /* Yatay kaymayı engelle */
     touch-action: pan-y !important; /* Sadece dikey kaydırma */
     overscroll-behavior-x: none !important; /* Yatay overscroll'u engelle */
     isolation: isolate !important;
