@@ -4170,11 +4170,34 @@
         if (nativeInp.value) textEl.value = formatIsoToGgAaYyyy(nativeInp.value);
       }
 
+      function openOlayNativeDatePicker() {
+        syncNativeFromText();
+        if (typeof nativeInp.showPicker === 'function') {
+          try {
+            nativeInp.showPicker();
+            return;
+          } catch (err) {
+            /* NotAllowedError veya tarayıcı kısıtı */
+          }
+        }
+        nativeInp.focus({ preventScroll: true });
+        nativeInp.click();
+      }
+
       textEl.addEventListener('blur', syncNativeFromText);
       textEl.addEventListener('change', syncNativeFromText);
       nativeInp.addEventListener('change', syncTextFromNative);
 
-      /* iOS Safari: ekran dışındaki type=date üzerinde showPicker/click genelde çalışmaz; dokunuş doğrudan görünür alandaki inputa gitmeli */
+      btn.setAttribute('aria-label', 'Tarih se\u00e7');
+      btn.removeAttribute('aria-hidden');
+      btn.tabIndex = 0;
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        openOlayNativeDatePicker();
+      });
+
+      /* iOS Safari: ekran dışındaki type=date üzerinde showPicker/click genelde çalışmaz; simge butonu showPicker çağırır */
       pickerSlot.appendChild(btn);
       pickerSlot.appendChild(nativeInp);
       wrap.appendChild(pickerSlot);
