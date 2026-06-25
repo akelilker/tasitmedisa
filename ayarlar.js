@@ -1355,8 +1355,8 @@
         return;
       }
   
-      previousBranches = readBranches();
-      const branches = previousBranches.slice();
+      previousBranches = cloneStorageState(readBranches());
+      const branches = cloneStorageState(previousBranches);
   
       if (id) {
         // güncelleME
