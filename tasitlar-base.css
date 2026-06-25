@@ -41,14 +41,7 @@
     content: none !important;
 }
 
-/* Şube kartı hover üstten kesilmesin – overflow sadece dashboard/şube kartı görünümünde; liste görünümünde kesilmesin */
-#vehicles-modal.tasitlar-modal-overlay.active:not(.has-vehicles-list-scroll),
-#vehicles-modal.tasitlar-modal-overlay.open:not(.has-vehicles-list-scroll) {
-    overflow: visible !important;
-}
-#vehicles-modal:not(.has-vehicles-list-scroll) .modal-container {
-    overflow: visible !important;
-}
+/* Şube kartı hover kesilmesin – #vehicles-modal-content padding ile çözülür; container ve overlay hidden kalır */
 
 /* Vehicle Detail Modal: scroll modal-body / scroll-wrap içinde; yan taşmaya izin (ortak kurallar style-core'da).
    max-height 90vh kullanma: overlay yüksekliği footer için zaten kısaltılmış; 90vh tam viewport
@@ -2349,22 +2342,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     border-top-right-radius: var(--modal-radius);
 }
 
-/* Liste + detay: Kayıt modalı ile aynı üst highlight (container çerçevesi header altında kaybolmasın) */
-#vehicles-modal .modal-container::before,
-#vehicle-detail-modal .modal-container::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: rgba(200, 208, 216, 0.48);
-    border-top-left-radius: var(--modal-radius, 10px);
-    border-top-right-radius: var(--modal-radius, 10px);
-    pointer-events: none;
-    z-index: 3;
-}
-
 /* Tarihçe modalı UX prototipi: geri navigasyon → taşıt kimliği → sekmeler → içerik */
 #vehicle-history-modal .history-back-nav {
     position: relative !important;
@@ -2655,16 +2632,18 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 .vehicles-toolbar {
     height: 36px;
     min-height: 36px;
-    background: var(--bg);
-    border-bottom: none; 
+    background: var(--modal-bg);
+    border-top: 1px solid rgba(var(--theme-color-rgb), 0.18);
+    border-bottom: none;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0 16px;
-    position: relative !important;
+    position: sticky !important;
+    top: 0;
     z-index: 10;
     flex-shrink: 0;
-    overflow: visible !important; /* ıman dropdown kesilmesin (masaüstü + mobil) */
+    overflow: visible !important; /* dropdown kesilmesin */
 }
 
 @media (max-width: 768px) {
@@ -3043,7 +3022,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: 18px 3px 12px 3px !important; /*Çerçeve ile içerik arası 3px; üst 18px şube kartı hover kesilmesin */
+    padding: 0 3px 12px 3px !important; /* üst 0: toolbar içeride sticky; içerik boşluğu #vehicles-modal-content'te */
     box-sizing: border-box !important;
     scrollbar-width: none;
     -ms-overflow-style: none;
@@ -3067,6 +3046,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     margin-top: 0;
     overscroll-behavior: none;
     touch-action: pan-y;
+    padding-top: 0 !important; /* liste: sticky header doğrudan başlar, üst boşluk gerekmez */
 }
 .vehicles-loading-state {
     display: flex;
@@ -3527,10 +3507,11 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     z-index: 0 !important;
 }
 
-/* çerik alanı: başlık ile liste aynı stacking context'te (scroll sarmalayıcı yoksa) */
+/* İçerik alanı: liste ve kartlar aynı stacking context'te */
 #vehicles-modal #vehicles-modal-content {
     position: relative;
     isolation: isolate;
+    padding: 10px 0 0 0; /* kart hover scale(1.04) üstte 1.3px taşır; 10px absorbe eder */
 }
 
 .list-header-row {
