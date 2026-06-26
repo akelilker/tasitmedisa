@@ -1303,16 +1303,21 @@ body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-
 }
 @media (min-width: 641px) {
     #monthly-todo-header-btn .monthly-todo-header-badge {
+        top: 1px;
+        right: 1px;
         font-size: 12px;
+        font-weight: 900;
+        -webkit-font-smoothing: antialiased;
     }
 }
 @media (max-width: 640px) {
     #monthly-todo-header-btn .monthly-todo-header-badge {
-        top: -2px;
-        right: -2px;
+        top: 0;
+        right: 2px;
         font-size: 16px;
-        font-weight: 800;
+        font-weight: 900;
         line-height: 1;
+        -webkit-font-smoothing: antialiased;
     }
 }
 
