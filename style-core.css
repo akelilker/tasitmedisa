@@ -626,6 +626,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
     top: 0;
     left: 0;
     right: 0;
+    bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap));
     bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0));
     border-top: 0.5px solid var(--border-red-tech);
     border-left: 0.5px solid var(--border-red-tech);
@@ -1381,6 +1382,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu .m
   top: 0 !important;
   left: 0;
   right: 0;
+  bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap)) !important;
   bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
   z-index: 10020 !important; /* Footer (10000) üstünde kalsın */
   isolation: isolate !important; /* Işık sızmasını engeller */
@@ -1704,6 +1706,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu .m
 /* Kullanıcı Paneli linki - footer üstünde, sağa yaslı (mobilde 2px aşağı override ile); yarı saydam */
 .user-panel-link {
   position: fixed;
+  bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap));
   bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0));
   left: 50%;
   transform: translateX(-50%);
@@ -1728,6 +1731,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu .m
     opacity: 1;
   }
   .user-panel-link {
+    bottom: calc(var(--app-footer-real-height, 34px) + var(--app-footer-gap, 6px));
     bottom: calc(var(--app-footer-real-height, 34px) + var(--app-footer-gap, 6px) + env(safe-area-inset-bottom, 0));
     font-size: 13px;
     padding: 2px 12px;
@@ -2026,11 +2030,13 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
 /* MOBİL AYARLARI: 768px ve altında modal alt çerçeve footer ışığında ezilmesin; sınır sadece top/bottom */
 @media (max-width: 768px) {
     .modal-overlay {
+        bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap)) !important;
         bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
     }
     #vehicle-modal.modal-overlay,
     #reports-modal.modal-overlay,
     .tasitlar-modal-overlay.modal-overlay {
+        bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap)) !important;
         bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
     }
     :is(#vehicle-modal, #reports-modal, #vehicles-modal, #vehicle-detail-modal, #dinamik-olay-modal, #event-menu-modal, #vehicle-history-modal).modal-overlay .modal-body {
@@ -2250,12 +2256,14 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         top: 0 !important;
         overflow: hidden !important;
         overscroll-behavior: none !important;
+        bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap)) !important;
         bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
     }
     #vehicle-modal.modal-overlay,
     #reports-modal.modal-overlay,
     .tasitlar-modal-overlay.modal-overlay {
         top: 0 !important;
+        bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap)) !important;
         bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
     }
 
@@ -2427,6 +2435,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         top: 0;
         left: 0;
         right: 0;
+        bottom: var(--app-footer-real-height);
         bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0));
         border-left: 0.5px solid rgba(var(--theme-color-rgb), 0.78);
         border-right: 0.5px solid rgba(var(--theme-color-rgb), 0.78);
@@ -2493,6 +2502,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     
     /* Mobil: Kullanıcı paneli giriş butonu 2px aşağı */
     .user-panel-link {
+        bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap)) !important;
         bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
     }
     
@@ -2531,6 +2541,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
 @media (max-width: 640px) and (display-mode: standalone) {
     .modal-overlay {
         padding-top: env(safe-area-inset-top) !important;
+        bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap)) !important;
         bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
     }
     /* ≤768 padding:0 !important ezmesin: kayıt/rapor + taşıt zinciri çentik altında kalmasın */
@@ -2539,6 +2550,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         padding-right: 0 !important;
         padding-bottom: 0 !important;
         padding-left: 0 !important;
+        bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap)) !important;
         bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
     }
     :is(#vehicles-modal, #vehicle-detail-modal, #dinamik-olay-modal, #event-menu-modal, #vehicle-history-modal).tasitlar-modal-overlay.modal-overlay {
@@ -2546,11 +2558,13 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         padding-right: 0 !important;
         padding-bottom: 0 !important;
         padding-left: 0 !important;
+        bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap)) !important;
         bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
     }
     .tasitlar-modal-overlay {
         padding-top: env(safe-area-inset-top) !important;
         padding-bottom: 0 !important;
+        bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap)) !important;
         bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
     }
     .tasitlar-modal-overlay::before {
@@ -2786,6 +2800,7 @@ body.modal-open .app-container {
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #dinamik-olay-modal.modal-overlay,
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #event-menu-modal.modal-overlay,
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicle-history-modal.modal-overlay {
+    bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap)) !important;
     bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicle-modal.modal-overlay .modal-container,
@@ -2802,16 +2817,19 @@ body.modal-open .app-container {
     border-bottom-right-radius: 12px !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .app-container::before {
+    bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap)) !important;
     bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
   }
   /* Modal kapalıyken (≤768): ::before tabanı gap’siz — eski mobil/tablet görünümü. Masaüstü ≥769’da bu blok yok; taban kural (gap’li) geçer. */
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page):not(.modal-open) .app-container::before {
+    bottom: var(--app-footer-real-height) !important;
     bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
   }
 }
 
 @media (max-width: 640px) {
   .content-wrap::before {
+    bottom: var(--app-footer-real-height) !important;
     bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
   }
 }
@@ -3026,16 +3044,19 @@ body.modal-open .app-container {
   }
   /* İç kırmızı inset footer + modal–footer gap şeridine inmesin */
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-container::after {
+    bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap));
     bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0));
   }
 
   /* Ana ekran masaüstü: modal kapalıyken yan çizgiler ve iç glow footer üstüne kadar insin */
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page):not(.modal-open) .app-container::before,
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page):not(.modal-open) .app-container::after {
+    bottom: var(--app-footer-real-height);
     bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0));
   }
 
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-returning .app-container::before {
+    bottom: var(--app-footer-real-height) !important;
     bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
   }
 
