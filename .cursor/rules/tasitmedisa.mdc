@@ -80,7 +80,7 @@ Sen kıdemli bir yazılım geliştiricisisin. Projenin son aşamasındayız; sta
 - Kullanıcı analiz veya talimat isterse tek parça, doğrudan kopyalanabilir `GÖREV / TALİMAT` bloğu ver.
 - Kullanıcı açıkça uygulama isterse dosyaları değiştir, doğrulama komutlarını çalıştır ve sonuç raporu ver.
 - Plan modu ile uygulama talebini bloklama.
-- Kod değişikliği sonrası en az şu kontrolleri çalıştır:
+- Kod değişikliği sonrası görev kapsamına uygun olarak en az şu kontrolleri çalıştır; çalıştırılamayan kontrol varsa nedenini raporla:
   - `git status --short`
   - `git diff --stat`
   - `git diff --check`
@@ -106,3 +106,44 @@ Sen kıdemli bir yazılım geliştiricisisin. Projenin son aşamasındayız; sta
 - Doğrulanmayan davranışı başarılı gibi raporlama.
 - Commit öncesi diff review zorunludur.
 - Commit/push sonrası workflow, deploy ve canlı asset doğrulaması yapılmalıdır.
+
+## 12. GIT VE ÇALIŞMA AĞACI GÜVENLİĞİ
+
+- Çalışmaya başlamadan önce mevcut branch, `HEAD`, `origin/main` ve working tree durumu kontrol edilir.
+- Başkasına veya önceki göreve ait değişiklik varsa bunlara dokunulmaz; restore, stash, reset, clean, checkout veya formatlama yapılmaz.
+- `git reset`, `git clean`, `git checkout`, `git restore`, `git stash`, `rebase`, `amend` gibi geçmişi veya çalışma ağacını etkileyen komutlar yalnızca kullanıcı açıkça isterse çalıştırılır.
+- Untracked dosyalar görev kapsamına ait değilse silinmez, taşınmaz, stage edilmez ve commit'e dahil edilmez.
+- Tek görev tek mantıksal diff üretmelidir. İlgisiz dosya değişikliği commit'e alınmaz.
+- Commit mesajı yapılan dar işi açıkça anlatır. Commit, push ve deploy yalnızca açık talimatla yapılır.
+
+## 13. TOPLU FORMAT, REFACTOR VE BAĞIMLILIK KORUMASI
+
+- Görev doğrudan istemedikçe toplu formatlama, Prettier/lint fix, import sıralama, whitespace cleanup veya genel refactor yapılmaz.
+- Sadece görev kapsamındaki satırlar ve owner noktalar değiştirilir.
+- `package.json`, lock dosyaları, build config, Vite config, PWA manifest, service worker, `.env`, deploy config ve benzeri altyapı dosyalarına yalnızca görev doğrudan bu dosyaları gerektiriyorsa dokunulur.
+- Yeni dependency eklemek, dependency güncellemek veya build pipeline değiştirmek son çaredir ve açık gerekçe ister.
+- Otomatik global find-replace yapılmaz. Türkçe karakter, selector, class veya fonksiyon isimleri toplu değiştirilecekse önce kapsam ve risk raporlanır.
+
+## 14. VERİ, STORAGE VE PERSISTENCE KURALI
+
+- Gerçek kullanıcı, taşıt, plaka, rapor, tarih, kasko, muayene, sigorta, egzoz, kredi, anahtar, lastik, UTTS ve takip verileri test amacıyla değiştirilmez, silinmez veya örnek veriyle ezilmez.
+- `data/data.json` veya canlı veri dosyalarına yalnızca görev açıkça veri migrasyonu, veri düzeltmesi veya persistence değişikliği istiyorsa dokunulur.
+- Kalıcı iş verisi `localStorage` içine yazılmaz.
+- `localStorage` yalnızca geçici UI state için kullanılabilir.
+- Okundu bilgisi, kasko listesi, taşıt kayıtları, kullanıcı raporları ve benzeri kalıcı veriler mevcut server/data owner kontratı üzerinden yürütülür.
+- Yeni fallback, shadow cache veya migration davranışı eklenmeden önce mevcut read/write owner zinciri incelenir.
+- Eski veriyle uyumluluk bozulacaksa migration veya backward compatibility planı yapılmadan kod yazılmaz.
+
+## 15. UI, PWA VE CANLI DOĞRULAMA MATRİSİ
+
+- UI/CSS değişikliği sonrası yalnızca syntax değil, ilgili ekran davranışı da doğrulanır.
+- İlgili ekran için en az şu matris düşünülür:
+  - Masaüstü görünüm
+  - Mobil dar ekran
+  - Modal açık/kapalı durumları
+  - PWA standalone / safe-area etkisi
+  - İlgili buton, filtre, arama, kayıt veya rapor aksiyonu
+- Ortak component değiştiyse bu component'i kullanan diğer ana ekranlarda hızlı regresyon kontrolü yapılır.
+- Deploy sonrası canlı asset doğrulaması yapılır; eski CSS/JS cache'i, PWA cache'i veya version uyuşmazlığı varsa başarılı kabul edilmez.
+- Çalıştırılmayan test, görülmeyen ekran veya doğrulanmayan canlı davranış başarılı gibi raporlanmaz.
+
