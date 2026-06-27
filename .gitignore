@@ -27,6 +27,12 @@ data/kasko_police/
 data/kasko_police_preview/
 data/sigorta_police/
 data/sigorta_police_preview/
+data/k2_belgesi/
+data/k2_belgesi_preview/
+data/tasit_karti/
+data/tasit_karti_preview/
+data/takograf/
+data/takograf_preview/
 
 # Keep canonical seed/runtime files that are intentionally versioned
 !data/data.json

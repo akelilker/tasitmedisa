@@ -1,5 +1,25 @@
-# Add directories or file patterns to ignore during indexing (e.g. foo/ or *.csv)
+# Cursor index dışında kalacak geçici/runtime dosyalar
 .cursor/debug-*.log
 .cursor/plans/
 .cursor/sessions/
+.vscode/
+node_modules/
+outputs/
+tmp/
+tmp_doc_review/
+.tmp/
+.tmp-playwright/
+.tmp-chrome-k2-profile/
 data/backups/
+data/ruhsat/
+data/ruhsat_preview/
+data/kasko_police/
+data/kasko_police_preview/
+data/sigorta_police/
+data/sigorta_police_preview/
+data/k2_belgesi/
+data/k2_belgesi_preview/
+data/tasit_karti/
+data/tasit_karti_preview/
+data/takograf/
+data/takograf_preview/
