@@ -1,4 +1,4 @@
-﻿# Taşıt Yönetim Sistemi V3 - Geliştirici Raporu
+# Taşıt Yönetim Sistemi V3 - Geliştirici Raporu
 **Tarih:** 22 Haziran 2026
 **Doğrulama:** 22 Haziran 2026 (güncel `main` kod incelemesi)
 **Sistem:** Medisa Taşıt Yönetim Sistemi

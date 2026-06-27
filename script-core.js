@@ -676,6 +676,8 @@ window.__medisaScriptNormalizedUrl = function(srcAttr) {
  * Tekil dinamik betik: tam src eşleşmesinde tekrar <script> eklemez.
  * Sürüm query'si varsa aynı pathname ama farklı ?v= yeni betik olarak yüklenir.
  * loadAppModule / tasitlar-yazici / CDN lazy load ile paylaşılır.
+ * @param {string} src - Yüklenecek betik yolu veya mutlak URL.
+ * @returns {Promise<void>} Betik yüklendiğinde çözülen, hata durumunda reddedilen Promise.
  */
 window.__medisaLoadScriptOnce = function(src) {
   if (!src) return Promise.resolve();
@@ -1198,6 +1200,10 @@ function isMedisaVehicleNotificationDomainValid(namespace) {
   return true;
 }
 
+/**
+ * Taşıt bildirim domain modülünü tek sefer yükler ve public API sözleşmesini doğrular.
+ * @returns {Promise<void>}
+ */
 window.ensureMedisaVehicleNotificationDomainReady = function() {
   if (isMedisaVehicleNotificationDomainValid(window.MedisaVehicleNotificationDomain)) {
     return Promise.resolve();
@@ -1304,6 +1310,10 @@ window.ensureMedisaVehicleNotificationDomainReady = function() {
     return promise;
   }
 
+  /**
+   * Taşıtlar modülünü bağımlılıklarıyla birlikte yükler ve hazır işaretini doğrular.
+   * @returns {Promise<void>}
+   */
   window.ensureMedisaTasitlarModuleReady = function() {
     var inflightKey = 'medisa:tasitlar-module-ready';
     var inflight = window.__medisaModuleInflight;
