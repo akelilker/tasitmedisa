@@ -1488,6 +1488,21 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu .m
   text-shadow: var(--premium-title-shadow);
 }
 
+/* Ana modallar — menü .ttl ile birebir metalik başlık (ID + !important: düz renk fallback ezilmesin) */
+:is(#vehicle-modal, #vehicles-modal, #vehicle-detail-modal, #reports-modal) .modal-header h2.premium-title {
+  font-weight: var(--premium-title-weight);
+  letter-spacing: var(--premium-title-letter-spacing);
+  background: var(--premium-title-gradient) !important;
+  background-size: 100% 180% !important;
+  background-position: 50% 54% !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  color: transparent !important;
+  filter: brightness(1.01);
+  text-shadow: var(--premium-title-shadow) !important;
+}
+
 /* Dış çerçeve .modal-container’da: başlıkta üst border yok — çift katman / üst kırım önlenir */
 #vehicle-modal .modal-header,
 #reports-modal .modal-header,
@@ -1850,7 +1865,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         --premium-title-shadow: 0 1px 1px rgba(0, 0, 0, 0.26), 0 0 7px rgba(214, 224, 232, 0.26);
     }
 
-    .modal-overlay .modal-header h2.premium-title {
+    :is(#vehicle-modal, #vehicles-modal, #vehicle-detail-modal, #reports-modal) .modal-header h2.premium-title {
         filter: brightness(1.10);
     }
 
@@ -2465,6 +2480,15 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
             0 1px 2px rgba(0, 0, 0, 0.22),
             0 0 7px rgba(214, 224, 232, 0.24),
             0 0 9px rgba(214, 188, 132, 0.12);
+    }
+
+    /* Ana modal başlıkları mobilde menü .ttl ile aynı glow */
+    :is(#vehicle-modal, #vehicles-modal, #vehicle-detail-modal, #reports-modal) .modal-header h2.premium-title {
+        letter-spacing: 1.5px !important;
+        text-shadow:
+            0 1px 2px rgba(0, 0, 0, 0.22),
+            0 0 7px rgba(214, 224, 232, 0.24),
+            0 0 9px rgba(214, 188, 132, 0.12) !important;
     }
     
     /* Mobil: Kullanıcı paneli giriş butonu 2px aşağı */
