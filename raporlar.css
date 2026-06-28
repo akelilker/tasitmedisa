@@ -9,10 +9,10 @@ RAPORLAR MODAL CSS - FINAL (PWA FIX & DESKTOP 52PX)
 /* Modal Overlay */
 /* Overlay konumu style-core .modal-overlay (6px) kullanılır */
 #reports-modal.modal-overlay {
---modal-mobile-border-color: rgba(var(--theme-color-rgb), 0.30);
---modal-mobile-top-border-color: rgba(var(--theme-color-rgb), 0.52);
+--modal-mobile-border-color: rgba(184, 192, 201, 0.42);
+--modal-mobile-top-border-color: rgba(200, 208, 216, 0.48);
 --modal-mobile-header-top-border: rgba(255, 255, 255, 0.18);
---modal-mobile-inner-top-highlight: rgba(var(--theme-color-rgb), 0.20);
+--modal-mobile-inner-top-highlight: rgba(255, 255, 255, 0.12);
 display: none !important;
 background: var(--bg);
 flex-direction: column;
