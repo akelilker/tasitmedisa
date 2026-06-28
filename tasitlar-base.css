@@ -8,10 +8,10 @@
 
 /* Overlay konumu style-core .modal-overlay (6px) kullanılır; ezme yok */
 .tasitlar-modal-overlay {
-    --modal-mobile-border-color: rgba(var(--theme-color-rgb), 0.30);
-    --modal-mobile-top-border-color: rgba(var(--theme-color-rgb), 0.54);
+    --modal-mobile-border-color: rgba(184, 192, 201, 0.42);
+    --modal-mobile-top-border-color: rgba(200, 208, 216, 0.48);
     --modal-mobile-header-top-border: rgba(255, 255, 255, 0.18);
-    --modal-mobile-inner-top-highlight: rgba(var(--theme-color-rgb), 0.20);
+    --modal-mobile-inner-top-highlight: rgba(255, 255, 255, 0.12);
     display: none !important;
     background: var(--bg) !important;
     flex-direction: column !important;
@@ -2069,6 +2069,34 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     padding-left: 2px; /* Kırmızı çizgi ile arasındaki boşluk (toplam 4px için: 2px) */
     min-width: 0; /* Flex item'in küçülmesine izin ver */
     box-sizing: border-box; /* Padding'i genişlişe dahil et */
+}
+
+@media (max-width: 640px) {
+    .vehicle-detail-columns {
+        flex-direction: column;
+        gap: 0;
+        margin-top: 12px;
+        align-items: stretch;
+    }
+
+    .vehicle-detail-left {
+        flex: none;
+        width: 100%;
+        padding-right: 0;
+        padding-left: 0;
+        border-right: none;
+        box-shadow: none;
+        padding-bottom: 12px;
+        margin-bottom: 12px;
+        border-bottom: 1px solid rgba(var(--theme-color-rgb), 0.18);
+    }
+
+    .vehicle-detail-right {
+        flex: none;
+        width: 100%;
+        padding-left: 0;
+        padding-right: 0;
+    }
 }
 
 .detail-row {

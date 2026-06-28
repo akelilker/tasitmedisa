@@ -1847,19 +1847,7 @@
     font-weight: var(--modal-title-weight) !important;
   }
 
-  /* --- TAŞIT DETAY MODAL --- */
-  /* Taşıt detay: iki kolon arasındaki kullanılmayan mobil boşluğu azalt; ayırıcı çizgi ve 1px iç nefes korunur. */
-  #vehicle-detail-modal .vehicle-detail-columns {
-    gap: 2px !important;
-  }
-  #vehicle-detail-modal .vehicle-detail-left {
-    padding-right: 1px !important;
-  }
-  #vehicle-detail-modal .vehicle-detail-right {
-    padding-left: 1px !important;
-  }
-
-  /* Taşıt detay: layout base + container query ile; mobilde de yatay alan varsa yan yana */
+  /* --- TAŞIT DETAY MODAL (mobil tek kolon: base.css owner) --- */
   .detail-row-inline .detail-row-value {
     margin-top: 0 !important;
   }
@@ -2718,9 +2706,9 @@
   
   /* --- DETAY MODAL SCROLL & PADDING --- */
   #vehicle-detail-modal #vehicle-detail-content {
-    padding-top: 2px !important;
-    padding-left: 8px !important; /* Çerçeve ile içerik arası – detay sayfası rahat olsun */
-    padding-right: 8px !important;
+    padding-top: 10px !important;
+    padding-left: 12px !important;
+    padding-right: 12px !important;
   }
   #vehicle-detail-modal .modal-body {
     overflow-y: auto !important;
@@ -2767,7 +2755,7 @@
   }
 
   #vehicle-detail-modal #detail-boya-container .kaporta-schema-wrapper {
-    transform: translateX(-8px);
+    transform: none;
   }
   #vehicle-detail-modal #detail-boya-container .boya-legend {
     gap: 10px !important;

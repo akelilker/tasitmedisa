@@ -28,10 +28,10 @@
 #vehicle-modal {
     --save-green: #28a745;
     --save-green-rgb: 40, 167, 69;
-    --modal-mobile-border-color: rgba(var(--theme-color-rgb), 0.30);
-    --modal-mobile-top-border-color: rgba(var(--theme-color-rgb), 0.52);
+    --modal-mobile-border-color: rgba(184, 192, 201, 0.42);
+    --modal-mobile-top-border-color: rgba(200, 208, 216, 0.48);
     --modal-mobile-header-top-border: rgba(255, 255, 255, 0.18);
-    --modal-mobile-inner-top-highlight: rgba(var(--theme-color-rgb), 0.20);
+    --modal-mobile-inner-top-highlight: rgba(255, 255, 255, 0.12);
 }
 
 /* Çift katman / üst kırım: style-core tam opak overlay kullanır; ::before kapatıldı */
@@ -60,9 +60,6 @@
 #vehicle-modal .modal-body {
   min-height: 0;
   padding: 0px 12px 12px 12px !important; /* style-core .modal-overlay .modal-body 20px'i override */
-}
-#vehicle-modal .modal-body .modal-columns {
-  margin-top: -10px !important;
 }
 
 /* Boya/Değişen ile Notlar alt hizası: sol sütun flex, son blok alta yapışır */
@@ -1413,7 +1410,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal select.form-input,
     #vehicle-modal select {
         color: var(--data-value-color, #a0aec0) !important;
-        border-color: rgba(255, 255, 255, 0.34) !important; /* Mobil: çerçeve parlaması azaltıldı */
+        border-color: rgba(255, 255, 255, 0.40) !important;
         background: rgba(255, 255, 255, 0.008) !important; /* Zemin sisi minimal tutulur */
     }
     #vehicle-modal #vehicle-branch-select.branch-placeholder {
@@ -1428,7 +1425,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     }
     #vehicle-modal .vehicle-branch-dropdown-wrap.single-branch .vehicle-branch-trigger:focus,
     #vehicle-modal .vehicle-branch-dropdown-wrap.single-branch .vehicle-branch-trigger:focus-visible {
-        border-color: rgba(255, 255, 255, 0.34) !important;
+        border-color: rgba(255, 255, 255, 0.40) !important;
         box-shadow: none !important;
     }
     
@@ -1437,7 +1434,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     }
     
     #vehicle-modal .radio-btn {
-        border-color: rgba(255, 255, 255, 0.34) !important; /* Mobil: çerçeve parlaması azaltıldı */
+        border-color: rgba(255, 255, 255, 0.40) !important;
         color: rgba(255, 255, 255, 0.8) !important; /* Radio buton metni daha parlak */
         background: rgba(255, 255, 255, 0.008) !important; /* Beyaz sis minimal */
     }
@@ -1531,7 +1528,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         overflow-x: hidden !important;
         overscroll-behavior: none !important;
         overscroll-behavior-y: none !important;
-        padding-top: 12px !important;
+        padding-top: 16px !important;
         padding-left: 12px !important;
         padding-right: 12px !important;
         padding-bottom: 12px !important;
@@ -1552,8 +1549,8 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-body .universal-btn-group {
         flex-shrink: 0;
         position: static !important;
-        margin-top: 16px;
-        padding-top: 8px !important;
+        margin-top: 20px;
+        padding-top: 12px !important;
         padding-bottom: 30px !important; /* En alta rahat bir boşluk */
         background: transparent !important;
         z-index: 2;
@@ -1575,15 +1572,36 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     .modal-close { font-size: 21px; }
     textarea.form-input { font-size: 13px; }
     
-    .modal-columns { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0; min-width: 0; margin-top: 0 !important; }
-    .modal-column-left { padding-right: 8px; padding-left: 0; border-right: 1px solid rgba(var(--theme-color-rgb), 0.28); min-width: 0; }
-    .modal-column-right { padding-left: 8px; padding-right: 0; overflow: visible; min-width: 0; }
+    .modal-columns {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 0;
+        min-width: 0;
+        margin-top: 0 !important;
+        align-items: start !important;
+    }
+    .modal-column-left {
+        padding-right: 0;
+        padding-left: 0;
+        border-right: none;
+        box-shadow: none;
+        min-width: 0;
+        padding-bottom: 12px;
+        margin-bottom: 12px;
+        border-bottom: 1px solid rgba(var(--theme-color-rgb), 0.18);
+    }
+    .modal-column-right {
+        padding-left: 0;
+        padding-right: 0;
+        overflow: visible;
+        min-width: 0;
+    }
     #vehicle-modal .modal-column-right { display: flex; flex-direction: column; min-height: 0; }
     .modal-column-right .form-section { margin-bottom: 8px; }
 
-    /* Mobil: sağ-sol grid alt hizası eşit – kolonlar aynı yükseklikte, son satır aynı hizada */
+    /* Mobil: sol kolon üstü, sağ kolon alta — stretch hizalama gerekmez */
     #vehicle-modal .modal-columns {
-        align-items: stretch !important;
+        align-items: start !important;
     }
     #vehicle-modal .modal-column-left,
     #vehicle-modal .modal-column-right {
@@ -1591,6 +1609,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         flex-direction: column !important;
         min-height: 0;
         align-self: stretch !important;
+        width: 100%;
     }
     /* Sol alt hizayı bozan gizli Tramer/Boya alanları mobilde yer kaplamasın */
     #vehicle-modal .modal-column-left .form-section:has(#tramer-records-container):not(.tramer-records-visible),
@@ -1624,7 +1643,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         align-items: flex-end;
         flex-wrap: nowrap;
         max-width: 100%;
-        margin-top: -6px !important;
+        margin-top: 0 !important;
         padding: 0;
         box-sizing: border-box;
         gap: 0 !important;
@@ -1753,11 +1772,11 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     
     .form-input:not(#anahtar-nerede):not(#kredi-detay) { height: 26px; font-size: 13px; padding: 4px 8px; }
     
-    /* Sağ kolon çerçeveleri: mobilde 4px daralt (sağa taşmayı engelle) */
+    /* Sağ kolon çerçeveleri: tek kolonda tam genişlik */
     #vehicle-modal .modal-column-right .form-input,
     #vehicle-modal .modal-column-right select {
-        width: calc(100% - 4px) !important;
-        max-width: calc(100% - 4px) !important;
+        width: 100% !important;
+        max-width: 100% !important;
         margin-right: 0 !important;
         box-sizing: border-box;
     }
@@ -1879,6 +1898,10 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
 @media (min-width: 641px) {
     #vehicle-modal.modal-overlay .modal-container {
         margin-top: 2px !important;
+    }
+
+    #vehicle-modal .modal-body .modal-columns {
+        margin-top: -10px !important;
     }
 
     .form-input, select {
