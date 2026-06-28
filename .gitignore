@@ -6,6 +6,11 @@
 Thumbs.db
 .DS_Store
 
+# Local environment secrets
+.env
+.env.*
+!.env.example
+
 # Tooling dependencies
 node_modules/
 
