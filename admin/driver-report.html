@@ -32,7 +32,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../style-core.css?v=20260630.1">
-  <link rel="stylesheet" href="admin-report.css?v=20260630.1">
+  <link rel="stylesheet" href="admin-report.css?v=20260630.2">
 </head>
 <body class="admin-report-page">
   <div class="admin-app-container">
@@ -73,22 +73,22 @@
 
         <div id="monthly-stage-detail" class="monthly-stage-detail" hidden>
           <div class="report-stats report-stats-enhanced">
-            <div class="report-stat-box">
+            <button type="button" class="report-stat-box report-stat-filter" data-monthly-stat-filter="" aria-pressed="true">
               <div class="label">Toplam Taşıt</div>
               <div class="value" id="stat-total">0</div>
-            </div>
-            <div class="report-stat-box">
+            </button>
+            <button type="button" class="report-stat-box report-stat-filter" data-monthly-stat-filter="girdi" aria-pressed="false">
               <div class="label">Bildiren</div>
               <div class="value" id="stat-entered">0</div>
-            </div>
-            <div class="report-stat-box report-stat-box-pending">
+            </button>
+            <button type="button" class="report-stat-box report-stat-box-pending report-stat-filter" data-monthly-stat-filter="girmedi" aria-pressed="false">
               <div class="label">Beklenen</div>
               <div class="value" id="stat-pending">0</div>
-            </div>
-            <div class="report-stat-box report-stat-box-muted">
+            </button>
+            <button type="button" class="report-stat-box report-stat-box-muted report-stat-filter" data-monthly-stat-filter="atamasiz" aria-pressed="false">
               <div class="label">Tahsisi Olmayan</div>
               <div class="value" id="stat-unassigned">0</div>
-            </div>
+            </button>
           </div>
 
           <div class="report-toolbar-shell">
@@ -200,6 +200,6 @@
 
   <script defer src="../portal-session.js?v=20260513.2"></script>
   <script defer src="../script-core.js"></script>
-  <script defer src="admin-report.js?v=20260630.1"></script>
+  <script defer src="admin-report.js?v=20260630.2"></script>
 </body>
 </html>
