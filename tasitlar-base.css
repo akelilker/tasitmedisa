@@ -2661,7 +2661,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     height: 36px;
     min-height: 36px;
     background: var(--modal-bg);
-    border-top: 1px solid rgba(var(--theme-color-rgb), 0.18);
+    border-top: none;
     border-bottom: none;
     display: flex;
     justify-content: space-between;
