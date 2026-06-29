@@ -173,7 +173,7 @@
     width: 100%;
     padding: 4px 8px;
     background: #0d131f;
-    border: 1.1px solid rgba(255, 255, 255, 0.40); /* Çerçeve belirginleştirildi */
+    border: 1.1px solid rgba(255, 255, 255, 0.46); /* Çerçeve belirginleştirildi */
     border-radius: 6px;
     color: var(--data-value-color, #f8f9fa); /* Renk parlatıldı */
     font-size: 9px;
@@ -513,7 +513,7 @@ select.form-input {
     font-size: 9px;
     font-weight: 500;
     color: var(--data-value-color, #f8f9fa);
-    border: 1px solid rgba(255, 255, 255, 0.28);
+    border: 1px solid rgba(255, 255, 255, 0.34);
     border-radius: 6px;
     color-scheme: dark;
     accent-color: var(--theme-color, #d40000);
@@ -1264,7 +1264,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     width: 48px;
     flex: 0 0 48px;
     background: rgba(255, 255, 255, 0.08); /* Kontrast artırıldı */
-    border: 1px solid rgba(255, 255, 255, 0.35); /* Çerçeve belirginleştirildi */
+    border: 1px solid rgba(255, 255, 255, 0.42); /* Çerçeve belirginleştirildi */
     color: #e0e0e0; /* #888 çok soluktu, parlaklaştırıldı */
     font-size: 10px;
     font-weight: 500;
