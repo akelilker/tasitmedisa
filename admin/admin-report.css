@@ -2613,6 +2613,8 @@ body.admin-report-page .main-header-user-name.is-empty {
 }
 
 .monthly-stage-detail .report-stats.report-stats-enhanced .report-stat-box {
+  appearance: none;
+  -webkit-appearance: none;
   height: auto;
   max-height: none;
   min-height: 46px;
@@ -2625,6 +2627,26 @@ body.admin-report-page .main-header-user-name.is-empty {
   align-items: stretch;
   gap: 0;
   background: rgba(255, 255, 255, 0.02);
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.monthly-stage-detail .report-stats.report-stats-enhanced .report-stat-box:hover,
+.monthly-stage-detail .report-stats.report-stats-enhanced .report-stat-box:focus-visible,
+.monthly-stage-detail .report-stats.report-stats-enhanced .report-stat-box.active {
+  border-color: rgba(255, 255, 255, 0.52);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.monthly-stage-detail .report-stats.report-stats-enhanced .report-stat-box:focus-visible {
+  outline: 2px solid rgba(var(--theme-color-rgb), 0.38);
+  outline-offset: 2px;
+}
+
+.monthly-stage-detail .report-stats.report-stats-enhanced .report-stat-box.active {
+  box-shadow: inset 0 0 0 1px rgba(var(--theme-color-rgb), 0.20);
 }
 
 .monthly-stage-detail .report-stats.report-stats-enhanced .report-stat-box .label {

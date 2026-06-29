@@ -13,6 +13,7 @@
   var monthlyReportBranchCards = [];
   var monthlyReportView = 'list';
   var monthlyReportQuery = '';
+  var monthlyReportStatFilter = '';
   var monthlyMobileSortState = { key: '', direction: 'asc' };
   var monthlyBranchSelectionMade = false;
   var userAnalyticsUsers = [];
@@ -246,6 +247,7 @@
     if (mutedBox) {
       mutedBox.classList.toggle('has-data', atamasiYok > 0);
     }
+    syncMonthlyStatFilters();
   }
   function capitalizeWords(str) { return (typeof window.capitalizeWords === 'function' ? window.capitalizeWords(str) : str); }
   function normalizeDisplayName(rawValue) {
@@ -459,9 +461,9 @@
 
   function getMonthlyFilteredRecords(records) {
     var query = normalizeForSearch(monthlyReportQuery);
-    if (!query) return (records || []).slice();
-
     return (records || []).filter(function(record) {
+      if (!recordMatchesMonthlyStatFilter(record)) return false;
+      if (!query) return true;
       var haystack = [
         record.plaka,
         record.surucu_adi,
@@ -473,6 +475,39 @@
         record.email
       ].map(normalizeForSearch).join(' ');
       return haystack.indexOf(query) !== -1;
+    });
+  }
+
+  function recordMatchesMonthlyStatFilter(record) {
+    if (!monthlyReportStatFilter) return true;
+    var assigned = !(record && record.atama_var === false);
+    if (monthlyReportStatFilter === 'atamasiz') return !assigned;
+    if (!assigned) return false;
+    var entered = !!(record && record.girdi);
+    if (monthlyReportStatFilter === 'girdi') return entered;
+    if (monthlyReportStatFilter === 'girmedi') return !entered;
+    return true;
+  }
+
+  function syncMonthlyStatFilters() {
+    Array.prototype.forEach.call(document.querySelectorAll('.report-stat-filter'), function(button) {
+      var value = button.getAttribute('data-monthly-stat-filter') || '';
+      var active = value === monthlyReportStatFilter;
+      button.classList.toggle('active', active);
+      button.setAttribute('aria-pressed', active ? 'true' : 'false');
+    });
+  }
+
+  function bindMonthlyStatFilters() {
+    Array.prototype.forEach.call(document.querySelectorAll('.report-stat-filter'), function(button) {
+      if (button.dataset.monthlyStatFilterBound === '1') return;
+      button.addEventListener('click', function() {
+        var value = button.getAttribute('data-monthly-stat-filter') || '';
+        monthlyReportStatFilter = value === monthlyReportStatFilter ? '' : value;
+        syncMonthlyStatFilters();
+        renderMonthlyResults(monthlyReportRecords);
+      });
+      button.dataset.monthlyStatFilterBound = '1';
     });
   }
 
@@ -499,6 +534,7 @@
         monthlyBranchSelectionMade = false;
         reportBranch = '';
         monthlyReportQuery = '';
+        monthlyReportStatFilter = '';
         var searchInput = document.getElementById('report-search');
         var searchContainer = document.getElementById('report-search-container');
         if (searchInput) searchInput.value = '';
@@ -541,6 +577,7 @@
         monthlyBranchSelectionMade = true;
         reportBranch = selectedBranch === 'all' ? '' : selectedBranch;
         monthlyReportQuery = '';
+        monthlyReportStatFilter = '';
         if (searchInput) searchInput.value = '';
         if (searchContainer) searchContainer.classList.remove('open');
         syncMonthlyDetailStage();
@@ -2148,6 +2185,8 @@
       });
     }
     bindExpandableSearch('report-search-toggle', 'report-search-container', 'report-search');
+    bindMonthlyStatFilters();
+    syncMonthlyStatFilters();
 
     var monthlyViewToggle = document.getElementById('monthly-view-toggle');
     if (monthlyViewToggle) {
