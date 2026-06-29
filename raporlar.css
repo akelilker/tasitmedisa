@@ -396,7 +396,7 @@ width: calc((100% - (4 * 3px)) / 5);
 max-width: calc((100% - (4 * 3px)) / 5);
 flex: 0 0 calc((100% - (4 * 3px)) / 5);
 background: rgba(255, 255, 255, 0.02);
-border: 1px solid rgba(255, 255, 255, 0.30);
+border: 1px solid rgba(255, 255, 255, 0.36);
 border-radius: 8px;
 padding: 4px;
 padding-top: 16px !important;
@@ -414,13 +414,13 @@ box-sizing: border-box;
 }
 
 .stok-branch-card.all-card {
-border-color: rgba(255, 255, 255, 0.30);
+border-color: rgba(255, 255, 255, 0.36);
 }
 
 /* Masaüstü hover: Taşıtlar kutularıyla aynı */
 @media (hover: hover) and (pointer: fine) {
 .stok-branch-card:hover {
-border-color: rgba(255, 255, 255, 0.6);
+border-color: rgba(255, 255, 255, 0.66);
 transform: scale(1.04);
 transform-origin: center;
 z-index: 5;
@@ -430,7 +430,7 @@ z-index: 5;
 transform: none;
 }
 .stok-branch-card.all-card:hover {
-border-color: rgba(255, 255, 255, 0.6);
+border-color: rgba(255, 255, 255, 0.66);
 transform: scale(1.06);
 transform-origin: center;
 z-index: 10;
@@ -439,7 +439,7 @@ z-index: 10;
 /* Mobil active: Taşıtlar ile aynı */
 @media (hover: none) {
 .stok-branch-card:active {
-border-color: rgba(255, 255, 255, 0.6);
+border-color: rgba(255, 255, 255, 0.66);
 transform: scale(1.04);
 transform-origin: center;
 z-index: 5;
@@ -449,7 +449,7 @@ z-index: 5;
 transform: none;
 }
 .stok-branch-card.all-card:active {
-border-color: rgba(255, 255, 255, 0.6);
+border-color: rgba(255, 255, 255, 0.66);
 transform: scale(1.06);
 transform-origin: center;
 z-index: 10;
