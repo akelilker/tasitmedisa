@@ -29,12 +29,14 @@ body.admin-report-page::-webkit-scrollbar {
   margin: 0 auto;
   min-height: 100vh;
   background: var(--bg);
-  border-top: 0.8px solid rgba(var(--theme-color-rgb), 0.56);
-  border-left: 1px solid rgba(var(--theme-color-rgb), 0.72);
-  border-right: 1px solid rgba(var(--theme-color-rgb), 0.72);
+  border-top: 0.5px solid rgba(var(--theme-color-rgb), 0.78);
+  border-left: 0.7px solid rgba(var(--theme-color-rgb), 0.78);
+  border-right: 0.7px solid rgba(var(--theme-color-rgb), 0.78);
   box-sizing: border-box;
   overflow: visible;
-  box-shadow: inset 1px 0 0 rgba(var(--theme-color-rgb), 0.12), inset -1px 0 0 rgba(var(--theme-color-rgb), 0.12);
+  box-shadow:
+    0 0 16px rgba(var(--theme-color-rgb), 0.24),
+    inset 0 0 18px rgba(var(--theme-color-rgb), 0.10);
 }
 
 .admin-content-wrap {
@@ -2458,8 +2460,8 @@ body.admin-report-page .main-header-user-name.is-empty {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 180px));
   justify-content: center;
-  gap: 12px;
-  margin-bottom: 14px;
+  gap: 10px;
+  margin-bottom: 10px;
   width: 100%;
   padding: 0;
 }
@@ -2602,8 +2604,8 @@ body.admin-report-page .main-header-user-name.is-empty {
 
 /* Şubeler geri satırı: sekme butonlarının üstünde */
 .driver-report-page > #report-selection-bar .report-selection-backbar.universal-back-bar {
-  padding-top: 4px !important;
-  padding-bottom: 6px;
+  padding-top: 0 !important;
+  padding-bottom: 2px;
 }
 
 .report-selection-left {
@@ -2644,7 +2646,7 @@ body.admin-report-page .main-header-user-name.is-empty {
   min-height: 46px;
   padding: 0 6px;
   border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.32);
   display: flex;
   flex-direction: column-reverse;
   justify-content: flex-start;
