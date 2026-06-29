@@ -7,7 +7,6 @@
   var APP_VERSION = 'v78.3';
   var reportPeriod = '';
   var reportBranch = '';
-  var reportStatus = '';
   var branches = [];
   var dimTimeout = null;
   var monthlyReportRecords = [];
@@ -175,8 +174,7 @@
     reportPeriod = periodSelect ? periodSelect.value : new Date().toISOString().slice(0, 7);
 
     var url = API_BASE + 'admin_report.php?period=' + encodeURIComponent(reportPeriod)
-      + '&branch=' + encodeURIComponent(reportBranch || '')
-      + '&status=' + encodeURIComponent(reportStatus || '');
+      + '&branch=' + encodeURIComponent(reportBranch || '');
 
     fetchJson(url)
       .then(function (data) {
@@ -205,7 +203,6 @@
         renderStats(data.stats || {});
         renderMonthlySelectionBar(data.stats || {});
         syncMonthlyDetailStage();
-        syncReportStatusPills();
         syncMonthlyViewToggle();
         renderMonthlyResults(monthlyReportRecords);
       })
@@ -501,13 +498,11 @@
       resetBtn.addEventListener('click', function() {
         monthlyBranchSelectionMade = false;
         reportBranch = '';
-        reportStatus = '';
         monthlyReportQuery = '';
         var searchInput = document.getElementById('report-search');
         var searchContainer = document.getElementById('report-search-container');
         if (searchInput) searchInput.value = '';
         if (searchContainer) searchContainer.classList.remove('open');
-        syncReportStatusPills();
         renderMonthlyBranchGrid();
         renderMonthlySelectionBar({});
         syncMonthlyDetailStage();
@@ -545,19 +540,12 @@
         var searchContainer = document.getElementById('report-search-container');
         monthlyBranchSelectionMade = true;
         reportBranch = selectedBranch === 'all' ? '' : selectedBranch;
-        reportStatus = '';
         monthlyReportQuery = '';
         if (searchInput) searchInput.value = '';
         if (searchContainer) searchContainer.classList.remove('open');
         syncMonthlyDetailStage();
         loadReport();
       });
-    });
-  }
-
-  function syncReportStatusPills() {
-    Array.prototype.forEach.call(document.querySelectorAll('.report-status-pill'), function(button) {
-      button.classList.toggle('active', String(button.getAttribute('data-status') || '') === String(reportStatus || ''));
     });
   }
 
@@ -1913,8 +1901,7 @@
   function exportExcel() {
     var period = document.getElementById('report-period') ? document.getElementById('report-period').value : new Date().toISOString().slice(0, 7);
     var url = API_BASE + 'admin_export.php?period=' + encodeURIComponent(period)
-      + '&branch=' + encodeURIComponent(reportBranch || '')
-      + '&status=' + encodeURIComponent(reportStatus || '');
+      + '&branch=' + encodeURIComponent(reportBranch || '');
     fetch(url, {
       method: 'GET',
       cache: 'no-store',
@@ -2161,16 +2148,6 @@
       });
     }
     bindExpandableSearch('report-search-toggle', 'report-search-container', 'report-search');
-
-    Array.prototype.forEach.call(document.querySelectorAll('.report-status-pill'), function(button) {
-      if (button.dataset.reportStatusBound === '1') return;
-      button.addEventListener('click', function() {
-        reportStatus = button.getAttribute('data-status') || '';
-        syncReportStatusPills();
-        loadReport();
-      });
-      button.dataset.reportStatusBound = '1';
-    });
 
     var monthlyViewToggle = document.getElementById('monthly-view-toggle');
     if (monthlyViewToggle) {
