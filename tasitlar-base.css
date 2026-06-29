@@ -2073,28 +2073,25 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 
 @media (max-width: 640px) {
     .vehicle-detail-columns {
-        flex-direction: column;
+        flex-direction: row;
         gap: 0;
         margin-top: 12px;
-        align-items: stretch;
+        align-items: flex-start;
     }
 
     .vehicle-detail-left {
-        flex: none;
-        width: 100%;
-        padding-right: 0;
+        flex: 1;
+        width: auto;
+        padding-right: 2px;
         padding-left: 0;
-        border-right: none;
-        box-shadow: none;
-        padding-bottom: 12px;
-        margin-bottom: 12px;
-        border-bottom: 1px solid rgba(var(--theme-color-rgb), 0.18);
+        border-right: 1px solid rgba(var(--theme-color-rgb), 0.28);
+        box-shadow: 10px 0 18px -18px rgba(var(--theme-color-rgb), 0.45);
     }
 
     .vehicle-detail-right {
-        flex: none;
-        width: 100%;
-        padding-left: 0;
+        flex: 1;
+        width: auto;
+        padding-left: 2px;
         padding-right: 0;
     }
 }
