@@ -1410,7 +1410,6 @@ body.admin-report-page .main-header-user-name.is-empty {
 .report-view-btn,
 .user-analytics-view-btn,
 .report-icon-btn,
-.report-status-pill,
 .report-action-btn {
   appearance: none;
   font: inherit;
@@ -1452,34 +1451,6 @@ body.admin-report-page .main-header-user-name.is-empty {
 
 .report-icon-btn.report-icon-excel {
   color: #86efac;
-}
-
-.report-status-pills {
-  display: flex;
-  flex-wrap: nowrap;
-  align-items: center;
-  gap: 3px;
-  width: 100%;
-  min-width: 0;
-}
-
-.report-status-pill {
-  flex: 0 1 auto;
-  min-width: 0;
-  padding: 3px 6px;
-  border: none;
-  border-radius: 0;
-  background: transparent;
-  color: var(--muted);
-  font-size: 11px;
-  font-weight: 600;
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-.report-status-pill.active {
-  color: #ffffff;
-  font-weight: 700;
 }
 
 .user-analytics-statebar {
@@ -3224,10 +3195,6 @@ body.admin-report-page .main-header-user-name.is-empty {
 
 .monthly-action-placeholder {
   color: var(--muted);
-}
-
-.monthly-stage-detail #report-status-pills {
-  padding: 0 2px;
 }
 
 @media (max-width: 640px) {
