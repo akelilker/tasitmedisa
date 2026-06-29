@@ -2459,9 +2459,10 @@ body.admin-report-page .main-header-user-name.is-empty {
 .admin-tabs-container {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 180px));
-  justify-content: center;
+  justify-content: flex-start;
   gap: 10px;
-  margin-bottom: 10px;
+  margin-top: 0;
+  margin-bottom: 8px;
   width: 100%;
   padding: 0;
 }
