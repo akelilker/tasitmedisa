@@ -9,7 +9,9 @@
    ========================================= */
 
 (function() {
+  const MEDISA_TASITLAR_MODULE_VERSION = '20260630.3';
   window.__medisaTasitlarModuleReady = false;
+  window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
   var requiredVehicleDomainApi = [
     'vehicleNeedsK2Belgesi',
@@ -7250,10 +7252,10 @@
     }
   }
 
-  function uploadVehicleDocumentXHR(formData, onProgress) {
+  function uploadVehicleDocumentXHR(formData, onProgress, uploadUrl) {
     return new Promise(function(resolve, reject) {
       var xhr = new XMLHttpRequest();
-      xhr.open('POST', 'upload_ruhsat.php');
+      xhr.open('POST', uploadUrl || 'upload_ruhsat.php');
       var headers = buildMedisaAuthHeaders();
       Object.keys(headers).forEach(function(k) {
         var v = headers[k];
@@ -7323,11 +7325,20 @@
     }
     const formData = new FormData();
     formData.append('vehicleId', vehicleId);
-    formData.append('vehicleVersion', String(Number(vehicle.version) || 1));
+    const vehicleVersion = String(Number(vehicle.version) || 1);
+    formData.append('vehicleVersion', vehicleVersion);
     formData.append('documentType', cfg.key);
-    formData.append('documentPathBefore', getVehicleDocumentPath(vehicle, cfg.key));
+    const documentPathBefore = getVehicleDocumentPath(vehicle, cfg.key);
+    formData.append('documentPathBefore', documentPathBefore);
+    const uploadUrlParams = new URLSearchParams();
+    uploadUrlParams.set('vehicleId', vehicleId);
+    uploadUrlParams.set('vehicleVersion', vehicleVersion);
+    uploadUrlParams.set('documentType', cfg.key);
+    uploadUrlParams.set('documentPathBefore', documentPathBefore);
     if (cfg.key === 'tasit_karti') {
-      formData.append('tasitKartiExpiryDateBefore', getTasitKartiExpiryDate(vehicle));
+      const tasitKartiExpiryDateBefore = getTasitKartiExpiryDate(vehicle);
+      formData.append('tasitKartiExpiryDateBefore', tasitKartiExpiryDateBefore);
+      uploadUrlParams.set('tasitKartiExpiryDateBefore', tasitKartiExpiryDateBefore);
       const expiryValidation = validateTasitKartiK2SourceDate();
       if (!expiryValidation.valid) {
         alert(expiryValidation.message);
@@ -7342,11 +7353,13 @@
       }
       if (dateValidation.iso) {
         formData.append('documentOperationDate', dateValidation.iso);
+        uploadUrlParams.set('documentOperationDate', dateValidation.iso);
       }
     }
     formData.append('document', input.files[0]);
     setRuhsatUploadProgressVisible(true, 0, true);
     setRuhsatUploadUiLocked(true);
+    const uploadUrl = 'upload_ruhsat.php?' + uploadUrlParams.toString();
     uploadVehicleDocumentXHR(formData, function(info) {
       if (!info || info.lengthComputable === false) {
         setRuhsatUploadProgressVisible(true, 0, true);
@@ -7354,7 +7367,7 @@
         var pct = info.total ? Math.round(100 * info.loaded / info.total) : 0;
         setRuhsatUploadProgressVisible(true, pct, false);
       }
-    })
+    }, uploadUrl)
       .then(function(data) {
         setRuhsatUploadProgressVisible(false, 0, false);
         setRuhsatUploadUiLocked(false);
