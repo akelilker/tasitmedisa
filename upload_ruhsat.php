@@ -16,6 +16,38 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
+function medisaUploadSizeToBytes($value) {
+    $raw = trim((string)$value);
+    if ($raw === '') {
+        return 0;
+    }
+    $unit = strtolower(substr($raw, -1));
+    $number = (float)$raw;
+    if ($number <= 0) {
+        return 0;
+    }
+    switch ($unit) {
+        case 'g':
+            $number *= 1024;
+            // fall through
+        case 'm':
+            $number *= 1024;
+            // fall through
+        case 'k':
+            $number *= 1024;
+            break;
+    }
+    return (int)$number;
+}
+
+$contentLength = isset($_SERVER['CONTENT_LENGTH']) ? (int)$_SERVER['CONTENT_LENGTH'] : 0;
+$postMaxBytes = medisaUploadSizeToBytes(ini_get('post_max_size'));
+if ($contentLength > 0 && $postMaxBytes > 0 && $contentLength > $postMaxBytes) {
+    http_response_code(400);
+    echo json_encode(['error' => 'Dosya boyutu sunucu limitini aşıyor. Daha küçük bir PDF deneyin veya PDF boyutunu düşürüp tekrar yükleyin.'], JSON_UNESCAPED_UNICODE);
+    exit;
+}
+
 $documentType = strtolower(trim((string)($_POST['documentType'] ?? 'ruhsat')));
 $config = medisaGetVehicleDocumentConfig($documentType);
 if (!$config) {
