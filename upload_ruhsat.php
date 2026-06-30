@@ -48,6 +48,23 @@ if ($contentLength > 0 && $postMaxBytes > 0 && $contentLength > $postMaxBytes) {
     exit;
 }
 
+$hasUploadedFile = false;
+foreach (['document', 'ruhsat'] as $uploadFieldKey) {
+    if (!isset($_FILES[$uploadFieldKey]) || !is_array($_FILES[$uploadFieldKey])) {
+        continue;
+    }
+    $uploadError = (int)($_FILES[$uploadFieldKey]['error'] ?? UPLOAD_ERR_NO_FILE);
+    if ($uploadError !== UPLOAD_ERR_NO_FILE) {
+        $hasUploadedFile = true;
+        break;
+    }
+}
+if ($contentLength > 0 && empty($_POST) && !$hasUploadedFile) {
+    http_response_code(400);
+    echo json_encode(['error' => 'Yükleme verisi sunucuya ulaşmadı. Dosya boyutu sunucu limitini aşmış olabilir; daha küçük bir PDF deneyin.'], JSON_UNESCAPED_UNICODE);
+    exit;
+}
+
 $documentType = strtolower(trim((string)($_POST['documentType'] ?? 'ruhsat')));
 $config = medisaGetVehicleDocumentConfig($documentType);
 if (!$config) {
