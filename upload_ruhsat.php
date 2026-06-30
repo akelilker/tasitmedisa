@@ -65,7 +65,24 @@ if ($contentLength > 0 && empty($_POST) && !$hasUploadedFile) {
     exit;
 }
 
-$documentType = strtolower(trim((string)($_POST['documentType'] ?? 'ruhsat')));
+function medisaUploadRequestValue($key, $default = '', $fallbackWhenPostEmpty = false) {
+    if (array_key_exists($key, $_POST)) {
+        $value = $_POST[$key];
+        if (!$fallbackWhenPostEmpty || trim((string)$value) !== '') {
+            return $value;
+        }
+    }
+    if (array_key_exists($key, $_GET)) {
+        return $_GET[$key];
+    }
+    return $default;
+}
+
+function medisaUploadRequestHas($key) {
+    return array_key_exists($key, $_POST) || array_key_exists($key, $_GET);
+}
+
+$documentType = strtolower(trim((string)medisaUploadRequestValue('documentType', 'ruhsat', true)));
 $config = medisaGetVehicleDocumentConfig($documentType);
 if (!$config) {
     http_response_code(400);
@@ -215,8 +232,9 @@ function medisaCanMergeVehicleDocumentUpload($vehicle, $config, $documentType, $
     return true;
 }
 
-$vehicleId = trim((string)($_POST['vehicleId'] ?? ''));
-$vehicleVersion = isset($_POST['vehicleVersion']) ? (int)$_POST['vehicleVersion'] : null;
+$vehicleId = trim((string)medisaUploadRequestValue('vehicleId', '', true));
+$vehicleVersionRaw = medisaUploadRequestValue('vehicleVersion', null, true);
+$vehicleVersion = $vehicleVersionRaw !== null && $vehicleVersionRaw !== '' ? (int)$vehicleVersionRaw : null;
 if (!$isSettingsDocument && $vehicleId === '') {
     http_response_code(400);
     echo json_encode(['error' => 'vehicleId gerekli'], JSON_UNESCAPED_UNICODE);
@@ -231,14 +249,14 @@ if (!$isSettingsDocument && ($vehicleVersion === null || $vehicleVersion <= 0)) 
 
 $tasitKartiK2ExpiryDate = '';
 
-$hasClientDocumentPath = array_key_exists('documentPathBefore', $_POST);
-$clientDocumentPath = $hasClientDocumentPath ? (string)$_POST['documentPathBefore'] : '';
-$hasClientTasitKartiSyncDate = array_key_exists('tasitKartiExpiryDateBefore', $_POST);
+$hasClientDocumentPath = medisaUploadRequestHas('documentPathBefore');
+$clientDocumentPath = $hasClientDocumentPath ? (string)medisaUploadRequestValue('documentPathBefore', '') : '';
+$hasClientTasitKartiSyncDate = medisaUploadRequestHas('tasitKartiExpiryDateBefore');
 $clientTasitKartiSyncDate = $hasClientTasitKartiSyncDate
-    ? medisaNormalizeUploadDocumentDateToIso($_POST['tasitKartiExpiryDateBefore'])
+    ? medisaNormalizeUploadDocumentDateToIso(medisaUploadRequestValue('tasitKartiExpiryDateBefore', '', true))
     : '';
 
-$documentOperationDateRaw = trim((string)($_POST['documentOperationDate'] ?? ''));
+$documentOperationDateRaw = trim((string)medisaUploadRequestValue('documentOperationDate', '', true));
 $documentOperationDate = $documentOperationDateRaw !== ''
     ? medisaNormalizeUploadDocumentDateToIso($documentOperationDateRaw)
     : '';
@@ -343,7 +361,7 @@ if ($safeId === '') {
     $safeId = 'vehicle_' . (preg_replace('/\D/', '', $vehicleId) ?: 'unknown');
 }
 
-$plate = strtoupper(preg_replace('/[^A-Z0-9]/', '', (string)($_POST['plaka'] ?? '')));
+$plate = strtoupper(preg_replace('/[^A-Z0-9]/', '', (string)medisaUploadRequestValue('plaka', '')));
 if ($plate === '') {
     $plate = $isSettingsDocument
         ? strtoupper((string)($config['fallbackName'] ?? $documentType))
