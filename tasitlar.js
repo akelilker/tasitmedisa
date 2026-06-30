@@ -5454,6 +5454,43 @@
     if (actionGroup) actionGroup.classList.toggle('ruhsat-single-visible', !visible);
   }
 
+  function pinRuhsatUploadVehicleContext(vehicleId) {
+    const vid = String(vehicleId || '').trim();
+    if (!vid) return '';
+    window.currentDetailVehicleId = vid;
+    const modal = DOM.dinamikOlayModal || document.getElementById('dinamik-olay-modal');
+    const content = document.getElementById('ruhsat-modal-content') || DOM.dinamikOlayFormIcerik;
+    if (modal) modal.dataset.vehicleId = vid;
+    if (content) content.dataset.vehicleId = vid;
+    return vid;
+  }
+
+  function resolveRuhsatUploadVehicleId() {
+    const modal = DOM.dinamikOlayModal || document.getElementById('dinamik-olay-modal');
+    const content = document.getElementById('ruhsat-modal-content') || DOM.dinamikOlayFormIcerik;
+    const fromModal = modal && modal.dataset && modal.dataset.vehicleId
+      ? String(modal.dataset.vehicleId).trim()
+      : '';
+    const fromContent = content && content.dataset && content.dataset.vehicleId
+      ? String(content.dataset.vehicleId).trim()
+      : '';
+    const fromGlobal = window.currentDetailVehicleId != null
+      ? String(window.currentDetailVehicleId).trim()
+      : '';
+    return fromModal || fromContent || fromGlobal || '';
+  }
+
+  function findVehicleForDocumentUpload(vehicleId) {
+    const rawId = String(vehicleId || '').trim();
+    if (!rawId) return null;
+    var appTasitlar = window.appData && Array.isArray(window.appData.tasitlar) ? window.appData.tasitlar : [];
+    var vehicle = appTasitlar.find(function(v) { return String(v.id) === rawId; });
+    if (vehicle) return vehicle;
+    var vehicles = readVehicles();
+    if (!Array.isArray(vehicles)) return null;
+    return vehicles.find(function(v) { return String(v.id) === rawId; }) || null;
+  }
+
   function setRuhsatInlineViewerMode(active) {
     const content = document.getElementById('ruhsat-modal-content') || (DOM.dinamikOlayFormIcerik && DOM.dinamikOlayModal && DOM.dinamikOlayModal.classList.contains('active') ? DOM.dinamikOlayFormIcerik : null);
     const actionGroup = document.getElementById('ruhsat-btn-group') || (DOM.dinamikOlayKaydetBtn && DOM.dinamikOlayKaydetBtn.closest && DOM.dinamikOlayKaydetBtn.closest('.universal-btn-group'));
@@ -6823,12 +6860,8 @@
   window.openVehicleDocumentsModal = function(vehicleId) {
     const vid = (vehicleId || window.currentDetailVehicleId || '').toString();
     if (!vid) return;
-    window.currentDetailVehicleId = vid;
-    var appTasitlar = window.appData && Array.isArray(window.appData.tasitlar) ? window.appData.tasitlar : [];
-    var vehicle = appTasitlar.find(function(v) { return String(v.id) === vid; });
-    if (!vehicle) {
-      vehicle = readVehicles().find(function(v) { return String(v.id) === vid; });
-    }
+    pinRuhsatUploadVehicleContext(vid);
+    var vehicle = findVehicleForDocumentUpload(vid);
     const modal = DOM.dinamikOlayModal;
     const content = DOM.dinamikOlayFormIcerik;
     const saveBtn = DOM.dinamikOlayKaydetBtn;
@@ -6866,12 +6899,8 @@
     const cfg = getVehicleDocumentConfig(dt);
     const vid = (vehicleId || window.currentDetailVehicleId || '').toString();
     if (!vid) return;
-    window.currentDetailVehicleId = vid;
-    var appTasitlar = window.appData && Array.isArray(window.appData.tasitlar) ? window.appData.tasitlar : [];
-    var vehicle = appTasitlar.find(function(v) { return String(v.id) === vid; });
-    if (!vehicle) {
-      vehicle = readVehicles().find(function(v) { return String(v.id) === vid; });
-    }
+    pinRuhsatUploadVehicleContext(vid);
+    var vehicle = findVehicleForDocumentUpload(vid);
     const modal = DOM.dinamikOlayModal;
     const content = DOM.dinamikOlayFormIcerik;
     const saveBtn = DOM.dinamikOlayKaydetBtn;
@@ -6976,6 +7005,8 @@
 
   function renderRuhsatUploadForm(content, saveBtn, hasExistingRuhsat, documentType) {
     const cfg = getVehicleDocumentConfig(documentType);
+    const pinnedVehicleId = resolveRuhsatUploadVehicleId();
+    if (content && pinnedVehicleId) content.dataset.vehicleId = pinnedVehicleId;
     content.innerHTML = '';
     if (cfg.key === 'sigorta' || cfg.key === 'kasko' || cfg.key === 'takograf') {
       const dateStack = document.createElement('div');
@@ -7280,11 +7311,14 @@
   window.saveRuhsatUpload = function(documentType) {
     const cfg = getVehicleDocumentConfig(documentType);
     const input = document.getElementById('ruhsat-file-input');
-    const vehicleId = (window.currentDetailVehicleId || '').toString();
-    const vehicles = window.appData?.tasitlar || [];
-    const vehicle = vehicles.find(function(x) { return String(x.id) === String(vehicleId); });
-    if (!input || !input.files || !input.files[0] || !vehicleId || !vehicle) {
+    const vehicleId = resolveRuhsatUploadVehicleId();
+    const vehicle = findVehicleForDocumentUpload(vehicleId);
+    if (!input || !input.files || !input.files[0]) {
       alert(cfg.missingAlert);
+      return;
+    }
+    if (!vehicleId || !vehicle) {
+      alert('Taşıt kimliği bulunamadı. Belgeler ekranını kapatıp taşıt detayından yeniden açın.');
       return;
     }
     const formData = new FormData();
