@@ -4,6 +4,7 @@
 #   FTP_SERVER, FTP_USERNAME, FTP_PASSWORD  — çoğu cPanel hesabında zaten tanımlı
 #   FTP_REMOTE_DIR  — sunucudaki hedef klasör, FTP köküne göre, sonda / olmalı
 #                     örn. public_html/medisa/  (.cpanel.yml DEPLOYPATH ile uyumlu olsun)
+#                     Dedicated /public_html/medisa FTP hesabı için ./ kullanın.
 #                     Aynı isimle "Repository variables" altında da verilebilir (secret boşsa orası kullanılır).
 #
 # İsteğe bağlı: Farklı bağlantı tipi gerekiyorsa Actions → Variables altında değiştirin:
