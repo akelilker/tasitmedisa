@@ -646,6 +646,25 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       if (usernameInput) usernameInput.addEventListener('focus', function() { scrollInputIntoView(this); });
       if (passwordInput) passwordInput.addEventListener('focus', function() { scrollInputIntoView(this); });
 
+      function submitLoginFormFromPageEnter(ev) {
+          if (!ev || ev.key !== 'Enter' || ev.defaultPrevented || ev.altKey || ev.ctrlKey || ev.metaKey || ev.shiftKey) return;
+          var active = document.activeElement;
+          if (active && loginForm.contains(active)) return;
+          if (document.body && document.body.classList.contains('login-gate-active')) return;
+          if (!usernameInput || !passwordInput) return;
+          if (!usernameInput.value.trim() || !passwordInput.value) return;
+          var loginBtn = document.getElementById('login-btn');
+          if (loginBtn && loginBtn.disabled) return;
+
+          ev.preventDefault();
+          if (typeof loginForm.requestSubmit === 'function') {
+              loginForm.requestSubmit(loginBtn || undefined);
+          } else if (loginBtn) {
+              loginBtn.click();
+          }
+      }
+      document.addEventListener('keydown', submitLoginFormFromPageEnter);
+
       loginForm.addEventListener('submit', async (e) => {
           e.preventDefault();
 
