@@ -2705,8 +2705,9 @@
   }
   
   /* --- DETAY MODAL SCROLL & PADDING --- */
+  /* Toolbar–plaka kimlik bloğu: algılanan üst boşluğu daralt (Olay Ekle min-height 26px korunur) */
   #vehicle-detail-modal #vehicle-detail-content {
-    padding-top: 10px !important;
+    padding-top: 5px !important;
     padding-left: 12px !important;
     padding-right: 12px !important;
   }
@@ -2747,7 +2748,7 @@
     padding-top: 0 !important;
     position: relative;
     z-index: 1;
-    min-height: 36px !important;
+    min-height: 28px !important;
   }
   /* Taşıt detay: Olay Ekle mobilde +1pt (17px) */
   #vehicle-detail-modal .detail-plate-row .history-add-event-btn {
