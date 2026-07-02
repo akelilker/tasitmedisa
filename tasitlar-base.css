@@ -496,6 +496,17 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
   background: rgba(var(--theme-color-rgb), 0.24) !important;
   color: #ffffff !important;
 }
+.olay-ekle-modal .modal-body .ceza-user-option--add {
+  background: transparent !important;
+  border-top: 1px solid rgba(190, 200, 214, 0.14) !important;
+  color: rgba(var(--theme-color-rgb), 0.95) !important;
+  font-weight: 600 !important;
+}
+.olay-ekle-modal .modal-body .ceza-user-option--add:hover,
+.olay-ekle-modal .modal-body .ceza-user-option--add:focus {
+  background: rgba(var(--theme-color-rgb), 0.16) !important;
+  color: #ffffff !important;
+}
 .olay-ekle-modal .modal-body .ceza-user-empty {
   padding: 11px 12px !important;
   color: #6c757d !important;
