@@ -1518,14 +1518,14 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
   .dashboard-page .driver-below-hero {
     overflow: visible;
   }
-  /* Blur overlay — açık durumda tam ekran karartma */
+  /* Düz karartma — açık durumda tam ekran (blur yok; ana modal kontratı ile uyumlu) */
   .dashboard-page .driver-shortcuts-overlay {
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(3, 7, 14, 0.60);
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
+    background: rgba(3, 7, 14, 0.68);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
     z-index: 10042;
     cursor: default;
   }
