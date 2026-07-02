@@ -1313,7 +1313,7 @@ body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-
 @media (max-width: 640px) {
     #monthly-todo-header-btn .monthly-todo-header-badge {
         top: 0;
-        right: 2px;
+        right: 0;
         font-size: 16px;
         font-weight: 900;
         line-height: 1;
