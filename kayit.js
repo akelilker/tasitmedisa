@@ -175,6 +175,7 @@
     panel: null,
     input: null,
     anchor: null,
+    adapter: null,
     year: 0,
     month: 0,
     bound: false
@@ -186,6 +187,25 @@
     const m = String(date.getMonth() + 1).padStart(2, '0');
     const d = String(date.getDate()).padStart(2, '0');
     return `${y}-${m}-${d}`;
+  }
+
+  /** Takvim değeri okuma/yazma: adapter varsa dış formatı (ör. olay gg/aa/yyyy), yoksa kayıt ekranı varsayılanı */
+  function readVehicleDateCalendarIso(input) {
+    const adapter = vehicleDateCalendarState.adapter;
+    if (adapter && typeof adapter.readIso === 'function') {
+      const v = adapter.readIso(input);
+      return v == null ? '' : String(v);
+    }
+    return readVehicleDateIso(input);
+  }
+
+  function writeVehicleDateCalendarValue(input, iso) {
+    const adapter = vehicleDateCalendarState.adapter;
+    if (adapter && typeof adapter.writeIso === 'function') {
+      input.value = adapter.writeIso(iso || '') || '';
+      return;
+    }
+    setVehicleDateInputValue(input, iso || '');
   }
 
   function getVehicleCalendarDateFromIso(iso) {
@@ -243,6 +263,7 @@
     }
     vehicleDateCalendarState.input = null;
     vehicleDateCalendarState.anchor = null;
+    vehicleDateCalendarState.adapter = null;
   }
 
   function positionVehicleDateCalendarPanel() {
@@ -283,7 +304,7 @@
 
     const year = vehicleDateCalendarState.year;
     const month = vehicleDateCalendarState.month;
-    const selectedIso = readVehicleDateIso(input);
+    const selectedIso = readVehicleDateCalendarIso(input);
     const todayIso = getVehicleCalendarIsoFromDate(new Date());
     const firstDay = new Date(year, month, 1);
     const startOffset = (firstDay.getDay() + 6) % 7;
@@ -321,13 +342,14 @@
     panel.setAttribute('aria-hidden', 'false');
   }
 
-  function openVehicleDateCalendar(input, anchor) {
+  function openVehicleDateCalendar(input, anchor, adapter) {
     if (!input || input.disabled || !anchor) return;
     if (vehicleDateCalendarState.input === input && vehicleDateCalendarState.panel && vehicleDateCalendarState.panel.classList.contains('open')) {
       closeVehicleDateCalendar();
       return;
     }
-    const selectedDate = getVehicleCalendarDateFromIso(readVehicleDateIso(input)) || new Date();
+    vehicleDateCalendarState.adapter = adapter || null;
+    const selectedDate = getVehicleCalendarDateFromIso(readVehicleDateCalendarIso(input)) || new Date();
     vehicleDateCalendarState.input = input;
     vehicleDateCalendarState.anchor = anchor;
     vehicleDateCalendarState.year = selectedDate.getFullYear();
@@ -341,7 +363,7 @@
     const input = vehicleDateCalendarState.input;
     if (!input) return;
     const previousValue = input.value;
-    setVehicleDateInputValue(input, iso || '');
+    writeVehicleDateCalendarValue(input, iso || '');
     if (input.value !== previousValue) {
       dispatchVehicleDateInputEvents(input);
     }
@@ -390,6 +412,7 @@
       if (!panel || !panel.classList.contains('open')) return;
       if (panel.contains(event.target)) return;
       if (anchor && anchor.closest('.vehicle-date-picker-wrap') && anchor.closest('.vehicle-date-picker-wrap').contains(event.target)) return;
+      if (anchor && (anchor === event.target || anchor.contains(event.target))) return;
       closeVehicleDateCalendar();
     });
     document.addEventListener('keydown', function(event) {
@@ -397,6 +420,15 @@
     });
     window.addEventListener('resize', closeVehicleDateCalendar);
   }
+
+  /** Paylaşılan takvim servisi: olay/sigorta akışı gibi diğer modüller de kullanır (owner kayit.js) */
+  window.MedisaDateCalendar = {
+    open: function(input, anchor, adapter) {
+      bindVehicleDateCalendarGlobalEvents();
+      openVehicleDateCalendar(input, anchor, adapter);
+    },
+    close: closeVehicleDateCalendar
+  };
 
   function setupVehicleDatePickers(root) {
     var calendarSvg = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M8 2v4"/><path d="M16 2v4"/><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18"/></svg>';

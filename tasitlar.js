@@ -9,7 +9,7 @@
    ========================================= */
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20260702.1';
+  const MEDISA_TASITLAR_MODULE_VERSION = '20260702.2';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
@@ -191,20 +191,27 @@
     };
 
     const renderUserList = function() {
+      const rawQuery = String(searchInput.value || '').trim();
       const query = normalizeForSearch(searchInput.value || '');
       const filtered = userNames.filter(function(name) {
         return normalizeForSearch(name).indexOf(query) !== -1;
       });
 
+      let html = '';
       if (!filtered.length) {
-        listEl.innerHTML = '<div class="ceza-user-empty">Kullanıcı bulunamadı</div>';
-        return;
+        html += '<div class="ceza-user-empty">Kullanıcı bulunamadı</div>';
+      } else {
+        html += filtered.map(function(name) {
+          const isSelected = selectedUserName === name;
+          return '<button type="button" class="ceza-user-option' + (isSelected ? ' selected' : '') + '" data-user-name="' + escapeHtmlLocal(name) + '" role="option" aria-selected="' + (isSelected ? 'true' : 'false') + '">' + escapeHtmlLocal(name) + '</button>';
+        }).join('');
       }
-
-      listEl.innerHTML = filtered.map(function(name) {
-        const isSelected = selectedUserName === name;
-        return '<button type="button" class="ceza-user-option' + (isSelected ? ' selected' : '') + '" data-user-name="' + escapeHtmlLocal(name) + '" role="option" aria-selected="' + (isSelected ? 'true' : 'false') + '">' + escapeHtmlLocal(name) + '</button>';
-      }).join('');
+      // Serbest metin: sirket disi / listede olmayan kisi icin bu cezaya ozel isim (users tablosuna yazilmaz)
+      const addLabel = rawQuery
+        ? '+ "' + escapeHtmlLocal(rawQuery) + '" kullan'
+        : '+ Yeni Kullanıcı Ekle';
+      html += '<button type="button" class="ceza-user-option ceza-user-option--add" data-add-user="1">' + addLabel + '</button>';
+      listEl.innerHTML = html;
     };
 
     const setSelectedUser = function(name) {
@@ -255,6 +262,17 @@
         lastTouchOptionAt = Date.now();
         if (e.cancelable) e.preventDefault();
       } else if (e.type === 'click' && Date.now() - lastTouchOptionAt < 500) {
+        return;
+      }
+      const addBtn = e.target.closest('[data-add-user]');
+      if (addBtn) {
+        let name = String(searchInput.value || '').trim();
+        if (!name) name = String(window.prompt('Kullanıcı adı girin (şirket dışı kişi):', '') || '').trim();
+        if (!name) return;
+        if (userNames.indexOf(name) === -1) userNames = userNames.concat(name);
+        setSelectedUser(name);
+        closeDropdown();
+        trigger.focus();
         return;
       }
       const option = e.target.closest('.ceza-user-option');
@@ -1468,12 +1486,13 @@
     modalContent.addEventListener('click', handleVehicleRowClick);
   }
 
-  /** Olay menüsü render state (gruplar, etiketler, aktif taşıt). */
+  /** Olay menüsü render state (gruplar, etiketler, aktif taşıt, aktif kategori). */
   var eventMenuRenderState = {
     groups: [],
     labels: {},
     vehicleId: '',
-    vehicle: null
+    vehicle: null,
+    currentCategoryId: ''
   };
 
   var EVENT_MENU_SHIELD_CHECK_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m8.5 12 2.2 2.2 4.8-4.8"/></svg>';
@@ -1539,6 +1558,14 @@
     { id: 'kullanim', title: 'Kullanım ve Olaylar', ids: ['km', 'ceza', 'bakim', 'lastik', 'anahtar', 'kaza'] },
     { id: 'yonetim', title: 'Yönetim İşlemleri', ids: ['kullanici', 'sube', 'kredi', 'satis'] }
   ];
+
+  /** Bir olay tipinin ait olduğu kategori id'si (geri dönüşte ara ekranı restore için). */
+  function getCategoryIdForEventType(type) {
+    for (var i = 0; i < EVENT_MENU_GROUPS.length; i++) {
+      if (EVENT_MENU_GROUPS[i].ids.indexOf(type) !== -1) return EVENT_MENU_GROUPS[i].id;
+    }
+    return '';
+  }
 
   var EVENT_MENU_DEFAULT_EVENT_IDS = [
     'muayene',
@@ -1707,6 +1734,7 @@
   function renderEventMenuCategoryRoot() {
     var menuList = DOM.eventMenuList;
     if (!menuList) return;
+    eventMenuRenderState.currentCategoryId = '';
     syncEventMenuBackButton('root');
     syncEventMenuHeaderTitle('OLAY EKLE');
     menuList.classList.add('event-menu-list--categories');
@@ -1729,6 +1757,7 @@
       return item.id === categoryId;
     });
     if (!group) return;
+    eventMenuRenderState.currentCategoryId = categoryId;
     menuList.classList.remove('event-menu-list--categories');
     menuList.classList.add('event-menu-list--items');
     syncEventMenuBackButton('items');
@@ -4195,10 +4224,32 @@
       btn.setAttribute('aria-label', 'Tarih se\u00e7');
       btn.removeAttribute('aria-hidden');
       btn.tabIndex = 0;
+      /* Adapter: kayit.js takvim servisi input elementi verir; parse/format gg/aa/yyyy string ile calisir */
+      const olayCalendarAdapter = {
+        readIso: function(inp) { return parseGgAaYyyyToIso(inp ? inp.value : ''); },
+        writeIso: function(iso) { return iso ? formatIsoToGgAaYyyy(iso) : ''; }
+      };
+      function openOlayCustomCalendar() {
+        if (window.MedisaDateCalendar && typeof window.MedisaDateCalendar.open === 'function') {
+          window.MedisaDateCalendar.open(textEl, btn, olayCalendarAdapter);
+          return;
+        }
+        if (typeof ensureVehicleTypePickerModule === 'function') {
+          ensureVehicleTypePickerModule().then(function() {
+            if (window.MedisaDateCalendar && typeof window.MedisaDateCalendar.open === 'function') {
+              window.MedisaDateCalendar.open(textEl, btn, olayCalendarAdapter);
+            } else {
+              openOlayNativeDatePicker();
+            }
+          }).catch(function() { openOlayNativeDatePicker(); });
+          return;
+        }
+        openOlayNativeDatePicker();
+      }
       btn.addEventListener('click', function(e) {
         e.preventDefault();
         e.stopPropagation();
-        openOlayNativeDatePicker();
+        openOlayCustomCalendar();
       });
 
       /* iOS Safari: ekran dışındaki type=date üzerinde showPicker/click genelde çalışmaz; simge butonu showPicker çağırır */
@@ -4544,7 +4595,7 @@
   /**
    * Olay modal menüsünü veya tek dinamik olay form modal'ını açar
    */
-  function openEventModalBody(type, vehicleId) {
+  function openEventModalBody(type, vehicleId, returnCategoryId) {
     closeDynamicModalCustomSelect();
 
     var effectiveVid = '';
@@ -4604,13 +4655,20 @@
       }).filter(function(group) {
         return group.ids.length > 0;
       });
-      renderEventMenuCategoryRoot();
+      // Formdan geri dönüşte ara kategori ekranı korunur; yoksa kök menü.
+      if (returnCategoryId && eventMenuRenderState.groups.some(function(g) { return g.id === returnCategoryId; })) {
+        renderEventMenuCategoryItems(returnCategoryId);
+      } else {
+        renderEventMenuCategoryRoot();
+      }
       
       modal.style.display = 'flex';
       requestAnimationFrame(() => {
         modal.classList.add('active');
       });
     } else {
+      // Form açılışında aktif kategoriyi türet: geri dönüşte doğru ara ekrana dönülür.
+      eventMenuRenderState.currentCategoryId = getCategoryIdForEventType(type);
       if (type === 'ruhsat') {
         window.currentDetailVehicleId = (vehicleId || window.currentDetailVehicleId || '').toString();
         if (typeof window.openVehicleDocumentsModal === 'function') window.openVehicleDocumentsModal(vehicleId || window.currentDetailVehicleId);
@@ -5161,10 +5219,10 @@
     }
   }
 
-  window.openEventModal = function(type, vehicleId) {
+  window.openEventModal = function(type, vehicleId, returnCategoryId) {
     var flushP = flushVehicleDetailNotesInlineSave();
     function proceed() {
-      openEventModalBody(type, vehicleId);
+      openEventModalBody(type, vehicleId, returnCategoryId);
     }
     if (flushP && typeof flushP.then === 'function') {
       flushP.then(proceed, proceed);
@@ -5219,10 +5277,12 @@
   window.closeEventModalAndShowEventMenu = function(type) {
     const vehicleId = window.currentDetailVehicleId;
     const dynamicModal = DOM.dinamikOlayModal || document.getElementById(DINAMIK_OLAY_MODAL_ID);
+    // openEventModal('menu') kök render edip currentCategoryId'yi sıfırlar; önce oku.
+    const returnCategoryId = eventMenuRenderState.currentCategoryId;
 
     // Önce menüyü aç, sonra dinamik modalı kapat:
     // böylece iki modal arasında boş frame kalmaz ve Taşıt Detay "flash" etmez.
-    openEventModal('menu', vehicleId);
+    openEventModal('menu', vehicleId, returnCategoryId);
 
     requestAnimationFrame(function() {
       if (dynamicModal && dynamicModal.classList.contains('active')) {
