@@ -236,44 +236,45 @@
 .view-list .list-item.archive-vehicle-row .list-cell.list-brand {
     display: flex !important;
     flex-direction: column !important;
+    justify-content: center !important;
+    align-items: stretch !important;
     -webkit-line-clamp: unset !important;
     line-clamp: unset !important;
     -webkit-box-orient: initial !important;
 }
 .view-list .list-item.archive-vehicle-row .list-cell.list-brand .archive-brand-main {
-    display: block;
+    display: -webkit-box;
     width: 100%;
-    white-space: nowrap;
+    white-space: normal;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    font-size: 0.94em;
+    line-height: 1.16;
+    max-height: 2.32em;
     overflow: hidden;
-    text-overflow: ellipsis;
+    text-overflow: clip;
 }
 .view-list .list-item.archive-vehicle-row .list-cell.list-brand .archive-satildi-line {
     display: block;
+    flex: 0 0 auto;
     color: #d40000;
     font-size: 12px;
     line-height: 1.1;
     margin-top: 1px;
 }
-@media (max-width: 640px) {
-    .view-list .list-item.archive-vehicle-row .list-cell.list-brand {
-        justify-content: center !important;
-        align-items: stretch !important;
+@media (min-width: 769px) {
+    .view-list .list-item.archive-vehicle-row {
+        min-height: 48px;
     }
-
+}
+@media (max-width: 640px) {
     .view-list .list-item.archive-vehicle-row .list-cell.list-brand .archive-brand-main {
-        display: -webkit-box;
-        white-space: normal;
-        -webkit-line-clamp: 2;
-        line-clamp: 2;
-        -webkit-box-orient: vertical;
         line-height: 1.12;
         max-height: 2.24em;
-        overflow: hidden;
-        text-overflow: clip;
     }
 
     .view-list .list-item.archive-vehicle-row .list-cell.list-brand .archive-satildi-line {
-        flex: 0 0 auto;
         margin-top: 2px;
     }
 }
