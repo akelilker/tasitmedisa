@@ -64,6 +64,15 @@
   }
 
   function getEgzozMuayeneState(vehicle) {
+    if (isVehicleOperationallyInactive(vehicle)) {
+      return {
+        state: 'inactive',
+        date: '',
+        days: null,
+        warningClass: ''
+      };
+    }
+
     var rawDate = vehicle && vehicle.egzozMuayeneDate != null ? String(vehicle.egzozMuayeneDate).trim() : '';
     if (!rawDate) {
       return {

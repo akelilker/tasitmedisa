@@ -1112,7 +1112,7 @@ var MEDISA_MODULE_VERSIONS = {
   ayarlarJs: '20260625.2',
   ayarlarCss: '20260623.6',
   tasitlarYazici: '20260517.5',
-  vehicleNotificationDomain: '20260617.1'
+  vehicleNotificationDomain: '20260703.1'
 };
 window.MEDISA_MODULE_VERSIONS = MEDISA_MODULE_VERSIONS;
 
