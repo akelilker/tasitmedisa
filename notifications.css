@@ -1311,10 +1311,17 @@ body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-
     }
 }
 @media (max-width: 640px) {
+    #monthly-todo-header-btn {
+        overflow: visible;
+    }
+    #monthly-todo-header-btn svg {
+        width: 26px !important;
+        height: 26px !important;
+    }
     #monthly-todo-header-btn .monthly-todo-header-badge {
-        top: -2px;
+        top: -4px;
         right: auto;
-        left: calc(100% - 6px);
+        left: calc(100% + 2px);
         font-size: 16px;
         font-weight: 900;
         line-height: 1;
