@@ -2270,7 +2270,7 @@
         const mtvStateClass = mtvRead ? ' notification-read' : ' notification-unread date-warning-orange-border';
         const mtvStyle = mtvRead
           ? '--notif-border: rgba(130, 130, 130, 0.55); --notif-fg: #9a9a9a;'
-          : '--notif-border: rgba(250, 204, 21, 0.68); --notif-fg: #fff;';
+          : '--notif-border: rgba(245, 158, 11, 0.68); --notif-fg: #fff;';
         const mtvFirstSeenDisplay = getOrCreateNotificationFirstSeen(mtvKey);
         mtvSortMs = parseNotificationDisplayDateMs(mtvFirstSeenDisplay);
         const mtvDateHtml = showDesktopSpecialNotifDate ? '<div class="notif-line2 notif-meta-date">' + escapeHtml(mtvFirstSeenDisplay) + '</div>' : '';
@@ -2467,7 +2467,7 @@
 
             const borderColor = notif.warningClass === 'date-warning-red'
               ? 'rgba(212, 0, 0, 0.6)'
-              : 'rgba(250, 204, 21, 0.68)';
+              : 'rgba(245, 158, 11, 0.68)';
             const readBorderColor = 'rgba(130, 130, 130, 0.55)';
 
             const safePlate = (notif.type === 'k2' ? 'Şirket Evrakı' : (notif.plate || '')).replace(/"/g, '&quot;');
