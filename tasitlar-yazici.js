@@ -250,6 +250,9 @@
   }
 
   function summarizeOtherHistoryEvent(event, branches) {
+    function title(value) {
+      return toTitleCase(String(value));
+    }
     var eventType = String(event.type || '').trim();
     var d = event.data || {};
     var text = '';
@@ -258,24 +261,24 @@
     if (eventType === 'anahtar-guncelle') {
       var durum1 = String(d.durum || 'yok').toLowerCase();
       text = 'Yedek Anahtar: ' + (durum1 === 'var' ? 'Var' : 'Yok');
-      if (d.detay) extra = 'Konum: ' + toTitleCase(String(d.detay));
+      if (d.detay) extra = 'Konum: ' + title(d.detay);
     } else if (eventType === 'lastik-guncelle') {
       var durum2 = String(d.durum || 'yok').toLowerCase();
       text = 'Yazlık/ Kışlık Lastik Durumu: ' + (durum2 === 'var' ? 'Var' : 'Yok');
-      if (d.adres) extra = 'Konum: ' + toTitleCase(String(d.adres));
+      if (d.adres) extra = 'Konum: ' + title(d.adres);
     } else if (eventType === 'kasko-guncelle') {
       text = 'Kasko Güncelleme';
       var details1 = [];
       if (d.bitisTarihi) details1.push('Bitiş: ' + (formatDateForDisplay(d.bitisTarihi) || '-'));
-      if (d.firma) details1.push('Firma: ' + toTitleCase(String(d.firma)));
-      if (d.acente) details1.push('Acente: ' + toTitleCase(String(d.acente)));
+      if (d.firma) details1.push('Firma: ' + title(d.firma));
+      if (d.acente) details1.push('Acente: ' + title(d.acente));
       extra = details1.join(' | ');
     } else if (eventType === 'sigorta-guncelle') {
       text = 'Sigorta Güncelleme';
       var details2 = [];
       if (d.bitisTarihi) details2.push('Bitiş: ' + (formatDateForDisplay(d.bitisTarihi) || '-'));
-      if (d.firma) details2.push('Firma: ' + toTitleCase(String(d.firma)));
-      if (d.acente) details2.push('Acente: ' + toTitleCase(String(d.acente)));
+      if (d.firma) details2.push('Firma: ' + title(d.firma));
+      if (d.acente) details2.push('Acente: ' + title(d.acente));
       extra = details2.join(' | ');
     } else if (eventType === 'muayene-guncelle') {
       text = 'Muayene Güncelleme';
@@ -285,21 +288,21 @@
     } else if (eventType === 'kullanici-atama') {
       text = 'Kullanıcı Ataması';
       var details3 = [];
-      if (d.kullaniciAdi) details3.push('Yeni: ' + toTitleCase(String(d.kullaniciAdi)));
-      if (d.eskiKullaniciAdi) details3.push('Önceki: ' + toTitleCase(String(d.eskiKullaniciAdi)));
+      if (d.kullaniciAdi) details3.push('Yeni: ' + title(d.kullaniciAdi));
+      if (d.eskiKullaniciAdi) details3.push('Önceki: ' + title(d.eskiKullaniciAdi));
       extra = details3.join(' | ');
     } else if (eventType === 'sube-degisiklik') {
       text = 'Şube Değişikliği';
       var yeni = d.yeniSubeAdi || ((branches.find(function(b) { return String(b.id) === String(d.yeniSubeId); }) || {}).name) || '';
       var eski = d.eskiSubeAdi || ((branches.find(function(b) { return String(b.id) === String(d.eskiSubeId); }) || {}).name) || '';
       var details4 = [];
-      if (yeni) details4.push('Yeni: ' + toTitleCase(String(yeni)));
-      if (eski) details4.push('Önceki: ' + toTitleCase(String(eski)));
+      if (yeni) details4.push('Yeni: ' + title(yeni));
+      if (eski) details4.push('Önceki: ' + title(eski));
       extra = details4.join(' | ');
     } else if (eventType === 'kredi-guncelle') {
       var durum3 = String(d.durum || 'yok').toLowerCase();
       text = 'Hak Mahrumiyeti: ' + (durum3 === 'var' ? 'Var' : 'Yok');
-      if (d.detay) extra = 'Detay: ' + toTitleCase(String(d.detay));
+      if (d.detay) extra = 'Detay: ' + title(d.detay);
     } else if (eventType === 'utts-guncelle') {
       text = 'UTTS: ' + ((d.durum === true || d.durum === 'evet') ? 'Evet' : 'Hayır');
     } else if (eventType === 'takip-cihaz-guncelle') {
@@ -308,7 +311,7 @@
       text = 'Trafik Cezası';
       var details5 = [];
       if (d.tutar) details5.push('Tutar: ' + d.tutar + ' TL');
-      if (d.aciklama) details5.push('Nedeni: ' + toTitleCase(String(d.aciklama)));
+      if (d.aciklama) details5.push('Nedeni: ' + title(d.aciklama));
       extra = details5.join(' | ');
     } else if (eventType === 'driver-feedback') {
       text = 'Kullanıcı Panelinde Talep Kaydı Oluşturdu';
@@ -327,7 +330,7 @@
     } else if (eventType === 'satis') {
       text = 'Satış / Pert';
     } else {
-      text = toTitleCase(eventType || 'Diğer İşlem');
+      text = title(eventType || 'Diğer İşlem');
     }
 
     return { text: text || '-', extra: extra || '' };
@@ -577,18 +580,16 @@
 '        try { if (window.history.length > 1) { window.history.back(); return; } } catch (e) {}' +
 '        if (returnUrl) { window.location.href = returnUrl; }' +
 '      }' +
-'      if (document.readyState === "loading") {' +
-'        document.addEventListener("DOMContentLoaded", function() {' +
-'          var backBtn = document.getElementById("print-preview-back");' +
-'          var closeBtn = document.getElementById("print-preview-close");' +
-'          if (backBtn) backBtn.addEventListener("click", safeReturnToApp);' +
-'          if (closeBtn) closeBtn.addEventListener("click", function() { try { window.close(); } catch (e) {} setTimeout(safeReturnToApp, 80); });' +
-'        });' +
-'      } else {' +
+'      function bindPrintPreviewButtons() {' +
 '        var backBtn = document.getElementById("print-preview-back");' +
 '        var closeBtn = document.getElementById("print-preview-close");' +
 '        if (backBtn) backBtn.addEventListener("click", safeReturnToApp);' +
 '        if (closeBtn) closeBtn.addEventListener("click", function() { try { window.close(); } catch (e) {} setTimeout(safeReturnToApp, 80); });' +
+'      }' +
+'      if (document.readyState === "loading") {' +
+'        document.addEventListener("DOMContentLoaded", bindPrintPreviewButtons);' +
+'      } else {' +
+'        bindPrintPreviewButtons();' +
 '      }' +
 '    })();' +
 '  <\/script>' +
