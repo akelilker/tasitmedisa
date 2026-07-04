@@ -256,6 +256,7 @@
     const panel = vehicleDateCalendarState.panel;
     if (panel) {
       panel.classList.remove('open');
+      panel.classList.remove('vehicle-date-calendar-panel--viewport');
       panel.setAttribute('aria-hidden', 'true');
     }
     if (vehicleDateCalendarState.anchor) {
@@ -269,28 +270,59 @@
   function positionVehicleDateCalendarPanel() {
     const panel = vehicleDateCalendarState.panel;
     const anchor = vehicleDateCalendarState.anchor;
-    const container = panel ? panel.parentElement : null;
-    if (!panel || !anchor || !container) return;
+    const input = vehicleDateCalendarState.input;
+    if (!panel || !anchor) return;
+
+    const useViewportLayer = !!(input && input.closest('#dinamik-olay-modal'));
+
+    if (useViewportLayer) {
+      if (panel.parentNode !== document.body) {
+        document.body.appendChild(panel);
+      }
+      panel.classList.add('vehicle-date-calendar-panel--viewport');
+    } else {
+      panel.classList.remove('vehicle-date-calendar-panel--viewport');
+      const container = getVehicleDateCalendarContainer(input);
+      if (container && panel.parentNode !== container) {
+        container.appendChild(panel);
+      }
+    }
 
     panel.style.visibility = 'hidden';
     panel.classList.add('open');
 
-    const containerRect = container.getBoundingClientRect();
+    const gap = 6;
+    const pad = 8;
     const anchorRect = anchor.getBoundingClientRect();
-    const panelWidth = Math.min(252, Math.max(216, containerRect.width - 16));
+    const panelWidth = useViewportLayer
+      ? Math.min(252, Math.max(216, window.innerWidth - 16))
+      : Math.min(252, Math.max(216, (panel.parentElement ? panel.parentElement.getBoundingClientRect().width : window.innerWidth) - 16));
     panel.style.width = `${panelWidth}px`;
 
     const panelHeight = panel.offsetHeight || 268;
-    const gap = 6;
-    const pad = 8;
-    let left = anchorRect.right - containerRect.left - panelWidth;
-    left = Math.max(pad, Math.min(left, containerRect.width - panelWidth - pad));
+    let left;
+    let top;
 
-    let top = anchorRect.bottom - containerRect.top + gap;
-    if (top + panelHeight + pad > containerRect.height) {
-      top = anchorRect.top - containerRect.top - panelHeight - gap;
+    if (useViewportLayer) {
+      left = anchorRect.right - panelWidth;
+      left = Math.max(pad, Math.min(left, window.innerWidth - panelWidth - pad));
+      top = anchorRect.bottom + gap;
+      if (top + panelHeight + pad > window.innerHeight) {
+        top = anchorRect.top - panelHeight - gap;
+      }
+      top = Math.max(pad, Math.min(top, window.innerHeight - panelHeight - pad));
+    } else {
+      const container = panel.parentElement;
+      if (!container) return;
+      const containerRect = container.getBoundingClientRect();
+      left = anchorRect.right - containerRect.left - panelWidth;
+      left = Math.max(pad, Math.min(left, containerRect.width - panelWidth - pad));
+      top = anchorRect.bottom - containerRect.top + gap;
+      if (top + panelHeight + pad > containerRect.height) {
+        top = anchorRect.top - containerRect.top - panelHeight - gap;
+      }
+      top = Math.max(pad, Math.min(top, containerRect.height - panelHeight - pad));
     }
-    top = Math.max(pad, Math.min(top, containerRect.height - panelHeight - pad));
 
     panel.style.left = `${left}px`;
     panel.style.top = `${top}px`;
