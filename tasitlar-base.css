@@ -1591,7 +1591,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     #event-menu-modal .event-menu-item--status-orange:focus-visible .event-menu-category-icon,
     #event-menu-modal .event-menu-item--status-orange:hover .event-menu-category-icon-wrap--police-letter,
     #event-menu-modal .event-menu-item--status-orange:focus-visible .event-menu-category-icon-wrap--police-letter {
-        color: var(--orange-warn, #ff6a00);
+        color: var(--orange-warn, #facc15);
         filter: none;
         transform: scale(1.03);
     }
