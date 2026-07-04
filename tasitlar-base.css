@@ -454,6 +454,13 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
   overflow-y: auto !important;
   scrollbar-width: none !important;
   -ms-overflow-style: none !important;
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+}
+.olay-ekle-modal .modal-body #ceza-user-add-btn {
+  flex-shrink: 0 !important;
+  border-top: 1px solid rgba(190, 200, 214, 0.14) !important;
+  border-bottom: none !important;
 }
 .olay-ekle-modal .modal-body .ceza-user-list::-webkit-scrollbar {
   display: none !important;
