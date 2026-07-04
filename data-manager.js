@@ -1318,6 +1318,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         sessionStorage.removeItem('medisa_just_restored');
         loadDataFromLocalStorage();
         window.dispatchEvent(new CustomEvent('dataLoaded', { detail: window.appData }));
+        if (typeof window.medisaNotifyAppReady === 'function') window.medisaNotifyAppReady();
         return;
     }
 
@@ -1327,4 +1328,5 @@ document.addEventListener('DOMContentLoaded', async function() {
         console.warn('[Medisa] İlk veri yüklemesi tamamlanamadı:', loadErr && loadErr.message);
     }
     window.dispatchEvent(new CustomEvent('dataLoaded', { detail: window.appData }));
+    if (typeof window.medisaNotifyAppReady === 'function') window.medisaNotifyAppReady();
 });
