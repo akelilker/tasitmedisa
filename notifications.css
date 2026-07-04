@@ -1276,16 +1276,19 @@ body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-
 /* Üst taşıt takvim / rozet */
 #monthly-todo-header-btn {
     position: relative;
+    display: inline-flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 3px;
+    overflow: visible;
 }
 #monthly-todo-header-btn .monthly-todo-header-badge {
     pointer-events: none;
     box-sizing: border-box;
-    position: absolute;
-    top: -3px;
-    right: auto;
-    left: calc(100% + 2px);
-    min-width: 0;
-    min-height: 0;
+    position: static;
+    flex: 0 0 auto;
+    min-width: 2ch;
+    min-height: 1em;
     padding: 0;
     border-radius: 0;
     background: none;
@@ -1302,32 +1305,26 @@ body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
     text-shadow: none;
+    transform: translateY(-2px);
 }
 @media (min-width: 641px) {
     #monthly-todo-header-btn .monthly-todo-header-badge {
-        top: 0;
-        right: auto;
-        left: calc(100% + 2px);
         font-size: 12px;
         font-weight: 900;
+        transform: translateY(-1px);
         -webkit-font-smoothing: antialiased;
     }
 }
 @media (max-width: 640px) {
-    #monthly-todo-header-btn {
-        overflow: visible;
-    }
     #monthly-todo-header-btn svg {
         width: 26px !important;
         height: 26px !important;
     }
     #monthly-todo-header-btn .monthly-todo-header-badge {
-        top: -4px;
-        right: auto;
-        left: calc(100% + 2px);
-        font-size: 16px;
+        font-size: 13px;
         font-weight: 900;
         line-height: 1;
+        transform: translateY(-3px);
         -webkit-font-smoothing: antialiased;
     }
 }
