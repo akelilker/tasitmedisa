@@ -414,12 +414,6 @@ window.openMedisaIosPwaPrintPreview = function openMedisaIosPwaPrintPreview(prin
   var toolbar = document.createElement('div');
   toolbar.style.cssText = 'display:flex;align-items:center;gap:8px;margin-bottom:10px;flex:0 0 auto;';
   toolbar.innerHTML =
-    '<button type="button" data-print-preview-action="back" style="border:1px solid #b8bec8;background:#fff;color:#111;border-radius:10px;padding:10px 12px;font:600 15px Arial,sans-serif;">Geri Dön</button>' +
-    '<div style="flex:1;text-align:center;font:700 16px Arial,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + safeTitle + '</div>' +
-    '<button type="button" data-print-preview-action="print" style="border:1px solid #0f766e;background:#0f766e;color:#fff;border-radius:10px;padding:10px 12px;font:700 15px Arial,sans-serif;">Yazdır</button>' +
-    '<button type="button" data-print-preview-action="close" style="border:1px solid #b8bec8;background:#fff;color:#111;border-radius:10px;padding:10px 12px;font:600 15px Arial,sans-serif;">Kapat</button>';
-
-  toolbar.innerHTML =
     '<button type="button" data-print-preview-action="back" style="border:1px solid rgba(226,232,240,.18);background:rgba(15,23,36,.82);color:#eef2f7;border-radius:10px;padding:10px 12px;font:600 15px Arial,sans-serif;box-shadow:inset 0 0 0 1px rgba(255,255,255,.04);">Geri D&#246;n</button>' +
     '<div style="flex:1;text-align:center;font:700 16px Arial,sans-serif;color:#f8fafc;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + safeTitle + '</div>' +
     '<button type="button" data-print-preview-action="print" style="border:1px solid #0f766e;background:#0f766e;color:#fff;border-radius:10px;padding:10px 12px;font:700 15px Arial,sans-serif;box-shadow:0 10px 24px rgba(15,118,110,.32);">Yazd&#305;r</button>' +
