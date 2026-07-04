@@ -1286,7 +1286,7 @@ body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-
     box-sizing: border-box;
     position: absolute;
     top: -7px;
-    left: calc(100% - 4px);
+    left: 100%;
     min-width: 2ch;
     min-height: 1em;
     padding: 0;
@@ -1309,7 +1309,7 @@ body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-
 @media (min-width: 641px) {
     #monthly-todo-header-btn .monthly-todo-header-badge {
         top: -6px;
-        left: calc(100% - 4px);
+        left: 100%;
         font-size: 12px;
         font-weight: 900;
         -webkit-font-smoothing: antialiased;
@@ -1322,7 +1322,7 @@ body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-
     }
     #monthly-todo-header-btn .monthly-todo-header-badge {
         top: -8px;
-        left: calc(100% - 8px);
+        left: 100%;
         font-size: 13px;
         font-weight: 900;
         line-height: 1;
