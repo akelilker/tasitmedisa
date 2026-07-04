@@ -1277,16 +1277,16 @@ body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-
 #monthly-todo-header-btn {
     position: relative;
     display: inline-flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: center;
-    gap: 3px;
     overflow: visible;
 }
 #monthly-todo-header-btn .monthly-todo-header-badge {
     pointer-events: none;
     box-sizing: border-box;
-    position: static;
-    flex: 0 0 auto;
+    position: absolute;
+    top: -7px;
+    left: 17px;
     min-width: 2ch;
     min-height: 1em;
     padding: 0;
@@ -1305,13 +1305,13 @@ body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
     text-shadow: none;
-    transform: translateY(-2px);
 }
 @media (min-width: 641px) {
     #monthly-todo-header-btn .monthly-todo-header-badge {
+        top: -6px;
+        left: 16px;
         font-size: 12px;
         font-weight: 900;
-        transform: translateY(-1px);
         -webkit-font-smoothing: antialiased;
     }
 }
@@ -1321,10 +1321,11 @@ body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-
         height: 26px !important;
     }
     #monthly-todo-header-btn .monthly-todo-header-badge {
+        top: -8px;
+        left: 21px;
         font-size: 13px;
         font-weight: 900;
         line-height: 1;
-        transform: translateY(-3px);
         -webkit-font-smoothing: antialiased;
     }
 }
