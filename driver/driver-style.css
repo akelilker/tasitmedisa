@@ -1765,15 +1765,13 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
   font-family: inherit;
   min-width: min-content; /* Sığmazsa açıklama daralmadan tamamı alt satıra geçer, ortadan bölünmez */
 }
-/* İzole Edilmiş Tarih / KM Uyarı Renkleri ve Sızıntı Engeli */
-.driver-info-item.driver-warn-red .label,
+/* İzole Edilmiş Tarih / KM Uyarı Renkleri ve Sızıntı Engeli — sadece değer renklenir */
 .driver-info-item.driver-warn-red .value {
   color: var(--theme-color) !important;
 }
 .driver-info-item .value .driver-info-missing-value {
   color: var(--theme-color, #e00000);
 }
-.driver-info-item.driver-warn-orange .label,
 .driver-info-item.driver-warn-orange .value {
   color: var(--orange-warn) !important;
 }
@@ -1854,7 +1852,6 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
   box-shadow: 0 0 8px rgba(238, 246, 255, 0.14);
   text-shadow: 0 0 5px rgba(238, 246, 255, 0.32);
 }
-.driver-info-item.saved .label,
 .driver-info-item.saved .value {
   color: #22c55e;
 }
