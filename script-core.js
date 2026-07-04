@@ -1601,14 +1601,12 @@ document.addEventListener('DOMContentLoaded', function() {
         versionEl.textContent = APP_VERSION + suffix;
     }
 
-    // Loading screen'i kapat (index.html'deki window.hideLoading kullanılır)
-    if (window.hideLoading) window.hideLoading();
 });
 
-// Splash kapanışı index.html tarafında; veri gelince ayrıca bildirim motorunu çalıştır.
+// Splash kapanışı index.html'deki app-ready modeline bağlı; veri gelince notify + bildirim motoru.
 window.addEventListener('dataLoaded', () => {
-    if (typeof window.hideLoading === 'function') {
-        setTimeout(window.hideLoading, 50);
+    if (typeof window.medisaNotifyAppReady === 'function') {
+        setTimeout(window.medisaNotifyAppReady, 50);
     }
 
     // Bildirimler ayrı lazy modülde; Taşıtlar ekranı açılmadan tasitlar.js yüklenmez.

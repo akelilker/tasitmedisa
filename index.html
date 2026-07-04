@@ -44,7 +44,7 @@
     <meta name="apple-mobile-web-app-title" content="Taşıt Yönetim Sistemi">
 
     <!-- Critical CSS: FOUC/CLS için minimal kurallar; tam footer/modal token ve kurallar style-core.css (sürüm script-core MEDISA_MODULE_VERSIONS.tasitlar ile uyumlu) -->
-    <!-- Critical CSS - Splash (logo + başlık 3 sn, JS gelmese bile otomatik kapanır) -->
+    <!-- Critical CSS - Splash (JS controlled dismiss: app-ready + min süre, en geç MAX fallback) -->
     <style>
         #loading-screen {
             position: fixed;
@@ -59,7 +59,6 @@
             z-index: 10001; /* Footer (10000) üstünde; splash sırasında footer gizlenir */
             opacity: 1;
             transition: opacity 0.4s ease;
-            animation: autoHideLoading 2s forwards;
         }
         #loading-screen.hidden {
             opacity: 0;
@@ -97,10 +96,6 @@
             background-clip: text;
             -webkit-text-fill-color: transparent;
             font-family: 'Inter', sans-serif;
-        }
-        @keyframes autoHideLoading {
-            0%, 85% { opacity: 1; pointer-events: auto; }
-            100% { opacity: 0; pointer-events: none; visibility: hidden; }
         }
         /* CLS azaltma: CSS gelmeden önce modal/footer yerleşimini sabitle */
         .modal-overlay,
@@ -1202,38 +1197,56 @@
     <!-- INLINE KRITIK JS: Harici script dosyaları 404 olsa bile loading screen kapanır -->
     <script>
     (function(){
-      // 1. Loading screen: logo+başlık en az 2 sn gösterilir, sonra kapanır
-      var SPLASH_MIN = 2000;
+      // 1. Splash: JS controlled dismiss — app-ready sinyali + min süre; en geç MAX fallback
+      var MIN_SPLASH_MS = 2000;
+      var MAX_SPLASH_MS = 8000;
       var _start = Date.now();
-      window.hideLoading = function hideLoading() {
+      var appReady = false;
+      var dismissed = false;
+
+      // Güvenli kapatma: her yolda app-loading kaldırılır
+      function hideLoading() {
+        if (dismissed) return;
+        dismissed = true;
         var ls = document.getElementById('loading-screen');
         if (!ls) {
-          document.body.classList.remove('app-loading');
-          return;
-        }
-        if (ls.classList.contains('hidden')) {
-          document.body.classList.remove('app-loading');
-          return;
-        }
-        var elapsed = Date.now() - _start;
-        if (elapsed < SPLASH_MIN) {
-          setTimeout(hideLoading, Math.max(50, SPLASH_MIN - elapsed));
+          if (document.body) document.body.classList.remove('app-loading');
           return;
         }
         ls.classList.add('hidden');
-        ls.style.animation = 'none';
         setTimeout(function(){
           ls.style.display = 'none';
-          document.body.classList.remove('app-loading');
+          if (document.body) document.body.classList.remove('app-loading');
         }, 350);
-      };
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', hideLoading);
-      } else {
-        hideLoading();
       }
-      window.addEventListener('load', hideLoading);
-      setTimeout(hideLoading, 2500);
+
+      function tryDismissSplash() {
+        if (dismissed) return;
+        var elapsed = Date.now() - _start;
+        if (appReady && elapsed >= MIN_SPLASH_MS) {
+          hideLoading();
+          return;
+        }
+        if (elapsed >= MAX_SPLASH_MS) {
+          hideLoading();
+          return;
+        }
+        // App hazır ama min marka süresi dolmadıysa kalan süre sonrası tekrar dene
+        if (appReady) {
+          setTimeout(tryDismissSplash, Math.max(50, MIN_SPLASH_MS - elapsed));
+        }
+      }
+
+      // Ready sinyali owner: data-manager / script-core dataLoaded akışı çağırır
+      window.medisaNotifyAppReady = function medisaNotifyAppReady() {
+        appReady = true;
+        tryDismissSplash();
+      };
+      // Geriye uyumluluk: eski (cache'li) script-core doğrudan çağırırsa güvenli kapatma
+      window.hideLoading = hideLoading;
+
+      // MAX fallback: app-ready hiç gelmese de splash asılı kalmasın
+      setTimeout(tryDismissSplash, MAX_SPLASH_MS);
 
       // 2. CSS async load fallback: onerror durumunda media='all' yap (print kalmayı önle)
       document.querySelectorAll('link[rel="stylesheet"][media="print"]').forEach(function(link){
@@ -1257,9 +1270,9 @@
     </script>
 
     <script defer src="portal-session.js?v=20260513.2"></script>
-    <script defer src="data-manager.js?v=20260625.1"></script>
+    <script defer src="data-manager.js?v=20260703.4"></script>
     <script defer src="data-service.js?v=20260615.1"></script>
-    <script defer src="script-core.js?v=20260704.2"></script>
+    <script defer src="script-core.js?v=20260703.4"></script>
 </body>
 </html>
 
