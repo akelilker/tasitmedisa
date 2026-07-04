@@ -325,6 +325,11 @@ textarea.form-input:focus {
     display: block;
 }
 
+.vehicle-date-calendar-panel--viewport {
+    position: fixed;
+    z-index: 10025;
+}
+
 :where(#vehicle-modal, .egzoz-dialog-overlay, #dinamik-olay-modal) .vehicle-date-calendar-head {
     display: flex;
     align-items: center;

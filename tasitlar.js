@@ -132,7 +132,8 @@
     const dropdown = modal.querySelector('#ceza-user-dropdown');
     const searchInput = modal.querySelector('#ceza-user-search');
     const listEl = modal.querySelector('#ceza-user-list');
-    if (!hiddenInput || !wrap || !trigger || !triggerText || !dropdown || !searchInput || !listEl) return;
+    const addBtn = modal.querySelector('#ceza-user-add-btn');
+    if (!hiddenInput || !wrap || !trigger || !triggerText || !dropdown || !searchInput || !listEl || !addBtn) return;
 
     if (modal._cezaUserOutsideHandler) {
       document.removeEventListener('click', modal._cezaUserOutsideHandler, true);
@@ -206,12 +207,27 @@
           return '<button type="button" class="ceza-user-option' + (isSelected ? ' selected' : '') + '" data-user-name="' + escapeHtmlLocal(name) + '" role="option" aria-selected="' + (isSelected ? 'true' : 'false') + '">' + escapeHtmlLocal(name) + '</button>';
         }).join('');
       }
-      // Serbest metin: sirket disi / listede olmayan kisi icin bu cezaya ozel isim (users tablosuna yazilmaz)
-      const addLabel = rawQuery
-        ? '+ "' + escapeHtmlLocal(rawQuery) + '" kullan'
-        : '+ Yeni Kullanıcı Ekle';
-      html += '<button type="button" class="ceza-user-option ceza-user-option--add" data-add-user="1">' + addLabel + '</button>';
       listEl.innerHTML = html;
+      addBtn.textContent = rawQuery
+        ? ('+ "' + rawQuery + '" kullan')
+        : '+ Yeni Kullanıcı Ekle (şirket dışı)';
+    };
+
+    const handleAddUser = function(e) {
+      if (e && e.type === 'touchend') {
+        lastTouchOptionAt = Date.now();
+        if (e.cancelable) e.preventDefault();
+      } else if (e && e.type === 'click' && Date.now() - lastTouchOptionAt < 500) {
+        return;
+      }
+      if (e) e.stopPropagation();
+      let name = String(searchInput.value || '').trim();
+      if (!name) name = String(window.prompt('Kullanıcı adı girin (şirket dışı kişi):', '') || '').trim();
+      if (!name) return;
+      if (userNames.indexOf(name) === -1) userNames = userNames.concat(name);
+      setSelectedUser(name);
+      closeDropdown();
+      trigger.focus();
     };
 
     const setSelectedUser = function(name) {
@@ -264,15 +280,9 @@
       } else if (e.type === 'click' && Date.now() - lastTouchOptionAt < 500) {
         return;
       }
-      const addBtn = e.target.closest('[data-add-user]');
-      if (addBtn) {
-        let name = String(searchInput.value || '').trim();
-        if (!name) name = String(window.prompt('Kullanıcı adı girin (şirket dışı kişi):', '') || '').trim();
-        if (!name) return;
-        if (userNames.indexOf(name) === -1) userNames = userNames.concat(name);
-        setSelectedUser(name);
-        closeDropdown();
-        trigger.focus();
+      const addBtnTarget = e.target.closest('[data-add-user]');
+      if (addBtnTarget) {
+        handleAddUser(e);
         return;
       }
       const option = e.target.closest('.ceza-user-option');
@@ -285,6 +295,8 @@
 
     listEl.addEventListener('click', handleOptionSelect);
     listEl.addEventListener('touchend', handleOptionSelect, { passive: false });
+    addBtn.addEventListener('click', handleAddUser);
+    addBtn.addEventListener('touchend', handleAddUser, { passive: false });
 
     modal._cezaUserOutsideHandler = function(e) {
       if (!wrap.contains(e.target)) closeDropdown();
@@ -1492,7 +1504,8 @@
     labels: {},
     vehicleId: '',
     vehicle: null,
-    currentCategoryId: ''
+    currentCategoryId: '',
+    backGuardUntil: 0
   };
 
   var EVENT_MENU_SHIELD_CHECK_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m8.5 12 2.2 2.2 4.8-4.8"/></svg>';
@@ -1563,6 +1576,13 @@
   function getCategoryIdForEventType(type) {
     for (var i = 0; i < EVENT_MENU_GROUPS.length; i++) {
       if (EVENT_MENU_GROUPS[i].ids.indexOf(type) !== -1) return EVENT_MENU_GROUPS[i].id;
+    }
+    return '';
+  }
+
+  function getEventMenuCategoryTitle(categoryId) {
+    for (var i = 0; i < EVENT_MENU_GROUPS.length; i++) {
+      if (EVENT_MENU_GROUPS[i].id === categoryId) return EVENT_MENU_GROUPS[i].title;
     }
     return '';
   }
@@ -1664,6 +1684,7 @@
       backBtn.onclick = function(e) {
         e.stopPropagation();
         e.preventDefault();
+        if (Date.now() < eventMenuRenderState.backGuardUntil) return;
         renderEventMenuCategoryRoot();
       };
       return;
@@ -4522,6 +4543,7 @@
                   '<input type="text" id="ceza-user-search" class="form-input ceza-user-search-input" placeholder="Kullanıcı Ara..." autocomplete="off" aria-label="Kullanıcı Ara">' +
                 '</div>' +
                 '<div id="ceza-user-list" class="ceza-user-list"></div>' +
+                '<button type="button" id="ceza-user-add-btn" class="ceza-user-option ceza-user-option--add" data-add-user="1">+ Yeni Kullanıcı Ekle</button>' +
               '</div>' +
             '</div>' +
           '</div>' +
@@ -4731,9 +4753,17 @@
       var backBarBtn = modal.querySelector('.universal-back-btn');
       if (backBarBtn) {
         var labelSpan = backBarBtn.querySelector('.universal-back-label');
-        if (labelSpan) labelSpan.textContent = getDynamicEventCloseTarget() === 'detail' ? 'Taşıt Detay' : 'Olay Ekle';
+        if (labelSpan) {
+          if (getDynamicEventCloseTarget() === 'detail') {
+            labelSpan.textContent = 'Taşıt Detay';
+          } else {
+            var returnCategoryTitle = getEventMenuCategoryTitle(getCategoryIdForEventType(type));
+            labelSpan.textContent = returnCategoryTitle || 'Olay Ekle';
+          }
+        }
         backBarBtn.onclick = function(e) {
           e.stopPropagation();
+          e.preventDefault();
           closeDynamicEventByOrigin();
         };
       }
@@ -5283,6 +5313,7 @@
     // Önce menüyü aç, sonra dinamik modalı kapat:
     // böylece iki modal arasında boş frame kalmaz ve Taşıt Detay "flash" etmez.
     openEventModal('menu', vehicleId, returnCategoryId);
+    eventMenuRenderState.backGuardUntil = Date.now() + 400;
 
     requestAnimationFrame(function() {
       if (dynamicModal && dynamicModal.classList.contains('active')) {
