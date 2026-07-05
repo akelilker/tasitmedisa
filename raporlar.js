@@ -332,11 +332,11 @@
         var label = String(rawName || '').trim().toLocaleUpperCase('tr-TR');
         if (!label) label = '-';
         var spaceIdx = label.indexOf(' ');
-        var line1 = spaceIdx === -1 ? label : label.slice(0, spaceIdx);
-        var line2Raw = spaceIdx === -1 ? '' : label.slice(spaceIdx + 1).trim();
-        var line2Inner = line2Raw ? escapeHtml(line2Raw) : '\u00A0';
-        return '<span class="stok-branch-name-line">' + escapeHtml(line1) + '</span>' +
-            '<span class="stok-branch-name-line">' + line2Inner + '</span>';
+        var firstLine = spaceIdx === -1 ? label : label.slice(0, spaceIdx);
+        var secondLine = spaceIdx === -1 ? '' : label.slice(spaceIdx + 1).trim();
+        var secondHtml = secondLine ? escapeHtml(secondLine) : '\u00A0';
+        return '<span class="stok-branch-name-line">' + escapeHtml(firstLine) + '</span>' +
+            '<span class="stok-branch-name-line">' + secondHtml + '</span>';
     }
 
     // Şube Grid Render
