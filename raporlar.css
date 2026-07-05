@@ -262,12 +262,9 @@ will-change: transform;
 cursor: pointer;
 transition: border-color 0.2s, box-shadow 0.2s;
 display: flex !important;
-flex-direction: row !important;
-flex-wrap: wrap !important;
-align-items: baseline !important;
-align-content: center !important;
-justify-content: center !important;
-gap: 0.35em;
+flex-direction: column !important;
+align-items: center !important;
+justify-content: flex-start !important;
 overflow: hidden;
 box-sizing: border-box;
 }
@@ -320,26 +317,27 @@ border-color: var(--theme-color);
 background: rgba(var(--theme-color-rgb), 0.1);
 }
 
-/* Taşıtlar .branch-name ile birebir aynı */
+/* Şube adı: en fazla 2 satır; taşıt sayısı her kartta 3. satır hizasında */
 .stok-branch-name {
 font-size: clamp(10.5px, 3.8vw, 15px);
 font-weight: 700;
 color: #f8fafc;
 line-height: 1.12;
 text-align: center;
-overflow-wrap: anywhere;
+overflow-wrap: normal;
 word-break: normal;
 hyphens: none;
-flex: 0 1 auto;
-max-width: 100%;
+width: 100%;
+min-height: calc(2 * 1.12em);
+flex: 0 0 auto;
 }
 
-/* Taşıtlar .branch-count ile birebir aynı */
 .stok-branch-count {
 font-size: 15px;
 font-weight: 500;
 color: rgba(248, 250, 252, 0.62);
 text-align: center;
+width: 100%;
 flex: 0 0 auto;
 white-space: nowrap;
 }
@@ -351,6 +349,7 @@ font-size: 13px;
 font-weight: 600;
 line-height: 1.08;
 letter-spacing: 0.15px;
+min-height: calc(2 * 1.08em);
 }
 #reports-modal .stok-branch-count {
 font-size: 13px;
@@ -2516,7 +2515,10 @@ aspect-ratio: 1 / 1;
 .stok-branch-card:not(.active) {
 transform: none !important;
 }
-.stok-branch-name { font-size: 15px; }
+.stok-branch-name {
+font-size: 15px;
+min-height: calc(2 * 1.12em);
+}
 .stok-branch-count { font-size: 15px; }
 
 /* Mobil: üstteki #reports-modal … stok-list-header-row / stok-list-row kontratı geçerli; gap 4px↔2px çakışması kaldırıldı */
