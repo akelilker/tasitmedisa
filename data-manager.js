@@ -151,6 +151,59 @@ let serverDatasetTrusted = false;
 /** Ardışık save isteklerini sıraya alır; eşzamanlı çağrılarda biri false dönüp veri kaybı yaşanmasın. */
 let saveMutex = Promise.resolve();
 let offlineReadonlyWarnAt = 0;
+let visibleCacheVersion = 0;
+let visibleCache = {
+    key: '',
+    vehicles: null,
+    users: null,
+    branches: null
+};
+
+function invalidateMedisaVisibleCache() {
+    visibleCacheVersion += 1;
+    visibleCache.key = '';
+    visibleCache.vehicles = null;
+    visibleCache.users = null;
+    visibleCache.branches = null;
+}
+
+function getMedisaSessionFingerprint() {
+    var session = getSessionScope();
+    var role = getSessionRoleValue(session);
+    var userId = String((session.user && session.user.id) || '');
+    var branchIds = Array.isArray(session.branch_ids)
+        ? session.branch_ids.map(String).filter(Boolean).sort().join('|')
+        : '';
+    return [
+        session.authenticated ? '1' : '0',
+        role || '',
+        userId,
+        branchIds,
+        String(session.raw_role || ''),
+        session.yonetici_only === true ? '1' : '0',
+        getStoredPortalToken() ? '1' : '0'
+    ].join(':');
+}
+
+function getMedisaVisibleCacheRuntimeKey() {
+    return String(visibleCacheVersion) + '|' + getMedisaSessionFingerprint();
+}
+
+function getCachedMedisaVisibleList(kind, builder) {
+    var runtimeKey = getMedisaVisibleCacheRuntimeKey();
+    if (visibleCache.key === runtimeKey && Array.isArray(visibleCache[kind])) {
+        return visibleCache[kind].slice();
+    }
+    if (visibleCache.key !== runtimeKey) {
+        visibleCache.key = runtimeKey;
+        visibleCache.vehicles = null;
+        visibleCache.users = null;
+        visibleCache.branches = null;
+    }
+    var built = builder();
+    visibleCache[kind] = Array.isArray(built) ? built : [];
+    return visibleCache[kind].slice();
+}
 
 function syncDataLoadState() {
     isDataLoaded = hasUsableAppData(window.appData);
@@ -231,6 +284,7 @@ function medisaMainAppLogout() {
         var sub = document.getElementById('data-submenu');
         if (sub) sub.classList.remove('open');
     } catch (e) {}
+    invalidateMedisaVisibleCache();
     if (typeof window === 'undefined') return;
     window.__medisaRedirecting = true;
     window.location.href = DRIVER_INDEX_URL;
@@ -440,6 +494,7 @@ function setMedisaSession(sessionData) {
     }
     window.medisaSession = nextSession;
     applyMainAppSessionUiState();
+    invalidateMedisaVisibleCache();
 }
 
 function resolveMainAppHeaderUserName(sessionData) {
@@ -659,6 +714,7 @@ async function loadDataFromServer(forceRefresh) {
         window.appData = getDefaultAppData();
         serverDatasetTrusted = false;
         syncDataLoadState();
+        invalidateMedisaVisibleCache();
         return Promise.reject(new Error('Medisa oturum yok'));
     }
 
@@ -675,6 +731,7 @@ async function loadDataFromServer(forceRefresh) {
             window.appData = hasUsableAppData(window.appData)
                 ? getSafeAppDataFallback()
                 : (readOfflineAppDataSnapshot() || getSafeAppDataFallback());
+            invalidateMedisaVisibleCache();
             if (hasUsableAppData(window.appData)) {
                 showOfflineReadonlyWarning();
                 return window.appData;
@@ -713,6 +770,7 @@ async function loadDataFromServer(forceRefresh) {
                 redirectToPortalLogin();
                 serverDatasetTrusted = false;
                 window.appData = getDefaultAppData();
+                invalidateMedisaVisibleCache();
                 var authErr = new Error('Unauthorized');
                 authErr.medisaHttpStatus = response.status;
                 throw authErr;
@@ -774,6 +832,7 @@ async function loadDataFromServer(forceRefresh) {
                     : {}
             };
 
+            invalidateMedisaVisibleCache();
             setMedisaSession(data.session || getSessionFromToken());
 
             serverDatasetTrusted = true;
@@ -1021,6 +1080,7 @@ async function saveDataToServer(options) {
     } finally {
         isSaving = false;
         syncDataLoadState();
+        invalidateMedisaVisibleCache();
         if (typeof releaseNext === 'function') releaseNext();
     }
 }
@@ -1034,6 +1094,9 @@ function genericSaveData(collectionName, item) {
         window.appData[collectionName] = [];
         window.appData[collectionName].push(item);
         syncDataLoadState();
+        if (collectionName === 'tasitlar' || collectionName === 'users' || collectionName === 'branches') {
+            invalidateMedisaVisibleCache();
+        }
         return saveDataToServer();
     }
     var existingIndex = collection.findIndex(function(entry) { return entry.id === item.id; });
@@ -1043,6 +1106,9 @@ function genericSaveData(collectionName, item) {
         collection.push(item);
     }
     syncDataLoadState();
+    if (collectionName === 'tasitlar' || collectionName === 'users' || collectionName === 'branches') {
+        invalidateMedisaVisibleCache();
+    }
     return saveDataToServer();
 }
 
@@ -1187,12 +1253,12 @@ function getVisibleBranches(branches) {
     (session.branch_ids || []).forEach(function(branchId) {
         visibleBranchIds[String(branchId)] = true;
     });
-    getVisibleVehicles(window.appData && window.appData.tasitlar).forEach(function(vehicle) {
+    getMedisaVehicles().forEach(function(vehicle) {
         if (vehicle && vehicle.branchId != null && vehicle.branchId !== '') {
             visibleBranchIds[String(vehicle.branchId)] = true;
         }
     });
-    getVisibleUsers(window.appData && window.appData.users).forEach(function(user) {
+    getMedisaUsers().forEach(function(user) {
         getUserBranchIds(user).forEach(function(branchId) {
             visibleBranchIds[String(branchId)] = true;
         });
@@ -1211,15 +1277,21 @@ function getMedisaData(key) {
 }
 
 function getMedisaVehicles() {
-    return getVisibleVehicles(getMedisaData('tasitlar'));
+    return getCachedMedisaVisibleList('vehicles', function() {
+        return getVisibleVehicles(getMedisaData('tasitlar'));
+    });
 }
 
 function getMedisaBranches() {
-    return getVisibleBranches(getMedisaData('branches'));
+    return getCachedMedisaVisibleList('branches', function() {
+        return getVisibleBranches(getMedisaData('branches'));
+    });
 }
 
 function getMedisaUsers() {
-    return getVisibleUsers(getMedisaData('users'));
+    return getCachedMedisaVisibleList('users', function() {
+        return getVisibleUsers(getMedisaData('users'));
+    });
 }
 
 window.saveAyarlar = async function(ayarlar) {
@@ -1245,6 +1317,7 @@ window.writeVehicles = function(arr) {
         return window.dataApi.saveVehiclesList(arr)
             .then(function(result) {
                 syncDataLoadState();
+                invalidateMedisaVisibleCache();
                 return result;
             })
             .catch(function(err) {
@@ -1259,6 +1332,7 @@ window.writeVehicles = function(arr) {
     }
     window.appData.tasitlar = Array.isArray(arr) ? arr : [];
     syncDataLoadState();
+    invalidateMedisaVisibleCache();
     if (typeof window.saveDataToServer === 'function') {
         return window.saveDataToServer().catch(function(err) {
             if (err && err.conflict) {
@@ -1278,6 +1352,7 @@ window.writeBranches = function(arr) {
     if (!window.appData) return Promise.resolve(false);
     window.appData.branches = Array.isArray(arr) ? arr : [];
     syncDataLoadState();
+    invalidateMedisaVisibleCache();
     if (typeof window.saveDataToServer === 'function') {
         return window.saveDataToServer().catch(function(err) {
             console.error('Sunucuya kaydetme hatası:', err);
@@ -1291,6 +1366,7 @@ window.writeUsers = function(arr) {
     if (!window.appData) return Promise.resolve(false);
     window.appData.users = Array.isArray(arr) ? arr : [];
     syncDataLoadState();
+    invalidateMedisaVisibleCache();
     applyMainAppSessionUiState();
     if (typeof window.saveDataToServer === 'function') {
         return window.saveDataToServer().catch(function(err) {
