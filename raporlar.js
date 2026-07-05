@@ -327,6 +327,18 @@
         return '<span class="stok-header-text stok-header-text--tasit-tip-icon" title="Taşıt Tipi"><svg ' + a + ' class="stok-tasit-tipi-col-head-svg"><path d="M6 16h15l-1.2-3.5H7.2L6 16z"/><path d="M6 16v1.5h2V16H6zm11 0v1.5h2V16h-2z"/><circle cx="9" cy="16" r="1" fill="currentColor" stroke="none"/><circle cx="18" cy="16" r="1" fill="currentColor" stroke="none"/></svg></span>';
     }
 
+    /** Stok şube kartı: 1. kelime üst satır, kalan alt satır, sayı 3. satır hizası */
+    function buildStokBranchNameHtml(rawName) {
+        var label = String(rawName || '').trim().toLocaleUpperCase('tr-TR');
+        if (!label) label = '-';
+        var spaceIdx = label.indexOf(' ');
+        var line1 = spaceIdx === -1 ? label : label.slice(0, spaceIdx);
+        var line2Raw = spaceIdx === -1 ? '' : label.slice(spaceIdx + 1).trim();
+        var line2Inner = line2Raw ? escapeHtml(line2Raw) : '\u00A0';
+        return '<span class="stok-branch-name-line">' + escapeHtml(line1) + '</span>' +
+            '<span class="stok-branch-name-line">' + line2Inner + '</span>';
+    }
+
     // Şube Grid Render
     function renderStokBranchGrid() {
         const gridContainer = document.getElementById('stok-branch-grid');
@@ -358,7 +370,7 @@
         let html = `
             <div class="stok-branch-card all-card ${stokCurrentBranchId === 'all' ? 'active' : ''}" 
                  onclick="selectStokBranch('all')">
-                <div class="stok-branch-name">TÜMÜ</div>
+                <div class="stok-branch-name">${buildStokBranchNameHtml('TÜMÜ')}</div>
                 <div class="stok-branch-count">${totalCount} Taşıt</div>
             </div>
         `;
@@ -372,7 +384,7 @@
             html += `
                 <div class="stok-branch-card ${isActive ? 'active' : ''}" 
                      onclick="selectStokBranch('${escapeHtml(branch.id)}')">
-                    <div class="stok-branch-name">${escapeHtml(String(branch.name || '').toLocaleUpperCase('tr-TR'))}</div>
+                    <div class="stok-branch-name">${buildStokBranchNameHtml(branch.name)}</div>
                     <div class="stok-branch-count">${count} Taşıt</div>
                 </div>
             `;

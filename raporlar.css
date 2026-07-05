@@ -317,7 +317,7 @@ border-color: var(--theme-color);
 background: rgba(var(--theme-color-rgb), 0.1);
 }
 
-/* Şube adı: en fazla 2 satır; taşıt sayısı her kartta 3. satır hizasında */
+/* Şube adı + sayı: stok grid kartlarında 2 satır isim + 3. satır sayı */
 .stok-branch-name {
 font-size: clamp(10.5px, 3.8vw, 15px);
 font-weight: 700;
@@ -328,8 +328,27 @@ overflow-wrap: normal;
 word-break: normal;
 hyphens: none;
 width: 100%;
-min-height: calc(2 * 1.12em);
 flex: 0 0 auto;
+}
+
+#stok-branch-grid .stok-branch-name {
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: flex-start;
+width: 100%;
+min-height: calc(2 * 1.12em);
+}
+
+#stok-branch-grid .stok-branch-name-line {
+display: block;
+width: 100%;
+line-height: 1.12;
+min-height: 1.12em;
+max-height: 1.12em;
+overflow: hidden;
+text-overflow: ellipsis;
+white-space: nowrap;
 }
 
 .stok-branch-count {
@@ -342,16 +361,24 @@ flex: 0 0 auto;
 white-space: nowrap;
 }
 
-/* Masaüstü: Raporlar şube kutusu tipografisi daha sakin (mobili etkilemez) */
+/* Masaüstü: Raporlar stok şube kutusu tipografisi (mobili etkilemez) */
 @media (min-width: 641px) {
-#reports-modal .stok-branch-name {
+#reports-modal #stok-branch-grid .stok-branch-name {
 font-size: 13px;
 font-weight: 600;
 line-height: 1.08;
 letter-spacing: 0.15px;
 min-height: calc(2 * 1.08em);
 }
-#reports-modal .stok-branch-count {
+#reports-modal #stok-branch-grid .stok-branch-name-line {
+font-size: 13px;
+font-weight: 600;
+line-height: 1.08;
+letter-spacing: 0.15px;
+min-height: 1.08em;
+max-height: 1.08em;
+}
+#reports-modal #stok-branch-grid .stok-branch-count {
 font-size: 13px;
 font-weight: 400;
 line-height: 1.08;
@@ -2515,11 +2542,16 @@ aspect-ratio: 1 / 1;
 .stok-branch-card:not(.active) {
 transform: none !important;
 }
-.stok-branch-name {
+#stok-branch-grid .stok-branch-name {
 font-size: 15px;
 min-height: calc(2 * 1.12em);
 }
-.stok-branch-count { font-size: 15px; }
+#stok-branch-grid .stok-branch-name-line {
+font-size: 15px;
+min-height: 1.12em;
+max-height: 1.12em;
+}
+#stok-branch-grid .stok-branch-count { font-size: 15px; }
 
 /* Mobil: üstteki #reports-modal … stok-list-header-row / stok-list-row kontratı geçerli; gap 4px↔2px çakışması kaldırıldı */
 /* Mobil: açık satır rengi daha belirgin (0.02 → 0.06) */
