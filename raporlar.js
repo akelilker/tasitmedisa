@@ -335,8 +335,9 @@
         var firstLine = spaceIdx === -1 ? label : label.slice(0, spaceIdx);
         var secondLine = spaceIdx === -1 ? '' : label.slice(spaceIdx + 1).trim();
         var secondHtml = secondLine ? escapeHtml(secondLine) : '\u00A0';
+        var secondClass = 'stok-branch-name-line' + (secondLine ? '' : ' stok-branch-name-line--empty');
         return '<span class="stok-branch-name-line">' + escapeHtml(firstLine) + '</span>' +
-            '<span class="stok-branch-name-line">' + secondHtml + '</span>';
+            '<span class="' + secondClass + '">' + secondHtml + '</span>';
     }
 
     // Şube Grid Render
