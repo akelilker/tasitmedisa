@@ -1294,22 +1294,6 @@ function getMedisaUsers() {
     });
 }
 
-window.saveAyarlar = async function(ayarlar) {
-    window.appData.ayarlar = ayarlar;
-    syncDataLoadState();
-    return await saveDataToServer();
-};
-
-window.saveSifre = async function(sifre) {
-    return await genericSaveData('sifreler', sifre);
-};
-
-window.deleteSifre = async function(sifreId) {
-    window.appData.sifreler = window.appData.sifreler.filter(function(sifre) { return sifre.id !== sifreId; });
-    syncDataLoadState();
-    return await saveDataToServer();
-};
-
 window.writeVehicles = function(arr) {
     if (!window.appData) window.appData = getDefaultAppData();
     applyMainAppSessionUiState();
