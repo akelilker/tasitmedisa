@@ -1085,33 +1085,6 @@ async function saveDataToServer(options) {
     }
 }
 
-function genericSaveData(collectionName, item) {
-    if (!window.appData || typeof window.appData[collectionName] === 'undefined') {
-        return Promise.reject(new Error('Veri henüz yüklenmedi veya geçersiz koleksiyon'));
-    }
-    var collection = window.appData[collectionName];
-    if (!Array.isArray(collection)) {
-        window.appData[collectionName] = [];
-        window.appData[collectionName].push(item);
-        syncDataLoadState();
-        if (collectionName === 'tasitlar' || collectionName === 'users' || collectionName === 'branches') {
-            invalidateMedisaVisibleCache();
-        }
-        return saveDataToServer();
-    }
-    var existingIndex = collection.findIndex(function(entry) { return entry.id === item.id; });
-    if (existingIndex >= 0) {
-        collection[existingIndex] = item;
-    } else {
-        collection.push(item);
-    }
-    syncDataLoadState();
-    if (collectionName === 'tasitlar' || collectionName === 'users' || collectionName === 'branches') {
-        invalidateMedisaVisibleCache();
-    }
-    return saveDataToServer();
-}
-
 function normalizeUser(user) {
     if (!user || typeof user !== 'object') {
         return {
