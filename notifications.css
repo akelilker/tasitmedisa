@@ -1290,7 +1290,8 @@ body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-
     right: 0;
     min-width: 1ch;
     min-height: 1em;
-    padding: 0;
+    padding-block: 0;
+    padding-inline: 0.1em 0.05em;
     border-radius: 0;
     background: none;
     border: none;
@@ -1312,6 +1313,8 @@ body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-
     #monthly-todo-header-btn .monthly-todo-header-badge {
         font-size: 12px;
         font-weight: 900;
+        padding-inline: 0.12em 0.06em;
+        transform: translate(72%, -46%);
         -webkit-font-smoothing: antialiased;
     }
 }
@@ -1330,6 +1333,8 @@ body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-
         font-size: 16px;
         font-weight: 900;
         line-height: 1;
+        padding-inline: 0.1em 0.05em;
+        transform: translate(50%, -45%);
         -webkit-font-smoothing: antialiased;
         transform: translate(45%, -45%);
     }
