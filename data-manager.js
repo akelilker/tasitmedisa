@@ -858,9 +858,6 @@ async function loadDataFromServer(forceRefresh) {
     return loadPromise;
 }
 
-/**
- * @param {{ includeKaskoDegerListesi?: boolean }} [options] - includeKaskoDegerListesi eski API uyumu için yoksayılır.
- */
 var serverDatasetBaseline = null;
 
 function cloneServerDatasetValue(value) {
