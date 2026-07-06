@@ -48,6 +48,7 @@ data/takograf_preview/
 .tmp/
 .tmp-playwright/
 .tmp-chrome-k2-profile/
+**/* - Kopya.*
 *.bak
 *.orig
 *.rej
