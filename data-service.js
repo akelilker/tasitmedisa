@@ -256,7 +256,6 @@
   window.clearKaskoCache = clearKaskoCache;
   window.getKaskoDegeri = getKaskoDegeri;
   window.getKaskoDegeriAsync = getKaskoDegeriAsync;
-  window.ensureKaskoListLoaded = ensureKaskoListLoaded;
   window.guncelleTumKaskoDegerleri = guncelleTumKaskoDegerleri;
   window.getKaskoDegerListesiState = getKaskoDegerListesiState;
   window.hasAnyKaskoListData = hasAnyKaskoListData;
