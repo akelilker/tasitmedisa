@@ -81,12 +81,8 @@ $result = medisaMutateData(function (&$data) use ($username, $password) {
     $userIndex = -1;
     $usernameExists = false;
     $usernameActive = false;
-    $definedLoginUserCount = 0;
     foreach ($data['users'] as $idx => $candidate) {
         $storedLogin = medisaLoginExtractStoredUsername($candidate);
-        if ($storedLogin !== '') {
-            $definedLoginUserCount++;
-        }
         $kullaniciEslesiyor = $storedLogin !== '' && medisaLoginUsernamesEqual($storedLogin, $username);
         if (!$kullaniciEslesiyor) {
             continue;
