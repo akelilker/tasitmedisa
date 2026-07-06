@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="tr" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Taşıt Yönetim Sistemi</title>
+    <!-- Paylaşım önizlemesi (WhatsApp, vb.): logo ve başlık -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="TYS-Medisa Kullanıcı">
+    <meta property="og:description" content="">
+    <meta property="og:image" content="https://karmotors.com.tr/medisa/icon/medlogo.png">
+    <meta property="og:image:width" content="512">
+    <meta property="og:image:height" content="512">
+    <meta property="og:url" content="https://karmotors.com.tr/medisa/driver/dashboard.html">
+    <meta property="og:locale" content="tr_TR">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="TYS-Medisa Kullanıcı">
+    <meta name="twitter:image" content="https://karmotors.com.tr/medisa/icon/medlogo.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../icon/favicon-32.png?v=20260506-1">
+<link rel="icon" type="image/png" href="../icon/medisa-round-pwa-192.png?v=20260506-1">
+<link rel="icon" type="image/x-icon" href="../icon/favicon.ico?v=20260506-1">
+<link rel="apple-touch-icon" href="../icon/medisa-round-pwa-192.png?v=20260506-1">
+<link rel="apple-touch-icon" sizes="180x180" href="../icon/medisa-round-pwa-192.png?v=20260506-1">
+<link rel="apple-touch-icon" sizes="192x192" href="../icon/medisa-round-pwa-192.png?v=20260506-1">
+<link rel="apple-touch-icon" sizes="512x512" href="../icon/medisa-round-pwa-512.png?v=20260506-1">
+    <link rel="manifest" href="./manifest.json?v=20260506-1">
+    <link rel="mask-icon" href="../icon/logo-header2.svg" color="#080d16">
+    <link rel="preload" href="../icon/logo-header2.svg" as="image">
+    <meta name="theme-color" content="#080d16">
+    <meta name="msapplication-TileColor" content="#080d16">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Taşıt Yönetim Sistemi">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style-core.css?v=20260705.2">
+<link rel="stylesheet" href="driver-style.css?v=20260702.1">
+<script defer src="../portal-session.js?v=20260513.2"></script>
+<script defer src="../script-core.js?v=20260705.4"></script>
+</head>
+<body class="dashboard-page driver-splash-active">
+    <div id="driver-splash" class="driver-splash driver-splash--dashboard" aria-hidden="false">
+        <div class="driver-splash-inner">
+            <img src="../icon/logo-header2.svg" alt="MEDISA" class="driver-splash-logo" width="150" height="86">
+            <h1 class="driver-splash-title">TAŞIT YÖNETİM SİSTEMİ</h1>
+            <p class="driver-splash-subtitle">KULLANICI PANELİ</p>
+        </div>
+    </div>
+    <div id="pwa-install-wrapper" class="pwa-install-center"></div>
+    <div class="app-container driver-dashboard-container">
+        <div class="driver-header-fixed">
+            <div class="hero hero-two-rows">
+                <div class="hero-logo">
+                    <picture>
+                        <source media="(max-width: 640px)" srcset="../icon/logo-header2-mobile-header.svg">
+                        <img src="../icon/logo-header2.svg" alt="MEDISA" class="logo-small">
+                    </picture>
+                    <span id="main-header-user-name" class="main-header-user-name is-empty" aria-live="polite"></span>
+                </div>
+                <div class="hero-title-block">
+                    <h1 class="hero-title-line">TAŞIT YÖNETİM SİSTEMİ</h1>
+                    <p class="driver-panel-subtitle hero-panel-subtitle">KULLANICI PANELİ</p>
+                </div>
+                <div class="hero-spacer"></div>
+            </div>
+
+            <div class="driver-below-hero">
+                <div class="driver-below-hero-row">
+                    <div id="driver-below-hero-pwa-slot" class="driver-below-hero-pwa-slot"></div>
+                    <div class="driver-status-icon-row" role="group" aria-label="Durum göstergeleri">
+                        <div class="driver-status-icon-slot driver-status-icon-slot-history">
+                            <div id="driver-vehicle-shortcuts" class="driver-vehicle-shortcuts">
+                                <div class="driver-shortcuts-overlay" aria-hidden="true"></div>
+                                <button type="button" id="driver-vehicle-shortcuts-toggle" class="driver-vehicle-shortcuts-toggle" title="Taşıt Kısayolları" aria-label="Taşıt Kısayolları" aria-expanded="false" aria-haspopup="true" aria-controls="driver-vehicle-shortcuts-panel">
+                                    <svg class="driver-vehicle-shortcuts-toggle-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                        <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+                                        <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+                                        <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+                                        <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+                                    </svg>
+                                </button>
+                                <div id="driver-vehicle-shortcuts-panel" class="driver-vehicle-shortcuts-panel" role="menu" aria-label="Taşıt kısayolları" aria-hidden="true">
+                                    <button type="button" role="menuitem" class="driver-vehicle-shortcuts-item driver-vehicle-shortcuts-item-history" onclick="showHistory()" title="Geçmiş İşlemler" aria-label="Geçmiş İşlemler">
+                                        <svg class="driver-vehicle-shortcuts-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                            <path d="M5 22h14"></path>
+                                            <path d="M5 2h14"></path>
+                                            <path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22"></path>
+                                            <path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2"></path>
+                                        </svg>
+                                        <span class="driver-vehicle-shortcuts-item-label">Geçmiş İşlemler</span>
+                                    </button>
+                                    <button type="button" role="menuitem" class="driver-vehicle-shortcuts-item driver-vehicle-shortcuts-item-documents" onclick="openDriverDocumentsModal()" title="Belgeler" aria-label="Belgeler">
+                                        <svg class="driver-vehicle-shortcuts-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.05" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                            <path d="M7 3h7l5 5v13H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"></path>
+                                            <path d="M14 3v5h5"></path>
+                                            <line x1="8" y1="13" x2="16" y2="13"></line>
+                                            <line x1="8" y1="17" x2="14" y2="17"></line>
+                                        </svg>
+                                        <span class="driver-vehicle-shortcuts-item-label">Belgeler</span>
+                                    </button>
+                                    <button type="button" role="menuitem" class="driver-vehicle-shortcuts-item driver-vehicle-shortcuts-item-feedback" onclick="openDriverFeedbackModal()" title="Talep" aria-label="Talep">
+                                        <svg class="driver-vehicle-shortcuts-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.05" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                            <path d="M7.5 5.5h9a4.5 4.5 0 0 1 0 9h-3.2L9 18.5v-4H7.5a4.5 4.5 0 0 1 0-9z"></path>
+                                            <circle cx="9" cy="10" r="0.7" fill="currentColor" stroke="none"></circle>
+                                            <circle cx="12" cy="10" r="0.7" fill="currentColor" stroke="none"></circle>
+                                            <circle cx="15" cy="10" r="0.7" fill="currentColor" stroke="none"></circle>
+                                        </svg>
+                                        <span class="driver-vehicle-shortcuts-item-label">Talep</span>
+                                    </button>
+                                    <button type="button" role="menuitem" class="driver-vehicle-shortcuts-item driver-vehicle-shortcuts-item-password" onclick="openDriverPasswordModal()" title="Şifre" aria-label="Şifre">
+                                        <svg class="driver-vehicle-shortcuts-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                            <circle cx="7" cy="15" r="4"></circle>
+                                            <path d="M11 15h9"></path>
+                                            <path d="M16 15v3"></path>
+                                            <path d="M19 15v2"></path>
+                                        </svg>
+                                        <span class="driver-vehicle-shortcuts-item-label">Şifre</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="driver-status-icon-slot driver-status-icon-slot-warning">
+                            <div id="driver-below-hero-notification-slot" class="driver-below-hero-notification-slot">
+                                <div id="driver-sliding-warning" class="driver-sliding-warning" aria-live="polite"></div>
+                            </div>
+                        </div>
+                        <div class="driver-status-icon-slot driver-status-icon-slot-key">
+                            <button type="button" onclick="openDriverPasswordModal()" class="driver-btn-password" title="Şifre değiştir" aria-label="Şifre değiştir">
+                                <svg class="driver-btn-password-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="7" cy="15" r="4"></circle>
+                                    <path d="M11 15h9"></path>
+                                    <path d="M16 15v3"></path>
+                                    <path d="M19 15v2"></path>
+                                </svg>
+                            </button>
+                            <button type="button" onclick="logout()" class="driver-btn-header-logout" title="Çıkış" aria-label="Çıkış">
+                                <svg class="driver-btn-header-logout-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <path d="M10 17l5-5-5-5"></path>
+                                    <path d="M15 12H3"></path>
+                                    <path d="M21 19V5a2 2 0 0 0-2-2h-5"></path>
+                                    <path d="M21 19a2 2 0 0 1-2 2h-5"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <main class="content-wrap driver-content-wrap driver-scroll-area">
+            <div id="loading-spinner" class="driver-loading">
+                <div class="driver-spinner"></div>
+                <p>Veriler yükleniyor...</p>
+            </div>
+
+            <div id="empty-state" class="driver-empty-state" style="display: none;">
+                <div class="driver-empty-icon">🚗</div>
+                <h3>Zimmetli Taşıt Bulunamadı</h3>
+                <p>Size Atanmış Taşıt Bulunmamaktadır. Lütfen Yöneticinizle İletişime Geçin.</p>
+                <div class="universal-back-bar driver-footer-back-wrap driver-back-in-empty">
+                    <a href="../" class="universal-back-btn" title="Yönetim Sistemi">
+                        <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        <span class="universal-back-label">Yönetim Sistemi</span>
+                    </a>
+                </div>
+            </div>
+
+            <div id="driver-two-panel" class="driver-two-panel" style="display: none;">
+                <div class="driver-panels-inner">
+                    <aside class="driver-left-panel">
+                        <div class="driver-left-panel-content">
+                            <div class="driver-user-plate-row driver-user-plate-in-panel">
+                                <div class="driver-plate-dropdown-row">
+                                    <span id="driver-current-plaka" class="driver-current-plaka"></span>
+                                    <button type="button" id="driver-plate-trigger" class="driver-plate-trigger" aria-label="Taşıt seç" style="display: none;">
+                                        <span class="driver-plate-chevron">▾</span>
+                                    </button>
+                                    <div id="driver-plate-dropdown" class="driver-plate-dropdown" role="listbox" style="display:none"></div>
+                                </div>
+                                <span id="driver-plate-subtitle" class="driver-plate-subtitle" aria-hidden="true"></span>
+                            </div>
+                            <div id="driver-mobile-notification-slot" class="driver-mobile-notification-slot" aria-hidden="true"></div>
+                            <div id="driver-vehicle-info" class="driver-vehicle-info"></div>
+                            <div class="driver-left-quick-actions" aria-label="Taşıt kısayolları">
+                                <button type="button" class="driver-left-quick-action driver-left-quick-action-documents" onclick="openDriverDocumentsModal()" title="Belgeler" aria-label="Belgeler">
+                                    <svg class="driver-left-quick-action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.05" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                        <path d="M7 3h7l5 5v13H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"></path>
+                                        <path d="M14 3v5h5"></path>
+                                        <line x1="8" y1="13" x2="16" y2="13"></line>
+                                        <line x1="8" y1="17" x2="14" y2="17"></line>
+                                    </svg>
+                                </button>
+                                <button type="button" class="driver-left-quick-action driver-left-quick-action-feedback" onclick="openDriverFeedbackModal()" title="Talep" aria-label="Talep">
+                                    <svg class="driver-left-quick-action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.05" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                        <path d="M7.5 5.5h9a4.5 4.5 0 0 1 0 9h-3.2L9 18.5v-4H7.5a4.5 4.5 0 0 1 0-9z"></path>
+                                        <circle cx="9" cy="10" r="0.7" fill="currentColor" stroke="none"></circle>
+                                        <circle cx="12" cy="10" r="0.7" fill="currentColor" stroke="none"></circle>
+                                        <circle cx="15" cy="10" r="0.7" fill="currentColor" stroke="none"></circle>
+                                    </svg>
+                                </button>
+                                <button type="button" class="driver-left-quick-action driver-left-quick-action-history" onclick="showHistory()" title="Geçmiş İşlemlerim" aria-label="Geçmiş İşlemlerim">
+                                    <svg class="driver-left-quick-action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                        <path d="M5 22h14"></path>
+                                        <path d="M5 2h14"></path>
+                                        <path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22"></path>
+                                        <path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2"></path>
+                                    </svg>
+                                </button>
+                                <button type="button" class="driver-left-quick-action driver-left-quick-action-password" onclick="openDriverPasswordModal()" title="Şifre değiştir" aria-label="Şifre değiştir">
+                                    <svg class="driver-left-quick-action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                        <circle cx="7" cy="15" r="4"></circle>
+                                        <path d="M11 15h9"></path>
+                                        <path d="M16 15v3"></path>
+                                        <path d="M19 15v2"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="universal-back-bar driver-footer-back-wrap">
+                            <a href="../" class="universal-back-btn" title="Yönetim Sistemi">
+                                <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                                <span class="universal-back-label">Yönetim Sistemi</span>
+                            </a>
+                        </div>
+                    </aside>
+                    <main class="driver-right-panel">
+                        <div id="driver-action-area" class="driver-action-area"></div>
+                    </main>
+                </div>
+            </div>
+        </main>
+
+        <footer id="app-footer">
+            <div class="footer-content">
+                <span class="version" id="version-display"></span>
+                <span class="brand"><img src="../icon/logo-footer.svg" alt="MEDISA" style="height: 14px; width: auto;"></span>
+                <span class="status status-ready">● Sistem Hazır</span>
+            </div>
+        </footer>
+
+        <div id="driver-password-modal" class="driver-modal modal-overlay">
+        <div class="driver-modal-content modal-container" onclick="event.stopPropagation();">
+            <div class="modal-header">
+                <h2>Şifre Değiştir</h2>
+                <button type="button" onclick="closeDriverPasswordModal()" class="modal-close" aria-label="Kapat">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="driver-password-form" class="driver-password-form" onsubmit="return submitDriverPasswordChange(event);">
+                    <div class="form-group">
+                        <label for="driver-current-password">Mevcut Şifre</label>
+                        <input type="password" id="driver-current-password" autocomplete="current-password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="driver-new-password">Yeni Şifre</label>
+                        <input type="password" id="driver-new-password" autocomplete="new-password" minlength="6" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="driver-new-password-confirm">Yeni Şifre Tekrar</label>
+                        <input type="password" id="driver-new-password-confirm" autocomplete="new-password" minlength="6" required>
+                    </div>
+                    <div id="driver-password-message" class="driver-password-message" aria-live="polite"></div>
+                    <div class="driver-password-actions">
+                        <button type="submit" id="driver-password-submit" class="btn-submit">Kaydet</button>
+                        <button type="button" class="universal-btn-cancel" onclick="closeDriverPasswordModal()">Vazgeç</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        </div>
+
+        <div id="driver-feedback-modal" class="driver-modal modal-overlay">
+        <div class="driver-modal-content modal-container" onclick="event.stopPropagation();">
+            <div class="modal-header">
+                <h2>Talep / Şikayet / Öneri</h2>
+                <button type="button" onclick="closeDriverFeedbackModal()" class="modal-close" aria-label="Kapat">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="driver-feedback-form" class="driver-feedback-form" onsubmit="return submitDriverFeedback(event);">
+                    <div class="form-group">
+                        <label id="driver-feedback-type-label">Talep Türü</label>
+                        <div class="vehicle-branch-dropdown-wrap driver-feedback-type-dropdown-wrap">
+                            <select id="driver-feedback-type" required aria-hidden="true" tabindex="-1">
+                                <option value="talep">Talep</option>
+                                <option value="sikayet">Şikayet</option>
+                                <option value="oneri">Öneri</option>
+                                <option value="diger">Diğer</option>
+                            </select>
+                            <div id="driver-feedback-type-trigger" class="vehicle-branch-trigger form-input" tabindex="0" role="combobox" aria-expanded="false" aria-controls="driver-feedback-type-list" aria-labelledby="driver-feedback-type-label"></div>
+                            <div id="driver-feedback-type-list" class="vehicle-branch-list" role="listbox" aria-hidden="true"></div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="driver-feedback-message">Mesaj</label>
+                        <textarea id="driver-feedback-message" class="form-input driver-feedback-message" rows="4" maxlength="500" placeholder="Yöneticiye iletmek istediğiniz notu yazın..." required></textarea>
+                    </div>
+                    <div id="driver-feedback-message-status" class="driver-feedback-message-status" aria-live="polite"></div>
+                    <div class="driver-feedback-actions">
+                        <button type="submit" id="driver-feedback-submit" class="btn-submit">Kaydet</button>
+                        <button type="button" class="universal-btn-cancel" onclick="closeDriverFeedbackModal()">Vazgeç</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        </div>
+
+        <div id="driver-documents-modal" class="driver-modal modal-overlay">
+        <div class="driver-modal-content modal-container" onclick="event.stopPropagation();">
+            <div class="modal-header">
+                <h2>BELGELER</h2>
+                <button type="button" onclick="closeDriverDocumentsModal()" class="modal-close" aria-label="Kapat">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="driver-documents-list" class="driver-documents-list" aria-live="polite"></div>
+                <div id="driver-documents-message" class="driver-documents-message" aria-live="polite"></div>
+            </div>
+        </div>
+        </div>
+
+        <div id="history-modal" class="driver-modal modal-overlay">
+        <div class="driver-modal-content modal-container">
+            <div class="modal-header">
+                <h2>Geçmiş Kayıtlarım</h2>
+                <button type="button" onclick="closeHistory()" class="modal-close" aria-label="Kapat">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+            </div>
+            <div class="universal-back-bar">
+                <button type="button" class="universal-back-btn" onclick="closeHistory()">
+                    <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                    <span class="universal-back-label">Kullanıcı Paneli</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="history-filters">
+                    <div class="history-vehicle-dropdown-wrap">
+                        <span id="history-vehicle-label" class="history-filter-label">Taşıt:</span>
+                        <div id="history-vehicle-trigger" class="history-vehicle-trigger" onclick="toggleHistoryVehicleDropdown(event)" role="button" tabindex="0" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="history-vehicle-label">
+                            <span class="history-vehicle-trigger-text">Tüm Taşıtlar</span>
+                            <span class="history-vehicle-chevron">▾</span>
+                        </div>
+                        <input type="hidden" id="history-vehicle-filter" value="">
+                        <div id="history-vehicle-dropdown" class="history-vehicle-dropdown" role="listbox" style="display:none"></div>
+                    </div>
+                </div>
+                <div id="history-list" class="history-container"></div>
+            </div>
+        </div>
+        </div>
+
+        <div id="edit-request-modal" class="driver-modal modal-overlay">
+        <div class="driver-modal-content modal-container">
+            <div class="modal-header">
+                <h2>Düzeltme Talebi</h2>
+                <button type="button" onclick="closeEditRequest()" class="modal-close" aria-label="Kapat">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="universal-back-bar">
+                <button type="button" class="universal-back-btn" onclick="closeEditRequest()">
+                    <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                    <span class="universal-back-label">Geçmiş Kayıtlarım</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="edit-request-content" class="edit-request-scroll">
+                <div id="edit-section-km" class="edit-request-section">
+                    <p class="driver-current-km">
+                        Mevcut KM: <strong id="current-km">0</strong>
+                    </p>
+                    <div class="form-group">
+                        <label for="new-km">Yeni KM Değeri</label>
+                        <input type="number" id="new-km" placeholder="Örn: 54230" inputmode="numeric" pattern="[0-9]*">
+                    </div>
+                </div>
+                <div id="edit-section-bakim" class="edit-request-section">
+                    <p class="driver-current-km">
+                        Mevcut Bakım: <strong id="current-bakim">-</strong>
+                    </p>
+                    <div class="form-group">
+                        <label for="new-bakim">Yeni Bakım Açıklama</label>
+                        <input type="text" id="new-bakim" placeholder="Boş bırakırsanız 'Yok' sayılır">
+                    </div>
+                </div>
+                <div id="edit-section-kaza" class="edit-request-section">
+                    <p class="driver-current-km">
+                        Mevcut Kaza: <strong id="current-kaza">-</strong>
+                    </p>
+                    <div class="form-group">
+                        <label for="new-kaza">Yeni Kaza Açıklama</label>
+                        <input type="text" id="new-kaza" placeholder="Boş bırakırsanız 'Yok' sayılır">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="edit-reason">Düzeltme Sebebi</label>
+                    <textarea id="edit-reason" placeholder="Neden düzeltmek istiyorsunuz?" rows="1" required></textarea>
+                </div>
+                <button type="button" onclick="submitEditRequest()" class="btn-submit">Talep Gönder</button>
+                </div>
+            </div>
+        </div>
+        </div>
+
+    </div>
+    <!-- Muayene teyit popover: body seviyesinde, overflow'dan etkilenmez -->
+    <div id="muayene-confirm-popover" class="muayene-confirm-popover" style="display: none;">
+        <p>Muayene Bitiş Tarihi <strong id="muayene-calc-date">--/--/----</strong> olarak belirlenmiştir. Evrak üzerinden doğruluğunu teyit etmeniz gerekmektedir. Teyit edildi mi?</p>
+        <div class="muayene-confirm-actions">
+            <button type="button" class="btn-confirm-no" onclick="cancelMuayeneSubmit()">Hayır</button>
+            <button type="button" class="btn-confirm-yes" onclick="confirmMuayeneSubmit()">Evet</button>
+        </div>
+    </div>
+<script defer src="driver-script.js?v=20260622.2"></script>
+</body>
+</html>
