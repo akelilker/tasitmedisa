@@ -1280,13 +1280,14 @@ body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-
     align-items: center;
     justify-content: center;
     overflow: visible;
+    box-sizing: border-box;
 }
 #monthly-todo-header-btn .monthly-todo-header-badge {
     pointer-events: none;
     box-sizing: border-box;
     position: absolute;
-    top: -7px;
-    left: calc(100% - 2px);
+    top: 0;
+    right: 0;
     min-width: 1ch;
     min-height: 1em;
     padding: 0;
@@ -1305,28 +1306,32 @@ body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
     text-shadow: none;
+    transform: translate(45%, -45%);
 }
 @media (min-width: 641px) {
     #monthly-todo-header-btn .monthly-todo-header-badge {
-        top: -6px;
-        left: calc(100% - 2px);
         font-size: 12px;
         font-weight: 900;
         -webkit-font-smoothing: antialiased;
     }
 }
 @media (max-width: 640px) {
+    #monthly-todo-header-btn {
+        min-width: 44px;
+        min-height: 44px;
+    }
     #monthly-todo-header-btn svg {
         width: 26px !important;
         height: 26px !important;
     }
     #monthly-todo-header-btn .monthly-todo-header-badge {
-        top: -8px;
-        left: calc(100% - 4px);
-        font-size: 13px;
+        top: 8px;
+        right: 8px;
+        font-size: 16px;
         font-weight: 900;
         line-height: 1;
         -webkit-font-smoothing: antialiased;
+        transform: translate(45%, -45%);
     }
 }
 
