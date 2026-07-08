@@ -444,6 +444,7 @@
       if (!panel || !panel.classList.contains('open')) return;
       if (panel.contains(event.target)) return;
       if (anchor && anchor.closest('.vehicle-date-picker-wrap') && anchor.closest('.vehicle-date-picker-wrap').contains(event.target)) return;
+      if (anchor && anchor.closest('.olay-date-mobile-wrap') && anchor.closest('.olay-date-mobile-wrap').contains(event.target)) return;
       if (anchor && (anchor === event.target || anchor.contains(event.target))) return;
       closeVehicleDateCalendar();
     });
