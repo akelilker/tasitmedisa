@@ -7354,13 +7354,38 @@
     }
   }
 
+  function isMobileVehicleDocumentUploadContext() {
+    if (typeof window.matchMedia !== 'function') return false;
+    return window.matchMedia('(max-width: 768px)').matches
+      || window.matchMedia('(pointer: coarse)').matches;
+  }
+
   function resolveVehicleUploadFileBlob(file) {
     return new Promise(function(resolve, reject) {
       if (!file) {
         reject(new Error('Dosya seçilmedi.'));
         return;
       }
-      var fileName = String(file.name || 'document.pdf');
+      var fileName = String(file.name || 'document.pdf').trim() || 'document.pdf';
+      if (!/\.pdf$/i.test(fileName)) {
+        fileName = fileName.replace(/\.[^.]+$/, '') + '.pdf';
+      }
+      function deliverBuffer(buffer) {
+        if (!buffer || !buffer.byteLength) {
+          reject(new Error('PDF okunamadı. Birkaç saniye bekleyip yeniden seçin veya Wi-Fi ile deneyin.'));
+          return;
+        }
+        resolve({
+          blob: new Blob([buffer], { type: 'application/pdf' }),
+          fileName: fileName
+        });
+      }
+      if (typeof file.arrayBuffer === 'function' && isMobileVehicleDocumentUploadContext()) {
+        file.arrayBuffer().then(deliverBuffer).catch(function() {
+          reject(new Error('PDF okunamadı. Wi-Fi veya daha güçlü sinyal ile tekrar deneyin.'));
+        });
+        return;
+      }
       if (file.size > 0) {
         resolve({ blob: file, fileName: fileName });
         return;
@@ -7369,51 +7394,45 @@
         reject(new Error('Seçilen dosya okunamadı. Dosyayı yeniden seçin.'));
         return;
       }
-      file.arrayBuffer().then(function(buffer) {
-        if (!buffer || !buffer.byteLength) {
-          reject(new Error('Dosya boş veya henüz indirilemedi. PDF\'i önce Dosyalar uygulamasına kaydedip tekrar seçin.'));
-          return;
-        }
-        resolve({
-          blob: new Blob([buffer], { type: file.type || 'application/pdf' }),
-          fileName: fileName
-        });
-      }).catch(function() {
-        reject(new Error('Dosya okunamadı. Dosyayı yeniden seçin.'));
+      file.arrayBuffer().then(deliverBuffer).catch(function() {
+        reject(new Error('PDF okunamadı. Dosyayı yeniden seçin.'));
       });
     });
   }
 
-  function uploadVehicleDocumentFetch(formData, uploadUrl) {
-    return fetch(uploadUrl || 'upload_ruhsat.php', {
-      method: 'POST',
-      headers: buildMedisaAuthHeaders(),
-      body: formData,
-      credentials: 'same-origin'
-    }).then(function(response) {
-      return response.json().catch(function() { return {}; }).then(function(data) {
-        if (!response.ok || !data.success) {
-          var err = new Error((data && (data.error || data.message)) ? (data.error || data.message) : ('Yükleme başarısız (HTTP ' + response.status + ')'));
-          err.status = response.status;
-          err.conflict = !!(data && data.conflict) || response.status === 409;
-          throw err;
-        }
-        return data;
-      });
-    });
-  }
-
-  function shouldUseFetchVehicleDocumentUpload() {
-    if (typeof window.matchMedia !== 'function') return false;
-    return window.matchMedia('(max-width: 768px)').matches
-      || window.matchMedia('(pointer: coarse)').matches;
-  }
-
-  function uploadVehicleDocument(formData, onProgress, uploadUrl) {
-    if (shouldUseFetchVehicleDocumentUpload()) {
-      return uploadVehicleDocumentFetch(formData, uploadUrl);
+  function appendRuhsatUploadMeta(formData, meta) {
+    formData.append('vehicleId', meta.vehicleId);
+    formData.append('vehicleVersion', meta.vehicleVersion);
+    formData.append('documentType', meta.documentType);
+    formData.append('documentPathBefore', meta.documentPathBefore);
+    if (meta.tasitKartiExpiryDateBefore) {
+      formData.append('tasitKartiExpiryDateBefore', meta.tasitKartiExpiryDateBefore);
     }
-    return uploadVehicleDocumentXHR(formData, onProgress, uploadUrl);
+    if (meta.documentOperationDate) {
+      formData.append('documentOperationDate', meta.documentOperationDate);
+    }
+    formData.append('document', meta.blob, meta.fileName);
+  }
+
+  function isRetryableVehicleUploadError(err) {
+    var msg = String((err && err.message) || '').toLowerCase();
+    return msg.indexOf('ulaşmad') !== -1
+      || msg.indexOf('iletilemedi') !== -1
+      || msg.indexOf('eksik ulaşt') !== -1
+      || msg.indexOf('ağ hatası') !== -1
+      || msg.indexOf('network') !== -1
+      || msg.indexOf('timeout') !== -1;
+  }
+
+  function uploadVehicleDocumentWithRetry(meta, onProgress, uploadUrl, attemptsLeft) {
+    var formData = new FormData();
+    appendRuhsatUploadMeta(formData, meta);
+    return uploadVehicleDocumentXHR(formData, onProgress, uploadUrl).catch(function(err) {
+      if (attemptsLeft <= 1 || !isRetryableVehicleUploadError(err)) {
+        throw err;
+      }
+      return uploadVehicleDocumentWithRetry(meta, onProgress, uploadUrl, attemptsLeft - 1);
+    });
   }
 
   function uploadVehicleDocumentXHR(formData, onProgress, uploadUrl) {
@@ -7434,6 +7453,10 @@
           onProgress({ lengthComputable: false });
         }
       };
+      xhr.timeout = isMobileVehicleDocumentUploadContext() ? 180000 : 120000;
+      xhr.ontimeout = function() {
+        reject(new Error('Yükleme zaman aşımına uğradı. Wi-Fi veya daha güçlü sinyal ile tekrar deneyin.'));
+      };
       xhr.onload = function() {
         var raw = xhr.responseText || '';
         var data = {};
@@ -7453,7 +7476,7 @@
         resolve(data);
       };
       xhr.onerror = function() {
-        reject(new Error('Ağ hatası'));
+        reject(new Error('Bağlantı hatası. Wi-Fi veya daha güçlü mobil sinyal ile tekrar deneyin.'));
       };
       xhr.send(formData);
     });
@@ -7492,21 +7515,24 @@
       alert('Taşıt kimliği bulunamadı. Belgeler ekranını kapatıp taşıt detayından yeniden açın.');
       return;
     }
-    const formData = new FormData();
-    formData.append('vehicleId', vehicleId);
     const vehicleVersion = String(Number(vehicle.version) || 1);
-    formData.append('vehicleVersion', vehicleVersion);
-    formData.append('documentType', cfg.key);
     const documentPathBefore = getVehicleDocumentPath(vehicle, cfg.key);
-    formData.append('documentPathBefore', documentPathBefore);
     const uploadUrlParams = new URLSearchParams();
     uploadUrlParams.set('vehicleId', vehicleId);
     uploadUrlParams.set('vehicleVersion', vehicleVersion);
     uploadUrlParams.set('documentType', cfg.key);
     uploadUrlParams.set('documentPathBefore', documentPathBefore);
+    var uploadMeta = {
+      vehicleId: vehicleId,
+      vehicleVersion: vehicleVersion,
+      documentType: cfg.key,
+      documentPathBefore: documentPathBefore,
+      tasitKartiExpiryDateBefore: '',
+      documentOperationDate: ''
+    };
     if (cfg.key === 'tasit_karti') {
       const tasitKartiExpiryDateBefore = getTasitKartiExpiryDate(vehicle);
-      formData.append('tasitKartiExpiryDateBefore', tasitKartiExpiryDateBefore);
+      uploadMeta.tasitKartiExpiryDateBefore = tasitKartiExpiryDateBefore;
       uploadUrlParams.set('tasitKartiExpiryDateBefore', tasitKartiExpiryDateBefore);
       const expiryValidation = validateTasitKartiK2SourceDate();
       if (!expiryValidation.valid) {
@@ -7521,7 +7547,7 @@
         return;
       }
       if (dateValidation.iso) {
-        formData.append('documentOperationDate', dateValidation.iso);
+        uploadMeta.documentOperationDate = dateValidation.iso;
         uploadUrlParams.set('documentOperationDate', dateValidation.iso);
       }
     }
@@ -7530,15 +7556,17 @@
     setRuhsatUploadUiLocked(true);
     const uploadUrl = 'upload_ruhsat.php?' + uploadUrlParams.toString();
     resolveVehicleUploadFileBlob(selectedFile).then(function(resolved) {
-      formData.append('document', resolved.blob, resolved.fileName);
-      return uploadVehicleDocument(formData, function(info) {
+      uploadMeta.blob = resolved.blob;
+      uploadMeta.fileName = resolved.fileName;
+      var retryCount = isMobileVehicleDocumentUploadContext() ? 2 : 1;
+      return uploadVehicleDocumentWithRetry(uploadMeta, function(info) {
         if (!info || info.lengthComputable === false) {
           setRuhsatUploadProgressVisible(true, 0, true);
         } else {
           var pct = info.total ? Math.round(100 * info.loaded / info.total) : 0;
           setRuhsatUploadProgressVisible(true, pct, false);
         }
-      }, uploadUrl);
+      }, uploadUrl, retryCount);
     })
       .then(function(data) {
         setRuhsatUploadProgressVisible(false, 0, false);
