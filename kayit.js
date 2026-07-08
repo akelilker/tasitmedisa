@@ -267,6 +267,11 @@
     vehicleDateCalendarState.adapter = null;
   }
 
+  function getVehicleDateCalendarViewportRoot(input) {
+    if (!input || !input.closest('#dinamik-olay-modal')) return null;
+    return document.getElementById('dinamik-olay-modal');
+  }
+
   function positionVehicleDateCalendarPanel() {
     const panel = vehicleDateCalendarState.panel;
     const anchor = vehicleDateCalendarState.anchor;
@@ -276,8 +281,9 @@
     const useViewportLayer = !!(input && input.closest('#dinamik-olay-modal'));
 
     if (useViewportLayer) {
-      if (panel.parentNode !== document.body) {
-        document.body.appendChild(panel);
+      const viewportRoot = getVehicleDateCalendarViewportRoot(input) || document.body;
+      if (panel.parentNode !== viewportRoot) {
+        viewportRoot.appendChild(panel);
       }
       panel.classList.add('vehicle-date-calendar-panel--viewport');
     } else {
