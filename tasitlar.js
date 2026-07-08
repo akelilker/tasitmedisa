@@ -9,7 +9,7 @@
    ========================================= */
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20260708.6';
+  const MEDISA_TASITLAR_MODULE_VERSION = '20260708.7';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
@@ -7420,8 +7420,10 @@
       || msg.indexOf('iletilemedi') !== -1
       || msg.indexOf('eksik ulaşt') !== -1
       || msg.indexOf('ağ hatası') !== -1
+      || msg.indexOf('bağlantı hatası') !== -1
       || msg.indexOf('network') !== -1
-      || msg.indexOf('timeout') !== -1;
+      || msg.indexOf('timeout') !== -1
+      || msg.indexOf('zaman aşımı') !== -1;
   }
 
   function uploadVehicleDocumentWithRetry(meta, onProgress, uploadUrl, attemptsLeft) {
