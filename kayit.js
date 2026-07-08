@@ -267,6 +267,11 @@
     vehicleDateCalendarState.adapter = null;
   }
 
+  function getVehicleDateCalendarViewportRoot(input) {
+    if (!input || !input.closest('#dinamik-olay-modal')) return null;
+    return document.getElementById('dinamik-olay-modal');
+  }
+
   function positionVehicleDateCalendarPanel() {
     const panel = vehicleDateCalendarState.panel;
     const anchor = vehicleDateCalendarState.anchor;
@@ -276,8 +281,9 @@
     const useViewportLayer = !!(input && input.closest('#dinamik-olay-modal'));
 
     if (useViewportLayer) {
-      if (panel.parentNode !== document.body) {
-        document.body.appendChild(panel);
+      const viewportRoot = getVehicleDateCalendarViewportRoot(input) || document.body;
+      if (panel.parentNode !== viewportRoot) {
+        viewportRoot.appendChild(panel);
       }
       panel.classList.add('vehicle-date-calendar-panel--viewport');
     } else {
@@ -444,6 +450,7 @@
       if (!panel || !panel.classList.contains('open')) return;
       if (panel.contains(event.target)) return;
       if (anchor && anchor.closest('.vehicle-date-picker-wrap') && anchor.closest('.vehicle-date-picker-wrap').contains(event.target)) return;
+      if (anchor && anchor.closest('.olay-date-mobile-wrap') && anchor.closest('.olay-date-mobile-wrap').contains(event.target)) return;
       if (anchor && (anchor === event.target || anchor.contains(event.target))) return;
       closeVehicleDateCalendar();
     });
