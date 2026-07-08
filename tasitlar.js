@@ -9,7 +9,7 @@
    ========================================= */
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20260708.4';
+  const MEDISA_TASITLAR_MODULE_VERSION = '20260708.5';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
@@ -4251,10 +4251,6 @@
         writeIso: function(iso) { return iso ? formatIsoToGgAaYyyy(iso) : ''; }
       };
       function openOlayCustomCalendar() {
-        if (typeof window.matchMedia === 'function' && window.matchMedia('(min-width: 769px)').matches) {
-          openOlayNativeDatePicker();
-          return;
-        }
         if (window.MedisaDateCalendar && typeof window.MedisaDateCalendar.open === 'function') {
           window.MedisaDateCalendar.open(textEl, btn, olayCalendarAdapter);
           return;
