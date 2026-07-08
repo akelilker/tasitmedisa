@@ -340,10 +340,10 @@ if (!isset($_FILES[$fileKey]) || $_FILES[$fileKey]['error'] !== UPLOAD_ERR_OK) {
             $msg = 'Dosya boyutu tarayıcı veya sunucu limitini aşıyor. Mobilde limit genelde daha düşüktür; daha küçük bir PDF deneyin veya masaüstünden yükleyin.';
             break;
         case UPLOAD_ERR_PARTIAL:
-            $msg = 'Dosya sunucuya eksik ulaştı. Bağlantıyı kontrol edip dosyayı yeniden seçerek tekrar deneyin.';
+            $msg = 'PDF sunucuya eksik ulaştı. Wi-Fi veya daha güçlü mobil sinyal ile tekrar deneyin.';
             break;
         case UPLOAD_ERR_NO_FILE:
-            $msg = 'Dosya sunucuya ulaşmadı. Dosyayı yeniden seçip tekrar deneyin.';
+            $msg = 'PDF sunucuya ulaşmadı. Dosyayı yeniden seçip tekrar deneyin.';
             break;
         case UPLOAD_ERR_NO_TMP_DIR:
             $msg = 'Sunucu geçici yükleme klasörü bulunamadığı için dosya alınamadı.';
@@ -356,7 +356,11 @@ if (!isset($_FILES[$fileKey]) || $_FILES[$fileKey]['error'] !== UPLOAD_ERR_OK) {
             break;
         default:
             if (!isset($_FILES[$fileKey])) {
-                $msg = 'Dosya sunucuya ulaşmadı. PDF\'i önce cihaza indirip Dosyalar uygulamasından seçin veya bağlantıyı kontrol edip tekrar deneyin.';
+                if ($contentLength > 0) {
+                    $msg = 'PDF sunucuya iletilemedi. Wi-Fi veya daha güçlü mobil sinyal ile tekrar deneyin.';
+                } else {
+                    $msg = 'PDF seçimi sunucuya gönderilemedi. Dosyayı yeniden seçip tekrar deneyin.';
+                }
             } else {
                 $msg = 'Dosya yüklenemedi. Hata kodu: ' . (string)$err;
             }
