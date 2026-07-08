@@ -9,7 +9,7 @@
    ========================================= */
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20260705.2';
+  const MEDISA_TASITLAR_MODULE_VERSION = '20260708.2';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
@@ -4443,7 +4443,11 @@
     };
     const inputId = inputIds[documentType];
     if (!inputId) return { valid: true };
-    const tarihInput = document.getElementById(inputId);
+    const uploadScope = document.getElementById('ruhsat-modal-content')
+      || document.getElementById('dinamik-olay-modal');
+    const tarihInput = uploadScope
+      ? uploadScope.querySelector('#' + inputId)
+      : document.getElementById(inputId);
     if (!tarihInput) return { valid: true };
     const raw = (tarihInput.value || '').trim();
     if (!raw) return { valid: true };
@@ -7425,9 +7429,15 @@
     formData.append('documentType', cfg.key);
     const documentPathBefore = getVehicleDocumentPath(vehicle, cfg.key);
     formData.append('documentPathBefore', documentPathBefore);
+    const uploadUrlParams = new URLSearchParams();
+    uploadUrlParams.set('vehicleId', vehicleId);
+    uploadUrlParams.set('vehicleVersion', vehicleVersion);
+    uploadUrlParams.set('documentType', cfg.key);
+    uploadUrlParams.set('documentPathBefore', documentPathBefore);
     if (cfg.key === 'tasit_karti') {
       const tasitKartiExpiryDateBefore = getTasitKartiExpiryDate(vehicle);
       formData.append('tasitKartiExpiryDateBefore', tasitKartiExpiryDateBefore);
+      uploadUrlParams.set('tasitKartiExpiryDateBefore', tasitKartiExpiryDateBefore);
       const expiryValidation = validateTasitKartiK2SourceDate();
       if (!expiryValidation.valid) {
         alert(expiryValidation.message);
@@ -7442,13 +7452,14 @@
       }
       if (dateValidation.iso) {
         formData.append('documentOperationDate', dateValidation.iso);
+        uploadUrlParams.set('documentOperationDate', dateValidation.iso);
       }
     }
     const selectedFile = input.files[0];
-    formData.append('document', selectedFile);
+    formData.append('document', selectedFile, selectedFile.name || 'document.pdf');
     setRuhsatUploadProgressVisible(true, 0, true);
     setRuhsatUploadUiLocked(true);
-    const uploadUrl = 'upload_ruhsat.php';
+    const uploadUrl = 'upload_ruhsat.php?' + uploadUrlParams.toString();
     uploadVehicleDocumentXHR(formData, function(info) {
       if (!info || info.lengthComputable === false) {
         setRuhsatUploadProgressVisible(true, 0, true);
