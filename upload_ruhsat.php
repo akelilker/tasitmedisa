@@ -355,7 +355,11 @@ if (!isset($_FILES[$fileKey]) || $_FILES[$fileKey]['error'] !== UPLOAD_ERR_OK) {
             $msg = 'Sunucu dosya yüklemeyi bir PHP eklentisi nedeniyle durdurdu.';
             break;
         default:
-            $msg = 'Dosya yüklenemedi. Hata kodu: ' . (string)$err;
+            if (!isset($_FILES[$fileKey])) {
+                $msg = 'Dosya sunucuya ulaşmadı. PDF\'i önce cihaza indirip Dosyalar uygulamasından seçin veya bağlantıyı kontrol edip tekrar deneyin.';
+            } else {
+                $msg = 'Dosya yüklenemedi. Hata kodu: ' . (string)$err;
+            }
             break;
     }
     http_response_code(400);
