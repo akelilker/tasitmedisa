@@ -9,7 +9,7 @@
    ========================================= */
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20260708.4';
+  const MEDISA_TASITLAR_MODULE_VERSION = '20260708.6';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
@@ -4188,7 +4188,7 @@
     const ids = ['sigorta-tarih', 'kasko-tarih', 'k2-belgesi-tarih', 'takograf-kalibrasyon-tarih', 'tasit-karti-yapilma-tarih', 'muayene-tarih', 'muayene-egzoz-yapilma-tarih'];
     const calendarSvg = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>';
     ids.forEach(function(id) {
-      const textEl = document.getElementById(id);
+      const textEl = modal.querySelector('#' + id);
       if (!textEl || textEl.closest('.olay-date-mobile-wrap')) return;
       const par = textEl.parentNode;
       if (!par) return;
@@ -4255,8 +4255,8 @@
           window.MedisaDateCalendar.open(textEl, btn, olayCalendarAdapter);
           return;
         }
-        if (typeof ensureVehicleTypePickerModule === 'function') {
-          ensureVehicleTypePickerModule().then(function() {
+        if (typeof ensureMedisaDateCalendarReady === 'function') {
+          ensureMedisaDateCalendarReady().then(function() {
             if (window.MedisaDateCalendar && typeof window.MedisaDateCalendar.open === 'function') {
               window.MedisaDateCalendar.open(textEl, btn, olayCalendarAdapter);
             } else {
@@ -4267,6 +4267,9 @@
         }
         openOlayNativeDatePicker();
       }
+      btn.addEventListener('mousedown', function(e) {
+        e.preventDefault();
+      });
       btn.addEventListener('click', function(e) {
         e.preventDefault();
         e.stopPropagation();
@@ -5245,6 +5248,10 @@
         requestAnimationFrame(function() {
           applyDinamikOlayFormDateHelpers(modal);
         });
+        if (['sigorta', 'kasko', 'muayene', 'takograf', 'tasitkarti'].indexOf(type) >= 0
+          && typeof ensureMedisaDateCalendarReady === 'function') {
+          ensureMedisaDateCalendarReady().catch(function() {});
+        }
       }
     }
 
@@ -9691,6 +9698,29 @@
   let muayeneTooltipCloseTimeout = null;
   let muayenePickerPointerHandledAt = 0;
   let vehicleTypePickerModulePromise = null;
+  let medisaDateCalendarModulePromise = null;
+
+  function ensureMedisaDateCalendarReady() {
+    if (window.MedisaDateCalendar && typeof window.MedisaDateCalendar.open === 'function') {
+      return Promise.resolve();
+    }
+    if (medisaDateCalendarModulePromise) {
+      return medisaDateCalendarModulePromise;
+    }
+    const versions = window.MEDISA_MODULE_VERSIONS || {};
+    const base = typeof window.getMainAppBasePath === 'function' ? window.getMainAppBasePath() : '';
+    const kayitJs = base + 'kayit.js?v=' + (versions.kayitJs || '20260406.1');
+    const kayitCss = base + 'kayit.css?v=' + (versions.kayitCss || '20260421.2');
+    if (typeof window.loadAppModule === 'function') {
+      medisaDateCalendarModulePromise = window.loadAppModule(kayitJs, kayitCss).catch(function(err) {
+        medisaDateCalendarModulePromise = null;
+        throw err;
+      });
+      return medisaDateCalendarModulePromise;
+    }
+    return Promise.resolve();
+  }
+
   function ensureVehicleTypePickerModule() {
     if (typeof window.openVehicleTypePickerOverlay === 'function') {
       return Promise.resolve();
