@@ -237,6 +237,7 @@
       panel.className = 'vehicle-date-calendar-panel';
       panel.setAttribute('role', 'dialog');
       panel.setAttribute('aria-label', 'Tarih Seç');
+      panel.setAttribute('aria-hidden', 'true');
       panel.addEventListener('click', handleVehicleDateCalendarClick);
       vehicleDateCalendarState.panel = panel;
     }
@@ -252,7 +253,27 @@
     return !!(panel && target && panel.contains(target));
   }
 
+  function restoreVehicleDateCalendarFocusBeforeHide() {
+    const anchor = vehicleDateCalendarState.anchor;
+    const input = vehicleDateCalendarState.input;
+    const panel = vehicleDateCalendarState.panel;
+    const active = document.activeElement;
+    if (panel && active && panel.contains(active)) {
+      const target = anchor || input;
+      if (target && typeof target.focus === 'function') {
+        try {
+          target.focus({ preventScroll: true });
+        } catch (err) {
+          target.focus();
+        }
+      } else if (typeof active.blur === 'function') {
+        active.blur();
+      }
+    }
+  }
+
   function closeVehicleDateCalendar() {
+    restoreVehicleDateCalendarFocusBeforeHide();
     const panel = vehicleDateCalendarState.panel;
     if (panel) {
       panel.classList.remove('open');
