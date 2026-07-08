@@ -7393,9 +7393,13 @@
     var selectBox = document.querySelector('#ruhsat-modal-content .ruhsat-select-box');
     if (saveBtn) saveBtn.disabled = !!locked;
     if (cancelBtn) cancelBtn.disabled = !!locked;
-    if (selectBox) selectBox.classList.toggle('ruhsat-select-box--uploading', !!locked);
+    if (selectBox) {
+      selectBox.classList.toggle('ruhsat-select-box--uploading', !!locked);
+      selectBox.disabled = !!locked;
+      selectBox.setAttribute('aria-disabled', locked ? 'true' : 'false');
+    }
     var inputEl = document.getElementById('ruhsat-file-input');
-    if (inputEl) inputEl.disabled = !!locked;
+    if (inputEl && !locked) inputEl.disabled = false;
   }
 
   /**
@@ -7421,15 +7425,9 @@
     formData.append('documentType', cfg.key);
     const documentPathBefore = getVehicleDocumentPath(vehicle, cfg.key);
     formData.append('documentPathBefore', documentPathBefore);
-    const uploadUrlParams = new URLSearchParams();
-    uploadUrlParams.set('vehicleId', vehicleId);
-    uploadUrlParams.set('vehicleVersion', vehicleVersion);
-    uploadUrlParams.set('documentType', cfg.key);
-    uploadUrlParams.set('documentPathBefore', documentPathBefore);
     if (cfg.key === 'tasit_karti') {
       const tasitKartiExpiryDateBefore = getTasitKartiExpiryDate(vehicle);
       formData.append('tasitKartiExpiryDateBefore', tasitKartiExpiryDateBefore);
-      uploadUrlParams.set('tasitKartiExpiryDateBefore', tasitKartiExpiryDateBefore);
       const expiryValidation = validateTasitKartiK2SourceDate();
       if (!expiryValidation.valid) {
         alert(expiryValidation.message);
@@ -7444,13 +7442,13 @@
       }
       if (dateValidation.iso) {
         formData.append('documentOperationDate', dateValidation.iso);
-        uploadUrlParams.set('documentOperationDate', dateValidation.iso);
       }
     }
-    formData.append('document', input.files[0]);
+    const selectedFile = input.files[0];
+    formData.append('document', selectedFile);
     setRuhsatUploadProgressVisible(true, 0, true);
     setRuhsatUploadUiLocked(true);
-    const uploadUrl = 'upload_ruhsat.php?' + uploadUrlParams.toString();
+    const uploadUrl = 'upload_ruhsat.php';
     uploadVehicleDocumentXHR(formData, function(info) {
       if (!info || info.lengthComputable === false) {
         setRuhsatUploadProgressVisible(true, 0, true);

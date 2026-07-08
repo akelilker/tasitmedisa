@@ -334,9 +334,30 @@ $fileKey = isset($_FILES['document']) ? 'document' : 'ruhsat';
 
 if (!isset($_FILES[$fileKey]) || $_FILES[$fileKey]['error'] !== UPLOAD_ERR_OK) {
     $err = $_FILES[$fileKey]['error'] ?? -1;
-    $msg = ($err === UPLOAD_ERR_INI_SIZE || $err === UPLOAD_ERR_FORM_SIZE)
-        ? 'Dosya boyutu tarayıcı veya sunucu limitini aşıyor. Mobilde limit genelde daha düşüktür; daha küçük bir PDF deneyin veya masaüstünden yükleyin.'
-        : 'Dosya yüklenemedi';
+    switch ($err) {
+        case UPLOAD_ERR_INI_SIZE:
+        case UPLOAD_ERR_FORM_SIZE:
+            $msg = 'Dosya boyutu tarayıcı veya sunucu limitini aşıyor. Mobilde limit genelde daha düşüktür; daha küçük bir PDF deneyin veya masaüstünden yükleyin.';
+            break;
+        case UPLOAD_ERR_PARTIAL:
+            $msg = 'Dosya sunucuya eksik ulaştı. Bağlantıyı kontrol edip dosyayı yeniden seçerek tekrar deneyin.';
+            break;
+        case UPLOAD_ERR_NO_FILE:
+            $msg = 'Dosya sunucuya ulaşmadı. Dosyayı yeniden seçip tekrar deneyin.';
+            break;
+        case UPLOAD_ERR_NO_TMP_DIR:
+            $msg = 'Sunucu geçici yükleme klasörü bulunamadığı için dosya alınamadı.';
+            break;
+        case UPLOAD_ERR_CANT_WRITE:
+            $msg = 'Sunucu dosyayı geçici alana yazamadı.';
+            break;
+        case UPLOAD_ERR_EXTENSION:
+            $msg = 'Sunucu dosya yüklemeyi bir PHP eklentisi nedeniyle durdurdu.';
+            break;
+        default:
+            $msg = 'Dosya yüklenemedi. Hata kodu: ' . (string)$err;
+            break;
+    }
     http_response_code(400);
     echo json_encode(['error' => $msg], JSON_UNESCAPED_UNICODE);
     exit;
