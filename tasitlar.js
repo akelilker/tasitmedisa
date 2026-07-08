@@ -9,7 +9,7 @@
    ========================================= */
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20260708.2';
+  const MEDISA_TASITLAR_MODULE_VERSION = '20260708.3';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
@@ -7118,18 +7118,16 @@
     }
     const uploadBox = document.createElement('div');
     uploadBox.className = 'ruhsat-upload-box';
+    const selectBox = document.createElement('div');
+    selectBox.className = 'ruhsat-select-box';
+    selectBox.setAttribute('aria-hidden', 'true');
+    selectBox.innerHTML = '<span class="ruhsat-select-box-icon" aria-hidden="true">+</span><span class="ruhsat-select-box-label">Dosya Seç</span>';
     const input = document.createElement('input');
     input.type = 'file';
-    input.accept = 'application/pdf,.pdf';
+    input.accept = 'application/pdf,.pdf,application/octet-stream';
     input.id = 'ruhsat-file-input';
+    input.className = 'ruhsat-file-input-native';
     input.setAttribute('aria-label', cfg.label + ' dosyası seç');
-    input.style.display = 'none';
-    const selectBox = document.createElement('button');
-    selectBox.type = 'button';
-    selectBox.className = 'ruhsat-select-box';
-    selectBox.setAttribute('aria-label', cfg.label + ' dosyası seç');
-    selectBox.innerHTML = '<span class="ruhsat-select-box-icon" aria-hidden="true">+</span><span class="ruhsat-select-box-label">Dosya Seç</span>';
-    selectBox.onclick = function() { input.click(); };
     uploadBox.appendChild(selectBox);
     uploadBox.appendChild(input);
     content.appendChild(uploadBox);
@@ -7231,7 +7229,9 @@
       if (hasExistingRuhsat) {
         replaceConfirm.hidden = false;
       } else {
-        uploadSelectedDocument();
+        requestAnimationFrame(function() {
+          uploadSelectedDocument();
+        });
       }
     };
     if (cfg.key === 'sigorta' || cfg.key === 'kasko' || cfg.key === 'takograf') {
@@ -7347,6 +7347,68 @@
     }
   }
 
+  function resolveVehicleUploadFileBlob(file) {
+    return new Promise(function(resolve, reject) {
+      if (!file) {
+        reject(new Error('Dosya seçilmedi.'));
+        return;
+      }
+      var fileName = String(file.name || 'document.pdf');
+      if (file.size > 0) {
+        resolve({ blob: file, fileName: fileName });
+        return;
+      }
+      if (typeof file.arrayBuffer !== 'function') {
+        reject(new Error('Seçilen dosya okunamadı. Dosyayı yeniden seçin.'));
+        return;
+      }
+      file.arrayBuffer().then(function(buffer) {
+        if (!buffer || !buffer.byteLength) {
+          reject(new Error('Dosya boş veya henüz indirilemedi. PDF\'i önce Dosyalar uygulamasına kaydedip tekrar seçin.'));
+          return;
+        }
+        resolve({
+          blob: new Blob([buffer], { type: file.type || 'application/pdf' }),
+          fileName: fileName
+        });
+      }).catch(function() {
+        reject(new Error('Dosya okunamadı. Dosyayı yeniden seçin.'));
+      });
+    });
+  }
+
+  function uploadVehicleDocumentFetch(formData, uploadUrl) {
+    return fetch(uploadUrl || 'upload_ruhsat.php', {
+      method: 'POST',
+      headers: buildMedisaAuthHeaders(),
+      body: formData,
+      credentials: 'same-origin'
+    }).then(function(response) {
+      return response.json().catch(function() { return {}; }).then(function(data) {
+        if (!response.ok || !data.success) {
+          var err = new Error((data && (data.error || data.message)) ? (data.error || data.message) : ('Yükleme başarısız (HTTP ' + response.status + ')'));
+          err.status = response.status;
+          err.conflict = !!(data && data.conflict) || response.status === 409;
+          throw err;
+        }
+        return data;
+      });
+    });
+  }
+
+  function shouldUseFetchVehicleDocumentUpload() {
+    if (typeof window.matchMedia !== 'function') return false;
+    return window.matchMedia('(max-width: 768px)').matches
+      || window.matchMedia('(pointer: coarse)').matches;
+  }
+
+  function uploadVehicleDocument(formData, onProgress, uploadUrl) {
+    if (shouldUseFetchVehicleDocumentUpload()) {
+      return uploadVehicleDocumentFetch(formData, uploadUrl);
+    }
+    return uploadVehicleDocumentXHR(formData, onProgress, uploadUrl);
+  }
+
   function uploadVehicleDocumentXHR(formData, onProgress, uploadUrl) {
     return new Promise(function(resolve, reject) {
       var xhr = new XMLHttpRequest();
@@ -7399,11 +7461,12 @@
     if (cancelBtn) cancelBtn.disabled = !!locked;
     if (selectBox) {
       selectBox.classList.toggle('ruhsat-select-box--uploading', !!locked);
-      selectBox.disabled = !!locked;
-      selectBox.setAttribute('aria-disabled', locked ? 'true' : 'false');
     }
     var inputEl = document.getElementById('ruhsat-file-input');
-    if (inputEl && !locked) inputEl.disabled = false;
+    if (inputEl) {
+      inputEl.disabled = !!locked;
+      inputEl.setAttribute('aria-disabled', locked ? 'true' : 'false');
+    }
   }
 
   /**
@@ -7456,18 +7519,20 @@
       }
     }
     const selectedFile = input.files[0];
-    formData.append('document', selectedFile, selectedFile.name || 'document.pdf');
     setRuhsatUploadProgressVisible(true, 0, true);
     setRuhsatUploadUiLocked(true);
     const uploadUrl = 'upload_ruhsat.php?' + uploadUrlParams.toString();
-    uploadVehicleDocumentXHR(formData, function(info) {
-      if (!info || info.lengthComputable === false) {
-        setRuhsatUploadProgressVisible(true, 0, true);
-      } else {
-        var pct = info.total ? Math.round(100 * info.loaded / info.total) : 0;
-        setRuhsatUploadProgressVisible(true, pct, false);
-      }
-    }, uploadUrl)
+    resolveVehicleUploadFileBlob(selectedFile).then(function(resolved) {
+      formData.append('document', resolved.blob, resolved.fileName);
+      return uploadVehicleDocument(formData, function(info) {
+        if (!info || info.lengthComputable === false) {
+          setRuhsatUploadProgressVisible(true, 0, true);
+        } else {
+          var pct = info.total ? Math.round(100 * info.loaded / info.total) : 0;
+          setRuhsatUploadProgressVisible(true, pct, false);
+        }
+      }, uploadUrl);
+    })
       .then(function(data) {
         setRuhsatUploadProgressVisible(false, 0, false);
         setRuhsatUploadUiLocked(false);
