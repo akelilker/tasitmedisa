@@ -9,7 +9,7 @@
    ========================================= */
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20260708.5';
+  const MEDISA_TASITLAR_MODULE_VERSION = '20260708.6';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
@@ -4267,6 +4267,9 @@
         }
         openOlayNativeDatePicker();
       }
+      btn.addEventListener('mousedown', function(e) {
+        e.preventDefault();
+      });
       btn.addEventListener('click', function(e) {
         e.preventDefault();
         e.stopPropagation();
