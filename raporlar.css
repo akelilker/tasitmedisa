@@ -168,14 +168,6 @@ color: #4ade80 !important;
 #reports-modal .reports-list-header-actions .universal-back-bar {
 margin: 0;
 }
-/* Geri Al + Detay Ekleme: dikey, 15px aralık (sarı kutu sol bloğu) */
-#reports-modal .reports-list-header-actions .stok-left-controls {
-display: flex;
-flex-direction: column;
-gap: 15px;
-align-items: flex-start;
-flex-shrink: 0;
-}
 /* Header slotunda geri çubuğu küçülebilir yap */
 #reports-modal .reports-list-header-actions .stok-controls-row-1 .universal-back-bar {
 flex: 1 1 auto !important;
@@ -193,9 +185,7 @@ color: var(--txt) !important;
 #reports-modal .reports-list-header-actions .stok-detail-add-btn.active:hover {
 color: #4ade80 !important;
 }
-#reports-modal .stok-controls-row-1 .universal-back-bar,
-#reports-modal .kullanici-list-top-controls .universal-back-bar,
-#reports-modal .kullanici-detail-header .universal-back-bar {
+#reports-modal .stok-controls-row-1 .universal-back-bar {
 width: auto;
 flex: 0 0 auto;
 }
@@ -1460,19 +1450,6 @@ width: 100% !important;
 box-sizing: border-box !important;
 margin: 0 !important;
 }
-/* stok-left-controls varsa (mobil veya eski yapı) – gizle veya uyumlu tut */
-#reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-1 .stok-left-controls {
-display: flex !important;
-flex-direction: row !important;
-justify-content: center !important;
-align-items: center !important;
-gap: 10px !important;
-flex-shrink: 0 !important;
-}
-#reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-1 .stok-left-controls .universal-back-bar,
-#reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-1 .stok-left-controls .stok-detail-add-btn {
-flex-shrink: 0 !important;
-}
 /* Masaüstü: geri + Detay tek satır; geri oku ortak 8px / 16px başlangıcında tut */
 #reports-modal .reports-list-header-actions:has(.stok-detail-add-wrap.desktop-single-row) {
 padding-top: 0 !important;
@@ -1483,9 +1460,6 @@ margin-top: 0 !important;
 }
 #reports-modal .stok-detail-add-wrap.desktop-single-row {
 padding-top: 0 !important;
-margin-top: 0 !important;
-}
-#reports-modal .stok-detail-add-wrap.desktop-single-row .stok-left-controls .universal-back-bar {
 margin-top: 0 !important;
 }
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-1 .universal-back-bar,
@@ -1749,7 +1723,7 @@ z-index: 100;
   -webkit-text-fill-color: var(--data-value-color, #a0aec0) !important;
 }
 /* Desktop düzeltme katmanı: Detay menü üst hiza + modal alt çerçeve sabit */
-/* Not: > ile sadece row-1'in direkt çocuğu (stok-left-controls yokken). stok-left-controls içindeki back-bar bu kuralı almaz, kendi -46px kuralı geçerli kalır. */
+/* Not: > ile sadece row-1'in direkt çocuğu hedeflenir. */
 #reports-modal .reports-list-header-actions .stok-controls-row-1 > .universal-back-bar {
 margin-top: 0 !important;
 flex: 0 0 auto !important;
@@ -2303,189 +2277,6 @@ color: #4ade80;
 background: rgba(74, 222, 128, 0.2);
 border-color: rgba(74, 222, 128, 0.5);
 color: #4ade80;
-}
-
-/* === KULLANICI SEKME STİLLERİ === */
-
-/* Kullanıcı Liste Item */
-.kullanici-list-item {
-display: flex;
-justify-content: space-between;
-align-items: center;
-padding: 8px 16px;
-border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-background: rgba(255, 255, 255, 0.02);
-cursor: pointer;
-transition: background 0.2s;
-}
-
-.kullanici-list-item:hover {
-background: rgba(255, 255, 255, 0.05);
-}
-
-.kullanici-list-item-left {
-flex: 1;
-}
-
-.kullanici-list-item-name {
-font-size: 13px;
-font-weight: 600;
-color: #f0f0f0;
-}
-
-.kullanici-list-item-right {
-text-align: right;
-display: flex;
-flex-direction: column;
-align-items: flex-end;
-gap: 4px;
-}
-
-.kullanici-list-item-plate {
-font-size: 12px;
-font-weight: 700;
-color: var(--data-value-color, #a0aec0);
-background: #000;
-padding: 2px 6px;
-border-radius: 3px;
-border: 1px solid #333;
-}
-
-.kullanici-list-item-brand {
-font-size: 11px;
-color: var(--data-value-color, #a0aec0);
-}
-
-/* Kullanıcı Liste Top Controls */
-.kullanici-list-top-controls {
-display: flex;
-align-items: center;
-gap: 12px;
-min-height: 36px;
-padding: 0 16px;
-border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.kullanici-export-controls {
-display: flex;
-align-items: center;
-gap: 8px;
-margin-left: auto;
-}
-
-.kullanici-export-right {
-display: flex;
-align-items: center;
-gap: 8px;
-}
-
-/* Kullanıcı Detay Grid */
-.kullanici-detail-header {
-padding: 0;
-border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.kullanici-detail-grid {
-display: grid;
-grid-template-columns: 1fr 1fr;
-gap: 20px;
-padding: 20px;
-}
-
-.kullanici-detail-left,
-.kullanici-detail-right {
-display: flex;
-flex-direction: column;
-}
-
-.kullanici-detail-section {
-background: rgba(255, 255, 255, 0.02);
-border: 1px solid rgba(255, 255, 255, 0.1);
-border-radius: 8px;
-padding: 16px;
-}
-
-.kullanici-detail-section-title {
-font-size: 14px;
-font-weight: 700;
-color: #f0f0f0;
-margin-bottom: 16px;
-padding-bottom: 8px;
-border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.kullanici-detail-row {
-display: flex;
-flex-direction: column;
-gap: 4px;
-margin-bottom: 12px;
-}
-
-.kullanici-detail-row:last-child {
-margin-bottom: 0;
-}
-
-.kullanici-detail-label {
-font-size: 12px;
-color: #ffffff;
-font-weight: 500;
-}
-
-.kullanici-detail-value {
-font-size: 14px;
-color: var(--data-value-color, #a0aec0);
-}
-
-/* Kullanıcı Events List */
-.kullanici-events-list {
-display: flex;
-flex-direction: column;
-gap: 12px;
-max-height: 500px;
-overflow-y: auto;
-}
-
-.kullanici-event-item {
-background: rgba(255, 255, 255, 0.03);
-border: 1px solid rgba(255, 255, 255, 0.1);
-border-radius: 6px;
-padding: 12px;
-transition: background 0.2s;
-}
-
-.kullanici-event-item:hover {
-background: rgba(255, 255, 255, 0.05);
-}
-
-.kullanici-event-header {
-display: flex;
-justify-content: space-between;
-align-items: center;
-margin-bottom: 8px;
-}
-
-.kullanici-event-type {
-font-size: 12px;
-font-weight: 700;
-color: var(--theme-color);
-text-transform: uppercase;
-}
-
-.kullanici-event-date {
-font-size: 11px;
-color: var(--data-value-color, #a0aec0);
-}
-
-.kullanici-event-vehicle {
-font-size: 12px;
-color: var(--data-value-color, #a0aec0);
-margin-bottom: 4px;
-}
-
-.kullanici-event-details {
-font-size: 12px;
-color: var(--data-value-color, #a0aec0);
-line-height: 1.4;
 }
 
 /* — MOBİL TEK BLOK (max-width: 640px) - .cursorrules uyumlu — */
@@ -3156,23 +2947,6 @@ max-width: 100% !important;
 padding: 0 !important;
 }
 
-/* Kullanıcı */
-.kullanici-detail-section-title { font-size: 16px !important; }
-.kullanici-detail-label { font-size: 14px !important; }
-.kullanici-detail-value { font-size: 16px !important; }
-.kullanici-event-type { font-size: 14px !important; }
-.kullanici-event-date { font-size: 13px !important; }
-.kullanici-event-vehicle { font-size: 14px !important; }
-.kullanici-event-details { font-size: 14px !important; }
-.kullanici-detail-grid {
-grid-template-columns: 1fr;
-gap: 16px;
-padding: 16px;
-}
-.kullanici-list-item { padding: 6px 12px; }
-.kullanici-list-item-name { font-size: 13px; }
-.kullanici-list-item-plate { font-size: 12px; }
-.kullanici-list-item-brand { font-size: 11px; }
 }
 
 /* iOS PWA modal margin: style-core.css (.modal-overlay .modal-container) */
