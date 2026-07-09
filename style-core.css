@@ -1618,9 +1618,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu .m
 }
 
 /* Sadece gövde (body) kaydırılabilir – çerçeve sabit (iOS zıplama engeli) */
-.modal-overlay .modal-body,
-.login-body,
-.user-panel-body {
+.modal-overlay .modal-body {
   flex: 1 1 auto !important;
   min-height: 0 !important; /* Flex içinde küçülebilsin, taşan içerik scroll olsun */
   max-height: 100% !important;

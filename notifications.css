@@ -591,10 +591,6 @@ body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-
   right: auto;
 }
 
-#notifications-dropdown.settings-dropdown > button.notification-item .notif-line2.notif-detail {
-  grid-column: 1 / -1;
-}
-
 #notifications-dropdown > .notification-item:last-child {
   margin-bottom: 0 !important;
 }
