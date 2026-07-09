@@ -14,15 +14,6 @@ body.admin-report-page::-webkit-scrollbar {
   display: none;
 }
 
-.report-table-wrap {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-.report-table-wrap::-webkit-scrollbar {
-  display: none;
-}
-
 /* Anasayfa ile aynı: üst + yan kırmızı çizgiler */
 .admin-app-container {
   max-width: 1200px;
@@ -353,46 +344,6 @@ body.admin-report-page .main-header-user-name.is-empty {
   gap: 12px;
 }
 
-.user-analytics-branch-card {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
-  gap: 8px;
-  min-height: 118px;
-  padding: 14px 16px;
-  border: 1px solid #3d3d3d;
-  border-radius: 12px;
-  background: rgba(0, 0, 0, 0.2);
-  color: #fff;
-  font: inherit;
-  text-align: left;
-  cursor: pointer;
-  appearance: none;
-  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.user-analytics-branch-card:hover {
-  border-color: var(--theme-color);
-  transform: translateY(-1px);
-  box-shadow: 0 0 0 1px rgba(var(--theme-color-rgb), 0.18);
-}
-
-.user-analytics-branch-card.all-card {
-  border-color: rgba(var(--theme-color-rgb), 0.42);
-}
-
-.user-analytics-branch-name {
-  font-size: 18px;
-  font-weight: 700;
-  letter-spacing: 0.4px;
-}
-
-.user-analytics-branch-count {
-  font-size: 14px;
-  color: var(--muted);
-}
-
 .user-analytics-list-shell,
 .user-analytics-detail-shell {
   display: flex;
@@ -465,16 +416,6 @@ body.admin-report-page .main-header-user-name.is-empty {
 .user-analytics-card {
   padding: 14px;
   overflow: hidden;
-}
-
-.user-analytics-card .card-accent {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 4px;
-  height: 100%;
-  background: var(--theme-color);
-  opacity: 0.8;
 }
 
 .user-analytics-head {
@@ -658,128 +599,6 @@ body.admin-report-page .main-header-user-name.is-empty {
   color: #ef4444 !important;
 }
 
-/* --- Filtreler --- */
-.report-filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2px;
-  align-items: flex-end;
-  margin-top: 0;
-  margin-bottom: 0;
-  max-width: 100%;
-  overflow-x: auto;
-  overflow-y: visible;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  -webkit-overflow-scrolling: touch;
-  padding-bottom: 2px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
-}
-
-.report-filters::-webkit-scrollbar {
-  display: none;
-}
-
-.report-filters-row {
-  flex-basis: 100%;
-  display: flex;
-  flex-wrap: nowrap;
-  gap: 2px;
-  align-items: center;
-  justify-content: space-between;
-  overflow-x: auto;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  -webkit-overflow-scrolling: touch;
-}
-
-.report-filters-row label:nth-child(1) {
-  flex: 0 0 auto;
-  justify-content: flex-start;
-}
-
-.report-filters-row label:nth-child(2) {
-  flex: 1;
-  justify-content: center;
-}
-
-.report-filters-row label:nth-child(3) {
-  flex: 0 0 auto;
-  justify-content: flex-end;
-}
-
-.report-filters-row::-webkit-scrollbar {
-  display: none;
-}
-
-.report-filters-actions {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  margin-top: 4px;
-  margin-bottom: 6px;
-}
-
-.report-filters label {
-  display: flex;
-  align-items: center;
-  gap: 0;
-  font-size: 0.9rem;
-  color: #ffffff;
-  min-width: fit-content;
-}
-
-.report-filters label select {
-  width: fit-content;
-  min-width: 7em;
-  max-width: 100%;
-  margin: 0;
-  margin-left: -0.15em;
-  padding-left: 0;
-}
-
-.report-filters select {
-  padding: 0.35rem 1.25em 0.35rem 0;
-  border: none;
-  border-radius: 0;
-  font-size: 0.9rem;
-  background: transparent;
-  color: var(--data-value-color, #a0aec0);
-  flex: 0 0 auto;
-  color-scheme: dark;
-  width: fit-content;
-  min-width: 7em;
-  max-width: 100%;
-  text-align: center;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23d40000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 0.35em center;
-  background-size: 0.65em;
-}
-
-.report-filters select option {
-  background: var(--card-bg);
-  color: var(--muted);
-}
-
-.report-filters select:focus {
-  outline: none;
-}
-
-.report-filters button {
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  font-weight: 600;
-  font-size: 0.9rem;
-  border: none;
-  cursor: pointer;
-  background: var(--theme-color);
-  color: #fff;
-}
-
 .report-icon-btn {
   padding: 6px !important;
   background: transparent !important;
@@ -798,26 +617,6 @@ body.admin-report-page .main-header-user-name.is-empty {
   display: block;
 }
 
-.report-filters-actions .report-icon-btn svg {
-  width: 16px;
-  height: 16px;
-}
-
-.report-filters button.secondary {
-  background: #444;
-  color: #fff;
-}
-
-.report-filters button.report-icon-excel {
-  background: transparent !important;
-  color: #86efac !important;
-}
-
-.report-filters button.report-icon-excel:hover,
-.report-filters-actions .report-icon-btn:hover {
-  color: #a7f3d0;
-}
-
 .report-icon-btn.report-icon-alert {
   position: relative;
   overflow: visible;
@@ -825,10 +624,6 @@ body.admin-report-page .main-header-user-name.is-empty {
 
 .report-icon-btn.report-icon-alert.has-alert {
   color: #f87171;
-}
-
-.report-filters-actions .report-icon-btn.report-icon-alert.has-alert:hover {
-  color: #fca5a5;
 }
 
 .pending-alert-badge {
@@ -848,10 +643,6 @@ body.admin-report-page .main-header-user-name.is-empty {
   border-radius: 999px;
   pointer-events: none;
   z-index: 1;
-}
-
-.report-filters button.secondary:hover {
-  background: #555;
 }
 
 /* --- Özet kartları --- */
@@ -906,90 +697,6 @@ body.admin-report-page .main-header-user-name.is-empty {
   color: var(--theme-color);
 }
 
-/* --- Tablo --- */
-.report-table-wrap {
-  overflow-x: hidden;
-  margin-bottom: 8px;
-  border-radius: 8px;
-  border: 1px solid #3d3d3d;
-  max-width: 100%;
-}
-
-.report-table {
-  width: 100%;
-  min-width: 0;
-  table-layout: fixed;
-  border-collapse: collapse;
-  font-size: clamp(0.76rem, 1vw, 0.84rem);
-}
-
-.report-table th,
-.report-table td {
-  padding: 0.38rem 0.45rem;
-  border-bottom: 1px solid #3d3d3d;
-  border-left: 0.5px solid rgba(255, 255, 255, 0.18);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  vertical-align: middle;
-  box-sizing: border-box;
-  line-height: 1.2;
-  font-size: clamp(0.76rem, 1vw, 0.84rem);
-}
-
-.report-table th:first-child,
-.report-table td:first-child {
-  border-left: none;
-}
-
-.report-table th {
-  background: transparent;
-  font-weight: 500;
-  text-align: center;
-  white-space: nowrap;
-  color: #ffffff;
-  font-size: clamp(0.78rem, 1.05vw, 0.88rem);
-}
-
-.report-table td {
-  text-align: center;
-  white-space: nowrap;
-  word-break: normal;
-  overflow-wrap: normal;
-  word-wrap: normal;
-  color: var(--data-value-color, #a0aec0);
-}
-
-.report-table th:nth-child(1),
-.report-table td:nth-child(1) {
-  width: 22%;
-}
-
-.report-table th:nth-child(2),
-.report-table td:nth-child(2) {
-  width: 30%;
-}
-
-.report-table th:nth-child(3),
-.report-table td:nth-child(3) {
-  width: 16%;
-}
-
-.report-table th:nth-child(4),
-.report-table td:nth-child(4) {
-  width: 12%;
-}
-
-.report-table th:nth-child(5),
-.report-table td:nth-child(5) {
-  width: 8%;
-}
-
-.report-table th:nth-child(6),
-.report-table td:nth-child(6) {
-  width: 12%;
-  white-space: nowrap;
-}
-
 @media (min-width: 641px) {
   .pending-card {
     padding: 0.65rem 0.5rem;
@@ -1002,115 +709,6 @@ body.admin-report-page .main-header-user-name.is-empty {
     width: 100%;
     max-width: 12rem;
   }
-
-  .report-filters label select {
-    min-width: auto;
-    margin-left: 0;
-  }
-
-  .report-filters select {
-    padding: 0.35rem 0.45em 0.35rem 0;
-    text-align: left;
-  }
-}
-
-.report-table tbody tr:hover {
-  background: rgba(255, 255, 255, 0.03);
-}
-
-.report-table tr.row-success {
-  background: rgba(74, 222, 128, 0.03);
-}
-
-.report-table tr.row-warning {
-  background: rgba(var(--theme-color-rgb), 0.05);
-}
-
-.report-table tr.row-km-overdue {
-  background: rgba(239, 68, 68, 0.05);
-}
-
-.report-table tr.row-km-warning,
-.report-table tr.row-pending {
-  background: rgba(251, 146, 60, 0.05);
-}
-
-.report-table .action-cell {
-  text-align: center;
-  vertical-align: middle;
-}
-
-.report-table .action-cell button {
-  padding: 0.25rem;
-  margin: 0;
-  font-size: 0.8rem;
-  border-radius: 4px;
-  border: none;
-  cursor: pointer;
-  background: #25d366;
-  color: #fff;
-}
-
-.report-table .action-cell .whatsapp-btn {
-  padding: 0.2rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: transparent !important;
-}
-
-.report-table .action-cell .whatsapp-btn .whatsapp-icon {
-  width: 20px;
-  height: 20px;
-  fill: #25d366;
-}
-
-.report-table .action-cell button.detail-btn {
-  background: #555;
-  color: #fff;
-}
-
-.report-table .durum-cell {
-  text-align: center;
-  vertical-align: middle;
-  font-weight: 600;
-}
-
-.report-table tr.row-success .durum-cell {
-  color: #4ade80;
-}
-
-.report-table tr.row-warning .durum-cell {
-  color: var(--theme-color);
-}
-
-.report-table tr.row-km-overdue .durum-cell {
-  color: #ef4444;
-}
-
-.report-table tr.row-km-warning .durum-cell,
-.report-table tr.row-pending .durum-cell {
-  color: #fb923c;
-}
-
-.report-table .durum-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.report-table .durum-icon .durum-svg {
-  display: block;
-  width: 15px;
-  height: 15px;
-}
-
-.report-table .durum-bildirilmedi {
-  color: #fb923c;
-}
-
-.report-table .durum-bildirildi {
-  color: #4ade80;
 }
 
 /* --- Birleşik liste / kutu sistemi --- */
@@ -2234,16 +1832,6 @@ body.admin-report-page .main-header-user-name.is-empty {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 8px;
   }
-  .user-analytics-branch-card {
-    min-height: 96px;
-    padding: 12px;
-  }
-  .user-analytics-branch-name {
-    font-size: 15px;
-  }
-  .user-analytics-branch-count {
-    font-size: 12px;
-  }
   .user-analytics-statebar,
   .user-analytics-head,
   .user-analytics-submeta,
@@ -2286,71 +1874,6 @@ body.admin-report-page .main-header-user-name.is-empty {
   }
   .report-stat-box .value {
     font-size: 1rem;
-  }
-  .report-filters {
-    flex-wrap: nowrap;
-    align-items: center;
-    gap: 4px;
-    overflow-x: auto;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-  }
-  .report-filters-row {
-    gap: 4px;
-    flex-wrap: nowrap;
-    min-width: 0;
-    justify-content: space-between;
-  }
-  .report-filters-row label:nth-child(1) {
-    justify-content: flex-start;
-  }
-  .report-filters-row label:nth-child(2) {
-    justify-content: center;
-  }
-  .report-filters-row label:nth-child(3) {
-    justify-content: flex-end;
-  }
-  .report-filters label {
-    align-items: center;
-    flex-shrink: 0;
-    font-size: 0.75rem;
-    gap: 2px;
-  }
-  .report-filters label select,
-  .report-filters select {
-    width: auto;
-    min-width: 4.5em;
-    max-width: 7.8em;
-    flex-shrink: 0;
-    font-size: 0.75rem;
-    padding: 0.3rem 0.5em 0.3rem 0;
-  }
-  .report-filters-row::-webkit-scrollbar {
-    display: none;
-  }
-  .report-table .durum-icon .durum-svg {
-    width: 13px;
-    height: 13px;
-  }
-  .report-table .action-cell .whatsapp-btn .whatsapp-icon {
-    width: 18px;
-    height: 18px;
-  }
-  .report-table {
-    font-size: 13px;
-  }
-
-  .report-table th,
-  .report-table td {
-    padding: 0.34rem 0.3rem;
-  }
-
-  .report-table th {
-    font-size: 13px;
-  }
-
-  .report-table .action-cell button {
-    font-size: 13px;
   }
   .pending-section h2 {
     font-size: 17px !important;
