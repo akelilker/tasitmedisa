@@ -26,7 +26,6 @@ const DRIVER_INDEX_URL = API_BASE + 'driver/';
 const DRIVER_DASHBOARD_URL = API_BASE + 'driver/dashboard.html';
 
 window.MEDISA_API_BASE = API_BASE;
-window.API_LOAD_KASKO = API_LOAD_KASKO;
 window.API_SAVE_KASKO = API_SAVE_KASKO;
 
 /**

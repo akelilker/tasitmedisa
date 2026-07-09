@@ -1407,8 +1407,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu .m
 }
 
 .modal-overlay .modal-container,
-.login-container,
-.user-panel-container {
+.login-container {
   display: flex !important;
   flex-direction: column !important;
   overflow: hidden !important; /* Dış çerçevenin kaymasını kesin kilitler */
@@ -2782,8 +2781,6 @@ body.modal-open .app-container {
 .u-hidden { display: none; }
 .u-mt-6 { margin-top: 6px; }
 .u-p-16 { padding: 16px; }
-.u-mb-16 { margin-bottom: 16px; }
-.u-block { display: block; }
 
 .event-menu-list {
   display: flex;
