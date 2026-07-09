@@ -710,6 +710,16 @@
 
   /** Ana panelde kayıt yapan görünen ad (ceza/satış tarihçesi); önce oturumdaki kullanıcı, sonra ayar, son çare Yönetim */
   function getRecorderDisplayName() {
+    if (
+      typeof window.getRecorderDisplayName === 'function' &&
+      window.getRecorderDisplayName !== getRecorderDisplayName
+    ) {
+      var globalRecorderName = window.getRecorderDisplayName();
+      if (typeof globalRecorderName === 'string' && globalRecorderName.trim()) {
+        return globalRecorderName;
+      }
+    }
+
     try {
       var sess = typeof window.medisaSession === 'object' && window.medisaSession ? window.medisaSession : null;
       if (sess && sess.authenticated) {
