@@ -4441,18 +4441,6 @@ body.dashboard-page.driver-history-vehicle-dropdown-open #history-modal .history
   padding-left: 4px !important;
   padding-right: 4px !important;
 }
-/* Şifre ekranı: ana uygulamadaki footer üstü link iskeleti kullanılır */
-.login-page .user-panel-link.driver-home-link {
-  z-index: 10003;
-}
-
-/* Masaüstü: link kutusunun altı ile footer üst (border) arası 8px */
-@media (min-width: 769px) {
-  .login-page .user-panel-link.driver-home-link {
-    bottom: calc(var(--app-footer-real-height) + 8px + env(safe-area-inset-bottom, 0)) !important;
-  }
-}
-
 .login-page .content-wrap::-webkit-scrollbar {
   display: none !important;
 }
