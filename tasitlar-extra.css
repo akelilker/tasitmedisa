@@ -2209,7 +2209,7 @@
     height: 35px !important;
   }
 
-  .olay-ekle-modal .modal-body button:not(.event-menu-card):not(.event-menu-category-card):not(.event-menu-category-back):not(.ceza-user-trigger):not(.ceza-user-option):not(.medisa-owner-select-trigger):not(.medisa-owner-select-option) {
+  .olay-ekle-modal .modal-body button:not(.event-menu-card):not(.event-menu-category-card):not(.ceza-user-trigger):not(.ceza-user-option):not(.medisa-owner-select-trigger):not(.medisa-owner-select-option) {
     font-size: 17px !important; /* 16px + 1 punto */
   }
 
