@@ -647,34 +647,6 @@
   function formatDateForDisplay(date) { return (typeof window.formatDateShort === 'function' ? window.formatDateShort(date) : (date ? (date instanceof Date ? (String(date.getDate()).padStart(2, '0') + '/' + String(date.getMonth() + 1).padStart(2, '0') + '/' + date.getFullYear()) : String(date)) : '')); }
 
   /**
-   * gg/aa/yyyy formatındaki string'i parse eder
-   * 
-   * @param {string} dateStr - gg/aa/yyyy formatında tarih string'i
-   * @returns {Date|null} - Parse edilmiş Date objesi veya null
-   */
-  function parseDateInput(dateStr) {
-    if (!dateStr) return null;
-    
-    const datePattern = /^(\d{2})\/(\d{2})\/(\d{4})$/;
-    const match = dateStr.match(datePattern);
-    
-    if (!match) return null;
-    
-    const day = parseInt(match[1], 10);
-    const month = parseInt(match[2], 10) - 1;
-    const year = parseInt(match[3], 10);
-    
-    const date = new Date(year, month, day);
-    
-    // Tarih geçerliliği kontrolü
-    if (date.getDate() !== day || date.getMonth() !== month || date.getFullYear() !== year) {
-      return null;
-    }
-    
-    return date;
-  }
-
-  /**
    * gg/aa/yyyy formatını validate eder
    * 
    * @param {string} dateStr - Validasyon yapılacak tarih (gg/aa/yyyy formatında)
@@ -994,28 +966,6 @@
   }
 
   /**
-   * Tramer kayıtlarını yükler (edit modu için)
-   * 
-   * @param {Array<{date: string, amount: string}>} records - Yüklenecek kayıtlar
-   */
-  function loadTramerRecords(records) {
-    const container = document.getElementById('tramer-records-container');
-    if (!container) return;
-    
-    // Container'ı temizle
-    container.innerHTML = '';
-    
-    if (records && records.length > 0) {
-      records.forEach(record => {
-        addTramerRecordRow(record.date || '', record.amount || '');
-      });
-    } else {
-      // Boşsa ilk satırı ekle
-      addTramerRecordRow();
-    }
-  }
-
-  /**
    * Boya parçaları SVG'sini yükler ve tıklama event'lerini ekler
    */
   function initBoyaPartsSVG() {
@@ -1186,23 +1136,6 @@
     });
     
     return state;
-  }
-
-  /**
-   * Kaydedilmiş parça durumlarını SVG'ye yükler
-   * 
-   * @param {Object} stateObject - Parça ID'leri ve durumları object'i
-   */
-  function loadBoyaPartsState(stateObject) {
-    if (!stateObject || typeof stateObject !== 'object') return;
-    
-    // Her parça için durumu yükle
-    Object.keys(stateObject).forEach(partId => {
-      const state = stateObject[partId];
-      if (state === 'boyali' || state === 'degisen') {
-        updatePartColor(partId, state);
-      }
-    });
   }
 
   function capitalizeFirstLetter(text) {
