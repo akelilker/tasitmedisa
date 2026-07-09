@@ -1687,10 +1687,6 @@ window.addEventListener('dataLoaded', () => {
     return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
   }
 
-  function getInstallButton() {
-    return document.getElementById('pwa-install-btn');
-  }
-
   function getInstallBar() {
     return document.getElementById('pwa-install-bar');
   }
