@@ -1208,75 +1208,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     stroke-width: 1.15;
 }
 
-#event-menu-modal .event-menu-category-icon-wrap--police-letter {
-    position: relative;
-    display: block;
-    flex-shrink: 0;
-    width: 42px;
-    height: 42px;
-    color: rgba(148, 163, 184, 0.66);
-    transition: color 0.18s ease;
-}
-
-#event-menu-modal .event-menu-category-icon-wrap--police-letter .event-menu-category-icon {
-    width: 100%;
-    height: 100%;
-}
-
-#event-menu-modal .event-menu-category-icon-wrap--police-letter .event-menu-category-icon-letter {
-    position: absolute;
-    left: 50%;
-    bottom: 2px;
-    transform: translateX(-50%);
-    font-size: 13px;
-    font-weight: 800;
-    line-height: 1;
-    letter-spacing: 0;
-    color: currentColor;
-    text-shadow: 0 0 5px rgba(0, 0, 0, 0.72), 0 0 6px currentColor;
-    pointer-events: none;
-}
-
-#event-menu-modal .event-menu-card .event-menu-category-icon-wrap--police-letter {
-    width: 44px;
-    height: 44px;
-}
-
-#event-menu-modal .event-menu-card .event-menu-category-icon-wrap--police-letter .event-menu-category-icon-letter {
-    font-size: 13px;
-}
-
-#event-menu-modal .event-menu-card:focus:not(:focus-visible) .event-menu-category-icon-wrap--police-letter {
-    color: rgba(148, 163, 184, 0.66);
-}
-
-#event-menu-modal .event-menu-card:focus:not(:focus-visible) .event-menu-category-icon-wrap--police-letter .event-menu-category-icon {
-    filter: none;
-    transform: none;
-}
-
-@media (hover: hover) {
-    #event-menu-modal .event-menu-card:hover .event-menu-category-icon-wrap--police-letter {
-        color: rgba(255, 255, 255, 0.96);
-    }
-
-    #event-menu-modal .event-menu-card:hover .event-menu-category-icon-wrap--police-letter .event-menu-category-icon {
-        filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.30));
-        transform: scale(1.05);
-    }
-}
-
-#event-menu-modal .event-menu-card:focus-visible .event-menu-category-icon-wrap--police-letter,
-#event-menu-modal .event-menu-card:active .event-menu-category-icon-wrap--police-letter {
-    color: rgba(255, 255, 255, 0.96);
-}
-
-#event-menu-modal .event-menu-card:focus-visible .event-menu-category-icon-wrap--police-letter .event-menu-category-icon,
-#event-menu-modal .event-menu-card:active .event-menu-category-icon-wrap--police-letter .event-menu-category-icon {
-    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.30));
-    transform: scale(1.05);
-}
-
 #event-menu-modal .event-menu-category-card:not(.event-menu-item--status-ok):not(.event-menu-item--status-orange):not(.event-menu-item--status-red):hover .event-menu-category-icon,
 #event-menu-modal .event-menu-category-card:not(.event-menu-item--status-ok):not(.event-menu-item--status-orange):not(.event-menu-item--status-red):focus-visible .event-menu-category-icon {
     color: rgba(255, 255, 255, 0.96);
@@ -1402,17 +1333,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
         height: 54px;
     }
 
-    #event-menu-modal .event-menu-row-single .event-menu-card .event-menu-category-icon-wrap--police-letter,
-    #event-menu-modal .event-menu-row-one .event-menu-card .event-menu-category-icon-wrap--police-letter {
-        width: 50px;
-        height: 50px;
-    }
-
-    #event-menu-modal .event-menu-row-single .event-menu-card .event-menu-category-icon-wrap--police-letter .event-menu-category-icon-letter,
-    #event-menu-modal .event-menu-row-one .event-menu-card .event-menu-category-icon-wrap--police-letter .event-menu-category-icon-letter {
-        font-size: 15px;
-        bottom: 3px;
-    }
 }
 
 #event-menu-modal .event-menu-card:not(.event-menu-item--status-ok):not(.event-menu-item--status-orange):not(.event-menu-item--status-red):focus-visible .event-menu-category-icon,
@@ -1497,20 +1417,17 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     filter: none;
 }
 
-#event-menu-modal .event-menu-item--status-ok .event-menu-category-icon,
-#event-menu-modal .event-menu-item--status-ok .event-menu-category-icon-wrap--police-letter {
+#event-menu-modal .event-menu-item--status-ok .event-menu-category-icon {
     color: #16a34a;
     filter: none;
 }
 
-#event-menu-modal .event-menu-item--status-orange .event-menu-category-icon,
-#event-menu-modal .event-menu-item--status-orange .event-menu-category-icon-wrap--police-letter {
+#event-menu-modal .event-menu-item--status-orange .event-menu-category-icon {
     color: #ea580c;
     filter: none;
 }
 
-#event-menu-modal .event-menu-item--status-red .event-menu-category-icon,
-#event-menu-modal .event-menu-item--status-red .event-menu-category-icon-wrap--police-letter {
+#event-menu-modal .event-menu-item--status-red .event-menu-category-icon {
     color: #dc2626;
     filter: none;
 }
@@ -1525,22 +1442,19 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     text-shadow: none;
 }
 
-#event-menu-modal .event-menu-item--status-ok:focus:not(:focus-visible) .event-menu-category-icon,
-#event-menu-modal .event-menu-item--status-ok:focus:not(:focus-visible) .event-menu-category-icon-wrap--police-letter {
+#event-menu-modal .event-menu-item--status-ok:focus:not(:focus-visible) .event-menu-category-icon {
     color: #16a34a;
     filter: none;
     transform: none;
 }
 
-#event-menu-modal .event-menu-item--status-orange:focus:not(:focus-visible) .event-menu-category-icon,
-#event-menu-modal .event-menu-item--status-orange:focus:not(:focus-visible) .event-menu-category-icon-wrap--police-letter {
+#event-menu-modal .event-menu-item--status-orange:focus:not(:focus-visible) .event-menu-category-icon {
     color: #ea580c;
     filter: none;
     transform: none;
 }
 
-#event-menu-modal .event-menu-item--status-red:focus:not(:focus-visible) .event-menu-category-icon,
-#event-menu-modal .event-menu-item--status-red:focus:not(:focus-visible) .event-menu-category-icon-wrap--police-letter {
+#event-menu-modal .event-menu-item--status-red:focus:not(:focus-visible) .event-menu-category-icon {
     color: #dc2626;
     filter: none;
     transform: none;
@@ -1579,27 +1493,21 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     }
 
     #event-menu-modal .event-menu-item--status-ok:hover .event-menu-category-icon,
-    #event-menu-modal .event-menu-item--status-ok:focus-visible .event-menu-category-icon,
-    #event-menu-modal .event-menu-item--status-ok:hover .event-menu-category-icon-wrap--police-letter,
-    #event-menu-modal .event-menu-item--status-ok:focus-visible .event-menu-category-icon-wrap--police-letter {
+    #event-menu-modal .event-menu-item--status-ok:focus-visible .event-menu-category-icon {
         color: #22c55e;
         filter: none;
         transform: scale(1.03);
     }
 
     #event-menu-modal .event-menu-item--status-orange:hover .event-menu-category-icon,
-    #event-menu-modal .event-menu-item--status-orange:focus-visible .event-menu-category-icon,
-    #event-menu-modal .event-menu-item--status-orange:hover .event-menu-category-icon-wrap--police-letter,
-    #event-menu-modal .event-menu-item--status-orange:focus-visible .event-menu-category-icon-wrap--police-letter {
+    #event-menu-modal .event-menu-item--status-orange:focus-visible .event-menu-category-icon {
         color: var(--orange-warn, #f59e0b);
         filter: none;
         transform: scale(1.03);
     }
 
     #event-menu-modal .event-menu-item--status-red:hover .event-menu-category-icon,
-    #event-menu-modal .event-menu-item--status-red:focus-visible .event-menu-category-icon,
-    #event-menu-modal .event-menu-item--status-red:hover .event-menu-category-icon-wrap--police-letter,
-    #event-menu-modal .event-menu-item--status-red:focus-visible .event-menu-category-icon-wrap--police-letter {
+    #event-menu-modal .event-menu-item--status-red:focus-visible .event-menu-category-icon {
         color: var(--theme-color, #d40000);
         filter: none;
         transform: scale(1.03);
@@ -1608,10 +1516,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 
 #event-menu-modal .event-menu-item--status-ok:active .event-menu-category-icon,
 #event-menu-modal .event-menu-item--status-orange:active .event-menu-category-icon,
-#event-menu-modal .event-menu-item--status-red:active .event-menu-category-icon,
-#event-menu-modal .event-menu-item--status-ok:active .event-menu-category-icon-wrap--police-letter,
-#event-menu-modal .event-menu-item--status-orange:active .event-menu-category-icon-wrap--police-letter,
-#event-menu-modal .event-menu-item--status-red:active .event-menu-category-icon-wrap--police-letter {
+#event-menu-modal .event-menu-item--status-red:active .event-menu-category-icon {
     transform: scale(1.01);
     filter: none;
 }
@@ -1692,11 +1597,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     #event-menu-modal .event-menu-card .event-menu-category-icon {
         width: 64px;
         height: 64px;
-    }
-
-    #event-menu-modal .event-menu-card .event-menu-category-icon-wrap--police-letter {
-        width: 58px;
-        height: 58px;
     }
 
     #event-menu-modal .event-menu-row-one .event-menu-card[data-event-id="muayene"] {
