@@ -935,14 +935,17 @@ function buildSaveMutationIntent() {
     };
 }
 
-function updateServerDatasetBaselineAfterSave(intent) {
-    if (!serverDatasetBaseline) {
-        setServerDatasetBaseline(window.appData);
+function updateServerDatasetBaselineAfterSave(intent, requestSnapshot, versionMap) {
+    if (!requestSnapshot || typeof requestSnapshot !== 'object') {
         return;
     }
-    var current = window.appData || {};
+    versionMap = versionMap && typeof versionMap === 'object' ? versionMap : {};
+    if (!serverDatasetBaseline) {
+        setServerDatasetBaseline(requestSnapshot);
+        return;
+    }
     (intent.collections || []).forEach(function(key) {
-        if (key !== 'tasitlar') serverDatasetBaseline[key] = cloneServerDatasetValue(current[key]);
+        if (key !== 'tasitlar') serverDatasetBaseline[key] = cloneServerDatasetValue(requestSnapshot[key]);
     });
     if ((intent.collections || []).indexOf('tasitlar') === -1) return;
 
@@ -950,18 +953,23 @@ function updateServerDatasetBaselineAfterSave(intent) {
     (intent.changedVehicleIds || []).forEach(function(id) { changedIds[String(id)] = true; });
     var deletedIds = {};
     (intent.deletedVehicleIds || []).forEach(function(id) { deletedIds[String(id)] = true; });
-    var currentVehicles = Array.isArray(current.tasitlar) ? current.tasitlar : [];
+    var snapshotVehicles = Array.isArray(requestSnapshot.tasitlar) ? requestSnapshot.tasitlar : [];
     var baselineVehicles = Array.isArray(serverDatasetBaseline.tasitlar) ? serverDatasetBaseline.tasitlar : [];
-    var currentById = {};
-    currentVehicles.forEach(function(vehicle) {
-        if (vehicle && vehicle.id != null) currentById[String(vehicle.id)] = vehicle;
+    var snapshotById = {};
+    snapshotVehicles.forEach(function(vehicle) {
+        if (vehicle && vehicle.id != null) snapshotById[String(vehicle.id)] = vehicle;
     });
     serverDatasetBaseline.tasitlar = baselineVehicles.filter(function(vehicle) {
         var id = vehicle && vehicle.id != null ? String(vehicle.id) : '';
         return id && !deletedIds[id] && !changedIds[id];
     });
     Object.keys(changedIds).forEach(function(id) {
-        if (currentById[id]) serverDatasetBaseline.tasitlar.push(cloneServerDatasetValue(currentById[id]));
+        if (!snapshotById[id]) return;
+        var vehicle = cloneServerDatasetValue(snapshotById[id]);
+        if (Object.prototype.hasOwnProperty.call(versionMap, id)) {
+            vehicle.version = versionMap[id];
+        }
+        serverDatasetBaseline.tasitlar.push(vehicle);
     });
 }
 
@@ -987,13 +995,22 @@ async function saveDataToServer(options) {
         delete payloadObj.kaskoDegerListesi;
         var mutationIntent = buildSaveMutationIntent();
         payloadObj._medisaMutation = mutationIntent;
+        var requestBody = JSON.stringify(payloadObj);
+        var requestSnapshot;
+        try {
+            requestSnapshot = JSON.parse(requestBody);
+        } catch (snapshotParseErr) {
+            console.warn('[Medisa] Kayıt snapshot doğrulanamadı:', snapshotParseErr && snapshotParseErr.message);
+            return false;
+        }
+        delete requestSnapshot._medisaMutation;
 
         var response = await fetch(API_SAVE, {
             method: 'POST',
             headers: buildAuthHeaders({
                 'Content-Type': 'application/json'
             }),
-            body: JSON.stringify(payloadObj)
+            body: requestBody
         });
 
         if (!response.ok) {
@@ -1040,14 +1057,15 @@ async function saveDataToServer(options) {
             throw conflictErr;
         }
 
-        if (data && Array.isArray(data.vehicleVersions) && window.appData && Array.isArray(window.appData.tasitlar)) {
-            var versionMap = {};
+        var versionMap = {};
+        if (data && Array.isArray(data.vehicleVersions)) {
             data.vehicleVersions.forEach(function(item) {
                 var id = item && item.id != null ? String(item.id) : '';
                 if (!id) return;
                 versionMap[id] = Number(item.version) || 1;
             });
-
+        }
+        if (Object.keys(versionMap).length && window.appData && Array.isArray(window.appData.tasitlar)) {
             window.appData.tasitlar = window.appData.tasitlar.map(function(vehicle) {
                 if (!vehicle || vehicle.id == null) return vehicle;
                 var vehicleId = String(vehicle.id);
@@ -1068,7 +1086,7 @@ async function saveDataToServer(options) {
             localStorage.setItem('medisa_server_backup', JSON.stringify(autoBackup));
         } catch (storageErr) {}
         persistOfflineAppDataSnapshot(window.appData);
-        updateServerDatasetBaselineAfterSave(mutationIntent);
+        updateServerDatasetBaselineAfterSave(mutationIntent, requestSnapshot, versionMap);
 
         medisaInvalidateVehicleDateTasksCacheIfAvailable();
         return true;
