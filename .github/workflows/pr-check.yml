@@ -52,10 +52,15 @@ jobs:
             driver/driver-script.js \
             admin/admin-report.js \
             scripts/verify-medisa-role-invariants.js \
+            scripts/verify-medisa-vehicle-save-invariants.js \
             scripts/hydrate-demo-data-branches.js
           do
             node --check "$f"
           done
+
+      - name: Vehicle save invariants
+        shell: bash
+        run: npm run tool:verify-vehicle-save
 
   http-smoke:
     name: HTTP smoke (php -S + curl)
