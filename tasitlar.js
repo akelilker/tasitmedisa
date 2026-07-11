@@ -356,7 +356,6 @@
       }
 
       item.hidden = !shouldShow;
-      item.classList.toggle('is-filter-hidden', !shouldShow);
     });
 
     let emptyItem = optionsHost.querySelector('.medisa-owner-select-empty');

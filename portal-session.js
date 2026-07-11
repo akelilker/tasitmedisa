@@ -66,5 +66,4 @@
 
   window.medisaPortalSession = api;
   window.getStoredPortalToken = api.getStoredToken;
-  window.clearStoredPortalTokens = api.clearStoredTokens;
 })();
