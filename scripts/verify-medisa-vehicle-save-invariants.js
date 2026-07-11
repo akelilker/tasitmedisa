@@ -14,7 +14,7 @@ const ROOT = path.join(__dirname, '..');
 const EXPECTED_DIRECT_DATAAPI_CALLERS = 1;
 const EXPECTED_KAYIT_JS = '20260712.2';
 const EXPECTED_SCRIPT_CORE_QUERY = '20260712.2';
-const EXPECTED_SW_CACHE = 'medisa-v2.223';
+const EXPECTED_SW_CACHE = 'medisa-v2.224';
 const SCRIPT_CORE_HTML_FILES = [
   'index.html',
   'driver/index.html',
@@ -410,12 +410,13 @@ function loadDataManager(ctx) {
   }
 }
 
-async function bootstrapTrustedDataset(ctx) {
+async function bootstrapTrustedDataset(ctx, options) {
+  options = options || {};
   var payload = {
-    tasitlar: [{ id: 'v1', plate: '34 TEST 1', version: 1, vehicleType: 'otomobil', km: '1000' }],
+    tasitlar: options.tasitlar || [{ id: 'v1', plate: '34 TEST 1', version: 1, vehicleType: 'otomobil', km: '1000', notes: '' }],
     kayitlar: [],
     branches: [{ id: 'b1', name: 'Merkez' }],
-    users: [{ id: 'u1', name: 'Test', role: 'genel_yonetici' }],
+    users: options.users || [{ id: 'u1', name: 'Test', role: 'genel_yonetici' }],
     ayarlar: ctx.window.appData.ayarlar,
     sifreler: [],
     arac_aylik_hareketler: [],
@@ -780,6 +781,119 @@ async function runSaveMutexTests() {
   });
 }
 
+async function runBaselineSnapshotTests() {
+  await test('saveDataToServer baseline uses request snapshot not live appData', async function() {
+    var ctx = createBrowserContext();
+    loadDataManager(ctx);
+    await bootstrapTrustedDataset(ctx);
+
+    var bodies = [];
+    var postIndex = 0;
+    var fetch1Entered = false;
+    var fetch1Release;
+    var fetch1Gate = new Promise(function(resolve) { fetch1Release = resolve; });
+
+    ctx._fetchImpl = async function(url, opts) {
+      postIndex += 1;
+      bodies.push(JSON.parse(opts.body));
+      if (postIndex === 1) {
+        fetch1Entered = true;
+        await fetch1Gate;
+      }
+      return {
+        ok: true,
+        status: 200,
+        json: async function() {
+          return { vehicleVersions: [{ id: 'v1', version: postIndex + 1 }] };
+        },
+      };
+    };
+
+    var vehicles = ctx.window.getMedisaVehicles();
+    vehicles[0].km = '200';
+    vehicles[0].notes = '';
+    ctx.window.appData.tasitlar = vehicles;
+
+    ctx.counters.maxActiveFetches = 0;
+    var p1 = ctx.window.saveDataToServer();
+    await flushMicrotasks(5);
+    assert.equal(fetch1Entered, true, 'first save fetch should start before mutation during pending fetch');
+    assert.equal(ctx.counters.maxActiveFetches, 1, 'queue serialized global-state coalescing');
+
+    var vehiclesPending = ctx.window.getMedisaVehicles();
+    vehiclesPending[0].notes = 'yeni not';
+    ctx.window.appData.tasitlar = vehiclesPending;
+
+    fetch1Release();
+    await p1;
+
+    assert.equal(bodies[0].tasitlar[0].km, '200');
+    assert.equal(bodies[0].tasitlar[0].notes, '');
+
+    var p2 = ctx.window.saveDataToServer();
+    await Promise.all([p2]);
+
+    assert.equal(bodies.length, 2);
+    assert.equal(bodies[1]._medisaMutation.collections.indexOf('tasitlar'), 0);
+    assert.equal(bodies[1]._medisaMutation.changedVehicleIds.indexOf('v1'), 0);
+    assert.equal(bodies[1].tasitlar[0].notes, 'yeni not');
+    assert.equal(ctx.counters.maxActiveFetches, 1);
+    console.log('  baseline snapshot: second save detects notes drift after first request snapshot');
+  });
+
+  await test('saveDataToServer non-vehicle baseline uses request snapshot', async function() {
+    var ctx = createBrowserContext();
+    loadDataManager(ctx);
+    await bootstrapTrustedDataset(ctx, {
+      users: [{ id: 'u1', name: 'Eski', role: 'genel_yonetici' }],
+    });
+
+    var bodies = [];
+    var postIndex = 0;
+    var fetch1Entered = false;
+    var fetch1Release;
+    var fetch1Gate = new Promise(function(resolve) { fetch1Release = resolve; });
+    ctx.counters.maxActiveFetches = 0;
+
+    ctx._fetchImpl = async function(url, opts) {
+      postIndex += 1;
+      bodies.push(JSON.parse(opts.body));
+      if (postIndex === 1) {
+        fetch1Entered = true;
+        await fetch1Gate;
+      }
+      return {
+        ok: true,
+        status: 200,
+        json: async function() { return { vehicleVersions: [] }; },
+      };
+    };
+
+    ctx.window.appData.users[0].name = 'Gönderilen';
+    var p1 = ctx.window.saveDataToServer();
+    await flushMicrotasks(5);
+    assert.equal(fetch1Entered, true);
+
+    ctx.window.appData.users[0].name = 'Yeni Lokal';
+    fetch1Release();
+    var save1Result = await p1;
+    assert.equal(save1Result, true);
+    assert.equal(ctx.window.appData.users[0].name, 'Yeni Lokal');
+
+    assert.equal(bodies[0].users[0].name, 'Gönderilen');
+
+    var p2 = ctx.window.saveDataToServer();
+    var save2Result = await p2;
+    assert.equal(save2Result, true);
+
+    assert.equal(bodies.length, 2);
+    assert.equal(bodies[1]._medisaMutation.collections.indexOf('users'), 0);
+    assert.equal(bodies[1].users[0].name, 'Yeni Lokal');
+    assert.equal(ctx.counters.maxActiveFetches, 1);
+    console.log('  baseline snapshot: second save detects users drift after first request snapshot');
+  });
+}
+
 function runStaticInvariants() {
   var ds = read('data-service.js');
   assert.match(ds, /function notifyVehicleListPersisted\(\)/);
@@ -819,6 +933,10 @@ function runStaticInvariants() {
 
   var sw = read('sw.js');
   assert.match(sw, new RegExp("CACHE_VERSION = '" + EXPECTED_SW_CACHE + "'"));
+
+  var indexHtml = read('index.html');
+  assert.match(indexHtml, /data-manager\.js\?v=20260712\.4/);
+  assert.doesNotMatch(indexHtml, /data-manager\.js\?v=20260712\.3/);
 }
 
 function buildPickerDom() {
@@ -989,6 +1107,7 @@ async function main() {
   await runDataServiceTests();
   await runWriteVehiclesTests();
   await runSaveMutexTests();
+  await runBaselineSnapshotTests();
 
   await test('static side-effect and caller invariants', function() {
     runStaticInvariants();
