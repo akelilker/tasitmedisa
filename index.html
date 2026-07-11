@@ -333,6 +333,26 @@
                         if (typeof window.updateFooterDim === 'function') window.updateFooterDim();
                     };
                 }
+
+                function hideEgzozModal(id) {
+                    var m = document.getElementById(id);
+                    if (!m) return;
+                    m.classList.remove('active');
+                    m.style.display = 'none';
+                }
+
+                if (!window.closeVehicleEgzozQuestionFlow) {
+                    window.closeVehicleEgzozQuestionFlow = function() {
+                        hideEgzozModal('vehicle-egzoz-confirm-modal');
+                        hideEgzozModal('vehicle-egzoz-date-modal');
+                    };
+                }
+
+                if (!window.cancelVehicleEgzozDateModal) {
+                    window.cancelVehicleEgzozDateModal = function() {
+                        hideEgzozModal('vehicle-egzoz-date-modal');
+                    };
+                }
             })();
             </script>
 
