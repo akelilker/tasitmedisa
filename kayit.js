@@ -8,6 +8,7 @@
   let isEditMode = false;
   let editingVehicleId = null;
   let editingVehicleVersion = 1; // Çakışma kontrolü (Phase 3) – düzenleme açıldığında kaydedilir
+  let vehicleTypeSaveInFlight = false;
   const NOTES_MIN_HEIGHT_PX = 58; // Mobilde ~2.5 satır başlangıç yüksekliği
   const vehicleEgzozPromptState = {
     handledMuayeneDate: '',
@@ -51,6 +52,18 @@
   }
   window.openVehicleTypePickerOverlay = openVehicleTypePickerOverlay;
   window.closeVehicleTypePickerOverlay = closeVehicleTypePickerOverlay;
+
+  function setVehicleTypePickerBusy(busy) {
+    const pickerOverlay = getVehicleTypePickerOverlay();
+    if (!pickerOverlay) return;
+    if (busy) pickerOverlay.setAttribute('aria-busy', 'true');
+    else pickerOverlay.removeAttribute('aria-busy');
+    $all('.vehicle-type-picker-option', pickerOverlay).forEach(function(btn) {
+      btn.disabled = !!busy;
+      if (busy) btn.setAttribute('aria-disabled', 'true');
+      else btn.removeAttribute('aria-disabled');
+    });
+  }
 
   /** Şube yöneticisi: yeni kayıtta Tahsis Edilen Şube bölümü gizlenir; düzenlemede görünür. */
   function syncVehicleBranchFormSectionVisibility() {
@@ -2682,22 +2695,42 @@
     }
     if (pickerOverlay && pickerOptions && pickerOptions.length) {
       pickerOptions.forEach(opt => {
-        opt.addEventListener('click', function() {
+        opt.addEventListener('click', async function() {
           const type = this.getAttribute('data-type');
           const fromDetailId = window.vehicleTypePickerFromDetail;
           if (fromDetailId) {
+            if (vehicleTypeSaveInFlight) return;
+            if (typeof window.writeVehicles !== 'function') {
+              console.error('[Medisa] writeVehicles owner hazır değil; taşıt tipi kaydedilemedi.');
+              alert('Kayıt modülü henüz hazır değil. Lütfen sayfayı yenileyip tekrar deneyin.');
+              closeVehicleTypePickerOverlay();
+              return;
+            }
             const vehicles = readVehicles();
             const vehicle = vehicles.find(v => String(v.id) === String(fromDetailId));
-            if (vehicle) {
+            if (!vehicle) {
+              closeVehicleTypePickerOverlay();
+              return;
+            }
+            vehicleTypeSaveInFlight = true;
+            setVehicleTypePickerBusy(true);
+            try {
               vehicle.vehicleType = type;
               clearVehicleTakografFieldsWhenOutOfScope(vehicle);
               syncVehicleTasitKartiFieldsForK2Scope(vehicle);
-              if (window.dataApi && window.dataApi.saveVehiclesList) {
-                window.dataApi.saveVehiclesList(vehicles).catch(function() {});
+              await window.writeVehicles(vehicles);
+              if (typeof window.showVehicleDetail === 'function') window.showVehicleDetail(fromDetailId);
+              closeVehicleTypePickerOverlay();
+            } catch (err) {
+              if (!(err && err.conflict === true)) {
+                alert('Taşıt tipi kaydedilemedi. Lütfen bağlantınızı kontrol edip tekrar deneyin.');
               }
               if (typeof window.showVehicleDetail === 'function') window.showVehicleDetail(fromDetailId);
+              closeVehicleTypePickerOverlay();
+            } finally {
+              vehicleTypeSaveInFlight = false;
+              setVehicleTypePickerBusy(false);
             }
-            closeVehicleTypePickerOverlay();
           } else {
             const modal = getModal();
             const formBtn = modal && modal.querySelector('.vehicle-type-btn[data-type="' + type + '"]');
