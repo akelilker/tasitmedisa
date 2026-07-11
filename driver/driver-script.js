@@ -1524,10 +1524,10 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       const takografW = checkDateWarningsDriver(takografDate);
 
       const anahtarLabel = (vehicle.anahtar === 'var')
-          ? ((vehicle.anahtarNerede && String(vehicle.anahtarNerede).trim()) ? capitalizeWords(String(vehicle.anahtarNerede).trim()) : 'Var')
+          ? ((vehicle.anahtarNerede && String(vehicle.anahtarNerede).trim()) ? window.capitalizeWords(String(vehicle.anahtarNerede).trim()) : 'Var')
           : 'Yoktur.';
       const lastikLabel = (vehicle.lastikDurumu === 'var')
-          ? ((vehicle.lastikAdres && String(vehicle.lastikAdres).trim()) ? capitalizeWords(String(vehicle.lastikAdres).trim()) : 'Var')
+          ? ((vehicle.lastikAdres && String(vehicle.lastikAdres).trim()) ? window.capitalizeWords(String(vehicle.lastikAdres).trim()) : 'Var')
           : 'Yoktur.';
       const uttsLabel = vehicle.uttsTanimlandi ? 'Evet' : 'Hayır';
       const sigortaSaved = !!(vehicle.sigortaDate && vehicle.sigortaDate.trim());
@@ -1742,8 +1742,8 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       const kmVal = (lastKm !== '' && lastKm != null) ? esc(formatKm(lastKm)) : '';
       const bakimTarih = existingRecord && existingRecord.bakim_tarih ? existingRecord.bakim_tarih : today;
       const kazaTarih = existingRecord && existingRecord.kaza_tarih ? existingRecord.kaza_tarih : today;
-      const bakimAciklama = existingRecord ? esc(capitalizeWords(existingRecord.bakim_aciklama || '')) : '';
-      const kazaAciklama = existingRecord ? esc(capitalizeWords(existingRecord.kaza_aciklama || '')) : '';
+      const bakimAciklama = existingRecord ? esc(window.capitalizeWords(existingRecord.bakim_aciklama || '')) : '';
+      const kazaAciklama = existingRecord ? esc(window.capitalizeWords(existingRecord.kaza_aciklama || '')) : '';
       const kmBtnClass = opts.kmBtnClass || '';
       const kazaBtnClass = opts.kazaBtnClass || '';
       const bakimBtnClass = opts.bakimBtnClass || '';
@@ -2053,14 +2053,14 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           arac_id: parseInt(vid, 10),
           guncel_km: guncelKm,
           bakim_durumu: type === 'bakim' ? 1 : 0,
-          bakim_aciklama: type === 'bakim' ? capitalizeWords((document.getElementById('bakim-detay-' + vid) || {}).value.trim()) : '',
+          bakim_aciklama: type === 'bakim' ? window.capitalizeWords((document.getElementById('bakim-detay-' + vid) || {}).value.trim()) : '',
           bakim_tarih: type === 'bakim' ? (document.getElementById('bakim-tarih-' + vid) || {}).value : '',
-          bakim_servis: type === 'bakim' ? capitalizeWords(((document.getElementById('bakim-servis-' + vid) || {}).value || '').trim()) : '',
-          bakim_kisi: type === 'bakim' ? capitalizeWords(((document.getElementById('bakim-kisi-' + vid) || {}).value || '').trim()) : '',
+          bakim_servis: type === 'bakim' ? window.capitalizeWords(((document.getElementById('bakim-servis-' + vid) || {}).value || '').trim()) : '',
+          bakim_kisi: type === 'bakim' ? window.capitalizeWords(((document.getElementById('bakim-kisi-' + vid) || {}).value || '').trim()) : '',
           bakim_km: type === 'bakim' ? ((document.getElementById('bakim-km-' + vid) || {}).value || '').trim() : '',
           bakim_tutar: type === 'bakim' ? ((document.getElementById('bakim-tutar-' + vid) || {}).value || '').trim() : '',
           kaza_durumu: type === 'kaza' ? 1 : 0,
-          kaza_aciklama: type === 'kaza' ? capitalizeWords(document.getElementById('kaza-detay-' + vid).value.trim()) : '',
+          kaza_aciklama: type === 'kaza' ? window.capitalizeWords(document.getElementById('kaza-detay-' + vid).value.trim()) : '',
           kaza_tarih: type === 'kaza' ? (document.getElementById('kaza-tarih-' + vid).value || '') : '',
           kaza_hasar_tutari: type === 'kaza' ? ((document.getElementById('kaza-tutar-' + vid) || {}).value || '').trim() : '',
           boya_parcalar: '{}'
@@ -2821,13 +2821,13 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           const active = block ? block.querySelector('.driver-radio-btn.active') : null;
           if (!active) { alert('Lütfen Durum seçiniz!'); return; }
           const durum = active.dataset.value;
-          data = { durum: durum, detay: durum === 'var' ? capitalizeWords(document.getElementById('driver-anahtar-detay-' + vehicleId)?.value.trim() || '') : '' };
+          data = { durum: durum, detay: durum === 'var' ? window.capitalizeWords(document.getElementById('driver-anahtar-detay-' + vehicleId)?.value.trim() || '') : '' };
       } else if (type === 'lastik') {
           const block = document.getElementById('lastik-block-' + vehicleId);
           const active = block ? block.querySelector('.driver-radio-btn.active') : null;
           if (!active) { alert('Lütfen Durum seçiniz!'); return; }
           const durum = active.dataset.value;
-          data = { durum: durum, adres: durum === 'var' ? capitalizeWords(document.getElementById('driver-lastik-adres-' + vehicleId)?.value.trim() || '') : '' };
+          data = { durum: durum, adres: durum === 'var' ? window.capitalizeWords(document.getElementById('driver-lastik-adres-' + vehicleId)?.value.trim() || '') : '' };
       } else if (type === 'muayene') {
           const payload = getDriverMuayenePayload(vehicleId);
           if (!payload) return;
@@ -2847,8 +2847,8 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           if (!tarih) { alert('Tarih zorunludur!'); return; }
           data = {
               tarih: tarih,
-              firma: capitalizeWords(document.getElementById('driver-sigorta-firma-' + vehicleId)?.value.trim() || ''),
-              acente: capitalizeWords(document.getElementById('driver-sigorta-acente-' + vehicleId)?.value.trim() || ''),
+              firma: window.capitalizeWords(document.getElementById('driver-sigorta-firma-' + vehicleId)?.value.trim() || ''),
+              acente: window.capitalizeWords(document.getElementById('driver-sigorta-acente-' + vehicleId)?.value.trim() || ''),
               iletisim: document.getElementById('driver-sigorta-iletisim-' + vehicleId)?.value.trim() || ''
           };
       } else if (type === 'kasko') {
@@ -2856,8 +2856,8 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           if (!tarih) { alert('Tarih zorunludur!'); return; }
           data = {
               tarih: tarih,
-              firma: capitalizeWords(document.getElementById('driver-kasko-firma-' + vehicleId)?.value.trim() || ''),
-              acente: capitalizeWords(document.getElementById('driver-kasko-acente-' + vehicleId)?.value.trim() || ''),
+              firma: window.capitalizeWords(document.getElementById('driver-kasko-firma-' + vehicleId)?.value.trim() || ''),
+              acente: window.capitalizeWords(document.getElementById('driver-kasko-acente-' + vehicleId)?.value.trim() || ''),
               iletisim: document.getElementById('driver-kasko-iletisim-' + vehicleId)?.value.trim() || ''
           };
       } else return;
@@ -3369,13 +3369,6 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       return '';
   }
 
-  function capitalizeWords(str) {
-    if (!str || typeof str !== 'string') return str;
-    return str.split(/\s+/).map(function(w) {
-      return w.charAt(0).toLocaleUpperCase('tr-TR') + w.slice(1).toLocaleLowerCase('tr-TR');
-    }).join(' ');
-  }
-
   function getDriverFeedbackHistoryActionLabel(type) {
       var t = String(type || '').toLocaleLowerCase('tr-TR');
       if (t === 'sikayet' || t === 'şikayet') return 'Şikayet Edildi.';
@@ -3396,7 +3389,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
               var v = raw.trim();
               if (!v) return;
               if (/[^\s@]+@[^\s@]+\.[^\s@]+/.test(v)) return;
-              var out = capitalizeWords(v);
+              var out = window.capitalizeWords(v);
               if (out !== raw) {
                   el.value = out;
                   try {
@@ -3438,7 +3431,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
                   detailsHtml = '<p>Kaza Bilgisi Bildirildi.</p>';
                   if (item.kaza_hasar_tutari) detailsHtml += `<p>Hasar tutar\u0131: ${escapeHtmlDriver(item.kaza_hasar_tutari)} TL olarak bildirildi.</p>`;
               } else if (item.bakim_durumu) {
-                  const bakimAcik = escapeHtmlDriver(capitalizeWords(item.bakim_aciklama || 'Var'));
+                  const bakimAcik = escapeHtmlDriver(window.capitalizeWords(item.bakim_aciklama || 'Var'));
                   detailsHtml = `<p>Bak\u0131m bilgisi ${bakimAcik} olarak bildirildi.</p>`;
                   if (item.bakim_tarih) detailsHtml += `<p>Tarih: ${escapeHtmlDriver(item.bakim_tarih)}.</p>`;
                   if (item.guncel_km) detailsHtml += `<p>Km; ${formatKm(item.guncel_km)} olarak bildirildi.</p>`;
@@ -3539,13 +3532,13 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       document.getElementById('new-km').value = '';
       document.getElementById('new-km').placeholder = formatKm(record.guncel_km) || 'Örn: 54230';
 
-      document.getElementById('current-bakim').textContent = record.bakim_durumu ? capitalizeWords(record.bakim_aciklama || 'Var') : 'Yok';
+      document.getElementById('current-bakim').textContent = record.bakim_durumu ? window.capitalizeWords(record.bakim_aciklama || 'Var') : 'Yok';
       document.getElementById('new-bakim').value = '';
-      document.getElementById('new-bakim').placeholder = record.bakim_durumu ? capitalizeWords(record.bakim_aciklama || '') : "Boş bırakırsanız 'Yok' sayılır";
+      document.getElementById('new-bakim').placeholder = record.bakim_durumu ? window.capitalizeWords(record.bakim_aciklama || '') : "Boş bırakırsanız 'Yok' sayılır";
 
-      document.getElementById('current-kaza').textContent = record.kaza_durumu ? capitalizeWords(record.kaza_aciklama || 'Var') : 'Yok';
+      document.getElementById('current-kaza').textContent = record.kaza_durumu ? window.capitalizeWords(record.kaza_aciklama || 'Var') : 'Yok';
       document.getElementById('new-kaza').value = '';
-      document.getElementById('new-kaza').placeholder = record.kaza_durumu ? capitalizeWords(record.kaza_aciklama || '') : "Boş bırakırsanız 'Yok' sayılır";
+      document.getElementById('new-kaza').placeholder = record.kaza_durumu ? window.capitalizeWords(record.kaza_aciklama || '') : "Boş bırakırsanız 'Yok' sayılır";
 
       document.getElementById('edit-reason').value = '';
 
@@ -3619,11 +3612,11 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       if (kmChanged && newKm !== null) payload.yeni_km = newKm;
       if (bakimChanged) {
           payload.yeni_bakim_durumu = newBakim ? 1 : 0;
-          payload.yeni_bakim_aciklama = capitalizeWords(newBakim);
+          payload.yeni_bakim_aciklama = window.capitalizeWords(newBakim);
       }
       if (kazaChanged) {
           payload.yeni_kaza_durumu = newKaza ? 1 : 0;
-          payload.yeni_kaza_aciklama = capitalizeWords(newKaza);
+          payload.yeni_kaza_aciklama = window.capitalizeWords(newKaza);
       }
       try {
           const response = await fetch(API_BASE + 'driver_request.php', {
@@ -3913,7 +3906,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           setDriverFeedbackMessage('Mesaj alanını doldurmalısınız.', true);
           return false;
       }
-      const messageFormatted = capitalizeWords(message);
+      const messageFormatted = window.capitalizeWords(message);
       if (messageFormatted.length > 500) {
           setDriverFeedbackMessage('Mesaj çok uzun. En fazla 500 karakter yazabilirsiniz.', true);
           return false;

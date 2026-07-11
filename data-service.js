@@ -79,11 +79,7 @@
         if (typeof window.loadDataFromServer === 'function') {
           await window.loadDataFromServer(true).catch(function() {});
         }
-        if (typeof window.onMedisaConflict === 'function') {
-          window.onMedisaConflict();
-        } else {
-          console.warn('[Medisa] Çakışma: Veri başka biri tarafından güncellenmiş. Veriler sunucudan yenilendi.');
-        }
+        console.warn('[Medisa] Çakışma: Veri başka biri tarafından güncellenmiş. Veriler sunucudan yenilendi.');
         return Promise.reject(e);
       }
       return Promise.reject(new Error('Sunucuya kayıt yapılamadı.'));
