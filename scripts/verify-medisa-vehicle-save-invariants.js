@@ -11,7 +11,16 @@ const vm = require('node:vm');
 
 const ROOT = path.join(__dirname, '..');
 
-const EXPECTED_DIRECT_DATAAPI_CALLERS = 2;
+const EXPECTED_DIRECT_DATAAPI_CALLERS = 1;
+const EXPECTED_KAYIT_JS = '20260712.2';
+const EXPECTED_SCRIPT_CORE_QUERY = '20260712.2';
+const EXPECTED_SW_CACHE = 'medisa-v2.223';
+const SCRIPT_CORE_HTML_FILES = [
+  'index.html',
+  'driver/index.html',
+  'driver/dashboard.html',
+  'admin/driver-report.html',
+];
 
 let failed = 0;
 let passed = 0;
@@ -246,7 +255,7 @@ function createBrowserContext(options) {
       clearStoredTokens: function() {},
     },
     MEDISA_MODULE_VERSIONS: {
-      kayitJs: '20260712.1',
+      kayitJs: EXPECTED_KAYIT_JS,
     },
     location: { pathname: '/', href: 'http://127.0.0.1/' },
     navigator: { onLine: true, userAgent: 'node-test', platform: 'Win32', maxTouchPoints: 0, standalone: false },
@@ -785,12 +794,193 @@ function runStaticInvariants() {
     'direct dataApi caller count expected ' + EXPECTED_DIRECT_DATAAPI_CALLERS + ', got ' + callers.length + ': ' + JSON.stringify(callers.map(function(c) { return c.name; }))
   );
 
-  var pickerBranch = kayit.slice(kayit.indexOf('vehicleTypePickerFromDetail'), kayit.indexOf('vehicleTypePickerFromDetail') + 2200);
-  var pickerSilentCatch = /\.catch\s*\(\s*function\s*\(\s*\)\s*\{\s*\}\s*\)/.test(pickerBranch);
-  console.log('  direct dataApi callers:', callers.map(function(c) { return c.name; }).join(', '));
-  if (pickerSilentCatch) {
-    console.log('  tech-debt: vehicle-type-picker uses silent empty catch (MT-6A Commit 2 target)');
+  var pickerHandlerStart = kayit.indexOf('if (fromDetailId) {\r\n            if (vehicleTypeSaveInFlight)');
+  if (pickerHandlerStart === -1) {
+    pickerHandlerStart = kayit.indexOf('if (fromDetailId) {\n            if (vehicleTypeSaveInFlight)');
   }
+  assert.notEqual(pickerHandlerStart, -1, 'detail vehicle type picker handler not found');
+  var pickerBranch = kayit.slice(pickerHandlerStart, pickerHandlerStart + 2200);
+  assert.match(pickerBranch, /writeVehicles/);
+  assert.doesNotMatch(pickerBranch, /dataApi\.saveVehiclesList\s*\(/);
+  assert.doesNotMatch(pickerBranch, /\.catch\s*\(\s*function\s*\(\s*\)\s*\{\s*\}\s*\)/);
+  assert.match(kayit, /vehicleTypeSaveInFlight/);
+
+  console.log('  direct dataApi callers:', callers.map(function(c) { return c.name; }).join(', '));
+
+  var sc = read('script-core.js');
+  assert.match(sc, new RegExp("kayitJs:\\s*'" + EXPECTED_KAYIT_JS + "'"));
+
+  SCRIPT_CORE_HTML_FILES.forEach(function(rel) {
+    var html = read(rel);
+    assert.match(html, new RegExp('script-core\\.js\\?v=' + EXPECTED_SCRIPT_CORE_QUERY));
+    assert.doesNotMatch(html, /script-core\.js\?v=20260712\.1/);
+    assert.doesNotMatch(html, /script-core\.js["']/);
+  });
+
+  var sw = read('sw.js');
+  assert.match(sw, new RegExp("CACHE_VERSION = '" + EXPECTED_SW_CACHE + "'"));
+}
+
+function buildPickerDom() {
+  var overlay = createElement('div');
+  overlay.id = 'vehicle-type-picker-overlay';
+  overlay.classList = createClassList();
+  overlay.style.display = 'none';
+  overlay._ariaHidden = 'false';
+  overlay._ariaBusy = null;
+  overlay.setAttribute = function(name, value) {
+    this.attributes[name] = String(value);
+    if (name === 'aria-hidden') this._ariaHidden = String(value);
+    if (name === 'aria-busy') this._ariaBusy = String(value);
+  };
+  overlay.getAttribute = function(name) {
+    if (name === 'aria-hidden') return this._ariaHidden || null;
+    if (name === 'aria-busy') return this._ariaBusy || null;
+    if (name === 'data-type') return this.attributes['data-type'] || null;
+    return this.attributes[name] != null ? this.attributes[name] : null;
+  };
+  overlay.removeAttribute = function(name) {
+    delete this.attributes[name];
+    if (name === 'aria-busy') this._ariaBusy = null;
+  };
+  overlay.classList.add = function() {
+    createClassList().add.apply(this.classList, arguments);
+  };
+  overlay.classList.remove = function() {
+    createClassList().remove.apply(this.classList, arguments);
+  };
+  overlay._backdrop = createElement('div');
+  overlay._options = [
+    createElement('button', { attributes: { 'data-type': 'otomobil' } }),
+    createElement('button', { attributes: { 'data-type': 'minivan' } }),
+  ];
+  overlay.querySelector = function(sel) {
+    if (sel === '.vehicle-type-picker-backdrop') return this._backdrop;
+    return null;
+  };
+  overlay.querySelectorAll = function(sel) {
+    if (sel === '.vehicle-type-picker-option') return this._options;
+    return [];
+  };
+  overlay._options.forEach(function(opt) {
+    opt.attributes = opt.attributes || { 'data-type': opt.getAttribute ? opt.getAttribute('data-type') : 'otomobil' };
+    opt.getAttribute = function(name) {
+      return this.attributes[name] || null;
+    };
+    opt.setAttribute = function(name, value) {
+      this.attributes[name] = String(value);
+    };
+    opt.removeAttribute = function(name) {
+      delete this.attributes[name];
+    };
+    opt.disabled = false;
+    opt.classList = createClassList();
+  });
+  return overlay;
+}
+
+async function runTipPickerBehaviorTests() {
+  function setupKayitContext() {
+    var overlay = buildPickerDom();
+    var ctx = createBrowserContext({
+      elements: {
+        'vehicle-type-picker-overlay': overlay,
+        'vehicle-modal': createElement('div'),
+      },
+    });
+    ctx.overlay = overlay;
+    ctx.loadScript('kayit.js');
+    ctx.window.vehicleTypePickerFromDetail = 'v1';
+    return ctx;
+  }
+
+  await test('tip picker success waits for writeVehicles', async function() {
+    var deferredResolve;
+    var deferred = new Promise(function(resolve) { deferredResolve = resolve; });
+    var ctx = setupKayitContext();
+    var c = ctx.counters;
+    ctx.window.writeVehicles = function() {
+      c.writeVehicles += 1;
+      return deferred;
+    };
+
+    ctx.overlay._options[1].click();
+    await flushMicrotasks(8);
+    assert.equal(c.writeVehicles, 1);
+    assert.equal(c.showVehicleDetail, 0);
+
+    deferredResolve();
+    await flushMicrotasks(8);
+    assert.equal(c.showVehicleDetail, 1);
+    assert.equal(ctx.overlay.style.display, 'none');
+    assert.equal(ctx.overlay._options[1].disabled, false);
+  });
+
+  await test('tip picker double click single save', async function() {
+    var gateResolve;
+    var gate = new Promise(function(resolve) { gateResolve = resolve; });
+    var ctx = setupKayitContext();
+    var c = ctx.counters;
+    ctx.window.writeVehicles = function() {
+      c.writeVehicles += 1;
+      return gate;
+    };
+
+    ctx.overlay._options[0].click();
+    ctx.overlay._options[1].click();
+    await flushMicrotasks(8);
+    assert.equal(c.writeVehicles, 1);
+    gateResolve();
+    await flushMicrotasks(8);
+  });
+
+  await test('tip picker conflict no second alert', async function() {
+    var ctx = setupKayitContext();
+    var c = ctx.counters;
+    var conflictErr = new Error('Conflict');
+    conflictErr.conflict = true;
+    ctx.window.writeVehicles = async function() {
+      c.writeVehicles += 1;
+      throw conflictErr;
+    };
+
+    ctx.overlay._options[0].click();
+    await flushMicrotasks(8);
+    assert.equal(c.alert, 0);
+    assert.equal(c.showVehicleDetail, 1);
+    assert.equal(ctx.overlay.style.display, 'none');
+    assert.equal(ctx.overlay._options[0].disabled, false);
+  });
+
+  await test('tip picker non-conflict error alert once', async function() {
+    var ctx = setupKayitContext();
+    var c = ctx.counters;
+    ctx.window.writeVehicles = async function() {
+      c.writeVehicles += 1;
+      throw new Error('NetworkError');
+    };
+
+    ctx.overlay._options[0].click();
+    await flushMicrotasks(8);
+    assert.equal(c.alert, 1);
+    assert.equal(c.dataApiSave, 0);
+    assert.equal(ctx.overlay._options[0].disabled, false);
+    assert.equal(ctx.overlay.style.display, 'none');
+  });
+
+  await test('tip picker missing writeVehicles owner', async function() {
+    var ctx = setupKayitContext();
+    var c = ctx.counters;
+    var beforeType = ctx.window.getMedisaVehicles()[0].vehicleType;
+    delete ctx.window.writeVehicles;
+
+    ctx.overlay._options[1].click();
+    await flushMicrotasks(8);
+    assert.equal(ctx.window.getMedisaVehicles()[0].vehicleType, beforeType);
+    assert.equal(c.alert, 1);
+    assert.equal(c.errorLog, 1);
+    assert.equal(ctx.overlay.style.display, 'none');
+  });
 }
 
 async function main() {
@@ -803,6 +993,8 @@ async function main() {
   await test('static side-effect and caller invariants', function() {
     runStaticInvariants();
   });
+
+  await runTipPickerBehaviorTests();
 
   console.log('');
   console.log('Summary: PASS=' + passed + ' FAIL=' + failed);
