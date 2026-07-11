@@ -1304,8 +1304,15 @@ window.writeVehicles = function(arr) {
     syncDataLoadState();
     invalidateMedisaVisibleCache();
     if (typeof window.saveDataToServer === 'function') {
-        return window.saveDataToServer().catch(function(err) {
+        return window.saveDataToServer().catch(async function(err) {
             if (err && err.conflict) {
+                if (typeof window.loadDataFromServer === 'function') {
+                    try {
+                        await window.loadDataFromServer(true);
+                    } catch (reloadErr) {
+                        console.warn('[Medisa] Çakışma sonrası taşıt verisi yenilenemedi:', reloadErr && reloadErr.message);
+                    }
+                }
                 alert('Dikkat! Veri başka biri tarafından güncellenmiş. Lütfen sayfayı yenileyin.');
                 return Promise.reject(err);
             }
