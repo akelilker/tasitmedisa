@@ -471,18 +471,15 @@
   }
 
   function isKaskoDegerListesiUploadUnavailableForNotifClick() {
-    if (typeof window.medisaIsDisVeriPanelUnavailableOnDevice === 'function') {
-      return window.medisaIsDisVeriPanelUnavailableOnDevice();
+    try {
+      if (typeof window.medisaIsDisVeriPanelUnavailableOnDevice !== 'function') {
+        return true;
+      }
+      return !!window.medisaIsDisVeriPanelUnavailableOnDevice();
+    } catch (err) {
+      console.warn('[Medisa] Dış-Veri bildirim cihaz kontrolü çalıştırılamadı:', err && err.message);
+      return true;
     }
-    const hasMatchMedia = typeof window.matchMedia === 'function';
-    const isMobileViewport = hasMatchMedia
-      ? window.matchMedia('(max-width: 640px)').matches
-      : window.innerWidth <= 640;
-    const ua = navigator.userAgent || '';
-    const isiOS = /iPhone|iPad|iPod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-    const isStandalone = hasMatchMedia
-      && (window.matchMedia('(display-mode: standalone)').matches || window.matchMedia('(display-mode: fullscreen)').matches);
-    return isMobileViewport || (isiOS && (isStandalone || window.navigator.standalone === true));
   }
 
   function showKaskoExcelMobileWarning() {

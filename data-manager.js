@@ -1293,8 +1293,7 @@ window.writeVehicles = function(arr) {
             })
             .catch(function(err) {
                 if (err && err.conflict) {
-                    if (typeof window.onMedisaConflict === 'function') window.onMedisaConflict();
-                    else alert('Dikkat! Veri başka biri tarafından güncellenmiş. Lütfen sayfayı yenileyin.');
+                    alert('Dikkat! Veri başka biri tarafından güncellenmiş. Lütfen sayfayı yenileyin.');
                     return Promise.reject(err);
                 }
                 console.error('Sunucuya kaydetme hatası:', err);
@@ -1307,8 +1306,7 @@ window.writeVehicles = function(arr) {
     if (typeof window.saveDataToServer === 'function') {
         return window.saveDataToServer().catch(function(err) {
             if (err && err.conflict) {
-                if (typeof window.onMedisaConflict === 'function') window.onMedisaConflict();
-                else alert('Dikkat! Veri başka biri tarafından güncellenmiş. Lütfen sayfayı yenileyin.');
+                alert('Dikkat! Veri başka biri tarafından güncellenmiş. Lütfen sayfayı yenileyin.');
                 return Promise.reject(err);
             }
             console.error('Sunucuya kaydetme hatası:', err);
