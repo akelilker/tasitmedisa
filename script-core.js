@@ -1098,17 +1098,88 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Lazy modül asset sürümleri — tek nesne; index.html içindeki style-core ?v= ile tasitlar sürümü uyumlu kalmalı
 var MEDISA_MODULE_VERSIONS = {
-  tasitlar: '20260708.8',
-  notifications: '20260705.4',
+  tasitlar: '20260712.1',
+  notifications: '20260712.1',
   raporlar: '20260630.1',
-  kayitJs: '20260708.3',
+  kayitJs: '20260712.1',
   kayitCss: '20260708.1',
-  ayarlarJs: '20260625.2',
+  ayarlarJs: '20260712.1',
   ayarlarCss: '20260623.6',
   tasitlarYazici: '20260517.5',
   vehicleNotificationDomain: '20260703.1'
 };
 window.MEDISA_MODULE_VERSIONS = MEDISA_MODULE_VERSIONS;
+
+(function() {
+  if (window.MedisaVehicleSearch && typeof window.MedisaVehicleSearch.matches === 'function') return;
+
+  function normalizeText(value) {
+    var s = String(value == null ? '' : value);
+    if (typeof s.normalize === 'function') {
+      try {
+        s = s.normalize('NFKC');
+      } catch (e) { /* yoksay */ }
+    }
+    return s.toLocaleLowerCase('tr-TR').trim();
+  }
+
+  function normalizePlate(value) {
+    return normalizeText(value).replace(/[\s\-_.]+/g, '');
+  }
+
+  function getBrandModelHaystack(vehicle) {
+    var source = vehicle || {};
+    var rawMm = String(source.brandModel || '').trim();
+    if (!rawMm) {
+      rawMm = (String(source.brand || source.marka || '') + ' ' + String(source.model || '')).trim();
+    }
+    if (!rawMm) return '';
+    if (typeof window.formatBrandModel === 'function') return window.formatBrandModel(rawMm);
+    if (typeof window.toTitleCase === 'function') return window.toTitleCase(rawMm);
+    return rawMm;
+  }
+
+  function getFieldHits(vehicle, query) {
+    var q = normalizeText(query);
+    var empty = { plate: false, brand: false, year: false, user: false };
+    if (!q) return empty;
+
+    var source = vehicle || {};
+    var plate = String(source.plate != null ? source.plate : (source.plaka != null ? source.plaka : ''));
+    var compactQuery = normalizePlate(q);
+    var rawPlate = normalizeText(plate);
+    var compactPlate = normalizePlate(plate);
+    var formattedPlate = '';
+    if (typeof window.formatPlaka === 'function') {
+      formattedPlate = normalizePlate(window.formatPlaka(plate));
+    }
+
+    var plateHit =
+      !!(rawPlate && rawPlate.indexOf(q) !== -1) ||
+      !!(compactQuery && (compactPlate.indexOf(compactQuery) !== -1 || (formattedPlate && formattedPlate.indexOf(compactQuery) !== -1)));
+
+    var brandHay = normalizeText(getBrandModelHaystack(source));
+    var brandHit = !!(brandHay && brandHay.indexOf(q) !== -1);
+    var yearHit = !!(source.year != null && String(source.year).indexOf(q) !== -1);
+    var userHit = !!(source.tahsisKisi && normalizeText(source.tahsisKisi).indexOf(q) !== -1);
+
+    return { plate: plateHit, brand: brandHit, year: yearHit, user: userHit };
+  }
+
+  function matches(vehicle, query) {
+    var q = normalizeText(query);
+    if (!q) return true;
+    var hits = getFieldHits(vehicle, query);
+    return hits.plate || hits.brand || hits.year || hits.user;
+  }
+
+  window.MedisaVehicleSearch = {
+    normalizeText: normalizeText,
+    normalizePlate: normalizePlate,
+    getFieldHits: getFieldHits,
+    matches: matches
+  };
+})();
 
 function medisaResolveRecorderDisplayName() {
   function localTitleCase(value) {
@@ -1355,6 +1426,70 @@ window.ensureMedisaVehicleNotificationDomainReady = function() {
   var AYARLAR_CSS = base + 'ayarlar.css?v=' + V.ayarlarCss;
   var ayarlarPreloadScheduled = false;
 
+  function isMedisaKayitModuleReady() {
+    return window.__medisaKayitModuleReady === true
+      && window.__medisaKayitModuleVersion === V.kayitJs
+      && typeof window.openVehicleModal === 'function'
+      && window.openVehicleModal !== lazyOpenVehicleModal
+      && typeof window.openVehicleTypePickerOverlay === 'function'
+      && window.MedisaDateCalendar
+      && typeof window.MedisaDateCalendar.open === 'function';
+  }
+
+  window.ensureMedisaKayitModuleReady = function() {
+    if (isMedisaKayitModuleReady()) return Promise.resolve();
+
+    var inflightKey = 'medisa:kayit-module-ready';
+    var inflight = window.__medisaModuleInflight;
+    if (inflight[inflightKey]) return inflight[inflightKey];
+
+    var promise = Promise.resolve()
+      .then(function() {
+        if (typeof window.ensureMedisaVehicleNotificationDomainReady !== 'function') {
+          throw new Error('vehicle notification domain loader hazir degil');
+        }
+        return window.ensureMedisaVehicleNotificationDomainReady();
+      })
+      .then(function() {
+        if (window.__medisaKayitModuleReady === true && window.__medisaKayitModuleVersion !== V.kayitJs) {
+          window.__medisaKayitModuleReady = false;
+        }
+        if (isMedisaKayitModuleReady()) return;
+        if (typeof window.loadAppModule !== 'function') {
+          throw new Error('Kayit module loader hazir degil');
+        }
+        return window.loadAppModule(KAYIT_JS, KAYIT_CSS);
+      })
+      .then(function() {
+        if (!isMedisaKayitModuleReady()) {
+          throw new Error('Kayit modulu hazir duruma gelemedi');
+        }
+      })
+      .catch(function(err) {
+        console.error('[Medisa] Kayit modulu hazirlanamadi:', err);
+        throw err;
+      })
+      .finally(function() {
+        if (inflight[inflightKey] === promise) delete inflight[inflightKey];
+      });
+
+    inflight[inflightKey] = promise;
+    return promise;
+  };
+
+  function lazyOpenVehicleModal() {
+    showModuleSpinner();
+    window.ensureMedisaKayitModuleReady().then(function() {
+      if (typeof window.openVehicleModal === 'function' && window.openVehicleModal !== lazyOpenVehicleModal) {
+        window.openVehicleModal();
+      }
+    }).catch(function(err) {
+      console.error('[Medisa] Kayit modulu yuklenemedi:', err);
+    }).finally(function() {
+      hideModuleSpinner();
+    });
+  }
+
   function preloadAyarlarModuleInIdleTime() {
     if (ayarlarPreloadScheduled || window._ayarlarLoaded === true) return;
     ayarlarPreloadScheduled = true;
@@ -1494,16 +1629,7 @@ window.ensureMedisaVehicleNotificationDomainReady = function() {
     });
   };
 
-  window.openVehicleModal = function() {
-    showModuleSpinner();
-    window.loadAppModule(KAYIT_JS, KAYIT_CSS).then(function() {
-      if (typeof window.openVehicleModal === 'function') window.openVehicleModal();
-    }).catch(function(err) {
-      console.error('[Medisa] Kayıt modülü yüklenemedi:', err);
-    }).finally(function() {
-      hideModuleSpinner();
-    });
-  };
+  window.openVehicleModal = lazyOpenVehicleModal;
 
   function wrapAyarlar(fnName) {
     return function() {

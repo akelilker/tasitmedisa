@@ -73,16 +73,6 @@
     return 'Yönetim';
   }
 
-  function isMainAppSessionGenelYonetici() {
-    try {
-      var sess = typeof window.medisaSession === 'object' && window.medisaSession ? window.medisaSession : null;
-      var sr = sess && (sess.role || (sess.user && sess.user.role));
-      return !!(sess && sess.authenticated && String(sr || '').trim() === 'genel_yonetici');
-    } catch (e) {
-      return false;
-    }
-  }
-
   function formatDateForDisplay(dateStr) {
     if (!dateStr) return '';
     const raw = String(dateStr).trim();
@@ -1529,7 +1519,7 @@
   }
 
   function getMonthlyTodoBranchFilterHtml(branches) {
-    if (!isMainAppSessionGenelYonetici()) return '';
+    if (!window.isMedisaMainAppSessionGenelYonetici()) return '';
     var visibleBranches = Array.isArray(branches) ? branches : [];
     var selectedBranch = visibleBranches.find(function(branch) {
       return String(branch && branch.id) === String(monthlyTodoBranchFilterId);
@@ -1557,7 +1547,7 @@
   }
 
   function monthlyTodoTableColHeaderHtml(branches) {
-    var ariaHidden = isMainAppSessionGenelYonetici() ? '' : ' aria-hidden="true"';
+    var ariaHidden = window.isMedisaMainAppSessionGenelYonetici() ? '' : ' aria-hidden="true"';
     var html = '<div class="monthly-todo-col-header"' + ariaHidden + '>';
     html += '<span class="monthly-todo-col-h monthly-todo-col-h--middle">';
     html += '<span class="monthly-todo-col-h-line">Plaka</span>';
@@ -1671,7 +1661,7 @@
       if (b && b.id != null) branchNameMap[String(b.id)] = String(b.name || '').trim();
     });
     var filteredTasks = tasksArray || [];
-    if (isMainAppSessionGenelYonetici() && monthlyTodoBranchFilterId !== 'all') {
+    if (window.isMedisaMainAppSessionGenelYonetici() && monthlyTodoBranchFilterId !== 'all') {
       filteredTasks = filteredTasks.filter(function(task) {
         var vehicle = task && task.vehicle;
         return vehicle && String(vehicle.branchId || '') === String(monthlyTodoBranchFilterId);

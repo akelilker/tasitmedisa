@@ -52,23 +52,11 @@
   window.openVehicleTypePickerOverlay = openVehicleTypePickerOverlay;
   window.closeVehicleTypePickerOverlay = closeVehicleTypePickerOverlay;
 
-  /** Ana uygulama oturum rolü — data-manager normalizeSessionRole ile aynı sözleşme (export yok, yerel kopya). */
-  function getMedisaMainAppSessionRole() {
-    const sessionData = typeof window.getMedisaSession === "function"
-      ? (window.getMedisaSession() || {})
-      : (window.medisaSession || {});
-    let role = String(sessionData.role || (sessionData.user && sessionData.user.role) || "").trim();
-    if (role === "admin") return "genel_yonetici";
-    if (role === "yonetici" || role === "yonetici_kullanici") return "sube_yonetici";
-    if (role === "driver" || role === "sales" || role === "surucu") return "kullanici";
-    return role;
-  }
-
   /** Şube yöneticisi: yeni kayıtta Tahsis Edilen Şube bölümü gizlenir; düzenlemede görünür. */
   function syncVehicleBranchFormSectionVisibility() {
     const section = document.getElementById("vehicle-branch-form-section");
     if (!section) return;
-    const hide = !isEditMode && getMedisaMainAppSessionRole() === "sube_yonetici";
+    const hide = !isEditMode && window.getMedisaMainAppSessionRole() === "sube_yonetici";
     section.classList.toggle("u-hidden", hide);
   }
 
@@ -76,29 +64,13 @@
   function readVehicles() { return (typeof window.getMedisaVehicles === 'function' ? window.getMedisaVehicles() : null) || []; }
   const VEHICLE_DATE_INPUT_SELECTOR = 'input.form-input[data-date-input="vehicle"]';
 
-  function getRegistrationVehicleTypeKey(vehicleOrType) {
-    if (vehicleOrType && typeof vehicleOrType === 'object') {
-      return String(vehicleOrType.vehicleType || vehicleOrType.tip || '').trim().toLowerCase();
-    }
-    return String(vehicleOrType || '').trim().toLowerCase();
-  }
-
-  function registrationVehicleNeedsTakograf(vehicleOrType) {
-    return getRegistrationVehicleTypeKey(vehicleOrType) === 'kamyon';
-  }
-
-  function registrationVehicleNeedsK2(vehicleOrType) {
-    const typeKey = getRegistrationVehicleTypeKey(vehicleOrType);
-    return typeKey === 'minivan' || typeKey === 'kamyon' || typeKey === 'romork';
-  }
-
   function getRegistrationK2ExpiryDate() {
     const state = window.appData && window.appData.ayarlar && window.appData.ayarlar.k2Belgesi;
     return String((state && state.expiryDate) || '').trim();
   }
 
   function clearVehicleTakografFieldsWhenOutOfScope(vehicle) {
-    if (!vehicle || registrationVehicleNeedsTakograf(vehicle)) return vehicle;
+    if (!vehicle || window.MedisaVehicleNotificationDomain.vehicleNeedsTakograf(vehicle)) return vehicle;
     vehicle.takografKalibrasyonDate = '';
     vehicle.takografExpiryDate = '';
     vehicle.takografBelgesiPath = '';
@@ -108,7 +80,7 @@
 
   function syncVehicleTasitKartiFieldsForK2Scope(vehicle) {
     if (!vehicle) return vehicle;
-    if (registrationVehicleNeedsK2(vehicle)) {
+    if (window.MedisaVehicleNotificationDomain.vehicleNeedsK2Belgesi(vehicle)) {
       vehicle.tasitKartiExpiryDate = getRegistrationK2ExpiryDate();
       return vehicle;
     }
@@ -2001,7 +1973,7 @@
     const krediDetay = document.getElementById('kredi-detay')?.value.trim() || '';
     
     let branchId = document.getElementById("vehicle-branch-select")?.value || '';
-    if (!isEditMode && getMedisaMainAppSessionRole() === "sube_yonetici") {
+    if (!isEditMode && window.getMedisaMainAppSessionRole() === "sube_yonetici") {
       const sessionData = typeof window.getMedisaSession === "function"
         ? (window.getMedisaSession() || {})
         : (window.medisaSession || {});
@@ -3019,4 +2991,7 @@
   } else {
     initVehicleModalListeners();
   }
+
+  window.__medisaKayitModuleReady = true;
+  window.__medisaKayitModuleVersion = (window.MEDISA_MODULE_VERSIONS && window.MEDISA_MODULE_VERSIONS.kayitJs) || '';
 })();
