@@ -9,7 +9,7 @@
    ========================================= */
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20260712.1';
+  const MEDISA_TASITLAR_MODULE_VERSION = '20260712.2';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
@@ -3587,8 +3587,9 @@
         updateDetailModalSignatureFromVehicle(fresh);
       }
       if (typeof window.renderVehicles === 'function') window.renderVehicles();
-    }).catch(function() {
+    }).catch(function(err) {
       setCellFromNotesString(savedBuf.originalNotes != null ? savedBuf.originalNotes : '');
+      if (err && err.conflict) return;
       alert('Notlar kaydedilemedi. Tekrar deneyin.');
     });
   }
@@ -5800,15 +5801,10 @@
 
   function getMedisaPortalToken() {
     try {
-      if (typeof getStoredPortalToken === 'function') {
-        return getStoredPortalToken() || '';
-      }
-      return localStorage.getItem('medisa_portal_token')
-        || sessionStorage.getItem('medisa_portal_token')
-        || localStorage.getItem('driver_token')
-        || sessionStorage.getItem('driver_token')
-        || '';
-    } catch (e) {
+      if (typeof window.getStoredPortalToken !== 'function') return '';
+      return window.getStoredPortalToken() || '';
+    } catch (err) {
+      console.warn('[Medisa] Portal token bilgisi okunamadı:', err && err.message);
       return '';
     }
   }
