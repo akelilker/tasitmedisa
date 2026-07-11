@@ -2067,54 +2067,6 @@
       document.addEventListener('pointerdown', onUserManagementSearchOutsidePointerDown, true);
     }
 
-    /** Plaka/marka araması: tasitlar.js vehicleMatchesSearchQuery ile aynı hizada (NFKC, tire/nokta, formatPlaka). */
-    function medisaNormalizeUserVehicleSearchString(str) {
-      var s = String(str == null ? '' : str);
-      if (typeof s.normalize === 'function') {
-        try {
-          s = s.normalize('NFKC');
-        } catch (e) { /* yoksay */ }
-      }
-      return s;
-    }
-
-    function userFormVehicleMatchesSearch(v, qRaw) {
-      var qTrim = String(qRaw || '').trim();
-      if (!qTrim) return true;
-      var qNorm = medisaNormalizeUserVehicleSearchString(qTrim);
-      var qLower = qNorm.toLocaleLowerCase('tr-TR');
-      var qCompact = qLower.replace(/[\s\-_.]+/g, '');
-
-      var plakaStr = v.plate || v.plaka || '';
-      var pNorm = medisaNormalizeUserVehicleSearchString(plakaStr);
-      var pLower = pNorm.toLocaleLowerCase('tr-TR');
-      var pCompact = pLower.replace(/[\s\-_.]+/g, '');
-
-      if (qCompact && pCompact.indexOf(qCompact) !== -1) return true;
-      if (qLower && pLower.indexOf(qLower) !== -1) return true;
-
-      if (typeof window.formatPlaka === 'function' && qCompact) {
-        var fmt = window.formatPlaka(pNorm);
-        if (fmt && fmt !== '-') {
-          var fCompact = medisaNormalizeUserVehicleSearchString(String(fmt))
-            .toLocaleLowerCase('tr-TR')
-            .replace(/[\s\-_.]+/g, '');
-          if (fCompact.indexOf(qCompact) !== -1) return true;
-        }
-      }
-
-      var rawMm = (v.brandModel || (v.brand || v.marka || '') + ' ' + (v.model || '')).trim();
-      var markaModel = (typeof window.formatBrandModel === 'function' ? window.formatBrandModel(rawMm) : (typeof window.toTitleCase === 'function' ? window.toTitleCase(rawMm) : rawMm));
-      var brandHay = String(markaModel || '').toLocaleLowerCase('tr-TR');
-      if (qLower && brandHay.indexOf(qLower) !== -1) return true;
-
-      if (v.year != null && String(v.year).indexOf(qLower) !== -1) return true;
-      var tks = v.tahsisKisi;
-      if (tks && medisaNormalizeUserVehicleSearchString(String(tks)).toLocaleLowerCase('tr-TR').indexOf(qLower) !== -1) return true;
-
-      return false;
-    }
-
     function userVehiclesTypeaheadIsTextualFormInput(el) {
       if (!el || el.tagName !== 'INPUT') return false;
       var type = String(el.type || '').toLowerCase();
@@ -2197,7 +2149,7 @@
       }
       const qRaw = (searchFilter || '').trim();
       if (qRaw) {
-        activeVehicles = activeVehicles.filter(v => userFormVehicleMatchesSearch(v, qRaw));
+        activeVehicles = activeVehicles.filter(v => window.MedisaVehicleSearch.matches(v, qRaw));
       }
       const assignedSet = new Set(assignedIds.map(String));
       function userVehiclePlateSortKey(v) {

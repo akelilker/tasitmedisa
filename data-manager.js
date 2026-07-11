@@ -352,6 +352,25 @@ function getSessionRoleValue(sessionData) {
     return normalizeSessionRole(session.role || (session.user && session.user.role) || '');
 }
 
+window.getMedisaMainAppSessionRole = function(sessionData) {
+    var session = sessionData && typeof sessionData === 'object'
+        ? sessionData
+        : (typeof window.getMedisaSession === 'function' ? window.getMedisaSession() : (window.medisaSession || getDefaultSession()));
+    return getSessionRoleValue(session);
+};
+
+window.isMedisaMainAppSessionGenelYonetici = function(sessionData) {
+    try {
+        var session = sessionData && typeof sessionData === 'object'
+            ? sessionData
+            : (typeof window.getMedisaSession === 'function' ? window.getMedisaSession() : (window.medisaSession || getDefaultSession()));
+        if (!session || !session.authenticated) return false;
+        return getSessionRoleValue(session) === 'genel_yonetici';
+    } catch (e) {
+        return false;
+    }
+};
+
 function isBranchManagerSessionRole(role) {
     return normalizeSessionRole(role) === 'sube_yonetici';
 }

@@ -675,16 +675,6 @@
 
 
   /** Ana uygulamada olay satırında görünen sürücü adı: genel yönetici kendi adıyla; aksi halde atanmış kullanıcı / tahsis. */
-  function isMainAppSessionGenelYonetici() {
-    try {
-      var sess = typeof window.medisaSession === 'object' && window.medisaSession ? window.medisaSession : null;
-      var sr = sess && (sess.role || (sess.user && sess.user.role));
-      return !!(sess && sess.authenticated && String(sr || '').trim() === 'genel_yonetici');
-    } catch (e) {
-      return false;
-    }
-  }
-
   function getEventSurucuFromVehicleAssignment(vehicle) {
     const safeVehicle = vehicle || {};
     const users = readUsers();
@@ -699,7 +689,7 @@
   }
 
   function resolveMainAppEventSurucuName(vehicle) {
-    if (isMainAppSessionGenelYonetici()) return getRecorderDisplayName();
+    if (window.isMedisaMainAppSessionGenelYonetici()) return getRecorderDisplayName();
     return getEventSurucuFromVehicleAssignment(vehicle);
   }
 
@@ -1200,58 +1190,9 @@
     return '<span class="user-name-line1" title="' + escapeHtml(givenNames) + '">' + escapeHtml(givenNames) + '</span>' +
       '<span class="user-name-line2" title="' + escapeHtml(surname) + '">' + escapeHtml(surname) + '</span>';
   }
-  function normalizeVehicleSearchText(value) {
-    return String(value == null ? '' : value).toLocaleLowerCase('tr-TR').trim();
-  }
-  function normalizePlateSearchText(value) {
-    return normalizeVehicleSearchText(value).replace(/[\s-]+/g, '');
-  }
-  function vehicleMatchesSearchQuery(vehicle, query) {
-    const q = normalizeVehicleSearchText(query);
-    if (!q) return true;
-
-    const source = vehicle || {};
-    const plate = String(source.plate != null ? source.plate : '');
-    const compactQuery = normalizePlateSearchText(q);
-    const rawPlate = normalizeVehicleSearchText(plate);
-    const compactPlate = normalizePlateSearchText(plate);
-    const formattedPlate = normalizePlateSearchText(formatPlaka(plate));
-
-    return (rawPlate && rawPlate.includes(q)) ||
-      (compactQuery && (compactPlate.includes(compactQuery) || formattedPlate.includes(compactQuery))) ||
-      (source.brandModel && normalizeVehicleSearchText(source.brandModel).includes(q)) ||
-      (source.year && String(source.year).includes(q)) ||
-      (source.tahsisKisi && normalizeVehicleSearchText(source.tahsisKisi).includes(q));
-  }
-
-  /** vehicleMatchesSearchQuery ile aynı kriterler — hangi sütunun eşleştiğini boyamak için */
-  function getVehicleSearchFieldHits(vehicle, query) {
-    const q = normalizeVehicleSearchText(query);
-    const empty = { plate: false, brand: false, year: false, user: false };
-    if (!q) return empty;
-
-    const source = vehicle || {};
-    const plate = String(source.plate != null ? source.plate : '');
-    const compactQuery = normalizePlateSearchText(q);
-    const rawPlate = normalizeVehicleSearchText(plate);
-    const compactPlate = normalizePlateSearchText(plate);
-    const formattedPlate = normalizePlateSearchText(formatPlaka(plate));
-
-    const plateHit =
-      !!(rawPlate && rawPlate.includes(q)) ||
-      !!(compactQuery && (compactPlate.includes(compactQuery) || formattedPlate.includes(compactQuery)));
-
-    const brandHit = !!(source.brandModel && normalizeVehicleSearchText(source.brandModel).includes(q));
-    const yearHit = !!(source.year && String(source.year).includes(q));
-    const userHit = !!(source.tahsisKisi && normalizeVehicleSearchText(source.tahsisKisi).includes(q));
-
-    return { plate: plateHit, brand: brandHit, year: yearHit, user: userHit };
-  }
-
-  /** Türkçe büyük/küçük harf duyarlı alt dizgi vurgusu — güvenli HTML */
   function highlightVehicleSearchText(text, query, hitKind) {
     const t = String(text == null ? '' : text);
-    const q = normalizeVehicleSearchText(query);
+    const q = window.MedisaVehicleSearch.normalizeText(query);
     if (!q) return escapeHtml(t);
     const tl = t.toLocaleLowerCase('tr-TR');
     const ql = q.toLocaleLowerCase('tr-TR');
@@ -1274,7 +1215,7 @@
   }
 
   function maybeHighlightCell(displayText, query, hit, hitKind) {
-    const q = normalizeVehicleSearchText(query);
+    const q = window.MedisaVehicleSearch.normalizeText(query);
     if (!hit || !q) return escapeHtml(String(displayText == null ? '' : displayText));
     const hi = highlightVehicleSearchText(String(displayText), query, hitKind);
     if (hi.indexOf('<mark') === -1) return escapeHtml(String(displayText));
@@ -1285,7 +1226,7 @@
   function wrapPlateSearchHighlight(displayText, query, plateHit) {
     const text = String(displayText == null ? '' : displayText);
     const escaped = escapeHtml(text);
-    if (!plateHit || !normalizeVehicleSearchText(query)) return escaped;
+    if (!plateHit || !window.MedisaVehicleSearch.normalizeText(query)) return escaped;
     return (
       '<span class="vehicle-search-plate-cell">' +
       '<span class="vehicle-search-plate-accent" aria-hidden="true"></span>' +
@@ -1320,7 +1261,7 @@
   }
 
   function buildVehicleUserNameHtmlWithSearch(rawName, query, userHit) {
-    const q = normalizeVehicleSearchText(query);
+    const q = window.MedisaVehicleSearch.normalizeText(query);
     if (!userHit || !q) return buildVehicleUserNameHtml(rawName);
 
     const userName = formatAdSoyad(rawName || '-');
@@ -2290,7 +2231,7 @@
 
     // 2. Metin Araması (plaka, marka/model, yıl, kullanıcı)
     if (query) {
-        vehicles = vehicles.filter(v => vehicleMatchesSearchQuery(v, query));
+        vehicles = vehicles.filter(v => window.MedisaVehicleSearch.matches(v, query));
     }
 
     // 2b. Şanzıman filtresi (Otomatik/Manuel)
@@ -2421,7 +2362,7 @@
         html += '<div class="vehicles-list-scroll">';
       }
       html += `<div class="view-${viewMode}${extraClass}">` + vehicles.map(v => {
-        const searchHits = getVehicleSearchFieldHits(v, query);
+        const searchHits = window.MedisaVehicleSearch.getFieldHits(v, query);
 
         // Plaka (1. satır - tek satır maksimum)
         const plate = v.plate || '-';
@@ -2456,7 +2397,7 @@
             if (
               thirdLineDisplay &&
               searchHits.user &&
-              normalizeVehicleSearchText(query) &&
+              window.MedisaVehicleSearch.normalizeText(query) &&
               !isArchive &&
               activeBranchId !== 'all'
             ) {
@@ -3139,7 +3080,7 @@
               renderBranchDashboard();
               return;
           }
-          const q = normalizeVehicleSearchText(val);
+          const q = window.MedisaVehicleSearch.normalizeText(val);
           currentView = 'dashboard';
           activeBranchId = 'all';
           viewMode = 'list';
@@ -9708,26 +9649,13 @@
   // Taşıt detay: muayene tooltip (hover ile açık kalır, gecikmeli kapatma) + ünlem/link tıklama
   let muayeneTooltipCloseTimeout = null;
   let muayenePickerPointerHandledAt = 0;
-  let vehicleTypePickerModulePromise = null;
-  let medisaDateCalendarModulePromise = null;
 
   function ensureMedisaDateCalendarReady() {
     if (window.MedisaDateCalendar && typeof window.MedisaDateCalendar.open === 'function') {
       return Promise.resolve();
     }
-    if (medisaDateCalendarModulePromise) {
-      return medisaDateCalendarModulePromise;
-    }
-    const versions = window.MEDISA_MODULE_VERSIONS || {};
-    const base = typeof window.getMainAppBasePath === 'function' ? window.getMainAppBasePath() : '';
-    const kayitJs = base + 'kayit.js?v=' + (versions.kayitJs || '20260406.1');
-    const kayitCss = base + 'kayit.css?v=' + (versions.kayitCss || '20260421.2');
-    if (typeof window.loadAppModule === 'function') {
-      medisaDateCalendarModulePromise = window.loadAppModule(kayitJs, kayitCss).catch(function(err) {
-        medisaDateCalendarModulePromise = null;
-        throw err;
-      });
-      return medisaDateCalendarModulePromise;
+    if (typeof window.ensureMedisaKayitModuleReady === 'function') {
+      return window.ensureMedisaKayitModuleReady();
     }
     return Promise.resolve();
   }
@@ -9736,19 +9664,8 @@
     if (typeof window.openVehicleTypePickerOverlay === 'function') {
       return Promise.resolve();
     }
-    if (vehicleTypePickerModulePromise) {
-      return vehicleTypePickerModulePromise;
-    }
-    const versions = window.MEDISA_MODULE_VERSIONS || {};
-    const base = typeof window.getMainAppBasePath === 'function' ? window.getMainAppBasePath() : '';
-    const kayitJs = base + 'kayit.js?v=' + (versions.kayitJs || '20260406.1');
-    const kayitCss = base + 'kayit.css?v=' + (versions.kayitCss || '20260421.2');
-    if (typeof window.loadAppModule === 'function') {
-      vehicleTypePickerModulePromise = window.loadAppModule(kayitJs, kayitCss).catch(function(err) {
-        vehicleTypePickerModulePromise = null;
-        throw err;
-      });
-      return vehicleTypePickerModulePromise;
+    if (typeof window.ensureMedisaKayitModuleReady === 'function') {
+      return window.ensureMedisaKayitModuleReady();
     }
     return Promise.resolve();
   }
