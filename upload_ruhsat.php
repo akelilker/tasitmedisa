@@ -131,19 +131,11 @@ function medisaNormalizeUploadDocumentPath($path) {
 }
 
 function medisaUploadVehicleNeedsK2($vehicle) {
-    if (!is_array($vehicle)) {
-        return false;
-    }
-    $typeKey = strtolower(trim((string)($vehicle['vehicleType'] ?? $vehicle['tip'] ?? '')));
-    return in_array($typeKey, ['minivan', 'kamyon', 'romork'], true);
+    return medisaSaveVehicleNeedsK2($vehicle);
 }
 
 function medisaUploadVehicleNeedsTakograf($vehicle) {
-    if (!is_array($vehicle)) {
-        return false;
-    }
-    $typeKey = strtolower(trim((string)($vehicle['vehicleType'] ?? $vehicle['tip'] ?? '')));
-    return $typeKey === 'kamyon';
+    return medisaSaveVehicleNeedsTakograf($vehicle);
 }
 
 function medisaUploadDocumentHistoryMeta($documentType) {
