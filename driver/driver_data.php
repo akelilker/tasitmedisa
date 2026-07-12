@@ -51,8 +51,8 @@ function buildVehicleForDriver($tasit, $branches = [], $k2Belgesi = []) {
     $model = $tasit['model'] ?? '';
     $brandModel = $tasit['brandModel'] ?? trim($marka . ' ' . $model);
     $vehicleType = strtolower(trim((string)($tasit['vehicleType'] ?? $tasit['tip'] ?? 'otomobil')));
-    $k2Required = in_array($vehicleType, ['minivan', 'kamyon', 'romork'], true);
-    $takografRequired = $vehicleType === 'kamyon';
+    $k2Required = medisaSaveVehicleNeedsK2($tasit);
+    $takografRequired = medisaSaveVehicleNeedsTakograf($tasit);
     return [
         'id' => $tasit['id'],
         'version' => medisaGetVehicleVersion($tasit),
