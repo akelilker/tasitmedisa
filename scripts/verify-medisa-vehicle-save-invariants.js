@@ -294,6 +294,55 @@ function verifyModuleBootContracts(scriptCoreJs, registry, swJs) {
   );
 }
 
+function verifyOlayEgzozFlowInvariants() {
+  var indexHtml = read('index.html');
+  var kayitJs = read('kayit.js');
+  var tasitlarJs = read('tasitlar.js');
+
+  assert.match(indexHtml, /if \(!window\.closeVehicleEgzozQuestionFlow\)/, 'egzoz confirm close fallback guard missing');
+  assert.match(indexHtml, /window\.closeVehicleEgzozQuestionFlow\s*=\s*function/, 'egzoz confirm close early fallback missing');
+  assert.match(indexHtml, /if \(!window\.cancelVehicleEgzozDateModal\)/, 'egzoz date cancel fallback guard missing');
+  assert.match(indexHtml, /window\.cancelVehicleEgzozDateModal\s*=\s*function/, 'egzoz date cancel early fallback missing');
+  assert.match(indexHtml, /function hideEgzozModal\(id\)/, 'egzoz modal hide helper missing in shell');
+  assert.match(indexHtml, /onclick="closeVehicleEgzozQuestionFlow\(\)"/, 'egzoz confirm close button must call global handler');
+  assert.match(indexHtml, /onclick="cancelVehicleEgzozDateModal\(\)"/, 'egzoz date cancel button must call global handler');
+  assert.match(indexHtml, /id="event-menu-modal"/, 'event menu modal shell missing');
+  assert.match(indexHtml, /id="dinamik-olay-modal"/, 'dynamic event modal shell missing');
+  assert.match(indexHtml, /id="vehicle-egzoz-confirm-modal"/, 'egzoz confirm modal shell missing');
+  assert.match(indexHtml, /id="vehicle-egzoz-date-modal"/, 'egzoz date modal shell missing');
+
+  [
+    'window.confirmVehicleEgzozSameDate',
+    'window.confirmVehicleEgzozDifferentDate',
+    'window.saveVehicleEgzozDateModal',
+    'window.cancelVehicleEgzozDateModal',
+    'window.closeVehicleEgzozQuestionFlow',
+  ].forEach(function(symbol) {
+    assert.match(
+      kayitJs,
+      new RegExp(symbol.replace(/\./g, '\\.') + '\\s*=\\s*function'),
+      symbol + ' canonical handler missing in kayit.js'
+    );
+  });
+  assert.match(kayitJs, /const vehicleEgzozPromptState\s*=\s*\{/, 'egzoz prompt state owner missing');
+  assert.match(kayitJs, /function maybePromptVehicleEgzozFlow\s*\(/, 'egzoz prompt entry missing');
+  assert.match(kayitJs, /function showVehicleEgzozConfirmModal\s*\(/, 'egzoz confirm modal opener missing');
+
+  assert.match(tasitlarJs, /window\.openEventModal\s*=\s*function/, 'openEventModal public API missing');
+  assert.match(tasitlarJs, /var EVENT_DEFINITIONS\s*=\s*\{/, 'EVENT_DEFINITIONS owner missing');
+  assert.match(tasitlarJs, /var EVENT_MENU_GROUPS\s*=\s*\[/, 'EVENT_MENU_GROUPS owner missing');
+  assert.match(tasitlarJs, /muayene:\s*\{\s*menuLabel:\s*'Muayene'/, 'muayene event definition missing');
+  assert.match(tasitlarJs, /getElementById\('dinamik-olay-modal'\)/, 'dinamik olay modal binding missing');
+  assert.match(tasitlarJs, /getElementById\('dinamik-olay-kaydet-btn'\)/, 'dinamik olay save button binding missing');
+  assert.match(tasitlarJs, /MedisaVehicleNotificationDomain\.vehicleNeedsK2Belgesi/, 'K2 metadata must use domain helper');
+  assert.match(tasitlarJs, /MedisaVehicleNotificationDomain\.vehicleNeedsTakograf/, 'takograf metadata must use domain helper');
+
+  var groupBlock = tasitlarJs.match(/var EVENT_MENU_GROUPS\s*=\s*\[([\s\S]*?)\n\s*\];/);
+  assert.ok(groupBlock, 'EVENT_MENU_GROUPS block not found');
+  var groupIdCount = (groupBlock[1].match(/id:\s*'[^']+'/g) || []).length;
+  assert.equal(groupIdCount, 5, 'Olay Ekle menu must expose 5 category groups');
+}
+
 function pass(name, detail) {
   passed += 1;
   console.log('[PASS]', name, detail ? '- ' + detail : '');
@@ -1474,6 +1523,8 @@ function runStaticInvariants() {
   assert.doesNotMatch(indexHtml, /data-manager\.js\?v=20260712\.4/);
   assert.doesNotMatch(indexHtml, /data-manager\.js\?v=20260712\.3/);
   assert.doesNotMatch(sw, /medisa-v2\.224/);
+
+  verifyOlayEgzozFlowInvariants();
 }
 
 function buildPickerDom() {
