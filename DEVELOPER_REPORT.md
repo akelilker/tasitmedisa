@@ -1,6 +1,6 @@
 # Taşıt Yönetim Sistemi V3 - Geliştirici Raporu
 **Tarih:** 22 Haziran 2026
-**Doğrulama:** 12 Temmuz 2026 (güncel `main` kod incelemesi)
+**Doğrulama:** 13 Temmuz 2026 (güncel `main` kod incelemesi, commit `0353889`)
 **Sistem:** Medisa Taşıt Yönetim Sistemi
 **Dil Bileşimi:** JavaScript (52.2%), CSS (36.2%), PHP (6.9%), HTML (4.6%), PowerShell (0.1%)
 **Repository:** akelilker/tasitmedisa
@@ -13,14 +13,14 @@ Güncel `main` branch kod incelemesi sonucu **doğrulanmış aktif ORTA güvenli
 
 Doc-token güvenlik fazı ile belge URL'lerinde ana session JWT taşınması kapatılmıştır. Şube veri izolasyonu bulgusu kod akışına göre **yanlış alarm** olarak sınıflandırılmıştır.
 
-Runtime `data/data.json` artık Git tarafından takip edilmez. Boş şema örneği `data/data.example.json` altında tutulur ve deploy preflight hassas veri invariantı bu sınırı doğrular. Repo geçmişine ilişkin güvenlik çalışmaları ayrı, koordineli P0 operasyon fazıdır.
+Runtime `data/data.json` artık Git tarafından takip edilmez. Boş şema örneği `data/data.example.json` altında tutulur. Hassas veri invariantı **canonical kalite kapısının** bir parçasıdır; aynı kapı hem PR Check hem Deploy preflight tarafından (`.github/scripts/quality-gate.sh`) çağrılır ve dinamik PHP/JS/MJS syntax kontrolleri ile dört invariantı (roller, taşıt-save, hassas veri, KM state) zorunlu kılar. Repo geçmişine ilişkin güvenlik çalışmaları ayrı, koordineli P0 operasyon fazıdır.
 
-Kalan işler **düşük öncelikli UX, hijyen ve backlog** kalemleridir.
+Kalan işler **veri bütünlüğü, hijyen ve platform/backlog** kalemleridir. Driver login ARIA artık açık UX işi değildir; vehicle modal button-type maddesi gerçek bir bug değildir.
 
 **Genel Puanlandırma (revize):**
 - 🟢 Güvenlik: **97%** (doc-token fazı + mevcut filtreleme)
 - 🟢 Veri İzolasyonu: **95%** (şube filtresi mevcut owner akışında çalışıyor)
-- 🟢 Erişilebilirlik: **80%** (driver login ARIA eksik)
+- 🟢 Erişilebilirlik: **80%** (driver `#error-message` alert semantiği mevcut; kapsamlı A11Y puanlaması bu revizyonda yeniden hesaplanmadı)
 - 🟢 Kod Kalitesi: **88%**
 
 ---
@@ -62,14 +62,48 @@ Aktif kaynak ağacında yeni kritik kod bulgusu yoktur. Repo geçmişine ilişki
 
 ### 1.1 Runtime Veri Sınırı
 
-**Dosyalar:** `.gitignore`, `data/data.example.json`, `scripts/verify-medisa-sensitive-data.js`, `.github/workflows/deploy-cpanel.yml`
+**Dosyalar:** `.gitignore`, `data/data.example.json`, `scripts/verify-medisa-sensitive-data.js`, `.github/scripts/quality-gate.sh`, `.github/workflows/deploy-cpanel.yml`
 **Durum:** **ÇÖZÜLDÜ / KALICI GUARD MEVCUT**
 
 - `data/data.json` runtime kaynağıdır ve Git tarafından takip edilmez.
 - `data/data.example.json` yalnızca boş şema örneğidir; uygulama bunu otomatik runtime kaynağı olarak kullanmaz.
 - GitHub FTP deploy `data/**` ağacını dışlar; canlı runtime dosyası kod deploy'u ile ezilmez.
-- `tool:verify-sensitive-data` ve deploy preflight adımı takip/ignore/example invariantlarını doğrular.
+- Hassas veri invariantı canonical kalite kapısının bir parçasıdır; PR Check ve Deploy preflight aynı scripti çağırır.
 - Repo geçmişine ilişkin temizlik, rotasyon ve dağıtılmış kopya doğrulaması ayrı ve koordineli P0 güvenlik fazıdır.
+
+### Canonical CI / Deploy Kalite Kapısı
+
+**Dosyalar:** `.github/scripts/quality-gate.sh`, `.github/workflows/pr-check.yml`, `.github/workflows/deploy-cpanel.yml`
+**Durum:** **ÇÖZÜLDÜ / KALICI GUARD MEVCUT**
+
+- Canonical owner: `.github/scripts/quality-gate.sh`
+- PR Check (`Static checks`) ve Deploy preflight aynı scripti çağırır.
+- PHP ve JS/MJS syntax kapsamı tracked dosyalardan dinamik üretilir (`git ls-files`).
+- Roller, taşıt-save, hassas veri ve KM state invariantları zorunludur.
+- Doğrudan `main` push'u deploy öncesinde bu kapıyı atlayamaz.
+- HTTP smoke PR Check içinde ayrı job olarak kalır.
+
+### 4. Driver Login ARIA
+
+**Dosya:** `driver/index.html` (`#error-message`), `driver/driver-script.js` (login hata akışı)
+**Durum:** **ÇÖZÜLDÜ**
+
+**Kanıt:**
+- `driver/index.html` içinde `#error-message` üzerinde `role="alert"` ve `aria-live="assertive"` mevcuttur.
+- Login hata mesajı ekran okuyucular için canlı alert semantiğine sahiptir.
+- Bu madde için yeni kod değişikliği gerekmez.
+- Eski “ARIA yok” açıklaması **stale**'dir.
+
+### 5. Form Button Type — Vehicle Modal
+
+**Dosya:** `index.html` (vehicle modal Kaydet/Vazgeç butonları)
+**Durum:** **KAPANDI / GERÇEK RİSK YOK**
+
+- İncelenen Kaydet/Vazgeç butonları `<form>` içinde değildir (`vehicle-modal` → `div.modal-body` / `universal-btn-group`).
+- Implicit submit riski yoktur.
+- Bu nedenle hata düzeltmesi gerekmemektedir.
+- Yalnız semantik görünüm amacıyla `type="button"` eklemek ürün veya kalite gereksinimi değildir (mevcut butonlar zaten `type="button"` kullanır).
+- Bu madde için kod değişikliği önerilmez.
 
 ---
 
@@ -104,24 +138,6 @@ Aktif kaynak ağacında yeni kritik kod bulgusu yoktur. Repo geçmişine ilişki
 - `medisaAtomicWriteFile()`: `LOCK_EX`, yazılan byte = `strlen($content)` doğrulaması
 
 **Değerlendirme:** Her save sonrası `json_decode` verify eklemek ek IO/parse maliyeti getirir; mevcut atomic write + backup riski zaten ciddi ölçüde azaltıyor. İhtiyaç halinde tasarım backlog'unda tutulabilir.
-
----
-
-### 4. Driver ARIA Eksikleri
-
-**Dosya:** `driver/index.html` (satır ~91), `driver/driver-script.js` (login hata akışı)
-**Durum:** **BACKLOG** — güvenlik değil, **UX/A11Y** mini iş
-
-`#error-message` div'inde `role="alert"` / `aria-live` yok. Düşük riskli; ekran okuyucu kullanıcıları için iyileştirme.
-
----
-
-### 5. Form Button Type — Vehicle Modal
-
-**Dosya:** `index.html` (satır ~495-496)
-**Durum:** **KISMEN STALE / MİNİ BACKLOG**
-
-İşaretlenen Kaydet/Vazgeç butonları `<form>` içinde **değil** (`vehicle-modal` → `div.modal-body`). Gerçek submit riski **yok**. Semantik tutarlılık için `type="button"` eklenebilir; `branch-form` ve `user-form` içindeki butonlar zaten `type="button"` kullanıyor.
 
 ---
 
@@ -160,8 +176,10 @@ Aktif kaynak ağacında yeni kritik kod bulgusu yoktur. Repo geçmişine ilişki
 | Document Token System (`?doc=` DOC JWT) | core.php (1564+), document_token.php | ✅ MEVCUT |
 | Bearer Token Priority | core.php (548+) | ✅ MEVCUT |
 | Şube veri izolasyonu (load filtresi) | core.php medisaFilterDataForContextWithUserPredicate | ✅ ÇALIŞIYOR (yanlış alarm kapatıldı) |
-| Form Button Semantics (çoğunluk) | index.html | ✅ MEVCUT (branch/user formları) |
-| Runtime veri Git sınırı | .gitignore, data/data.example.json, deploy preflight | ✅ MEVCUT |
+| Canonical CI/Deploy quality gate | .github/scripts/quality-gate.sh, pr-check.yml, deploy-cpanel.yml | ✅ ÇÖZÜLDÜ / KALICI GUARD |
+| Driver Login ARIA | driver/index.html `#error-message` | ✅ ÇÖZÜLDÜ |
+| Vehicle modal button type | index.html vehicle-modal | ✅ GERÇEK RİSK YOK / KOD AKSİYONU YOK |
+| Runtime veri Git sınırı | .gitignore, data/data.example.json, canonical quality gate | ✅ MEVCUT |
 
 ---
 
@@ -172,8 +190,8 @@ Aktif kaynak ağacında yeni kritik kod bulgusu yoktur. Repo geçmişine ilişki
 | 1 | Query Token / URL exposure | core.php + belge akışı | ORTA | **ÇÖZÜLDÜ / STALE** | Eski `?token=` reddetme guard'ını koru |
 | 2 | Şube izolasyonu | core.php 1120-1177 | ORTA | **YANLIŞ ALARM** | Kod değişikliği yok |
 | 3 | JSON UTF-8 verify | core.php saveData | ORTA | **BACKLOG** | Tasarım backlog |
-| 4 | Driver ARIA | driver/index.html | DÜŞÜK | **BACKLOG (A11Y)** | Mini UX fix |
-| 5 | Button type | index.html 495-496 | DÜŞÜK | **KISMEN STALE** | Semantik mini fix |
+| 4 | Driver ARIA | driver/index.html | DÜŞÜK | **ÇÖZÜLDÜ** | Kod değişikliği yok; mevcut ARIA kontratını koru |
+| 5 | Button type | index.html vehicle-modal | DÜŞÜK | **KAPANDI / RİSK YOK** | Kod değişikliği yok |
 | 6 | Windows atomic write | core.php 198-203 | DÜŞÜK | **BACKLOG** | Windows dev only |
 | 7 | Notification scope | core.php 941-991 | DÜŞÜK | **BACKLOG / HİJYEN** | Legacy cleanup |
 
@@ -181,12 +199,10 @@ Aktif kaynak ağacında yeni kritik kod bulgusu yoktur. Repo geçmişine ilişki
 
 ## 🎯 ÖNERİLEN ÖNCELİK SIRASI (GÜNCEL)
 
-1. **Driver ARIA** mini UX fix (`driver/index.html` + `driver-script.js`)
-2. **Vehicle modal** `type="button"` semantik mini fix (`index.html` ~495-496)
-3. **Notification scope** kullanıcı legacy state migration planı
-4. **`saveData` post-write verify** tasarımı (maliyet/fayda değerlendirmesi sonrası)
-5. **Windows atomic write** iyileştirmesi (yalnızca Windows dev sorun çıkarırsa)
-6. **Repo geçmişi güvenlik operasyonu** (ayrı, koordineli ve yedekli P0 fazı)
+1. **Notification scope** kullanıcı legacy state migration planı
+2. **`saveData` post-write verify** tasarımı (maliyet/fayda değerlendirmesi sonrası)
+3. **Windows atomic write** iyileştirmesi (yalnızca Windows dev sorun çıkarırsa)
+4. **Repo geçmişi güvenlik operasyonu** (ayrı, koordineli ve yedekli P0 fazı)
 
 ---
 
@@ -209,8 +225,8 @@ Durum: PRODUCTION READY ✅
 ## 💡 GENEL ÖNERİLER (REVİZE)
 
 ### Kısa Vadeli (düşük risk)
-- Driver login hata mesajına ARIA ekle
-- Vehicle modal butonlarına `type="button"` ekle
+
+Bu revizyonda doğrulanmış aktif kısa vadeli kod düzeltmesi yoktur.
 
 ### Orta Vadeli (hijyen)
 - Notification kullanıcı legacy state migration planını ayrı tasarla
@@ -224,7 +240,7 @@ Durum: PRODUCTION READY ✅
 ### DevOps
 - Production error logging
 - Backup rotasyonu
-- Runtime hassas veri invariantını preflight kapısı olarak koru
+- Canonical kalite kapısını hem PR Check hem deploy preflight'ta koru; hassas veri invariantı bu kapının bir parçasıdır — kapıyı yeniden tekil hassas veri kontrolüne düşürme
 - Security headers (CSP, X-Frame-Options, vb.)
 
 ---
@@ -232,11 +248,11 @@ Durum: PRODUCTION READY ✅
 ## 📞 İletişim & Sorular
 
 **İlk Rapor:** GitHub Copilot (22 Haziran 2026)
-**Doğrulama & Revizyon:** Kod incelemesi (12 Temmuz 2026, `main` branch)
+**Doğrulama & Revizyon:** Kod incelemesi (13 Temmuz 2026, `main` branch, commit `0353889`)
 **Sistem:** Medisa Taşıt Yönetim Sistemi V3
 
 Herhangi bir sorun veya açıklama için repository'de issue açabilirsiniz.
 
 ---
 
-**Son Güncelleme:** 2026-07-12 (runtime veri sınırı ve token davranışı revizyonu)
+**Son Güncelleme:** 2026-07-13 (canonical kalite kapısı, stale CI/A11Y dokümantasyonu revizyonu)
