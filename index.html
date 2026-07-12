@@ -1262,9 +1262,6 @@
         appReady = true;
         tryDismissSplash();
       };
-      // Geriye uyumluluk: eski (cache'li) script-core doğrudan çağırırsa güvenli kapatma
-      window.hideLoading = hideLoading;
-
       // MAX fallback: app-ready hiç gelmese de splash asılı kalmasın
       setTimeout(tryDismissSplash, MAX_SPLASH_MS);
 
@@ -1292,7 +1289,7 @@
     <script defer src="portal-session.js?v=20260513.3"></script>
     <script defer src="data-manager.js?v=20260712.5"></script>
     <script defer src="data-service.js?v=20260712.2"></script>
-    <script defer src="script-core.js?v=20260712.4"></script>
+    <script defer src="script-core.js?v=20260712.5"></script>
 </body>
 </html>
 

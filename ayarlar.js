@@ -26,11 +26,11 @@
       syncSettingsOpenState();
     }
 
-    window.reopenSettingsMenu = function reopenSettingsMenu() {
+    function reopenSettingsMenu() {
       const settingsMenu = document.getElementById('settings-menu');
       if (settingsMenu) settingsMenu.classList.add('open');
       syncSettingsOpenState();
-    };
+    }
 
     let settingsHistorySync = false;
     let medisaSettingsLayers = ['home'];
@@ -2961,22 +2961,6 @@
 
       container.innerHTML = rows;
       fitUserManagementCardNames();
-    }
-  
-    // ========================================
-    // YARDIMCI FONKSİYONLAR
-    // ========================================
-  
-    function formatDate(isoString) {
-      if (!isoString) return '-';
-      const date = new Date(isoString);
-      return date.toLocaleDateString('tr-TR', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      });
     }
   
     // ========================================
