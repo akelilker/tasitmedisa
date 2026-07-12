@@ -1,6 +1,6 @@
 # Taşıt Yönetim Sistemi V3 - Geliştirici Raporu
 **Tarih:** 22 Haziran 2026
-**Doğrulama:** 22 Haziran 2026 (güncel `main` kod incelemesi)
+**Doğrulama:** 12 Temmuz 2026 (güncel `main` kod incelemesi)
 **Sistem:** Medisa Taşıt Yönetim Sistemi
 **Dil Bileşimi:** JavaScript (52.2%), CSS (36.2%), PHP (6.9%), HTML (4.6%), PowerShell (0.1%)
 **Repository:** akelilker/tasitmedisa
@@ -12,6 +12,8 @@
 Güncel `main` branch kod incelemesi sonucu **doğrulanmış aktif ORTA güvenlik riski bulunmamaktadır.**
 
 Doc-token güvenlik fazı ile belge URL'lerinde ana session JWT taşınması kapatılmıştır. Şube veri izolasyonu bulgusu kod akışına göre **yanlış alarm** olarak sınıflandırılmıştır.
+
+Runtime `data/data.json` artık Git tarafından takip edilmez. Boş şema örneği `data/data.example.json` altında tutulur ve deploy preflight hassas veri invariantı bu sınırı doğrular. Repo geçmişine ilişkin güvenlik çalışmaları ayrı, koordineli P0 operasyon fazıdır.
 
 Kalan işler **düşük öncelikli UX, hijyen ve backlog** kalemleridir.
 
@@ -25,7 +27,7 @@ Kalan işler **düşük öncelikli UX, hijyen ve backlog** kalemleridir.
 
 ## 🔴 KRİTİK SORUNLAR
 
-**Bulunmamıştır.** ✅
+Aktif kaynak ağacında yeni kritik kod bulgusu yoktur. Repo geçmişine ilişkin kontrollü güvenlik operasyonu bu raporun kapsamı dışında açık P0 fazı olarak tutulur.
 
 ---
 
@@ -53,12 +55,21 @@ Kalan işler **düşük öncelikli UX, hijyen ve backlog** kalemleridir.
 - `?token=` belge akışı **kaldırıldı**; eski `?token=` istekleri **401** ile reddediliyor (`medisaResolveDocumentAccessContext`).
 - Belge erişimi `?doc=` üzerinden **kısa ömürlü DOC JWT** (`typ: DOC`, `purpose: document_view`) ile yapılıyor.
 - `validateToken()` DOC token'ları session olarak **kabul etmiyor**.
-- Repo genelinde `searchParams.set('token')`, `appendMedisaDocumentAuthToUrl` ve `allowQueryToken=true` çağrısı **yok**.
-- Tüm API uçları `validateToken()` / `validateToken(false)` ile Bearer-only çalışıyor.
+- Repo genelinde `searchParams.set('token')` ve `appendMedisaDocumentAuthToUrl` çağrısı **yok**.
+- `medisaReadAccessToken()` parametresizdir ve yalnızca `Authorization: Bearer` başlığını okur.
+- API session doğrulaması `validateToken()` üzerinden Bearer token ile çalışır.
+- `medisaResolveDocumentAccessContext()` içindeki eski `?token=` talebini 401 ile reddeden branch bilinçli güvenlik korumasıdır; ölü kod değildir ve kaldırılmamalıdır.
 
-**Kalan iş (hijyen backlog, canlı risk değil):**
-- `medisaReadAccessToken($allowQueryToken)` ve `allowQueryToken` parametresi ölü kod olarak duruyor; hiçbir çağrıda `true` geçilmiyor.
-- Uzun vadede parametre ve `$_GET['token']` branch'i kaldırılabilir.
+### 1.1 Runtime Veri Sınırı
+
+**Dosyalar:** `.gitignore`, `data/data.example.json`, `scripts/verify-medisa-sensitive-data.js`, `.github/workflows/deploy-cpanel.yml`
+**Durum:** **ÇÖZÜLDÜ / KALICI GUARD MEVCUT**
+
+- `data/data.json` runtime kaynağıdır ve Git tarafından takip edilmez.
+- `data/data.example.json` yalnızca boş şema örneğidir; uygulama bunu otomatik runtime kaynağı olarak kullanmaz.
+- GitHub FTP deploy `data/**` ağacını dışlar; canlı runtime dosyası kod deploy'u ile ezilmez.
+- `tool:verify-sensitive-data` ve deploy preflight adımı takip/ignore/example invariantlarını doğrular.
+- Repo geçmişine ilişkin temizlik, rotasyon ve dağıtılmış kopya doğrulaması ayrı ve koordineli P0 güvenlik fazıdır.
 
 ---
 
@@ -134,7 +145,7 @@ Kalan işler **düşük öncelikli UX, hijyen ve backlog** kalemleridir.
 - Canonical key: `user:<id>|role:<role>|branches:<scope>`
 - Aktif client (`notifications.js`) canonical key kullanıyor; `scope:*` üretmiyor.
 - Load projection: `scope:*` anahtarları **okunmaz, merge edilmez, response'a konmaz**.
-- `save.php` geriye dönük uyumluluk için legacy `scope:*` yazımına izin verebilir; bu bildirim okundu/gizlendi state'i içindir, iş verisi veya yetki bypass değildir.
+- `save.php` yalnızca canonical anahtar ile kullanıcıya ait legacy `user:<id>` anahtarını kabul eder; generic `scope:*` yazımı kabul edilmez.
 
 **Kalan iş:** Eski `data.json` içindeki generic `scope:role` kayıtlarının temizlenmesi / deprecate edilmesi (migration hijyeni).
 
@@ -150,6 +161,7 @@ Kalan işler **düşük öncelikli UX, hijyen ve backlog** kalemleridir.
 | Bearer Token Priority | core.php (548+) | ✅ MEVCUT |
 | Şube veri izolasyonu (load filtresi) | core.php medisaFilterDataForContextWithUserPredicate | ✅ ÇALIŞIYOR (yanlış alarm kapatıldı) |
 | Form Button Semantics (çoğunluk) | index.html | ✅ MEVCUT (branch/user formları) |
+| Runtime veri Git sınırı | .gitignore, data/data.example.json, deploy preflight | ✅ MEVCUT |
 
 ---
 
@@ -157,7 +169,7 @@ Kalan işler **düşük öncelikli UX, hijyen ve backlog** kalemleridir.
 
 | No | Sorun | Dosya | Öncelik (eski) | Durum (güncel) | Aksiyon |
 |----|-------|-------|----------------|----------------|---------|
-| 1 | Query Token / URL exposure | core.php + belge akışı | ORTA | **ÇÖZÜLDÜ / STALE** | `allowQueryToken` hijyen backlog |
+| 1 | Query Token / URL exposure | core.php + belge akışı | ORTA | **ÇÖZÜLDÜ / STALE** | Eski `?token=` reddetme guard'ını koru |
 | 2 | Şube izolasyonu | core.php 1120-1177 | ORTA | **YANLIŞ ALARM** | Kod değişikliği yok |
 | 3 | JSON UTF-8 verify | core.php saveData | ORTA | **BACKLOG** | Tasarım backlog |
 | 4 | Driver ARIA | driver/index.html | DÜŞÜK | **BACKLOG (A11Y)** | Mini UX fix |
@@ -171,10 +183,10 @@ Kalan işler **düşük öncelikli UX, hijyen ve backlog** kalemleridir.
 
 1. **Driver ARIA** mini UX fix (`driver/index.html` + `driver-script.js`)
 2. **Vehicle modal** `type="button"` semantik mini fix (`index.html` ~495-496)
-3. **`allowQueryToken` dead code cleanup** tasarımı (`core.php` hijyen)
-4. **Notification scope** legacy cleanup (`data.json` + save merge hijyeni)
-5. **`saveData` post-write verify** tasarımı (maliyet/fayda değerlendirmesi sonrası)
-6. **Windows atomic write** iyileştirmesi (yalnızca Windows dev sorun çıkarırsa)
+3. **Notification scope** kullanıcı legacy state migration planı
+4. **`saveData` post-write verify** tasarımı (maliyet/fayda değerlendirmesi sonrası)
+5. **Windows atomic write** iyileştirmesi (yalnızca Windows dev sorun çıkarırsa)
+6. **Repo geçmişi güvenlik operasyonu** (ayrı, koordineli ve yedekli P0 fazı)
 
 ---
 
@@ -201,8 +213,8 @@ Durum: PRODUCTION READY ✅
 - Vehicle modal butonlarına `type="button"` ekle
 
 ### Orta Vadeli (hijyen)
-- `allowQueryToken` ölü kodunu kaldır
-- Notification `scope:*` legacy kayıtlarını temizle
+- Notification kullanıcı legacy state migration planını ayrı tasarla
+- Eski `?token=` taleplerini reddeden güvenlik branch'ini koru
 
 ### Uzun Vadeli (opsiyonel)
 - `saveData` post-write verify (maliyet analizi sonrası)
@@ -212,6 +224,7 @@ Durum: PRODUCTION READY ✅
 ### DevOps
 - Production error logging
 - Backup rotasyonu
+- Runtime hassas veri invariantını preflight kapısı olarak koru
 - Security headers (CSP, X-Frame-Options, vb.)
 
 ---
@@ -219,11 +232,11 @@ Durum: PRODUCTION READY ✅
 ## 📞 İletişim & Sorular
 
 **İlk Rapor:** GitHub Copilot (22 Haziran 2026)
-**Doğrulama & Revizyon:** Kod incelemesi (22 Haziran 2026, `main` branch)
+**Doğrulama & Revizyon:** Kod incelemesi (12 Temmuz 2026, `main` branch)
 **Sistem:** Medisa Taşıt Yönetim Sistemi V3
 
 Herhangi bir sorun veya açıklama için repository'de issue açabilirsiniz.
 
 ---
 
-**Son Güncelleme:** 2026-06-22 (doğrulama revizyonu)
+**Son Güncelleme:** 2026-07-12 (runtime veri sınırı ve token davranışı revizyonu)
