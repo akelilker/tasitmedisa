@@ -2110,13 +2110,11 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
     border: 1px solid rgba(255, 255, 255, 0.25);
   }
   .driver-action-btn.saved,
-  .driver-action-btn.data-entered,
-  .driver-action-btn.warning:not(.warning-orange) {
+  .driver-action-btn.data-entered {
     border: 1px solid rgba(255, 255, 255, 0.25);
   }
   .driver-action-btn.saved:hover,
-  .driver-action-btn.data-entered:hover,
-  .driver-action-btn.warning:not(.warning-orange):hover {
+  .driver-action-btn.data-entered:hover {
     border-color: rgba(255, 255, 255, 0.5);
   }
   .driver-current-plaka { font-size: 14.5px; }
@@ -5971,12 +5969,25 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
         min-height: 38px !important;
         transition: border-color 0.2s, color 0.2s, background 0.2s, transform 0.2s !important;
     }
-    .dashboard-page .driver-action-area .driver-action-group > .driver-action-btn:hover {
+    .dashboard-page .driver-action-area .driver-action-group > .driver-action-btn:not(.warning):hover {
         transform: none;
         border-color: rgba(238, 246, 255, 0.72) !important;
         color: var(--txt-white, #fff) !important;
         box-shadow: 0 0 9px rgba(238, 246, 255, 0.16) !important;
         text-shadow: 0 0 5px rgba(238, 246, 255, 0.34) !important;
+    }
+    .dashboard-page .driver-action-area .driver-action-group > .driver-action-btn.warning:not(.warning-orange) {
+        color: var(--theme-color) !important;
+        border-color: var(--theme-color) !important;
+    }
+    .dashboard-page .driver-action-area .driver-action-group > .driver-action-btn.warning:not(.warning-orange):hover,
+    .dashboard-page .driver-action-area .driver-action-group > .driver-action-btn.warning:not(.warning-orange):focus-visible {
+        color: var(--theme-color) !important;
+        border-color: var(--theme-color) !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        text-shadow: none !important;
+        transform: scale(1.012) !important;
     }
     .dashboard-page .driver-action-area .universal-btn-save,
     .dashboard-page .driver-action-area .universal-btn-cancel {
