@@ -3827,6 +3827,8 @@
     };
   }
 
+  window.getKaportaPartNames = getKaportaPartNames;
+
   /**
    * Boya şemasını detay ekranında render et (readonly)
    */

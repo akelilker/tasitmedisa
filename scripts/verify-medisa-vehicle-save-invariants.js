@@ -13,8 +13,9 @@ const ROOT = path.join(__dirname, '..');
 
 const EXPECTED_DIRECT_DATAAPI_CALLERS = 0;
 const EXPECTED_KAYIT_JS = '20260712.3';
-const EXPECTED_SCRIPT_CORE_QUERY = '20260712.5';
-const EXPECTED_SW_CACHE = 'medisa-v2.230';
+const EXPECTED_TASITLAR_JS = '20260712.4';
+const EXPECTED_SCRIPT_CORE_QUERY = '20260712.6';
+const EXPECTED_SW_CACHE = 'medisa-v2.231';
 const SCRIPT_CORE_HTML_FILES = [
   'index.html',
   'driver/index.html',
@@ -1079,6 +1080,44 @@ function runStaticInvariants() {
 
   var sc = read('script-core.js');
   assert.match(sc, new RegExp("kayitJs:\\s*'" + EXPECTED_KAYIT_JS + "'"));
+  assert.match(sc, new RegExp("tasitlar:\\s*'" + EXPECTED_TASITLAR_JS + "'"));
+
+  var tasitlarJs = read('tasitlar.js');
+  assert.match(tasitlarJs, /function getVehicleTypeLabel\s*\(/);
+  assert.match(tasitlarJs, /window\.getVehicleTypeLabel\s*=\s*getVehicleTypeLabel/);
+  assert.match(tasitlarJs, /function getKaportaPartNames\s*\(/);
+  assert.match(tasitlarJs, /window\.getKaportaPartNames\s*=\s*getKaportaPartNames/);
+  [
+    "'otomobil': 'Otomobil'",
+    "'minivan': 'Küçük Ticari'",
+    "'kamyon': 'Büyük Ticari'",
+    "'romork': 'Römork'",
+  ].forEach(function(entry) {
+    assert.match(tasitlarJs, new RegExp(entry.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  });
+  [
+    "'on-tampon': 'Ön Tampon'",
+    "'arka-tampon': 'Arka Tampon'",
+    "'kaput': 'Kaput'",
+    "'bagaj': 'Bagaj Kapağı'",
+    "'sag-on-kapi': 'Sağ Ön Kapı'",
+    "'sol-on-kapi': 'Sol Ön Kapı'",
+    "'sag-arka-kapi': 'Sağ Arka Kapı'",
+    "'sol-arka-kapi': 'Sol Arka Kapı'",
+    "'sag-on-camurluk': 'Sağ Ön Çamurluk'",
+    "'sol-on-camurluk': 'Sol Ön Çamurluk'",
+    "'sag-arka-camurluk': 'Sağ Arka Çamurluk'",
+    "'sol-arka-camurluk': 'Sol Arka Çamurluk'",
+    "'tavan': 'Tavan'",
+  ].forEach(function(entry) {
+    assert.match(tasitlarJs, new RegExp(entry.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  });
+
+  var yaziciJs = read('tasitlar-yazici.js');
+  assert.match(yaziciJs, /typeof window\.getVehicleTypeLabel === 'function'/);
+  assert.match(yaziciJs, /typeof window\.getKaportaPartNames === 'function'/);
+  assert.doesNotMatch(yaziciJs, /'otomobil':\s*'Otomobil'/);
+  assert.doesNotMatch(yaziciJs, /'on-tampon':\s*'Ön Tampon'/);
 
   SCRIPT_CORE_HTML_FILES.forEach(function(rel) {
     var html = read(rel);
