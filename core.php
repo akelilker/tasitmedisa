@@ -1344,6 +1344,26 @@ function medisaSaveVehicleTypeKey($vehicle) {
     return strtolower(trim((string)($vehicle['vehicleType'] ?? $vehicle['tip'] ?? '')));
 }
 
+function medisaGetVehicleTypeRuleProfile($vehicleTypeRaw) {
+    $vehicleType = strtolower(trim((string)$vehicleTypeRaw));
+    if ($vehicleType === '') {
+        return 'otomobil';
+    }
+    if ($vehicleType === 'kamyon') {
+        return 'buyukTicari';
+    }
+    if ($vehicleType === 'romork') {
+        return 'buyukTicari';
+    }
+    if ($vehicleType === 'minivan') {
+        return 'minivan';
+    }
+    if ($vehicleType === 'otomobil') {
+        return 'otomobil';
+    }
+    return $vehicleType;
+}
+
 function medisaSaveVehicleNeedsK2($vehicle) {
     return in_array(medisaSaveVehicleTypeKey($vehicle), ['minivan', 'kamyon', 'romork'], true);
 }

@@ -13,15 +13,21 @@ const ROOT = path.join(__dirname, '..');
 
 const EXPECTED_DIRECT_DATAAPI_CALLERS = 0;
 const EXPECTED_KAYIT_JS = '20260712.3';
-const EXPECTED_TASITLAR_JS = '20260712.4';
+const EXPECTED_TASITLAR_JS = '20260712.5';
 const EXPECTED_AYARLAR_JS = '20260712.6';
-const EXPECTED_SCRIPT_CORE_QUERY = '20260712.7';
-const EXPECTED_SW_CACHE = 'medisa-v2.232';
+const EXPECTED_SCRIPT_CORE_QUERY = '20260712.8';
+const EXPECTED_VEHICLE_NOTIFICATION_DOMAIN = '20260712.1';
+const EXPECTED_DRIVER_SCRIPT_QUERY = '20260712.2';
+const EXPECTED_SW_CACHE = 'medisa-v2.233';
 const SCRIPT_CORE_HTML_FILES = [
   'index.html',
   'driver/index.html',
   'driver/dashboard.html',
   'admin/driver-report.html',
+];
+const DRIVER_HTML_FILES = [
+  'driver/index.html',
+  'driver/dashboard.html',
 ];
 
 let failed = 0;
@@ -1083,6 +1089,12 @@ function runStaticInvariants() {
   assert.match(sc, new RegExp("kayitJs:\\s*'" + EXPECTED_KAYIT_JS + "'"));
   assert.match(sc, new RegExp("tasitlar:\\s*'" + EXPECTED_TASITLAR_JS + "'"));
   assert.match(sc, new RegExp("ayarlarJs:\\s*'" + EXPECTED_AYARLAR_JS + "'"));
+  assert.match(sc, new RegExp("vehicleNotificationDomain:\\s*'" + EXPECTED_VEHICLE_NOTIFICATION_DOMAIN + "'"));
+  assert.match(sc, /'getVehicleTypeRuleProfile'/);
+
+  var domainJs = read('vehicle-notification-domain.js');
+  assert.match(domainJs, /function getVehicleTypeRuleProfile\s*\(/);
+  assert.match(domainJs, /'getVehicleTypeRuleProfile'/);
 
   var ayarlarJs = read('ayarlar.js');
   assert.match(ayarlarJs, /function zorunluEvrakVehicleNeedsK2\s*\(/);
@@ -1094,6 +1106,9 @@ function runStaticInvariants() {
   assert.doesNotMatch(driverDataPhp, /in_array\s*\(\s*\$vehicleType,\s*\[\s*'minivan',\s*'kamyon',\s*'romork'\s*\]/);
 
   var tasitlarJs = read('tasitlar.js');
+  assert.match(tasitlarJs, /function getVehicleTypeRuleProfile\s*\(/);
+  assert.match(tasitlarJs, /MedisaVehicleNotificationDomain\.getVehicleTypeRuleProfile/);
+  assert.match(tasitlarJs, /'getVehicleTypeRuleProfile'/);
   assert.match(tasitlarJs, /function getVehicleTypeLabel\s*\(/);
   assert.match(tasitlarJs, /window\.getVehicleTypeLabel\s*=\s*getVehicleTypeLabel/);
   assert.match(tasitlarJs, /function getKaportaPartNames\s*\(/);
@@ -1129,6 +1144,61 @@ function runStaticInvariants() {
   assert.match(yaziciJs, /typeof window\.getKaportaPartNames === 'function'/);
   assert.doesNotMatch(yaziciJs, /'otomobil':\s*'Otomobil'/);
   assert.doesNotMatch(yaziciJs, /'on-tampon':\s*'Ön Tampon'/);
+
+  var driverScriptJs = read('driver/driver-script.js');
+  assert.match(driverScriptJs, /function getVehicleTypeRuleProfileDriver\s*\(/);
+  assert.match(driverScriptJs, /MedisaVehicleNotificationDomain\.getVehicleTypeRuleProfile/);
+
+  var driverEventPhp = read('driver/driver_event.php');
+  assert.match(driverEventPhp, /medisaGetVehicleTypeRuleProfile\s*\(\s*\$vehicleType\s*\)/);
+  assert.doesNotMatch(driverEventPhp, /function getVehicleTypeRuleProfile\s*\(/);
+
+  var corePhp = read('core.php');
+  assert.match(corePhp, /function medisaGetVehicleTypeRuleProfile\s*\(/);
+
+  var domainSandbox = {
+    window: {
+      MedisaVehicleNotificationDomain: null,
+      appData: { ayarlar: {} },
+      checkDateWarnings: function() { return { class: '', days: null }; }
+    }
+  };
+  vm.createContext(domainSandbox);
+  vm.runInContext(domainJs, domainSandbox);
+  var getVehicleTypeRuleProfile = domainSandbox.window.MedisaVehicleNotificationDomain.getVehicleTypeRuleProfile;
+  assert.equal(typeof getVehicleTypeRuleProfile, 'function');
+  [
+    ['otomobil', 'otomobil'],
+    ['minivan', 'minivan'],
+    ['kamyon', 'buyukTicari'],
+    ['romork', 'buyukTicari'],
+    ['', 'otomobil'],
+    ['  KAMYON  ', 'buyukTicari'],
+    ['ozel_tip', 'ozel_tip'],
+  ].forEach(function(pair) {
+    assert.equal(getVehicleTypeRuleProfile(pair[0]), pair[1], 'JS profile for ' + JSON.stringify(pair[0]));
+  });
+
+  var execSync = require('node:child_process').execSync;
+  [
+    ['otomobil', 'otomobil'],
+    ['kamyon', 'buyukTicari'],
+    ['', 'otomobil'],
+    ['ozel_tip', 'ozel_tip'],
+  ].forEach(function(pair) {
+    var phpArg = pair[0].replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+    var phpOut = execSync(
+      "php -r \"require 'core.php'; echo medisaGetVehicleTypeRuleProfile('" + phpArg + "');\"",
+      { cwd: ROOT, encoding: 'utf8' }
+    ).trim();
+    assert.equal(phpOut, pair[1], 'PHP profile for ' + JSON.stringify(pair[0]));
+  });
+
+  DRIVER_HTML_FILES.forEach(function(rel) {
+    var html = read(rel);
+    assert.match(html, new RegExp('vehicle-notification-domain\\.js\\?v=' + EXPECTED_VEHICLE_NOTIFICATION_DOMAIN));
+    assert.match(html, new RegExp('driver-script\\.js\\?v=' + EXPECTED_DRIVER_SCRIPT_QUERY));
+  });
 
   SCRIPT_CORE_HTML_FILES.forEach(function(rel) {
     var html = read(rel);

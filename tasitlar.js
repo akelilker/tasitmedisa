@@ -20,7 +20,8 @@
     'getK2BelgesiExpiryDate',
     'isVehicleOperationallyInactive',
     'getEgzozMuayeneState',
-    'isEgzozMuayeneCritical'
+    'isEgzozMuayeneCritical',
+    'getVehicleTypeRuleProfile'
   ];
   for (var vehicleDomainApiIndex = 0; vehicleDomainApiIndex < requiredVehicleDomainApi.length; vehicleDomainApiIndex++) {
     var vehicleDomainApiKey = requiredVehicleDomainApi[vehicleDomainApiIndex];
@@ -3228,13 +3229,7 @@
   function checkDateWarnings(dateString) { return (typeof window.checkDateWarnings === 'function' ? window.checkDateWarnings(dateString) : { class: '', days: null }); }
 
   function getVehicleTypeRuleProfile(tasitTipi) {
-    var rawType = tasitTipi != null ? String(tasitTipi).trim().toLowerCase() : '';
-    if (!rawType) return 'otomobil';
-    if (rawType === 'kamyon') return 'buyukTicari';
-    if (rawType === 'romork') return 'buyukTicari';
-    if (rawType === 'minivan') return 'minivan';
-    if (rawType === 'otomobil') return 'otomobil';
-    return rawType;
+    return window.MedisaVehicleNotificationDomain.getVehicleTypeRuleProfile(tasitTipi);
   }
 
   function getK2BelgesiDocumentPath() {

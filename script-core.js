@@ -1098,7 +1098,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Lazy modül asset sürümleri — tek nesne; index.html içindeki style-core ?v= ile tasitlar sürümü uyumlu kalmalı
 var MEDISA_MODULE_VERSIONS = {
-  tasitlar: '20260712.4',
+  tasitlar: '20260712.5',
   notifications: '20260712.3',
   raporlar: '20260712.1',
   kayitJs: '20260712.3',
@@ -1106,7 +1106,7 @@ var MEDISA_MODULE_VERSIONS = {
   ayarlarJs: '20260712.6',
   ayarlarCss: '20260623.6',
   tasitlarYazici: '20260517.5',
-  vehicleNotificationDomain: '20260703.1'
+  vehicleNotificationDomain: '20260712.1'
 };
 window.MEDISA_MODULE_VERSIONS = MEDISA_MODULE_VERSIONS;
 
@@ -1248,7 +1248,8 @@ var MEDISA_VEHICLE_NOTIFICATION_DOMAIN_KEYS = [
   'getK2BelgesiExpiryDate',
   'isVehicleOperationallyInactive',
   'getEgzozMuayeneState',
-  'isEgzozMuayeneCritical'
+  'isEgzozMuayeneCritical',
+  'getVehicleTypeRuleProfile'
 ];
 
 function isMedisaVehicleNotificationDomainValid(namespace) {
