@@ -14,8 +14,9 @@ const ROOT = path.join(__dirname, '..');
 const EXPECTED_DIRECT_DATAAPI_CALLERS = 0;
 const EXPECTED_KAYIT_JS = '20260712.3';
 const EXPECTED_TASITLAR_JS = '20260712.4';
-const EXPECTED_SCRIPT_CORE_QUERY = '20260712.6';
-const EXPECTED_SW_CACHE = 'medisa-v2.231';
+const EXPECTED_AYARLAR_JS = '20260712.6';
+const EXPECTED_SCRIPT_CORE_QUERY = '20260712.7';
+const EXPECTED_SW_CACHE = 'medisa-v2.232';
 const SCRIPT_CORE_HTML_FILES = [
   'index.html',
   'driver/index.html',
@@ -1081,6 +1082,16 @@ function runStaticInvariants() {
   var sc = read('script-core.js');
   assert.match(sc, new RegExp("kayitJs:\\s*'" + EXPECTED_KAYIT_JS + "'"));
   assert.match(sc, new RegExp("tasitlar:\\s*'" + EXPECTED_TASITLAR_JS + "'"));
+  assert.match(sc, new RegExp("ayarlarJs:\\s*'" + EXPECTED_AYARLAR_JS + "'"));
+
+  var ayarlarJs = read('ayarlar.js');
+  assert.match(ayarlarJs, /function zorunluEvrakVehicleNeedsK2\s*\(/);
+  assert.match(ayarlarJs, /MedisaVehicleNotificationDomain\.vehicleNeedsK2Belgesi/);
+
+  var driverDataPhp = read('driver/driver_data.php');
+  assert.match(driverDataPhp, /medisaSaveVehicleNeedsK2\s*\(\s*\$tasit\s*\)/);
+  assert.match(driverDataPhp, /medisaSaveVehicleNeedsTakograf\s*\(\s*\$tasit\s*\)/);
+  assert.doesNotMatch(driverDataPhp, /in_array\s*\(\s*\$vehicleType,\s*\[\s*'minivan',\s*'kamyon',\s*'romork'\s*\]/);
 
   var tasitlarJs = read('tasitlar.js');
   assert.match(tasitlarJs, /function getVehicleTypeLabel\s*\(/);
