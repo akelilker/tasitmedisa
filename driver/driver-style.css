@@ -4516,8 +4516,7 @@ body.dashboard-page.driver-history-vehicle-dropdown-open #history-modal .history
 }
 
 .login-page #app-footer.login-footer.dimmed .status,
-.login-page #app-footer.login-footer.dimmed .status.status-ready,
-.login-page #app-footer.login-footer.dimmed .status.status-error {
+.login-page #app-footer.login-footer.dimmed .status.status-ready {
   opacity: 1 !important;
 }
 
@@ -4531,8 +4530,7 @@ body.dashboard-page.driver-history-vehicle-dropdown-open #history-modal .history
 }
 
 .login-page #app-footer.login-footer.dimmed.delayed .status,
-.login-page #app-footer.login-footer.dimmed.delayed .status.status-ready,
-.login-page #app-footer.login-footer.dimmed.delayed .status.status-error {
+.login-page #app-footer.login-footer.dimmed.delayed .status.status-ready {
   opacity: 0.3 !important;
 }
 
@@ -5060,9 +5058,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   body.dashboard-page:has(#history-modal.driver-modal.show) #app-footer .status,
   body.dashboard-page:has(#edit-request-modal.driver-modal.show) #app-footer .status,
   body.dashboard-page:has(#history-modal.driver-modal.show) #app-footer .status.status-ready,
-  body.dashboard-page:has(#edit-request-modal.driver-modal.show) #app-footer .status.status-ready,
-  body.dashboard-page:has(#history-modal.driver-modal.show) #app-footer .status.status-error,
-  body.dashboard-page:has(#edit-request-modal.driver-modal.show) #app-footer .status.status-error {
+  body.dashboard-page:has(#edit-request-modal.driver-modal.show) #app-footer .status.status-ready {
     opacity: 0.3 !important;
   }
   body.dashboard-page:has(#history-modal.driver-modal.show) #app-footer .brand img,
@@ -5074,8 +5070,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     body.dashboard-page.driver-history-or-edit-modal-open #app-footer .version,
     body.dashboard-page.driver-history-or-edit-modal-open #app-footer .version#version-display,
     body.dashboard-page.driver-history-or-edit-modal-open #app-footer .status,
-    body.dashboard-page.driver-history-or-edit-modal-open #app-footer .status.status-ready,
-    body.dashboard-page.driver-history-or-edit-modal-open #app-footer .status.status-error {
+    body.dashboard-page.driver-history-or-edit-modal-open #app-footer .status.status-ready {
       opacity: 0.3 !important;
     }
     body.dashboard-page.driver-history-or-edit-modal-open #app-footer .brand img {
