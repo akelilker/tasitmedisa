@@ -71,6 +71,59 @@ function medisaDefaultData() {
     ];
 }
 
+/** Aylık KM kayıtlarında dolu değer kontrolünün canonical owner'ı. */
+function medisaHasKmValue($record) {
+    if (!is_array($record)) return false;
+    if (!array_key_exists('guncel_km', $record)) return false;
+    $value = $record['guncel_km'];
+    if ($value === null) return false;
+    return trim((string)$value) !== '';
+}
+
+/** Seçilen dönemden sonra KM kaydı bulunup bulunmadığını mevcut string dönem sırasıyla hesaplar. */
+function medisaHasFutureKmPeriod($kmPeriods, $period) {
+    if (!is_array($kmPeriods) || empty($kmPeriods)) return false;
+    foreach ($kmPeriods as $candidatePeriod) {
+        if (strcmp((string)$candidatePeriod, (string)$period) > 0) {
+            return true;
+        }
+    }
+    return false;
+}
+
+/** Admin raporu, CSV export ve sürücü panelinin ortak KM durum motoru. */
+function medisaComputeKmState($selectedPeriod, $currentPeriod, $dayOfMonth, $hasKmForPeriod, $hasFutureKmRecord, $hasReliableHistory, $hasBaseKm) {
+    $selectedPeriod = (string)$selectedPeriod;
+    $currentPeriod = (string)$currentPeriod;
+    $isFuturePeriod = strcmp($selectedPeriod, $currentPeriod) > 0;
+    $isPastPeriod = strcmp($selectedPeriod, $currentPeriod) < 0;
+    $isCurrentPeriod = !$isFuturePeriod && !$isPastPeriod;
+
+    if ($isFuturePeriod) {
+        return ['state' => 'OK', 'reason' => 'future_period_no_warning', 'is_current_period' => false, 'is_past_period' => false, 'is_future_period' => true];
+    }
+    if (!$hasReliableHistory && !$hasBaseKm) {
+        return ['state' => 'FIRST_ENTRY_REQUIRED', 'reason' => 'no_reliable_history_and_no_base_km', 'is_current_period' => $isCurrentPeriod, 'is_past_period' => $isPastPeriod, 'is_future_period' => false];
+    }
+    if ($hasKmForPeriod) {
+        return ['state' => 'OK', 'reason' => 'period_km_exists', 'is_current_period' => $isCurrentPeriod, 'is_past_period' => $isPastPeriod, 'is_future_period' => false];
+    }
+    if ($isPastPeriod) {
+        if ($hasFutureKmRecord) {
+            return ['state' => 'TELAFI_CLOSED', 'reason' => 'past_period_closed_by_future_km', 'is_current_period' => false, 'is_past_period' => true, 'is_future_period' => false];
+        }
+        return ['state' => 'MONTHLY_UPDATE_DUE_HARD', 'reason' => 'past_period_unclosed_missing_km', 'is_current_period' => false, 'is_past_period' => true, 'is_future_period' => false];
+    }
+    if ($isCurrentPeriod) {
+        if ((int)$dayOfMonth <= 2) {
+            return ['state' => 'MONTHLY_UPDATE_DUE_SOFT', 'reason' => 'current_period_day_1_2_missing_km', 'is_current_period' => true, 'is_past_period' => false, 'is_future_period' => false];
+        }
+        return ['state' => 'MONTHLY_UPDATE_DUE_HARD', 'reason' => 'current_period_day_3_plus_missing_km', 'is_current_period' => true, 'is_past_period' => false, 'is_future_period' => false];
+    }
+
+    return ['state' => 'OK', 'reason' => 'default_ok', 'is_current_period' => false, 'is_past_period' => false, 'is_future_period' => false];
+}
+
 /**
  * Mevcut data.json dosyasını yedekler (data.json.backup + data/backups/snapshot-*.json).
  * Tüm sunucu yazımları saveData() üzerinden geçtiği için tek merkezden çalışır.
@@ -703,18 +756,6 @@ function medisaContextHasPermission($context, $permission) {
         && !empty($context['permissions'][$permission]);
 }
 
-function medisaContextCanAccessMainApp($context) {
-    return medisaContextHasPermission($context, 'view_main_app');
-}
-
-function medisaContextCanViewReports($context) {
-    return medisaContextHasPermission($context, 'view_reports');
-}
-
-function medisaContextCanManageGlobalData($context) {
-    return medisaContextHasPermission($context, 'manage_data');
-}
-
 function medisaBuildSessionPayload($context) {
     $user = $context['user'] ?? null;
     return [
@@ -817,19 +858,6 @@ function medisaUserBranchesWithinScope($user, $allowedBranchIds) {
     }
 
     return true;
-}
-
-function medisaCanViewBranchRecord($branch, $context) {
-    $role = $context['role'] ?? 'kullanici';
-    if ($role === 'genel_yonetici') {
-        return true;
-    }
-
-    if (!is_array($branch) || !isset($branch['id'])) {
-        return false;
-    }
-
-    return medisaArrayHasId($context['branch_ids'] ?? [], $branch['id']);
 }
 
 function medisaCanViewVehicleRecord($vehicle, $context) {
@@ -1540,10 +1568,6 @@ function medisaResolveVehicleDocumentFilePath($vehicle, string $documentType, $d
     }
 
     return null;
-}
-
-function medisaResolveVehicleRuhsatFilePath($vehicle) {
-    return medisaResolveVehicleDocumentFilePath($vehicle, 'ruhsat');
 }
 
 /** Kısa ömürlü belge görüntüleme token süresi (saniye). */

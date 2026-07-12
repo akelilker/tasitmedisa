@@ -2574,8 +2574,6 @@
         }
     };
 
-    function formatDateForDisplay(dateStr) { return !dateStr ? '' : (typeof window.formatDateShort === 'function' ? window.formatDateShort(dateStr) : formatDate(dateStr)); }
-
     // Global Event Listeners (ESC ve Overlay click)
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {

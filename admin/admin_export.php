@@ -21,68 +21,6 @@ function titleCaseTr($str) {
     return implode(' ', $result);
 }
 
-if (!function_exists('medisaComparePeriod')) {
-    function medisaComparePeriod($left, $right) {
-        return strcmp((string)$left, (string)$right);
-    }
-}
-
-if (!function_exists('medisaHasKmValue')) {
-    function medisaHasKmValue($record) {
-        if (!is_array($record)) return false;
-        if (!array_key_exists('guncel_km', $record)) return false;
-        $value = $record['guncel_km'];
-        if ($value === null) return false;
-        return trim((string)$value) !== '';
-    }
-}
-
-if (!function_exists('medisaHasFutureKmPeriod')) {
-    function medisaHasFutureKmPeriod($kmPeriods, $period) {
-        if (!is_array($kmPeriods) || empty($kmPeriods)) return false;
-        foreach ($kmPeriods as $p) {
-            if (strcmp((string)$p, (string)$period) > 0) {
-                return true;
-            }
-        }
-        return false;
-    }
-}
-
-if (!function_exists('medisaComputeKmState')) {
-    function medisaComputeKmState($selectedPeriod, $currentPeriod, $dayOfMonth, $hasKmForPeriod, $hasFutureKmRecord, $hasReliableHistory, $hasBaseKm) {
-        $selectedPeriod = (string)$selectedPeriod;
-        $currentPeriod = (string)$currentPeriod;
-        $isFuturePeriod = medisaComparePeriod($selectedPeriod, $currentPeriod) > 0;
-        $isPastPeriod = medisaComparePeriod($selectedPeriod, $currentPeriod) < 0;
-        $isCurrentPeriod = !$isFuturePeriod && !$isPastPeriod;
-
-        if ($isFuturePeriod) {
-            return ['state' => 'OK'];
-        }
-        if (!$hasReliableHistory && !$hasBaseKm) {
-            return ['state' => 'FIRST_ENTRY_REQUIRED'];
-        }
-        if ($hasKmForPeriod) {
-            return ['state' => 'OK'];
-        }
-        if ($isPastPeriod) {
-            if ($hasFutureKmRecord) {
-                return ['state' => 'TELAFI_CLOSED'];
-            }
-            return ['state' => 'MONTHLY_UPDATE_DUE_HARD'];
-        }
-        if ($isCurrentPeriod) {
-            if ((int)$dayOfMonth <= 2) {
-                return ['state' => 'MONTHLY_UPDATE_DUE_SOFT'];
-            }
-            return ['state' => 'MONTHLY_UPDATE_DUE_HARD'];
-        }
-
-        return ['state' => 'OK'];
-    }
-}
-
 $period = $_GET['period'] ?? date('Y-m');
 if (!preg_match('/^\d{4}-\d{2}$/', $period)) {
     $period = date('Y-m');
