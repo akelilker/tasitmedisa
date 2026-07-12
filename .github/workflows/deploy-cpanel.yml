@@ -51,6 +51,9 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
+      - name: Runtime hassas veri siniri
+        run: npm run tool:verify-sensitive-data
+
       - name: Secrets kontrolü (boşsa FTP sunucu köküne yazar; canlıda değişiklik görünmez)
         shell: bash
         env:

@@ -8,6 +8,7 @@
   "scripts": {
     "tool:verify-roles": "node scripts/verify-medisa-role-invariants.js",
     "tool:verify-vehicle-save": "node scripts/verify-medisa-vehicle-save-invariants.js",
+    "tool:verify-sensitive-data": "node scripts/verify-medisa-sensitive-data.js",
     "tool:import-gpt-xlsx": "node scripts/import_gpt_xlsx.mjs",
     "tool:build-deploy-zip": "powershell -ExecutionPolicy Bypass -File scripts/build-deploy-zip.ps1"
   },

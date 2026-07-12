@@ -21,6 +21,7 @@ tmp/
 tmp_doc_review/
 
 # Runtime-only data and caches
+data/data.json
 data/.medisa_*
 data/backups/
 data/*.backup
@@ -39,8 +40,7 @@ data/tasit_karti_preview/
 data/takograf/
 data/takograf_preview/
 
-# Keep canonical seed/runtime files that are intentionally versioned
-!data/data.json
+# Keep canonical non-sensitive data files that are intentionally versioned
 !data/kasko-deger-listesi.json
 
 # Patch / merge leftovers

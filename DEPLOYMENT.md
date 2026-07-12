@@ -12,7 +12,8 @@ Desteklenen iki ana deploy yolu vardır:
 ## Runtime `data/` klasörü ve deploy politikası
 
 - GitHub FTP deploy **`data/**` göndermez**. Canlı **`data/data.json`** bu yolla **ezilmez**; sunucudaki dosya korunur.
-- **`data/data.json` runtime veridir** — lokal smoke, login veya canlı test kayıtları **commitlenmemelidir**.
+- **`data/data.json` runtime veridir** — Git tarafından takip edilmez; lokal smoke, login veya canlı test kayıtları **commitlenmemelidir**.
+- **`data/data.example.json` yalnızca boş şema örneğidir**; uygulama tarafından runtime veri kaynağı olarak otomatik kullanılmaz.
 - Sunucuda **`data/`** uygulama kökü altında bulunmalı ve PHP tarafından **yazılabilir** olmalıdır.
 - Upload, preview, backup ve ilk `save` işlemleri `data/` yazma iznine bağlıdır.
 - Belge upload (`upload_ruhsat.php`), PDF preview (`ruhsat_preview.php`) ve snapshot (`core.php` → `data/backups/`) alt klasörlerini ilk kullanımda oluşturabilir.
