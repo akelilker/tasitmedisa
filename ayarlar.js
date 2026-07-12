@@ -472,6 +472,10 @@
     }
 
     function zorunluEvrakVehicleNeedsK2(vehicle) {
+      if (window.MedisaVehicleNotificationDomain
+        && typeof window.MedisaVehicleNotificationDomain.vehicleNeedsK2Belgesi === 'function') {
+        return window.MedisaVehicleNotificationDomain.vehicleNeedsK2Belgesi(vehicle);
+      }
       const typeKey = String((vehicle && (vehicle.vehicleType || vehicle.tip)) || '').trim().toLowerCase();
       return typeKey === 'minivan' || typeKey === 'kamyon' || typeKey === 'romork';
     }
