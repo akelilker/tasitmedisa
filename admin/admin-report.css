@@ -1500,8 +1500,7 @@ body.admin-report-page .main-header-user-name.is-empty {
 }
 
 .admin-footer.dimmed .status,
-.admin-footer.dimmed .status.status-ready,
-.admin-footer.dimmed .status.status-error {
+.admin-footer.dimmed .status.status-ready {
   opacity: 1 !important;
 }
 
@@ -1515,8 +1514,7 @@ body.admin-report-page .main-header-user-name.is-empty {
 }
 
 .admin-footer.dimmed.delayed .status,
-.admin-footer.dimmed.delayed .status.status-ready,
-.admin-footer.dimmed.delayed .status.status-error {
+.admin-footer.dimmed.delayed .status.status-ready {
   opacity: 0.3 !important;
 }
 
