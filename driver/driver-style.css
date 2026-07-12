@@ -1768,6 +1768,7 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
 /* İzole Edilmiş Tarih / KM Uyarı Renkleri ve Sızıntı Engeli — sadece değer renklenir */
 .driver-info-item.driver-warn-red .value {
   color: var(--theme-color) !important;
+  font-weight: 600;
 }
 .driver-info-item .value .driver-info-missing-value {
   color: var(--theme-color, #e00000);
