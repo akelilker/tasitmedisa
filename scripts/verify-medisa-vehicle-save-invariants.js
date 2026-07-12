@@ -13,12 +13,12 @@ const ROOT = path.join(__dirname, '..');
 
 const EXPECTED_DIRECT_DATAAPI_CALLERS = 0;
 const EXPECTED_KAYIT_JS = '20260712.3';
-const EXPECTED_TASITLAR_JS = '20260712.5';
+const EXPECTED_TASITLAR_JS = '20260712.6';
 const EXPECTED_AYARLAR_JS = '20260712.6';
-const EXPECTED_SCRIPT_CORE_QUERY = '20260712.8';
+const EXPECTED_SCRIPT_CORE_QUERY = '20260712.9';
 const EXPECTED_VEHICLE_NOTIFICATION_DOMAIN = '20260712.1';
 const EXPECTED_DRIVER_SCRIPT_QUERY = '20260712.2';
-const EXPECTED_SW_CACHE = 'medisa-v2.233';
+const EXPECTED_SW_CACHE = 'medisa-v2.234';
 const SCRIPT_CORE_HTML_FILES = [
   'index.html',
   'driver/index.html',
@@ -1106,6 +1106,15 @@ function runStaticInvariants() {
   assert.doesNotMatch(driverDataPhp, /in_array\s*\(\s*\$vehicleType,\s*\[\s*'minivan',\s*'kamyon',\s*'romork'\s*\]/);
 
   var tasitlarJs = read('tasitlar.js');
+  var tasitlarInternalVersionMatch = tasitlarJs.match(/MEDISA_TASITLAR_MODULE_VERSION\s*=\s*'([^']+)'/);
+  assert.ok(tasitlarInternalVersionMatch, 'MEDISA_TASITLAR_MODULE_VERSION not found in tasitlar.js');
+  assert.equal(
+    tasitlarInternalVersionMatch[1],
+    EXPECTED_TASITLAR_JS,
+    'tasitlar.js internal module version must match MEDISA_MODULE_VERSIONS.tasitlar'
+  );
+  assert.match(tasitlarJs, /window\.__medisaTasitlarModuleVersion\s*=\s*MEDISA_TASITLAR_MODULE_VERSION/);
+  assert.match(tasitlarJs, /window\.__medisaTasitlarModuleReady\s*=\s*true/);
   assert.match(tasitlarJs, /function getVehicleTypeRuleProfile\s*\(/);
   assert.match(tasitlarJs, /MedisaVehicleNotificationDomain\.getVehicleTypeRuleProfile/);
   assert.match(tasitlarJs, /'getVehicleTypeRuleProfile'/);
