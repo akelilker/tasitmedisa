@@ -1,7 +1,7 @@
 // Service Worker - Medisa Taşıt Yönetim Sistemi
 // Version 2.15 - Güvenli offline okuma kabuğu
 
-const CACHE_VERSION = 'medisa-v2.226';
+const CACHE_VERSION = 'medisa-v2.227';
 // Raporlar modülü (raporlar.js / raporlar.css): ana shell cache'inden ayrı; MEDISA_MODULE_VERSIONS.raporlar ile senkron tut
 const CACHE_RAPORLAR_VERSION = 'medisa-raporlar-20260712.1';
 
@@ -171,33 +171,5 @@ self.addEventListener('fetch', (event) => {
           })
           .then((res) => res || new Response('Not in cache', { status: 503 }));
       })
-  );
-});
-
-// Push Notifications
-self.addEventListener('push', (event) => {
-  const data = event.data ? event.data.json() : {};
-  const title = data.title || 'Medisa Taşıt';
-  const base = getBase();
-  const defaultUrl = base ? base + '/' : '/';
-  const options = {
-    body: data.body || 'Yeni Bildirim',
-    icon: base + '/icon/logo-header2.svg',
-    badge: base + '/icon/logo-header2.svg',
-    data: data.url || defaultUrl
-  };
-  
-  event.waitUntil(
-    self.registration.showNotification(title, options)
-  );
-});
-
-// Notification click
-self.addEventListener('notificationclick', (event) => {
-  event.notification.close();
-  const base = getBase();
-  const defaultUrl = base ? base + '/' : '/';
-  event.waitUntil(
-    clients.openWindow(event.notification.data || defaultUrl)
   );
 });
