@@ -1258,10 +1258,6 @@
     var assignedVehicles = [];
     var relatedVehicleMap = {};
 
-    function parseLocalizedNumber(value) {
-      return parseFloat(String(value == null ? '' : value).replace(/\./g, '').replace(/,/g, '.')) || 0;
-    }
-
     function findVehicleById(vehicleId) {
       return tasitlar.find(function(tasit) {
         return String((tasit && tasit.id) || '') === String(vehicleId || '');
@@ -1312,10 +1308,10 @@
         var type = String(event.type || '').toLowerCase();
         if (type === 'ceza') {
           cezaCount++;
-          cezaTutar += parseLocalizedNumber((event.data && event.data.tutar) || event.tutar || '0');
+          cezaTutar += parseLocalizedNumberValue((event.data && event.data.tutar) || event.tutar || '0');
         } else if (type === 'kaza') {
           kazaCount++;
-          kazaTutar += parseLocalizedNumber((event.data && event.data.hasarTutari) || event.tutar || '0');
+          kazaTutar += parseLocalizedNumberValue((event.data && event.data.hasarTutari) || event.tutar || '0');
         } else if (type === 'bakim') {
           bakimCount++;
         }
@@ -1491,19 +1487,15 @@
     var eventData = event && event.data ? event.data : {};
     var type = String((event && event.type) || '').toLowerCase();
 
-    function parseLocalizedNumber(value) {
-      return parseFloat(String(value == null ? '' : value).replace(/\./g, '').replace(/,/g, '.')) || 0;
-    }
-
     if (type === 'ceza') {
-      var cezaAmount = parseLocalizedNumber(eventData.tutar || event.tutar || 0);
+      var cezaAmount = parseLocalizedNumberValue(eventData.tutar || event.tutar || 0);
       var cezaTutar = cezaAmount > 0 ? (formatMoney(cezaAmount) + ' TL') : '-';
       var cezaDetay = toTitleCase(eventData.aciklama || event.aciklama || 'Açıklama yok');
       return 'Tutar: ' + cezaTutar + ' | Açıklama: ' + cezaDetay;
     }
 
     if (type === 'kaza') {
-      var hasarAmount = parseLocalizedNumber(eventData.hasarTutari || event.tutar || 0);
+      var hasarAmount = parseLocalizedNumberValue(eventData.hasarTutari || event.tutar || 0);
       var hasarTutar = hasarAmount > 0 ? (formatMoney(hasarAmount) + ' TL') : '-';
       var kazaDetay = toTitleCase(eventData.aciklama || event.aciklama || 'Açıklama yok');
       return 'Hasar: ' + hasarTutar + ' | Açıklama: ' + kazaDetay;
