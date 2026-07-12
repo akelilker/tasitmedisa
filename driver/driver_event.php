@@ -18,22 +18,12 @@ function addYears($dateStr, $years) {
     return $dt->format('Y-m-d');
 }
 
-function getVehicleTypeRuleProfile($vehicleTypeRaw) {
-    $vehicleType = strtolower(trim((string)$vehicleTypeRaw));
-    if ($vehicleType === '') return 'otomobil';
-    if ($vehicleType === 'kamyon') return 'buyukTicari';
-    if ($vehicleType === 'romork') return 'buyukTicari';
-    if ($vehicleType === 'minivan') return 'minivan';
-    if ($vehicleType === 'otomobil') return 'otomobil';
-    return $vehicleType;
-}
-
 function calculateNextMuayene($vehicle, $muayeneDateStr) {
     // Muayene ve egzos yaptırılan tarihlerinden bitiş hesaplamasında aynı periyot kuralları kullanılır (driver_event.php ↔ tasitlar.js senkron).
     if (!$muayeneDateStr) return '';
 
     $vehicleType = (string)($vehicle['vehicleType'] ?? $vehicle['tip'] ?? 'otomobil');
-    $profile = getVehicleTypeRuleProfile($vehicleType);
+    $profile = medisaGetVehicleTypeRuleProfile($vehicleType);
     $yearsToAdd = $profile === 'otomobil' ? 2 : 1;
 
     return addYears($muayeneDateStr, $yearsToAdd);

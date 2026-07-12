@@ -6,7 +6,8 @@
     'getK2BelgesiExpiryDate',
     'isVehicleOperationallyInactive',
     'getEgzozMuayeneState',
-    'isEgzozMuayeneCritical'
+    'isEgzozMuayeneCritical',
+    'getVehicleTypeRuleProfile'
   ];
 
   function isValidNamespace(namespace) {
@@ -115,6 +116,16 @@
     return egzozState.warningClass === 'date-warning-red';
   }
 
+  function getVehicleTypeRuleProfile(rawType) {
+    var normalized = rawType != null ? String(rawType).trim().toLowerCase() : '';
+    if (!normalized) return 'otomobil';
+    if (normalized === 'kamyon') return 'buyukTicari';
+    if (normalized === 'romork') return 'buyukTicari';
+    if (normalized === 'minivan') return 'minivan';
+    if (normalized === 'otomobil') return 'otomobil';
+    return normalized;
+  }
+
   window.MedisaVehicleNotificationDomain = {
     vehicleNeedsK2Belgesi: vehicleNeedsK2Belgesi,
     vehicleNeedsTakograf: vehicleNeedsTakograf,
@@ -122,6 +133,7 @@
     getK2BelgesiExpiryDate: getK2BelgesiExpiryDate,
     isVehicleOperationallyInactive: isVehicleOperationallyInactive,
     getEgzozMuayeneState: getEgzozMuayeneState,
-    isEgzozMuayeneCritical: isEgzozMuayeneCritical
+    isEgzozMuayeneCritical: isEgzozMuayeneCritical,
+    getVehicleTypeRuleProfile: getVehicleTypeRuleProfile
   };
 })();

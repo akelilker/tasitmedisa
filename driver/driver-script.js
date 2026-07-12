@@ -456,6 +456,10 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
   }
 
   function getVehicleTypeRuleProfileDriver(tasitTipi) {
+    if (window.MedisaVehicleNotificationDomain
+      && typeof window.MedisaVehicleNotificationDomain.getVehicleTypeRuleProfile === 'function') {
+      return window.MedisaVehicleNotificationDomain.getVehicleTypeRuleProfile(tasitTipi);
+    }
     var rawType = tasitTipi != null ? String(tasitTipi).trim().toLowerCase() : '';
     if (!rawType) return 'otomobil';
     if (rawType === 'kamyon') return 'buyukTicari';
