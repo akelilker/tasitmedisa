@@ -19,6 +19,105 @@ const EXPECTED_SCRIPT_CORE_QUERY = '20260712.9';
 const EXPECTED_VEHICLE_NOTIFICATION_DOMAIN = '20260712.1';
 const EXPECTED_DRIVER_SCRIPT_QUERY = '20260712.2';
 const EXPECTED_SW_CACHE = 'medisa-v2.234';
+const EXPECTED_NOTIFICATIONS = '20260712.3';
+const EXPECTED_RAPORLAR = '20260712.1';
+const EXPECTED_KAYIT_CSS = '20260708.1';
+const EXPECTED_AYARLAR_CSS = '20260623.6';
+const EXPECTED_TASITLAR_YAZICI = '20260517.5';
+
+const EXPECTED_REGISTRY_VERSIONS = {
+  tasitlar: EXPECTED_TASITLAR_JS,
+  notifications: EXPECTED_NOTIFICATIONS,
+  raporlar: EXPECTED_RAPORLAR,
+  kayitJs: EXPECTED_KAYIT_JS,
+  kayitCss: EXPECTED_KAYIT_CSS,
+  ayarlarJs: EXPECTED_AYARLAR_JS,
+  ayarlarCss: EXPECTED_AYARLAR_CSS,
+  tasitlarYazici: EXPECTED_TASITLAR_YAZICI,
+  vehicleNotificationDomain: EXPECTED_VEHICLE_NOTIFICATION_DOMAIN,
+};
+
+/** Modüller: internal/registry/loader üçlü parity veya registry-türevli sürüm sözleşmesi. */
+const MODULE_VERSION_CONTRACTS = [
+  {
+    name: 'tasitlar',
+    registryKey: 'tasitlar',
+    file: 'tasitlar.js',
+    contractKind: 'FULL_VERSION_CONTRACT',
+    internalPattern: /MEDISA_TASITLAR_MODULE_VERSION\s*=\s*'([^']+)'/,
+    versionPublishPattern: /window\.__medisaTasitlarModuleVersion\s*=\s*MEDISA_TASITLAR_MODULE_VERSION/,
+    readyInitPattern: /window\.__medisaTasitlarModuleReady\s*=\s*false/,
+    readyPublishPattern: /window\.__medisaTasitlarModuleReady\s*=\s*true/,
+    loaderVersionCheck: /__medisaTasitlarModuleVersion === V\.tasitlar/,
+    loaderStaleInvalidate: /__medisaTasitlarModuleReady === true && window\.__medisaTasitlarModuleVersion !== V\.tasitlar/,
+    loaderAsset: 'tasitlar.js',
+  },
+  {
+    name: 'kayit',
+    registryKey: 'kayitJs',
+    file: 'kayit.js',
+    contractKind: 'REGISTRY_DERIVED_VERSION',
+    versionPublishPattern: /window\.__medisaKayitModuleVersion\s*=\s*\(window\.MEDISA_MODULE_VERSIONS && window\.MEDISA_MODULE_VERSIONS\.kayitJs\)/,
+    readyPublishPattern: /window\.__medisaKayitModuleReady\s*=\s*true/,
+    loaderVersionCheck: /__medisaKayitModuleVersion === V\.kayitJs/,
+    loaderStaleInvalidate: /__medisaKayitModuleReady === true && window\.__medisaKayitModuleVersion !== V\.kayitJs/,
+    loaderAsset: 'kayit.js',
+  },
+];
+
+/** Sürüm karşılaştırması olmayan modüller: ready flag / API / doğrudan script sözleşmesi. */
+const MODULE_BOOT_CONTRACTS = [
+  {
+    name: 'notifications',
+    registryKey: 'notifications',
+    file: 'notifications.js',
+    contractKind: 'READY_FLAG_ONLY',
+    readyInitPattern: /window\.__medisaNotificationsModuleReady\s*=\s*false/,
+    readyPublishPattern: /window\.__medisaNotificationsModuleReady\s*=\s*true/,
+    loaderReadyCheck: /__medisaNotificationsModuleReady === true/,
+    loaderAsset: 'notifications.js',
+    loaderNoVersionCheck: true,
+  },
+  {
+    name: 'raporlar',
+    registryKey: 'raporlar',
+    file: 'raporlar.js',
+    contractKind: 'FUNCTION_API_ONLY',
+    moduleApiPattern: /window\.openReportsView\s*=\s*function/,
+    loaderAsset: 'raporlar.js',
+    loaderUsesLazyWrapper: true,
+  },
+  {
+    name: 'vehicleNotificationDomain',
+    registryKey: 'vehicleNotificationDomain',
+    file: 'vehicle-notification-domain.js',
+    contractKind: 'NAMESPACE_VALIDATOR',
+    namespaceExportPattern: /window\.MedisaVehicleNotificationDomain\s*=/,
+    loaderAsset: 'vehicle-notification-domain.js',
+    loaderValidator: /isMedisaVehicleNotificationDomainValid/,
+  },
+  {
+    name: 'tasitlarYazici',
+    registryKey: 'tasitlarYazici',
+    file: 'tasitlar.js',
+    contractKind: 'REGISTRY_QUERY_REFERENCE',
+    registryReferencePattern: /MEDISA_MODULE_VERSIONS\.tasitlarYazici/,
+    fallbackVersion: EXPECTED_TASITLAR_YAZICI,
+    loadedFrom: 'tasitlar.js',
+  },
+];
+
+const REGISTRY_LOADER_ASSET_BINDINGS = [
+  { registryKey: 'tasitlar', asset: 'tasitlar.js' },
+  { registryKey: 'notifications', asset: 'notifications.js' },
+  { registryKey: 'raporlar', asset: 'raporlar.js' },
+  { registryKey: 'kayitJs', asset: 'kayit.js' },
+  { registryKey: 'kayitCss', asset: 'kayit.css' },
+  { registryKey: 'ayarlarJs', asset: 'ayarlar.js' },
+  { registryKey: 'ayarlarCss', asset: 'ayarlar.css' },
+  { registryKey: 'vehicleNotificationDomain', asset: 'vehicle-notification-domain.js' },
+];
+
 const SCRIPT_CORE_HTML_FILES = [
   'index.html',
   'driver/index.html',
@@ -35,6 +134,164 @@ let passed = 0;
 
 function read(rel) {
   return fs.readFileSync(path.join(ROOT, rel), 'utf8');
+}
+
+function parseMedisaModuleVersions(scriptCoreJs) {
+  var blockMatch = scriptCoreJs.match(/var MEDISA_MODULE_VERSIONS\s*=\s*\{([\s\S]*?)\n\};/);
+  assert.ok(blockMatch, 'MEDISA_MODULE_VERSIONS block not found in script-core.js');
+  var registry = Object.create(null);
+  var pairRe = /(\w+)\s*:\s*'([^']+)'/g;
+  var match;
+  while ((match = pairRe.exec(blockMatch[1])) !== null) {
+    registry[match[1]] = match[2];
+  }
+  return registry;
+}
+
+function verifyMedisaRegistryVersions(registry) {
+  Object.keys(EXPECTED_REGISTRY_VERSIONS).forEach(function(key) {
+    assert.equal(
+      registry[key],
+      EXPECTED_REGISTRY_VERSIONS[key],
+      'MEDISA_MODULE_VERSIONS.' + key + ' must be ' + EXPECTED_REGISTRY_VERSIONS[key]
+    );
+  });
+}
+
+function verifyRegistryLoaderAssetBindings(scriptCoreJs, registry) {
+  REGISTRY_LOADER_ASSET_BINDINGS.forEach(function(binding) {
+    var version = registry[binding.registryKey];
+    assert.ok(version, 'registry key missing for loader binding: ' + binding.registryKey);
+    var vRefPattern = new RegExp(
+      binding.asset.replace('.', '\\.') + '\\?v=\' \\+ V\\.' + binding.registryKey
+    );
+    var medisaRefPattern = new RegExp(
+      binding.asset.replace('.', '\\.') + '\\?v=\'\\s*\\+\\s*MEDISA_MODULE_VERSIONS\\.' + binding.registryKey
+    );
+    assert.ok(
+      vRefPattern.test(scriptCoreJs) || medisaRefPattern.test(scriptCoreJs),
+      'script-core loader must bind ' + binding.asset + ' to registry key ' + binding.registryKey
+    );
+  });
+}
+
+function verifyModuleVersionContracts(scriptCoreJs, registry) {
+  MODULE_VERSION_CONTRACTS.forEach(function(contract) {
+    var registryVersion = registry[contract.registryKey];
+    assert.ok(registryVersion, contract.name + ': registry key missing: ' + contract.registryKey);
+    assert.equal(
+      registryVersion,
+      EXPECTED_REGISTRY_VERSIONS[contract.registryKey],
+      contract.name + ': registry version drift'
+    );
+
+    var fileContent = read(contract.file);
+
+    if (contract.internalPattern) {
+      var internalMatch = fileContent.match(contract.internalPattern);
+      assert.ok(internalMatch, contract.name + ': internal version constant not found in ' + contract.file);
+      assert.equal(
+        internalMatch[1],
+        registryVersion,
+        contract.name + ': internal version must match MEDISA_MODULE_VERSIONS.' + contract.registryKey
+      );
+    }
+
+    if (contract.versionPublishPattern) {
+      assert.match(
+        fileContent,
+        contract.versionPublishPattern,
+        contract.name + ': version publish pattern missing in ' + contract.file
+      );
+    }
+    if (contract.readyInitPattern) {
+      assert.match(fileContent, contract.readyInitPattern, contract.name + ': ready init=false missing');
+    }
+    if (contract.readyPublishPattern) {
+      assert.match(fileContent, contract.readyPublishPattern, contract.name + ': ready publish=true missing');
+    }
+    if (contract.loaderVersionCheck) {
+      assert.match(scriptCoreJs, contract.loaderVersionCheck, contract.name + ': loader version check missing');
+    }
+    if (contract.loaderStaleInvalidate) {
+      assert.match(scriptCoreJs, contract.loaderStaleInvalidate, contract.name + ': stale ready invalidate missing');
+    }
+    if (contract.loaderAsset) {
+      assert.match(
+        scriptCoreJs,
+        new RegExp(contract.loaderAsset.replace('.', '\\.') + '\\?v=\' \\+ V\\.' + contract.registryKey),
+        contract.name + ': loader asset URL must use V.' + contract.registryKey
+      );
+    }
+  });
+}
+
+function verifyModuleBootContracts(scriptCoreJs, registry, swJs) {
+  MODULE_BOOT_CONTRACTS.forEach(function(contract) {
+    var registryVersion = registry[contract.registryKey];
+    assert.ok(registryVersion, contract.name + ': registry key missing: ' + contract.registryKey);
+
+    if (contract.file && contract.file !== 'tasitlar.js') {
+      var fileContent = read(contract.file);
+      if (contract.readyInitPattern) {
+        assert.match(fileContent, contract.readyInitPattern, contract.name + ': ready init=false missing');
+      }
+      if (contract.readyPublishPattern) {
+        assert.match(fileContent, contract.readyPublishPattern, contract.name + ': ready publish=true missing');
+      }
+      if (contract.moduleApiPattern) {
+        assert.match(fileContent, contract.moduleApiPattern, contract.name + ': module API export missing');
+      }
+      if (contract.namespaceExportPattern) {
+        assert.match(fileContent, contract.namespaceExportPattern, contract.name + ': namespace export missing');
+      }
+    }
+
+    if (contract.registryReferencePattern) {
+      var hostContent = read(contract.loadedFrom || contract.file);
+      assert.match(hostContent, contract.registryReferencePattern, contract.name + ': registry reference missing');
+      if (contract.fallbackVersion) {
+        assert.match(
+          hostContent,
+          new RegExp("\\|\\|\\s*'" + contract.fallbackVersion.replace(/\./g, '\\.') + "'"),
+          contract.name + ': fallback version must match registry default'
+        );
+      }
+    }
+
+    if (contract.loaderReadyCheck) {
+      assert.match(scriptCoreJs, contract.loaderReadyCheck, contract.name + ': loader ready check missing');
+    }
+    if (contract.loaderNoVersionCheck) {
+      assert.doesNotMatch(
+        scriptCoreJs,
+        /__medisaNotificationsModuleVersion/,
+        contract.name + ': must not use version-based ready without internal contract'
+      );
+    }
+    if (contract.loaderAsset) {
+      var assetEsc = contract.loaderAsset.replace(/\./g, '\\.');
+      var vLine = new RegExp(assetEsc + "\\?v=' \\+ V\\." + contract.registryKey);
+      var medisaLine = new RegExp(assetEsc + "\\?v='[\\s\\S]{0,120}MEDISA_MODULE_VERSIONS\\." + contract.registryKey);
+      assert.ok(
+        vLine.test(scriptCoreJs) || medisaLine.test(scriptCoreJs),
+        contract.name + ': loader asset URL must use registry version'
+      );
+    }
+    if (contract.loaderValidator) {
+      assert.match(scriptCoreJs, contract.loaderValidator, contract.name + ': loader validator missing');
+    }
+    if (contract.loaderUsesLazyWrapper) {
+      assert.match(scriptCoreJs, /window\.openReportsView\s*=\s*function\s*\(\)\s*\{[\s\S]*loadAppModule\(RAPORLAR_JS/, contract.name + ': lazy wrapper must load module before delegate');
+      assert.match(scriptCoreJs, /openVehiclesView !== lazyOpenVehiclesView/, 'tasitlar lazy wrapper must distinguish stub from real API');
+    }
+  });
+
+  assert.match(
+    swJs,
+    new RegExp("CACHE_RAPORLAR_VERSION = 'medisa-raporlar-" + registry.raporlar + "'"),
+    'sw.js CACHE_RAPORLAR_VERSION must track MEDISA_MODULE_VERSIONS.raporlar'
+  );
 }
 
 function pass(name, detail) {
@@ -1086,10 +1343,13 @@ function runStaticInvariants() {
   console.log('  direct dataApi callers:', callers.map(function(c) { return c.name; }).join(', '));
 
   var sc = read('script-core.js');
-  assert.match(sc, new RegExp("kayitJs:\\s*'" + EXPECTED_KAYIT_JS + "'"));
-  assert.match(sc, new RegExp("tasitlar:\\s*'" + EXPECTED_TASITLAR_JS + "'"));
-  assert.match(sc, new RegExp("ayarlarJs:\\s*'" + EXPECTED_AYARLAR_JS + "'"));
-  assert.match(sc, new RegExp("vehicleNotificationDomain:\\s*'" + EXPECTED_VEHICLE_NOTIFICATION_DOMAIN + "'"));
+  var registry = parseMedisaModuleVersions(sc);
+  verifyMedisaRegistryVersions(registry);
+  verifyRegistryLoaderAssetBindings(sc, registry);
+  verifyModuleVersionContracts(sc, registry);
+
+  var sw = read('sw.js');
+  verifyModuleBootContracts(sc, registry, sw);
   assert.match(sc, /'getVehicleTypeRuleProfile'/);
 
   var domainJs = read('vehicle-notification-domain.js');
@@ -1106,15 +1366,6 @@ function runStaticInvariants() {
   assert.doesNotMatch(driverDataPhp, /in_array\s*\(\s*\$vehicleType,\s*\[\s*'minivan',\s*'kamyon',\s*'romork'\s*\]/);
 
   var tasitlarJs = read('tasitlar.js');
-  var tasitlarInternalVersionMatch = tasitlarJs.match(/MEDISA_TASITLAR_MODULE_VERSION\s*=\s*'([^']+)'/);
-  assert.ok(tasitlarInternalVersionMatch, 'MEDISA_TASITLAR_MODULE_VERSION not found in tasitlar.js');
-  assert.equal(
-    tasitlarInternalVersionMatch[1],
-    EXPECTED_TASITLAR_JS,
-    'tasitlar.js internal module version must match MEDISA_MODULE_VERSIONS.tasitlar'
-  );
-  assert.match(tasitlarJs, /window\.__medisaTasitlarModuleVersion\s*=\s*MEDISA_TASITLAR_MODULE_VERSION/);
-  assert.match(tasitlarJs, /window\.__medisaTasitlarModuleReady\s*=\s*true/);
   assert.match(tasitlarJs, /function getVehicleTypeRuleProfile\s*\(/);
   assert.match(tasitlarJs, /MedisaVehicleNotificationDomain\.getVehicleTypeRuleProfile/);
   assert.match(tasitlarJs, /'getVehicleTypeRuleProfile'/);
@@ -1216,7 +1467,6 @@ function runStaticInvariants() {
     assert.doesNotMatch(html, /script-core\.js["']/);
   });
 
-  var sw = read('sw.js');
   assert.match(sw, new RegExp("CACHE_VERSION = '" + EXPECTED_SW_CACHE + "'"));
 
   var indexHtml = read('index.html');
