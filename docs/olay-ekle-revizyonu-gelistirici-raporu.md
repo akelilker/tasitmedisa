@@ -159,9 +159,9 @@ Belge/Ruhsat bloğu (belge yükleme, değiştirme, görüntüleme, önizleme, ya
 
 **Veri güvenliği:** Bu fazda `data/data.json` okunmadı/yazılmadı; kayıt, yükleme, silme ve içe/dışa aktarma testi çalıştırılmadı.
 
-### 8.2 Kayıtsız browser smoke — MANUEL BEKLİYOR
+### 8.2 Kayıtsız browser smoke — KAPANDI (MT-9C, 2026-07-12)
 
-Ortamda güvenilir browser otomasyonu yok; aşağıdaki senaryolar manuel doğrulanmalıdır (Kaydet'e basılmadan, yalnızca aç/kapa):
+Orijinal kapsam (Kaydet'e basılmadan, yalnızca aç/kapa):
 
 - Masaüstü ve 390px görünüm
 - Olay Ekle açılışı, beş kategori, kategoriye giriş ve geri dönüş
@@ -170,9 +170,60 @@ Ortamda güvenilir browser otomasyonu yok; aşağıdaki senaryolar manuel doğru
 - Aynı taşıt detayının art arda açılmasında Olay Ekle butonunun çoğalmaması
 - Konsol hatası kontrolü
 
-### 8.3 K2 ve metadata senaryoları (Bölüm 7) — MANUEL BEKLİYOR
+**Durum:** Canlı oturumlu masaüstü tarayıcıda salt-okunur smoke tamamlandı. Ayrıntılar aşağıdaki **MT-9C Manuel UI Smoke Kapanışı** bölümünde.
 
-K2 kapsamı, form düzeni ve Kaydet handler bağlantısı runtime'da henüz smoke edilmedi.
+### 8.3 K2 ve metadata senaryoları (Bölüm 7) — KAPANDI (MT-9C, 2026-07-12)
+
+Orijinal not: K2 kapsamı, form düzeni ve Kaydet handler bağlantısı runtime'da henüz smoke edilmedi.
+
+**Durum:** K2 metadata görünürlüğü salt-okunur UI smoke ile doğrulandı. Gerçek save/write yolu bu smoke kapsamı dışındadır; production save testleri ve MT-9B static invariantları korunmaktadır.
+
+## MT-9C Manuel UI Smoke Kapanışı
+
+- Tarih: 2026-07-12
+- Test ortamı: Canlı, oturumlu masaüstü tarayıcı
+- Kod tabanı: `58da4bcef063f835d02ff720bd542957e6e3bbb1`
+- Test aracı: `78***671`
+- Veri mutasyonu: Yapılmadı
+- Kaydet işlemi: Yapılmadı
+- Network:
+  - İlk yüklemede yalnız GET istekleri gözlendi
+  - POST/PATCH/PUT/DELETE oluşmadı
+  - 404/500 görülmedi
+- Console:
+  - Kırmızı hata görülmedi
+
+Kontrol tablosu:
+
+| Kontrol | Sonuç |
+| --- | --- |
+| Ana uygulama açılışı | OK |
+| Taşıtlar ekranı | OK |
+| Taşıt detayı | OK |
+| Olay Ekle menüsü | OK |
+| Beş kategori görünümü | OK |
+| Kategori aç/kapa ve geri dönüş | OK |
+| Egzoz ilk açılış | OK |
+| Egzoz kapatıp yeniden açma | OK |
+| Duplicate modal kontrolü | OK |
+| Sigorta/Kasko S-K ikonları | OK |
+| K2 metadata görünürlüğü | OK |
+| Console error | YOK |
+| HTTP 404/500 | YOK |
+| Yazma isteği | GÖNDERİLMEDİ |
+
+Kapanış değerlendirmesi:
+
+- Olay Ekle ve Egzoz salt-okunur UI akışları canlıda doğrulandı.
+- İlk açılış ve yeniden açılış davranışları sorunsuz.
+- Duplicate modal oluşmadı.
+- İkon ve metadata görünürlükleri doğrulandı.
+- Console ve network temiz.
+- Canlı veri mutasyonu yapılmadı.
+- §8.2–8.3 manuel UI smoke borcu kapandı.
+- Gerçek save/write yolu bu smoke'un kapsamı dışındadır; mevcut production save testleri ve MT-9B static invariantları korunmaktadır.
+
+**MT-9C MANUEL UI SMOKE: BAŞARILI — OLAY/EGZOZ UI KAPANIŞI TAMAMLANDI**
 
 ## 9. Faz 4 — Analiz / Modülerleştirme Backlog'u
 
