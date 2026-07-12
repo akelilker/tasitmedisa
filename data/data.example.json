@@ -1,0 +1,28 @@
+{
+  "tasitlar": [],
+  "kayitlar": [],
+  "branches": [],
+  "users": [],
+  "ayarlar": {
+    "sirketAdi": "",
+    "yetkiliKisi": "",
+    "telefon": "",
+    "eposta": "",
+    "k2Belgesi": {
+      "expiryDate": "",
+      "documentPath": "",
+      "updatedAt": ""
+    }
+  },
+  "sifreler": [],
+  "arac_aylik_hareketler": [],
+  "duzeltme_talepleri": [],
+  "kaskoDegerListesi": {
+    "updatedAt": "",
+    "period": "",
+    "sourceFileName": "",
+    "rows": []
+  },
+  "notificationReadState": {},
+  "monthlyTodoWhatsAppLogs": {}
+}
