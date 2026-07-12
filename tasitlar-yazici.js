@@ -140,31 +140,15 @@
   }
 
   function getVehicleTypeLabel(type) {
-    var labels = {
-      'otomobil': 'Otomobil',
-      'minivan': 'Küçük Ticari',
-      'kamyon': 'Büyük Ticari',
-      'romork': 'Römork'
-    };
-    return labels[type] || type;
+    return typeof window.getVehicleTypeLabel === 'function'
+      ? window.getVehicleTypeLabel(type)
+      : type;
   }
 
   function getKaportaPartNames() {
-    return {
-      'on-tampon': 'Ön Tampon',
-      'arka-tampon': 'Arka Tampon',
-      'kaput': 'Kaput',
-      'bagaj': 'Bagaj Kapağı',
-      'sag-on-kapi': 'Sağ Ön Kapı',
-      'sol-on-kapi': 'Sol Ön Kapı',
-      'sag-arka-kapi': 'Sağ Arka Kapı',
-      'sol-arka-kapi': 'Sol Arka Kapı',
-      'sag-on-camurluk': 'Sağ Ön Çamurluk',
-      'sol-on-camurluk': 'Sol Ön Çamurluk',
-      'sag-arka-camurluk': 'Sağ Arka Çamurluk',
-      'sol-arka-camurluk': 'Sol Arka Çamurluk',
-      'tavan': 'Tavan'
-    };
+    return typeof window.getKaportaPartNames === 'function'
+      ? window.getKaportaPartNames()
+      : {};
   }
 
   function getVehiclePrintRows(vehicle) {
