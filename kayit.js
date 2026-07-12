@@ -585,14 +585,6 @@
     }
   }
 
-  function saveVehiclesViaApi(vehicles) {
-    if (typeof window.dataApi !== 'undefined' && typeof window.dataApi.saveVehiclesList === 'function') {
-      return window.dataApi.saveVehiclesList(vehicles);
-    }
-    return Promise.reject(new Error('dataApi kullanılamıyor.'));
-  }
-
-
   // --- Helper Functions ---
   /**
    * Sayısal değerleri binlik ayırıcı (.) ile formatlar
@@ -2376,6 +2368,11 @@
    */
   function performSave(recordData, tescilTarihi) {
     try {
+      if (typeof window.writeVehicles !== 'function') {
+        alert('Kayıt modülü henüz hazır değil. Lütfen sayfayı yenileyip tekrar deneyin.');
+        return Promise.resolve();
+      }
+
       // Tescil tarihini record'a ekle; düzenlemede versiyon bilgisini ekle (çakışma kontrolü)
       const record = {
         ...recordData,
@@ -2431,8 +2428,7 @@
         vehicles.unshift(record);
       }
 
-      saveVehiclesViaApi(vehicles).then(function() {
-        if (window.updateNotifications) window.updateNotifications();
+      return window.writeVehicles(vehicles, { conflictUi: 'caller' }).then(function() {
         alert(isEditMode ? "Kayıt Güncellendi!" : "Yeni Kayıt Oluşturuldu!");
         window.closeVehicleModal();
         pendingRecordData = null;
@@ -2445,6 +2441,7 @@
       });
     } catch (error) {
       alert('Kayıt sırasında bir hata oluştu! Lütfen tekrar deneyin.');
+      return Promise.resolve();
     }
   }
 

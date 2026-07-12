@@ -1299,11 +1299,30 @@ function getMedisaUsers() {
     });
 }
 
-window.writeVehicles = function(arr) {
+function resolveWriteVehiclesConflictUi(options) {
+    if (!options || typeof options !== 'object') return 'generic';
+    return options.conflictUi === 'caller' ? 'caller' : 'generic';
+}
+
+function showWriteVehiclesConflictAlert(conflictUi) {
+    if (conflictUi === 'caller') return;
+    alert('Dikkat! Veri başka biri tarafından güncellenmiş. Lütfen sayfayı yenileyin.');
+}
+
+function notifyWriteVehiclesFallbackPersisted() {
+    if (typeof window.updateNotifications === 'function') {
+        window.updateNotifications();
+    }
+}
+
+window.writeVehicles = function(arr, options) {
     if (!window.appData) window.appData = getDefaultAppData();
     applyMainAppSessionUiState();
+    var conflictUi = resolveWriteVehiclesConflictUi(options);
+    var vehicles = Array.isArray(arr) ? arr : [];
+
     if (window.dataApi && typeof window.dataApi.saveVehiclesList === 'function') {
-        return window.dataApi.saveVehiclesList(arr)
+        return window.dataApi.saveVehiclesList(vehicles)
             .then(function(result) {
                 syncDataLoadState();
                 invalidateMedisaVisibleCache();
@@ -1311,18 +1330,24 @@ window.writeVehicles = function(arr) {
             })
             .catch(function(err) {
                 if (err && err.conflict) {
-                    alert('Dikkat! Veri başka biri tarafından güncellenmiş. Lütfen sayfayı yenileyin.');
+                    showWriteVehiclesConflictAlert(conflictUi);
                     return Promise.reject(err);
                 }
                 console.error('Sunucuya kaydetme hatası:', err);
                 return Promise.reject(err);
             });
     }
-    window.appData.tasitlar = Array.isArray(arr) ? arr : [];
+    window.appData.tasitlar = vehicles;
     syncDataLoadState();
     invalidateMedisaVisibleCache();
     if (typeof window.saveDataToServer === 'function') {
-        return window.saveDataToServer().catch(async function(err) {
+        return window.saveDataToServer().then(function(ok) {
+            if (ok !== true) {
+                return Promise.reject(new Error('Sunucuya kayıt yapılamadı.'));
+            }
+            notifyWriteVehiclesFallbackPersisted();
+            return ok;
+        }).catch(async function(err) {
             if (err && err.conflict) {
                 if (typeof window.loadDataFromServer === 'function') {
                     try {
@@ -1331,15 +1356,17 @@ window.writeVehicles = function(arr) {
                         console.warn('[Medisa] Çakışma sonrası taşıt verisi yenilenemedi:', reloadErr && reloadErr.message);
                     }
                 }
-                alert('Dikkat! Veri başka biri tarafından güncellenmiş. Lütfen sayfayı yenileyin.');
+                showWriteVehiclesConflictAlert(conflictUi);
+                return Promise.reject(err);
+            }
+            if (err && err.message === 'Sunucuya kayıt yapılamadı.') {
                 return Promise.reject(err);
             }
             console.error('Sunucuya kaydetme hatası:', err);
             return Promise.reject(err);
         });
     }
-    medisaInvalidateVehicleDateTasksCacheIfAvailable();
-    return Promise.resolve();
+    return Promise.reject(new Error('[Medisa] writeVehicles owner hazır değil; kayıt yapılamadı.'));
 };
 
 window.writeBranches = function(arr) {

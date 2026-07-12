@@ -11,10 +11,10 @@ const vm = require('node:vm');
 
 const ROOT = path.join(__dirname, '..');
 
-const EXPECTED_DIRECT_DATAAPI_CALLERS = 1;
-const EXPECTED_KAYIT_JS = '20260712.2';
-const EXPECTED_SCRIPT_CORE_QUERY = '20260712.2';
-const EXPECTED_SW_CACHE = 'medisa-v2.224';
+const EXPECTED_DIRECT_DATAAPI_CALLERS = 0;
+const EXPECTED_KAYIT_JS = '20260712.3';
+const EXPECTED_SCRIPT_CORE_QUERY = '20260712.3';
+const EXPECTED_SW_CACHE = 'medisa-v2.225';
 const SCRIPT_CORE_HTML_FILES = [
   'index.html',
   'driver/index.html',
@@ -410,6 +410,16 @@ function loadDataManager(ctx) {
   }
 }
 
+function loadDataManagerAndService(ctx, saveImpl, loadImpl) {
+  loadDataManager(ctx);
+  if (saveImpl) ctx.window.saveDataToServer = saveImpl;
+  if (loadImpl) ctx.window.loadDataFromServer = loadImpl;
+  ctx.loadScript('data-service.js');
+  if (!ctx.window.dataApi || typeof ctx.window.dataApi.saveVehiclesList !== 'function') {
+    throw new Error('window.dataApi.saveVehiclesList export missing after data-service load');
+  }
+}
+
 async function bootstrapTrustedDataset(ctx, options) {
   options = options || {};
   var payload = {
@@ -672,6 +682,126 @@ async function runWriteVehiclesTests() {
     assert.equal(c.saveDataToServer, 1);
     assert.equal(c.alert, 0);
   });
+
+  await test('writeVehicles dataApi success notifies exactly once', async function() {
+    var ctx = createBrowserContext();
+    var c = ctx.counters;
+    loadDataManagerAndService(ctx, async function() {
+      c.saveDataToServer += 1;
+      return true;
+    });
+
+    await ctx.window.writeVehicles([{ id: 'w8', version: 1 }], { conflictUi: 'caller' });
+    assert.equal(c.saveDataToServer, 1);
+    assert.equal(c.updateNotifications, 1);
+    assert.equal(c.alert, 0);
+  });
+
+  await test('writeVehicles fallback success notifies exactly once', async function() {
+    var ctx = createBrowserContext();
+    loadDataManager(ctx);
+    var c = ctx.counters;
+    ctx.window.dataApi = null;
+    ctx.window.saveDataToServer = async function() {
+      c.saveDataToServer += 1;
+      return true;
+    };
+
+    await ctx.window.writeVehicles([{ id: 'w9', version: 1 }]);
+    assert.equal(c.saveDataToServer, 1);
+    assert.equal(c.updateNotifications, 1);
+    assert.equal(c.alert, 0);
+  });
+
+  await test('writeVehicles dataApi conflict caller-owned', async function() {
+    var ctx = createBrowserContext();
+    loadDataManager(ctx);
+    var c = ctx.counters;
+    var conflictErr = new Error('Conflict');
+    conflictErr.conflict = true;
+    ctx.window.dataApi = {
+      saveVehiclesList: async function() {
+        throw conflictErr;
+      },
+    };
+
+    await assert.rejects(function() {
+      return ctx.window.writeVehicles([{ id: 'w2b', version: 1 }], { conflictUi: 'caller' });
+    }, function(err) {
+      return err === conflictErr;
+    });
+    assert.equal(c.alert, 0);
+    assert.equal(c.loadDataFromServer, 0);
+    assert.equal(c.saveDataToServer, 0);
+  });
+
+  await test('writeVehicles fallback conflict caller-owned', async function() {
+    var ctx = createBrowserContext();
+    loadDataManager(ctx);
+    var c = ctx.counters;
+    ctx.window.dataApi = null;
+    var conflictErr = new Error('Conflict');
+    conflictErr.conflict = true;
+    ctx.window.saveDataToServer = async function() {
+      c.saveDataToServer += 1;
+      throw conflictErr;
+    };
+    ctx.window.loadDataFromServer = async function(force) {
+      c.loadDataFromServer += 1;
+      assert.equal(force, true);
+    };
+
+    await assert.rejects(function() {
+      return ctx.window.writeVehicles([{ id: 'w4b', version: 1 }], { conflictUi: 'caller' });
+    }, function(err) {
+      return err === conflictErr;
+    });
+    assert.equal(c.saveDataToServer, 1);
+    assert.equal(c.loadDataFromServer, 1);
+    assert.equal(c.alert, 0);
+  });
+
+  await test('writeVehicles fallback false rejects', async function() {
+    var ctx = createBrowserContext();
+    loadDataManager(ctx);
+    var c = ctx.counters;
+    ctx.window.dataApi = null;
+    var outcomes = [false, undefined, null, 0, ''];
+    for (var i = 0; i < outcomes.length; i++) {
+      c.saveDataToServer = 0;
+      c.updateNotifications = 0;
+      c.alert = 0;
+      var outcome = outcomes[i];
+      ctx.window.saveDataToServer = async function() {
+        c.saveDataToServer += 1;
+        return outcome;
+      };
+      await assert.rejects(function() {
+        return ctx.window.writeVehicles([{ id: 'w7-' + i, version: 1 }]);
+      }, function(err) {
+        return err && err.message === 'Sunucuya kayıt yapılamadı.';
+      });
+      assert.equal(c.saveDataToServer, 1);
+      assert.equal(c.updateNotifications, 0);
+      assert.equal(c.alert, 0);
+    }
+  });
+
+  await test('writeVehicles owner missing rejects', async function() {
+    var ctx = createBrowserContext();
+    loadDataManager(ctx);
+    var c = ctx.counters;
+    ctx.window.dataApi = null;
+    ctx.window.saveDataToServer = undefined;
+
+    await assert.rejects(function() {
+      return ctx.window.writeVehicles([{ id: 'w6', version: 1 }]);
+    }, function(err) {
+      return err && /writeVehicles owner hazır değil/i.test(String(err.message || err));
+    });
+    assert.equal(c.alert, 0);
+    assert.equal(c.saveDataToServer, 0);
+  });
 }
 
 async function runSaveMutexTests() {
@@ -907,6 +1037,32 @@ function runStaticInvariants() {
     EXPECTED_DIRECT_DATAAPI_CALLERS,
     'direct dataApi caller count expected ' + EXPECTED_DIRECT_DATAAPI_CALLERS + ', got ' + callers.length + ': ' + JSON.stringify(callers.map(function(c) { return c.name; }))
   );
+  assert.doesNotMatch(kayit, /function saveVehiclesViaApi/);
+  assert.doesNotMatch(kayit, /dataApi\.saveVehiclesList\s*\(/);
+
+  var performSaveStart = kayit.indexOf('function performSave(recordData, tescilTarihi)');
+  assert.notEqual(performSaveStart, -1, 'performSave not found');
+  var performSaveBody = kayit.slice(performSaveStart, performSaveStart + 3600);
+  assert.match(performSaveBody, /writeVehicles\s*\(\s*vehicles\s*,\s*\{\s*conflictUi:\s*'caller'\s*\}\s*\)/);
+  assert.match(performSaveBody, /return\s+window\.writeVehicles/);
+  assert.doesNotMatch(performSaveBody, /saveVehiclesViaApi/);
+  assert.doesNotMatch(performSaveBody, /updateNotifications/);
+  assert.match(performSaveBody, /Veri ezilmesini önlemek için/);
+  assert.match(performSaveBody, /Kayıt Güncellendi!/);
+  assert.match(performSaveBody, /Yeni Kayıt Oluşturuldu!/);
+  var readinessIdx = performSaveBody.indexOf("typeof window.writeVehicles !== 'function'");
+  var mutationIdx = performSaveBody.indexOf('let vehicles = readVehicles()');
+  assert.notEqual(readinessIdx, -1, 'performSave owner readiness check missing');
+  assert.notEqual(mutationIdx, -1, 'performSave vehicles mutation missing');
+  assert.ok(readinessIdx < mutationIdx, 'performSave owner readiness must precede persistence mutation');
+
+  var dm = read('data-manager.js');
+  assert.match(dm, /resolveWriteVehiclesConflictUi/);
+  assert.match(dm, /showWriteVehiclesConflictAlert/);
+  assert.match(dm, /notifyWriteVehiclesFallbackPersisted/);
+  assert.match(dm, /conflictUi === 'caller'/);
+  assert.match(dm, /ok !== true/);
+  assert.match(dm, /Sunucuya kayıt yapılamadı\./);
 
   var pickerHandlerStart = kayit.indexOf('if (fromDetailId) {\r\n            if (vehicleTypeSaveInFlight)');
   if (pickerHandlerStart === -1) {
@@ -935,8 +1091,10 @@ function runStaticInvariants() {
   assert.match(sw, new RegExp("CACHE_VERSION = '" + EXPECTED_SW_CACHE + "'"));
 
   var indexHtml = read('index.html');
-  assert.match(indexHtml, /data-manager\.js\?v=20260712\.4/);
+  assert.match(indexHtml, /data-manager\.js\?v=20260712\.5/);
+  assert.doesNotMatch(indexHtml, /data-manager\.js\?v=20260712\.4/);
   assert.doesNotMatch(indexHtml, /data-manager\.js\?v=20260712\.3/);
+  assert.doesNotMatch(sw, /medisa-v2\.224/);
 }
 
 function buildPickerDom() {
