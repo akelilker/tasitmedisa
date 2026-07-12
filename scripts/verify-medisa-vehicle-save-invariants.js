@@ -14,7 +14,7 @@ const ROOT = path.join(__dirname, '..');
 const EXPECTED_DIRECT_DATAAPI_CALLERS = 0;
 const EXPECTED_KAYIT_JS = '20260712.3';
 const EXPECTED_SCRIPT_CORE_QUERY = '20260712.5';
-const EXPECTED_SW_CACHE = 'medisa-v2.228';
+const EXPECTED_SW_CACHE = 'medisa-v2.229';
 const SCRIPT_CORE_HTML_FILES = [
   'index.html',
   'driver/index.html',
