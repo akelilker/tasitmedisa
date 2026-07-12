@@ -20,47 +20,14 @@ jobs:
         with:
           php-version: '8.2'
 
-      - name: PHP syntax (php -l)
-        shell: bash
-        run: |
-          set -euo pipefail
-          while IFS= read -r -d '' f; do
-            php -l "$f"
-          done < <(find . -name '*.php' -print0)
-
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
           node-version: '24'
 
-      - name: JavaScript syntax (node --check)
+      - name: Canonical quality gate
         shell: bash
-        run: |
-          set -euo pipefail
-          for f in \
-            script-core.js \
-            data-manager.js \
-            data-service.js \
-            vehicle-notification-domain.js \
-            notifications.js \
-            tasitlar.js \
-            tasitlar-yazici.js \
-            kayit.js \
-            raporlar.js \
-            ayarlar.js \
-            sw.js \
-            driver/driver-script.js \
-            admin/admin-report.js \
-            scripts/verify-medisa-role-invariants.js \
-            scripts/verify-medisa-vehicle-save-invariants.js \
-            scripts/hydrate-demo-data-branches.js
-          do
-            node --check "$f"
-          done
-
-      - name: Vehicle save invariants
-        shell: bash
-        run: npm run tool:verify-vehicle-save
+        run: bash .github/scripts/quality-gate.sh
 
   http-smoke:
     name: HTTP smoke (php -S + curl)
