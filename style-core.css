@@ -2298,7 +2298,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     /* Kayıt / Raporlar / tüm taşıt modalları / Ayarlar (şube-kullanıcı-veri): mobilde yan+üst+alt krom çerçeve görünür */
     #vehicle-modal.modal-overlay .modal-container,
     #reports-modal.modal-overlay .modal-container,
-    .tasitlar-modal-overlay.modal-overlay .modal-container,
+    :is(#vehicles-modal, #vehicle-detail-modal, #dinamik-olay-modal, #event-menu-modal, #vehicle-history-modal).modal-overlay .modal-container,
     #branch-modal.modal-overlay .modal-container,
     #branch-form-modal.modal-overlay .modal-container,
     #user-modal.modal-overlay .modal-container,
@@ -2316,7 +2316,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     }
     #vehicle-modal.modal-overlay .modal-container,
     #reports-modal.modal-overlay .modal-container,
-    .tasitlar-modal-overlay.modal-overlay .modal-container {
+    :is(#vehicles-modal, #vehicle-detail-modal, #dinamik-olay-modal, #event-menu-modal, #vehicle-history-modal).modal-overlay .modal-container {
         border-top-color: rgba(255, 255, 255, 0.24) !important;
         box-shadow:
             0 0 40px var(--shadow-modal),
@@ -2793,7 +2793,7 @@ body.modal-open .app-container {
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicle-modal.modal-overlay .modal-container,
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #reports-modal.modal-overlay .modal-container,
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .tasitlar-modal-overlay.modal-overlay .modal-container,
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) :is(#vehicles-modal, #vehicle-detail-modal, #dinamik-olay-modal, #event-menu-modal, #vehicle-history-modal).modal-overlay .modal-container,
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #branch-modal.modal-overlay .modal-container,
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #branch-form-modal.modal-overlay .modal-container,
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #user-modal.modal-overlay .modal-container,
