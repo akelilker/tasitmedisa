@@ -90,4 +90,61 @@ function assertNoSensitiveValue(value, keyPath) {
 }
 
 assertNoSensitiveValue(example, 'example');
+
+const corePhp = fs.readFileSync(path.join(repoRoot, 'core.php'), 'utf8');
+if (!/function\s+medisaProjectUserForClient\s*\(/.test(corePhp)) {
+  fail('core.php medisaProjectUserForClient helper eksik.');
+}
+if (!/function\s+medisaReconcileUserCredentials\s*\(/.test(corePhp)) {
+  fail('core.php medisaReconcileUserCredentials helper eksik.');
+}
+if (!/array_map\(\s*'medisaProjectUserForClient'\s*,\s*\$visibleUsers\s*\)/.test(corePhp)
+    && !/array_map\("medisaProjectUserForClient",\s*\$visibleUsers\)/.test(corePhp)) {
+  fail('core.php filter users projection contract eksik.');
+}
+
+const ayarlarJs = fs.readFileSync(path.join(repoRoot, 'ayarlar.js'), 'utf8');
+const forbiddenAyarlarPatterns = [
+  { re: /passwordInput\.value\s*=\s*user\.sifre/, label: 'passwordInput.value = user.sifre' },
+  { re: /users\[idx\]\.sifre\s*=/, label: 'users[idx].sifre =' },
+  { re: /sifre\s*:\s*sifre\b/, label: 'yeni user sifre: sifre' },
+  { re: /delete\s+users\[idx\]\.sifre_hash/, label: 'delete users[idx].sifre_hash' }
+];
+forbiddenAyarlarPatterns.forEach(function(item) {
+  if (item.re.test(ayarlarJs)) {
+    fail('ayarlar.js yasak pattern: ' + item.label);
+  }
+});
+if (!/portal_sifresi_var\s*===\s*true/.test(ayarlarJs)) {
+  fail('ayarlar.js portal_sifresi_var kontrati eksik.');
+}
+if (!/userPasswordChanges/.test(ayarlarJs)) {
+  fail('ayarlar.js transient userPasswordChanges hattı eksik.');
+}
+
+const dataManagerJs = fs.readFileSync(path.join(repoRoot, 'data-manager.js'), 'utf8');
+if (!/_medisaUserPasswordChanges/.test(dataManagerJs)) {
+  fail('data-manager.js transient _medisaUserPasswordChanges eksik.');
+}
+if (!/delete\s+requestSnapshot\._medisaUserPasswordChanges/.test(dataManagerJs)) {
+  fail('data-manager.js requestSnapshot transient parola temizligi eksik.');
+}
+if (/serverDatasetBaseline\[.*\]\s*=\s*.*_medisaUserPasswordChanges/.test(dataManagerJs)) {
+  fail('data-manager.js baseline transient parola almamali.');
+}
+if (/localStorage\.setItem\([^)]*_medisaUserPasswordChanges/.test(dataManagerJs)) {
+  fail('data-manager.js localStorage transient parola almamali.');
+}
+if (/window\.appData\._medisaUserPasswordChanges\s*=/.test(dataManagerJs)) {
+  fail('data-manager.js appData transient parola almamali.');
+}
+
+const savePhp = fs.readFileSync(path.join(repoRoot, 'save.php'), 'utf8');
+if (!/medisaReconcileUserCredentials\s*\(/.test(savePhp)) {
+  fail('save.php credential reconciliation cagrisi eksik.');
+}
+if (!/_medisaUserPasswordChanges/.test(savePhp)) {
+  fail('save.php transient parola okuma eksik.');
+}
+
 console.log('verify-medisa-sensitive-data: OK');

@@ -1754,9 +1754,7 @@
           id: u.id,
           isim: u.name || u.isim || '',
           kullanici_adi: u.kullanici_adi || '',
-          sifre: u.sifre || '',
-          sifre_hash: u.sifre_hash || '',
-          sifre_guncellendi_at: u.sifre_guncellendi_at || '',
+          portal_sifresi_var: u.portal_sifresi_var === true,
           telefon: u.phone || '',
           email: u.email || '',
           sube_id: sube_id,
@@ -1801,10 +1799,10 @@
       syncUsersToAppData(Array.isArray(users) ? users : [], { skipServerSave: true });
     }
 
-    async function persistUserManagementState(users, vehicles) {
+    async function persistUserManagementState(users, vehicles, options) {
       setUserManagementLocalState(users, vehicles);
       if (typeof window.saveDataToServer === 'function') {
-        return await window.saveDataToServer();
+        return await window.saveDataToServer(options);
       }
       return true;
     }
@@ -2340,6 +2338,10 @@
       // Form temizle
       if (form) form.reset();
       if (idInput) idInput.value = '';
+      if (passwordInput) {
+        passwordInput.value = '';
+        passwordInput.placeholder = 'Şifre';
+      }
       if (branchReadonly) branchReadonly.value = '';
       if (deleteBtn) {
         deleteBtn.classList.add('u-hidden');
@@ -2372,7 +2374,12 @@
         if (emailInput) emailInput.value = user.email || '';
         if (roleSelect) roleSelect.value = scope.isBranchManager ? 'kullanici' : getUiRoleFromUser(user);
         if (usernameInput) usernameInput.value = user.kullanici_adi || '';
-        if (passwordInput) passwordInput.value = user.sifre || '';
+        if (passwordInput) {
+          passwordInput.value = '';
+          passwordInput.placeholder = user.portal_sifresi_var === true
+            ? 'Değiştirmek için yeni şifre girin'
+            : 'Şifre';
+        }
         if (branchReadonly) {
           const userBranch = readAllBranches().find(function(branch) {
             return String(branch && branch.id) === String(getUserPrimaryBranchId(user));
@@ -2636,10 +2643,7 @@
   
         // Portal girişi: Kullanıcı veya şube yöneticisine taşıt atanmışsa kullanıcı adı ve şifre zorunlu
         const needsPortalCredentials = hasAssignedVehicles && (role === 'kullanici' || role === 'sube_yonetici');
-        const hasExistingPortalPassword = !!(existingUser && (
-          (existingUser.sifre && String(existingUser.sifre).trim() !== '') ||
-          (existingUser.sifre_hash && String(existingUser.sifre_hash).trim() !== '')
-        ));
+        const hasExistingPortalPassword = !!(existingUser && existingUser.portal_sifresi_var === true);
         if (needsPortalCredentials && (!kullanici_adi || (!sifre && !hasExistingPortalPassword))) {
           alert('Taşıt atanan kullanıcı veya yönetici için "Kullanıcı Adı (portal girişi)" ve "Şifre (portal girişi)" zorunludur. Bu bilgilerle kullanıcı paneline girilebilir.');
           if (usernameInput) usernameInput.focus();
@@ -2647,6 +2651,7 @@
         }
 
         let savedUserId = id;
+        const userPasswordChanges = {};
 
         const reassignedVehicles = vehicles
           .filter(function(v) {
@@ -2694,17 +2699,16 @@
             users[idx].kullanici_paneli = kullanici_paneli;
             users[idx].surucu_paneli = kullanici_paneli;
             users[idx].kullanici_adi = kullanici_adi;
-            // Şifre: boş bırakılırsa eskisini koru (yanlışlıkla silinmesin)
             if (sifre !== '') {
-              users[idx].sifre = sifre;
-              delete users[idx].sifre_hash;
-              delete users[idx].sifre_guncellendi_at;
+              userPasswordChanges[String(id)] = sifre;
+              users[idx].portal_sifresi_var = true;
             }
           }
         } else {
           // Yeni EKLEME
+          const newUserId = 'u' + Date.now().toString();
           const newUser = {
-            id: 'u' + Date.now().toString(),
+            id: newUserId,
             name: name,
             branchId: branchId,
             branchIds: branchIds,
@@ -2714,11 +2718,14 @@
             kullanici_paneli: kullanici_paneli,
             surucu_paneli: kullanici_paneli,
             kullanici_adi: kullanici_adi,
-            sifre: sifre,
+            portal_sifresi_var: sifre !== '',
             createdAt: new Date().toISOString()
           };
           users.push(newUser);
-          savedUserId = newUser.id;
+          savedUserId = newUserId;
+          if (sifre !== '') {
+            userPasswordChanges[String(newUserId)] = sifre;
+          }
         }
   
         // atanmış Taşıtlar: tek kaynak vehicle.assignedUserId
@@ -2738,7 +2745,10 @@
             if (u && !v.branchId && primarySube) v.branchId = primarySube;
           }
         });
-        const persisted = await persistUserManagementState(users, vehicles);
+        const persistOptions = Object.keys(userPasswordChanges).length > 0
+          ? { userPasswordChanges: userPasswordChanges }
+          : undefined;
+        const persisted = await persistUserManagementState(users, vehicles, persistOptions);
         if (persisted !== true) {
           setUserManagementLocalState(previousUsers, previousVehicles);
           renderUserList();

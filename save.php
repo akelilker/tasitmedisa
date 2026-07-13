@@ -57,6 +57,9 @@ $result = medisaMutateData(function (&$data) use ($incomingData) {
     $currentVehicles = medisaSaveNormalizeCollection($data['tasitlar'] ?? []);
     $currentUsers = medisaSaveNormalizeCollection($data['users'] ?? []);
     $currentVehiclesById = medisaSaveIndexVehiclesById($currentVehicles);
+    $passwordChanges = is_array($incomingData['_medisaUserPasswordChanges'] ?? null)
+        ? $incomingData['_medisaUserPasswordChanges']
+        : null;
     $mutation = is_array($incomingData['_medisaMutation'] ?? null) ? $incomingData['_medisaMutation'] : null;
     $mutationCollections = $mutation !== null && is_array($mutation['collections'] ?? null)
         ? array_values(array_unique(array_map('strval', $mutation['collections'])))
@@ -76,6 +79,7 @@ $result = medisaMutateData(function (&$data) use ($incomingData) {
     $collectionChanged = function ($name) use ($mutationCollections) {
         return $mutationCollections === null || in_array($name, $mutationCollections, true);
     };
+    $usersCollectionChanged = $collectionChanged('users') || (is_array($passwordChanges) && count($passwordChanges) > 0);
 
     $versionCheck = medisaSaveValidateIncomingVehicleVersions($incomingVehicles, $currentVehiclesById, $context, $changedVehicleIds);
     if ($versionCheck !== true) {
@@ -101,7 +105,13 @@ $result = medisaMutateData(function (&$data) use ($incomingData) {
         if ($collectionChanged('tasitlar')) $data['tasitlar'] = $incomingVehicles;
         if ($collectionChanged('kayitlar')) $data['kayitlar'] = is_array($incomingData['kayitlar'] ?? null) ? $incomingData['kayitlar'] : ($data['kayitlar'] ?? []);
         if ($collectionChanged('branches')) $data['branches'] = medisaSaveNormalizeCollection($incomingData['branches'] ?? []);
-        if ($collectionChanged('users')) $data['users'] = $incomingUsers;
+        if ($usersCollectionChanged) {
+            $reconciledUsers = medisaReconcileUserCredentials($currentUsers, $incomingUsers, $passwordChanges, $context);
+            if (($reconciledUsers['success'] ?? false) !== true) {
+                return $reconciledUsers;
+            }
+            $data['users'] = $reconciledUsers['users'];
+        }
         if ($collectionChanged('ayarlar')) $data['ayarlar'] = is_array($incomingData['ayarlar'] ?? null) ? $incomingData['ayarlar'] : ($data['ayarlar'] ?? []);
         if ($collectionChanged('sifreler')) $data['sifreler'] = medisaSaveNormalizeCollection($incomingData['sifreler'] ?? []);
     } else {
@@ -111,7 +121,7 @@ $result = medisaMutateData(function (&$data) use ($incomingData) {
             : array_values(array_filter($incomingVehicles, function ($vehicle) use ($changedVehicleLookup) {
                 return isset($changedVehicleLookup[(string)($vehicle['id'] ?? '')]);
             }));
-        if (($collectionChanged('tasitlar') && !medisaSaveEnsureScopedVehiclesAreAllowed($vehiclesToAuthorize, $context)) || ($collectionChanged('users') && !medisaSaveEnsureScopedUsersAreAllowed($incomingUsers, $context))) {
+        if (($collectionChanged('tasitlar') && !medisaSaveEnsureScopedVehiclesAreAllowed($vehiclesToAuthorize, $context)) || ($usersCollectionChanged && !medisaSaveEnsureScopedUsersAreAllowed($incomingUsers, $context))) {
             return medisaBuildErrorResult('Kapsam dışı veri kaydı engellendi.', 403);
         }
 
@@ -126,10 +136,14 @@ $result = medisaMutateData(function (&$data) use ($incomingData) {
                 : $incomingVehicles;
         }
 
-        if ($collectionChanged('users')) {
+        if ($usersCollectionChanged) {
+            $reconciledUsers = medisaReconcileUserCredentials($currentUsers, $incomingUsers, $passwordChanges, $context);
+            if (($reconciledUsers['success'] ?? false) !== true) {
+                return $reconciledUsers;
+            }
             $data['users'] = medisaSaveMergeScopedCollection(
                 $currentUsers,
-                $incomingUsers,
+                $reconciledUsers['users'],
                 function ($user) use ($context) { return medisaCanManageUserRecord($user, $context); },
                 function ($user) use ($context) { return medisaCanManageUserRecord($user, $context); }
             );

@@ -40,6 +40,9 @@ npm run tool:verify-vehicle-save
 echo "[quality-gate] Sensitive data invariants"
 npm run tool:verify-sensitive-data
 
+echo "[quality-gate] User password invariants"
+npm run tool:verify-user-password
+
 echo "[quality-gate] KM state invariants"
 npm run tool:verify-km-state
 

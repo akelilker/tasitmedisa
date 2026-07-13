@@ -994,6 +994,25 @@ async function saveDataToServer(options) {
         var payloadObj = Object.assign({}, window.appData);
         delete payloadObj.kaskoDegerListesi;
         var mutationIntent = buildSaveMutationIntent();
+        var passwordChanges = options && options.userPasswordChanges && typeof options.userPasswordChanges === 'object'
+            ? options.userPasswordChanges
+            : null;
+        if (passwordChanges) {
+            var sanitizedPasswordChanges = {};
+            Object.keys(passwordChanges).forEach(function(userId) {
+                var key = String(userId || '').trim();
+                if (!key) return;
+                var value = passwordChanges[userId];
+                if (value == null || typeof value === 'object') return;
+                sanitizedPasswordChanges[key] = String(value);
+            });
+            if (Object.keys(sanitizedPasswordChanges).length > 0) {
+                payloadObj._medisaUserPasswordChanges = sanitizedPasswordChanges;
+                if ((mutationIntent.collections || []).indexOf('users') === -1) {
+                    mutationIntent.collections = (mutationIntent.collections || []).concat(['users']);
+                }
+            }
+        }
         payloadObj._medisaMutation = mutationIntent;
         var requestBody = JSON.stringify(payloadObj);
         var requestSnapshot;
@@ -1004,6 +1023,7 @@ async function saveDataToServer(options) {
             return false;
         }
         delete requestSnapshot._medisaMutation;
+        delete requestSnapshot._medisaUserPasswordChanges;
 
         var response = await fetch(API_SAVE, {
             method: 'POST',
