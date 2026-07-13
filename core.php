@@ -714,6 +714,127 @@ function medisaSetUserPasswordHash(&$user, $password) {
     unset($user['sifre']);
 }
 
+function medisaUserClientCredentialFieldNames() {
+    return [
+        'sifre',
+        'sifre_hash',
+        'sifre_guncellendi_at',
+        'yeni_sifre',
+        'portal_sifresi',
+        'password',
+        'password_hash',
+        'portal_sifresi_var',
+    ];
+}
+
+function medisaStripUserCredentialFields($user) {
+    if (!is_array($user)) {
+        return [];
+    }
+
+    $clean = $user;
+    foreach (medisaUserClientCredentialFieldNames() as $field) {
+        unset($clean[$field]);
+    }
+    return $clean;
+}
+
+function medisaProjectUserForClient($user) {
+    $original = is_array($user) ? $user : [];
+    $projected = medisaStripUserCredentialFields($original);
+    $projected['portal_sifresi_var'] = medisaUserHasPortalPassword($original);
+    return $projected;
+}
+
+/**
+ * İstemci users + transient parola değişikliklerini sunucu-side kalıcı users koleksiyonuna çevirir.
+ * Düz metin parola persist edilmez; istemci hash'ine güvenilmez.
+ *
+ * @return array{success:bool,users?:array,message?:string,status?:int}
+ */
+function medisaReconcileUserCredentials($currentUsers, $incomingUsers, $passwordChanges = null, $context = null) {
+    $currentById = [];
+    foreach (medisaSaveNormalizeCollection($currentUsers) as $currentUser) {
+        if (!is_array($currentUser)) {
+            continue;
+        }
+        $currentId = isset($currentUser['id']) ? (string)$currentUser['id'] : '';
+        if ($currentId !== '') {
+            $currentById[$currentId] = $currentUser;
+        }
+    }
+
+    $incomingList = medisaSaveNormalizeCollection($incomingUsers);
+    $incomingById = [];
+    foreach ($incomingList as $incomingUser) {
+        if (!is_array($incomingUser)) {
+            continue;
+        }
+        $incomingId = isset($incomingUser['id']) ? (string)$incomingUser['id'] : '';
+        if ($incomingId !== '') {
+            $incomingById[$incomingId] = $incomingUser;
+        }
+    }
+
+    $changes = [];
+    if (is_array($passwordChanges)) {
+        foreach ($passwordChanges as $rawUserId => $rawPassword) {
+            $userId = trim((string)$rawUserId);
+            if ($userId === '') {
+                return medisaBuildErrorResult('Geçersiz parola değişikliği.', 400);
+            }
+            if (!array_key_exists($userId, $incomingById)) {
+                return medisaBuildErrorResult('Bilinmeyen kullanıcı için parola değişikliği reddedildi.', 400);
+            }
+            if (!is_scalar($rawPassword) || is_bool($rawPassword)) {
+                return medisaBuildErrorResult('Geçersiz parola değeri.', 400);
+            }
+            $changes[$userId] = trim((string)$rawPassword);
+        }
+    }
+
+    $reconciled = [];
+    foreach ($incomingList as $incomingUser) {
+        if (!is_array($incomingUser)) {
+            continue;
+        }
+
+        $user = medisaStripUserCredentialFields($incomingUser);
+        $userId = isset($user['id']) ? (string)$user['id'] : '';
+        $currentUser = ($userId !== '' && isset($currentById[$userId])) ? $currentById[$userId] : null;
+        $newPassword = ($userId !== '' && array_key_exists($userId, $changes)) ? $changes[$userId] : null;
+
+        if ($newPassword !== null && $newPassword !== '') {
+            if (is_array($context) && !medisaCanManageUserRecord($incomingUser, $context)) {
+                return medisaBuildErrorResult('Bu kullanıcının parolasını değiştirme yetkiniz yok.', 403);
+            }
+            if (mb_strlen($newPassword, 'UTF-8') < 6) {
+                return medisaBuildErrorResult('Yeni şifre en az 6 karakter olmalı.', 400);
+            }
+            medisaSetUserPasswordHash($user, $newPassword);
+        } elseif (is_array($currentUser)) {
+            $currentHash = isset($currentUser['sifre_hash']) ? trim((string)$currentUser['sifre_hash']) : '';
+            $currentPlain = isset($currentUser['sifre']) ? trim((string)$currentUser['sifre']) : '';
+            if ($currentHash !== '') {
+                $user['sifre_hash'] = $currentUser['sifre_hash'];
+                if (isset($currentUser['sifre_guncellendi_at'])) {
+                    $user['sifre_guncellendi_at'] = $currentUser['sifre_guncellendi_at'];
+                }
+            } elseif ($currentPlain !== '') {
+                medisaSetUserPasswordHash($user, $currentPlain);
+            }
+        }
+
+        unset($user['sifre'], $user['portal_sifresi_var'], $user['yeni_sifre'], $user['portal_sifresi'], $user['password'], $user['password_hash']);
+        $reconciled[] = $user;
+    }
+
+    return [
+        'success' => true,
+        'users' => array_values($reconciled),
+    ];
+}
+
 function medisaComputeDriverDashboard($user, $data) {
     if (medisaIsYoneticiOnlyUser($user)) {
         return false;
@@ -1189,11 +1310,13 @@ function medisaFilterDataForContextWithUserPredicate($data, $context, $userPredi
         return isset($visibleAylikKayitIds[(string)($request['kayit_id'] ?? '')]);
     }));
 
+    $projectedUsers = array_map('medisaProjectUserForClient', $visibleUsers);
+
     return [
         'tasitlar' => $visibleVehicles,
         'kayitlar' => ($context['role'] ?? 'kullanici') === 'genel_yonetici' ? ($data['kayitlar'] ?? []) : [],
         'branches' => $visibleBranches,
-        'users' => $visibleUsers,
+        'users' => array_values($projectedUsers),
         'ayarlar' => $data['ayarlar'] ?? [
             'sirketAdi' => 'Medisa',
             'yetkiliKisi' => '',

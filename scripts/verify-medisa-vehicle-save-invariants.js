@@ -14,11 +14,11 @@ const ROOT = path.join(__dirname, '..');
 const EXPECTED_DIRECT_DATAAPI_CALLERS = 0;
 const EXPECTED_KAYIT_JS = '20260712.3';
 const EXPECTED_TASITLAR_JS = '20260712.6';
-const EXPECTED_AYARLAR_JS = '20260712.6';
-const EXPECTED_SCRIPT_CORE_QUERY = '20260712.9';
+const EXPECTED_AYARLAR_JS = '20260713.1';
+const EXPECTED_SCRIPT_CORE_QUERY = '20260713.1';
 const EXPECTED_VEHICLE_NOTIFICATION_DOMAIN = '20260712.1';
 const EXPECTED_DRIVER_SCRIPT_QUERY = '20260712.2';
-const EXPECTED_SW_CACHE = 'medisa-v2.235';
+const EXPECTED_SW_CACHE = 'medisa-v2.236';
 const EXPECTED_NOTIFICATIONS = '20260712.3';
 const EXPECTED_RAPORLAR = '20260712.1';
 const EXPECTED_KAYIT_CSS = '20260708.1';
@@ -1519,7 +1519,8 @@ function runStaticInvariants() {
   assert.match(sw, new RegExp("CACHE_VERSION = '" + EXPECTED_SW_CACHE + "'"));
 
   var indexHtml = read('index.html');
-  assert.match(indexHtml, /data-manager\.js\?v=20260712\.5/);
+  assert.match(indexHtml, /data-manager\.js\?v=20260713\.1/);
+  assert.doesNotMatch(indexHtml, /data-manager\.js\?v=20260712\.5/);
   assert.doesNotMatch(indexHtml, /data-manager\.js\?v=20260712\.4/);
   assert.doesNotMatch(indexHtml, /data-manager\.js\?v=20260712\.3/);
   assert.doesNotMatch(sw, /medisa-v2\.224/);
