@@ -11,14 +11,15 @@ require_once __DIR__ . '/lib/medisa-portal-accounts-runner.php';
 
 function medisaPortalAccountsCliUsage() {
     fwrite(STDERR, "Kullanım:\n");
-    fwrite(STDERR, "  php scripts/apply-medisa-portal-accounts.php --input=<repo-dışı-data.json> --output-dir=<repo-dışı-klasör> [--mode=dry-run|apply] [--confirm=KULLANICI_HESAPLARINI_OLUSTUR]\n");
+    fwrite(STDERR, "  php scripts/apply-medisa-portal-accounts.php --input=<repo-dışı-data.json> --output-dir=<repo-dışı-klasör> [--mode=dry-run|apply] [--password-policy=preserve-legacy|rotate-all-active] [--confirm=KULLANICI_HESAPLARINI_OLUSTUR]\n");
 }
 
-$options = getopt('', ['input:', 'output-dir:', 'mode::', 'confirm::']);
+$options = getopt('', ['input:', 'output-dir:', 'mode::', 'confirm::', 'password-policy::']);
 $inputPath = isset($options['input']) ? trim((string)$options['input']) : '';
 $outputDir = isset($options['output-dir']) ? trim((string)$options['output-dir']) : '';
 $mode = isset($options['mode']) ? strtolower(trim((string)$options['mode'])) : 'dry-run';
 $confirm = isset($options['confirm']) ? trim((string)$options['confirm']) : '';
+$passwordPolicy = medisaPortalAccountsNormalizePasswordPolicy($options['password-policy'] ?? 'preserve-legacy');
 
 if ($inputPath === '' || $outputDir === '') {
     medisaPortalAccountsCliUsage();
@@ -26,6 +27,10 @@ if ($inputPath === '' || $outputDir === '') {
 }
 if ($mode !== 'dry-run' && $mode !== 'apply') {
     fwrite(STDERR, "Geçersiz mode: {$mode}\n");
+    exit(1);
+}
+if ($passwordPolicy !== 'preserve-legacy' && $passwordPolicy !== 'rotate-all-active') {
+    fwrite(STDERR, "Geçersiz password-policy: {$passwordPolicy}\n");
     exit(1);
 }
 if ($mode === 'apply' && $confirm !== 'KULLANICI_HESAPLARINI_OLUSTUR') {
@@ -53,8 +58,11 @@ if (!is_array($data) || json_last_error() !== JSON_ERROR_NONE) {
 }
 
 $beforeUsers = array_values($data['users'] ?? []);
-$dryRun = medisaPortalAccountsComputeDryRunReport($data);
+$dryRun = $passwordPolicy === 'rotate-all-active'
+    ? medisaPortalAccountsComputeRotateAllDryRunReport($data)
+    : medisaPortalAccountsComputeDryRunReport($data);
 $exampleUsername = medisaBuildPortalUsernameBase('Serhan Köse');
+$transformOptions = ['password_policy' => $passwordPolicy];
 
 if ($mode === 'dry-run') {
     if (!medisaPortalAccountsVerifyInputIntegrity($inputReal, $integrityBefore)) {
@@ -63,6 +71,7 @@ if ($mode === 'dry-run') {
     }
     echo json_encode([
         'mode' => 'dry-run',
+        'password_policy' => $passwordPolicy,
         'input' => [
             'masked_file' => medisaPortalAccountsMaskBackupName(basename($inputReal)),
             'outside_repo' => true,
@@ -85,9 +94,22 @@ if ($mode === 'dry-run') {
     exit(0);
 }
 
+if (!medisaPortalAccountsHardenOutputAcl($outputReal)) {
+    fwrite(STDERR, "Output klasörü ACL sıkılaştırması başarısız.\n");
+    exit(1);
+}
+
 try {
-    $transformed = medisaPortalAccountsTransformData($data, true);
-    medisaPortalAccountsValidateTransformedData($transformed['data'], $beforeUsers);
+    $transformed = medisaPortalAccountsTransformData($data, true, $transformOptions);
+    if ($passwordPolicy === 'rotate-all-active') {
+        medisaPortalAccountsValidateRotateAllTransformedData(
+            $transformed['data'],
+            $beforeUsers,
+            $transformed['transform_meta'] ?? []
+        );
+    } else {
+        medisaPortalAccountsValidateTransformedData($transformed['data'], $beforeUsers);
+    }
 } catch (Throwable $e) {
     fwrite(STDERR, 'Apply dönüşümü başarısız: ' . $e->getMessage() . PHP_EOL);
     exit(1);
@@ -133,6 +155,7 @@ if (!medisaPortalAccountsVerifyInputIntegrity($inputReal, $integrityBefore)) {
 
 echo json_encode([
     'mode' => 'apply',
+    'password_policy' => $passwordPolicy,
     'input' => [
         'masked_file' => medisaPortalAccountsMaskBackupName(basename($inputReal)),
         'sha256_before' => $integrityBefore['sha256'],

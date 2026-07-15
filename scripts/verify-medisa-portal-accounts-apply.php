@@ -255,6 +255,67 @@ medisaDismissInitialPasswordSuggestion($dismissUser);
 paAssert('Devam seciminde hash degismez', $hashBeforeDismiss === $dismissUser['sifre_hash']);
 paAssert('Devam sonrasi oneri kapali', ($dismissUser['ilk_giris_parola_onerisi_bekliyor'] ?? null) === false);
 
+$preserveData = json_decode(file_get_contents($inputFile), true);
+$preserveResult = medisaPortalAccountsTransformData($preserveData, false, ['password_policy' => 'preserve-legacy']);
+$hashOnlyPreserved = null;
+foreach ($preserveResult['data']['users'] as $user) {
+    if (($user['id'] ?? '') === 'u-hash-only') {
+        $hashOnlyPreserved = $user;
+        break;
+    }
+}
+paAssert('Preserve policy mevcut hash korur', is_array($hashOnlyPreserved) && medisaVerifyUserPassword($hashOnlyPreserved, $legacyPassword));
+
+$rotateData = json_decode(file_get_contents($inputFile), true);
+$rotateBefore = array_values($rotateData['users']);
+$rotateResult = medisaPortalAccountsTransformData($rotateData, true, ['password_policy' => 'rotate-all-active']);
+medisaPortalAccountsValidateRotateAllTransformedData(
+    $rotateResult['data'],
+    $rotateBefore,
+    $rotateResult['transform_meta'] ?? []
+);
+$rotateUsers = [];
+foreach ($rotateResult['data']['users'] as $user) {
+    $rotateUsers[(string)($user['id'] ?? '')] = $user;
+}
+paAssert('Rotate mevcut username korunur', ($rotateUsers['u-existing']['kullanici_adi'] ?? '') === 'aliV');
+paAssert('Rotate yeni username olusturur', ($rotateUsers['u-new']['kullanici_adi'] ?? '') === 'serhanK');
+paAssert('Rotate collision username', ($rotateUsers['u-collision']['kullanici_adi'] ?? '') === 'serhanK2');
+paAssert('Rotate eski legacy parola gecersiz', !medisaVerifyUserPassword($rotateUsers['u-existing'], $existingPassword));
+$rotatedExistingPassword = '';
+foreach ($rotateResult['csv_rows'] as $row) {
+    if (($row['user_id'] ?? '') === 'u-existing') {
+        $rotatedExistingPassword = (string)($row['password_cell'] ?? '');
+        break;
+    }
+}
+paAssert('Rotate yeni parola gecerli', $rotatedExistingPassword !== '' && medisaVerifyUserPassword($rotateUsers['u-existing'], $rotatedExistingPassword));
+paAssert('Rotate pasif parola degismez', medisaVerifyUserPassword($rotateUsers['u-passive'], $legacyPassword));
+paAssert('Rotate aktif duz metin sifir', trim((string)($rotateUsers['u-existing']['sifre'] ?? '')) === '' && !array_key_exists('sifre', $rotateUsers['u-new']));
+paAssert('Rotate hash-only eski parola gecersiz', !medisaVerifyUserPassword($rotateUsers['u-hash-only'], $legacyPassword));
+paAssert('Rotate aktif hash var', medisaPortalAccountsHashIsValid($rotateUsers['u-hash-only']['sifre_hash'] ?? ''));
+paAssert('Rotate ilk giris onerisi aktif', ($rotateUsers['u-existing']['ilk_giris_parola_onerisi_bekliyor'] ?? null) === true
+    && ($rotateUsers['u-hash-only']['ilk_giris_parola_onerisi_bekliyor'] ?? null) === true);
+paAssert('Rotate kullanici sayisi korunur', count($rotateResult['data']['users']) === count($rotateBefore));
+paAssert('Rotate rol korunur', ($rotateUsers['u-hash-only']['rol'] ?? '') === 'genel_yonetici');
+paAssert('Rotate arac korunur', ($rotateUsers['u-existing']['zimmetli_araclar'][0] ?? '') === 'v1');
+
+$rotatePasswords = [];
+foreach (($rotateResult['transform_meta'] ?? []) as $meta) {
+    if (!is_array($meta) || ($meta['action'] ?? '') === 'passive_skipped') {
+        continue;
+    }
+    $pw = (string)($meta['plain_password'] ?? '');
+    $userRef = [
+        'kullanici_adi' => $meta['username'] ?? '',
+        'isim' => 'Serhan Köse',
+    ];
+    paAssert('Rotate parola politikasi', medisaPortalAccountsValidateRotatePassword($pw, $userRef) === null && mb_strlen($pw, 'UTF-8') >= 12);
+    paAssert('Rotate parola benzersiz', !in_array($pw, $rotatePasswords, true));
+    $rotatePasswords[] = $pw;
+}
+paAssert('Rotate stdout sizintisi yok', !str_contains($dryRun['output'], $existingPassword) && !str_contains($dryRun['output'], $legacyPassword));
+
 echo 'Summary: PASS=' . $passed . ' FAIL=' . $failed . PHP_EOL;
 if ($failed > 0) {
     exit(1);
