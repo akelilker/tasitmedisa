@@ -39,8 +39,9 @@ if ($currentPassword === '' || $newPassword === '') {
     exit;
 }
 
-if (mb_strlen($newPassword, 'UTF-8') < 6) {
-    echo json_encode(['success' => false, 'message' => 'Yeni şifre en az 6 karakter olmalı.'], JSON_UNESCAPED_UNICODE);
+$passwordPolicyError = medisaValidatePortalPassword($newPassword);
+if ($passwordPolicyError !== null) {
+    echo json_encode(['success' => false, 'message' => $passwordPolicyError], JSON_UNESCAPED_UNICODE);
     exit;
 }
 

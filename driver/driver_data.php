@@ -176,7 +176,11 @@ echo json_encode([
     'success' => true,
     'user' => [
         'id' => $user['id'],
-        'isim' => $user['isim'] ?? $user['name'] ?? ''
+        'isim' => $user['isim'] ?? $user['name'] ?? '',
+        'ilk_giris_parola_onerisi_bekliyor' => ($user['ilk_giris_parola_onerisi_bekliyor'] ?? false) === true,
+        'ilk_giris_parola_onerisi_gosterildi_tarihi' => $user['ilk_giris_parola_onerisi_gosterildi_tarihi'] ?? null,
+        'parola_son_degisim_tarihi' => $user['parola_son_degisim_tarihi'] ?? null,
+        'portal_credential_durumu' => $user['portal_credential_durumu'] ?? (medisaUserHasPortalPassword($user) ? 'aktif' : 'yok'),
     ],
     'session' => medisaBuildSessionPayload($context),
     'vehicles' => $vehicles,

@@ -37,9 +37,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../style-core.css?v=20260705.3">
-<link rel="stylesheet" href="driver-style.css?v=20260702.4">
+<link rel="stylesheet" href="driver-style.css?v=20260715.1">
 <script defer src="../portal-session.js?v=20260513.3"></script>
-<script defer src="../script-core.js?v=20260713.1"></script>
+<script defer src="../script-core.js?v=20260715.1"></script>
 <script defer src="../vehicle-notification-domain.js?v=20260712.1"></script>
 </head>
 <body class="dashboard-page driver-splash-active">
@@ -245,8 +245,8 @@
         <div id="driver-password-modal" class="driver-modal modal-overlay">
         <div class="driver-modal-content modal-container" onclick="event.stopPropagation();">
             <div class="modal-header">
-                <h2>Şifre Değiştir</h2>
-                <button type="button" onclick="closeDriverPasswordModal()" class="modal-close" aria-label="Kapat">
+                <h2 id="driver-password-modal-title">Şifre Değiştir</h2>
+                <button type="button" id="driver-password-modal-close" onclick="closeDriverPasswordModal()" class="modal-close" aria-label="Kapat">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <line x1="18" y1="6" x2="6" y2="18"></line>
                         <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -254,6 +254,14 @@
                 </button>
             </div>
             <div class="modal-body">
+                <div id="driver-password-suggestion" class="driver-password-suggestion" hidden>
+                    <p>Hesabınız için bir başlangıç parolası tanımlanmıştır. Güvenliğiniz için parolanızı şimdi değiştirebilirsiniz. Bu adımı atlayarak mevcut parolanızla kullanmaya devam edebilirsiniz.</p>
+                    <div class="driver-password-actions">
+                        <button type="button" class="btn-submit" onclick="startSuggestedPasswordChange()">Şimdi Parolamı Değiştir</button>
+                        <button type="button" id="driver-password-continue" class="universal-btn-cancel" onclick="continueWithCurrentPassword()">Mevcut Parolayla Devam Et</button>
+                    </div>
+                    <div id="driver-password-suggestion-message" class="driver-password-message" aria-live="polite"></div>
+                </div>
                 <form id="driver-password-form" class="driver-password-form" onsubmit="return submitDriverPasswordChange(event);">
                     <div class="form-group">
                         <label for="driver-current-password">Mevcut Şifre</label>
@@ -261,16 +269,16 @@
                     </div>
                     <div class="form-group">
                         <label for="driver-new-password">Yeni Şifre</label>
-                        <input type="password" id="driver-new-password" autocomplete="new-password" minlength="6" required>
+                        <input type="password" id="driver-new-password" autocomplete="new-password" minlength="10" required>
                     </div>
                     <div class="form-group">
                         <label for="driver-new-password-confirm">Yeni Şifre Tekrar</label>
-                        <input type="password" id="driver-new-password-confirm" autocomplete="new-password" minlength="6" required>
+                        <input type="password" id="driver-new-password-confirm" autocomplete="new-password" minlength="10" required>
                     </div>
                     <div id="driver-password-message" class="driver-password-message" aria-live="polite"></div>
                     <div class="driver-password-actions">
                         <button type="submit" id="driver-password-submit" class="btn-submit">Kaydet</button>
-                        <button type="button" class="universal-btn-cancel" onclick="closeDriverPasswordModal()">Vazgeç</button>
+                        <button type="button" id="driver-password-cancel" class="universal-btn-cancel" onclick="closeDriverPasswordModal()">Vazgeç</button>
                     </div>
                 </form>
             </div>
@@ -434,6 +442,6 @@
             <button type="button" class="btn-confirm-yes" onclick="confirmMuayeneSubmit()">Evet</button>
         </div>
     </div>
-<script defer src="driver-script.js?v=20260712.2"></script>
+<script defer src="driver-script.js?v=20260715.1"></script>
 </body>
 </html>

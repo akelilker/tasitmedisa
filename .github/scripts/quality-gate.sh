@@ -46,4 +46,7 @@ npm run tool:verify-user-password
 echo "[quality-gate] KM state invariants"
 npm run tool:verify-km-state
 
+echo "[quality-gate] Portal accounts apply invariants"
+npm run tool:verify-portal-accounts-apply
+
 echo "[quality-gate] OK"

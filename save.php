@@ -60,6 +60,9 @@ $result = medisaMutateData(function (&$data) use ($incomingData) {
     $passwordChanges = is_array($incomingData['_medisaUserPasswordChanges'] ?? null)
         ? $incomingData['_medisaUserPasswordChanges']
         : null;
+    if (is_array($passwordChanges) && count($passwordChanges) > 0) {
+        return medisaBuildErrorResult('Parola yönetimi yalnız güvenli başlangıç parolası yenileme işlemiyle yapılabilir.', 400);
+    }
     $mutation = is_array($incomingData['_medisaMutation'] ?? null) ? $incomingData['_medisaMutation'] : null;
     $mutationCollections = $mutation !== null && is_array($mutation['collections'] ?? null)
         ? array_values(array_unique(array_map('strval', $mutation['collections'])))

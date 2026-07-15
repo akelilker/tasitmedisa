@@ -777,9 +777,12 @@
                             <label class="form-label" for="user-username">Kullanıcı Adı (portal girişi)</label>
                             <input type="text" id="user-username" class="form-input" placeholder="Plaka veya Kullanıcı Adı" autocomplete="username">
                         </div>
-                        <div class="form-section">
-                            <label class="form-label" for="user-password">Şifre (portal girişi)</label>
-                            <input type="password" id="user-password" class="form-input" placeholder="Şifre" autocomplete="new-password">
+                        <div class="form-section user-portal-status-section">
+                            <span class="form-label">Portal Hesabı</span>
+                            <div id="user-portal-status" class="settings-card-count">Hesap Yok</div>
+                            <div id="user-password-suggestion-status" class="settings-card-count">İlk giriş önerisi: -</div>
+                            <div id="user-password-changed-at" class="settings-card-count">Parola son değişim: -</div>
+                            <button type="button" id="user-password-reset-btn" class="settings-add-text-btn u-hidden" onclick="resetUserInitialPassword()">Başlangıç Parolası Oluştur / Yenile</button>
                         </div>
                         <div class="form-section form-section-vehicles">
                             <span id="user-vehicles-label" class="form-label">Tahsis Edilecek Taşıt</span>
@@ -801,6 +804,33 @@
                             <button type="button" class="settings-btn-delete u-hidden" onclick="deleteUser(document.getElementById('user-id').value)" id="user-delete-btn">Sil</button>
                         </div>
                     </form>
+                </div>
+            </div>
+        </div>
+
+        <div id="user-credential-result-modal" class="modal-overlay ayarlar-modal-overlay">
+            <div class="modal-container">
+                <div class="modal-header">
+                    <h2>BAŞLANGIÇ PORTAL HESABI</h2>
+                    <button class="modal-close" onclick="closeUserCredentialResultModal()">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="user-credential-result">
+                        <p>Bu bilgi yalnız bir kez gösterilir. Güvenli biçimde kullanıcıya iletin.</p>
+                        <label class="form-label" for="user-credential-result-username">Kullanıcı Adı</label>
+                        <input type="text" id="user-credential-result-username" class="form-input" readonly>
+                        <label class="form-label" for="user-credential-result-password">Başlangıç Parolası</label>
+                        <input type="text" id="user-credential-result-password" class="form-input" readonly>
+                        <div class="universal-btn-group">
+                            <button type="button" class="universal-btn-save" onclick="copyUserCredentialResult()">Kopyala</button>
+                            <button type="button" class="universal-btn-cancel" onclick="closeUserCredentialResultModal()">Kapat</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1289,7 +1319,7 @@
     <script defer src="portal-session.js?v=20260513.3"></script>
     <script defer src="data-manager.js?v=20260713.1"></script>
     <script defer src="data-service.js?v=20260712.2"></script>
-    <script defer src="script-core.js?v=20260713.1"></script>
+    <script defer src="script-core.js?v=20260715.1"></script>
 </body>
 </html>
 

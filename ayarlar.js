@@ -1755,6 +1755,10 @@
           isim: u.name || u.isim || '',
           kullanici_adi: u.kullanici_adi || '',
           portal_sifresi_var: u.portal_sifresi_var === true,
+          portal_credential_durumu: u.portal_credential_durumu || (u.portal_sifresi_var === true ? 'aktif' : 'yok'),
+          ilk_giris_parola_onerisi_bekliyor: u.ilk_giris_parola_onerisi_bekliyor === true,
+          ilk_giris_parola_onerisi_gosterildi_tarihi: u.ilk_giris_parola_onerisi_gosterildi_tarihi || null,
+          parola_son_degisim_tarihi: u.parola_son_degisim_tarihi || null,
           telefon: u.phone || '',
           email: u.email || '',
           sube_id: sube_id,
@@ -2304,6 +2308,37 @@
       }
     });
   
+    function formatPortalStatusDate(value) {
+      if (!value) return '-';
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return '-';
+      return date.toLocaleString('tr-TR');
+    }
+
+    function syncUserPortalCredentialStatus(user, scope) {
+      const status = document.getElementById('user-portal-status');
+      const suggestion = document.getElementById('user-password-suggestion-status');
+      const changedAt = document.getElementById('user-password-changed-at');
+      const resetBtn = document.getElementById('user-password-reset-btn');
+      const hasAccount = !!(user && user.portal_sifresi_var === true);
+      if (status) {
+        status.textContent = 'Portal hesabı: ' + (hasAccount ? 'Var' : 'Yok')
+          + ' · Hesap: ' + (user && user.aktif === false ? 'Pasif' : 'Aktif');
+      }
+      if (suggestion) {
+        suggestion.textContent = 'İlk giriş önerisi: '
+          + (user && user.ilk_giris_parola_onerisi_bekliyor === true ? 'Bekliyor' : (hasAccount ? 'Tamamlandı' : '-'));
+      }
+      if (changedAt) {
+        changedAt.textContent = 'Parola son değişim: '
+          + formatPortalStatusDate(user && user.parola_son_degisim_tarihi);
+      }
+      if (resetBtn) {
+        const canReset = !!(user && user.id && scope && scope.role === 'genel_yonetici');
+        resetBtn.classList.toggle('u-hidden', !canReset);
+      }
+    }
+
     window.openUserFormModal = function openUserFormModal(editId = null, options) {
       const opts = options && typeof options === 'object' ? options : {};
       if (!opts.fromVehicleAssign && typeof window.medisaDismissVehicleAssignUserSavedListener === 'function') {
@@ -2322,7 +2357,6 @@
       const emailInput = $('#user-email', modal);
       const roleSelect = $('#user-role', modal);
       const usernameInput = $('#user-username', modal);
-      const passwordInput = $('#user-password', modal);
       const title = $('.modal-header h2', modal);
       const deleteBtn = $('#user-delete-btn', modal);
 
@@ -2338,10 +2372,7 @@
       // Form temizle
       if (form) form.reset();
       if (idInput) idInput.value = '';
-      if (passwordInput) {
-        passwordInput.value = '';
-        passwordInput.placeholder = 'Şifre';
-      }
+      syncUserPortalCredentialStatus(null, scope);
       if (branchReadonly) branchReadonly.value = '';
       if (deleteBtn) {
         deleteBtn.classList.add('u-hidden');
@@ -2374,12 +2405,7 @@
         if (emailInput) emailInput.value = user.email || '';
         if (roleSelect) roleSelect.value = scope.isBranchManager ? 'kullanici' : getUiRoleFromUser(user);
         if (usernameInput) usernameInput.value = user.kullanici_adi || '';
-        if (passwordInput) {
-          passwordInput.value = '';
-          passwordInput.placeholder = user.portal_sifresi_var === true
-            ? 'Değiştirmek için yeni şifre girin'
-            : 'Şifre';
-        }
+        syncUserPortalCredentialStatus(user, scope);
         if (branchReadonly) {
           const userBranch = readAllBranches().find(function(branch) {
             return String(branch && branch.id) === String(getUserPrimaryBranchId(user));
@@ -2564,7 +2590,6 @@
         const emailInput = document.getElementById('user-email');
         const roleSelect = document.getElementById('user-role');
         const usernameInput = document.getElementById('user-username');
-        const passwordInput = document.getElementById('user-password');
         const vehiclesContainer = document.getElementById('user-vehicles-container');
         const scope = getUserManagementSessionScope();
   
@@ -2612,7 +2637,6 @@
           return;
         }
         const kullanici_adi = usernameInput ? usernameInput.value.trim() : '';
-        const sifre = passwordInput ? passwordInput.value.trim() : '';
   
         // Validasyon
         if (!name || !name.trim()) {
@@ -2641,17 +2665,7 @@
           return;
         }
   
-        // Portal girişi: Kullanıcı veya şube yöneticisine taşıt atanmışsa kullanıcı adı ve şifre zorunlu
-        const needsPortalCredentials = hasAssignedVehicles && (role === 'kullanici' || role === 'sube_yonetici');
-        const hasExistingPortalPassword = !!(existingUser && existingUser.portal_sifresi_var === true);
-        if (needsPortalCredentials && (!kullanici_adi || (!sifre && !hasExistingPortalPassword))) {
-          alert('Taşıt atanan kullanıcı veya yönetici için "Kullanıcı Adı (portal girişi)" ve "Şifre (portal girişi)" zorunludur. Bu bilgilerle kullanıcı paneline girilebilir.');
-          if (usernameInput) usernameInput.focus();
-          return;
-        }
-
         let savedUserId = id;
-        const userPasswordChanges = {};
 
         const reassignedVehicles = vehicles
           .filter(function(v) {
@@ -2699,10 +2713,6 @@
             users[idx].kullanici_paneli = kullanici_paneli;
             users[idx].surucu_paneli = kullanici_paneli;
             users[idx].kullanici_adi = kullanici_adi;
-            if (sifre !== '') {
-              userPasswordChanges[String(id)] = sifre;
-              users[idx].portal_sifresi_var = true;
-            }
           }
         } else {
           // Yeni EKLEME
@@ -2718,14 +2728,11 @@
             kullanici_paneli: kullanici_paneli,
             surucu_paneli: kullanici_paneli,
             kullanici_adi: kullanici_adi,
-            portal_sifresi_var: sifre !== '',
+            portal_sifresi_var: false,
             createdAt: new Date().toISOString()
           };
           users.push(newUser);
           savedUserId = newUserId;
-          if (sifre !== '') {
-            userPasswordChanges[String(newUserId)] = sifre;
-          }
         }
   
         // atanmış Taşıtlar: tek kaynak vehicle.assignedUserId
@@ -2745,10 +2752,7 @@
             if (u && !v.branchId && primarySube) v.branchId = primarySube;
           }
         });
-        const persistOptions = Object.keys(userPasswordChanges).length > 0
-          ? { userPasswordChanges: userPasswordChanges }
-          : undefined;
-        const persisted = await persistUserManagementState(users, vehicles, persistOptions);
+        const persisted = await persistUserManagementState(users, vehicles);
         if (persisted !== true) {
           setUserManagementLocalState(previousUsers, previousVehicles);
           renderUserList();
@@ -2780,6 +2784,85 @@
         }
       } finally {
         if (saveBtn) saveBtn.disabled = false;
+      }
+    };
+
+    window.resetUserInitialPassword = async function resetUserInitialPassword() {
+      const userIdInput = document.getElementById('user-id');
+      const userId = userIdInput ? userIdInput.value.trim() : '';
+      const resetBtn = document.getElementById('user-password-reset-btn');
+      const token = typeof window.getStoredPortalToken === 'function' ? window.getStoredPortalToken() : '';
+      if (!userId || !token) {
+        alert('Geçerli kullanıcı ve yönetici oturumu gerekli.');
+        return;
+      }
+      if (!window.confirm('Bu kullanıcı için yeni bir başlangıç parolası üretilecek. Mevcut parola geçersiz olacaktır. Devam edilsin mi?')) {
+        return;
+      }
+      if (resetBtn) resetBtn.disabled = true;
+      try {
+        const response = await fetch('admin/user_portal_credentials.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+          },
+          body: JSON.stringify({ userId: userId })
+        });
+        const result = await response.json();
+        if (!response.ok || !result.success || !result.initialPassword) {
+          alert((result && result.message) || 'Başlangıç parolası oluşturulamadı.');
+          return;
+        }
+        const users = readAllUsers();
+        const user = users.find(function(item) { return String(item.id) === String(userId); });
+        if (user && result.user) {
+          Object.assign(user, result.user);
+          user.name = result.user.isim || result.user.name || user.name;
+          syncUsersToAppData(users, { skipServerSave: true });
+          syncUserPortalCredentialStatus(user, getUserManagementSessionScope());
+          const usernameInput = document.getElementById('user-username');
+          if (usernameInput) usernameInput.value = result.username || user.kullanici_adi || '';
+        }
+        const usernameResult = document.getElementById('user-credential-result-username');
+        const passwordResult = document.getElementById('user-credential-result-password');
+        const resultModal = document.getElementById('user-credential-result-modal');
+        if (usernameResult) usernameResult.value = result.username || '';
+        if (passwordResult) passwordResult.value = result.initialPassword;
+        if (resultModal) {
+          resultModal.style.display = 'flex';
+          requestAnimationFrame(function() { resultModal.classList.add('active'); });
+        }
+        renderUserList();
+      } catch (error) {
+        alert('Başlangıç parolası oluşturulurken bağlantı hatası oluştu.');
+      } finally {
+        if (resetBtn) resetBtn.disabled = false;
+      }
+    };
+
+    window.copyUserCredentialResult = async function copyUserCredentialResult() {
+      const username = document.getElementById('user-credential-result-username');
+      const password = document.getElementById('user-credential-result-password');
+      const text = 'Kullanıcı Adı: ' + (username ? username.value : '')
+        + '\nBaşlangıç Parolası: ' + (password ? password.value : '');
+      try {
+        await navigator.clipboard.writeText(text);
+        alert('Başlangıç hesap bilgileri panoya kopyalandı.');
+      } catch (error) {
+        alert('Panoya kopyalanamadı.');
+      }
+    };
+
+    window.closeUserCredentialResultModal = function closeUserCredentialResultModal() {
+      const modal = document.getElementById('user-credential-result-modal');
+      const username = document.getElementById('user-credential-result-username');
+      const password = document.getElementById('user-credential-result-password');
+      if (username) username.value = '';
+      if (password) password.value = '';
+      if (modal) {
+        modal.classList.remove('active');
+        setTimeout(function() { modal.style.display = 'none'; }, 300);
       }
     };
   
@@ -2935,6 +3018,11 @@
         const branchName = branch ? branch.name : '-';
         const roleLabelMarkup = buildUserRoleLabelMarkup(user, branchName);
         const phoneLine = formatTrGsmDisplay(user.phone || '') || '';
+        const usernameLine = user.kullanici_adi || '-';
+        const accountLine = user.portal_sifresi_var === true ? 'Portal: Var' : 'Portal: Yok';
+        const activeLine = user.aktif === false ? 'Pasif' : 'Aktif';
+        const suggestionLine = user.ilk_giris_parola_onerisi_bekliyor === true ? 'İlk giriş: Bekliyor' : 'İlk giriş: Tamamlandı';
+        const changedLine = 'Parola değişim: ' + formatPortalStatusDate(user.parola_son_degisim_tarihi);
 
         if (scope.isBranchManager) {
           return `
@@ -2942,6 +3030,8 @@
             <div class="settings-card-content">
               ${buildUserCardNameMarkup(user.name || 'İsimsiz')}
               ${roleLabelMarkup}
+              <div class="settings-card-count">${escapeHtml(usernameLine)} · ${accountLine} · ${activeLine}</div>
+              <div class="settings-card-count">${suggestionLine} · ${changedLine}</div>
             </div>
           </div>
         `;
@@ -2953,6 +3043,8 @@
               ${buildUserCardNameMarkup(user.name || 'İsimsiz')}
               ${roleLabelMarkup}
               ${phoneLine ? '<div class="settings-card-phone">' + escapeHtml(phoneLine) + '</div>' : ''}
+              <div class="settings-card-count">${escapeHtml(usernameLine)} · ${accountLine} · ${activeLine}</div>
+              <div class="settings-card-count">${suggestionLine} · ${changedLine}</div>
             </div>
           </div>
         `;

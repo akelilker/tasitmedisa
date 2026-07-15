@@ -3499,6 +3499,32 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
   width: 100%;
 }
 
+.driver-password-suggestion {
+  color: #a0aec0;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.driver-password-suggestion p {
+  margin: 8px 0 20px;
+}
+
+#driver-password-modal .driver-password-suggestion .driver-password-actions {
+  flex-direction: column;
+}
+
+#driver-password-modal .modal-close[hidden],
+#driver-password-modal .driver-password-actions [hidden] {
+  display: none !important;
+}
+
+#driver-password-modal .modal-header h2 {
+  max-width: calc(100% - 32px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: clamp(14px, 3.4vw, 20px);
+}
+
 .driver-feedback-actions {
   display: flex;
   flex-wrap: nowrap;
