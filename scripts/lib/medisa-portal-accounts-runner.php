@@ -851,16 +851,25 @@ function medisaPortalAccountsHardenOutputAcl($path) {
     if (PHP_OS_FAMILY !== 'Windows') {
         return true;
     }
-    $username = getenv('USERNAME') ?: getenv('USER') ?: '';
-    if ($username === '') {
+    $user = getenv('USERNAME') ?: getenv('USER') ?: '';
+    $domain = getenv('USERDOMAIN') ?: '';
+    $principal = $domain !== '' && $user !== '' ? $domain . '\\' . $user : $user;
+    if ($principal === '') {
         return false;
     }
-    $command = 'icacls ' . escapeshellarg($path)
-        . ' /inheritance:r /grant:r ' . escapeshellarg($username . ':(F)');
-    $output = [];
-    $exitCode = 1;
-    @exec($command, $output, $exitCode);
-    return $exitCode === 0;
+    $commands = [
+        'icacls ' . escapeshellarg($path) . ' /inheritance:r',
+        'icacls ' . escapeshellarg($path) . ' /grant:r ' . escapeshellarg($principal . ':(F)'),
+    ];
+    foreach ($commands as $command) {
+        $output = [];
+        $exitCode = 1;
+        @exec($command, $output, $exitCode);
+        if ($exitCode !== 0) {
+            return false;
+        }
+    }
+    return is_readable($path);
 }
 
 function medisaPortalAccountsMaskBackupName($basename) {

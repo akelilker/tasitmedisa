@@ -94,11 +94,6 @@ if ($mode === 'dry-run') {
     exit(0);
 }
 
-if (!medisaPortalAccountsHardenOutputAcl($outputReal)) {
-    fwrite(STDERR, "Output klasörü ACL sıkılaştırması başarısız.\n");
-    exit(1);
-}
-
 try {
     $transformed = medisaPortalAccountsTransformData($data, true, $transformOptions);
     if ($passwordPolicy === 'rotate-all-active') {
@@ -139,6 +134,8 @@ if (!medisaPortalAccountsWriteAtomic($csvPath, $csvContent)) {
     fwrite(STDERR, "Output CSV yazılamadı.\n");
     exit(1);
 }
+$jsonSha = hash_file('sha256', $jsonPath);
+$csvSha = hash_file('sha256', $csvPath);
 if (!medisaPortalAccountsHardenOutputAcl($jsonPath) || !medisaPortalAccountsHardenOutputAcl($csvPath)) {
     @unlink($jsonPath);
     @unlink($csvPath);
@@ -165,8 +162,8 @@ echo json_encode([
     'outputs' => [
         'json_file' => basename($jsonPath),
         'csv_file' => basename($csvPath),
-        'json_sha256' => hash_file('sha256', $jsonPath),
-        'csv_sha256' => hash_file('sha256', $csvPath),
+        'json_sha256' => $jsonSha,
+        'csv_sha256' => $csvSha,
         'csv_row_count' => count($transformed['csv_rows']),
         'outside_repo' => true,
     ],
