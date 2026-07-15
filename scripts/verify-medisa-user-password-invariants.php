@@ -28,13 +28,16 @@ $contextAdmin = [
     'user_id' => 'admin1',
     'branch_ids' => [],
 ];
+$fixturePassword = medisaGenerateInitialPortalPassword();
+$replacementPassword = medisaGenerateInitialPortalPassword();
+$legacyPassword = medisaGenerateInitialPortalPassword();
 
 // 1) Client projection
 $userWithHash = [
     'id' => 'u1',
     'isim' => 'Test Kullanici',
     'sifre' => 'should-not-leak',
-    'sifre_hash' => password_hash('secret123', PASSWORD_DEFAULT),
+    'sifre_hash' => password_hash($fixturePassword, PASSWORD_DEFAULT),
     'sifre_guncellendi_at' => '2026-01-01T00:00:00+00:00',
     'password' => 'also-leak',
 ];
@@ -53,25 +56,25 @@ pwAssertSame('Projection portal_sifresi_var false', false, $projectedEmpty['port
 // 2) Yeni kullanici + yeni parola
 $createResult = medisaReconcileUserCredentials([], [
     ['id' => 'u-new', 'isim' => 'Yeni'],
-], ['u-new' => 'parola123'], $contextAdmin);
+], ['u-new' => $fixturePassword], $contextAdmin);
 pwAssert('Yeni kullanici reconcile basarili', ($createResult['success'] ?? false) === true);
 $created = $createResult['users'][0] ?? [];
 pwAssert('Yeni kullanici duz metin yok', !isset($created['sifre']) || $created['sifre'] === '');
 pwAssert('Yeni kullanici hash var', isset($created['sifre_hash']) && trim((string)$created['sifre_hash']) !== '');
-pwAssert('Yeni kullanici password_verify', medisaVerifyUserPassword($created, 'parola123'));
+pwAssert('Yeni kullanici password_verify', medisaVerifyUserPassword($created, $fixturePassword));
 pwAssert('Yeni kullanici portal_sifresi_var persist edilmez', !array_key_exists('portal_sifresi_var', $created));
 
 // 3) Mevcut kullanici + yeni parola
 $oldHashUser = ['id' => 'u3', 'isim' => 'Eski'];
-medisaSetUserPasswordHash($oldHashUser, 'eskiParola1');
+medisaSetUserPasswordHash($oldHashUser, $fixturePassword);
 $oldStamp = $oldHashUser['sifre_guncellendi_at'] ?? '';
 $updateResult = medisaReconcileUserCredentials([$oldHashUser], [
     ['id' => 'u3', 'isim' => 'Eski', 'sifre_hash' => 'client-fake-hash'],
-], ['u3' => 'yeniParola9'], $contextAdmin);
+], ['u3' => $replacementPassword], $contextAdmin);
 pwAssert('Guncelleme reconcile basarili', ($updateResult['success'] ?? false) === true);
 $updated = $updateResult['users'][0] ?? [];
-pwAssert('Eski parola dogrulanmaz', !medisaVerifyUserPassword($updated, 'eskiParola1'));
-pwAssert('Yeni parola dogrulanir', medisaVerifyUserPassword($updated, 'yeniParola9'));
+pwAssert('Eski parola dogrulanmaz', !medisaVerifyUserPassword($updated, $fixturePassword));
+pwAssert('Yeni parola dogrulanir', medisaVerifyUserPassword($updated, $replacementPassword));
 pwAssert('Guncellemede duz metin yok', !isset($updated['sifre']) || $updated['sifre'] === '');
 
 // 4) Mevcut kullanici + bos parola -> hash korunur
@@ -91,10 +94,21 @@ $fakeHashResult = medisaReconcileUserCredentials([$oldHashUser], [
 pwAssert('Sahte hash reconcile basarili', ($fakeHashResult['success'] ?? false) === true);
 $fakeHandled = $fakeHashResult['users'][0] ?? [];
 pwAssertSame('Sahte hash kabul edilmez', $oldHashUser['sifre_hash'], $fakeHandled['sifre_hash'] ?? null);
-pwAssert('Sahte hash sonrasi eski parola dogrulanir', medisaVerifyUserPassword($fakeHandled, 'eskiParola1'));
+pwAssert('Sahte hash sonrasi eski parola dogrulanir', medisaVerifyUserPassword($fakeHandled, $fixturePassword));
+
+$metadataUser = $oldHashUser;
+$metadataUser['ilk_giris_parola_onerisi_bekliyor'] = true;
+$metadataResult = medisaReconcileUserCredentials([$metadataUser], [
+    ['id' => 'u3', 'isim' => 'Eski', 'ilk_giris_parola_onerisi_bekliyor' => false],
+], null, $contextAdmin);
+pwAssertSame(
+    'Credential metadata istemciden degistirilemez',
+    true,
+    $metadataResult['users'][0]['ilk_giris_parola_onerisi_bekliyor'] ?? null
+);
 
 // 6) Legacy duz metin goc
-$legacyUser = ['id' => 'u4', 'isim' => 'Legacy', 'sifre' => 'legacyPwd1'];
+$legacyUser = ['id' => 'u4', 'isim' => 'Legacy', 'sifre' => $legacyPassword];
 $legacyResult = medisaReconcileUserCredentials([$legacyUser], [
     ['id' => 'u4', 'isim' => 'Legacy', 'sifre' => 'should-ignore'],
 ], null, $contextAdmin);
@@ -102,7 +116,7 @@ pwAssert('Legacy reconcile basarili', ($legacyResult['success'] ?? false) === tr
 $migrated = $legacyResult['users'][0] ?? [];
 pwAssert('Legacy duz metin kaldirildi', !isset($migrated['sifre']) || $migrated['sifre'] === '');
 pwAssert('Legacy hash var', isset($migrated['sifre_hash']) && trim((string)$migrated['sifre_hash']) !== '');
-pwAssert('Legacy password_verify', medisaVerifyUserPassword($migrated, 'legacyPwd1'));
+pwAssert('Legacy password_verify', medisaVerifyUserPassword($migrated, $legacyPassword));
 
 // 7) Yeni kullanici + parola yok
 $noPassResult = medisaReconcileUserCredentials([], [
@@ -116,16 +130,55 @@ pwAssert('Parolasiz duz metin yok', !isset($noPassUser['sifre']) || $noPassUser[
 // 8) Bilinmeyen user ID password change
 $unknownResult = medisaReconcileUserCredentials([], [
     ['id' => 'u6', 'isim' => 'Var'],
-], ['u-unknown' => 'parola123'], $contextAdmin);
+], ['u-unknown' => $fixturePassword], $contextAdmin);
 pwAssert('Bilinmeyen ID reddedilir', ($unknownResult['success'] ?? false) !== true);
 pwAssertSame('Bilinmeyen ID status 400', 400, (int)($unknownResult['status'] ?? 0));
 
-// 9) 6 karakter alti
+// 9) Parola politikası
 $shortResult = medisaReconcileUserCredentials([], [
     ['id' => 'u7', 'isim' => 'Kisa'],
 ], ['u7' => '12345'], $contextAdmin);
 pwAssert('Kisa parola reddedilir', ($shortResult['success'] ?? false) !== true);
 pwAssertSame('Kisa parola status 400', 400, (int)($shortResult['status'] ?? 0));
+pwAssertSame('Karmasik parola politikasi', null, medisaValidatePortalPassword($fixturePassword));
+
+// 10) Kullanıcı adı normalizasyonu ve case-insensitive unique
+pwAssertSame('Turkce kullanici adi', 'sukruO', medisaBuildPortalUsernameBase('Şükrü Öztürk'));
+pwAssertSame('Cok adli kullanici adi', 'mehmetY', medisaBuildPortalUsernameBase('Mehmet Ali Yılmaz'));
+$usernameUsers = [
+    ['id' => 'u8', 'isim' => 'Serhan Köse', 'kullanici_adi' => 'serhanK'],
+    ['id' => 'u9', 'isim' => 'Serhan Köse', 'kullanici_adi' => 'SERHANK2'],
+];
+pwAssertSame('Duplicate sira numarasi', 'serhanK3', medisaCreateUniquePortalUsername('Serhan Köse', $usernameUsers));
+$duplicateResult = medisaReconcileUserCredentials([], [
+    ['id' => 'u8', 'isim' => 'Bir', 'kullanici_adi' => 'portalK'],
+    ['id' => 'u9', 'isim' => 'Iki', 'kullanici_adi' => 'PORTALK'],
+], null, $contextAdmin);
+pwAssert('Case-insensitive duplicate reddedilir', ($duplicateResult['success'] ?? false) !== true);
+
+// 11) Başlangıç parolası metadata ve projection
+$initialUser = ['id' => 'u10', 'isim' => 'Başlangıç'];
+$initialPassword = medisaGenerateInitialPortalPassword();
+medisaSetUserPasswordHash($initialUser, $initialPassword, true);
+pwAssert('Baslangic parola hash dogrulanir', medisaVerifyUserPassword($initialUser, $initialPassword));
+pwAssertSame('Ilk giris onerisi bekliyor', true, $initialUser['ilk_giris_parola_onerisi_bekliyor'] ?? null);
+$initialHash = $initialUser['sifre_hash'] ?? '';
+medisaDismissInitialPasswordSuggestion($initialUser);
+pwAssertSame('Ilk giris onerisi kapandi', false, $initialUser['ilk_giris_parola_onerisi_bekliyor'] ?? null);
+pwAssertSame('Devam seciminde hash degismez', $initialHash, $initialUser['sifre_hash'] ?? '');
+pwAssert('Devam seciminde ayni parola calisir', medisaVerifyUserPassword($initialUser, $initialPassword));
+$resetPassword = medisaAssignInitialPortalPassword($initialUser, [$initialUser]);
+pwAssert('Yonetici reset yeni hash olusturur', $initialHash !== ($initialUser['sifre_hash'] ?? ''));
+pwAssert('Yonetici reset eski parolayi gecersiz kilar', !medisaVerifyUserPassword($initialUser, $initialPassword));
+pwAssert('Yonetici reset yeni parolayi dogrular', medisaVerifyUserPassword($initialUser, $resetPassword));
+$initialProjection = medisaProjectUserForClient($initialUser);
+pwAssert('Baslangic parola hash projection yok', !array_key_exists('sifre_hash', $initialProjection));
+pwAssert('Baslangic parola duz metin projection yok', !array_key_exists('sifre', $initialProjection));
+$inactiveContext = medisaBuildAccessContext([
+    'users' => [['id' => 'inactive', 'aktif' => false, 'rol' => 'genel_yonetici']],
+    'tasitlar' => [],
+], ['user_id' => 'inactive']);
+pwAssertSame('Pasif kullanici authenticated context alamaz', null, $inactiveContext);
 
 // Filter projection contract (load response users)
 $sampleData = [

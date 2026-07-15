@@ -68,6 +68,7 @@ function medisaDefaultData() {
         'duzeltme_talepleri' => [],
         'notificationReadState' => [],
         'monthlyTodoWhatsAppLogs' => [],
+        'audit_events' => [],
     ];
 }
 
@@ -685,6 +686,135 @@ function medisaUserHasPortalPassword($user) {
     return $plainPassword !== '' || $passwordHash !== '';
 }
 
+function medisaValidatePortalPassword($password) {
+    $value = (string)$password;
+    if (mb_strlen($value, 'UTF-8') < 10) {
+        return 'Parola en az 10 karakter olmalı.';
+    }
+    if (!preg_match('/[A-Z]/', $value)
+        || !preg_match('/[a-z]/', $value)
+        || !preg_match('/[0-9]/', $value)
+        || !preg_match('/[^A-Za-z0-9]/', $value)) {
+        return 'Parola büyük harf, küçük harf, sayı ve özel karakter içermeli.';
+    }
+    return null;
+}
+
+function medisaNormalizePortalUsernameAscii($value) {
+    $mapped = strtr(trim((string)$value), [
+        'ç' => 'c', 'ğ' => 'g', 'ı' => 'i', 'ö' => 'o', 'ş' => 's', 'ü' => 'u',
+        'Ç' => 'C', 'Ğ' => 'G', 'İ' => 'I', 'I' => 'I', 'Ö' => 'O', 'Ş' => 'S', 'Ü' => 'U',
+    ]);
+    return preg_replace('/[^A-Za-z0-9]/', '', $mapped);
+}
+
+function medisaBuildPortalUsernameBase($fullName) {
+    $parts = preg_split('/\s+/u', trim((string)$fullName), -1, PREG_SPLIT_NO_EMPTY);
+    if (!is_array($parts) || count($parts) < 2) {
+        return '';
+    }
+    $firstName = medisaNormalizePortalUsernameAscii($parts[0]);
+    $lastName = medisaNormalizePortalUsernameAscii($parts[count($parts) - 1]);
+    if ($firstName === '' || $lastName === '') {
+        return '';
+    }
+    return strtolower($firstName) . strtoupper(substr($lastName, 0, 1));
+}
+
+function medisaPortalUsernameKey($username) {
+    $value = trim((string)$username);
+    return function_exists('mb_strtolower')
+        ? mb_strtolower($value, 'UTF-8')
+        : strtolower($value);
+}
+
+function medisaPortalUsernameLookup($users, $excludeUserId = '') {
+    $lookup = [];
+    foreach ((array)$users as $user) {
+        if (!is_array($user) || ($excludeUserId !== '' && (string)($user['id'] ?? '') === (string)$excludeUserId)) {
+            continue;
+        }
+        $username = trim((string)($user['kullanici_adi'] ?? ''));
+        if ($username !== '') {
+            $lookup[medisaPortalUsernameKey($username)] = true;
+        }
+    }
+    return $lookup;
+}
+
+function medisaCreateUniquePortalUsername($fullName, $users, $excludeUserId = '') {
+    $base = medisaBuildPortalUsernameBase($fullName);
+    if ($base === '') {
+        return '';
+    }
+    $lookup = medisaPortalUsernameLookup($users, $excludeUserId);
+    $candidate = $base;
+    $suffix = 2;
+    while (isset($lookup[medisaPortalUsernameKey($candidate)])) {
+        $candidate = $base . $suffix;
+        $suffix++;
+    }
+    return $candidate;
+}
+
+function medisaGenerateInitialPortalPassword($length = 14) {
+    $length = max(10, (int)$length);
+    $groups = [
+        'ABCDEFGHJKLMNPQRSTUVWXYZ',
+        'abcdefghijkmnopqrstuvwxyz',
+        '23456789',
+        '!@#$%*+-?',
+    ];
+    $chars = [];
+    foreach ($groups as $group) {
+        $chars[] = $group[random_int(0, strlen($group) - 1)];
+    }
+    $alphabet = implode('', $groups);
+    while (count($chars) < $length) {
+        $chars[] = $alphabet[random_int(0, strlen($alphabet) - 1)];
+    }
+    for ($i = count($chars) - 1; $i > 0; $i--) {
+        $j = random_int(0, $i);
+        $tmp = $chars[$i];
+        $chars[$i] = $chars[$j];
+        $chars[$j] = $tmp;
+    }
+    return implode('', $chars);
+}
+
+function medisaGenerateUniqueInitialPortalPassword($users, $length = 14) {
+    for ($attempt = 0; $attempt < 20; $attempt++) {
+        $candidate = medisaGenerateInitialPortalPassword($length);
+        $duplicate = false;
+        foreach ((array)$users as $user) {
+            if (medisaVerifyUserPassword($user, $candidate)) {
+                $duplicate = true;
+                break;
+            }
+        }
+        if (!$duplicate) {
+            return $candidate;
+        }
+    }
+    throw new RuntimeException('Benzersiz başlangıç parolası üretilemedi.');
+}
+
+function medisaAssignInitialPortalPassword(&$user, $existingUsers = []) {
+    $password = medisaGenerateUniqueInitialPortalPassword($existingUsers);
+    medisaSetUserPasswordHash($user, $password, true);
+    return $password;
+}
+
+function medisaDismissInitialPasswordSuggestion(&$user) {
+    if (!is_array($user)) {
+        return false;
+    }
+    $user['ilk_giris_parola_onerisi_bekliyor'] = false;
+    $user['ilk_giris_parola_onerisi_gosterildi_tarihi'] = date('c');
+    $user['updatedAt'] = date('c');
+    return true;
+}
+
 function medisaVerifyUserPassword($user, $password) {
     if (!is_array($user)) {
         return false;
@@ -704,13 +834,23 @@ function medisaVerifyUserPassword($user, $password) {
     return $plainPassword !== '' && hash_equals($plainPassword, $inputPassword);
 }
 
-function medisaSetUserPasswordHash(&$user, $password) {
+function medisaSetUserPasswordHash(&$user, $password, $isInitialPassword = false) {
     if (!is_array($user)) {
         $user = [];
     }
 
+    $now = date('c');
     $user['sifre_hash'] = password_hash(trim((string)$password), PASSWORD_DEFAULT);
-    $user['sifre_guncellendi_at'] = date('c');
+    $user['sifre_guncellendi_at'] = $now;
+    $user['ilk_giris_parola_onerisi_bekliyor'] = $isInitialPassword === true;
+    $user['portal_credential_durumu'] = 'aktif';
+    if ($isInitialPassword === true) {
+        $user['ilk_giris_parola_onerisi_gosterildi_tarihi'] = null;
+        $user['parola_son_degisim_tarihi'] = null;
+    } else {
+        $user['ilk_giris_parola_onerisi_gosterildi_tarihi'] = $now;
+        $user['parola_son_degisim_tarihi'] = $now;
+    }
     unset($user['sifre']);
 }
 
@@ -737,6 +877,15 @@ function medisaStripUserCredentialFields($user) {
         unset($clean[$field]);
     }
     return $clean;
+}
+
+function medisaUserServerManagedCredentialMetadataFields() {
+    return [
+        'portal_credential_durumu',
+        'ilk_giris_parola_onerisi_bekliyor',
+        'ilk_giris_parola_onerisi_gosterildi_tarihi',
+        'parola_son_degisim_tarihi',
+    ];
 }
 
 function medisaProjectUserForClient($user) {
@@ -803,13 +952,20 @@ function medisaReconcileUserCredentials($currentUsers, $incomingUsers, $password
         $userId = isset($user['id']) ? (string)$user['id'] : '';
         $currentUser = ($userId !== '' && isset($currentById[$userId])) ? $currentById[$userId] : null;
         $newPassword = ($userId !== '' && array_key_exists($userId, $changes)) ? $changes[$userId] : null;
+        foreach (medisaUserServerManagedCredentialMetadataFields() as $field) {
+            unset($user[$field]);
+            if (is_array($currentUser) && array_key_exists($field, $currentUser)) {
+                $user[$field] = $currentUser[$field];
+            }
+        }
 
         if ($newPassword !== null && $newPassword !== '') {
             if (is_array($context) && !medisaCanManageUserRecord($incomingUser, $context)) {
                 return medisaBuildErrorResult('Bu kullanıcının parolasını değiştirme yetkiniz yok.', 403);
             }
-            if (mb_strlen($newPassword, 'UTF-8') < 6) {
-                return medisaBuildErrorResult('Yeni şifre en az 6 karakter olmalı.', 400);
+            $passwordPolicyError = medisaValidatePortalPassword($newPassword);
+            if ($passwordPolicyError !== null) {
+                return medisaBuildErrorResult($passwordPolicyError, 400);
             }
             medisaSetUserPasswordHash($user, $newPassword);
         } elseif (is_array($currentUser)) {
@@ -827,6 +983,19 @@ function medisaReconcileUserCredentials($currentUsers, $incomingUsers, $password
 
         unset($user['sifre'], $user['portal_sifresi_var'], $user['yeni_sifre'], $user['portal_sifresi'], $user['password'], $user['password_hash']);
         $reconciled[] = $user;
+    }
+
+    $usernameLookup = [];
+    foreach ($reconciled as $user) {
+        $username = trim((string)($user['kullanici_adi'] ?? ''));
+        if ($username === '') {
+            continue;
+        }
+        $usernameKey = medisaPortalUsernameKey($username);
+        if (isset($usernameLookup[$usernameKey])) {
+            return medisaBuildErrorResult('Portal kullanıcı adı başka bir kullanıcı tarafından kullanılıyor.', 409);
+        }
+        $usernameLookup[$usernameKey] = true;
     }
 
     return [
@@ -903,7 +1072,7 @@ function medisaBuildAccessContext($data, $tokenData) {
     }
 
     $user = medisaFindUserById($data, $tokenData['user_id']);
-    if (!$user) {
+    if (!$user || (isset($user['aktif']) && $user['aktif'] !== true)) {
         return null;
     }
 

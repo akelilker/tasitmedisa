@@ -1544,6 +1544,34 @@ body.modal-open #info-modal .modal-container {
     cursor: default;
     opacity: 1 !important;
 }
+
+#user-form-modal .user-portal-status-section {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+#user-form-modal #user-password-reset-btn {
+    align-self: flex-start;
+    margin-top: 6px;
+}
+
+#user-credential-result-modal .user-credential-result {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 16px;
+}
+
+#user-credential-result-modal .user-credential-result p {
+    margin: 0 0 6px;
+    color: #a0aec0;
+}
+
+#user-credential-result-modal .form-input[readonly] {
+    color: #ffffff;
+}
+
 #branch-form-modal select.form-input option,
 #user-form-modal select.form-input option,
 #branch-form-modal .modal-body select.form-input option,

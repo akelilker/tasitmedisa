@@ -118,8 +118,11 @@ forbiddenAyarlarPatterns.forEach(function(item) {
 if (!/portal_sifresi_var\s*===\s*true/.test(ayarlarJs)) {
   fail('ayarlar.js portal_sifresi_var kontrati eksik.');
 }
-if (!/userPasswordChanges/.test(ayarlarJs)) {
-  fail('ayarlar.js transient userPasswordChanges hattı eksik.');
+if (/userPasswordChanges/.test(ayarlarJs)) {
+  fail('ayarlar.js eski manuel userPasswordChanges hattını kullanmamalı.');
+}
+if (!/user_portal_credentials\.php/.test(ayarlarJs)) {
+  fail('ayarlar.js güvenli başlangıç parolası yenileme endpointi eksik.');
 }
 
 const dataManagerJs = fs.readFileSync(path.join(repoRoot, 'data-manager.js'), 'utf8');
@@ -145,6 +148,50 @@ if (!/medisaReconcileUserCredentials\s*\(/.test(savePhp)) {
 }
 if (!/_medisaUserPasswordChanges/.test(savePhp)) {
   fail('save.php transient parola okuma eksik.');
+}
+if (!/Parola yönetimi yalnız güvenli başlangıç parolası yenileme/.test(savePhp)) {
+  fail('save.php eski manuel parola payloadunu reddetmiyor.');
+}
+
+const adminCredentialPhp = fs.readFileSync(path.join(repoRoot, 'admin', 'user_portal_credentials.php'), 'utf8');
+if (!/medisaProjectUserForClient/.test(adminCredentialPhp)) {
+  fail('Yönetici credential response güvenli projection kullanmıyor.');
+}
+if (/['"]sifre_hash['"]\s*=>/.test(adminCredentialPhp)) {
+  fail('Yönetici credential response hash dönmemeli.');
+}
+
+const driverScript = fs.readFileSync(path.join(repoRoot, 'driver', 'driver-script.js'), 'utf8');
+if (!/driver_password_suggestion\.php/.test(driverScript)) {
+  fail('İlk giriş önerisi devam aksiyonu eksik.');
+}
+if (/localStorage\.setItem\([^)]*(?:password|parola|sifre)/i.test(driverScript)
+    || /sessionStorage\.setItem\([^)]*(?:password|parola|sifre)/i.test(driverScript)) {
+  fail('Driver istemcisi parola storage alanına yazmamalı.');
+}
+if (!/ilk_giris_parola_onerisi_bekliyor\s*===\s*true/.test(driverScript)
+    || !/openDriverPasswordSuggestion/.test(driverScript)
+    || !/continueWithCurrentPassword/.test(driverScript)) {
+  fail('İlk başarılı giriş parola önerisi istemci akışı eksik.');
+}
+const driverDashboard = fs.readFileSync(path.join(repoRoot, 'driver', 'dashboard.html'), 'utf8');
+if (!/Parolanızı Değiştirmeniz Önerilir/.test(driverScript)
+    || !/Mevcut Parolayla Devam Et/.test(driverDashboard)
+    || !/Şimdi Parolamı Değiştir/.test(driverDashboard)) {
+  fail('İlk giriş önerisi modal kontratı eksik.');
+}
+
+const applyPortalPhp = fs.readFileSync(path.join(repoRoot, 'scripts', 'apply-medisa-portal-accounts.php'), 'utf8');
+if (!/PHP_SAPI\s*!==\s*'cli'/.test(applyPortalPhp)) {
+  fail('apply-medisa-portal-accounts.php CLI-only koruması eksik.');
+}
+if (!/--confirm=KULLANICI_HESAPLARINI_OLUSTUR/.test(applyPortalPhp)) {
+  fail('apply-medisa-portal-accounts.php apply confirmation koruması eksik.');
+}
+
+const deployWorkflow = fs.readFileSync(path.join(repoRoot, '.github', 'workflows', 'deploy-cpanel.yml'), 'utf8');
+if (!/scripts\/\*\*/.test(deployWorkflow)) {
+  fail('Deploy workflow scripts klasörünü dışlamıyor.');
 }
 
 console.log('verify-medisa-sensitive-data: OK');
