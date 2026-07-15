@@ -215,7 +215,346 @@ function medisaPortalAccountsPasswordCell(array $meta) {
     return (string)($meta['plain_password'] ?? '');
 }
 
-function medisaPortalAccountsTransformData(array $data, $includeCsvRows = false) {
+function medisaPortalAccountsNormalizePasswordPolicy($policy) {
+    $value = strtolower(trim((string)$policy));
+    return $value === '' ? 'preserve-legacy' : $value;
+}
+
+function medisaPortalAccountsCollectForbiddenPasswordParts($user) {
+    if (!is_array($user)) {
+        return [];
+    }
+    $parts = [];
+    $username = strtolower(trim((string)($user['kullanici_adi'] ?? '')));
+    if ($username !== '') {
+        $parts[] = $username;
+    }
+    $fullName = trim((string)($user['isim'] ?? $user['name'] ?? ''));
+    $nameParts = preg_split('/\s+/u', $fullName, -1, PREG_SPLIT_NO_EMPTY);
+    if (is_array($nameParts)) {
+        foreach ($nameParts as $part) {
+            $ascii = strtolower(medisaNormalizePortalUsernameAscii($part));
+            if ($ascii !== '' && mb_strlen($ascii, 'UTF-8') >= 3) {
+                $parts[] = $ascii;
+            }
+        }
+    }
+    return array_values(array_unique(array_filter($parts)));
+}
+
+function medisaPortalAccountsValidateRotatePassword($password, $user) {
+    $value = (string)$password;
+    if (mb_strlen($value, 'UTF-8') < 12) {
+        return 'Parola en az 12 karakter olmalı.';
+    }
+    $policyError = medisaValidatePortalPassword($value);
+    if ($policyError !== null) {
+        return $policyError;
+    }
+    $lower = strtolower($value);
+    foreach (medisaPortalAccountsCollectForbiddenPasswordParts($user) as $part) {
+        if ($part !== '' && str_contains($lower, $part)) {
+            return 'Parola kullanıcı adı veya ad/soyad parçası içeremez.';
+        }
+    }
+    return null;
+}
+
+function medisaPortalAccountsGenerateRotatePassword($user, array &$issuedPasswords) {
+    for ($attempt = 0; $attempt < 40; $attempt++) {
+        $candidate = medisaGenerateInitialPortalPassword(14);
+        if (medisaPortalAccountsValidateRotatePassword($candidate, $user) !== null) {
+            continue;
+        }
+        if (in_array($candidate, $issuedPasswords, true)) {
+            continue;
+        }
+        $issuedPasswords[] = $candidate;
+        return $candidate;
+    }
+    throw new RuntimeException('Benzersiz rotate parolası üretilemedi.');
+}
+
+function medisaPortalAccountsAssignRotatePassword(&$user, array &$issuedPasswords) {
+    $plainPassword = medisaPortalAccountsGenerateRotatePassword($user, $issuedPasswords);
+    medisaSetUserPasswordHash($user, $plainPassword, true);
+    $user['ilk_giris_parola_onerisi_bekliyor'] = true;
+    $user['ilk_giris_parola_onerisi_gosterildi_tarihi'] = null;
+    $user['parola_son_degisim_tarihi'] = null;
+    $user['portal_credential_durumu'] = 'aktif';
+    unset($user['sifre']);
+    return $plainPassword;
+}
+
+function medisaPortalAccountsComputeRotateAllDryRunReport(array $data) {
+    $users = is_array($data['users'] ?? null) ? array_values($data['users']) : [];
+    $counts = [
+        'total_users' => count($users),
+        'active_users' => 0,
+        'passive_users' => 0,
+        'roles' => [],
+        'usernames_preserved' => 0,
+        'usernames_to_create' => 0,
+        'passwords_to_rotate' => 0,
+        'legacy_plaintext_to_remove' => 0,
+        'hashes_to_create' => 0,
+        'username_collisions' => 0,
+        'legacy_plaintext_records' => 0,
+        'canonical_hash_present' => 0,
+        'canonical_hash_missing' => 0,
+    ];
+    $existingUsernameLookup = [];
+    foreach ($users as $user) {
+        if (!is_array($user)) {
+            continue;
+        }
+        $active = medisaPortalAccountsUserIsActive($user);
+        $active ? $counts['active_users']++ : $counts['passive_users']++;
+        $role = medisaResolveUserRole($user);
+        $counts['roles'][$role] = ($counts['roles'][$role] ?? 0) + 1;
+        $username = trim((string)($user['kullanici_adi'] ?? ''));
+        $usernameValid = medisaPortalAccountsIsValidUsername($username);
+        if ($username !== '') {
+            $key = medisaPortalUsernameKey($username);
+            if (isset($existingUsernameLookup[$key])) {
+                $counts['username_collisions']++;
+            }
+            $existingUsernameLookup[$key] = true;
+        }
+        $plain = trim((string)($user['sifre'] ?? ''));
+        $hash = trim((string)($user['sifre_hash'] ?? ''));
+        if ($plain !== '') {
+            $counts['legacy_plaintext_records']++;
+        }
+        if ($hash === '') {
+            $counts['canonical_hash_missing']++;
+        } elseif (medisaPortalAccountsHashIsValid($hash)) {
+            $counts['canonical_hash_present']++;
+        }
+        if (!$active) {
+            continue;
+        }
+        $counts['passwords_to_rotate']++;
+        $counts['hashes_to_create']++;
+        if ($plain !== '') {
+            $counts['legacy_plaintext_to_remove']++;
+        }
+        if ($usernameValid) {
+            $counts['usernames_preserved']++;
+        } else {
+            $counts['usernames_to_create']++;
+        }
+    }
+
+    $plannedLookup = $existingUsernameLookup;
+    foreach ($users as $user) {
+        if (!is_array($user) || !medisaPortalAccountsUserIsActive($user)) {
+            continue;
+        }
+        $username = trim((string)($user['kullanici_adi'] ?? ''));
+        if (medisaPortalAccountsIsValidUsername($username)) {
+            continue;
+        }
+        $fullName = $user['isim'] ?? $user['name'] ?? '';
+        $base = medisaBuildPortalUsernameBase($fullName);
+        if ($base !== '' && isset($plannedLookup[medisaPortalUsernameKey($base)])) {
+            $counts['username_collisions']++;
+        }
+        if ($base !== '') {
+            $candidate = $base;
+            $suffix = 2;
+            while (isset($plannedLookup[medisaPortalUsernameKey($candidate)])) {
+                $candidate = $base . $suffix++;
+            }
+            $plannedLookup[medisaPortalUsernameKey($candidate)] = true;
+        }
+    }
+    ksort($counts['roles']);
+    return $counts;
+}
+
+function medisaPortalAccountsTransformDataRotateAll(array $data, $includeCsvRows = false) {
+    if (!isset($data['users']) || !is_array($data['users'])) {
+        throw new RuntimeException('users koleksiyonu geçersiz.');
+    }
+    $users = array_values($data['users']);
+    $beforeSnapshots = [];
+    foreach ($users as $idx => $user) {
+        if (is_array($user)) {
+            $beforeSnapshots[$idx] = medisaPortalAccountsUserComparableSnapshot($user);
+        }
+    }
+
+    $stats = [
+        'total_users' => count($users),
+        'active_users' => 0,
+        'passive_users' => 0,
+        'roles' => [],
+        'usernames_preserved' => 0,
+        'usernames_created' => 0,
+        'passwords_rotated' => 0,
+        'legacy_plaintext_removed' => 0,
+        'passive_excluded' => 0,
+        'username_collisions' => 0,
+        'plaintext_fields_remaining' => 0,
+        'invalid_usernames_remaining' => 0,
+        'canonical_hash_present' => 0,
+        'first_login_suggestion_pending' => 0,
+    ];
+    $csvRows = [];
+    $issuedPasswords = [];
+    $usernameLookup = [];
+
+    foreach ($users as $user) {
+        if (!is_array($user)) {
+            continue;
+        }
+        medisaPortalAccountsUserIsActive($user) ? $stats['active_users']++ : $stats['passive_users']++;
+    }
+
+    $transformMeta = [];
+    foreach ($users as $idx => &$user) {
+        if (!is_array($user)) {
+            continue;
+        }
+        if (!medisaPortalAccountsUserIsActive($user)) {
+            $stats['passive_excluded']++;
+            $transformMeta[$idx] = ['action' => 'passive_skipped'];
+            continue;
+        }
+
+        $legacyPlain = trim((string)($user['sifre'] ?? ''));
+        $username = trim((string)($user['kullanici_adi'] ?? ''));
+        $usernameCreated = false;
+        if (!medisaPortalAccountsIsValidUsername($username)) {
+            $userId = (string)($user['id'] ?? '');
+            $fullName = $user['isim'] ?? $user['name'] ?? '';
+            $username = medisaCreateUniquePortalUsername($fullName, $users, $userId);
+            if ($username === '') {
+                throw new RuntimeException('Kullanıcı adı oluşturulamadı.');
+            }
+            $user['kullanici_adi'] = $username;
+            $usernameCreated = true;
+            $stats['usernames_created']++;
+        } else {
+            $stats['usernames_preserved']++;
+        }
+
+        $key = medisaPortalUsernameKey($username);
+        if (isset($usernameLookup[$key])) {
+            throw new RuntimeException('Kullanıcı adı çakışması oluştu.');
+        }
+        $usernameLookup[$key] = true;
+
+        $oldPasswordSnapshot = $user;
+        $plainPassword = medisaPortalAccountsAssignRotatePassword($user, $issuedPasswords);
+        $stats['passwords_rotated']++;
+        if ($legacyPlain !== '') {
+            $stats['legacy_plaintext_removed']++;
+        }
+        if (($user['ilk_giris_parola_onerisi_bekliyor'] ?? false) === true) {
+            $stats['first_login_suggestion_pending']++;
+        }
+
+        $meta = [
+            'username' => $username,
+            'plain_password' => $plainPassword,
+            'csv_password_status' => 'YENI_BASLANGIC_PAROLASI',
+            'action' => $usernameCreated ? 'created' : 'rotated',
+            'legacy_password' => $legacyPlain,
+            'old_user_snapshot' => $oldPasswordSnapshot,
+        ];
+        $transformMeta[$idx] = $meta;
+
+        if ($includeCsvRows) {
+            $csvRows[] = [
+                'user_id' => (string)($user['id'] ?? ''),
+                'full_name' => (string)($user['isim'] ?? $user['name'] ?? ''),
+                'username' => $username,
+                'password_cell' => $plainPassword,
+                'role' => medisaResolveUserRole($user),
+                'active_label' => 'Aktif',
+                'suggestion_label' => 'Evet',
+            ];
+        }
+    }
+    unset($user);
+
+    foreach ($users as $idx => $user) {
+        if (!is_array($user)) {
+            continue;
+        }
+        $after = medisaPortalAccountsUserComparableSnapshot($user);
+        $before = $beforeSnapshots[$idx] ?? [];
+        if ($after !== $before) {
+            $meta = $transformMeta[$idx] ?? [];
+            if (($meta['action'] ?? '') === 'passive_skipped') {
+                throw new RuntimeException('Pasif kullanıcı credential dışı alanları değişti.');
+            }
+        }
+        if (!medisaPortalAccountsUserIsActive($user)) {
+            continue;
+        }
+        if (trim((string)($user['sifre'] ?? '')) !== '') {
+            $stats['plaintext_fields_remaining']++;
+        }
+        if (!medisaPortalAccountsIsValidUsername($user['kullanici_adi'] ?? '')) {
+            $stats['invalid_usernames_remaining']++;
+        }
+        $hash = trim((string)($user['sifre_hash'] ?? ''));
+        if ($hash !== '' && medisaPortalAccountsHashIsValid($hash)) {
+            $stats['canonical_hash_present']++;
+        }
+    }
+
+    foreach ($users as $user) {
+        if (!is_array($user)) {
+            continue;
+        }
+        $role = medisaResolveUserRole($user);
+        $stats['roles'][$role] = ($stats['roles'][$role] ?? 0) + 1;
+    }
+    ksort($stats['roles']);
+
+    $data['users'] = $users;
+    return [
+        'data' => $data,
+        'stats' => $stats,
+        'csv_rows' => $csvRows,
+        'transform_meta' => $transformMeta,
+    ];
+}
+
+function medisaPortalAccountsValidateRotateAllTransformedData(array $data, array $beforeUsers, array $transformMeta = []) {
+    medisaPortalAccountsValidateTransformedData($data, $beforeUsers);
+    $afterUsers = array_values($data['users'] ?? []);
+    foreach ($afterUsers as $idx => $user) {
+        if (!is_array($user) || !medisaPortalAccountsUserIsActive($user)) {
+            continue;
+        }
+        if (($user['ilk_giris_parola_onerisi_bekliyor'] ?? false) !== true) {
+            throw new RuntimeException('Aktif kullanıcıda ilk giriş önerisi beklenmiyor.');
+        }
+        $meta = $transformMeta[$idx] ?? [];
+        $legacyPassword = (string)($meta['legacy_password'] ?? '');
+        if ($legacyPassword !== '') {
+            if (medisaVerifyUserPassword($user, $legacyPassword)) {
+                throw new RuntimeException('Eski legacy parola hâlâ geçerli.');
+            }
+        }
+        $newPassword = (string)($meta['plain_password'] ?? '');
+        if ($newPassword === '' || !medisaVerifyUserPassword($user, $newPassword)) {
+            throw new RuntimeException('Yeni rotate parolası doğrulanamadı.');
+        }
+    }
+    return true;
+}
+
+function medisaPortalAccountsTransformData(array $data, $includeCsvRows = false, array $options = []) {
+    $passwordPolicy = medisaPortalAccountsNormalizePasswordPolicy($options['password_policy'] ?? 'preserve-legacy');
+    if ($passwordPolicy === 'rotate-all-active') {
+        return medisaPortalAccountsTransformDataRotateAll($data, $includeCsvRows);
+    }
     if (!isset($data['users']) || !is_array($data['users'])) {
         throw new RuntimeException('users koleksiyonu geçersiz.');
     }
@@ -574,7 +913,7 @@ function medisaPortalAccountsValidateTransformedData(array $data, array $beforeU
         if (!is_array($user)) {
             continue;
         }
-        if (trim((string)($user['sifre'] ?? '')) !== '') {
+        if (medisaPortalAccountsUserIsActive($user) && trim((string)($user['sifre'] ?? '')) !== '') {
             throw new RuntimeException('Düz metin parola alanı kaldı.');
         }
         $username = trim((string)($user['kullanici_adi'] ?? ''));
