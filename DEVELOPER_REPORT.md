@@ -1,6 +1,6 @@
 # Taşıt Yönetim Sistemi V3 - Geliştirici Raporu
 **Tarih:** 22 Haziran 2026
-**Doğrulama:** 13 Temmuz 2026 (güncel `main` kod incelemesi, commit `0353889`)
+**Doğrulama:** 15 Temmuz 2026 (P0 güvenli durdurma ve go-live güvenlik kapısı)
 **Sistem:** Medisa Taşıt Yönetim Sistemi
 **Dil Bileşimi:** JavaScript (52.2%), CSS (36.2%), PHP (6.9%), HTML (4.6%), PowerShell (0.1%)
 **Repository:** akelilker/tasitmedisa
@@ -217,7 +217,7 @@ Veri İzolasyonu:         95/100  ███████████████�
 Performans:              94/100  ██████████████████░░
 ─────────────────────────────────────────────────────
 Genel Puanlandırma:      91.0/100 ██████████████████░░
-Durum: PRODUCTION READY ✅
+Durum: P0 GO-LIVE GÜVENLİK KAPISI AÇIK — gerçek kullanıcı kullanımına hazır değil
 ```
 
 ---
@@ -245,6 +245,66 @@ Bu revizyonda doğrulanmış aktif kısa vadeli kod düzeltmesi yoktur.
 
 ---
 
+## P0-A — Tamamlandı
+
+- Repo private duruma alındı.
+- İstemciye ve güvenli projection çıktısına parola/credential alanı sızması engellendi.
+- Parolaların sunucu tarafında hash'lenmesi sağlandı.
+- Canlı authenticated projection smoke PASS.
+- P0-A commit: `f1f82a88163bd3875d5672baeb5c16c2ab0b1280`
+
+## P0-B — Kontrollü Olarak Ertelendi
+
+- Kullanıcılar uygulamayı henüz gerçek kullanımda kullanmaya başlamadı.
+- Kullanıcı parola rotasyonu uygulanmadı.
+- JWT/DOC signing secret rotasyonu uygulanmadı.
+- Git history rewrite uygulanmadı.
+- Bu maddeler iptal edilmedi; go-live öncesi zorunlu güvenlik kapısına devredildi.
+- Geçici bakım endpoint'i canlıdan silindi ve HTTP 404 ile doğrulandı.
+- Yerel geçici endpoint/token materyalleri silindi.
+- Issue #456 açık tutulacak.
+
+## Risk Kabulünün Sınırı
+
+- Mevcut erteleme yalnız gerçek kullanıcı kullanımının başlamamış olması nedeniyle kabul edildi.
+- Uygulama kullanıcılara açılmadan önce ertelenen güvenlik maddeleri tamamlanmadan sistem “go-live güvenlik hazır” sayılmayacak.
+- Yeni kullanıcı şifreleri dağıtılmadan eski/test/geçici şifreler geçersiz kılınmalı.
+- Genel yönetici hesabı ve diğer yönetim hesapları dahil edilmelidir.
+- Signing secret değişimi mevcut JWT ve DOC tokenlarını geçersiz kılacaktır.
+- Git geçmişi temizliği sonrasında eski klonlar tekrar kullanılmamalı; yeniden clone edilmelidir.
+
+## GO-LIVE GÜVENLİK KAPISI
+
+1. Bakım penceresi belirle.
+2. Güncel canlı yedek ve geri dönüş planını doğrula.
+3. Tüm kullanıcı/portal hesaplarını ve credential kapsamını sayısal olarak envanterle.
+4. Genel yönetici, şube yöneticisi, kullanıcı/sürücü ve pasif credential hesaplarını kapsa.
+5. Eski/test/geçici başlangıç şifrelerini iptal et.
+6. Her credential hesabı için benzersiz güçlü başlangıç parolası üret.
+7. Canlı veride yalnız canonical parola hash'i bırak.
+8. Düz metin veya legacy parola alanı kalmadığını doğrula.
+9. JWT/DOC signing secret'ı güçlü rastgele yeni değerle değiştir.
+10. Eski oturumların 401 verdiğini doğrula.
+11. Yeni genel yönetici girişi smoke testi yap.
+12. Authenticated `load.php` smoke testi yap.
+13. Belge/DOC token smoke testi yap.
+14. İstemci projection, localStorage, sessionStorage ve offline cache içinde credential sızıntısı olmadığını doğrula.
+15. Geçici parola dağıtımını güvenli kanal üzerinden yap.
+16. İlk girişte parola değiştirme zorunluluğu mevcutsa doğrula; yoksa ayrı ürün/güvenlik işi olarak kaydet.
+17. Git geçmişindeki hassas `data.json`, credential ve eski secret izlerini bütün ref'lerden temizle.
+18. Temizlenmiş geçmişi kontrollü force-push et.
+19. Eski klonların kullanımını yasakla ve yeniden clone talimatı yayınla.
+20. Geçici bakım endpoint'i kullanıldıysa işlem sonunda canlıdan ve yerelden sil.
+21. Issue #456'yı yalnız tüm maddeler kanıtlandıktan sonra kapat.
+
+## GO-LIVE ENGEL ETİKETİ
+
+`P0_SECURITY_DEFERRED_UNTIL_BEFORE_REAL_USER_GO_LIVE`
+
+`P0_SECURITY_GO_LIVE_GATE_CLOSED` etiketi ancak parola rotasyonu, signing secret rotasyonu, canlı smoke ve history cleanup tamamlandıktan sonra kullanılabilir.
+
+---
+
 ## 📞 İletişim & Sorular
 
 **İlk Rapor:** GitHub Copilot (22 Haziran 2026)
@@ -255,4 +315,4 @@ Herhangi bir sorun veya açıklama için repository'de issue açabilirsiniz.
 
 ---
 
-**Son Güncelleme:** 2026-07-13 (canonical kalite kapısı, stale CI/A11Y dokümantasyonu revizyonu)
+**Son Güncelleme:** 2026-07-15 (P0 güvenli durdurma ve go-live güvenlik kapısı)
