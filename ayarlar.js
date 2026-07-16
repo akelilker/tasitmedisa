@@ -3077,7 +3077,6 @@
         const branch = branches.find(x => String(x.id) === String(primaryBranchId));
         const branchName = branch ? branch.name : '-';
         const roleLabelMarkup = buildUserRoleLabelMarkup(user, branchName);
-        const usernameLine = user.kullanici_adi || '—';
         const badgesMarkup = buildUserManagementBadgesMarkup(user);
 
         return `
@@ -3085,7 +3084,6 @@
             <div class="settings-card-content">
               ${buildUserCardNameMarkup(user.name || 'İsimsiz')}
               ${roleLabelMarkup}
-              <div class="settings-card-count settings-card-username">${escapeHtml(usernameLine)}</div>
               ${badgesMarkup}
             </div>
           </div>
