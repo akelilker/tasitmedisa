@@ -566,6 +566,10 @@ function applyMainAppSessionUiState() {
     if (logoutBtn) {
         logoutBtn.style.display = getStoredPortalToken() ? '' : 'none';
     }
+    var changePasswordBtn = document.getElementById('settings-change-password-btn');
+    if (changePasswordBtn) {
+        changePasswordBtn.style.display = getStoredPortalToken() ? '' : 'none';
+    }
 
     var mainUserPanelLink = document.getElementById('main-user-panel-link');
     if (mainUserPanelLink) {
@@ -1427,6 +1431,245 @@ window.loadDataFromServer = loadDataFromServer;
 window.saveDataToServer = saveDataToServer;
 window.buildAuthHeaders = buildAuthHeaders;
 
+var MAIN_APP_PASSWORD_SUGGESTION_URL = API_BASE + 'driver/driver_password_suggestion.php';
+var MAIN_APP_CHANGE_PASSWORD_URL = API_BASE + 'driver/driver_change_password.php';
+var mainPasswordSuggestionMode = false;
+
+function resolveMainAppSessionUserRecord() {
+    var session = window.medisaSession || getDefaultSession();
+    var userId = session && session.user ? String(session.user.id || '').trim() : '';
+    if (!userId || !window.appData || !Array.isArray(window.appData.users)) return null;
+    for (var i = 0; i < window.appData.users.length; i++) {
+        var candidate = window.appData.users[i];
+        if (candidate && String(candidate.id || '') === userId) return candidate;
+    }
+    return null;
+}
+
+function patchMainAppSessionUserRecord(patch) {
+    if (!patch || typeof patch !== 'object') return;
+    var userId = String(patch.id || '').trim();
+    if (!userId || !window.appData || !Array.isArray(window.appData.users)) return;
+    for (var i = 0; i < window.appData.users.length; i++) {
+        if (String(window.appData.users[i].id || '') !== userId) continue;
+        window.appData.users[i] = Object.assign({}, window.appData.users[i], patch);
+        break;
+    }
+}
+
+function setMainPasswordMessage(text, isError) {
+    var el = document.getElementById('main-password-message');
+    if (!el) return;
+    el.textContent = text || '';
+    el.classList.toggle('is-error', !!isError);
+}
+
+function setMainPasswordSuggestionMessage(text) {
+    var el = document.getElementById('main-password-suggestion-message');
+    if (!el) return;
+    el.textContent = text || '';
+}
+
+function setMainPasswordModalMode(isSuggestion, showForm) {
+    var title = document.getElementById('main-password-modal-title');
+    var closeBtn = document.getElementById('main-password-modal-close');
+    var cancelBtn = document.getElementById('main-password-cancel');
+    var suggestion = document.getElementById('main-password-suggestion');
+    var form = document.getElementById('main-password-form');
+    mainPasswordSuggestionMode = isSuggestion === true;
+    if (title) {
+        title.textContent = isSuggestion
+            ? 'Parolanızı Değiştirmeniz Önerilir'
+            : 'Parolamı Değiştir';
+    }
+    if (closeBtn) closeBtn.hidden = isSuggestion;
+    if (cancelBtn) cancelBtn.hidden = isSuggestion;
+    if (suggestion) suggestion.hidden = !(isSuggestion && !showForm);
+    if (form) form.hidden = isSuggestion && !showForm;
+}
+
+function openMainPasswordModalOverlay() {
+    var modal = document.getElementById('main-password-modal');
+    if (!modal) return;
+    modal.style.display = 'flex';
+    requestAnimationFrame(function() { modal.classList.add('active'); });
+    if (document.body) document.body.classList.add('modal-open');
+}
+
+function forceCloseMainPasswordModal() {
+    mainPasswordSuggestionMode = false;
+    var modal = document.getElementById('main-password-modal');
+    var form = document.getElementById('main-password-form');
+    if (modal) {
+        modal.classList.remove('active');
+        modal.style.display = 'none';
+    }
+    if (form) form.reset();
+    setMainPasswordMessage('', false);
+    setMainPasswordSuggestionMessage('');
+    if (document.body) document.body.classList.remove('modal-open');
+}
+
+function closeMainPasswordModalOverlay() {
+    if (mainPasswordSuggestionMode) return;
+    forceCloseMainPasswordModal();
+}
+
+window.closeMainPasswordModal = closeMainPasswordModalOverlay;
+
+window.openMainAppPasswordChange = function openMainAppPasswordChange() {
+    var form = document.getElementById('main-password-form');
+    if (form) form.reset();
+    setMainPasswordMessage('', false);
+    setMainPasswordSuggestionMessage('');
+    setMainPasswordModalMode(false, true);
+    openMainPasswordModalOverlay();
+    setTimeout(function() {
+        var currentInput = document.getElementById('main-current-password');
+        if (currentInput) currentInput.focus();
+    }, 50);
+};
+
+window.openMainAppPasswordSuggestion = function openMainAppPasswordSuggestion() {
+    var form = document.getElementById('main-password-form');
+    if (form) form.reset();
+    setMainPasswordMessage('', false);
+    setMainPasswordSuggestionMessage('');
+    setMainPasswordModalMode(true, false);
+    openMainPasswordModalOverlay();
+};
+
+window.startMainAppSuggestedPasswordChange = function startMainAppSuggestedPasswordChange() {
+    setMainPasswordModalMode(true, true);
+    setTimeout(function() {
+        var currentInput = document.getElementById('main-current-password');
+        if (currentInput) currentInput.focus();
+    }, 50);
+};
+
+window.continueMainAppWithCurrentPassword = async function continueMainAppWithCurrentPassword() {
+    var token = getStoredPortalToken();
+    var button = document.getElementById('main-password-continue');
+    if (!token) return;
+    if (button) button.disabled = true;
+    setMainPasswordSuggestionMessage('');
+    try {
+        var response = await fetch(MAIN_APP_PASSWORD_SUGGESTION_URL, {
+            method: 'POST',
+            headers: buildAuthHeaders({ 'Content-Type': 'application/json' }),
+            body: '{}'
+        });
+        var data = await response.json();
+        if (!response.ok || !data.success) {
+            setMainPasswordSuggestionMessage((data && data.message) || 'Tercihiniz kaydedilemedi.');
+            return;
+        }
+        var sessionUser = resolveMainAppSessionUserRecord();
+        if (sessionUser) {
+            patchMainAppSessionUserRecord({
+                id: sessionUser.id,
+                ilk_giris_parola_onerisi_bekliyor: false
+            });
+        }
+        forceCloseMainPasswordModal();
+    } catch (error) {
+        setMainPasswordSuggestionMessage('Bağlantı hatası. Lütfen tekrar deneyin.');
+    } finally {
+        if (button) button.disabled = false;
+    }
+};
+
+window.submitMainAppPasswordChange = async function submitMainAppPasswordChange(event) {
+    if (event && typeof event.preventDefault === 'function') event.preventDefault();
+    var token = getStoredPortalToken();
+    if (!token) return false;
+
+    var currentInput = document.getElementById('main-current-password');
+    var newInput = document.getElementById('main-new-password');
+    var confirmInput = document.getElementById('main-new-password-confirm');
+    var submitBtn = document.getElementById('main-password-submit');
+    var currentPassword = currentInput ? currentInput.value : '';
+    var newPassword = newInput ? newInput.value : '';
+    var confirmPassword = confirmInput ? confirmInput.value : '';
+
+    if (!currentPassword || !newPassword || !confirmPassword) {
+        setMainPasswordMessage('Tüm parola alanlarını doldurun.', true);
+        return false;
+    }
+    if (newPassword.trim() === '') {
+        setMainPasswordMessage('Parola yalnız boşluklardan oluşamaz.', true);
+        return false;
+    }
+    if (newPassword.length < 6) {
+        setMainPasswordMessage('Yeni parolanız en az 6 karakter olmalıdır.', true);
+        return false;
+    }
+    if (newPassword !== confirmPassword) {
+        setMainPasswordMessage('Yeni parola tekrarı eşleşmiyor.', true);
+        return false;
+    }
+    if (newPassword === currentPassword) {
+        setMainPasswordMessage('Yeni parola mevcut parolayla aynı olamaz.', true);
+        return false;
+    }
+
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Kaydediliyor...';
+    }
+    setMainPasswordMessage('', false);
+
+    try {
+        var response = await fetch(MAIN_APP_CHANGE_PASSWORD_URL, {
+            method: 'POST',
+            headers: buildAuthHeaders({ 'Content-Type': 'application/json' }),
+            body: JSON.stringify({
+                currentPassword: currentPassword,
+                newPassword: newPassword
+            })
+        });
+        var data = await response.json();
+        if (!response.ok || !data.success) {
+            setMainPasswordMessage((data && data.message) || 'Parola değiştirilemedi.', true);
+            return false;
+        }
+        var sessionUser = resolveMainAppSessionUserRecord();
+        if (sessionUser) {
+            patchMainAppSessionUserRecord({
+                id: sessionUser.id,
+                ilk_giris_parola_onerisi_bekliyor: false,
+                parola_son_degisim_tarihi: new Date().toISOString()
+            });
+        }
+        mainPasswordSuggestionMode = false;
+        var form = document.getElementById('main-password-form');
+        if (form) form.reset();
+        setMainPasswordMessage('Parolanız güncellendi.', false);
+        forceCloseMainPasswordModal();
+    } catch (error) {
+        setMainPasswordMessage('Bağlantı hatası. Lütfen tekrar deneyin.', true);
+    } finally {
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Kaydet';
+        }
+    }
+    return false;
+};
+
+function maybeOpenMainAppPasswordSuggestion() {
+    if (getCurrentPathname().indexOf('/driver/') !== -1) return;
+    var session = window.medisaSession || getDefaultSession();
+    if (!session.authenticated || !getStoredPortalToken()) return;
+    var user = resolveMainAppSessionUserRecord();
+    if (!user || user.ilk_giris_parola_onerisi_bekliyor !== true) return;
+    if (typeof window.openMainAppPasswordSuggestion === 'function') {
+        window.openMainAppPasswordSuggestion();
+    }
+}
+
+window.maybeOpenMainAppPasswordSuggestion = maybeOpenMainAppPasswordSuggestion;
+
 document.addEventListener('DOMContentLoaded', async function() {
     syncMainAppPortalLinks();
     setMedisaSession(getSessionFromToken());
@@ -1436,6 +1679,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         loadDataFromLocalStorage();
         window.dispatchEvent(new CustomEvent('dataLoaded', { detail: window.appData }));
         if (typeof window.medisaNotifyAppReady === 'function') window.medisaNotifyAppReady();
+        maybeOpenMainAppPasswordSuggestion();
         return;
     }
 
@@ -1446,4 +1690,20 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
     window.dispatchEvent(new CustomEvent('dataLoaded', { detail: window.appData }));
     if (typeof window.medisaNotifyAppReady === 'function') window.medisaNotifyAppReady();
+    maybeOpenMainAppPasswordSuggestion();
 });
+
+document.addEventListener('keydown', function(ev) {
+    if (ev.key !== 'Escape' || !mainPasswordSuggestionMode) return;
+    ev.preventDefault();
+    ev.stopImmediatePropagation();
+}, true);
+
+document.addEventListener('click', function(ev) {
+    if (!mainPasswordSuggestionMode) return;
+    var modal = document.getElementById('main-password-modal');
+    if (modal && ev.target === modal) {
+        ev.preventDefault();
+        ev.stopPropagation();
+    }
+}, true);

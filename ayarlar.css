@@ -1545,15 +1545,57 @@ body.modal-open #info-modal .modal-container {
     opacity: 1 !important;
 }
 
-#user-form-modal .user-portal-status-section {
+#user-form-modal .user-portal-status-section,
+#user-form-modal .user-account-status-section {
     display: flex;
     flex-direction: column;
     gap: 6px;
 }
 
-#user-form-modal #user-password-reset-btn {
+#user-form-modal .user-account-admin-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    margin-top: 4px;
+}
+
+#user-form-modal #user-password-reset-btn,
+#user-form-modal #user-portal-toggle-btn,
+#user-form-modal #user-password-suggestion-reopen-btn {
     align-self: flex-start;
+}
+
+#user-modal #user-list .user-mgmt-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
     margin-top: 6px;
+}
+
+#user-modal #user-list .user-mgmt-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    line-height: 1.4;
+    letter-spacing: 0.02em;
+    color: #a0aec0;
+    border: 1px solid rgba(160, 174, 192, 0.35);
+}
+
+#user-modal #user-list .user-mgmt-badge--inactive {
+    color: #f6ad55;
+    border-color: rgba(246, 173, 85, 0.45);
+}
+
+#user-modal #user-list .user-mgmt-badge--no-portal {
+    color: #a0aec0;
+}
+
+#user-modal #user-list .settings-card-username {
+    margin-top: 2px;
 }
 
 #user-credential-result-modal .user-credential-result {

@@ -141,6 +141,20 @@ if (/localStorage\.setItem\([^)]*_medisaUserPasswordChanges/.test(dataManagerJs)
 if (/window\.appData\._medisaUserPasswordChanges\s*=/.test(dataManagerJs)) {
   fail('data-manager.js appData transient parola almamali.');
 }
+if (!/driver\/driver_password_suggestion\.php/.test(dataManagerJs)) {
+  fail('data-manager.js canonical dismiss endpoint kullanmiyor.');
+}
+if (!/driver\/driver_change_password\.php/.test(dataManagerJs)) {
+  fail('data-manager.js canonical self-service endpoint kullanmiyor.');
+}
+if (!/maybeOpenMainAppPasswordSuggestion/.test(dataManagerJs)
+    || !/openMainAppPasswordChange/.test(dataManagerJs)
+    || !/continueMainAppWithCurrentPassword/.test(dataManagerJs)) {
+  fail('Ana uygulama parola akisi eksik.');
+}
+if (!/Yeni parolanız en az 6 karakter olmalıdır/.test(dataManagerJs)) {
+  fail('Ana uygulama parola politikasi mesaji eksik.');
+}
 
 const savePhp = fs.readFileSync(path.join(repoRoot, 'save.php'), 'utf8');
 if (!/medisaReconcileUserCredentials\s*\(/.test(savePhp)) {
@@ -185,6 +199,34 @@ if (!/targetRole === 'kullanici' \|\| targetRole === 'sube_yonetici'/.test(ayarl
 }
 if (!/user-password-reset-self-hint/.test(ayarlarJs)) {
   fail('ayarlar.js genel yönetici self-hint eksik.');
+}
+if (/Portal: Var|Portal: Yok|İlk giriş:/.test(ayarlarJs)) {
+  fail('ayarlar.js kullanici kartlarinda teknik portal metinleri kalmamali.');
+}
+if (!/user-account-status-summary/.test(ayarlarJs) || !/Hesap Durumu/.test(fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8'))) {
+  fail('Kullanici duzenleme Hesap Durumu bolumu eksik.');
+}
+if (!/toggleUserPortalAccountStatus/.test(ayarlarJs) || !/reopenUserPasswordSuggestion/.test(ayarlarJs)) {
+  fail('ayarlar.js portal yonetici islemleri eksik.');
+}
+
+const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
+if (!/settings-change-password-btn/.test(indexHtml) || !/Parolamı Değiştir/.test(indexHtml)) {
+  fail('Ana uygulama Parolamı Değiştir menusu eksik.');
+}
+if (!/main-password-modal/.test(indexHtml) || !/Mevcut Parolayla Devam Et/.test(indexHtml)) {
+  fail('Ana uygulama parola onerisi modali eksik.');
+}
+if (/user-portal-status|user-password-suggestion-status|user-password-changed-at/.test(indexHtml)) {
+  fail('Kullanici formunda eski teknik portal metinleri kalmamali.');
+}
+
+const adminPortalAccountPhp = fs.readFileSync(path.join(repoRoot, 'admin', 'user_portal_account.php'), 'utf8');
+if (!/medisaCanResetPortalInitialPassword/.test(adminPortalAccountPhp)) {
+  fail('Portal hesap admin endpoint hedef rol helper kullanmiyor.');
+}
+if (!/reopen_password_suggestion/.test(adminPortalAccountPhp) || !/toggle_portal_status/.test(adminPortalAccountPhp)) {
+  fail('Portal hesap admin endpoint aksiyonlari eksik.');
 }
 
 const driverScript = fs.readFileSync(path.join(repoRoot, 'driver', 'driver-script.js'), 'utf8');
