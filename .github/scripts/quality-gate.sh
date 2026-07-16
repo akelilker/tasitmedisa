@@ -43,6 +43,9 @@ npm run tool:verify-sensitive-data
 echo "[quality-gate] User password invariants"
 npm run tool:verify-user-password
 
+echo "[quality-gate] Portal account endpoint invariants"
+npm run tool:verify-portal-account-endpoint
+
 echo "[quality-gate] KM state invariants"
 npm run tool:verify-km-state
 

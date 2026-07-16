@@ -10,6 +10,7 @@
     "tool:verify-vehicle-save": "node scripts/verify-medisa-vehicle-save-invariants.js",
     "tool:verify-sensitive-data": "node scripts/verify-medisa-sensitive-data.js",
     "tool:verify-user-password": "php scripts/verify-medisa-user-password-invariants.php",
+    "tool:verify-portal-account-endpoint": "php scripts/verify-medisa-portal-account-endpoint.php",
     "tool:dry-run-portal-accounts": "php scripts/dry-run-medisa-portal-accounts.php",
     "tool:apply-portal-accounts": "php scripts/apply-medisa-portal-accounts.php",
     "tool:verify-portal-accounts-apply": "php scripts/verify-medisa-portal-accounts-apply.php",
