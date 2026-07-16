@@ -3616,6 +3616,12 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
   color: #58d68d;
 }
 
+.driver-password-hint {
+  margin: 6px 0 0;
+  color: #a0aec0;
+  font-size: 13px;
+}
+
 .driver-feedback-message-status {
   min-height: 18px;
   margin-top: -4px;

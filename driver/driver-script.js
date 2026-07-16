@@ -4108,12 +4108,12 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           setDriverPasswordMessage('Tüm şifre alanlarını doldurun.', true);
           return false;
       }
-      if (newPassword.length < 10
-          || !/[A-Z]/.test(newPassword)
-          || !/[a-z]/.test(newPassword)
-          || !/[0-9]/.test(newPassword)
-          || !/[^A-Za-z0-9]/.test(newPassword)) {
-          setDriverPasswordMessage('Yeni parola en az 10 karakter olmalı; büyük harf, küçük harf, sayı ve özel karakter içermeli.', true);
+      if (newPassword.trim() === '') {
+          setDriverPasswordMessage('Parola yalnız boşluklardan oluşamaz.', true);
+          return false;
+      }
+      if (newPassword.length < 6) {
+          setDriverPasswordMessage('Yeni parolanız en az 6 karakter olmalıdır.', true);
           return false;
       }
       if (newPassword !== confirmPassword) {
