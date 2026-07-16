@@ -270,7 +270,7 @@ Canlıda tamamlananlar:
 - Yeni JWT ile authenticated load → 200.
 - Projection içinde `sifre` / `sifre_hash` / parola alanları yok; `portal_sifresi_var` yalnız boolean.
 - Geçici maintenance endpoint, staged data ve apply state silindi (endpoint GET → 404).
-- Credential CSV repo dışında ve güvenli dağıtıma hazır.
+- İlk rastgele credential CSV üretildi; sonraki ürün kararıyla isim tabanlı modele geçilerek dağıtım dışı bırakıldı.
 - Rollback gerekmedi.
 
 Kapanış etiketleri:
@@ -298,18 +298,43 @@ Tarih: 2026-07-16
 - Git history cleanup hâlâ bekliyor.
 - Manuel UI smoke hâlâ bekliyor.
 
+## İsim tabanlı başlangıç hesapları — canlı düzeltme
+
+Tarih: 2026-07-16
+
+Ürün kararı düzeltmesi uygulandı:
+- Rastgele başlangıç parolaları kaldırıldı.
+- 48 aktif kullanıcı için isim tabanlı başlangıç parolası (ilk ad ASCII + `123`) canlıya yazıldı.
+- Kullanıcı adları canonical kuralda doğrulandı; Serhan Köse → `serhanK`.
+- Parolalar yalnız `sifre_hash` olarak saklandı; düz metin `sifre` alanı 0.
+- `ilk_giris_parola_onerisi_bekliyor = true` (48).
+- JWT/DOC signing secret değiştirilmedi.
+- Serhan Köse login smoke PASS; authenticated load PASS; projection PASS.
+- Rollback gerekmedi.
+- Eski rastgele credential CSV dağıtım dışı bırakılıp güvenli silindi.
+- Yeni Excel listesi repo dışında üretildi:
+  `MEDISA-GUVENLI\kullanici-hesaplari\TasitMedisa-Kullanici-Adlari-ve-Parolalar.xlsx`
+
+Etiketler:
+- `NAME_BASED_INITIAL_PASSWORDS_LIVE`
+- `RANDOM_INITIAL_PASSWORDS_REMOVED`
+- `USER_ACCOUNT_XLSX_READY`
+- `FIRST_LOGIN_PASSWORD_SUGGESTION_ACTIVE`
+- `P0_HISTORY_CLEANUP_PENDING`
+
 ## Hâlâ açık — Git history cleanup
 
 - Git history rewrite henüz uygulanmadı.
 - Eski klonlar kaldırılmalı / yeniden clone edilmeli.
 - Issue #456 history cleanup tamamlanana kadar açık kalır.
-- Credential CSV güvenli kanal ile dağıtılmalı; içerik Git’e veya sohbete yazılmamalı.
+- Yeni Excel hesap listesi güvenli kanal ile dağıtılmalı; içerik Git’e veya sohbete yazılmamalı.
 - Manuel UI smoke (ilk giriş öneri modalı) operatör tarafından doğrulanmalı.
 
 ## Notlar
 
 - Apply öncesi eski genel yönetici smoke login’i `son_giris` alanını güncellediği için canlı data hash’i orijinal yedek hash’ten farklılaştı; apply sonrası canlı hash hazır JSON hash ile eşleşti.
 - Maintenance cleanup staged/state/endpoint’i sildi; pre-apply data/secret yedekleri Aşama 2B-2’de otomatik FTP ile kaldırıldı.
+- İsim tabanlı başlangıç parolaları bilinçli zayıf ürün kararıdır; ilk girişte opsiyonel değiştirme önerisi aktiftir.
 
 ---
 
@@ -323,4 +348,4 @@ Herhangi bir sorun veya açıklama için repository'de issue açabilirsiniz.
 
 ---
 
-**Son Güncelleme:** 2026-07-16 (Aşama 2B-2 pre-apply sunucu yedek temizliği)
+**Son Güncelleme:** 2026-07-16 (isim tabanlı başlangıç hesapları canlı düzeltme)
