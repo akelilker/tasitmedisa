@@ -18,9 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 $rawData = loadData();
 if (!is_array($rawData)) {
-    http_response_code(500);
-    echo json_encode(['success' => false, 'message' => 'Veri okunamadı.'], JSON_UNESCAPED_UNICODE);
-    exit;
+    $rawData = medisaDefaultData();
 }
 
 $auth = medisaResolveAuthorizedContext($rawData, 'manage_users');
