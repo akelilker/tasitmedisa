@@ -691,40 +691,160 @@ function loadDataFromLocalStorage() {
 }
 
 /**
- * Ham kasko listesini ayrı endpoint’ten doldurur (data/kasko-deger-listesi.json).
+ * Kompakt kasko lookup indeksini ayrı endpoint’ten yükler (mode=index).
+ * Tam satır matrisi appData’ya yazılmaz.
+ * @param {boolean} [forceRefresh]
  * @returns {Promise<boolean>}
  */
-async function loadKaskoListIntoAppData() {
+var kaskoIndexLoadPromise = null;
+
+function medisaClearKaskoLookupRuntime() {
+    window.__medisaKaskoLookupIndex = null;
+    window.__medisaKaskoLookupYears = null;
+    window.__medisaKaskoLookupRevision = '';
+    window.__medisaKaskoLookupRowCount = 0;
+    window.__medisaKaskoLookupAvailable = false;
+    window.__medisaKaskoLookupLoaded = false;
+}
+
+function medisaUnpackKaskoPackedLookup(payload) {
+    var years = Array.isArray(payload.years) ? payload.years.map(String) : [];
+    var packed = payload.lookup;
+    var out = Object.create(null);
+
+    if (!packed || typeof packed !== 'object' || Array.isArray(packed)) {
+        return { years: years, lookup: out, rowCount: 0 };
+    }
+
+    if (packed.format !== 'packed-v1') {
+        Object.keys(packed).forEach(function(code) {
+            var yearMap = packed[code];
+            if (!yearMap || typeof yearMap !== 'object' || Array.isArray(yearMap)) return;
+            var norm = String(code || '').replace(/[^0-9]/g, '').replace(/^0+/, '');
+            if (!norm) return;
+            var clean = Object.create(null);
+            Object.keys(yearMap).forEach(function(year) {
+                var n = Number(yearMap[year]);
+                if (year && n > 0) clean[String(year)] = n;
+            });
+            out[norm] = clean;
+        });
+        return { years: years, lookup: out, rowCount: Object.keys(out).length };
+    }
+
+    function decodeBase36(token) {
+        token = String(token || '').trim();
+        if (!token) return null;
+        if (token.charAt(0) === '~') {
+            var raw = token.slice(1);
+            var f = Number(raw);
+            return Number.isFinite(f) ? f : null;
+        }
+        if (!/^[0-9a-z]+$/i.test(token)) return null;
+        var dec = parseInt(token, 36);
+        return Number.isFinite(dec) ? dec : null;
+    }
+
+    var codeTokens = packed.codes ? String(packed.codes).split(',') : [];
+    var packTokens = packed.packs != null ? String(packed.packs).split(';') : [];
+    if (codeTokens.length !== packTokens.length) {
+        throw new Error('Kasko packed lookup uzunluk uyumsuz');
+    }
+
+    var prev = 0;
+    for (var i = 0; i < codeTokens.length; i++) {
+        var delta = decodeBase36(codeTokens[i]);
+        if (delta == null) throw new Error('Kasko packed code token gecersiz');
+        var codeInt = i === 0 ? delta : (prev + delta);
+        prev = codeInt;
+        var code = String(codeInt);
+        var pack = packTokens[i];
+        var yearMap = Object.create(null);
+        if (pack) {
+            var parts = pack.split('|');
+            if (parts.length !== 2) throw new Error('Kasko packed pack gecersiz');
+            var minPos = decodeBase36(parts[0]);
+            if (minPos == null) throw new Error('Kasko packed minPos gecersiz');
+            var valueTokens = parts[1] ? parts[1].split(',') : [];
+            for (var offset = 0; offset < valueTokens.length; offset++) {
+                var vt = valueTokens[offset];
+                if (!vt) continue;
+                var num = decodeBase36(vt);
+                if (!(num > 0)) continue;
+                var pos = minPos + offset;
+                if (years[pos] == null) continue;
+                yearMap[String(years[pos])] = num;
+            }
+        }
+        out[code] = yearMap;
+    }
+
+    return {
+        years: years,
+        lookup: out,
+        rowCount: Object.keys(out).length
+    };
+}
+
+async function loadKaskoListIntoAppData(forceRefresh) {
     try {
         if (!ensureMainAppSession()) return false;
-        var url = API_LOAD_KASKO + '?t=' + Date.now();
-        var response = await fetch(url, {
-            method: 'GET',
-            headers: buildAuthHeaders({
-                'Content-Type': 'application/json',
-                'Cache-Control': 'no-cache'
-            }),
-            cache: 'no-store'
+        if (forceRefresh === true) {
+            medisaClearKaskoLookupRuntime();
+            if (typeof window.clearKaskoCache === 'function') window.clearKaskoCache();
+        } else if (window.__medisaKaskoLookupLoaded === true) {
+            return true;
+        }
+
+        if (kaskoIndexLoadPromise) return kaskoIndexLoadPromise;
+
+        kaskoIndexLoadPromise = (async function() {
+            var url = API_LOAD_KASKO + '?mode=index&t=' + Date.now();
+            var response = await fetch(url, {
+                method: 'GET',
+                headers: buildAuthHeaders({
+                    'Content-Type': 'application/json',
+                    'Cache-Control': 'no-cache'
+                }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return false;
+            var kd = await response.json();
+            if (!kd || typeof kd !== 'object' || kd.success === false) return false;
+            if (Number(kd.schemaVersion) !== 1) return false;
+            if (!kd.lookup || typeof kd.lookup !== 'object' || Array.isArray(kd.lookup)) return false;
+            if (!Array.isArray(kd.years)) return false;
+
+            var unpacked = medisaUnpackKaskoPackedLookup(kd);
+            if (!window.appData || typeof window.appData !== 'object') window.appData = getDefaultAppData();
+            window.appData.kaskoDegerListesi = {
+                updatedAt: String(kd.updatedAt || ''),
+                period: String(kd.period || ''),
+                sourceFileName: String(kd.sourceFileName || ''),
+                rows: []
+            };
+            window.__medisaKaskoLookupIndex = unpacked.lookup;
+            window.__medisaKaskoLookupYears = unpacked.years;
+            window.__medisaKaskoLookupRevision = String(kd.revision || '');
+            window.__medisaKaskoLookupRowCount = Number(kd.rowCount) || unpacked.rowCount || 0;
+            window.__medisaKaskoLookupAvailable = window.__medisaKaskoLookupRowCount > 0;
+            window.__medisaKaskoLookupLoaded = true;
+            if (typeof window.clearKaskoCache === 'function') window.clearKaskoCache();
+            return true;
+        })().catch(function() {
+            return false;
+        }).finally(function() {
+            kaskoIndexLoadPromise = null;
         });
-        if (!response.ok) return false;
-        var txt = await response.text();
-        var kd = JSON.parse(txt);
-        if (!kd || typeof kd !== 'object') return false;
-        if (!window.appData || typeof window.appData !== 'object') window.appData = getDefaultAppData();
-        window.appData.kaskoDegerListesi = {
-            updatedAt: String(kd.updatedAt || ''),
-            period: String(kd.period || ''),
-            sourceFileName: String(kd.sourceFileName || ''),
-            rows: Array.isArray(kd.rows) ? kd.rows : []
-        };
-        if (typeof window.clearKaskoCache === 'function') window.clearKaskoCache();
-        return true;
+
+        return kaskoIndexLoadPromise;
     } catch (e) {
         return false;
     }
 }
 
 window.loadKaskoListFromServer = loadKaskoListIntoAppData;
+window.medisaClearKaskoLookupRuntime = medisaClearKaskoLookupRuntime;
 
 async function loadDataFromServer(forceRefresh) {
     if (forceRefresh !== true && serverDatasetTrusted === true && hasUsableAppData(window.appData)) {

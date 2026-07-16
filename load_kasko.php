@@ -1,5 +1,7 @@
 <?php
 require_once __DIR__ . '/core.php';
+require_once __DIR__ . '/kasko-index.php';
+
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
@@ -33,22 +35,47 @@ if (!$context) {
     exit;
 }
 
+$mode = strtolower(trim((string)($_GET['mode'] ?? 'legacy')));
+if ($mode === '') {
+    $mode = 'legacy';
+}
+
 $path = getKaskoListesiFilePath();
-$empty = [
+$emptyLegacy = [
     'updatedAt' => '',
     'period' => '',
     'sourceFileName' => '',
     'rows' => [],
 ];
 
+if ($mode === 'index' || $mode === 'meta') {
+    try {
+        $index = medisaLoadOrBuildKaskoLookupIndex(false);
+        if ($mode === 'meta') {
+            echo json_encode(medisaBuildKaskoMetaApiPayload($index), JSON_UNESCAPED_UNICODE);
+            exit;
+        }
+        echo json_encode(medisaBuildKaskoIndexApiPayload($index), JSON_UNESCAPED_UNICODE);
+        exit;
+    } catch (Throwable $e) {
+        http_response_code(500);
+        echo json_encode([
+            'success' => false,
+            'message' => 'Kasko listesi dosyası geçersiz JSON.',
+        ], JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+}
+
+// Legacy / default: tam satır matrisi (cached eski istemci uyumluluğu)
 if (!file_exists($path)) {
-    echo json_encode($empty, JSON_UNESCAPED_UNICODE);
+    echo json_encode($emptyLegacy, JSON_UNESCAPED_UNICODE);
     exit;
 }
 
 $content = file_get_contents($path);
 if ($content === false || trim($content) === '') {
-    echo json_encode($empty, JSON_UNESCAPED_UNICODE);
+    echo json_encode($emptyLegacy, JSON_UNESCAPED_UNICODE);
     exit;
 }
 

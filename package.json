@@ -15,6 +15,7 @@
     "tool:apply-portal-accounts": "php scripts/apply-medisa-portal-accounts.php",
     "tool:verify-portal-accounts-apply": "php scripts/verify-medisa-portal-accounts-apply.php",
     "tool:verify-km-state": "php scripts/verify-medisa-km-state-invariants.php",
+    "tool:verify-kasko-lookup": "php scripts/verify-medisa-kasko-lookup-invariants.php",
     "tool:import-gpt-xlsx": "node scripts/import_gpt_xlsx.mjs",
     "tool:build-deploy-zip": "powershell -ExecutionPolicy Bypass -File scripts/build-deploy-zip.ps1"
   },

@@ -3338,30 +3338,27 @@
             var worksheet = workbook.Sheets[firstSheetName];
             var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
-                /* Sunucuya yazım devam eder; tarayıcı kotası kritik değil */
+                /* Tam satırlar yalnız request body’de; appData’ya yazılmaz */
             var nowIso = new Date().toISOString();
             var periodDate = new Date();
             var period = String(periodDate.getFullYear()) + '-' + String(periodDate.getMonth() + 1).padStart(2, '0');
             var sourceName = (file && file.name) ? String(file.name) : '';
-
-            if (!window.appData || typeof window.appData !== 'object') window.appData = {};
-            window.appData.kaskoDegerListesi = {
-              updatedAt: nowIso,
-              period: period,
-              sourceFileName: sourceName,
-              rows: Array.isArray(jsonData) ? jsonData : []
-            };
-
-            if (typeof window.clearKaskoCache === 'function') window.clearKaskoCache();
+            var rowsPayload = Array.isArray(jsonData) ? jsonData : [];
 
             var afterSave = function() {
-              var updatePromise = (typeof window.guncelleTumKaskoDegerleri === 'function')
-                ? window.guncelleTumKaskoDegerleri()
+              if (typeof window.clearKaskoCache === 'function') window.clearKaskoCache();
+              var reloadPromise = (typeof window.loadKaskoListFromServer === 'function')
+                ? window.loadKaskoListFromServer(true)
                 : Promise.resolve(false);
-              return Promise.resolve(updatePromise).then(function() {
-                if (typeof window.updateNotifications === 'function') {
-                  window.updateNotifications();
-                }
+              return Promise.resolve(reloadPromise).then(function() {
+                var updatePromise = (typeof window.guncelleTumKaskoDegerleri === 'function')
+                  ? window.guncelleTumKaskoDegerleri()
+                  : Promise.resolve(false);
+                return Promise.resolve(updatePromise).then(function() {
+                  if (typeof window.updateNotifications === 'function') {
+                    window.updateNotifications();
+                  }
+                });
               });
             };
 
@@ -3380,13 +3377,13 @@
                 updatedAt: nowIso,
                 period: period,
                 sourceFileName: sourceName,
-                rows: Array.isArray(jsonData) ? jsonData : []
+                rows: rowsPayload
               })
             }).then(function(res) {
               if (!res.ok) {
                 if (typeof window.closeCenteredInfoBox === 'function') window.closeCenteredInfoBox();
                 if (typeof window.showCenteredInfoBox === 'function') {
-                  window.showCenteredInfoBox('Kasko listesi sunucuya yazılamadı (yetki veya ağ). Yerel önizleme güncellendi.');
+                  window.showCenteredInfoBox('Kasko listesi sunucuya yazılamadı. Mevcut liste korunuyor.');
                 }
                 return;
               }
