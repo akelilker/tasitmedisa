@@ -2309,27 +2309,40 @@
     });
   
     function formatPortalStatusDate(value) {
-      if (!value) return '-';
+      if (!value) return '';
       const date = new Date(value);
-      if (Number.isNaN(date.getTime())) return '-';
+      if (Number.isNaN(date.getTime())) return '';
       return date.toLocaleString('tr-TR');
     }
 
-    function syncUserPortalCredentialStatus(user, scope) {
-      const status = document.getElementById('user-portal-status');
-      const suggestion = document.getElementById('user-password-suggestion-status');
-      const changedAt = document.getElementById('user-password-changed-at');
-      const resetBtn = document.getElementById('user-password-reset-btn');
-      let selfHint = document.getElementById('user-password-reset-self-hint');
-      if (!selfHint && resetBtn && resetBtn.parentNode) {
-        selfHint = document.createElement('div');
-        selfHint.id = 'user-password-reset-self-hint';
-        selfHint.className = 'settings-card-count u-hidden';
-        resetBtn.parentNode.insertBefore(selfHint, resetBtn);
+    function resolvePortalAccountStatusLabel(user) {
+      if (!user || user.portal_sifresi_var !== true) return 'Yok';
+      if (user.portal_credential_durumu === 'pasif') return 'Pasif';
+      return 'Aktif';
+    }
+
+    function buildUserManagementBadgesMarkup(user) {
+      if (!user) return '';
+      const badges = [];
+      if (user.aktif === false) {
+        badges.push('<span class="user-mgmt-badge user-mgmt-badge--inactive">Pasif</span>');
       }
-      const hasAccount = !!(user && user.portal_sifresi_var === true);
+      if (user.portal_sifresi_var !== true) {
+        badges.push('<span class="user-mgmt-badge user-mgmt-badge--no-portal">Portal hesabı yok</span>');
+      }
+      if (!badges.length) return '';
+      return '<div class="user-mgmt-badges">' + badges.join('') + '</div>';
+    }
+
+    function syncUserPortalCredentialStatus(user, scope) {
+      const summary = document.getElementById('user-account-status-summary');
+      const meta = document.getElementById('user-account-status-meta');
+      const resetBtn = document.getElementById('user-password-reset-btn');
+      const toggleBtn = document.getElementById('user-portal-toggle-btn');
+      const reopenBtn = document.getElementById('user-password-suggestion-reopen-btn');
+      const selfHint = document.getElementById('user-password-reset-self-hint');
       const targetRole = user ? getUiRoleFromUser(user) : '';
-      const canReset = !!(
+      const canAdminPortal = !!(
         user && user.id
         && scope && scope.role === 'genel_yonetici'
         && (targetRole === 'kullanici' || targetRole === 'sube_yonetici')
@@ -2339,20 +2352,35 @@
         && scope && scope.role === 'genel_yonetici'
         && targetRole === 'genel_yonetici'
       );
-      if (status) {
-        status.textContent = 'Portal hesabı: ' + (hasAccount ? 'Var' : 'Yok')
-          + ' · Hesap: ' + (user && user.aktif === false ? 'Pasif' : 'Aktif');
+      const hasPortalAccount = !!(user && user.portal_sifresi_var === true);
+      const usernameLine = user && user.kullanici_adi ? String(user.kullanici_adi) : '-';
+      const portalStatus = resolvePortalAccountStatusLabel(user);
+      const changedAt = formatPortalStatusDate(user && user.parola_son_degisim_tarihi);
+
+      if (summary) {
+        summary.textContent = user
+          ? ('Kullanıcı adı: ' + usernameLine + ' · Portal hesabı: ' + portalStatus)
+          : '-';
       }
-      if (suggestion) {
-        suggestion.textContent = 'İlk giriş önerisi: '
-          + (user && user.ilk_giris_parola_onerisi_bekliyor === true ? 'Bekliyor' : (hasAccount ? 'Tamamlandı' : '-'));
-      }
-      if (changedAt) {
-        changedAt.textContent = 'Parola son değişim: '
-          + formatPortalStatusDate(user && user.parola_son_degisim_tarihi);
+      if (meta) {
+        if (user && changedAt) {
+          meta.textContent = 'Son parola değişimi: ' + changedAt;
+          meta.classList.remove('u-hidden');
+        } else {
+          meta.textContent = '';
+          meta.classList.add('u-hidden');
+        }
       }
       if (resetBtn) {
-        resetBtn.classList.toggle('u-hidden', !canReset);
+        resetBtn.classList.toggle('u-hidden', !canAdminPortal);
+      }
+      if (toggleBtn) {
+        const portalPasif = user && user.portal_credential_durumu === 'pasif';
+        toggleBtn.textContent = portalPasif ? 'Portal Hesabını Aktifleştir' : 'Portal Hesabını Pasifleştir';
+        toggleBtn.classList.toggle('u-hidden', !canAdminPortal || !hasPortalAccount);
+      }
+      if (reopenBtn) {
+        reopenBtn.classList.toggle('u-hidden', !canAdminPortal || !hasPortalAccount);
       }
       if (selfHint) {
         if (showSelfHint) {
@@ -2867,6 +2895,84 @@
       }
     };
 
+    async function runUserPortalAccountAction(action) {
+      const userIdInput = document.getElementById('user-id');
+      const userId = userIdInput ? userIdInput.value.trim() : '';
+      const token = typeof window.getStoredPortalToken === 'function' ? window.getStoredPortalToken() : '';
+      if (!userId || !token) {
+        alert('Geçerli kullanıcı ve yönetici oturumu gerekli.');
+        return null;
+      }
+      const response = await fetch('admin/user_portal_account.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token
+        },
+        body: JSON.stringify({ userId: userId, action: action })
+      });
+      const result = await response.json();
+      if (!response.ok || !result.success) {
+        alert((result && result.message) || 'İşlem tamamlanamadı.');
+        return null;
+      }
+      return result;
+    }
+
+    window.toggleUserPortalAccountStatus = async function toggleUserPortalAccountStatus() {
+      const toggleBtn = document.getElementById('user-portal-toggle-btn');
+      const userIdInput = document.getElementById('user-id');
+      const userId = userIdInput ? userIdInput.value.trim() : '';
+      if (!userId) return;
+      const users = readAllUsers();
+      const user = users.find(function(item) { return String(item.id) === String(userId); });
+      const nextLabel = user && user.portal_credential_durumu === 'pasif' ? 'aktifleştirmek' : 'pasifleştirmek';
+      if (!window.confirm('Portal hesabını ' + nextLabel + ' istediğinize emin misiniz?')) return;
+      if (toggleBtn) toggleBtn.disabled = true;
+      try {
+        const result = await runUserPortalAccountAction('toggle_portal_status');
+        if (!result || !result.user) return;
+        const idx = users.findIndex(function(item) { return String(item.id) === String(userId); });
+        if (idx >= 0) {
+          Object.assign(users[idx], result.user);
+          users[idx].name = result.user.isim || result.user.name || users[idx].name;
+          syncUsersToAppData(users, { skipServerSave: true });
+          syncUserPortalCredentialStatus(users[idx], getUserManagementSessionScope());
+        }
+        renderUserList();
+      } catch (error) {
+        alert('Portal hesabı güncellenirken bağlantı hatası oluştu.');
+      } finally {
+        if (toggleBtn) toggleBtn.disabled = false;
+      }
+    };
+
+    window.reopenUserPasswordSuggestion = async function reopenUserPasswordSuggestion() {
+      const reopenBtn = document.getElementById('user-password-suggestion-reopen-btn');
+      const userIdInput = document.getElementById('user-id');
+      const userId = userIdInput ? userIdInput.value.trim() : '';
+      if (!userId) return;
+      if (!window.confirm('Bu kullanıcı için parola değiştirme önerisi yeniden gösterilecek. Devam edilsin mi?')) return;
+      if (reopenBtn) reopenBtn.disabled = true;
+      try {
+        const result = await runUserPortalAccountAction('reopen_password_suggestion');
+        if (!result || !result.user) return;
+        const users = readAllUsers();
+        const idx = users.findIndex(function(item) { return String(item.id) === String(userId); });
+        if (idx >= 0) {
+          Object.assign(users[idx], result.user);
+          users[idx].name = result.user.isim || result.user.name || users[idx].name;
+          syncUsersToAppData(users, { skipServerSave: true });
+          syncUserPortalCredentialStatus(users[idx], getUserManagementSessionScope());
+        }
+        renderUserList();
+      } catch (error) {
+        alert('Parola önerisi güncellenirken bağlantı hatası oluştu.');
+      } finally {
+        if (reopenBtn) reopenBtn.disabled = false;
+      }
+    };
+
     window.copyUserCredentialResult = async function copyUserCredentialResult() {
       const username = document.getElementById('user-credential-result-username');
       const password = document.getElementById('user-credential-result-password');
@@ -3043,34 +3149,16 @@
         const branch = branches.find(x => String(x.id) === String(primaryBranchId));
         const branchName = branch ? branch.name : '-';
         const roleLabelMarkup = buildUserRoleLabelMarkup(user, branchName);
-        const phoneLine = formatTrGsmDisplay(user.phone || '') || '';
         const usernameLine = user.kullanici_adi || '-';
-        const accountLine = user.portal_sifresi_var === true ? 'Portal: Var' : 'Portal: Yok';
-        const activeLine = user.aktif === false ? 'Pasif' : 'Aktif';
-        const suggestionLine = user.ilk_giris_parola_onerisi_bekliyor === true ? 'İlk giriş: Bekliyor' : 'İlk giriş: Tamamlandı';
-        const changedLine = 'Parola değişim: ' + formatPortalStatusDate(user.parola_son_degisim_tarihi);
-
-        if (scope.isBranchManager) {
-          return `
-          <div class="settings-card" onclick="editUser('${user.id}')" style="cursor:pointer;">
-            <div class="settings-card-content">
-              ${buildUserCardNameMarkup(user.name || 'İsimsiz')}
-              ${roleLabelMarkup}
-              <div class="settings-card-count">${escapeHtml(usernameLine)} · ${accountLine} · ${activeLine}</div>
-              <div class="settings-card-count">${suggestionLine} · ${changedLine}</div>
-            </div>
-          </div>
-        `;
-        }
+        const badgesMarkup = buildUserManagementBadgesMarkup(user);
 
         return `
           <div class="settings-card" onclick="editUser('${user.id}')" style="cursor:pointer;">
             <div class="settings-card-content">
               ${buildUserCardNameMarkup(user.name || 'İsimsiz')}
               ${roleLabelMarkup}
-              ${phoneLine ? '<div class="settings-card-phone">' + escapeHtml(phoneLine) + '</div>' : ''}
-              <div class="settings-card-count">${escapeHtml(usernameLine)} · ${accountLine} · ${activeLine}</div>
-              <div class="settings-card-count">${suggestionLine} · ${changedLine}</div>
+              <div class="settings-card-count settings-card-username">${escapeHtml(usernameLine)}</div>
+              ${badgesMarkup}
             </div>
           </div>
         `;

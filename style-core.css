@@ -3053,3 +3053,33 @@ body.modal-open .app-container {
     box-shadow: 0 2px 16px rgba(0, 0, 0, 0.32);
   }
 }
+
+#main-password-modal .main-password-suggestion p,
+#main-password-modal .main-password-hint {
+  margin: 0 0 12px;
+  color: #a0aec0;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+#main-password-modal .main-password-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+#main-password-modal .main-password-message {
+  min-height: 1.25em;
+  margin-top: 10px;
+  color: #a0aec0;
+  font-size: 13px;
+}
+
+#main-password-modal .main-password-message.is-error {
+  color: #f56565;
+}
+
+#settings-menu #settings-change-password-btn {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
