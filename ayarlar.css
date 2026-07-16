@@ -1545,13 +1545,6 @@ body.modal-open #info-modal .modal-container {
     opacity: 1 !important;
 }
 
-#user-form-modal .user-portal-status-section,
-#user-form-modal .user-account-status-section {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
 #user-form-modal .user-account-admin-actions {
     display: flex;
     flex-direction: column;
@@ -1561,7 +1554,6 @@ body.modal-open #info-modal .modal-container {
 }
 
 #user-form-modal #user-password-reset-btn,
-#user-form-modal #user-portal-toggle-btn,
 #user-form-modal #user-password-suggestion-reopen-btn {
     align-self: flex-start;
 }
@@ -1588,10 +1580,6 @@ body.modal-open #info-modal .modal-container {
 #user-modal #user-list .user-mgmt-badge--inactive {
     color: #f6ad55;
     border-color: rgba(246, 173, 85, 0.45);
-}
-
-#user-modal #user-list .user-mgmt-badge--no-portal {
-    color: #a0aec0;
 }
 
 #user-modal #user-list .settings-card-username {

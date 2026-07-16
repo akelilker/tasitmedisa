@@ -2308,88 +2308,34 @@
       }
     });
   
-    function formatPortalStatusDate(value) {
-      if (!value) return '';
-      const date = new Date(value);
-      if (Number.isNaN(date.getTime())) return '';
-      return date.toLocaleString('tr-TR');
-    }
-
-    function resolvePortalAccountStatusLabel(user) {
-      if (!user || user.portal_sifresi_var !== true) return 'Yok';
-      if (user.portal_credential_durumu === 'pasif') return 'Pasif';
-      return 'Aktif';
-    }
-
     function buildUserManagementBadgesMarkup(user) {
       if (!user) return '';
       const badges = [];
       if (user.aktif === false) {
         badges.push('<span class="user-mgmt-badge user-mgmt-badge--inactive">Pasif</span>');
       }
-      if (user.portal_sifresi_var !== true) {
-        badges.push('<span class="user-mgmt-badge user-mgmt-badge--no-portal">Portal hesabı yok</span>');
-      }
       if (!badges.length) return '';
       return '<div class="user-mgmt-badges">' + badges.join('') + '</div>';
     }
 
-    function syncUserPortalCredentialStatus(user, scope) {
-      const summary = document.getElementById('user-account-status-summary');
-      const meta = document.getElementById('user-account-status-meta');
+    function syncUserPasswordAdminActions(user, scope) {
+      const actionsWrap = document.querySelector('#user-form-modal .user-account-admin-actions');
       const resetBtn = document.getElementById('user-password-reset-btn');
-      const toggleBtn = document.getElementById('user-portal-toggle-btn');
       const reopenBtn = document.getElementById('user-password-suggestion-reopen-btn');
-      const selfHint = document.getElementById('user-password-reset-self-hint');
       const targetRole = user ? getUiRoleFromUser(user) : '';
       const canAdminPortal = !!(
         user && user.id
         && scope && scope.role === 'genel_yonetici'
         && (targetRole === 'kullanici' || targetRole === 'sube_yonetici')
       );
-      const showSelfHint = !!(
-        user && user.id
-        && scope && scope.role === 'genel_yonetici'
-        && targetRole === 'genel_yonetici'
-      );
       const hasPortalAccount = !!(user && user.portal_sifresi_var === true);
-      const usernameLine = user && user.kullanici_adi ? String(user.kullanici_adi) : '-';
-      const portalStatus = resolvePortalAccountStatusLabel(user);
-      const changedAt = formatPortalStatusDate(user && user.parola_son_degisim_tarihi);
+      const showReset = canAdminPortal;
+      const showReopen = canAdminPortal && hasPortalAccount;
 
-      if (summary) {
-        summary.textContent = user
-          ? ('Kullanıcı adı: ' + usernameLine + ' · Portal hesabı: ' + portalStatus)
-          : '-';
-      }
-      if (meta) {
-        if (user && changedAt) {
-          meta.textContent = 'Son parola değişimi: ' + changedAt;
-          meta.classList.remove('u-hidden');
-        } else {
-          meta.textContent = '';
-          meta.classList.add('u-hidden');
-        }
-      }
-      if (resetBtn) {
-        resetBtn.classList.toggle('u-hidden', !canAdminPortal);
-      }
-      if (toggleBtn) {
-        const portalPasif = user && user.portal_credential_durumu === 'pasif';
-        toggleBtn.textContent = portalPasif ? 'Portal Hesabını Aktifleştir' : 'Portal Hesabını Pasifleştir';
-        toggleBtn.classList.toggle('u-hidden', !canAdminPortal || !hasPortalAccount);
-      }
-      if (reopenBtn) {
-        reopenBtn.classList.toggle('u-hidden', !canAdminPortal || !hasPortalAccount);
-      }
-      if (selfHint) {
-        if (showSelfHint) {
-          selfHint.textContent = 'Bu hesabın parolası yalnız “Parolamı Değiştir” akışıyla değiştirilebilir.';
-          selfHint.classList.remove('u-hidden');
-        } else {
-          selfHint.textContent = '';
-          selfHint.classList.add('u-hidden');
-        }
+      if (resetBtn) resetBtn.classList.toggle('u-hidden', !showReset);
+      if (reopenBtn) reopenBtn.classList.toggle('u-hidden', !showReopen);
+      if (actionsWrap) {
+        actionsWrap.classList.toggle('u-hidden', !showReset && !showReopen);
       }
     }
 
@@ -2411,8 +2357,10 @@
       const emailInput = $('#user-email', modal);
       const roleSelect = $('#user-role', modal);
       const usernameInput = $('#user-username', modal);
+      const activeSelect = $('#user-active', modal);
       const title = $('.modal-header h2', modal);
       const deleteBtn = $('#user-delete-btn', modal);
+      const saveBtn = modal.querySelector('.universal-btn-save[onclick*="saveUser"]');
 
       // Şube dropdown'ını doldur
       populateBranchDropdown();
@@ -2426,7 +2374,7 @@
       // Form temizle
       if (form) form.reset();
       if (idInput) idInput.value = '';
-      syncUserPortalCredentialStatus(null, scope);
+      syncUserPasswordAdminActions(null, scope);
       if (branchReadonly) branchReadonly.value = '';
       if (deleteBtn) {
         deleteBtn.classList.add('u-hidden');
@@ -2459,7 +2407,8 @@
         if (emailInput) emailInput.value = user.email || '';
         if (roleSelect) roleSelect.value = scope.isBranchManager ? 'kullanici' : getUiRoleFromUser(user);
         if (usernameInput) usernameInput.value = user.kullanici_adi || '';
-        syncUserPortalCredentialStatus(user, scope);
+        if (activeSelect) activeSelect.value = user.aktif === false ? 'false' : 'true';
+        syncUserPasswordAdminActions(user, scope);
         if (branchReadonly) {
           const userBranch = readAllBranches().find(function(branch) {
             return String(branch && branch.id) === String(getUserPrimaryBranchId(user));
@@ -2473,6 +2422,7 @@
         setUserFormSelectedVehicleIds(assignedIds);
         populateUserVehiclesMulti('');
         if (title) title.textContent = 'Kullanıcı Düzenle';
+        if (saveBtn) saveBtn.textContent = 'Kullanıcıyı Güncelle';
         // Sil butonunu göster
         if (deleteBtn) {
           deleteBtn.classList.remove('u-hidden');
@@ -2481,6 +2431,8 @@
       } else {
         // Yeni EKLEME MODU
         if (title) title.textContent = 'Yeni Kullanıcı Ekle';
+        if (saveBtn) saveBtn.textContent = 'Kaydet';
+        if (activeSelect) activeSelect.value = 'true';
         // Sil butonunu gizle
         if (deleteBtn) {
           deleteBtn.classList.add('u-hidden');
@@ -2644,6 +2596,7 @@
         const emailInput = document.getElementById('user-email');
         const roleSelect = document.getElementById('user-role');
         const usernameInput = document.getElementById('user-username');
+        const activeSelect = document.getElementById('user-active');
         const vehiclesContainer = document.getElementById('user-vehicles-container');
         const scope = getUserManagementSessionScope();
   
@@ -2655,8 +2608,9 @@
         const id = idInput ? idInput.value.trim() : '';
         const nameRaw = nameInput.value.trim();
         const name = formatUserFullName(nameRaw);
-        const phone = phoneInput ? normalizePhoneDigits(phoneInput.value) : '';
-        const email = emailInput ? emailInput.value.trim() : '';
+        const phone = phoneInput ? normalizePhoneDigits(phoneInput.value) : null;
+        const email = emailInput ? emailInput.value.trim() : null;
+        const aktif = activeSelect ? activeSelect.value !== 'false' : true;
         const selectedRole = roleSelect ? roleSelect.value : 'kullanici';
         const effectiveSelectedRole = scope.isBranchManager ? 'kullanici' : selectedRole;
         const requestedBranchId = branchSelect ? String(branchSelect.value || '').trim() : '';
@@ -2761,8 +2715,9 @@
             users[idx].name = name;
             users[idx].branchId = branchId;
             users[idx].branchIds = branchIds;
-            users[idx].phone = phone;
-            users[idx].email = email;
+            users[idx].phone = phone === null ? (users[idx].phone || '') : phone;
+            users[idx].email = email === null ? (users[idx].email || '') : email;
+            users[idx].aktif = aktif;
             users[idx].role = role;
             users[idx].kullanici_paneli = kullanici_paneli;
             users[idx].surucu_paneli = kullanici_paneli;
@@ -2776,8 +2731,9 @@
             name: name,
             branchId: branchId,
             branchIds: branchIds,
-            phone: phone,
-            email: email,
+            phone: phone || '',
+            email: email || '',
+            aktif: aktif,
             role: role,
             kullanici_paneli: kullanici_paneli,
             surucu_paneli: kullanici_paneli,
@@ -2874,7 +2830,7 @@
           Object.assign(user, result.user);
           user.name = result.user.isim || result.user.name || user.name;
           syncUsersToAppData(users, { skipServerSave: true });
-          syncUserPortalCredentialStatus(user, getUserManagementSessionScope());
+          syncUserPasswordAdminActions(user, getUserManagementSessionScope());
           const usernameInput = document.getElementById('user-username');
           if (usernameInput) usernameInput.value = result.username || user.kullanici_adi || '';
         }
@@ -2919,34 +2875,6 @@
       return result;
     }
 
-    window.toggleUserPortalAccountStatus = async function toggleUserPortalAccountStatus() {
-      const toggleBtn = document.getElementById('user-portal-toggle-btn');
-      const userIdInput = document.getElementById('user-id');
-      const userId = userIdInput ? userIdInput.value.trim() : '';
-      if (!userId) return;
-      const users = readAllUsers();
-      const user = users.find(function(item) { return String(item.id) === String(userId); });
-      const nextLabel = user && user.portal_credential_durumu === 'pasif' ? 'aktifleştirmek' : 'pasifleştirmek';
-      if (!window.confirm('Portal hesabını ' + nextLabel + ' istediğinize emin misiniz?')) return;
-      if (toggleBtn) toggleBtn.disabled = true;
-      try {
-        const result = await runUserPortalAccountAction('toggle_portal_status');
-        if (!result || !result.user) return;
-        const idx = users.findIndex(function(item) { return String(item.id) === String(userId); });
-        if (idx >= 0) {
-          Object.assign(users[idx], result.user);
-          users[idx].name = result.user.isim || result.user.name || users[idx].name;
-          syncUsersToAppData(users, { skipServerSave: true });
-          syncUserPortalCredentialStatus(users[idx], getUserManagementSessionScope());
-        }
-        renderUserList();
-      } catch (error) {
-        alert('Portal hesabı güncellenirken bağlantı hatası oluştu.');
-      } finally {
-        if (toggleBtn) toggleBtn.disabled = false;
-      }
-    };
-
     window.reopenUserPasswordSuggestion = async function reopenUserPasswordSuggestion() {
       const reopenBtn = document.getElementById('user-password-suggestion-reopen-btn');
       const userIdInput = document.getElementById('user-id');
@@ -2963,7 +2891,7 @@
           Object.assign(users[idx], result.user);
           users[idx].name = result.user.isim || result.user.name || users[idx].name;
           syncUsersToAppData(users, { skipServerSave: true });
-          syncUserPortalCredentialStatus(users[idx], getUserManagementSessionScope());
+          syncUserPasswordAdminActions(users[idx], getUserManagementSessionScope());
         }
         renderUserList();
       } catch (error) {
@@ -3149,7 +3077,7 @@
         const branch = branches.find(x => String(x.id) === String(primaryBranchId));
         const branchName = branch ? branch.name : '-';
         const roleLabelMarkup = buildUserRoleLabelMarkup(user, branchName);
-        const usernameLine = user.kullanici_adi || '-';
+        const usernameLine = user.kullanici_adi || '—';
         const badgesMarkup = buildUserManagementBadgesMarkup(user);
 
         return `
