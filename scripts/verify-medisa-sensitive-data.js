@@ -197,20 +197,20 @@ if (!/\$targetRole === 'genel_yonetici'[\s\S]{0,80}return false/.test(corePhp)) 
 if (!/targetRole === 'kullanici' \|\| targetRole === 'sube_yonetici'/.test(ayarlarJs)) {
   fail('ayarlar.js reset butonu hedef rol filtresi eksik.');
 }
-if (!/user-password-reset-self-hint/.test(ayarlarJs)) {
-  fail('ayarlar.js genel yönetici self-hint eksik.');
-}
-if (/Portal: Var|Portal: Yok|İlk giriş:/.test(ayarlarJs)) {
+if (/Portal: Var|Portal: Yok|İlk giriş:|Portal hesabı yok|Portal hesabı var/.test(ayarlarJs)) {
   fail('ayarlar.js kullanici kartlarinda teknik portal metinleri kalmamali.');
 }
-if (!/user-account-status-summary/.test(ayarlarJs) || !/Hesap Durumu/.test(fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8'))) {
-  fail('Kullanici duzenleme Hesap Durumu bolumu eksik.');
-}
-if (!/toggleUserPortalAccountStatus/.test(ayarlarJs) || !/reopenUserPasswordSuggestion/.test(ayarlarJs)) {
-  fail('ayarlar.js portal yonetici islemleri eksik.');
+if (!/syncUserPasswordAdminActions/.test(ayarlarJs) || !/reopenUserPasswordSuggestion/.test(ayarlarJs)) {
+  fail('ayarlar.js parola yonetici islemleri eksik.');
 }
 
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
+if (/Hesap Durumu|user-account-status-summary|user-password-reset-self-hint|user-portal-toggle-btn/.test(indexHtml)) {
+  fail('Kullanici formunda teknik hesap durumu metinleri kalmamali.');
+}
+if (!/user-password-reset-btn/.test(indexHtml) || !/İlk Giriş Uyarısını Yeniden Göster/.test(indexHtml)) {
+  fail('Kullanici formunda parola yonetici butonlari eksik.');
+}
 if (!/settings-change-password-btn/.test(indexHtml) || !/Parolamı Değiştir/.test(indexHtml)) {
   fail('Ana uygulama Parolamı Değiştir menusu eksik.');
 }

@@ -1103,8 +1103,8 @@ var MEDISA_MODULE_VERSIONS = {
   raporlar: '20260712.1',
   kayitJs: '20260712.3',
   kayitCss: '20260708.1',
-  ayarlarJs: '20260716.1',
-  ayarlarCss: '20260716.1',
+  ayarlarJs: '20260716.2',
+  ayarlarCss: '20260716.2',
   tasitlarYazici: '20260517.5',
   vehicleNotificationDomain: '20260712.1'
 };
@@ -1699,7 +1699,7 @@ window.ensureMedisaVehicleNotificationDomainReady = function() {
 document.addEventListener('DOMContentLoaded', function() {
     var path = (document.location.pathname || '');
     if (path.indexOf('/driver') !== -1 || path.indexOf('/admin') !== -1) return; /* Kullanıcı paneli 78.1, raporlar 78.3 kendi scriptlerinde */
-    const APP_VERSION = "v78.1";
+    const APP_VERSION = "v78.2";
     const versionEl = document.getElementById('version-display');
 
     if (versionEl) {
