@@ -228,6 +228,11 @@ if (!/medisaCanResetPortalInitialPassword/.test(adminPortalAccountPhp)) {
 if (!/reopen_password_suggestion/.test(adminPortalAccountPhp) || !/toggle_portal_status/.test(adminPortalAccountPhp)) {
   fail('Portal hesap admin endpoint aksiyonlari eksik.');
 }
+const portalAuthPos = adminPortalAccountPhp.indexOf('medisaResolveAuthorizedContext($rawData');
+const portalBodyPos = adminPortalAccountPhp.indexOf("json_decode(file_get_contents('php://input')");
+if (portalAuthPos === -1 || portalBodyPos === -1 || portalAuthPos > portalBodyPos) {
+  fail('Portal hesap admin endpoint auth sirasi hatali (body validation auth oncesi).');
+}
 
 const driverScript = fs.readFileSync(path.join(repoRoot, 'driver', 'driver-script.js'), 'utf8');
 if (!/driver_password_suggestion\.php/.test(driverScript)) {

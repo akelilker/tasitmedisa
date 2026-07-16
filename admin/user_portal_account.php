@@ -16,6 +16,27 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
+$rawData = loadData();
+if (!is_array($rawData)) {
+    http_response_code(500);
+    echo json_encode(['success' => false, 'message' => 'Veri okunamadı.'], JSON_UNESCAPED_UNICODE);
+    exit;
+}
+
+$auth = medisaResolveAuthorizedContext($rawData, 'manage_users');
+if (($auth['success'] ?? false) !== true) {
+    http_response_code((int)($auth['status'] ?? 403));
+    echo json_encode(['success' => false, 'message' => $auth['message'] ?? 'Bu işlem için yetkiniz yok.'], JSON_UNESCAPED_UNICODE);
+    exit;
+}
+
+$context = $auth['context'];
+if (($context['role'] ?? '') !== 'genel_yonetici') {
+    http_response_code(403);
+    echo json_encode(['success' => false, 'message' => 'Bu işlem için yetkiniz bulunmamaktadır.'], JSON_UNESCAPED_UNICODE);
+    exit;
+}
+
 $input = json_decode(file_get_contents('php://input'), true);
 $targetUserId = is_array($input) ? trim((string)($input['userId'] ?? '')) : '';
 $action = is_array($input) ? trim((string)($input['action'] ?? '')) : '';
