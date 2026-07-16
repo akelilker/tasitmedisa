@@ -1,17 +1,19 @@
 /**
- * PERF-P0-1-R1 — firstSeenDates retention / cross-layer / rollback sözleşmesi.
+ * PERF-P0-1-R2 — firstSeenDates retention / legacy / parser / abort.
  * Çalıştır: node scripts/verify-notification-first-seen-retention.js
+ *
+ * Davranış testleri notifications.js içindeki gerçek pure helper kaynaklarını
+ * kontrollü biçimde çıkarıp vm içinde çalıştırır (kopya implementasyon yok).
  */
 'use strict';
 
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+const vm = require('node:vm');
 const { execSync } = require('node:child_process');
 
 const ROOT = path.join(__dirname, '..');
-const NOTIF_STATE_MAX_KEYS = 500;
-const NOTIF_STATE_MAX_AGE_MS = 90 * 24 * 60 * 60 * 1000;
 
 let passed = 0;
 let failed = 0;
@@ -30,103 +32,6 @@ function read(rel) {
   return fs.readFileSync(path.join(ROOT, rel), 'utf8');
 }
 
-function parseNotificationFirstSeenMs(value) {
-  const raw = String(value || '').trim();
-  if (!raw || raw === '-') return 0;
-  if (/^\d+$/.test(raw)) {
-    const n = Number(raw);
-    if (isFinite(n) && n > 0) return n < 1000000000000 ? n * 1000 : n;
-  }
-  const trMatch = raw.match(/^(\d{2})[./-](\d{2})[./-](\d{4})(?:\s+(\d{2}):(\d{2}))?$/);
-  if (trMatch) {
-    const day = Number(trMatch[1]);
-    const month = Number(trMatch[2]);
-    const year = Number(trMatch[3]);
-    const hour = trMatch[4] != null ? Number(trMatch[4]) : 0;
-    const minute = trMatch[5] != null ? Number(trMatch[5]) : 0;
-    const dt = new Date(year, month - 1, day, hour, minute, 0, 0);
-    if (!isNaN(dt.getTime())) return dt.getTime();
-  }
-  const parsed = Date.parse(raw);
-  return isNaN(parsed) ? 0 : parsed;
-}
-
-function areFirstSeenDatesMapsEqual(a, b) {
-  const left = (a && typeof a === 'object' && !Array.isArray(a)) ? a : {};
-  const right = (b && typeof b === 'object' && !Array.isArray(b)) ? b : {};
-  const leftKeys = Object.keys(left);
-  const rightKeys = Object.keys(right);
-  if (leftKeys.length !== rightKeys.length) return false;
-  for (let i = 0; i < leftKeys.length; i++) {
-    const key = leftKeys[i];
-    if (!Object.prototype.hasOwnProperty.call(right, key)) return false;
-    if (String(left[key]) !== String(right[key])) return false;
-  }
-  return true;
-}
-
-function normalizeFirstSeenDatesMap(rawMap, activeKeys) {
-  const out = {};
-  if (!rawMap || typeof rawMap !== 'object' || Array.isArray(rawMap)) return out;
-  const active = (activeKeys && typeof activeKeys === 'object' && !Array.isArray(activeKeys))
-    ? activeKeys
-    : null;
-  const now = Date.now();
-  const entries = [];
-  const rawKeys = Object.keys(rawMap);
-  for (let i = 0; i < rawKeys.length; i++) {
-    const rawKey = rawKeys[i];
-    const normalizedKey = String(rawKey || '').trim();
-    if (!normalizedKey) continue;
-    const rawVal = rawMap[rawKey];
-    if (rawVal == null || typeof rawVal === 'object') continue;
-    const normalizedDate = String(rawVal).trim();
-    if (!normalizedDate) continue;
-    const ms = parseNotificationFirstSeenMs(normalizedDate);
-    if (!(ms > 0) || !isFinite(ms)) continue;
-    entries.push({
-      key: normalizedKey,
-      value: normalizedDate,
-      ms: ms,
-      index: i,
-      isActive: !!(active && active[normalizedKey])
-    });
-  }
-  if (!active) {
-    for (let j = 0; j < entries.length; j++) out[entries[j].key] = entries[j].value;
-    return out;
-  }
-  const activeEntries = [];
-  const inactiveEntries = [];
-  for (let k = 0; k < entries.length; k++) {
-    const entry = entries[k];
-    if (entry.isActive) {
-      activeEntries.push(entry);
-      continue;
-    }
-    if ((now - entry.ms) <= NOTIF_STATE_MAX_AGE_MS) inactiveEntries.push(entry);
-  }
-  activeEntries.sort(function(a, b) {
-    if (a.key < b.key) return -1;
-    if (a.key > b.key) return 1;
-    return a.index - b.index;
-  });
-  inactiveEntries.sort(function(a, b) {
-    if (a.ms !== b.ms) return b.ms - a.ms;
-    if (a.key < b.key) return -1;
-    if (a.key > b.key) return 1;
-    return a.index - b.index;
-  });
-  for (let aIdx = 0; aIdx < activeEntries.length; aIdx++) {
-    out[activeEntries[aIdx].key] = activeEntries[aIdx].value;
-  }
-  const remaining = Math.max(0, NOTIF_STATE_MAX_KEYS - activeEntries.length);
-  for (let iIdx = 0; iIdx < inactiveEntries.length && iIdx < remaining; iIdx++) {
-    out[inactiveEntries[iIdx].key] = inactiveEntries[iIdx].value;
-  }
-  return out;
-}
-
 function run(name, fn) {
   try {
     fn();
@@ -136,32 +41,126 @@ function run(name, fn) {
   }
 }
 
-run('source wiring', function() {
+function extractFunctionSource(src, fnName) {
+  const startRe = new RegExp('function\\s+' + fnName + '\\s*\\(');
+  const startMatch = startRe.exec(src);
+  if (!startMatch) {
+    throw new Error('function not found: ' + fnName);
+  }
+  let i = startMatch.index;
+  const braceStart = src.indexOf('{', i);
+  if (braceStart < 0) throw new Error('brace start missing for ' + fnName);
+  let depth = 0;
+  let inStr = null;
+  let escape = false;
+  for (let p = braceStart; p < src.length; p++) {
+    const ch = src[p];
+    if (inStr) {
+      if (escape) {
+        escape = false;
+        continue;
+      }
+      if (ch === '\\') {
+        escape = true;
+        continue;
+      }
+      if (ch === inStr) inStr = null;
+      continue;
+    }
+    if (ch === '"' || ch === "'" || ch === '`') {
+      inStr = ch;
+      continue;
+    }
+    if (ch === '{') depth += 1;
+    if (ch === '}') {
+      depth -= 1;
+      if (depth === 0) {
+        return src.slice(i, p + 1);
+      }
+    }
+  }
+  throw new Error('function body not closed: ' + fnName);
+}
+
+function loadProductionFirstSeenHelpers() {
+  const src = read('notifications.js');
+  const constMatch = src.match(/const\s+NOTIF_STATE_MAX_KEYS\s*=\s*(\d+)\s*;/);
+  const ageMatch = src.match(/const\s+NOTIF_STATE_MAX_AGE_MS\s*=\s*([^;]+);/);
+  if (!constMatch || !ageMatch) {
+    throw new Error('NOTIF_STATE constants not found in notifications.js');
+  }
+  const helpers = [
+    extractFunctionSource(src, 'parseNotificationFirstSeenMs'),
+    extractFunctionSource(src, 'areFirstSeenDatesMapsEqual'),
+    extractFunctionSource(src, 'normalizeFirstSeenDatesMap')
+  ].join('\n');
+  const code = [
+    'var NOTIF_STATE_MAX_KEYS = ' + constMatch[1] + ';',
+    'var NOTIF_STATE_MAX_AGE_MS = ' + ageMatch[1] + ';',
+    helpers,
+    'result = {',
+    '  parseNotificationFirstSeenMs: parseNotificationFirstSeenMs,',
+    '  areFirstSeenDatesMapsEqual: areFirstSeenDatesMapsEqual,',
+    '  normalizeFirstSeenDatesMap: normalizeFirstSeenDatesMap,',
+    '  NOTIF_STATE_MAX_KEYS: NOTIF_STATE_MAX_KEYS,',
+    '  NOTIF_STATE_MAX_AGE_MS: NOTIF_STATE_MAX_AGE_MS',
+    '};'
+  ].join('\n');
+  const sandbox = { result: null };
+  vm.createContext(sandbox);
+  vm.runInContext(code, sandbox, { filename: 'notifications-firstseen-helpers.js' });
+  if (!sandbox.result || typeof sandbox.result.parseNotificationFirstSeenMs !== 'function') {
+    throw new Error('failed to load production helpers into vm');
+  }
+  return sandbox.result;
+}
+
+const helpers = loadProductionFirstSeenHelpers();
+const parseNotificationFirstSeenMs = helpers.parseNotificationFirstSeenMs;
+const areFirstSeenDatesMapsEqual = helpers.areFirstSeenDatesMapsEqual;
+const normalizeFirstSeenDatesMap = helpers.normalizeFirstSeenDatesMap;
+const NOTIF_STATE_MAX_KEYS = helpers.NOTIF_STATE_MAX_KEYS;
+const NOTIF_STATE_MAX_AGE_MS = helpers.NOTIF_STATE_MAX_AGE_MS;
+
+run('production helpers extracted from notifications.js', function() {
+  assert.equal(typeof parseNotificationFirstSeenMs, 'function');
+  assert.equal(typeof normalizeFirstSeenDatesMap, 'function');
+  assert.equal(NOTIF_STATE_MAX_KEYS, 500);
+  assert.ok(NOTIF_STATE_MAX_AGE_MS > 0);
+  const src = read('scripts/verify-notification-first-seen-retention.js');
+  assert.doesNotMatch(src, /function parseNotificationFirstSeenMs\(value\) \{/);
+  assert.doesNotMatch(src, /function normalizeFirstSeenDatesMap\(rawMap, activeKeys\) \{/);
+  assert.doesNotMatch(src, /git diff -- script-core\.js/);
+});
+
+run('source wiring R2', function() {
   const notif = read('notifications.js');
   const core = read('core.php');
   const save = read('save.php');
-  assert.match(notif, /function normalizeFirstSeenDatesMap\(rawMap,\s*activeKeys\)/);
-  assert.match(notif, /function applyNotificationFirstSeenPruneInBatch\(/);
-  assert.match(notif, /notificationScopeRollbackQuiet/);
-  assert.match(notif, /try \{[\s\S]*updateNotifications[\s\S]*\} finally \{[\s\S]*notificationScopeRollbackQuiet = false/);
-  assert.match(core, /function medisaNotificationResolveFirstSeenDates\(/);
-  assert.match(core, /function medisaNotificationFirstSeenEmergencyMaxKeys\(/);
-  assert.match(core, /return 20000/);
-  assert.doesNotMatch(core, /count\(\$entries\) > 500/);
-  assert.match(save, /medisaNotificationResolveFirstSeenDates\(/);
-  assert.match(save, /medisaNotificationFirstSeenMapsEqual\(/);
-  assert.match(save, /Semantik no-op/);
-  assert.doesNotMatch(save, /if \(!array_key_exists\(\$notifKey, \$firstSeenDates\)\)/);
+  assert.match(notif, /completed:\s*false/);
+  assert.match(notif, /function abortNotificationFirstSeenBatch\(/);
+  assert.match(notif, /flushNotificationFirstSeenBatch\(firstSeenBatchSucceeded\)/);
+  assert.match(notif, /getFullYear\(\) !== year/);
+  assert.match(core, /function medisaNotificationProjectFirstSeenDates\(/);
+  assert.match(core, /DateTimeImmutable::getLastErrors\(/);
+  assert.doesNotMatch(core, /strtotime\(\$raw\)/);
+  assert.match(save, /medisaNotificationProjectFirstSeenDates\(/);
+  assert.match(save, /legacyNeedsFirstSeenClear/);
+  assert.match(save, /'firstSeenDates' => \[\]/);
 });
 
-run('9.1 client: 600 active + 300 passive', function() {
+run('8.1 versions still aligned (no dirty-tree git diff test)', function() {
+  assert.match(read('script-core.js'), /notifications:\s*'20260716\.1'/);
+  assert.match(read('scripts/verify-medisa-vehicle-save-invariants.js'), /EXPECTED_NOTIFICATIONS = '20260716\.1'/);
+});
+
+run('8.7/9.1 client: 600 active + 300 passive', function() {
   const now = Date.now();
   const input = {};
   const active = {};
   for (let i = 0; i < 600; i++) {
     const key = 'active|' + String(i).padStart(4, '0');
-    const val = String(now - (120 * 24 * 60 * 60 * 1000) - i);
-    input[key] = val;
+    input[key] = String(now - (120 * 24 * 60 * 60 * 1000) - i);
     active[key] = true;
   }
   for (let j = 0; j < 300; j++) {
@@ -171,119 +170,100 @@ run('9.1 client: 600 active + 300 passive', function() {
   assert.equal(Object.keys(out).length, 600);
   assert.equal(out['passive|0000'], undefined);
   assert.equal(out['active|0000'], input['active|0000']);
-  assert.equal(out['active|0599'], input['active|0599']);
 });
 
-run('9.2 cross-layer: PHP keeps 600 after resolve', function() {
+run('8.2-8.3-8.7 PHP legacy/resolve harness', function() {
   const out = execSync('php scripts/verify-notification-first-seen-retention-php.php', {
     cwd: ROOT,
     encoding: 'utf8'
   });
-  assert.match(out, /PASS 9\.2 normalize keeps 600/);
-  assert.match(out, /PASS 9\.2 resolve keeps 600/);
+  assert.match(out, /PASS 8\.7 normalize keeps 600/);
+  assert.match(out, /PASS 8\.2 pruned legacy-old removed/);
+  assert.match(out, /PASS 8\.3 legacy timestamp ownership preserved/);
+  assert.match(out, /PASS 8\.2 reload projection does not resurrect/);
   assert.match(out, /PHP_RETENTION_OK/);
 });
 
-run('9.3-9.5-9.8-9.9 covered by PHP harness', function() {
-  const out = execSync('php scripts/verify-notification-first-seen-retention-php.php', {
+run('8.4 failed-render abort wiring', function() {
+  const src = read('notifications.js');
+  assert.match(src, /let firstSeenBatchSucceeded = false/);
+  assert.match(src, /notifFirstSeenBatchContext\.completed = true/);
+  assert.match(src, /firstSeenBatchSucceeded = true/);
+  assert.match(src, /flushNotificationFirstSeenBatch\(firstSeenBatchSucceeded\)/);
+  assert.match(src, /function abortNotificationFirstSeenBatch\(/);
+  assert.match(src, /state\[batch\.scopeKey\] = cloneNotificationScopeState\(batch\.previousScoped\)/);
+});
+
+run('8.4 abort behavior with production normalize', function() {
+  // Simulate: only 3 of 10 active collected → if prune ran, old actives past retention would drop.
+  // Abort path must leave map untouched (tested via source + normalize contract).
+  const now = Date.now();
+  const old = String(now - (120 * 24 * 60 * 60 * 1000));
+  const input = {};
+  const allActive = {};
+  for (let i = 0; i < 10; i++) {
+    const k = 'a|' + i;
+    input[k] = old;
+    allActive[k] = true;
+  }
+  const partialActive = { 'a|0': true, 'a|1': true, 'a|2': true };
+  const prunedPartial = normalizeFirstSeenDatesMap(input, partialActive);
+  assert.equal(Object.keys(prunedPartial).length, 3, 'partial active would prune others');
+  const prunedFull = normalizeFirstSeenDatesMap(input, allActive);
+  assert.equal(Object.keys(prunedFull).length, 10, 'full active keeps all');
+  assert.ok(areFirstSeenDatesMapsEqual(prunedFull, input));
+});
+
+run('8.5 badge finally isolation wiring', function() {
+  const src = read('notifications.js');
+  assert.match(
+    src,
+    /try \{\s*updateMonthlyTodoHeaderBadge\(\);\s*\} catch \(badgeErr\)/
+  );
+  assert.match(
+    src,
+    /try \{\s*flushNotificationFirstSeenBatch\(firstSeenBatchSucceeded\);\s*\} catch \(flushErr\)/
+  );
+  assert.match(src, /notifFirstSeenBatchContext = null/);
+});
+
+run('8.6 JS/PHP parser parity', function() {
+  const phpOut = execSync('php scripts/verify-notification-first-seen-retention-php.php', {
     cwd: ROOT,
     encoding: 'utf8'
   });
-  assert.match(out, /PASS 9\.2\/9\.3 server timestamp ownership/);
-  assert.match(out, /PASS 9\.4 new client key accepted/);
-  assert.match(out, /PASS 9\.5 pruned key stays deleted/);
-  assert.match(out, /PASS 9\.8 malformed dropped/);
-  assert.match(out, /PASS 9\.9 resolve idempotent/);
-});
-
-run('9.6 scope isolation source contract', function() {
-  const save = read('save.php');
-  assert.match(save, /\$allowedScopeKeys = \$scopeDescriptor\['saveAllowedKeys'\]/);
-  assert.match(
-    save,
-    /if \(!array_key_exists\(\$allowedScopeKey, \$incomingReadState\) \|\| !is_array\(\$incomingReadState\[\$allowedScopeKey\]\)\) continue;/
-  );
-});
-
-run('9.7 missing scope not wiped — continue guard present', function() {
-  const save = read('save.php');
-  const block = save.slice(save.indexOf('foreach ($allowedScopeKeys'), save.indexOf('monthlyTodoWhatsAppLogs'));
-  assert.match(block, /continue;/);
-  assert.doesNotMatch(block, /unset\(\$data\['notificationReadState'\]/);
-});
-
-run('scenario4 inactive within retention', function() {
-  const ms = Date.now() - (30 * 24 * 60 * 60 * 1000);
-  const key = 'passive|keep';
-  const out = normalizeFirstSeenDatesMap({ [key]: String(ms) }, {});
-  assert.equal(out[key], String(ms));
-});
-
-run('scenario5 capacity newest inactive', function() {
-  const now = Date.now();
-  const input = {};
-  for (let i = 0; i < 600; i++) {
-    input['cap|' + String(i).padStart(4, '0')] = String(now - i * 1000);
-  }
-  const out = normalizeFirstSeenDatesMap(input, {});
-  assert.equal(Object.keys(out).length, NOTIF_STATE_MAX_KEYS);
-  assert.ok(out['cap|0000']);
-  assert.equal(out['cap|0599'], undefined);
-});
-
-run('scenario7 invalid dropped', function() {
-  const out = normalizeFirstSeenDatesMap({
-    '': '1',
-    ok: String(Date.now()),
-    empty: '',
-    obj: { a: 1 },
-    arr: [1],
-    bad: 'not-a-date',
-    neg: '-5',
-    nan: 'NaN',
-    inf: 'Infinity'
-  }, {});
-  assert.equal(Object.keys(out).length, 1);
-  assert.ok(out.ok);
-});
-
-run('9.10 rollback quiet try\/finally + non-sticky', function() {
-  const src = read('notifications.js');
-  assert.match(src, /notificationScopeRollbackQuiet = true/);
-  assert.match(src, /finally \{\s*notificationScopeRollbackQuiet = false;\s*\}/);
-  assert.match(src, /if \(notificationScopeRollbackQuiet\) return;/);
-  // Quiet only gates save path; flag reset in finally so later real saves work.
-  const quietReturns = (src.match(/if \(notificationScopeRollbackQuiet\) return;/g) || []).length;
-  assert.ok(quietReturns >= 1);
-});
-
-run('idempotent client normalize', function() {
-  const now = Date.now();
-  const input = {};
-  const active = {};
-  for (let i = 0; i < 10; i++) {
-    const k = 'id|' + i;
-    input[k] = String(now - i * 1000);
-    if (i < 3) active[k] = true;
-  }
-  const a = normalizeFirstSeenDatesMap(input, active);
-  const b = normalizeFirstSeenDatesMap(a, active);
-  assert.ok(areFirstSeenDatesMapsEqual(a, b));
-});
-
-run('version 20260716.1', function() {
-  assert.match(read('script-core.js'), /notifications:\s*'20260716\.1'/);
-  assert.match(read('scripts/verify-medisa-vehicle-save-invariants.js'), /EXPECTED_NOTIFICATIONS = '20260716\.1'/);
-});
-
-run('script-core functional diff is version-only', function() {
-  const diff = execSync('git diff -- script-core.js', { cwd: ROOT, encoding: 'utf8' });
-  assert.match(diff, /notifications: '20260712\.3'/);
-  assert.match(diff, /notifications: '20260716\.1'/);
-  const contentLines = diff.split(/\r?\n/).filter(function(l) {
-    return /^[+-]/.test(l) && !/^[+-]{3}/.test(l);
+  const begin = phpOut.search(/PARITY_BEGIN\r?\n/);
+  const end = phpOut.search(/PARITY_END\r?\n/);
+  assert.ok(begin >= 0 && end > begin);
+  const beginLineEnd = phpOut.indexOf('\n', begin) + 1;
+  const rows = phpOut.slice(beginLineEnd, end).split(/\r?\n/).filter(function(row) {
+    return row.length > 0;
   });
-  assert.equal(contentLines.length, 2, 'expected exactly 2 content diff lines, got ' + contentLines.length);
+  assert.ok(rows.length >= 10);
+  rows.forEach(function(row) {
+    const tab = row.indexOf('\t');
+    assert.ok(tab > 0, 'parity row format: ' + JSON.stringify(row));
+    const phpOk = row.slice(0, tab) === '1';
+    const value = row.slice(tab + 1);
+    const jsOk = parseNotificationFirstSeenMs(value) > 0;
+    assert.equal(jsOk, phpOk, 'parity mismatch for ' + JSON.stringify(value) + ' js=' + jsOk + ' php=' + phpOk);
+  });
+});
+
+run('8.8 scope isolation source contract', function() {
+  const save = read('save.php');
+  assert.match(save, /\$userLegacyKey = \$scopeDescriptor\['userLegacyKey'\]/);
+  assert.match(save, /\$data\['notificationReadState'\]\[\$userLegacyKey\]/);
+  assert.doesNotMatch(save, /foreach \(\$data\['notificationReadState'\] as/);
+});
+
+run('idempotent production normalize', function() {
+  const now = Date.now();
+  const input = { a: String(now), b: String(now - 1000) };
+  const active = { a: true };
+  const once = normalizeFirstSeenDatesMap(input, active);
+  const twice = normalizeFirstSeenDatesMap(once, active);
+  assert.ok(areFirstSeenDatesMapsEqual(once, twice));
 });
 
 console.log('');

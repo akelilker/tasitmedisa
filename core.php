@@ -1341,7 +1341,8 @@ function medisaNotificationNormalizeKeys(array $keys): array {
 
 /**
  * firstSeen tarih değerini milisaniyeye çevir.
- * Destek: unix ms/saniye, ISO, TR tarih biçimleri.
+ * Destek: pozitif unix saniye/ms, ISO-8601, TR tarih (opsiyonel HH:mm).
+ * Relative / natural-language kabul edilmez.
  */
 function medisaNotificationParseFirstSeenMs($value): int {
     if (!is_scalar($value)) {
@@ -1367,7 +1368,6 @@ function medisaNotificationParseFirstSeenMs($value): int {
         }
         return (int)$n;
     }
-    // strtotime relative ('-5', '+1 day') firstSeen olamaz
     if (preg_match('/^[+-]?\d+(\.\d+)?$/', $raw) === 1) {
         return 0;
     }
@@ -1377,6 +1377,9 @@ function medisaNotificationParseFirstSeenMs($value): int {
         $year = (int)$m[3];
         $hour = isset($m[4]) ? (int)$m[4] : 0;
         $minute = isset($m[5]) ? (int)$m[5] : 0;
+        if ($hour < 0 || $hour > 23 || $minute < 0 || $minute > 59) {
+            return 0;
+        }
         if (!checkdate($month, $day, $year)) {
             return 0;
         }
@@ -1384,16 +1387,64 @@ function medisaNotificationParseFirstSeenMs($value): int {
             '!Y-m-d H:i:s',
             sprintf('%04d-%02d-%02d %02d:%02d:00', $year, $month, $day, $hour, $minute)
         );
-        if ($dt instanceof DateTimeImmutable) {
-            return (int)$dt->format('U') * 1000;
+        $errors = DateTimeImmutable::getLastErrors();
+        if (
+            !($dt instanceof DateTimeImmutable)
+            || ($errors !== false && (($errors['warning_count'] ?? 0) > 0 || ($errors['error_count'] ?? 0) > 0))
+        ) {
+            return 0;
         }
+        return ((int)$dt->format('U')) * 1000;
+    }
+
+    // Yalnız desteklenen ISO-8601 biçimleri (relative strtotime yok)
+    $isoPatterns = [
+        '!Y-m-d',
+        '!Y-m-d\\TH:i:s',
+        '!Y-m-d\\TH:i:sP',
+        '!Y-m-d\\TH:i:s.vP',
+        '!Y-m-d H:i:s',
+        '!Y-m-d\\TH:i:s\\Z',
+    ];
+    if (preg_match('/^(\d{4})-(\d{2})-(\d{2})/', $raw, $isoDate) !== 1) {
         return 0;
     }
-    $ts = strtotime($raw);
-    if ($ts === false || $ts <= 0) {
+    $year = (int)$isoDate[1];
+    $month = (int)$isoDate[2];
+    $day = (int)$isoDate[3];
+    if (!checkdate($month, $day, $year)) {
         return 0;
     }
-    return ((int)$ts) * 1000;
+    if (preg_match('/[T\s](\d{2}):(\d{2})(?::(\d{2}))?/', $raw, $isoTime) === 1) {
+        $hour = (int)$isoTime[1];
+        $minute = (int)$isoTime[2];
+        $second = isset($isoTime[3]) ? (int)$isoTime[3] : 0;
+        if ($hour < 0 || $hour > 23 || $minute < 0 || $minute > 59 || $second < 0 || $second > 59) {
+            return 0;
+        }
+    }
+    foreach ($isoPatterns as $pattern) {
+        $dt = DateTimeImmutable::createFromFormat($pattern, $raw);
+        $errors = DateTimeImmutable::getLastErrors();
+        if (
+            $dt instanceof DateTimeImmutable
+            && ($errors === false || (($errors['warning_count'] ?? 0) === 0 && ($errors['error_count'] ?? 0) === 0))
+        ) {
+            $ts = (int)$dt->format('U');
+            return $ts > 0 ? ($ts * 1000) : 0;
+        }
+    }
+    // Offset'li ISO: DateTimeImmutable constructor (takvim zaten checkdate ile doğrulandı)
+    if (preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2}(?:\.\d{1,3})?)?(?:Z|[+-]\d{2}:?\d{2})$/i', $raw) === 1) {
+        try {
+            $dt = new DateTimeImmutable($raw);
+            $ts = (int)$dt->format('U');
+            return $ts > 0 ? ($ts * 1000) : 0;
+        } catch (Exception $e) {
+            return 0;
+        }
+    }
+    return 0;
 }
 
 /**
@@ -1491,6 +1542,17 @@ function medisaNotificationResolveFirstSeenDates($serverMap, $clientMap): array 
     return medisaNotificationApplyFirstSeenEmergencyCap($out);
 }
 
+/**
+ * Load ile aynı firstSeen projection: legacy üzerine canonical (canonical aynı key'i ezer).
+ */
+function medisaNotificationProjectFirstSeenDates($legacyMap, $canonicalMap): array {
+    $projected = medisaNotificationNormalizeFirstSeenDates($legacyMap);
+    foreach (medisaNotificationNormalizeFirstSeenDates($canonicalMap) as $key => $value) {
+        $projected[$key] = $value;
+    }
+    return medisaNotificationApplyFirstSeenEmergencyCap($projected);
+}
+
 function medisaNotificationKeyListsEqual(array $a, array $b): bool {
     $left = medisaNotificationNormalizeKeys($a);
     $right = medisaNotificationNormalizeKeys($b);
@@ -1571,11 +1633,10 @@ function medisaProjectNotificationReadStateForContext(array $notificationReadSta
         $dismissedKeys
     ));
 
-    $firstSeenDates = $legacyScope['firstSeenDates'];
-    foreach ($canonicalScope['firstSeenDates'] as $notifKey => $firstSeenDate) {
-        $firstSeenDates[$notifKey] = $firstSeenDate;
-    }
-    $firstSeenDates = medisaNotificationNormalizeFirstSeenDates($firstSeenDates);
+    $firstSeenDates = medisaNotificationProjectFirstSeenDates(
+        $legacyScope['firstSeenDates'],
+        $canonicalScope['firstSeenDates']
+    );
 
     $canonicalUpdatedAt = trim((string)($canonicalScope['updatedAt'] ?? ''));
     $legacyUpdatedAt = trim((string)($legacyScope['updatedAt'] ?? ''));

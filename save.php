@@ -209,6 +209,8 @@ $result = medisaMutateData(function (&$data) use ($incomingData) {
         };
         $scopeDescriptor = medisaBuildNotificationScopeDescriptor($context);
         $allowedScopeKeys = $scopeDescriptor['saveAllowedKeys'];
+        $canonicalKey = $scopeDescriptor['canonicalKey'];
+        $userLegacyKey = $scopeDescriptor['userLegacyKey'];
 
         foreach ($allowedScopeKeys as $allowedScopeKey) {
             if (!array_key_exists($allowedScopeKey, $incomingReadState) || !is_array($incomingReadState[$allowedScopeKey])) continue;
@@ -216,9 +218,25 @@ $result = medisaMutateData(function (&$data) use ($incomingData) {
             $clientScope = $normalizeScopeState($incomingReadState[$allowedScopeKey]);
             $dismissedKeys = $mergeUnique($serverScope['dismissedKeys'], $clientScope['dismissedKeys']);
             $readKeys = $mergeUnique(array_merge($serverScope['readKeys'], $clientScope['readKeys']), $dismissedKeys);
-            // Key set = client prune; ortak key değeri = server firstSeen (reset yok).
+
+            $serverFirstSeenForResolve = $serverScope['firstSeenDates'];
+            if ($allowedScopeKey === $canonicalKey) {
+                // Load projection ile aynı kaynak: legacy + canonical (canonical ezer).
+                $legacyFirstSeen = [];
+                if ($userLegacyKey !== ''
+                    && array_key_exists($userLegacyKey, $data['notificationReadState'])
+                    && is_array($data['notificationReadState'][$userLegacyKey])) {
+                    $legacyNormalized = $normalizeScopeState($data['notificationReadState'][$userLegacyKey]);
+                    $legacyFirstSeen = $legacyNormalized['firstSeenDates'];
+                }
+                $serverFirstSeenForResolve = medisaNotificationProjectFirstSeenDates(
+                    $legacyFirstSeen,
+                    $serverScope['firstSeenDates']
+                );
+            }
+
             $firstSeenDates = medisaNotificationResolveFirstSeenDates(
-                $serverScope['firstSeenDates'],
+                $serverFirstSeenForResolve,
                 $clientScope['firstSeenDates']
             );
             $migrated = $serverScope['migratedFromLocalStorage'] || $clientScope['migratedFromLocalStorage'];
@@ -226,7 +244,16 @@ $result = medisaMutateData(function (&$data) use ($incomingData) {
             $sameDismissed = medisaNotificationKeyListsEqual($dismissedKeys, $serverScope['dismissedKeys']);
             $sameFirstSeen = medisaNotificationFirstSeenMapsEqual($firstSeenDates, $serverScope['firstSeenDates']);
             $sameMigrated = $migrated === $serverScope['migratedFromLocalStorage'];
-            if ($sameRead && $sameDismissed && $sameFirstSeen && $sameMigrated) {
+
+            $legacyNeedsFirstSeenClear = false;
+            if ($allowedScopeKey === $canonicalKey && $userLegacyKey !== ''
+                && array_key_exists($userLegacyKey, $data['notificationReadState'])
+                && is_array($data['notificationReadState'][$userLegacyKey])) {
+                $legacyForClear = $normalizeScopeState($data['notificationReadState'][$userLegacyKey]);
+                $legacyNeedsFirstSeenClear = !empty($legacyForClear['firstSeenDates']);
+            }
+
+            if ($sameRead && $sameDismissed && $sameFirstSeen && $sameMigrated && !$legacyNeedsFirstSeenClear) {
                 // Semantik no-op: scope rewrite / updatedAt dokunma.
                 continue;
             }
@@ -237,6 +264,18 @@ $result = medisaMutateData(function (&$data) use ($incomingData) {
                 'migratedFromLocalStorage' => $migrated,
                 'updatedAt' => date('c'),
             ];
+
+            // Kanonik save: firstSeen sahipliğini canonical'a taşı, bu kullanıcının legacy firstSeen'ini boşalt.
+            if ($allowedScopeKey === $canonicalKey && $legacyNeedsFirstSeenClear) {
+                $legacyExisting = $normalizeScopeState($data['notificationReadState'][$userLegacyKey]);
+                $data['notificationReadState'][$userLegacyKey] = [
+                    'readKeys' => $legacyExisting['readKeys'],
+                    'dismissedKeys' => $legacyExisting['dismissedKeys'],
+                    'firstSeenDates' => [],
+                    'migratedFromLocalStorage' => $legacyExisting['migratedFromLocalStorage'],
+                    'updatedAt' => date('c'),
+                ];
+            }
         }
     }
 

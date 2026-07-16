@@ -154,10 +154,15 @@
   function parseNotificationFirstSeenMs(value) {
     const raw = String(value || '').trim();
     if (!raw || raw === '-') return 0;
+    if (/^(nan|infinity)$/i.test(raw)) return 0;
     if (/^\d+$/.test(raw)) {
       const n = Number(raw);
-      if (isFinite(n) && n > 0) return n < 1000000000000 ? n * 1000 : n;
+      if (!isFinite(n) || n <= 0) return 0;
+      return n < 1000000000000 ? n * 1000 : n;
     }
+    // Relative / signed numeric firstSeen olamaz
+    if (/^[+-]?\d+(\.\d+)?$/.test(raw)) return 0;
+
     const trMatch = raw.match(/^(\d{2})[./-](\d{2})[./-](\d{4})(?:\s+(\d{2}):(\d{2}))?$/);
     if (trMatch) {
       const day = Number(trMatch[1]);
@@ -165,11 +170,47 @@
       const year = Number(trMatch[3]);
       const hour = trMatch[4] != null ? Number(trMatch[4]) : 0;
       const minute = trMatch[5] != null ? Number(trMatch[5]) : 0;
+      if (hour < 0 || hour > 23 || minute < 0 || minute > 59) return 0;
       const dt = new Date(year, month - 1, day, hour, minute, 0, 0);
-      if (!isNaN(dt.getTime())) return dt.getTime();
+      if (
+        isNaN(dt.getTime())
+        || dt.getFullYear() !== year
+        || dt.getMonth() !== (month - 1)
+        || dt.getDate() !== day
+        || dt.getHours() !== hour
+        || dt.getMinutes() !== minute
+      ) {
+        return 0;
+      }
+      return dt.getTime();
     }
-    const parsed = Date.parse(raw);
-    return isNaN(parsed) ? 0 : parsed;
+
+    // ISO-8601: YYYY-MM-DD[THH:mm[:ss][.sss][Z|±HH:mm]]
+    const isoMatch = raw.match(
+      /^(\d{4})-(\d{2})-(\d{2})(?:[T\s](\d{2}):(\d{2})(?::(\d{2})(?:\.\d{1,3})?)?(?:Z|[+-]\d{2}:?\d{2})?)?$/i
+    );
+    if (isoMatch) {
+      const year = Number(isoMatch[1]);
+      const month = Number(isoMatch[2]);
+      const day = Number(isoMatch[3]);
+      const hour = isoMatch[4] != null ? Number(isoMatch[4]) : 0;
+      const minute = isoMatch[5] != null ? Number(isoMatch[5]) : 0;
+      const second = isoMatch[6] != null ? Number(isoMatch[6]) : 0;
+      if (hour < 0 || hour > 23 || minute < 0 || minute > 59 || second < 0 || second > 59) return 0;
+      const cal = new Date(year, month - 1, day);
+      if (
+        isNaN(cal.getTime())
+        || cal.getFullYear() !== year
+        || cal.getMonth() !== (month - 1)
+        || cal.getDate() !== day
+      ) {
+        return 0;
+      }
+      const parsed = Date.parse(raw);
+      return isNaN(parsed) ? 0 : parsed;
+    }
+
+    return 0;
   }
 
   function areFirstSeenDatesMapsEqual(a, b) {
@@ -350,7 +391,13 @@
 
   function beginNotificationFirstSeenBatch(scopeKey) {
     notifFirstSeenBatchContext = scopeKey
-      ? { scopeKey: scopeKey, previousScoped: null, changed: false, activeKeys: {} }
+      ? {
+          scopeKey: scopeKey,
+          previousScoped: null,
+          changed: false,
+          activeKeys: {},
+          completed: false
+        }
       : null;
   }
 
@@ -372,13 +419,23 @@
     state[batch.scopeKey] = scoped;
   }
 
-  function flushNotificationFirstSeenBatch() {
+  function abortNotificationFirstSeenBatch() {
     const batch = notifFirstSeenBatchContext;
-    if (batch) {
-      applyNotificationFirstSeenPruneInBatch(batch);
-    }
     notifFirstSeenBatchContext = null;
-    if (!batch || !batch.changed || !batch.previousScoped) return;
+    if (!batch || !batch.scopeKey || !batch.previousScoped) return;
+    const state = ensureNotificationReadStateObject();
+    state[batch.scopeKey] = cloneNotificationScopeState(batch.previousScoped);
+  }
+
+  function flushNotificationFirstSeenBatch(success) {
+    const batch = notifFirstSeenBatchContext;
+    if (!success || !batch || !batch.completed) {
+      abortNotificationFirstSeenBatch();
+      return;
+    }
+    applyNotificationFirstSeenPruneInBatch(batch);
+    notifFirstSeenBatchContext = null;
+    if (!batch.changed || !batch.previousScoped) return;
     if (notificationScopeRollbackQuiet) return;
     saveNotificationScopeStateWithRollback(batch.scopeKey, batch.previousScoped);
   }
@@ -2176,6 +2233,7 @@
     }
     const notifScopeKey = getCurrentNotifScopeKey();
     beginNotificationFirstSeenBatch(notifScopeKey);
+    let firstSeenBatchSucceeded = false;
     try {
     const vehicles = readVehicles();
     const notifications = [];
@@ -2603,12 +2661,25 @@
         /* Zil rengi: kırmızı = kritik/süresi bitmiş uyarılar; turuncu = yaklaşan tarih ve benzeri; pulse = başka okunmamış. */
       }
     }
+    if (notifFirstSeenBatchContext) notifFirstSeenBatchContext.completed = true;
+    firstSeenBatchSucceeded = true;
     } catch (err) {
       if (typeof window.__medisaLogError === 'function') window.__medisaLogError('updateNotifications', err);
       else console.error('[Medisa] Bildirimler güncellenemedi:', err);
     } finally {
-      updateMonthlyTodoHeaderBadge();
-      flushNotificationFirstSeenBatch();
+      try {
+        updateMonthlyTodoHeaderBadge();
+      } catch (badgeErr) {
+        if (typeof window.__medisaLogError === 'function') window.__medisaLogError('updateMonthlyTodoHeaderBadge', badgeErr);
+        else console.error('[Medisa] Aylık todo badge güncellenemedi:', badgeErr);
+      }
+      try {
+        flushNotificationFirstSeenBatch(firstSeenBatchSucceeded);
+      } catch (flushErr) {
+        notifFirstSeenBatchContext = null;
+        if (typeof window.__medisaLogError === 'function') window.__medisaLogError('flushNotificationFirstSeenBatch', flushErr);
+        else console.error('[Medisa] Bildirim firstSeen batch temizlenemedi:', flushErr);
+      }
     }
     openNotificationsFromReturnParam();
   };
