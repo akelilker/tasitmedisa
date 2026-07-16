@@ -1,8 +1,9 @@
 <?php
 /**
- * PERF-P0-1-R2 — PHP firstSeenDates resolve / legacy / parser parity.
+ * PERF-P0-1-R3 — PHP parser parity + save firstSeen owner.
  * Çalıştır: php scripts/verify-notification-first-seen-retention-php.php
  */
+date_default_timezone_set('Europe/Istanbul');
 require __DIR__ . '/../core.php';
 
 function medisaAssert($cond, $msg) {
@@ -13,69 +14,54 @@ function medisaAssert($cond, $msg) {
     echo "PASS $msg\n";
 }
 
-$base = (int)round(microtime(true) * 1000);
-
-// 8.7 — 600 aktif key
-$map600 = [];
-for ($i = 0; $i < 600; $i++) {
-    $map600['active|' . str_pad((string)$i, 4, '0', STR_PAD_LEFT)] = (string)($base - $i);
-}
-$clean600 = medisaNotificationNormalizeFirstSeenDates($map600);
-medisaAssert(count($clean600) === 600, '8.7 normalize keeps 600 keys');
-
-$server600 = [];
-$client600 = [];
-for ($i = 0; $i < 600; $i++) {
-    $k = 'active|' . str_pad((string)$i, 4, '0', STR_PAD_LEFT);
-    $server600[$k] = (string)($base - 100000 - $i);
-    $client600[$k] = (string)($base - $i);
-}
-$resolved600 = medisaNotificationResolveFirstSeenDates($server600, $client600);
-medisaAssert(count($resolved600) === 600, '8.7 resolve keeps 600 keys');
-medisaAssert($resolved600['active|0000'] === $server600['active|0000'], '8.7/9.3 server timestamp ownership');
-
-// 8.2 / 8.3 — legacy projection + resolve + ownership
-$legacyMap = [
-    'legacy-old' => (string)($base - 90000),
-    'legacy-keep' => (string)($base - 80000),
-];
-$canonicalMap = [
-    'canonical-keep' => (string)($base - 70000),
-];
-$projected = medisaNotificationProjectFirstSeenDates($legacyMap, $canonicalMap);
-medisaAssert(isset($projected['legacy-old'], $projected['legacy-keep'], $projected['canonical-keep']), '8.2 projection merges legacy+canonical');
-
-$clientPruned = [
-    'legacy-keep' => (string)($base), // newer manipulated
-    'canonical-keep' => (string)($base - 70000),
-];
-$resolved = medisaNotificationResolveFirstSeenDates($projected, $clientPruned);
-medisaAssert(!isset($resolved['legacy-old']), '8.2 pruned legacy-old removed');
-medisaAssert($resolved['legacy-keep'] === $legacyMap['legacy-keep'], '8.3 legacy timestamp ownership preserved');
-medisaAssert($resolved['canonical-keep'] === $canonicalMap['canonical-keep'], '8.3 canonical timestamp preserved');
-
-// Reload projection after migration (canonical has resolved, legacy empty)
-$after = medisaNotificationProjectFirstSeenDates([], $resolved);
-medisaAssert(!isset($after['legacy-old']), '8.2 reload projection does not resurrect legacy-old');
-medisaAssert(isset($after['legacy-keep'], $after['canonical-keep']), '8.2 reload keeps pruned set');
-
-// 8.6 parser fixtures
-$valid = [
+$VALID = [
     '1721123456789',
     '1721123456',
     '16.07.2026',
+    '16/07/2026',
+    '16-07-2026',
+    '16.07.2026 23:59',
     '16/07/2026 23:59',
+    '16-07-2026 23:59',
     '2026-07-16',
+    '2026-07-16T10:30',
+    '2026-07-16T10:30:00',
+    '2026-07-16T10:30:00.1',
+    '2026-07-16T10:30:00.12',
+    '2026-07-16T10:30:00.123',
+    '2026-07-16T10:30Z',
+    '2026-07-16T10:30:00Z',
+    '2026-07-16T10:30:00.123Z',
+    '2026-07-16T10:30+03:00',
     '2026-07-16T10:30:00+03:00',
+    '2026-07-16T10:30:00.123+03:00',
+    '2026-07-16T10:30+0300',
+    '2026-07-16T10:30:00+0300',
+    '2026-07-16 10:30',
+    '2026-07-16 10:30:00',
 ];
-$invalid = [
+
+$INVALID = [
     '31.02.2026',
     '29.02.2025',
     '2026-02-31',
-    '16.07.2026 24:01',
+    '2026-00-16',
+    '2026-13-16',
+    '2026-07-00',
+    '2026-07-32',
+    '16.07.2026 24:00',
     '16.07.2026 23:60',
+    '2026-07-16T24:00',
+    '2026-07-16T23:60',
+    '2026-07-16T23:59:60',
+    '2026-07-16T10:30+25:00',
+    '2026-07-16T10:30+03:60',
     'tomorrow',
+    'yesterday',
+    'today',
+    'now',
     '+1 day',
+    '-1 day',
     'next monday',
     '0',
     '-5',
@@ -83,33 +69,128 @@ $invalid = [
     'Infinity',
     '',
 ];
-foreach ($valid as $v) {
-    medisaAssert(medisaNotificationParseFirstSeenMs($v) > 0, '8.6 PHP valid ' . $v);
+
+foreach ($VALID as $v) {
+    medisaAssert(medisaNotificationParseFirstSeenMs($v) > 0, 'valid ' . $v);
 }
-foreach ($invalid as $v) {
-    medisaAssert(medisaNotificationParseFirstSeenMs($v) === 0, '8.6 PHP invalid ' . $v);
+foreach ($INVALID as $v) {
+    medisaAssert(medisaNotificationParseFirstSeenMs($v) === 0, 'invalid ' . json_encode($v));
 }
 
-// malformed non-scalars via normalize
-$invalidMap = medisaNotificationNormalizeFirstSeenDates([
-    '' => '1',
-    'x' => '',
-    'y' => ['no'],
-    'z' => 'NaN',
-    'n' => '-5',
-    'zero' => '0',
-    'inf' => 'Infinity',
-    'ok' => (string)$base,
-]);
-medisaAssert(count($invalidMap) === 1 && isset($invalidMap['ok']), '9.8 malformed dropped');
+// Epoch parity samples for offset forms
+$a = medisaNotificationParseFirstSeenMs('2026-07-16T10:30:00+03:00');
+$b = medisaNotificationParseFirstSeenMs('2026-07-16T10:30:00+0300');
+medisaAssert($a > 0 && $a === $b, 'offset +03:00 vs +0300 same epoch');
 
-medisaAssert(medisaNotificationFirstSeenEmergencyMaxKeys() >= 20000, 'emergency max >= 20000');
+$base = (string)((int)round(microtime(true) * 1000));
+$old = (string)((int)$base - 90000);
+$keep = (string)((int)$base - 80000);
+$canon = (string)((int)$base - 70000);
 
-// Emit machine-readable parity rows for Node to compare
+$serverLegacy = [
+    'readKeys' => ['legacy-read'],
+    'dismissedKeys' => ['legacy-dismiss'],
+    'firstSeenDates' => [
+        'legacy-old' => $old,
+        'legacy-keep' => $keep,
+    ],
+    'migratedFromLocalStorage' => false,
+    'updatedAt' => '2026-01-01T00:00:00+03:00',
+];
+$serverCanonical = [
+    'readKeys' => ['canonical-read'],
+    'dismissedKeys' => [],
+    'firstSeenDates' => [
+        'canonical-keep' => $canon,
+    ],
+    'migratedFromLocalStorage' => false,
+    'updatedAt' => '2026-01-02T00:00:00+03:00',
+];
+$incomingCanonical = [
+    'readKeys' => ['canonical-read'],
+    'dismissedKeys' => [],
+    'firstSeenDates' => [
+        'legacy-keep' => (string)((int)$base),
+        'canonical-keep' => (string)((int)$base),
+    ],
+    'migratedFromLocalStorage' => false,
+    'updatedAt' => '',
+];
+$incomingLegacy = [
+    'readKeys' => ['legacy-read'],
+    'dismissedKeys' => ['legacy-dismiss'],
+    'firstSeenDates' => [
+        'legacy-old' => (string)((int)$base),
+        'legacy-extra' => (string)((int)$base),
+    ],
+    'migratedFromLocalStorage' => false,
+    'updatedAt' => '',
+];
+
+$d1 = medisaNotificationResolveScopeFirstSeenSave(
+    $serverLegacy,
+    $serverCanonical,
+    $incomingLegacy,
+    $incomingCanonical,
+    true
+);
+medisaAssert($d1['clearLegacyFirstSeen'] === true, '6.1 clear legacy');
+medisaAssert($d1['legacyFirstSeen'] === [], '6.1 legacy firstSeen empty');
+medisaAssert(!isset($d1['canonicalFirstSeen']['legacy-old']), '6.1 legacy-old gone');
+medisaAssert(!isset($d1['canonicalFirstSeen']['legacy-extra']), '6.1 legacy-extra ignored');
+medisaAssert($d1['canonicalFirstSeen']['legacy-keep'] === $keep, '6.1 legacy-keep server ownership');
+medisaAssert($d1['canonicalFirstSeen']['canonical-keep'] === $canon, '6.1 canonical-keep server ownership');
+
+// 6.3 legacy-only old client
+$dLegacyOnly = medisaNotificationResolveScopeFirstSeenSave(
+    $serverLegacy,
+    $serverCanonical,
+    [
+        'readKeys' => ['legacy-read'],
+        'dismissedKeys' => ['legacy-dismiss'],
+        'firstSeenDates' => [
+            'legacy-keep' => $keep,
+            'legacy-new' => $base,
+        ],
+        'migratedFromLocalStorage' => false,
+        'updatedAt' => '',
+    ],
+    [],
+    false
+);
+medisaAssert($dLegacyOnly['writeCanonicalFirstSeen'] === false, '6.3 no canonical write');
+medisaAssert(isset($dLegacyOnly['legacyFirstSeen']['legacy-new']), '6.3 legacy-only accepts new key');
+medisaAssert($dLegacyOnly['legacyFirstSeen']['legacy-keep'] === $keep, '6.3 legacy-only ownership');
+medisaAssert(!isset($dLegacyOnly['legacyFirstSeen']['legacy-old']), '6.3 legacy-only prune');
+
+// 6.4 idempotency
+$d2 = medisaNotificationResolveScopeFirstSeenSave(
+    array_merge($serverLegacy, ['firstSeenDates' => []]),
+    array_merge($serverCanonical, ['firstSeenDates' => $d1['canonicalFirstSeen']]),
+    $incomingLegacy,
+    [
+        'readKeys' => ['canonical-read'],
+        'dismissedKeys' => [],
+        'firstSeenDates' => $d1['canonicalFirstSeen'],
+        'migratedFromLocalStorage' => false,
+        'updatedAt' => '',
+    ],
+    true
+);
+medisaAssert(medisaNotificationFirstSeenMapsEqual($d1['canonicalFirstSeen'], $d2['canonicalFirstSeen']), '6.4 idempotent canonical');
+medisaAssert($d2['legacyFirstSeen'] === [], '6.4 legacy stays empty');
+
+// 8.7 600 active
+$map600 = [];
+for ($i = 0; $i < 600; $i++) {
+    $map600['a' . $i] = (string)((int)$base - $i);
+}
+medisaAssert(count(medisaNotificationNormalizeFirstSeenDates($map600)) === 600, '8.7 keeps 600');
+
 echo "PARITY_BEGIN\n";
-foreach (array_merge($valid, $invalid) as $v) {
-    $ok = medisaNotificationParseFirstSeenMs($v) > 0 ? '1' : '0';
-    echo $ok, "\t", str_replace(["\t", "\n"], [' ', ' '], $v), "\n";
+foreach (array_merge($VALID, $INVALID) as $v) {
+    $ms = medisaNotificationParseFirstSeenMs($v);
+    echo ($ms > 0 ? '1' : '0'), "\t", $ms, "\t", str_replace(["\t", "\n", "\r"], [' ', ' ', ''], $v), "\n";
 }
 echo "PARITY_END\n";
 echo "PHP_RETENTION_OK\n";

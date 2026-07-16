@@ -154,24 +154,32 @@
   function parseNotificationFirstSeenMs(value) {
     const raw = String(value || '').trim();
     if (!raw || raw === '-') return 0;
-    if (/^(nan|infinity)$/i.test(raw)) return 0;
+    if (/^(nan|infinity|tomorrow|yesterday|today|now|noon|midnight)$/i.test(raw)) return 0;
+    if (/^(?:\+|-)+\d+\s*day/i.test(raw) || /^next\s+/i.test(raw) || /^last\s+/i.test(raw)) return 0;
+
     if (/^\d+$/.test(raw)) {
       const n = Number(raw);
       if (!isFinite(n) || n <= 0) return 0;
       return n < 1000000000000 ? n * 1000 : n;
     }
-    // Relative / signed numeric firstSeen olamaz
     if (/^[+-]?\d+(\.\d+)?$/.test(raw)) return 0;
 
-    const trMatch = raw.match(/^(\d{2})[./-](\d{2})[./-](\d{4})(?:\s+(\d{2}):(\d{2}))?$/);
-    if (trMatch) {
-      const day = Number(trMatch[1]);
-      const month = Number(trMatch[2]);
-      const year = Number(trMatch[3]);
-      const hour = trMatch[4] != null ? Number(trMatch[4]) : 0;
-      const minute = trMatch[5] != null ? Number(trMatch[5]) : 0;
-      if (hour < 0 || hour > 23 || minute < 0 || minute > 59) return 0;
-      const dt = new Date(year, month - 1, day, hour, minute, 0, 0);
+    function calendarOk(year, month, day) {
+      const cal = new Date(year, month - 1, day);
+      return !isNaN(cal.getTime())
+        && cal.getFullYear() === year
+        && cal.getMonth() === (month - 1)
+        && cal.getDate() === day;
+    }
+
+    function localMs(year, month, day, hour, minute, second, ms) {
+      hour = hour || 0;
+      minute = minute || 0;
+      second = second || 0;
+      ms = ms || 0;
+      if (hour < 0 || hour > 23 || minute < 0 || minute > 59 || second < 0 || second > 59) return 0;
+      if (!calendarOk(year, month, day)) return 0;
+      const dt = new Date(year, month - 1, day, hour, minute, second, ms);
       if (
         isNaN(dt.getTime())
         || dt.getFullYear() !== year
@@ -179,38 +187,66 @@
         || dt.getDate() !== day
         || dt.getHours() !== hour
         || dt.getMinutes() !== minute
+        || dt.getSeconds() !== second
       ) {
         return 0;
       }
       return dt.getTime();
     }
 
-    // ISO-8601: YYYY-MM-DD[THH:mm[:ss][.sss][Z|±HH:mm]]
-    const isoMatch = raw.match(
-      /^(\d{4})-(\d{2})-(\d{2})(?:[T\s](\d{2}):(\d{2})(?::(\d{2})(?:\.\d{1,3})?)?(?:Z|[+-]\d{2}:?\d{2})?)?$/i
-    );
-    if (isoMatch) {
-      const year = Number(isoMatch[1]);
-      const month = Number(isoMatch[2]);
-      const day = Number(isoMatch[3]);
-      const hour = isoMatch[4] != null ? Number(isoMatch[4]) : 0;
-      const minute = isoMatch[5] != null ? Number(isoMatch[5]) : 0;
-      const second = isoMatch[6] != null ? Number(isoMatch[6]) : 0;
-      if (hour < 0 || hour > 23 || minute < 0 || minute > 59 || second < 0 || second > 59) return 0;
-      const cal = new Date(year, month - 1, day);
-      if (
-        isNaN(cal.getTime())
-        || cal.getFullYear() !== year
-        || cal.getMonth() !== (month - 1)
-        || cal.getDate() !== day
-      ) {
-        return 0;
-      }
-      const parsed = Date.parse(raw);
-      return isNaN(parsed) ? 0 : parsed;
+    const trMatch = raw.match(/^(\d{2})[./-](\d{2})[./-](\d{4})(?:\s+(\d{2}):(\d{2}))?$/);
+    if (trMatch) {
+      return localMs(
+        Number(trMatch[3]),
+        Number(trMatch[2]),
+        Number(trMatch[1]),
+        trMatch[4] != null ? Number(trMatch[4]) : 0,
+        trMatch[5] != null ? Number(trMatch[5]) : 0,
+        0,
+        0
+      );
     }
 
-    return 0;
+    // ISO date / datetime with optional space or T, optional fractional seconds, optional Z/+HH:MM/+HHMM
+    const isoMatch = raw.match(
+      /^(\d{4})-(\d{2})-(\d{2})(?:([T\s])(\d{2}):(\d{2})(?::(\d{2})(?:\.(\d{1,3}))?)?(?:(Z)|([+-])(\d{2}):?(\d{2}))?)?$/i
+    );
+    if (!isoMatch) return 0;
+
+    const year = Number(isoMatch[1]);
+    const month = Number(isoMatch[2]);
+    const day = Number(isoMatch[3]);
+    const hasTime = !!isoMatch[4];
+    if (!hasTime) {
+      return localMs(year, month, day, 0, 0, 0, 0);
+    }
+
+    const hour = Number(isoMatch[5]);
+    const minute = Number(isoMatch[6]);
+    const second = isoMatch[7] != null ? Number(isoMatch[7]) : 0;
+    let frac = isoMatch[8] != null ? isoMatch[8] : '';
+    while (frac.length < 3) frac += '0';
+    const msPart = frac ? Number(frac.slice(0, 3)) : 0;
+    if (hour < 0 || hour > 23 || minute < 0 || minute > 59 || second < 0 || second > 59) return 0;
+    if (!calendarOk(year, month, day)) return 0;
+
+    const isZ = !!isoMatch[9];
+    const offSign = isoMatch[10];
+    if (!isZ && !offSign) {
+      return localMs(year, month, day, hour, minute, second, msPart);
+    }
+
+    let offHour = 0;
+    let offMinute = 0;
+    if (offSign) {
+      offHour = Number(isoMatch[11]);
+      offMinute = Number(isoMatch[12]);
+      if (offHour < 0 || offHour > 23 || offMinute < 0 || offMinute > 59) return 0;
+    }
+    const sign = isZ ? 1 : (offSign === '-' ? -1 : 1);
+    const offsetMin = isZ ? 0 : sign * (offHour * 60 + offMinute);
+    const utcMs = Date.UTC(year, month - 1, day, hour, minute, second, msPart) - (offsetMin * 60000);
+    return isFinite(utcMs) && utcMs > 0 ? utcMs : 0;
   }
 
   function areFirstSeenDatesMapsEqual(a, b) {

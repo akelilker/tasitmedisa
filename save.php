@@ -211,6 +211,27 @@ $result = medisaMutateData(function (&$data) use ($incomingData) {
         $allowedScopeKeys = $scopeDescriptor['saveAllowedKeys'];
         $canonicalKey = $scopeDescriptor['canonicalKey'];
         $userLegacyKey = $scopeDescriptor['userLegacyKey'];
+        $canonicalIncomingPresent = array_key_exists($canonicalKey, $incomingReadState)
+            && is_array($incomingReadState[$canonicalKey]);
+
+        $serverLegacyRaw = ($userLegacyKey !== '' && array_key_exists($userLegacyKey, $data['notificationReadState']))
+            ? $data['notificationReadState'][$userLegacyKey]
+            : [];
+        $serverCanonicalRaw = array_key_exists($canonicalKey, $data['notificationReadState'])
+            ? $data['notificationReadState'][$canonicalKey]
+            : [];
+        $incomingLegacyRaw = ($userLegacyKey !== '' && array_key_exists($userLegacyKey, $incomingReadState))
+            ? $incomingReadState[$userLegacyKey]
+            : [];
+        $incomingCanonicalRaw = $canonicalIncomingPresent ? $incomingReadState[$canonicalKey] : [];
+
+        $firstSeenDecision = medisaNotificationResolveScopeFirstSeenSave(
+            is_array($serverLegacyRaw) ? $serverLegacyRaw : [],
+            is_array($serverCanonicalRaw) ? $serverCanonicalRaw : [],
+            is_array($incomingLegacyRaw) ? $incomingLegacyRaw : [],
+            is_array($incomingCanonicalRaw) ? $incomingCanonicalRaw : [],
+            $canonicalIncomingPresent
+        );
 
         foreach ($allowedScopeKeys as $allowedScopeKey) {
             if (!array_key_exists($allowedScopeKey, $incomingReadState) || !is_array($incomingReadState[$allowedScopeKey])) continue;
@@ -219,42 +240,25 @@ $result = medisaMutateData(function (&$data) use ($incomingData) {
             $dismissedKeys = $mergeUnique($serverScope['dismissedKeys'], $clientScope['dismissedKeys']);
             $readKeys = $mergeUnique(array_merge($serverScope['readKeys'], $clientScope['readKeys']), $dismissedKeys);
 
-            $serverFirstSeenForResolve = $serverScope['firstSeenDates'];
             if ($allowedScopeKey === $canonicalKey) {
-                // Load projection ile aynı kaynak: legacy + canonical (canonical ezer).
-                $legacyFirstSeen = [];
-                if ($userLegacyKey !== ''
-                    && array_key_exists($userLegacyKey, $data['notificationReadState'])
-                    && is_array($data['notificationReadState'][$userLegacyKey])) {
-                    $legacyNormalized = $normalizeScopeState($data['notificationReadState'][$userLegacyKey]);
-                    $legacyFirstSeen = $legacyNormalized['firstSeenDates'];
-                }
-                $serverFirstSeenForResolve = medisaNotificationProjectFirstSeenDates(
-                    $legacyFirstSeen,
-                    $serverScope['firstSeenDates']
+                $firstSeenDates = $firstSeenDecision['canonicalFirstSeen'];
+            } elseif ($userLegacyKey !== '' && $allowedScopeKey === $userLegacyKey) {
+                // Canonical payload varken incoming legacy firstSeen yok sayılır / boş kalır.
+                $firstSeenDates = $firstSeenDecision['legacyFirstSeen'];
+            } else {
+                $firstSeenDates = medisaNotificationResolveFirstSeenDates(
+                    $serverScope['firstSeenDates'],
+                    $clientScope['firstSeenDates']
                 );
             }
 
-            $firstSeenDates = medisaNotificationResolveFirstSeenDates(
-                $serverFirstSeenForResolve,
-                $clientScope['firstSeenDates']
-            );
             $migrated = $serverScope['migratedFromLocalStorage'] || $clientScope['migratedFromLocalStorage'];
             $sameRead = medisaNotificationKeyListsEqual($readKeys, $serverScope['readKeys']);
             $sameDismissed = medisaNotificationKeyListsEqual($dismissedKeys, $serverScope['dismissedKeys']);
             $sameFirstSeen = medisaNotificationFirstSeenMapsEqual($firstSeenDates, $serverScope['firstSeenDates']);
             $sameMigrated = $migrated === $serverScope['migratedFromLocalStorage'];
 
-            $legacyNeedsFirstSeenClear = false;
-            if ($allowedScopeKey === $canonicalKey && $userLegacyKey !== ''
-                && array_key_exists($userLegacyKey, $data['notificationReadState'])
-                && is_array($data['notificationReadState'][$userLegacyKey])) {
-                $legacyForClear = $normalizeScopeState($data['notificationReadState'][$userLegacyKey]);
-                $legacyNeedsFirstSeenClear = !empty($legacyForClear['firstSeenDates']);
-            }
-
-            if ($sameRead && $sameDismissed && $sameFirstSeen && $sameMigrated && !$legacyNeedsFirstSeenClear) {
-                // Semantik no-op: scope rewrite / updatedAt dokunma.
+            if ($sameRead && $sameDismissed && $sameFirstSeen && $sameMigrated) {
                 continue;
             }
             $data['notificationReadState'][$allowedScopeKey] = [
@@ -264,10 +268,16 @@ $result = medisaMutateData(function (&$data) use ($incomingData) {
                 'migratedFromLocalStorage' => $migrated,
                 'updatedAt' => date('c'),
             ];
+        }
 
-            // Kanonik save: firstSeen sahipliğini canonical'a taşı, bu kullanıcının legacy firstSeen'ini boşalt.
-            if ($allowedScopeKey === $canonicalKey && $legacyNeedsFirstSeenClear) {
-                $legacyExisting = $normalizeScopeState($data['notificationReadState'][$userLegacyKey]);
+        // Canonical geldiyse legacy firstSeen owner boşaltımı (payload'da legacy olmasa da).
+        if ($canonicalIncomingPresent
+            && $firstSeenDecision['clearLegacyFirstSeen']
+            && $userLegacyKey !== ''
+            && array_key_exists($userLegacyKey, $data['notificationReadState'])
+            && is_array($data['notificationReadState'][$userLegacyKey])) {
+            $legacyExisting = $normalizeScopeState($data['notificationReadState'][$userLegacyKey]);
+            if (!medisaNotificationFirstSeenMapsEqual($legacyExisting['firstSeenDates'], [])) {
                 $data['notificationReadState'][$userLegacyKey] = [
                     'readKeys' => $legacyExisting['readKeys'],
                     'dismissedKeys' => $legacyExisting['dismissedKeys'],

@@ -1340,9 +1340,8 @@ function medisaNotificationNormalizeKeys(array $keys): array {
 }
 
 /**
- * firstSeen tarih değerini milisaniyeye çevir.
- * Destek: pozitif unix saniye/ms, ISO-8601, TR tarih (opsiyonel HH:mm).
- * Relative / natural-language kabul edilmez.
+ * firstSeen tarih → epoch ms.
+ * Desteklenen format matrisi JS ile birebir aynıdır (Europe/Istanbul offset'siz).
  */
 function medisaNotificationParseFirstSeenMs($value): int {
     if (!is_scalar($value)) {
@@ -1352,13 +1351,13 @@ function medisaNotificationParseFirstSeenMs($value): int {
     if ($raw === '' || $raw === '-') {
         return 0;
     }
-    if (preg_match('/^(nan|infinity)$/i', $raw) === 1) {
+    if (preg_match('/^(nan|infinity|tomorrow|yesterday|today|now|noon|midnight)$/i', $raw) === 1) {
+        return 0;
+    }
+    if (preg_match('/^(?:\+|-)+\d+\s*day/i', $raw) === 1 || preg_match('/^(next|last)\s+/i', $raw) === 1) {
         return 0;
     }
     if (preg_match('/^\d+$/', $raw) === 1) {
-        if (!is_numeric($raw)) {
-            return 0;
-        }
         $n = (float)$raw;
         if (!is_finite($n) || $n <= 0) {
             return 0;
@@ -1371,13 +1370,11 @@ function medisaNotificationParseFirstSeenMs($value): int {
     if (preg_match('/^[+-]?\d+(\.\d+)?$/', $raw) === 1) {
         return 0;
     }
-    if (preg_match('/^(\d{2})[\\.\\/-](\d{2})[\\.\\/-](\d{4})(?:\s+(\d{2}):(\d{2}))?$/', $raw, $m) === 1) {
-        $day = (int)$m[1];
-        $month = (int)$m[2];
-        $year = (int)$m[3];
-        $hour = isset($m[4]) ? (int)$m[4] : 0;
-        $minute = isset($m[5]) ? (int)$m[5] : 0;
-        if ($hour < 0 || $hour > 23 || $minute < 0 || $minute > 59) {
+
+    $tz = new DateTimeZone('Europe/Istanbul');
+
+    $buildLocal = function ($year, $month, $day, $hour, $minute, $second, $ms) use ($tz) {
+        if ($hour < 0 || $hour > 23 || $minute < 0 || $minute > 59 || $second < 0 || $second > 59) {
             return 0;
         }
         if (!checkdate($month, $day, $year)) {
@@ -1385,7 +1382,8 @@ function medisaNotificationParseFirstSeenMs($value): int {
         }
         $dt = DateTimeImmutable::createFromFormat(
             '!Y-m-d H:i:s',
-            sprintf('%04d-%02d-%02d %02d:%02d:00', $year, $month, $day, $hour, $minute)
+            sprintf('%04d-%02d-%02d %02d:%02d:%02d', $year, $month, $day, $hour, $minute, $second),
+            $tz
         );
         $errors = DateTimeImmutable::getLastErrors();
         if (
@@ -1394,57 +1392,129 @@ function medisaNotificationParseFirstSeenMs($value): int {
         ) {
             return 0;
         }
-        return ((int)$dt->format('U')) * 1000;
+        return ((int)$dt->format('U')) * 1000 + (int)$ms;
+    };
+
+    if (preg_match('/^(\d{2})[\\.\\/-](\d{2})[\\.\\/-](\d{4})(?:\s+(\d{2}):(\d{2}))?$/', $raw, $m) === 1) {
+        return $buildLocal(
+            (int)$m[3],
+            (int)$m[2],
+            (int)$m[1],
+            isset($m[4]) ? (int)$m[4] : 0,
+            isset($m[5]) ? (int)$m[5] : 0,
+            0,
+            0
+        );
     }
 
-    // Yalnız desteklenen ISO-8601 biçimleri (relative strtotime yok)
-    $isoPatterns = [
-        '!Y-m-d',
-        '!Y-m-d\\TH:i:s',
-        '!Y-m-d\\TH:i:sP',
-        '!Y-m-d\\TH:i:s.vP',
-        '!Y-m-d H:i:s',
-        '!Y-m-d\\TH:i:s\\Z',
-    ];
-    if (preg_match('/^(\d{4})-(\d{2})-(\d{2})/', $raw, $isoDate) !== 1) {
+    if (preg_match(
+        '/^(\d{4})-(\d{2})-(\d{2})(?:([T\s])(\d{2}):(\d{2})(?::(\d{2})(?:\.(\d{1,3}))?)?(?:(Z)|([+-])(\d{2}):?(\d{2}))?)?$/i',
+        $raw,
+        $iso
+    ) !== 1) {
         return 0;
     }
-    $year = (int)$isoDate[1];
-    $month = (int)$isoDate[2];
-    $day = (int)$isoDate[3];
+
+    $year = (int)$iso[1];
+    $month = (int)$iso[2];
+    $day = (int)$iso[3];
+    $hasTime = !empty($iso[4]);
+    if (!$hasTime) {
+        return $buildLocal($year, $month, $day, 0, 0, 0, 0);
+    }
+
+    $hour = (int)$iso[5];
+    $minute = (int)$iso[6];
+    $second = isset($iso[7]) && $iso[7] !== '' ? (int)$iso[7] : 0;
+    $frac = isset($iso[8]) ? $iso[8] : '';
+    while (strlen($frac) < 3) {
+        $frac .= '0';
+    }
+    $msPart = $frac !== '' ? (int)substr($frac, 0, 3) : 0;
+    if ($hour < 0 || $hour > 23 || $minute < 0 || $minute > 59 || $second < 0 || $second > 59) {
+        return 0;
+    }
     if (!checkdate($month, $day, $year)) {
         return 0;
     }
-    if (preg_match('/[T\s](\d{2}):(\d{2})(?::(\d{2}))?/', $raw, $isoTime) === 1) {
-        $hour = (int)$isoTime[1];
-        $minute = (int)$isoTime[2];
-        $second = isset($isoTime[3]) ? (int)$isoTime[3] : 0;
-        if ($hour < 0 || $hour > 23 || $minute < 0 || $minute > 59 || $second < 0 || $second > 59) {
+
+    $isZ = !empty($iso[9]);
+    $offSign = isset($iso[10]) ? $iso[10] : '';
+    if (!$isZ && $offSign === '') {
+        return $buildLocal($year, $month, $day, $hour, $minute, $second, $msPart);
+    }
+
+    $offHour = 0;
+    $offMinute = 0;
+    if ($offSign !== '') {
+        $offHour = (int)$iso[11];
+        $offMinute = (int)$iso[12];
+        if ($offHour < 0 || $offHour > 23 || $offMinute < 0 || $offMinute > 59) {
             return 0;
         }
     }
-    foreach ($isoPatterns as $pattern) {
-        $dt = DateTimeImmutable::createFromFormat($pattern, $raw);
-        $errors = DateTimeImmutable::getLastErrors();
-        if (
-            $dt instanceof DateTimeImmutable
-            && ($errors === false || (($errors['warning_count'] ?? 0) === 0 && ($errors['error_count'] ?? 0) === 0))
-        ) {
-            $ts = (int)$dt->format('U');
-            return $ts > 0 ? ($ts * 1000) : 0;
-        }
+    $offsetMin = $isZ ? 0 : (($offSign === '-' ? -1 : 1) * ($offHour * 60 + $offMinute));
+    $utc = gmmktime($hour, $minute, $second, $month, $day, $year);
+    if ($utc === false) {
+        return 0;
     }
-    // Offset'li ISO: DateTimeImmutable constructor (takvim zaten checkdate ile doğrulandı)
-    if (preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2}(?:\.\d{1,3})?)?(?:Z|[+-]\d{2}:?\d{2})$/i', $raw) === 1) {
-        try {
-            $dt = new DateTimeImmutable($raw);
-            $ts = (int)$dt->format('U');
-            return $ts > 0 ? ($ts * 1000) : 0;
-        } catch (Exception $e) {
-            return 0;
-        }
+    $utcMs = ((int)$utc - ($offsetMin * 60)) * 1000 + $msPart;
+    return $utcMs > 0 ? $utcMs : 0;
+}
+
+/**
+ * Canonical/legacy firstSeen save kararı — tek production owner.
+ *
+ * @return array{
+ *   canonicalFirstSeen: array,
+ *   legacyFirstSeen: array,
+ *   writeCanonicalFirstSeen: bool,
+ *   writeLegacyFirstSeen: bool,
+ *   clearLegacyFirstSeen: bool
+ * }
+ */
+function medisaNotificationResolveScopeFirstSeenSave(
+    array $serverLegacyScope,
+    array $serverCanonicalScope,
+    array $incomingLegacyScope,
+    array $incomingCanonicalScope,
+    bool $canonicalIncomingPresent
+): array {
+    $serverLegacy = medisaNotificationNormalizeScopeState($serverLegacyScope);
+    $serverCanonical = medisaNotificationNormalizeScopeState($serverCanonicalScope);
+    $incomingLegacy = medisaNotificationNormalizeScopeState($incomingLegacyScope);
+    $incomingCanonical = medisaNotificationNormalizeScopeState($incomingCanonicalScope);
+
+    if ($canonicalIncomingPresent) {
+        $projected = medisaNotificationProjectFirstSeenDates(
+            $serverLegacy['firstSeenDates'],
+            $serverCanonical['firstSeenDates']
+        );
+        $resolved = medisaNotificationResolveFirstSeenDates(
+            $projected,
+            $incomingCanonical['firstSeenDates']
+        );
+        return [
+            'canonicalFirstSeen' => $resolved,
+            'legacyFirstSeen' => [],
+            'writeCanonicalFirstSeen' => true,
+            'writeLegacyFirstSeen' => true,
+            'clearLegacyFirstSeen' => true,
+        ];
     }
-    return 0;
+
+    // Yalnız legacy eski istemci: firstSeen legacy üzerinde resolve edilir.
+    $resolvedLegacy = medisaNotificationResolveFirstSeenDates(
+        $serverLegacy['firstSeenDates'],
+        $incomingLegacy['firstSeenDates']
+    );
+    return [
+        'canonicalFirstSeen' => $serverCanonical['firstSeenDates'],
+        'legacyFirstSeen' => $resolvedLegacy,
+        'writeCanonicalFirstSeen' => false,
+        'writeLegacyFirstSeen' => true,
+        'clearLegacyFirstSeen' => false,
+    ];
 }
 
 /**
