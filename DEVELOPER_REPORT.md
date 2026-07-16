@@ -253,55 +253,48 @@ Bu revizyonda doğrulanmış aktif kısa vadeli kod düzeltmesi yoktur.
 - Canlı authenticated projection smoke PASS.
 - P0-A commit: `f1f82a88163bd3875d5672baeb5c16c2ab0b1280`
 
-## P0-B — Kontrollü Olarak Ertelendi
+## P0-B — Canlı Portal Hesap / Secret Rotasyonu (Aşama 2B)
 
-- Kullanıcılar uygulamayı henüz gerçek kullanımda kullanmaya başlamadı.
-- Kullanıcı parola rotasyonu uygulanmadı.
-- JWT/DOC signing secret rotasyonu uygulanmadı.
-- Git history rewrite uygulanmadı.
-- Bu maddeler iptal edilmedi; go-live öncesi zorunlu güvenlik kapısına devredildi.
-- Geçici bakım endpoint'i canlıdan silindi ve HTTP 404 ile doğrulandı.
-- Yerel geçici endpoint/token materyalleri silindi.
-- Issue #456 açık tutulacak.
+Tarih: 2026-07-16
 
-## Risk Kabulünün Sınırı
+Canlıda tamamlananlar:
+- 48 aktif hesabın parola rotasyonu uygulandı.
+- 28 mevcut geçerli kullanıcı adı korundu; 20 kullanıcı adı canonical kural ile oluşturuldu.
+- Legacy düz metin parola alanı canlıda 0.
+- Canonical parola hash 48.
+- İlk giriş parola önerisi bekleyen aktif kullanıcı 48.
+- JWT/DOC signing secret rotate edildi.
+- Eski JWT ile authenticated load → 401.
+- Eski parola ile login reddedildi.
+- Yeni genel yönetici login → 200.
+- Yeni JWT ile authenticated load → 200.
+- Projection içinde `sifre` / `sifre_hash` / parola alanları yok; `portal_sifresi_var` yalnız boolean.
+- Geçici maintenance endpoint, staged data ve apply state silindi (endpoint GET → 404).
+- Credential CSV repo dışında ve güvenli dağıtıma hazır.
+- Rollback gerekmedi.
 
-- Mevcut erteleme yalnız gerçek kullanıcı kullanımının başlamamış olması nedeniyle kabul edildi.
-- Uygulama kullanıcılara açılmadan önce ertelenen güvenlik maddeleri tamamlanmadan sistem “go-live güvenlik hazır” sayılmayacak.
-- Yeni kullanıcı şifreleri dağıtılmadan eski/test/geçici şifreler geçersiz kılınmalı.
-- Genel yönetici hesabı ve diğer yönetim hesapları dahil edilmelidir.
-- Signing secret değişimi mevcut JWT ve DOC tokenlarını geçersiz kılacaktır.
-- Git geçmişi temizliği sonrasında eski klonlar tekrar kullanılmamalı; yeniden clone edilmelidir.
+Kapanış etiketleri:
+- `P0_PASSWORD_ROTATION_CLOSED`
+- `P0_TOKEN_SECRET_ROTATION_CLOSED`
+- `P0_OLD_SESSIONS_INVALIDATED`
+- `P0_LIVE_CREDENTIAL_PROJECTION_VERIFIED`
+- `P0_HISTORY_CLEANUP_PENDING`
 
-## GO-LIVE GÜVENLİK KAPISI
+Kullanılmayan etiket:
+- `P0_SECURITY_GO_LIVE_GATE_CLOSED` (Git history cleanup tamamlanmadan kapatılmaz)
 
-1. Bakım penceresi belirle.
-2. Güncel canlı yedek ve geri dönüş planını doğrula.
-3. Tüm kullanıcı/portal hesaplarını ve credential kapsamını sayısal olarak envanterle.
-4. Genel yönetici, şube yöneticisi, kullanıcı/sürücü ve pasif credential hesaplarını kapsa.
-5. Eski/test/geçici başlangıç şifrelerini iptal et.
-6. Her credential hesabı için benzersiz güçlü başlangıç parolası üret.
-7. Canlı veride yalnız canonical parola hash'i bırak.
-8. Düz metin veya legacy parola alanı kalmadığını doğrula.
-9. JWT/DOC signing secret'ı güçlü rastgele yeni değerle değiştir.
-10. Eski oturumların 401 verdiğini doğrula.
-11. Yeni genel yönetici girişi smoke testi yap.
-12. Authenticated `load.php` smoke testi yap.
-13. Belge/DOC token smoke testi yap.
-14. İstemci projection, localStorage, sessionStorage ve offline cache içinde credential sızıntısı olmadığını doğrula.
-15. Geçici parola dağıtımını güvenli kanal üzerinden yap.
-16. İlk girişte parola değiştirme zorunluluğu mevcutsa doğrula; yoksa ayrı ürün/güvenlik işi olarak kaydet.
-17. Git geçmişindeki hassas `data.json`, credential ve eski secret izlerini bütün ref'lerden temizle.
-18. Temizlenmiş geçmişi kontrollü force-push et.
-19. Eski klonların kullanımını yasakla ve yeniden clone talimatı yayınla.
-20. Geçici bakım endpoint'i kullanıldıysa işlem sonunda canlıdan ve yerelden sil.
-21. Issue #456'yı yalnız tüm maddeler kanıtlandıktan sonra kapat.
+## Hâlâ açık — Git history cleanup
 
-## GO-LIVE ENGEL ETİKETİ
+- Git history rewrite henüz uygulanmadı.
+- Eski klonlar kaldırılmalı / yeniden clone edilmeli.
+- Issue #456 history cleanup tamamlanana kadar açık kalır.
+- Credential CSV güvenli kanal ile dağıtılmalı; içerik Git’e veya sohbete yazılmamalı.
+- Manuel UI smoke (ilk giriş öneri modalı) operatör tarafından doğrulanmalı.
 
-`P0_SECURITY_DEFERRED_UNTIL_BEFORE_REAL_USER_GO_LIVE`
+## Notlar
 
-`P0_SECURITY_GO_LIVE_GATE_CLOSED` etiketi ancak parola rotasyonu, signing secret rotasyonu, canlı smoke ve history cleanup tamamlandıktan sonra kullanılabilir.
+- Apply öncesi eski genel yönetici smoke login’i `son_giris` alanını güncellediği için canlı data hash’i orijinal yedek hash’ten farklılaştı; apply sonrası canlı hash hazır JSON hash ile eşleşti.
+- Maintenance cleanup staged/state/endpoint’i sildi; sunucudaki `pre-apply` data/secret yedek dosyalarının manuel temizliği operatör kontrolünde kalabilir.
 
 ---
 
@@ -315,4 +308,4 @@ Herhangi bir sorun veya açıklama için repository'de issue açabilirsiniz.
 
 ---
 
-**Son Güncelleme:** 2026-07-15 (P0 güvenli durdurma ve go-live güvenlik kapısı)
+**Son Güncelleme:** 2026-07-16 (Aşama 2B canlı portal hesap ve secret rotasyonu)
