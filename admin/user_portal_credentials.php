@@ -43,8 +43,13 @@ $result = medisaMutateData(function (&$data) use ($targetUserId) {
     if ($userIndex < 0) {
         return medisaBuildErrorResult('Kullanıcı bulunamadı.', 404);
     }
-    if (!medisaCanManageUserRecord($data['users'][$userIndex], $context)) {
-        return medisaBuildErrorResult('Bu kullanıcı için parola yenileme yetkiniz yok.', 403);
+
+    // Yetki: parola üretimi ve data mutationından önce.
+    if (!medisaCanResetPortalInitialPassword($data['users'][$userIndex], $context)) {
+        return medisaBuildErrorResult(
+            'Bu kullanıcının başlangıç parolasını sıfırlama yetkiniz bulunmamaktadır.',
+            403
+        );
     }
 
     $username = trim((string)($data['users'][$userIndex]['kullanici_adi'] ?? ''));

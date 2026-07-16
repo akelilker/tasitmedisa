@@ -63,6 +63,30 @@ assert(
   'Eski tek tasitlar.css kaldırılmalı (base+extra kullanılır)'
 );
 
+assert(
+  'portal_reset_helper_blocks_genel_yonetici_target',
+  /function medisaCanResetPortalInitialPassword/.test(core) &&
+    /\$targetRole === 'genel_yonetici'/.test(core) &&
+    /return \$targetRole === 'kullanici' \|\| \$targetRole === 'sube_yonetici'/.test(core),
+  'Başlangıç parola reset helper genel yönetici hedefini engellemeli'
+);
+
+const ayarlar = read('ayarlar.js');
+assert(
+  'ayarlar_reset_button_role_gate',
+  /scope\.role === 'genel_yonetici'/.test(ayarlar) &&
+    /targetRole === 'kullanici' \|\| targetRole === 'sube_yonetici'/.test(ayarlar),
+  'UI reset butonu yalnız genel→kullanici/sube için görünmeli'
+);
+
+const adminCred = read('admin/user_portal_credentials.php');
+assert(
+  'admin_reset_endpoint_uses_helper',
+  /medisaCanResetPortalInitialPassword/.test(adminCred) &&
+    /Bu kullanıcının başlangıç parolasını sıfırlama yetkiniz bulunmamaktadır/.test(adminCred),
+  'Admin reset endpoint hedef rol 403 helper kullanmalı'
+);
+
 if (failed) {
   console.error('\nDoğrulama başarısız.');
   process.exit(1);
