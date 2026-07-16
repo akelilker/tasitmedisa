@@ -181,18 +181,6 @@ $result = medisaMutateData(function (&$data) use ($incomingData) {
             return array_slice($clean, -500);
         };
         $normalizeScopeState = function ($scopeState) use ($normalizeKeys, $isListArray) {
-            $normalizeFirstSeenDates = function ($map) {
-                $clean = [];
-                if (!is_array($map)) return $clean;
-                foreach ($map as $key => $date) {
-                    $normalizedKey = trim((string)$key);
-                    if (!is_scalar($date)) continue;
-                    $normalizedDate = trim((string)$date);
-                    if ($normalizedKey === '' || $normalizedDate === '') continue;
-                    $clean[$normalizedKey] = $normalizedDate;
-                }
-                return $clean;
-            };
             if ($isListArray($scopeState)) {
                 $readKeys = $normalizeKeys($scopeState);
                 return [
@@ -210,7 +198,8 @@ $result = medisaMutateData(function (&$data) use ($incomingData) {
             return [
                 'readKeys' => $readKeys,
                 'dismissedKeys' => $dismissedKeys,
-                'firstSeenDates' => $normalizeFirstSeenDates($scopeState['firstSeenDates'] ?? []),
+                // İstemci prune key set authoritative; değer resolve save tarafında.
+                'firstSeenDates' => medisaNotificationNormalizeFirstSeenDates($scopeState['firstSeenDates'] ?? []),
                 'migratedFromLocalStorage' => ($scopeState['migratedFromLocalStorage'] ?? false) === true,
                 'updatedAt' => trim((string)($scopeState['updatedAt'] ?? '')),
             ];
@@ -227,18 +216,25 @@ $result = medisaMutateData(function (&$data) use ($incomingData) {
             $clientScope = $normalizeScopeState($incomingReadState[$allowedScopeKey]);
             $dismissedKeys = $mergeUnique($serverScope['dismissedKeys'], $clientScope['dismissedKeys']);
             $readKeys = $mergeUnique(array_merge($serverScope['readKeys'], $clientScope['readKeys']), $dismissedKeys);
-            $firstSeenDates = is_array($serverScope['firstSeenDates'] ?? null) ? $serverScope['firstSeenDates'] : [];
-            $clientFirstSeenDates = is_array($clientScope['firstSeenDates'] ?? null) ? $clientScope['firstSeenDates'] : [];
-            foreach ($clientFirstSeenDates as $notifKey => $firstSeenDate) {
-                if (!array_key_exists($notifKey, $firstSeenDates)) {
-                    $firstSeenDates[$notifKey] = $firstSeenDate;
-                }
+            // Key set = client prune; ortak key değeri = server firstSeen (reset yok).
+            $firstSeenDates = medisaNotificationResolveFirstSeenDates(
+                $serverScope['firstSeenDates'],
+                $clientScope['firstSeenDates']
+            );
+            $migrated = $serverScope['migratedFromLocalStorage'] || $clientScope['migratedFromLocalStorage'];
+            $sameRead = medisaNotificationKeyListsEqual($readKeys, $serverScope['readKeys']);
+            $sameDismissed = medisaNotificationKeyListsEqual($dismissedKeys, $serverScope['dismissedKeys']);
+            $sameFirstSeen = medisaNotificationFirstSeenMapsEqual($firstSeenDates, $serverScope['firstSeenDates']);
+            $sameMigrated = $migrated === $serverScope['migratedFromLocalStorage'];
+            if ($sameRead && $sameDismissed && $sameFirstSeen && $sameMigrated) {
+                // Semantik no-op: scope rewrite / updatedAt dokunma.
+                continue;
             }
             $data['notificationReadState'][$allowedScopeKey] = [
                 'readKeys' => $readKeys,
                 'dismissedKeys' => $dismissedKeys,
                 'firstSeenDates' => $firstSeenDates,
-                'migratedFromLocalStorage' => $serverScope['migratedFromLocalStorage'] || $clientScope['migratedFromLocalStorage'],
+                'migratedFromLocalStorage' => $migrated,
                 'updatedAt' => date('c'),
             ];
         }

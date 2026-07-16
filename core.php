@@ -1339,23 +1339,179 @@ function medisaNotificationNormalizeKeys(array $keys): array {
     return array_slice($clean, -500);
 }
 
+/**
+ * firstSeen tarih değerini milisaniyeye çevir.
+ * Destek: unix ms/saniye, ISO, TR tarih biçimleri.
+ */
+function medisaNotificationParseFirstSeenMs($value): int {
+    if (!is_scalar($value)) {
+        return 0;
+    }
+    $raw = trim((string)$value);
+    if ($raw === '' || $raw === '-') {
+        return 0;
+    }
+    if (preg_match('/^(nan|infinity)$/i', $raw) === 1) {
+        return 0;
+    }
+    if (preg_match('/^\d+$/', $raw) === 1) {
+        if (!is_numeric($raw)) {
+            return 0;
+        }
+        $n = (float)$raw;
+        if (!is_finite($n) || $n <= 0) {
+            return 0;
+        }
+        if ($n < 1000000000000) {
+            return (int)round($n * 1000);
+        }
+        return (int)$n;
+    }
+    // strtotime relative ('-5', '+1 day') firstSeen olamaz
+    if (preg_match('/^[+-]?\d+(\.\d+)?$/', $raw) === 1) {
+        return 0;
+    }
+    if (preg_match('/^(\d{2})[\\.\\/-](\d{2})[\\.\\/-](\d{4})(?:\s+(\d{2}):(\d{2}))?$/', $raw, $m) === 1) {
+        $day = (int)$m[1];
+        $month = (int)$m[2];
+        $year = (int)$m[3];
+        $hour = isset($m[4]) ? (int)$m[4] : 0;
+        $minute = isset($m[5]) ? (int)$m[5] : 0;
+        if (!checkdate($month, $day, $year)) {
+            return 0;
+        }
+        $dt = DateTimeImmutable::createFromFormat(
+            '!Y-m-d H:i:s',
+            sprintf('%04d-%02d-%02d %02d:%02d:00', $year, $month, $day, $hour, $minute)
+        );
+        if ($dt instanceof DateTimeImmutable) {
+            return (int)$dt->format('U') * 1000;
+        }
+        return 0;
+    }
+    $ts = strtotime($raw);
+    if ($ts === false || $ts <= 0) {
+        return 0;
+    }
+    return ((int)$ts) * 1000;
+}
+
+/**
+ * Client soft capacity (inactive) = 500; aktifler client'ta soft limiti aşabilir.
+ * Server aynı 500'e kör kesmez. Bu yalnız patolojik payload için acil tavan.
+ */
+function medisaNotificationFirstSeenEmergencyMaxKeys(): int {
+    return 20000;
+}
+
+/**
+ * firstSeenDates doğrula (parse + scalar).
+ * Client soft 500 hard-truncate UYGULANMAZ — aktif istisnası korunur.
+ */
 function medisaNotificationNormalizeFirstSeenDates($map): array {
     $clean = [];
     if (!is_array($map)) {
         return $clean;
     }
     foreach ($map as $key => $date) {
+        if (!is_scalar($key) && $key !== null) {
+            continue;
+        }
         $normalizedKey = trim((string)$key);
-        if (!is_scalar($date)) {
+        if ($normalizedKey === '' || !is_scalar($date)) {
             continue;
         }
         $normalizedDate = trim((string)$date);
-        if ($normalizedKey === '' || $normalizedDate === '') {
+        if ($normalizedDate === '') {
+            continue;
+        }
+        $ms = medisaNotificationParseFirstSeenMs($normalizedDate);
+        if ($ms <= 0) {
             continue;
         }
         $clean[$normalizedKey] = $normalizedDate;
     }
-    return $clean;
+    return medisaNotificationApplyFirstSeenEmergencyCap($clean);
+}
+
+/**
+ * Deterministik acil tavan: en yeni kayıtlar kalır (ms DESC, key ASC).
+ */
+function medisaNotificationApplyFirstSeenEmergencyCap(array $map): array {
+    $max = medisaNotificationFirstSeenEmergencyMaxKeys();
+    if (count($map) <= $max) {
+        return $map;
+    }
+    $entries = [];
+    $index = 0;
+    foreach ($map as $key => $value) {
+        $entries[] = [
+            'key' => $key,
+            'value' => $value,
+            'ms' => medisaNotificationParseFirstSeenMs($value),
+            'index' => $index,
+        ];
+        $index++;
+    }
+    usort($entries, function ($a, $b) {
+        if ($a['ms'] !== $b['ms']) {
+            return ($a['ms'] < $b['ms']) ? 1 : -1;
+        }
+        if ($a['key'] !== $b['key']) {
+            return ($a['key'] < $b['key']) ? -1 : 1;
+        }
+        return $a['index'] <=> $b['index'];
+    });
+    $entries = array_slice($entries, 0, $max);
+    $out = [];
+    foreach ($entries as $entry) {
+        $out[$entry['key']] = $entry['value'];
+    }
+    return $out;
+}
+
+/**
+ * firstSeenDates save resolve:
+ * - nihai key set = client prune sonucu
+ * - ortak key → geçerli server değeri korunur (reset/manipülasyon yok)
+ * - yalnız client key → client değeri
+ * - yalnız server key → silinir
+ */
+function medisaNotificationResolveFirstSeenDates($serverMap, $clientMap): array {
+    $serverClean = medisaNotificationNormalizeFirstSeenDates($serverMap);
+    $clientClean = medisaNotificationNormalizeFirstSeenDates($clientMap);
+    $out = [];
+    foreach ($clientClean as $key => $clientVal) {
+        if (array_key_exists($key, $serverClean)) {
+            $out[$key] = $serverClean[$key];
+        } else {
+            $out[$key] = $clientVal;
+        }
+    }
+    return medisaNotificationApplyFirstSeenEmergencyCap($out);
+}
+
+function medisaNotificationKeyListsEqual(array $a, array $b): bool {
+    $left = medisaNotificationNormalizeKeys($a);
+    $right = medisaNotificationNormalizeKeys($b);
+    sort($left);
+    sort($right);
+    return $left === $right;
+}
+
+function medisaNotificationFirstSeenMapsEqual(array $a, array $b): bool {
+    if (count($a) !== count($b)) {
+        return false;
+    }
+    foreach ($a as $key => $value) {
+        if (!array_key_exists($key, $b)) {
+            return false;
+        }
+        if ((string)$b[$key] !== (string)$value) {
+            return false;
+        }
+    }
+    return true;
 }
 
 function medisaNotificationNormalizeScopeState($scopeState): array {
@@ -1419,6 +1575,7 @@ function medisaProjectNotificationReadStateForContext(array $notificationReadSta
     foreach ($canonicalScope['firstSeenDates'] as $notifKey => $firstSeenDate) {
         $firstSeenDates[$notifKey] = $firstSeenDate;
     }
+    $firstSeenDates = medisaNotificationNormalizeFirstSeenDates($firstSeenDates);
 
     $canonicalUpdatedAt = trim((string)($canonicalScope['updatedAt'] ?? ''));
     $legacyUpdatedAt = trim((string)($legacyScope['updatedAt'] ?? ''));

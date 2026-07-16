@@ -151,15 +151,110 @@
     return list.slice(0, NOTIF_STATE_MAX_KEYS).map(function(item) { return item.key; });
   }
 
-  function normalizeFirstSeenDatesMap(rawMap) {
+  function parseNotificationFirstSeenMs(value) {
+    const raw = String(value || '').trim();
+    if (!raw || raw === '-') return 0;
+    if (/^\d+$/.test(raw)) {
+      const n = Number(raw);
+      if (isFinite(n) && n > 0) return n < 1000000000000 ? n * 1000 : n;
+    }
+    const trMatch = raw.match(/^(\d{2})[./-](\d{2})[./-](\d{4})(?:\s+(\d{2}):(\d{2}))?$/);
+    if (trMatch) {
+      const day = Number(trMatch[1]);
+      const month = Number(trMatch[2]);
+      const year = Number(trMatch[3]);
+      const hour = trMatch[4] != null ? Number(trMatch[4]) : 0;
+      const minute = trMatch[5] != null ? Number(trMatch[5]) : 0;
+      const dt = new Date(year, month - 1, day, hour, minute, 0, 0);
+      if (!isNaN(dt.getTime())) return dt.getTime();
+    }
+    const parsed = Date.parse(raw);
+    return isNaN(parsed) ? 0 : parsed;
+  }
+
+  function areFirstSeenDatesMapsEqual(a, b) {
+    const left = (a && typeof a === 'object' && !Array.isArray(a)) ? a : {};
+    const right = (b && typeof b === 'object' && !Array.isArray(b)) ? b : {};
+    const leftKeys = Object.keys(left);
+    const rightKeys = Object.keys(right);
+    if (leftKeys.length !== rightKeys.length) return false;
+    for (let i = 0; i < leftKeys.length; i++) {
+      const key = leftKeys[i];
+      if (!Object.prototype.hasOwnProperty.call(right, key)) return false;
+      if (String(left[key]) !== String(right[key])) return false;
+    }
+    return true;
+  }
+
+  /**
+   * firstSeenDates normalize.
+   * activeKeys yoksa: yalnız geçerli kayıtları tut (yaş/kapasite yok — aktif koruma update turunda).
+   * activeKeys varsa: aktifleri koru; pasiflerde yaş+kapasite uygula.
+   */
+  function normalizeFirstSeenDatesMap(rawMap, activeKeys) {
     const out = {};
     if (!rawMap || typeof rawMap !== 'object' || Array.isArray(rawMap)) return out;
-    Object.keys(rawMap).forEach(function(key) {
-      const normalizedKey = String(key || '').trim();
-      const normalizedDate = String(rawMap[key] || '').trim();
-      if (!normalizedKey || !normalizedDate) return;
-      out[normalizedKey] = normalizedDate;
+    const active = (activeKeys && typeof activeKeys === 'object' && !Array.isArray(activeKeys))
+      ? activeKeys
+      : null;
+    const now = Date.now();
+    const entries = [];
+    const rawKeys = Object.keys(rawMap);
+    for (let i = 0; i < rawKeys.length; i++) {
+      const rawKey = rawKeys[i];
+      const normalizedKey = String(rawKey || '').trim();
+      if (!normalizedKey) continue;
+      const rawVal = rawMap[rawKey];
+      if (rawVal == null || typeof rawVal === 'object') continue;
+      const normalizedDate = String(rawVal).trim();
+      if (!normalizedDate) continue;
+      const ms = parseNotificationFirstSeenMs(normalizedDate);
+      if (!(ms > 0) || !isFinite(ms)) continue;
+      entries.push({
+        key: normalizedKey,
+        value: normalizedDate,
+        ms: ms,
+        index: i,
+        isActive: !!(active && active[normalizedKey])
+      });
+    }
+    if (!active) {
+      for (let j = 0; j < entries.length; j++) {
+        out[entries[j].key] = entries[j].value;
+      }
+      return out;
+    }
+
+    const activeEntries = [];
+    const inactiveEntries = [];
+    for (let k = 0; k < entries.length; k++) {
+      const entry = entries[k];
+      if (entry.isActive) {
+        activeEntries.push(entry);
+        continue;
+      }
+      if ((now - entry.ms) <= NOTIF_STATE_MAX_AGE_MS) {
+        inactiveEntries.push(entry);
+      }
+    }
+    activeEntries.sort(function(a, b) {
+      if (a.key < b.key) return -1;
+      if (a.key > b.key) return 1;
+      return a.index - b.index;
     });
+    inactiveEntries.sort(function(a, b) {
+      if (a.ms !== b.ms) return b.ms - a.ms;
+      if (a.key < b.key) return -1;
+      if (a.key > b.key) return 1;
+      return a.index - b.index;
+    });
+    for (let aIdx = 0; aIdx < activeEntries.length; aIdx++) {
+      out[activeEntries[aIdx].key] = activeEntries[aIdx].value;
+    }
+    const remaining = Math.max(0, NOTIF_STATE_MAX_KEYS - activeEntries.length);
+    for (let iIdx = 0; iIdx < inactiveEntries.length && iIdx < remaining; iIdx++) {
+      out[inactiveEntries[iIdx].key] = inactiveEntries[iIdx].value;
+    }
     return out;
   }
 
@@ -214,7 +309,10 @@
     return window.appData.kaskoDegerListesi;
   }
 
+  let notificationScopeRollbackQuiet = false;
+
   function saveNotificationScopeStateWithRollback(scopeKey, previousScoped) {
+    if (notificationScopeRollbackQuiet) return;
     if (typeof window.updateNotifications === 'function') window.updateNotifications();
     if (typeof window.saveDataToServer !== 'function') return;
     window.saveDataToServer()
@@ -224,33 +322,17 @@
       .catch(function() {
         const state = ensureNotificationReadStateObject();
         state[scopeKey] = cloneNotificationScopeState(previousScoped);
-        if (typeof window.updateNotifications === 'function') window.updateNotifications();
+        notificationScopeRollbackQuiet = true;
+        try {
+          if (typeof window.updateNotifications === 'function') window.updateNotifications();
+        } finally {
+          notificationScopeRollbackQuiet = false;
+        }
       });
   }
 
   function getCurrentNotificationFirstSeenValue() {
     return String(Date.now());
-  }
-
-  function parseNotificationFirstSeenMs(value) {
-    const raw = String(value || '').trim();
-    if (!raw || raw === '-') return 0;
-    if (/^\d+$/.test(raw)) {
-      const n = Number(raw);
-      if (isFinite(n) && n > 0) return n < 1000000000000 ? n * 1000 : n;
-    }
-    const trMatch = raw.match(/^(\d{2})[./-](\d{2})[./-](\d{4})(?:\s+(\d{2}):(\d{2}))?$/);
-    if (trMatch) {
-      const day = Number(trMatch[1]);
-      const month = Number(trMatch[2]);
-      const year = Number(trMatch[3]);
-      const hour = trMatch[4] != null ? Number(trMatch[4]) : 0;
-      const minute = trMatch[5] != null ? Number(trMatch[5]) : 0;
-      const dt = new Date(year, month - 1, day, hour, minute, 0, 0);
-      if (!isNaN(dt.getTime())) return dt.getTime();
-    }
-    const parsed = Date.parse(raw);
-    return isNaN(parsed) ? 0 : parsed;
   }
 
   function formatNotificationFirstSeenDisplay(value) {
@@ -267,13 +349,37 @@
   }
 
   function beginNotificationFirstSeenBatch(scopeKey) {
-    notifFirstSeenBatchContext = scopeKey ? { scopeKey: scopeKey, previousScoped: null, changed: false } : null;
+    notifFirstSeenBatchContext = scopeKey
+      ? { scopeKey: scopeKey, previousScoped: null, changed: false, activeKeys: {} }
+      : null;
+  }
+
+  function applyNotificationFirstSeenPruneInBatch(batch) {
+    if (!batch || !batch.scopeKey) return;
+    const state = ensureNotificationReadStateObject();
+    const scoped = getNotificationScopeState(batch.scopeKey);
+    const currentMap = (scoped.firstSeenDates && typeof scoped.firstSeenDates === 'object' && !Array.isArray(scoped.firstSeenDates))
+      ? scoped.firstSeenDates
+      : {};
+    const pruned = normalizeFirstSeenDatesMap(currentMap, batch.activeKeys || {});
+    if (areFirstSeenDatesMapsEqual(currentMap, pruned)) return;
+    if (!batch.previousScoped) {
+      batch.previousScoped = cloneNotificationScopeState(scoped);
+    }
+    batch.changed = true;
+    scoped.firstSeenDates = pruned;
+    scoped.updatedAt = new Date().toISOString();
+    state[batch.scopeKey] = scoped;
   }
 
   function flushNotificationFirstSeenBatch() {
     const batch = notifFirstSeenBatchContext;
+    if (batch) {
+      applyNotificationFirstSeenPruneInBatch(batch);
+    }
     notifFirstSeenBatchContext = null;
     if (!batch || !batch.changed || !batch.previousScoped) return;
+    if (notificationScopeRollbackQuiet) return;
     saveNotificationScopeStateWithRollback(batch.scopeKey, batch.previousScoped);
   }
 
@@ -284,6 +390,9 @@
     if (scopeKey) {
       const state = ensureNotificationReadStateObject();
       const scoped = getNotificationScopeState(scopeKey);
+      if (notifFirstSeenBatchContext && notifFirstSeenBatchContext.scopeKey === scopeKey) {
+        notifFirstSeenBatchContext.activeKeys[normalizedKey] = true;
+      }
       const existing = scoped.firstSeenDates && scoped.firstSeenDates[normalizedKey];
       if (existing) return existing;
       const firstSeenValue = getCurrentNotificationFirstSeenValue();
