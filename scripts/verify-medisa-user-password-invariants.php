@@ -206,6 +206,101 @@ foreach (($filtered['users'] ?? []) as $filteredUser) {
     pwAssert('Filter users portal_sifresi_var boolean', is_bool($filteredUser['portal_sifresi_var'] ?? null));
 }
 
+// 12) Genel yönetici başlangıç parola reset yetki matrisi (sentetik fixture)
+$ctxGenel = ['role' => 'genel_yonetici', 'user_id' => 'gm-self', 'branch_ids' => []];
+$ctxSube = ['role' => 'sube_yonetici', 'user_id' => 'bm1', 'branch_ids' => ['b1']];
+$ctxKullanici = ['role' => 'kullanici', 'user_id' => 'u-actor', 'branch_ids' => ['b1']];
+$targetKullanici = ['id' => 'u-target', 'rol' => 'kullanici', 'isim' => 'Hedef Kullanici'];
+$targetSube = ['id' => 'bm-target', 'rol' => 'sube_yonetici', 'isim' => 'Hedef Sube'];
+$targetGenelPeer = ['id' => 'gm-peer', 'rol' => 'genel_yonetici', 'isim' => 'Peer Genel'];
+$targetGenelSelf = ['id' => 'gm-self', 'rol' => 'genel_yonetici', 'isim' => 'Self Genel'];
+
+pwAssert('1 Genel->kullanici reset izinli', medisaCanResetPortalInitialPassword($targetKullanici, $ctxGenel) === true);
+pwAssert('2 Genel->sube_yonetici reset izinli', medisaCanResetPortalInitialPassword($targetSube, $ctxGenel) === true);
+pwAssert('3 Genel->baska genel reset reddi', medisaCanResetPortalInitialPassword($targetGenelPeer, $ctxGenel) === false);
+pwAssert('4 Genel->kendi hesabi admin reset reddi', medisaCanResetPortalInitialPassword($targetGenelSelf, $ctxGenel) === false);
+pwAssert('5 Sube->kullanici reset reddi', medisaCanResetPortalInitialPassword($targetKullanici, $ctxSube) === false);
+pwAssert('6 Sube->genel reset reddi', medisaCanResetPortalInitialPassword($targetGenelPeer, $ctxSube) === false);
+pwAssert('7 Kullanici->herhangi reset reddi', medisaCanResetPortalInitialPassword($targetKullanici, $ctxKullanici) === false);
+pwAssert('8 Body ID geneline cevrilince reset reddi', medisaCanResetPortalInitialPassword($targetGenelPeer, $ctxGenel) === false);
+
+$denyMessage = 'Bu kullanıcının başlangıç parolasını sıfırlama yetkiniz bulunmamaktadır.';
+$adminCredentialPhp = file_get_contents(__DIR__ . '/../admin/user_portal_credentials.php');
+pwAssert('Admin endpoint helper kullanir', strpos($adminCredentialPhp, 'medisaCanResetPortalInitialPassword') !== false);
+pwAssert('Admin endpoint guvenli mesaj', strpos($adminCredentialPhp, $denyMessage) !== false);
+$helperPos = strpos($adminCredentialPhp, 'medisaCanResetPortalInitialPassword');
+$assignPos = strpos($adminCredentialPhp, 'medisaAssignInitialPortalPassword');
+pwAssert('Yetki kontrolu parola uretiminden once', $helperPos !== false && $assignPos !== false && $helperPos < $assignPos);
+pwAssert('Admin response hash dondurmez', !preg_match("/['\"]sifre_hash['\"]\\s*=>/", $adminCredentialPhp));
+
+// 9-10) Yetki reddinde mutation / parola uretimi yok
+$peerBefore = $targetGenelPeer;
+medisaSetUserPasswordHash($peerBefore, $fixturePassword, true);
+$peerHashBefore = $peerBefore['sifre_hash'] ?? '';
+$peerMetaBefore = $peerBefore['ilk_giris_parola_onerisi_bekliyor'] ?? null;
+$auditBefore = [];
+$deniedMutated = false;
+$passwordGeneratedOnDeny = false;
+if (medisaCanResetPortalInitialPassword($peerBefore, $ctxGenel)) {
+    $passwordGeneratedOnDeny = true;
+    medisaAssignInitialPortalPassword($peerBefore, [$peerBefore]);
+    $deniedMutated = true;
+    $auditBefore[] = ['event' => 'portal_initial_password_reset'];
+}
+pwAssert('9 Yetki reddinde data mutation yok', $deniedMutated === false && $auditBefore === []);
+pwAssert('10 Yetki reddinde parola uretimi yok', $passwordGeneratedOnDeny === false);
+pwAssertSame('9 Peer hash korunur', $peerHashBefore, $peerBefore['sifre_hash'] ?? null);
+pwAssertSame('9 Peer metadata korunur', $peerMetaBefore, $peerBefore['ilk_giris_parola_onerisi_bekliyor'] ?? null);
+
+// İzinli hedeflerde helper true iken üretim yolu açılır (sentetik; canlıya yazılmaz)
+$allowedUser = $targetKullanici;
+medisaSetUserPasswordHash($allowedUser, $fixturePassword, true);
+$allowedHashBefore = $allowedUser['sifre_hash'] ?? '';
+if (medisaCanResetPortalInitialPassword($allowedUser, $ctxGenel)) {
+    $allowedResetPassword = medisaAssignInitialPortalPassword($allowedUser, [$allowedUser]);
+    pwAssert('Izinli reset yeni hash uretir', $allowedHashBefore !== ($allowedUser['sifre_hash'] ?? ''));
+    pwAssert('Izinli reset yeni parola dogrular', medisaVerifyUserPassword($allowedUser, $allowedResetPassword));
+} else {
+    pwAssert('Izinli reset yolu acilmali', false);
+}
+
+// 11) Self-service parola değişimi tüm roller için kendi hesabında
+foreach (['kullanici', 'sube_yonetici', 'genel_yonetici'] as $selfRole) {
+    $selfUser = ['id' => 'self-' . $selfRole, 'rol' => $selfRole, 'isim' => 'Self ' . $selfRole];
+    $oldSelfPassword = medisaGenerateInitialPortalPassword();
+    $newSelfPassword = medisaGenerateInitialPortalPassword();
+    medisaSetUserPasswordHash($selfUser, $oldSelfPassword);
+    pwAssert("11 Self-service mevcut parola {$selfRole}", medisaVerifyUserPassword($selfUser, $oldSelfPassword));
+    pwAssert("11 Self-service mevcut zorunlu {$selfRole}", !medisaVerifyUserPassword($selfUser, $newSelfPassword));
+    medisaSetUserPasswordHash($selfUser, $newSelfPassword);
+    pwAssert("11 Self-service yeni parola {$selfRole}", medisaVerifyUserPassword($selfUser, $newSelfPassword));
+    pwAssert("11 Self-service eski gecersiz {$selfRole}", !medisaVerifyUserPassword($selfUser, $oldSelfPassword));
+}
+
+// 12) Self-service endpoint başka kullanıcı ID seçemez
+$changePasswordPhp = file_get_contents(__DIR__ . '/../driver/driver_change_password.php');
+pwAssert('12 Self-service token user_id kullanir', strpos($changePasswordPhp, "\$tokenData['user_id']") !== false);
+pwAssert('12 Self-service input userId yok', !preg_match('/\$input\[[\'"]userId[\'"]\]/', $changePasswordPhp));
+pwAssert('12 Self-service mevcut parola dogrular', strpos($changePasswordPhp, 'medisaVerifyUserPassword') !== false);
+
+// 14) Admin reset response: yalnız başarıda initialPassword
+pwAssert(
+    '14 Basarili response initialPassword anahtari',
+    preg_match("/'initialPassword'\\s*=>\\s*\\\$initialPassword/", $adminCredentialPhp) === 1
+);
+pwAssert(
+    '14 Hata response initialPassword dondurmez',
+    preg_match('/medisaBuildErrorResult\([^)]*initialPassword/', $adminCredentialPhp) !== 1
+);
+
+// 15) save.php _medisaUserPasswordChanges reddi korunur (400 kontrat ihlali)
+$savePhp = file_get_contents(__DIR__ . '/../save.php');
+pwAssert('15 save passwordChanges reddi var', strpos($savePhp, '_medisaUserPasswordChanges') !== false);
+pwAssert(
+    '15 save passwordChanges HTTP 400 kontrat',
+    preg_match('/_medisaUserPasswordChanges[\s\S]{0,240}medisaBuildErrorResult\([^,]+,\s*400\)/', $savePhp) === 1
+);
+
 echo "Summary: PASS={$passed} FAIL={$failed}\n";
 if ($failed > 0) {
     exit(1);

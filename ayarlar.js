@@ -2320,7 +2320,25 @@
       const suggestion = document.getElementById('user-password-suggestion-status');
       const changedAt = document.getElementById('user-password-changed-at');
       const resetBtn = document.getElementById('user-password-reset-btn');
+      let selfHint = document.getElementById('user-password-reset-self-hint');
+      if (!selfHint && resetBtn && resetBtn.parentNode) {
+        selfHint = document.createElement('div');
+        selfHint.id = 'user-password-reset-self-hint';
+        selfHint.className = 'settings-card-count u-hidden';
+        resetBtn.parentNode.insertBefore(selfHint, resetBtn);
+      }
       const hasAccount = !!(user && user.portal_sifresi_var === true);
+      const targetRole = user ? getUiRoleFromUser(user) : '';
+      const canReset = !!(
+        user && user.id
+        && scope && scope.role === 'genel_yonetici'
+        && (targetRole === 'kullanici' || targetRole === 'sube_yonetici')
+      );
+      const showSelfHint = !!(
+        user && user.id
+        && scope && scope.role === 'genel_yonetici'
+        && targetRole === 'genel_yonetici'
+      );
       if (status) {
         status.textContent = 'Portal hesabı: ' + (hasAccount ? 'Var' : 'Yok')
           + ' · Hesap: ' + (user && user.aktif === false ? 'Pasif' : 'Aktif');
@@ -2334,8 +2352,16 @@
           + formatPortalStatusDate(user && user.parola_son_degisim_tarihi);
       }
       if (resetBtn) {
-        const canReset = !!(user && user.id && scope && scope.role === 'genel_yonetici');
         resetBtn.classList.toggle('u-hidden', !canReset);
+      }
+      if (selfHint) {
+        if (showSelfHint) {
+          selfHint.textContent = 'Bu hesabın parolası yalnız “Parolamı Değiştir” akışıyla değiştirilebilir.';
+          selfHint.classList.remove('u-hidden');
+        } else {
+          selfHint.textContent = '';
+          selfHint.classList.add('u-hidden');
+        }
       }
     }
 

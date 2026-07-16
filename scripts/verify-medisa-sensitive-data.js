@@ -160,6 +160,32 @@ if (!/medisaProjectUserForClient/.test(adminCredentialPhp)) {
 if (/['"]sifre_hash['"]\s*=>/.test(adminCredentialPhp)) {
   fail('Yönetici credential response hash dönmemeli.');
 }
+if (!/medisaCanResetPortalInitialPassword/.test(adminCredentialPhp)) {
+  fail('Yönetici credential endpoint hedef rol helper kullanmıyor.');
+}
+if (!/Bu kullanıcının başlangıç parolasını sıfırlama yetkiniz bulunmamaktadır/.test(adminCredentialPhp)) {
+  fail('Yönetici credential 403 mesajı eksik.');
+}
+const helperIdx = adminCredentialPhp.indexOf('medisaCanResetPortalInitialPassword');
+const assignIdx = adminCredentialPhp.indexOf('medisaAssignInitialPortalPassword');
+if (helperIdx < 0 || assignIdx < 0 || helperIdx > assignIdx) {
+  fail('Yetki kontrolü parola üretiminden önce olmalı.');
+}
+if (!/function medisaCanResetPortalInitialPassword/.test(corePhp)) {
+  fail('core.php medisaCanResetPortalInitialPassword helper eksik.');
+}
+if (!/return \$targetRole === 'kullanici' \|\| \$targetRole === 'sube_yonetici'/.test(corePhp)) {
+  fail('Reset helper yalnız kullanici/sube_yonetici hedeflerine izin vermeli.');
+}
+if (!/\$targetRole === 'genel_yonetici'[\s\S]{0,80}return false/.test(corePhp)) {
+  fail('Reset helper genel_yonetici hedefini reddetmeli.');
+}
+if (!/targetRole === 'kullanici' \|\| targetRole === 'sube_yonetici'/.test(ayarlarJs)) {
+  fail('ayarlar.js reset butonu hedef rol filtresi eksik.');
+}
+if (!/user-password-reset-self-hint/.test(ayarlarJs)) {
+  fail('ayarlar.js genel yönetici self-hint eksik.');
+}
 
 const driverScript = fs.readFileSync(path.join(repoRoot, 'driver', 'driver-script.js'), 'utf8');
 if (!/driver_password_suggestion\.php/.test(driverScript)) {

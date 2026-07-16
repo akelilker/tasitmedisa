@@ -1212,6 +1212,24 @@ function medisaCanManageUserRecord($user, $context) {
     return medisaUserBranchesWithinScope($user, $context['branch_ids'] ?? []);
 }
 
+/**
+ * Genel yönetici başlangıç parola reseti — yalnız kullanici / sube_yonetici hedefleri.
+ * Hedef genel_yonetici (kendi hesabı dahil) her durumda false.
+ */
+function medisaCanResetPortalInitialPassword($targetUser, $context) {
+    if (!is_array($context) || ($context['role'] ?? '') !== 'genel_yonetici') {
+        return false;
+    }
+    if (!is_array($targetUser) || trim((string)($targetUser['id'] ?? '')) === '') {
+        return false;
+    }
+    $targetRole = medisaResolveUserRole($targetUser);
+    if ($targetRole === 'genel_yonetici') {
+        return false;
+    }
+    return $targetRole === 'kullanici' || $targetRole === 'sube_yonetici';
+}
+
 function medisaCanViewUserRecord($user, $context) {
     $role = $context['role'] ?? 'kullanici';
     if ($role === 'genel_yonetici') {
