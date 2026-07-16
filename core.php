@@ -1339,23 +1339,311 @@ function medisaNotificationNormalizeKeys(array $keys): array {
     return array_slice($clean, -500);
 }
 
+/**
+ * firstSeen tarih → epoch ms.
+ * Desteklenen format matrisi JS ile birebir aynıdır (Europe/Istanbul offset'siz).
+ */
+function medisaNotificationParseFirstSeenMs($value): int {
+    if (!is_scalar($value)) {
+        return 0;
+    }
+    $raw = trim((string)$value);
+    if ($raw === '' || $raw === '-') {
+        return 0;
+    }
+    if (preg_match('/^(nan|infinity|tomorrow|yesterday|today|now|noon|midnight)$/i', $raw) === 1) {
+        return 0;
+    }
+    if (preg_match('/^(?:\+|-)+\d+\s*day/i', $raw) === 1 || preg_match('/^(next|last)\s+/i', $raw) === 1) {
+        return 0;
+    }
+    if (preg_match('/^\d+$/', $raw) === 1) {
+        $n = (float)$raw;
+        if (!is_finite($n) || $n <= 0) {
+            return 0;
+        }
+        if ($n < 1000000000000) {
+            return (int)round($n * 1000);
+        }
+        return (int)$n;
+    }
+    if (preg_match('/^[+-]?\d+(\.\d+)?$/', $raw) === 1) {
+        return 0;
+    }
+
+    $tz = new DateTimeZone('Europe/Istanbul');
+
+    $buildLocal = function ($year, $month, $day, $hour, $minute, $second, $ms) use ($tz) {
+        if ($hour < 0 || $hour > 23 || $minute < 0 || $minute > 59 || $second < 0 || $second > 59) {
+            return 0;
+        }
+        if (!checkdate($month, $day, $year)) {
+            return 0;
+        }
+        $dt = DateTimeImmutable::createFromFormat(
+            '!Y-m-d H:i:s',
+            sprintf('%04d-%02d-%02d %02d:%02d:%02d', $year, $month, $day, $hour, $minute, $second),
+            $tz
+        );
+        $errors = DateTimeImmutable::getLastErrors();
+        if (
+            !($dt instanceof DateTimeImmutable)
+            || ($errors !== false && (($errors['warning_count'] ?? 0) > 0 || ($errors['error_count'] ?? 0) > 0))
+        ) {
+            return 0;
+        }
+        return ((int)$dt->format('U')) * 1000 + (int)$ms;
+    };
+
+    if (preg_match('/^(\d{2})[\\.\\/-](\d{2})[\\.\\/-](\d{4})(?: (\d{2}):(\d{2}))?$/', $raw, $m) === 1) {
+        return $buildLocal(
+            (int)$m[3],
+            (int)$m[2],
+            (int)$m[1],
+            isset($m[4]) ? (int)$m[4] : 0,
+            isset($m[5]) ? (int)$m[5] : 0,
+            0,
+            0
+        );
+    }
+
+    if (preg_match(
+        '/^(\d{4})-(\d{2})-(\d{2})(?:([T ])(\d{2}):(\d{2})(?::(\d{2})(?:\.(\d{1,3}))?)?(?:(Z)|([+-])(\d{2}):?(\d{2}))?)?$/i',
+        $raw,
+        $iso
+    ) !== 1) {
+        return 0;
+    }
+
+    $year = (int)$iso[1];
+    $month = (int)$iso[2];
+    $day = (int)$iso[3];
+    $hasTime = !empty($iso[4]);
+    if (!$hasTime) {
+        return $buildLocal($year, $month, $day, 0, 0, 0, 0);
+    }
+
+    $hour = (int)$iso[5];
+    $minute = (int)$iso[6];
+    $second = isset($iso[7]) && $iso[7] !== '' ? (int)$iso[7] : 0;
+    $frac = isset($iso[8]) ? $iso[8] : '';
+    while (strlen($frac) < 3) {
+        $frac .= '0';
+    }
+    $msPart = $frac !== '' ? (int)substr($frac, 0, 3) : 0;
+    if ($hour < 0 || $hour > 23 || $minute < 0 || $minute > 59 || $second < 0 || $second > 59) {
+        return 0;
+    }
+    if (!checkdate($month, $day, $year)) {
+        return 0;
+    }
+
+    $isZ = !empty($iso[9]);
+    $offSign = isset($iso[10]) ? $iso[10] : '';
+    if (!$isZ && $offSign === '') {
+        return $buildLocal($year, $month, $day, $hour, $minute, $second, $msPart);
+    }
+
+    $offHour = 0;
+    $offMinute = 0;
+    if ($offSign !== '') {
+        $offHour = (int)$iso[11];
+        $offMinute = (int)$iso[12];
+        if ($offHour < 0 || $offHour > 23 || $offMinute < 0 || $offMinute > 59) {
+            return 0;
+        }
+    }
+    $offsetMin = $isZ ? 0 : (($offSign === '-' ? -1 : 1) * ($offHour * 60 + $offMinute));
+    $utc = gmmktime($hour, $minute, $second, $month, $day, $year);
+    if ($utc === false) {
+        return 0;
+    }
+    $utcMs = ((int)$utc - ($offsetMin * 60)) * 1000 + $msPart;
+    return $utcMs > 0 ? $utcMs : 0;
+}
+
+/**
+ * Canonical/legacy firstSeen save kararı — tek production owner.
+ *
+ * @return array{
+ *   canonicalFirstSeen: array,
+ *   legacyFirstSeen: array,
+ *   writeCanonicalFirstSeen: bool,
+ *   writeLegacyFirstSeen: bool,
+ *   clearLegacyFirstSeen: bool
+ * }
+ */
+function medisaNotificationResolveScopeFirstSeenSave(
+    array $serverLegacyScope,
+    array $serverCanonicalScope,
+    array $incomingLegacyScope,
+    array $incomingCanonicalScope,
+    bool $canonicalIncomingPresent
+): array {
+    $serverLegacy = medisaNotificationNormalizeScopeState($serverLegacyScope);
+    $serverCanonical = medisaNotificationNormalizeScopeState($serverCanonicalScope);
+    $incomingLegacy = medisaNotificationNormalizeScopeState($incomingLegacyScope);
+    $incomingCanonical = medisaNotificationNormalizeScopeState($incomingCanonicalScope);
+
+    if ($canonicalIncomingPresent) {
+        $projected = medisaNotificationProjectFirstSeenDates(
+            $serverLegacy['firstSeenDates'],
+            $serverCanonical['firstSeenDates']
+        );
+        $resolved = medisaNotificationResolveFirstSeenDates(
+            $projected,
+            $incomingCanonical['firstSeenDates']
+        );
+        return [
+            'canonicalFirstSeen' => $resolved,
+            'legacyFirstSeen' => [],
+            'writeCanonicalFirstSeen' => true,
+            'writeLegacyFirstSeen' => true,
+            'clearLegacyFirstSeen' => true,
+        ];
+    }
+
+    // Yalnız legacy eski istemci: firstSeen legacy üzerinde resolve edilir.
+    $resolvedLegacy = medisaNotificationResolveFirstSeenDates(
+        $serverLegacy['firstSeenDates'],
+        $incomingLegacy['firstSeenDates']
+    );
+    return [
+        'canonicalFirstSeen' => $serverCanonical['firstSeenDates'],
+        'legacyFirstSeen' => $resolvedLegacy,
+        'writeCanonicalFirstSeen' => false,
+        'writeLegacyFirstSeen' => true,
+        'clearLegacyFirstSeen' => false,
+    ];
+}
+
+/**
+ * Client soft capacity (inactive) = 500; aktifler client'ta soft limiti aşabilir.
+ * Server aynı 500'e kör kesmez. Bu yalnız patolojik payload için acil tavan.
+ */
+function medisaNotificationFirstSeenEmergencyMaxKeys(): int {
+    return 20000;
+}
+
+/**
+ * firstSeenDates doğrula (parse + scalar).
+ * Client soft 500 hard-truncate UYGULANMAZ — aktif istisnası korunur.
+ */
 function medisaNotificationNormalizeFirstSeenDates($map): array {
     $clean = [];
     if (!is_array($map)) {
         return $clean;
     }
     foreach ($map as $key => $date) {
+        if (!is_scalar($key) && $key !== null) {
+            continue;
+        }
         $normalizedKey = trim((string)$key);
-        if (!is_scalar($date)) {
+        if ($normalizedKey === '' || !is_scalar($date)) {
             continue;
         }
         $normalizedDate = trim((string)$date);
-        if ($normalizedKey === '' || $normalizedDate === '') {
+        if ($normalizedDate === '') {
+            continue;
+        }
+        $ms = medisaNotificationParseFirstSeenMs($normalizedDate);
+        if ($ms <= 0) {
             continue;
         }
         $clean[$normalizedKey] = $normalizedDate;
     }
-    return $clean;
+    return medisaNotificationApplyFirstSeenEmergencyCap($clean);
+}
+
+/**
+ * Deterministik acil tavan: en yeni kayıtlar kalır (ms DESC, key ASC).
+ */
+function medisaNotificationApplyFirstSeenEmergencyCap(array $map): array {
+    $max = medisaNotificationFirstSeenEmergencyMaxKeys();
+    if (count($map) <= $max) {
+        return $map;
+    }
+    $entries = [];
+    $index = 0;
+    foreach ($map as $key => $value) {
+        $entries[] = [
+            'key' => $key,
+            'value' => $value,
+            'ms' => medisaNotificationParseFirstSeenMs($value),
+            'index' => $index,
+        ];
+        $index++;
+    }
+    usort($entries, function ($a, $b) {
+        if ($a['ms'] !== $b['ms']) {
+            return ($a['ms'] < $b['ms']) ? 1 : -1;
+        }
+        if ($a['key'] !== $b['key']) {
+            return ($a['key'] < $b['key']) ? -1 : 1;
+        }
+        return $a['index'] <=> $b['index'];
+    });
+    $entries = array_slice($entries, 0, $max);
+    $out = [];
+    foreach ($entries as $entry) {
+        $out[$entry['key']] = $entry['value'];
+    }
+    return $out;
+}
+
+/**
+ * firstSeenDates save resolve:
+ * - nihai key set = client prune sonucu
+ * - ortak key → geçerli server değeri korunur (reset/manipülasyon yok)
+ * - yalnız client key → client değeri
+ * - yalnız server key → silinir
+ */
+function medisaNotificationResolveFirstSeenDates($serverMap, $clientMap): array {
+    $serverClean = medisaNotificationNormalizeFirstSeenDates($serverMap);
+    $clientClean = medisaNotificationNormalizeFirstSeenDates($clientMap);
+    $out = [];
+    foreach ($clientClean as $key => $clientVal) {
+        if (array_key_exists($key, $serverClean)) {
+            $out[$key] = $serverClean[$key];
+        } else {
+            $out[$key] = $clientVal;
+        }
+    }
+    return medisaNotificationApplyFirstSeenEmergencyCap($out);
+}
+
+/**
+ * Load ile aynı firstSeen projection: legacy üzerine canonical (canonical aynı key'i ezer).
+ */
+function medisaNotificationProjectFirstSeenDates($legacyMap, $canonicalMap): array {
+    $projected = medisaNotificationNormalizeFirstSeenDates($legacyMap);
+    foreach (medisaNotificationNormalizeFirstSeenDates($canonicalMap) as $key => $value) {
+        $projected[$key] = $value;
+    }
+    return medisaNotificationApplyFirstSeenEmergencyCap($projected);
+}
+
+function medisaNotificationKeyListsEqual(array $a, array $b): bool {
+    $left = medisaNotificationNormalizeKeys($a);
+    $right = medisaNotificationNormalizeKeys($b);
+    sort($left);
+    sort($right);
+    return $left === $right;
+}
+
+function medisaNotificationFirstSeenMapsEqual(array $a, array $b): bool {
+    if (count($a) !== count($b)) {
+        return false;
+    }
+    foreach ($a as $key => $value) {
+        if (!array_key_exists($key, $b)) {
+            return false;
+        }
+        if ((string)$b[$key] !== (string)$value) {
+            return false;
+        }
+    }
+    return true;
 }
 
 function medisaNotificationNormalizeScopeState($scopeState): array {
@@ -1415,10 +1703,10 @@ function medisaProjectNotificationReadStateForContext(array $notificationReadSta
         $dismissedKeys
     ));
 
-    $firstSeenDates = $legacyScope['firstSeenDates'];
-    foreach ($canonicalScope['firstSeenDates'] as $notifKey => $firstSeenDate) {
-        $firstSeenDates[$notifKey] = $firstSeenDate;
-    }
+    $firstSeenDates = medisaNotificationProjectFirstSeenDates(
+        $legacyScope['firstSeenDates'],
+        $canonicalScope['firstSeenDates']
+    );
 
     $canonicalUpdatedAt = trim((string)($canonicalScope['updatedAt'] ?? ''));
     $legacyUpdatedAt = trim((string)($legacyScope['updatedAt'] ?? ''));

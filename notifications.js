@@ -151,15 +151,244 @@
     return list.slice(0, NOTIF_STATE_MAX_KEYS).map(function(item) { return item.key; });
   }
 
-  function normalizeFirstSeenDatesMap(rawMap) {
+  /**
+   * Offset'siz duvar saatini Europe/Istanbul epoch ms'e çevirir.
+   * Host cihaz timezone'undan bağımsızdır (Intl IANA).
+   */
+  function notificationIstanbulWallClockToEpochMs(year, month, day, hour, minute, second, ms) {
+    hour = hour || 0;
+    minute = minute || 0;
+    second = second || 0;
+    ms = ms || 0;
+    if (hour < 0 || hour > 23 || minute < 0 || minute > 59 || second < 0 || second > 59) return 0;
+    if (ms < 0 || ms > 999) return 0;
+    const cal = new Date(Date.UTC(year, month - 1, day));
+    if (
+      isNaN(cal.getTime())
+      || cal.getUTCFullYear() !== year
+      || cal.getUTCMonth() !== (month - 1)
+      || cal.getUTCDate() !== day
+    ) {
+      return 0;
+    }
+
+    const dtf = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'Europe/Istanbul',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hourCycle: 'h23'
+    });
+
+    function readParts(epochMs) {
+      const parts = dtf.formatToParts(new Date(epochMs));
+      const map = {};
+      for (let i = 0; i < parts.length; i++) {
+        if (parts[i].type !== 'literal') map[parts[i].type] = parts[i].value;
+      }
+      return {
+        year: Number(map.year),
+        month: Number(map.month),
+        day: Number(map.day),
+        hour: Number(map.hour),
+        minute: Number(map.minute),
+        second: Number(map.second)
+      };
+    }
+
+    let guess = Date.UTC(year, month - 1, day, hour, minute, second, ms);
+    for (let iter = 0; iter < 4; iter++) {
+      const got = readParts(guess);
+      if (
+        got.year === year
+        && got.month === month
+        && got.day === day
+        && got.hour === hour
+        && got.minute === minute
+        && got.second === second
+      ) {
+        return guess;
+      }
+      const wantAsUtc = Date.UTC(year, month - 1, day, hour, minute, second, ms);
+      const gotAsUtc = Date.UTC(got.year, got.month - 1, got.day, got.hour, got.minute, got.second, ms);
+      guess = guess + (wantAsUtc - gotAsUtc);
+    }
+    const finalGot = readParts(guess);
+    if (
+      finalGot.year === year
+      && finalGot.month === month
+      && finalGot.day === day
+      && finalGot.hour === hour
+      && finalGot.minute === minute
+      && finalGot.second === second
+    ) {
+      return guess;
+    }
+    return 0;
+  }
+
+  function parseNotificationFirstSeenMs(value) {
+    const raw = String(value || '').trim();
+    if (!raw || raw === '-') return 0;
+    if (/^(nan|infinity|tomorrow|yesterday|today|now|noon|midnight)$/i.test(raw)) return 0;
+    if (/^(?:\+|-)+\d+\s*day/i.test(raw) || /^next\s+/i.test(raw) || /^last\s+/i.test(raw)) return 0;
+
+    if (/^\d+$/.test(raw)) {
+      const n = Number(raw);
+      if (!isFinite(n) || n <= 0) return 0;
+      return n < 1000000000000 ? n * 1000 : n;
+    }
+    if (/^[+-]?\d+(\.\d+)?$/.test(raw)) return 0;
+
+    function calendarOkUtc(year, month, day) {
+      const cal = new Date(Date.UTC(year, month - 1, day));
+      return !isNaN(cal.getTime())
+        && cal.getUTCFullYear() === year
+        && cal.getUTCMonth() === (month - 1)
+        && cal.getUTCDate() === day;
+    }
+
+    const trMatch = raw.match(/^(\d{2})[./-](\d{2})[./-](\d{4})(?: (\d{2}):(\d{2}))?$/);
+    if (trMatch) {
+      return notificationIstanbulWallClockToEpochMs(
+        Number(trMatch[3]),
+        Number(trMatch[2]),
+        Number(trMatch[1]),
+        trMatch[4] != null ? Number(trMatch[4]) : 0,
+        trMatch[5] != null ? Number(trMatch[5]) : 0,
+        0,
+        0
+      );
+    }
+
+    // ISO: ayırıcı yalnız T veya tek normal boşluk (tab/newline yok)
+    const isoMatch = raw.match(
+      /^(\d{4})-(\d{2})-(\d{2})(?:([T ])(\d{2}):(\d{2})(?::(\d{2})(?:\.(\d{1,3}))?)?(?:(Z)|([+-])(\d{2}):?(\d{2}))?)?$/i
+    );
+    if (!isoMatch) return 0;
+
+    const year = Number(isoMatch[1]);
+    const month = Number(isoMatch[2]);
+    const day = Number(isoMatch[3]);
+    const hasTime = !!isoMatch[4];
+    if (!hasTime) {
+      return notificationIstanbulWallClockToEpochMs(year, month, day, 0, 0, 0, 0);
+    }
+
+    const hour = Number(isoMatch[5]);
+    const minute = Number(isoMatch[6]);
+    const second = isoMatch[7] != null ? Number(isoMatch[7]) : 0;
+    let frac = isoMatch[8] != null ? isoMatch[8] : '';
+    while (frac.length < 3) frac += '0';
+    const msPart = frac ? Number(frac.slice(0, 3)) : 0;
+    if (hour < 0 || hour > 23 || minute < 0 || minute > 59 || second < 0 || second > 59) return 0;
+    if (!calendarOkUtc(year, month, day)) return 0;
+
+    const isZ = !!isoMatch[9];
+    const offSign = isoMatch[10];
+    if (!isZ && !offSign) {
+      return notificationIstanbulWallClockToEpochMs(year, month, day, hour, minute, second, msPart);
+    }
+
+    let offHour = 0;
+    let offMinute = 0;
+    if (offSign) {
+      offHour = Number(isoMatch[11]);
+      offMinute = Number(isoMatch[12]);
+      if (offHour < 0 || offHour > 23 || offMinute < 0 || offMinute > 59) return 0;
+    }
+    const sign = isZ ? 1 : (offSign === '-' ? -1 : 1);
+    const offsetMin = isZ ? 0 : sign * (offHour * 60 + offMinute);
+    const utcMs = Date.UTC(year, month - 1, day, hour, minute, second, msPart) - (offsetMin * 60000);
+    return isFinite(utcMs) && utcMs > 0 ? utcMs : 0;
+  }
+
+  function areFirstSeenDatesMapsEqual(a, b) {
+    const left = (a && typeof a === 'object' && !Array.isArray(a)) ? a : {};
+    const right = (b && typeof b === 'object' && !Array.isArray(b)) ? b : {};
+    const leftKeys = Object.keys(left);
+    const rightKeys = Object.keys(right);
+    if (leftKeys.length !== rightKeys.length) return false;
+    for (let i = 0; i < leftKeys.length; i++) {
+      const key = leftKeys[i];
+      if (!Object.prototype.hasOwnProperty.call(right, key)) return false;
+      if (String(left[key]) !== String(right[key])) return false;
+    }
+    return true;
+  }
+
+  /**
+   * firstSeenDates normalize.
+   * activeKeys yoksa: yalnız geçerli kayıtları tut (yaş/kapasite yok — aktif koruma update turunda).
+   * activeKeys varsa: aktifleri koru; pasiflerde yaş+kapasite uygula.
+   */
+  function normalizeFirstSeenDatesMap(rawMap, activeKeys) {
     const out = {};
     if (!rawMap || typeof rawMap !== 'object' || Array.isArray(rawMap)) return out;
-    Object.keys(rawMap).forEach(function(key) {
-      const normalizedKey = String(key || '').trim();
-      const normalizedDate = String(rawMap[key] || '').trim();
-      if (!normalizedKey || !normalizedDate) return;
-      out[normalizedKey] = normalizedDate;
+    const active = (activeKeys && typeof activeKeys === 'object' && !Array.isArray(activeKeys))
+      ? activeKeys
+      : null;
+    const now = Date.now();
+    const entries = [];
+    const rawKeys = Object.keys(rawMap);
+    for (let i = 0; i < rawKeys.length; i++) {
+      const rawKey = rawKeys[i];
+      const normalizedKey = String(rawKey || '').trim();
+      if (!normalizedKey) continue;
+      const rawVal = rawMap[rawKey];
+      if (rawVal == null || typeof rawVal === 'object') continue;
+      const normalizedDate = String(rawVal).trim();
+      if (!normalizedDate) continue;
+      const ms = parseNotificationFirstSeenMs(normalizedDate);
+      if (!(ms > 0) || !isFinite(ms)) continue;
+      entries.push({
+        key: normalizedKey,
+        value: normalizedDate,
+        ms: ms,
+        index: i,
+        isActive: !!(active && active[normalizedKey])
+      });
+    }
+    if (!active) {
+      for (let j = 0; j < entries.length; j++) {
+        out[entries[j].key] = entries[j].value;
+      }
+      return out;
+    }
+
+    const activeEntries = [];
+    const inactiveEntries = [];
+    for (let k = 0; k < entries.length; k++) {
+      const entry = entries[k];
+      if (entry.isActive) {
+        activeEntries.push(entry);
+        continue;
+      }
+      if ((now - entry.ms) <= NOTIF_STATE_MAX_AGE_MS) {
+        inactiveEntries.push(entry);
+      }
+    }
+    activeEntries.sort(function(a, b) {
+      if (a.key < b.key) return -1;
+      if (a.key > b.key) return 1;
+      return a.index - b.index;
     });
+    inactiveEntries.sort(function(a, b) {
+      if (a.ms !== b.ms) return b.ms - a.ms;
+      if (a.key < b.key) return -1;
+      if (a.key > b.key) return 1;
+      return a.index - b.index;
+    });
+    for (let aIdx = 0; aIdx < activeEntries.length; aIdx++) {
+      out[activeEntries[aIdx].key] = activeEntries[aIdx].value;
+    }
+    const remaining = Math.max(0, NOTIF_STATE_MAX_KEYS - activeEntries.length);
+    for (let iIdx = 0; iIdx < inactiveEntries.length && iIdx < remaining; iIdx++) {
+      out[inactiveEntries[iIdx].key] = inactiveEntries[iIdx].value;
+    }
     return out;
   }
 
@@ -214,7 +443,10 @@
     return window.appData.kaskoDegerListesi;
   }
 
+  let notificationScopeRollbackQuiet = false;
+
   function saveNotificationScopeStateWithRollback(scopeKey, previousScoped) {
+    if (notificationScopeRollbackQuiet) return;
     if (typeof window.updateNotifications === 'function') window.updateNotifications();
     if (typeof window.saveDataToServer !== 'function') return;
     window.saveDataToServer()
@@ -224,33 +456,17 @@
       .catch(function() {
         const state = ensureNotificationReadStateObject();
         state[scopeKey] = cloneNotificationScopeState(previousScoped);
-        if (typeof window.updateNotifications === 'function') window.updateNotifications();
+        notificationScopeRollbackQuiet = true;
+        try {
+          if (typeof window.updateNotifications === 'function') window.updateNotifications();
+        } finally {
+          notificationScopeRollbackQuiet = false;
+        }
       });
   }
 
   function getCurrentNotificationFirstSeenValue() {
     return String(Date.now());
-  }
-
-  function parseNotificationFirstSeenMs(value) {
-    const raw = String(value || '').trim();
-    if (!raw || raw === '-') return 0;
-    if (/^\d+$/.test(raw)) {
-      const n = Number(raw);
-      if (isFinite(n) && n > 0) return n < 1000000000000 ? n * 1000 : n;
-    }
-    const trMatch = raw.match(/^(\d{2})[./-](\d{2})[./-](\d{4})(?:\s+(\d{2}):(\d{2}))?$/);
-    if (trMatch) {
-      const day = Number(trMatch[1]);
-      const month = Number(trMatch[2]);
-      const year = Number(trMatch[3]);
-      const hour = trMatch[4] != null ? Number(trMatch[4]) : 0;
-      const minute = trMatch[5] != null ? Number(trMatch[5]) : 0;
-      const dt = new Date(year, month - 1, day, hour, minute, 0, 0);
-      if (!isNaN(dt.getTime())) return dt.getTime();
-    }
-    const parsed = Date.parse(raw);
-    return isNaN(parsed) ? 0 : parsed;
   }
 
   function formatNotificationFirstSeenDisplay(value) {
@@ -267,13 +483,53 @@
   }
 
   function beginNotificationFirstSeenBatch(scopeKey) {
-    notifFirstSeenBatchContext = scopeKey ? { scopeKey: scopeKey, previousScoped: null, changed: false } : null;
+    notifFirstSeenBatchContext = scopeKey
+      ? {
+          scopeKey: scopeKey,
+          previousScoped: null,
+          changed: false,
+          activeKeys: {},
+          completed: false
+        }
+      : null;
   }
 
-  function flushNotificationFirstSeenBatch() {
+  function applyNotificationFirstSeenPruneInBatch(batch) {
+    if (!batch || !batch.scopeKey) return;
+    const state = ensureNotificationReadStateObject();
+    const scoped = getNotificationScopeState(batch.scopeKey);
+    const currentMap = (scoped.firstSeenDates && typeof scoped.firstSeenDates === 'object' && !Array.isArray(scoped.firstSeenDates))
+      ? scoped.firstSeenDates
+      : {};
+    const pruned = normalizeFirstSeenDatesMap(currentMap, batch.activeKeys || {});
+    if (areFirstSeenDatesMapsEqual(currentMap, pruned)) return;
+    if (!batch.previousScoped) {
+      batch.previousScoped = cloneNotificationScopeState(scoped);
+    }
+    batch.changed = true;
+    scoped.firstSeenDates = pruned;
+    scoped.updatedAt = new Date().toISOString();
+    state[batch.scopeKey] = scoped;
+  }
+
+  function abortNotificationFirstSeenBatch() {
     const batch = notifFirstSeenBatchContext;
     notifFirstSeenBatchContext = null;
-    if (!batch || !batch.changed || !batch.previousScoped) return;
+    if (!batch || !batch.scopeKey || !batch.previousScoped) return;
+    const state = ensureNotificationReadStateObject();
+    state[batch.scopeKey] = cloneNotificationScopeState(batch.previousScoped);
+  }
+
+  function flushNotificationFirstSeenBatch(success) {
+    const batch = notifFirstSeenBatchContext;
+    if (!success || !batch || !batch.completed) {
+      abortNotificationFirstSeenBatch();
+      return;
+    }
+    applyNotificationFirstSeenPruneInBatch(batch);
+    notifFirstSeenBatchContext = null;
+    if (!batch.changed || !batch.previousScoped) return;
+    if (notificationScopeRollbackQuiet) return;
     saveNotificationScopeStateWithRollback(batch.scopeKey, batch.previousScoped);
   }
 
@@ -284,6 +540,9 @@
     if (scopeKey) {
       const state = ensureNotificationReadStateObject();
       const scoped = getNotificationScopeState(scopeKey);
+      if (notifFirstSeenBatchContext && notifFirstSeenBatchContext.scopeKey === scopeKey) {
+        notifFirstSeenBatchContext.activeKeys[normalizedKey] = true;
+      }
       const existing = scoped.firstSeenDates && scoped.firstSeenDates[normalizedKey];
       if (existing) return existing;
       const firstSeenValue = getCurrentNotificationFirstSeenValue();
@@ -2067,6 +2326,7 @@
     }
     const notifScopeKey = getCurrentNotifScopeKey();
     beginNotificationFirstSeenBatch(notifScopeKey);
+    let firstSeenBatchSucceeded = false;
     try {
     const vehicles = readVehicles();
     const notifications = [];
@@ -2494,12 +2754,25 @@
         /* Zil rengi: kırmızı = kritik/süresi bitmiş uyarılar; turuncu = yaklaşan tarih ve benzeri; pulse = başka okunmamış. */
       }
     }
+    if (notifFirstSeenBatchContext) notifFirstSeenBatchContext.completed = true;
+    firstSeenBatchSucceeded = true;
     } catch (err) {
       if (typeof window.__medisaLogError === 'function') window.__medisaLogError('updateNotifications', err);
       else console.error('[Medisa] Bildirimler güncellenemedi:', err);
     } finally {
-      updateMonthlyTodoHeaderBadge();
-      flushNotificationFirstSeenBatch();
+      try {
+        updateMonthlyTodoHeaderBadge();
+      } catch (badgeErr) {
+        if (typeof window.__medisaLogError === 'function') window.__medisaLogError('updateMonthlyTodoHeaderBadge', badgeErr);
+        else console.error('[Medisa] Aylık todo badge güncellenemedi:', badgeErr);
+      }
+      try {
+        flushNotificationFirstSeenBatch(firstSeenBatchSucceeded);
+      } catch (flushErr) {
+        notifFirstSeenBatchContext = null;
+        if (typeof window.__medisaLogError === 'function') window.__medisaLogError('flushNotificationFirstSeenBatch', flushErr);
+        else console.error('[Medisa] Bildirim firstSeen batch temizlenemedi:', flushErr);
+      }
     }
     openNotificationsFromReturnParam();
   };
