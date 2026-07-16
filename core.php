@@ -688,14 +688,11 @@ function medisaUserHasPortalPassword($user) {
 
 function medisaValidatePortalPassword($password) {
     $value = (string)$password;
-    if (mb_strlen($value, 'UTF-8') < 10) {
-        return 'Parola en az 10 karakter olmalı.';
+    if (trim($value) === '') {
+        return 'Parola yalnız boşluklardan oluşamaz.';
     }
-    if (!preg_match('/[A-Z]/', $value)
-        || !preg_match('/[a-z]/', $value)
-        || !preg_match('/[0-9]/', $value)
-        || !preg_match('/[^A-Za-z0-9]/', $value)) {
-        return 'Parola büyük harf, küçük harf, sayı ve özel karakter içermeli.';
+    if (mb_strlen($value, 'UTF-8') < 6) {
+        return 'Yeni parolanız en az 6 karakter olmalıdır.';
     }
     return null;
 }

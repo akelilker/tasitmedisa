@@ -140,7 +140,11 @@ $shortResult = medisaReconcileUserCredentials([], [
 ], ['u7' => '12345'], $contextAdmin);
 pwAssert('Kisa parola reddedilir', ($shortResult['success'] ?? false) !== true);
 pwAssertSame('Kisa parola status 400', 400, (int)($shortResult['status'] ?? 0));
-pwAssertSame('Karmasik parola politikasi', null, medisaValidatePortalPassword($fixturePassword));
+pwAssertSame('6 karakter parola kabul edilir', null, medisaValidatePortalPassword('abcdef'));
+pwAssertSame('6 rakam parola kabul edilir', null, medisaValidatePortalPassword('123456'));
+pwAssertSame('Ozel karakter zorunlu degil', null, medisaValidatePortalPassword('zzzzzz'));
+pwAssert('Bosluk parola reddedilir', medisaValidatePortalPassword('      ') !== null);
+pwAssertSame('Uzun parola politikasi gecerli', null, medisaValidatePortalPassword($fixturePassword));
 
 // 10) Kullanıcı adı normalizasyonu ve case-insensitive unique
 pwAssertSame('Turkce kullanici adi', 'sukruO', medisaBuildPortalUsernameBase('Şükrü Öztürk'));
