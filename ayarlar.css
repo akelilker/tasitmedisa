@@ -1582,10 +1582,6 @@ body.modal-open #info-modal .modal-container {
     border-color: rgba(246, 173, 85, 0.45);
 }
 
-#user-modal #user-list .settings-card-username {
-    margin-top: 2px;
-}
-
 #user-credential-result-modal .user-credential-result {
     display: flex;
     flex-direction: column;
