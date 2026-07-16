@@ -1,5 +1,7 @@
 <?php
 require_once __DIR__ . '/core.php';
+require_once __DIR__ . '/kasko-index.php';
+
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, OPTIONS');
@@ -66,6 +68,20 @@ $payload = [
     'rows' => array_values($incoming['rows']),
 ];
 
+try {
+    $indexPreview = medisaBuildKaskoLookupIndex($payload, [
+        'sourceSize' => 0,
+        'sourceMtime' => 0,
+    ]);
+} catch (Throwable $e) {
+    http_response_code(400);
+    echo json_encode([
+        'success' => false,
+        'message' => 'Kasko satırları indekslenemedi.',
+    ], JSON_UNESCAPED_UNICODE);
+    exit;
+}
+
 $json = json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
 if ($json === false) {
     http_response_code(500);
@@ -85,8 +101,28 @@ if (!medisaAtomicWriteFile($path, $json)) {
     exit;
 }
 
+$sourceSize = @filesize($path);
+$sourceMtime = @filemtime($path);
+$indexReady = false;
+$rowCount = (int)($indexPreview['rowCount'] ?? 0);
+
+try {
+    $index = medisaBuildKaskoLookupIndex($payload, [
+        'sourceSize' => (int)($sourceSize !== false ? $sourceSize : 0),
+        'sourceMtime' => (int)($sourceMtime !== false ? $sourceMtime : 0),
+    ]);
+    $rowCount = (int)($index['rowCount'] ?? 0);
+    $indexReady = medisaWriteKaskoLookupIndex($index) === true;
+} catch (Throwable $e) {
+    $indexReady = false;
+    error_log('[Medisa] save_kasko index yazimi basarisiz');
+}
+
 echo json_encode([
     'success' => true,
     'updatedAt' => $payload['updatedAt'],
     'period' => $payload['period'],
+    'indexReady' => $indexReady,
+    'rowCount' => $rowCount,
+    'schemaVersion' => MEDISA_KASKO_LOOKUP_SCHEMA_VERSION,
 ], JSON_UNESCAPED_UNICODE);

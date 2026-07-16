@@ -86,7 +86,7 @@
     }
   }
 
-  // Kasko Excel cache + hesaplama API'si (tasitlar.js'den taşındı)
+  // Kasko kompakt lookup API'si (satır matrisi yok; O(1) index)
   window._kaskoCache = null;
   let kaskoListRequestPromise = null;
 
@@ -102,21 +102,20 @@
     return window.appData.kaskoDegerListesi;
   }
 
-  function getKaskoRowsFromSource() {
-    var state = getKaskoDegerListesiState();
-    if (Array.isArray(state.rows) && state.rows.length > 0) return state.rows;
-    return [];
-  }
-
   function hasAnyKaskoListData() {
-    var state = getKaskoDegerListesiState();
-    if (Array.isArray(state.rows) && state.rows.length > 0) return true;
+    if (window.__medisaKaskoLookupAvailable === true) return true;
+    if ((Number(window.__medisaKaskoLookupRowCount) || 0) > 0) return true;
+    var index = window.__medisaKaskoLookupIndex;
+    if (index && typeof index === 'object') {
+      for (var key in index) {
+        if (Object.prototype.hasOwnProperty.call(index, key)) return true;
+      }
+    }
     return false;
   }
 
   function ensureKaskoListLoaded() {
-    var state = getKaskoDegerListesiState();
-    if (Array.isArray(state.rows) && state.rows.length > 0) return Promise.resolve(true);
+    if (window.__medisaKaskoLookupLoaded === true) return Promise.resolve(true);
     if (kaskoListRequestPromise) return kaskoListRequestPromise;
 
     if (typeof window.loadKaskoListFromServer !== 'function') {
@@ -138,70 +137,48 @@
     return kaskoListRequestPromise;
   }
 
+  function normalizeKaskoQueryCode(kaskoKodu) {
+    return String(kaskoKodu || '').replace(/[^0-9]/g, '').replace(/^0+/, '');
+  }
+
   function getKaskoDegeri(kaskoKodu, modelYili) {
     if (!kaskoKodu) return '-';
     try {
-      if (!window._kaskoCache) {
-        window._kaskoCache = getKaskoRowsFromSource();
+      var index = window.__medisaKaskoLookupIndex;
+      var years = window.__medisaKaskoLookupYears;
+      if (!index || typeof index !== 'object' || !Array.isArray(years)) {
+        return '-';
       }
-      var data = window._kaskoCache;
-      if (!Array.isArray(data) || data.length < 2) return '-';
 
-      var headerRowIndex = -1;
-      for (var i = 0; i < 10; i++) {
-        var rowStr = JSON.stringify(data[i] || []).toLowerCase();
-        if (rowStr.includes('marka') && rowStr.includes('kod')) {
-          headerRowIndex = i;
+      var targetYear = String(modelYili || '').trim();
+      var yearKnown = false;
+      for (var yi = 0; yi < years.length; yi++) {
+        var yRaw = String(years[yi] || '').trim();
+        if (yRaw === targetYear || yRaw === targetYear + '.0') {
+          yearKnown = true;
+          targetYear = yRaw.replace(/\.0$/, '');
           break;
         }
       }
-      if (headerRowIndex === -1) headerRowIndex = 1;
-      var headers = data[headerRowIndex];
+      if (!yearKnown) return 'Yıl Bulunamadı (' + String(modelYili || '').trim() + ')';
 
-      var markaIndex = -1, tipIndex = -1, yearIndex = -1;
-      var targetYear = String(modelYili || '').trim();
+      var targetClean = normalizeKaskoQueryCode(kaskoKodu);
+      if (!targetClean) return 'Kasko Kodu Bulunamadı';
 
-      for (var c = 0; c < headers.length; c++) {
-        var h = String(headers[c] || '').toLowerCase().trim();
-        var hRaw = String(headers[c] || '').trim();
-        if (h.includes('marka') && h.includes('kod')) markaIndex = c;
-        if ((h.includes('tip') || h.includes('model')) && h.includes('kod')) tipIndex = c;
-        if (hRaw === targetYear || hRaw === targetYear + '.0') yearIndex = c;
+      if (!Object.prototype.hasOwnProperty.call(index, targetClean)) {
+        return 'Kasko Kodu Bulunamadı';
       }
 
-      if (markaIndex === -1) markaIndex = 0;
-      if (tipIndex === -1) tipIndex = 1;
-      if (yearIndex === -1) return 'Yıl Bulunamadı (' + targetYear + ')';
-
-      var targetClean = String(kaskoKodu).replace(/[^0-9]/g, '').replace(/^0+/, '');
-
-      for (var r = headerRowIndex + 1; r < data.length; r++) {
-        var row = data[r];
-        if (!row || row.length < 2) continue;
-
-        var m = String(row[markaIndex] || '').replace(/[^0-9]/g, '').replace(/^0+/, '');
-        var t = String(row[tipIndex] || '').replace(/[^0-9]/g, '').replace(/^0+/, '');
-        var currentClean = m + t;
-
-        if (targetClean === currentClean) {
-          var rawVal = String(row[yearIndex] || '').trim();
-          var cleanVal = rawVal.replace(/[^0-9,.]/g, '');
-          if (cleanVal.includes(',') && cleanVal.includes('.')) {
-            cleanVal = cleanVal.replace(/\./g, '').replace(',', '.');
-          } else if (cleanVal.includes(',')) {
-            cleanVal = cleanVal.replace(',', '.');
-          } else if (cleanVal.includes('.') && !cleanVal.includes(',')) {
-            cleanVal = cleanVal.replace(/\./g, '');
-          }
-
-          var numVal = parseFloat(cleanVal) || parseInt(cleanVal.replace(/\D/g, ''), 10);
-          if (!isNaN(numVal) && numVal > 0) {
-            return numVal.toLocaleString('tr-TR') + ' ₺';
-          }
-          return 'Değer Yok (Excel: 0)';
-        }
+      var yearMap = index[targetClean];
+      if (!yearMap || typeof yearMap !== 'object') {
+        return 'Değer Yok (Excel: 0)';
       }
-      return 'Kasko Kodu Bulunamadı';
+
+      var numVal = yearMap[targetYear];
+      if (!(Number(numVal) > 0)) {
+        return 'Değer Yok (Excel: 0)';
+      }
+      return Number(numVal).toLocaleString('tr-TR') + ' ₺';
     } catch (e) {
       console.error('Kasko Hata:', e);
       return '-';
