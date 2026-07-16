@@ -1395,7 +1395,7 @@ function medisaNotificationParseFirstSeenMs($value): int {
         return ((int)$dt->format('U')) * 1000 + (int)$ms;
     };
 
-    if (preg_match('/^(\d{2})[\\.\\/-](\d{2})[\\.\\/-](\d{4})(?:\s+(\d{2}):(\d{2}))?$/', $raw, $m) === 1) {
+    if (preg_match('/^(\d{2})[\\.\\/-](\d{2})[\\.\\/-](\d{4})(?: (\d{2}):(\d{2}))?$/', $raw, $m) === 1) {
         return $buildLocal(
             (int)$m[3],
             (int)$m[2],
@@ -1408,7 +1408,7 @@ function medisaNotificationParseFirstSeenMs($value): int {
     }
 
     if (preg_match(
-        '/^(\d{4})-(\d{2})-(\d{2})(?:([T\s])(\d{2}):(\d{2})(?::(\d{2})(?:\.(\d{1,3}))?)?(?:(Z)|([+-])(\d{2}):?(\d{2}))?)?$/i',
+        '/^(\d{4})-(\d{2})-(\d{2})(?:([T ])(\d{2}):(\d{2})(?::(\d{2})(?:\.(\d{1,3}))?)?(?:(Z)|([+-])(\d{2}):?(\d{2}))?)?$/i',
         $raw,
         $iso
     ) !== 1) {

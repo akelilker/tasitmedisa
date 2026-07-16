@@ -151,6 +151,85 @@
     return list.slice(0, NOTIF_STATE_MAX_KEYS).map(function(item) { return item.key; });
   }
 
+  /**
+   * Offset'siz duvar saatini Europe/Istanbul epoch ms'e çevirir.
+   * Host cihaz timezone'undan bağımsızdır (Intl IANA).
+   */
+  function notificationIstanbulWallClockToEpochMs(year, month, day, hour, minute, second, ms) {
+    hour = hour || 0;
+    minute = minute || 0;
+    second = second || 0;
+    ms = ms || 0;
+    if (hour < 0 || hour > 23 || minute < 0 || minute > 59 || second < 0 || second > 59) return 0;
+    if (ms < 0 || ms > 999) return 0;
+    const cal = new Date(Date.UTC(year, month - 1, day));
+    if (
+      isNaN(cal.getTime())
+      || cal.getUTCFullYear() !== year
+      || cal.getUTCMonth() !== (month - 1)
+      || cal.getUTCDate() !== day
+    ) {
+      return 0;
+    }
+
+    const dtf = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'Europe/Istanbul',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hourCycle: 'h23'
+    });
+
+    function readParts(epochMs) {
+      const parts = dtf.formatToParts(new Date(epochMs));
+      const map = {};
+      for (let i = 0; i < parts.length; i++) {
+        if (parts[i].type !== 'literal') map[parts[i].type] = parts[i].value;
+      }
+      return {
+        year: Number(map.year),
+        month: Number(map.month),
+        day: Number(map.day),
+        hour: Number(map.hour),
+        minute: Number(map.minute),
+        second: Number(map.second)
+      };
+    }
+
+    let guess = Date.UTC(year, month - 1, day, hour, minute, second, ms);
+    for (let iter = 0; iter < 4; iter++) {
+      const got = readParts(guess);
+      if (
+        got.year === year
+        && got.month === month
+        && got.day === day
+        && got.hour === hour
+        && got.minute === minute
+        && got.second === second
+      ) {
+        return guess;
+      }
+      const wantAsUtc = Date.UTC(year, month - 1, day, hour, minute, second, ms);
+      const gotAsUtc = Date.UTC(got.year, got.month - 1, got.day, got.hour, got.minute, got.second, ms);
+      guess = guess + (wantAsUtc - gotAsUtc);
+    }
+    const finalGot = readParts(guess);
+    if (
+      finalGot.year === year
+      && finalGot.month === month
+      && finalGot.day === day
+      && finalGot.hour === hour
+      && finalGot.minute === minute
+      && finalGot.second === second
+    ) {
+      return guess;
+    }
+    return 0;
+  }
+
   function parseNotificationFirstSeenMs(value) {
     const raw = String(value || '').trim();
     if (!raw || raw === '-') return 0;
@@ -164,39 +243,17 @@
     }
     if (/^[+-]?\d+(\.\d+)?$/.test(raw)) return 0;
 
-    function calendarOk(year, month, day) {
-      const cal = new Date(year, month - 1, day);
+    function calendarOkUtc(year, month, day) {
+      const cal = new Date(Date.UTC(year, month - 1, day));
       return !isNaN(cal.getTime())
-        && cal.getFullYear() === year
-        && cal.getMonth() === (month - 1)
-        && cal.getDate() === day;
+        && cal.getUTCFullYear() === year
+        && cal.getUTCMonth() === (month - 1)
+        && cal.getUTCDate() === day;
     }
 
-    function localMs(year, month, day, hour, minute, second, ms) {
-      hour = hour || 0;
-      minute = minute || 0;
-      second = second || 0;
-      ms = ms || 0;
-      if (hour < 0 || hour > 23 || minute < 0 || minute > 59 || second < 0 || second > 59) return 0;
-      if (!calendarOk(year, month, day)) return 0;
-      const dt = new Date(year, month - 1, day, hour, minute, second, ms);
-      if (
-        isNaN(dt.getTime())
-        || dt.getFullYear() !== year
-        || dt.getMonth() !== (month - 1)
-        || dt.getDate() !== day
-        || dt.getHours() !== hour
-        || dt.getMinutes() !== minute
-        || dt.getSeconds() !== second
-      ) {
-        return 0;
-      }
-      return dt.getTime();
-    }
-
-    const trMatch = raw.match(/^(\d{2})[./-](\d{2})[./-](\d{4})(?:\s+(\d{2}):(\d{2}))?$/);
+    const trMatch = raw.match(/^(\d{2})[./-](\d{2})[./-](\d{4})(?: (\d{2}):(\d{2}))?$/);
     if (trMatch) {
-      return localMs(
+      return notificationIstanbulWallClockToEpochMs(
         Number(trMatch[3]),
         Number(trMatch[2]),
         Number(trMatch[1]),
@@ -207,9 +264,9 @@
       );
     }
 
-    // ISO date / datetime with optional space or T, optional fractional seconds, optional Z/+HH:MM/+HHMM
+    // ISO: ayırıcı yalnız T veya tek normal boşluk (tab/newline yok)
     const isoMatch = raw.match(
-      /^(\d{4})-(\d{2})-(\d{2})(?:([T\s])(\d{2}):(\d{2})(?::(\d{2})(?:\.(\d{1,3}))?)?(?:(Z)|([+-])(\d{2}):?(\d{2}))?)?$/i
+      /^(\d{4})-(\d{2})-(\d{2})(?:([T ])(\d{2}):(\d{2})(?::(\d{2})(?:\.(\d{1,3}))?)?(?:(Z)|([+-])(\d{2}):?(\d{2}))?)?$/i
     );
     if (!isoMatch) return 0;
 
@@ -218,7 +275,7 @@
     const day = Number(isoMatch[3]);
     const hasTime = !!isoMatch[4];
     if (!hasTime) {
-      return localMs(year, month, day, 0, 0, 0, 0);
+      return notificationIstanbulWallClockToEpochMs(year, month, day, 0, 0, 0, 0);
     }
 
     const hour = Number(isoMatch[5]);
@@ -228,12 +285,12 @@
     while (frac.length < 3) frac += '0';
     const msPart = frac ? Number(frac.slice(0, 3)) : 0;
     if (hour < 0 || hour > 23 || minute < 0 || minute > 59 || second < 0 || second > 59) return 0;
-    if (!calendarOk(year, month, day)) return 0;
+    if (!calendarOkUtc(year, month, day)) return 0;
 
     const isZ = !!isoMatch[9];
     const offSign = isoMatch[10];
     if (!isZ && !offSign) {
-      return localMs(year, month, day, hour, minute, second, msPart);
+      return notificationIstanbulWallClockToEpochMs(year, month, day, hour, minute, second, msPart);
     }
 
     let offHour = 0;

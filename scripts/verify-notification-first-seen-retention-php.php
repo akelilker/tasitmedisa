@@ -1,6 +1,6 @@
 <?php
 /**
- * PERF-P0-1-R3 — PHP parser parity + save firstSeen owner.
+ * PERF-P0-1-R4 — PHP parser parity + save firstSeen owner.
  * Çalıştır: php scripts/verify-notification-first-seen-retention-php.php
  */
 date_default_timezone_set('Europe/Istanbul');
@@ -13,6 +13,24 @@ function medisaAssert($cond, $msg) {
     }
     echo "PASS $msg\n";
 }
+
+$OFFSETLESS = [
+    '2026-01-15',
+    '2026-07-16',
+    '2026-01-15T10:30',
+    '2026-07-16T10:30',
+    '2026-01-15 10:30:45',
+    '2026-07-16 10:30:45',
+    '16.01.2026 10:30',
+    '16.07.2026 10:30',
+    '2015-01-15T10:30',
+    '2015-07-15T10:30',
+];
+
+$SEPARATOR_INVALID = [
+    "2026-07-16\t10:30",
+    "2026-07-16\n10:30",
+];
 
 $VALID = [
     '1721123456789',
@@ -39,6 +57,8 @@ $VALID = [
     '2026-07-16T10:30:00+0300',
     '2026-07-16 10:30',
     '2026-07-16 10:30:00',
+    '2015-01-15T10:30',
+    '2015-07-15T10:30',
 ];
 
 $INVALID = [
@@ -68,6 +88,8 @@ $INVALID = [
     'NaN',
     'Infinity',
     '',
+    "2026-07-16\t10:30",
+    "2026-07-16\n10:30",
 ];
 
 foreach ($VALID as $v) {
@@ -187,10 +209,17 @@ for ($i = 0; $i < 600; $i++) {
 }
 medisaAssert(count(medisaNotificationNormalizeFirstSeenDates($map600)) === 600, '8.7 keeps 600');
 
+echo "OFFSETLESS_BEGIN\n";
+foreach (array_merge($OFFSETLESS, $SEPARATOR_INVALID) as $v) {
+    $ms = medisaNotificationParseFirstSeenMs($v);
+    echo json_encode($v, JSON_UNESCAPED_UNICODE), "\t", $ms, "\n";
+}
+echo "OFFSETLESS_END\n";
+
 echo "PARITY_BEGIN\n";
 foreach (array_merge($VALID, $INVALID) as $v) {
     $ms = medisaNotificationParseFirstSeenMs($v);
-    echo ($ms > 0 ? '1' : '0'), "\t", $ms, "\t", str_replace(["\t", "\n", "\r"], [' ', ' ', ''], $v), "\n";
+    echo ($ms > 0 ? '1' : '0'), "\t", $ms, "\t", json_encode($v, JSON_UNESCAPED_UNICODE), "\n";
 }
 echo "PARITY_END\n";
 echo "PHP_RETENTION_OK\n";
