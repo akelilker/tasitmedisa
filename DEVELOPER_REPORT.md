@@ -278,10 +278,25 @@ Kapanış etiketleri:
 - `P0_TOKEN_SECRET_ROTATION_CLOSED`
 - `P0_OLD_SESSIONS_INVALIDATED`
 - `P0_LIVE_CREDENTIAL_PROJECTION_VERIFIED`
+- `P0_PRE_APPLY_SERVER_BACKUPS_REMOVED`
 - `P0_HISTORY_CLEANUP_PENDING`
 
 Kullanılmayan etiket:
 - `P0_SECURITY_GO_LIVE_GATE_CLOSED` (Git history cleanup tamamlanmadan kapatılmaz)
+
+## Aşama 2B-2 — Pre-apply sunucu yedek temizliği
+
+Tarih: 2026-07-16
+
+- Aşama 2B pre-apply data backup silindi.
+- Aşama 2B pre-apply secret backup silindi.
+- Aktif `data.json` korundu.
+- Aktif signing secret korundu.
+- Yeni login / authenticated load smoke PASS.
+- Sunucuda eski düz metin credential içeren geçici rollback backup’ı kalmadı.
+- Normal `data.json.backup` ve `backups/` klasörü korundu.
+- Git history cleanup hâlâ bekliyor.
+- Manuel UI smoke hâlâ bekliyor.
 
 ## Hâlâ açık — Git history cleanup
 
@@ -294,7 +309,7 @@ Kullanılmayan etiket:
 ## Notlar
 
 - Apply öncesi eski genel yönetici smoke login’i `son_giris` alanını güncellediği için canlı data hash’i orijinal yedek hash’ten farklılaştı; apply sonrası canlı hash hazır JSON hash ile eşleşti.
-- Maintenance cleanup staged/state/endpoint’i sildi; sunucudaki `pre-apply` data/secret yedek dosyalarının manuel temizliği operatör kontrolünde kalabilir.
+- Maintenance cleanup staged/state/endpoint’i sildi; pre-apply data/secret yedekleri Aşama 2B-2’de otomatik FTP ile kaldırıldı.
 
 ---
 
@@ -308,4 +323,4 @@ Herhangi bir sorun veya açıklama için repository'de issue açabilirsiniz.
 
 ---
 
-**Son Güncelleme:** 2026-07-16 (Aşama 2B canlı portal hesap ve secret rotasyonu)
+**Son Güncelleme:** 2026-07-16 (Aşama 2B-2 pre-apply sunucu yedek temizliği)
