@@ -238,21 +238,24 @@ if (portalAuthPos === -1 || portalBodyPos === -1 || portalAuthPos > portalBodyPo
   fail('Portal hesap admin endpoint auth sirasi hatali (body validation auth oncesi).');
 }
 
-const driverScript = fs.readFileSync(path.join(repoRoot, 'driver', 'driver-script.js'), 'utf8');
-if (!/driver_password_suggestion\.php/.test(driverScript)) {
+const driverPasswordFeature = fs.readFileSync(path.join(repoRoot, 'driver', 'driver-feature-password.js'), 'utf8');
+const driverDashboardCore = fs.readFileSync(path.join(repoRoot, 'driver', 'driver-dashboard-core.js'), 'utf8');
+const driverBootstrap = fs.readFileSync(path.join(repoRoot, 'driver', 'driver-script.js'), 'utf8');
+if (!/driver_password_suggestion\.php/.test(driverPasswordFeature)) {
   fail('İlk giriş önerisi devam aksiyonu eksik.');
 }
-if (/localStorage\.setItem\([^)]*(?:password|parola|sifre)/i.test(driverScript)
-    || /sessionStorage\.setItem\([^)]*(?:password|parola|sifre)/i.test(driverScript)) {
+const driverClientBundle = driverPasswordFeature + '\n' + driverDashboardCore + '\n' + driverBootstrap;
+if (/localStorage\.setItem\([^)]*(?:password|parola|sifre)/i.test(driverClientBundle)
+    || /sessionStorage\.setItem\([^)]*(?:password|parola|sifre)/i.test(driverClientBundle)) {
   fail('Driver istemcisi parola storage alanına yazmamalı.');
 }
-if (!/ilk_giris_parola_onerisi_bekliyor\s*===\s*true/.test(driverScript)
-    || !/openDriverPasswordSuggestion/.test(driverScript)
-    || !/continueWithCurrentPassword/.test(driverScript)) {
+if (!/ilk_giris_parola_onerisi_bekliyor\s*===\s*true/.test(driverDashboardCore)
+    || !/openDriverPasswordSuggestion/.test(driverBootstrap + driverPasswordFeature)
+    || !/continueWithCurrentPassword/.test(driverPasswordFeature)) {
   fail('İlk başarılı giriş parola önerisi istemci akışı eksik.');
 }
 const driverDashboard = fs.readFileSync(path.join(repoRoot, 'driver', 'dashboard.html'), 'utf8');
-if (!/Parolanızı Değiştirmeniz Önerilir/.test(driverScript)
+if (!/Parolanızı Değiştirmeniz Önerilir/.test(driverPasswordFeature)
     || !/Mevcut Parolayla Devam Et/.test(driverDashboard)
     || !/Şimdi Parolamı Değiştir/.test(driverDashboard)) {
   fail('İlk giriş önerisi modal kontratı eksik.');
