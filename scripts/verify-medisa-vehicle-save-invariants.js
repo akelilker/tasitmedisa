@@ -12,17 +12,17 @@ const vm = require('node:vm');
 const ROOT = path.join(__dirname, '..');
 
 const EXPECTED_DIRECT_DATAAPI_CALLERS = 0;
-const EXPECTED_KAYIT_JS = '20260712.3';
-const EXPECTED_TASITLAR_JS = '20260717.3';
-const EXPECTED_AYARLAR_JS = '20260717.3';
-const EXPECTED_SCRIPT_CORE_QUERY = '20260717.3';
+const EXPECTED_KAYIT_JS = '20260717.4';
+const EXPECTED_TASITLAR_JS = '20260717.4';
+const EXPECTED_AYARLAR_JS = '20260717.4';
+const EXPECTED_SCRIPT_CORE_QUERY = '20260717.4';
 const EXPECTED_VEHICLE_NOTIFICATION_DOMAIN = '20260712.1';
 const EXPECTED_DRIVER_SCRIPT_QUERY = '20260717.3';
-const EXPECTED_SW_CACHE = 'medisa-v2.241';
+const EXPECTED_SW_CACHE = 'medisa-v2.242';
 const EXPECTED_NOTIFICATIONS = '20260717.3';
-const EXPECTED_RAPORLAR = '20260712.1';
-const EXPECTED_KAYIT_CSS = '20260708.1';
-const EXPECTED_AYARLAR_CSS = '20260716.3';
+const EXPECTED_RAPORLAR = '20260717.4';
+const EXPECTED_KAYIT_CSS = '20260717.4';
+const EXPECTED_AYARLAR_CSS = '20260717.4';
 const EXPECTED_TASITLAR_YAZICI = '20260517.5';
 
 const EXPECTED_REGISTRY_VERSIONS = {
@@ -282,7 +282,7 @@ function verifyModuleBootContracts(scriptCoreJs, registry, swJs) {
       assert.match(scriptCoreJs, contract.loaderValidator, contract.name + ': loader validator missing');
     }
     if (contract.loaderUsesLazyWrapper) {
-      assert.match(scriptCoreJs, /window\.openReportsView\s*=\s*function\s*\(\)\s*\{[\s\S]*loadAppModule\(RAPORLAR_JS/, contract.name + ': lazy wrapper must load module before delegate');
+      assert.match(scriptCoreJs, /window\.openReportsView\s*=\s*function\s*\(\)\s*\{[\s\S]*MedisaMainSurfaceRegistry\.ensure\('reports'\)/, contract.name + ': lazy wrapper must ensure surface before delegate');
       assert.match(scriptCoreJs, /openVehiclesView !== lazyOpenVehiclesView/, 'tasitlar lazy wrapper must distinguish stub from real API');
     }
   });
@@ -304,12 +304,12 @@ function verifyOlayEgzozFlowInvariants() {
   assert.match(indexHtml, /if \(!window\.cancelVehicleEgzozDateModal\)/, 'egzoz date cancel fallback guard missing');
   assert.match(indexHtml, /window\.cancelVehicleEgzozDateModal\s*=\s*function/, 'egzoz date cancel early fallback missing');
   assert.match(indexHtml, /function hideEgzozModal\(id\)/, 'egzoz modal hide helper missing in shell');
-  assert.match(indexHtml, /onclick="closeVehicleEgzozQuestionFlow\(\)"/, 'egzoz confirm close button must call global handler');
-  assert.match(indexHtml, /onclick="cancelVehicleEgzozDateModal\(\)"/, 'egzoz date cancel button must call global handler');
-  assert.match(indexHtml, /id="event-menu-modal"/, 'event menu modal shell missing');
-  assert.match(indexHtml, /id="dinamik-olay-modal"/, 'dynamic event modal shell missing');
-  assert.match(indexHtml, /id="vehicle-egzoz-confirm-modal"/, 'egzoz confirm modal shell missing');
-  assert.match(indexHtml, /id="vehicle-egzoz-date-modal"/, 'egzoz date modal shell missing');
+  assert.match(kayitJs, /onclick="closeVehicleEgzozQuestionFlow\(\)"/, 'egzoz confirm close button must call global handler');
+  assert.match(kayitJs, /onclick="cancelVehicleEgzozDateModal\(\)"/, 'egzoz date cancel button must call global handler');
+  assert.match(tasitlarJs, /id="event-menu-modal"/, 'event menu modal owner markup missing');
+  assert.match(tasitlarJs, /id="dinamik-olay-modal"/, 'dynamic event modal owner markup missing');
+  assert.match(kayitJs, /id="vehicle-egzoz-confirm-modal"/, 'egzoz confirm modal owner markup missing');
+  assert.match(kayitJs, /id="vehicle-egzoz-date-modal"/, 'egzoz date modal owner markup missing');
 
   [
     'window.confirmVehicleEgzozSameDate',
@@ -1573,7 +1573,7 @@ function runStaticInvariants() {
   var indexHtml = read('index.html');
   assert.match(indexHtml, /data-manager\.js\?v=20260717\.3/);
   assert.match(indexHtml, /data-service\.js\?v=20260717\.3/);
-  assert.match(indexHtml, /script-core\.js\?v=20260717\.3/);
+  assert.match(indexHtml, /script-core\.js\?v=20260717\.4/);
   assert.doesNotMatch(indexHtml, /data-service\.js\?v=20260716\.4/);
   assert.doesNotMatch(indexHtml, /data-manager\.js\?v=20260716\.4/);
   assert.doesNotMatch(indexHtml, /data-manager\.js\?v=20260716\.1/);

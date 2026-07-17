@@ -5,6 +5,298 @@
    ========================================= */
 
 (function () {
+  function hydrateMedisaKayitMarkup() {
+    if (document.getElementById('vehicle-modal')) return;
+    var host = document.createElement('div');
+    host.setAttribute('data-medisa-surface', 'kayit');
+    host.innerHTML = `<div id="vehicle-modal" class="modal-overlay">
+            <div class="modal-container">
+                <div class="modal-header">
+                    <button type="button" class="modal-home" onclick="closeAllModals()" aria-label="Ana sayfaya dön" title="Ana sayfa">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 10v10h14V10"/></svg>
+                    </button>
+                    <h2 class="premium-title">KAYIT İŞLEMLERİ</h2>
+                    <button class="modal-close" onclick="closeVehicleModal()">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="modal-columns">
+                        <div class="modal-column-left">
+                            <div class="form-section-inline">
+                                <label class="form-label" for="vehicle-type-otomobil">Taşıt Tipi</label>
+                                <div class="vehicle-type-group">
+                                    <button type="button" id="vehicle-type-otomobil" class="vehicle-type-btn" data-type="otomobil" title="Otomobil / SUV">
+                                        <img src="icon/otomobil.svg" alt="Otomobil" />
+                                    </button>
+                                    <button class="vehicle-type-btn" data-type="minivan" title="Küçük Ticari">
+                                        <img src="icon/kucuk-ticari.svg" alt="Küçük Ticari" />
+                                    </button>
+                                    <button class="vehicle-type-btn" data-type="kamyon" title="Büyük Ticari">
+                                        <img src="icon/buyuk-ticari.svg" alt="Büyük Ticari" />
+                                    </button>
+                                    <button class="vehicle-type-btn" data-type="romork" title="Römork">
+                                        <img src="icon/romork.svg?v=20260609.3" alt="Römork" />
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="form-section">
+                                <label class="form-label" for="vehicle-plate">Plaka</label>
+                                <input type="text" id="vehicle-plate" class="form-input" placeholder="34 ABC 123" maxlength="15">
+                            </div>
+                            <div class="form-section">
+                                <label class="form-label" for="vehicle-year">Üretim Yılı</label>
+                                <input type="number" id="vehicle-year" class="form-input" placeholder="2026" min="1950" max="2030" inputmode="numeric">
+                            </div>
+                            <div class="form-section">
+                                <label class="form-label" for="vehicle-brand-model">Marka / Model</label>
+                                <input type="text" id="vehicle-brand-model" class="form-input" placeholder="Hyundai Elantra">
+                            </div>
+                            <div class="form-section">
+                                <label class="form-label" for="vehicle-km">Km (Alındığı Tarih)</label>
+                                <input type="text" id="vehicle-km" class="form-input" placeholder="50.000" inputmode="numeric" pattern="[0-9]*">
+                            </div>
+                            <div class="form-section">
+                                <label class="form-label" for="vehicle-price">Taşıtın Alım Bedeli</label>
+                                <input type="text" id="vehicle-price" class="form-input" placeholder="150.000 TL" inputmode="numeric">
+                            </div>
+                            <div class="form-section-inline" data-section="transmission">
+                                <label class="form-label" for="sanziman-manuel">Şanzıman Tipi</label>
+                                <div class="radio-group">
+                                    <button type="button" id="sanziman-manuel" class="radio-btn" data-value="manuel">Manuel</button>
+                                    <button class="radio-btn" data-value="otomatik">Otomatik</button>
+                                </div>
+                            </div>
+                            <div class="form-section-inline" data-section="tramer">
+                                <label class="form-label" for="tramer-var">Tramer Kaydı</label>
+                                <div class="radio-group">
+                                    <button type="button" id="tramer-var" class="radio-btn" data-value="var">Var</button>
+                                    <button type="button" class="radio-btn" data-value="yok">Yok</button>
+                                </div>
+                            </div>
+                            <div class="form-section">
+                                <div id="tramer-records-container" class="u-hidden u-mt-6"></div>
+                            </div>
+                            <div class="form-section-inline" data-section="boya">
+                                <label class="form-label" for="boya-var">Boya / Değişen</label>
+                                <div class="radio-group">
+                                    <button type="button" id="boya-var" class="radio-btn" data-value="var">Var</button>
+                                    <button type="button" class="radio-btn" data-value="yok">Yok</button>
+                                </div>
+                            </div>
+                            <div class="form-section">
+                                <div id="boya-parts-container" class="u-hidden u-mt-6"></div>
+                            </div>
+                        </div>
+
+                        <div class="modal-column-right">
+                            <div class="form-section">
+                                <label class="form-label" for="vehicle-sigorta-date">Sigorta Bitiş Tarihi</label>
+                                <input type="text" id="vehicle-sigorta-date" class="form-input" data-date-input="vehicle" inputmode="numeric" maxlength="10" placeholder="gg.aa.yyyy" autocomplete="off">
+                            </div>
+                            <div class="form-section">
+                                <label class="form-label" for="vehicle-kasko-date">Kasko Bitiş Tarihi</label>
+                                <input type="text" id="vehicle-kasko-date" class="form-input" data-date-input="vehicle" inputmode="numeric" maxlength="10" placeholder="gg.aa.yyyy" autocomplete="off">
+                            </div>
+                            <div class="form-section">
+                                <label class="form-label" for="vehicle-muayene-date">Muayene Bitiş Tarihi</label>
+                                <input type="text" id="vehicle-muayene-date" class="form-input" data-date-input="vehicle" inputmode="numeric" maxlength="10" placeholder="gg.aa.yyyy" autocomplete="off">
+                            </div>
+                            <div class="form-section egzoz-toggle-section u-hidden" aria-hidden="true">
+                                <label class="egzoz-muayene-check" for="vehicle-egzoz-different">
+                                    <input type="checkbox" id="vehicle-egzoz-different" tabindex="-1">
+                                    <span>Egzoz Muayenesi Farklı Tarih İse İşaretleyin..</span>
+                                </label>
+                            </div>
+                            <div class="form-section egzoz-date-section u-hidden" id="vehicle-egzoz-date-section" aria-hidden="true">
+                                <label class="form-label" for="vehicle-egzoz-date">Egzoz Muayenesi Bitiş Tarihi</label>
+                                <input type="text" id="vehicle-egzoz-date" class="form-input" data-date-input="vehicle" inputmode="numeric" maxlength="10" placeholder="gg.aa.yyyy" autocomplete="off" disabled tabindex="-1">
+                            </div>
+                            <div class="form-section-inline" data-section="anahtar">
+                                <label class="form-label" for="yedek-anahtar-var">Yedek Anahtar</label>
+                                <div class="radio-group">
+                                    <button type="button" id="yedek-anahtar-var" class="radio-btn" data-value="var">Var</button>
+                                    <button type="button" class="radio-btn" data-value="yok">Yok</button>
+                                </div>
+                            </div>
+                            <div class="form-section">
+                                <label class="form-label form-label-reveal" for="anahtar-nerede">Anahtar Nerede</label>
+                                <textarea class="form-input form-input-reveal" rows="1" placeholder="Nerede?" id="anahtar-nerede"></textarea>
+                            </div>
+                            <div class="form-section-inline" data-section="kredi">
+                                <label class="form-label" for="kredi-var">Hak Mahrumiyeti?</label>
+                                <div class="radio-group">
+                                    <button type="button" id="kredi-var" class="radio-btn" data-value="var" data-group="kredi">Var</button>
+                                    <button type="button" class="radio-btn" data-value="yok" data-group="kredi">Yok</button>
+                                </div>
+                            </div>
+                            <div class="form-section">
+                                <label class="form-label form-label-reveal" for="kredi-detay">Açıklama</label>
+                                <textarea class="form-input form-input-reveal" rows="1" placeholder="Detay Ekleyin" id="kredi-detay"></textarea>
+                            </div>
+                            <div class="form-section" id="vehicle-branch-form-section">
+                                <span class="form-label" id="vehicle-branch-label">Tahsis Edilen Şube</span>
+                                <div class="vehicle-branch-dropdown-wrap">
+                                    <select id="vehicle-branch-select" class="form-input" aria-hidden="true" tabindex="-1">
+                                        <option value="">Seçiniz</option>
+                                    </select>
+                                    <div id="vehicle-branch-trigger" class="vehicle-branch-trigger form-input placeholder" tabindex="0" role="combobox" aria-expanded="false" aria-haspopup="listbox" aria-controls="vehicle-branch-list" aria-labelledby="vehicle-branch-label">Seçiniz</div>
+                                    <div id="vehicle-branch-list" class="vehicle-branch-list" role="listbox" aria-hidden="true"></div>
+                                </div>
+                            </div>
+                            <div class="form-section">
+                                <label class="form-label" for="vehicle-kasko-kodu">Kasko Kodu</label>
+                                <input type="text" id="vehicle-kasko-kodu" class="form-input" placeholder="" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+                            </div>
+                            <div class="form-section">
+                                <label class="form-label" for="vehicle-notes">Notlar</label>
+                                <textarea id="vehicle-notes" class="form-input notes-auto-expand" rows="1" placeholder="Ek Bilgiler..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="universal-btn-group">
+                        <button type="button" class="universal-btn-save" onclick="saveVehicleRecord()">Kaydet</button>
+                        <button type="button" class="universal-btn-cancel" onclick="closeVehicleModal()">Vazgeç</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="vehicle-type-picker-overlay" class="vehicle-type-picker-overlay u-hidden" aria-hidden="true">
+            <div class="vehicle-type-picker-backdrop"></div>
+            <div class="vehicle-type-picker-box">
+                <h3 class="vehicle-type-picker-title">Taşıt Tipi Seçin</h3>
+                <div class="vehicle-type-picker-options">
+                    <button type="button" class="vehicle-type-picker-option" data-type="otomobil">
+                        <img src="icon/otomobil.svg" alt="Otomobil">
+                        <span class="vehicle-type-picker-label">Otomobil/ SUV</span>
+                    </button>
+                    <button type="button" class="vehicle-type-picker-option" data-type="minivan">
+                        <img src="icon/kucuk-ticari.svg" alt="Küçük Ticari">
+                        <span class="vehicle-type-picker-label">Küçük Ticari</span>
+                    </button>
+                    <button type="button" class="vehicle-type-picker-option" data-type="kamyon">
+                        <img src="icon/buyuk-ticari.svg" alt="Büyük Ticari">
+                        <span class="vehicle-type-picker-label">Büyük Ticari</span>
+                    </button>
+                    <button type="button" class="vehicle-type-picker-option" data-type="romork">
+                        <img src="icon/romork.svg?v=20260609.3" alt="Römork">
+                        <span class="vehicle-type-picker-label">Römork</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="tescil-tarih-confirm-modal" class="modal-overlay ayarlar-modal-overlay">
+            <div class="modal-container" onclick="event.stopPropagation();">
+                <div class="modal-header">
+                    <h2>TESCİL TARİHİ ONAY</h2>
+                    <button class="modal-close" onclick="cancelOnay()">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="modal-body" onclick="event.stopPropagation();">
+                    <p id="tescil-confirm-message"></p>
+                    <div class="universal-btn-group">
+                        <button type="button" class="universal-btn-save" onclick="event.stopPropagation(); confirmOnay();">Evet</button>
+                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); cancelOnay();">Hayır</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tescil Tarihi Giriş Modalı -->
+        <div id="tescil-tarih-input-modal" class="modal-overlay ayarlar-modal-overlay">
+            <div class="modal-container" onclick="event.stopPropagation();">
+                <div class="modal-header">
+                    <h2>TESCİL TARİHİ</h2>
+                    <button class="modal-close" onclick="cancelTescilTarihi()">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="modal-body" onclick="event.stopPropagation();">
+                    <div class="tescil-tarih-input-stack">
+                        <label for="tescil-tarih-input" class="form-label tescil-tarih-field-label">Tescil Tarihi:</label>
+                        <div class="tescil-input-wrapper">
+                            <input type="text" id="tescil-tarih-input" class="form-input" placeholder="gg/aa/yyyy" maxlength="10" inputmode="numeric">
+                            <span id="tescil-tarih-overlay" class="tescil-tarih-overlay"></span>
+                        </div>
+                    </div>
+                    <div class="universal-btn-group">
+                        <button type="button" class="universal-btn-save" onclick="event.stopPropagation(); saveTescilTarihi();">Kaydet</button>
+                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); cancelTescilTarihi();">Vazgeç</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="vehicle-egzoz-confirm-modal" class="egzoz-dialog-overlay">
+            <div class="egzoz-dialog-container" onclick="event.stopPropagation();">
+                <div class="egzoz-dialog-header">
+                    <h2>EGZOZ MUAYENESİ</h2>
+                    <button class="egzoz-dialog-close" onclick="closeVehicleEgzozQuestionFlow()">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="egzoz-dialog-body" onclick="event.stopPropagation();">
+                    <p id="vehicle-egzoz-confirm-message">Egzoz Muayenesi Aynı Tarihte Mi Bitiyor?</p>
+                    <div class="universal-btn-group">
+                        <button type="button" class="universal-btn-save" onclick="event.stopPropagation(); confirmVehicleEgzozSameDate();">Evet</button>
+                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); confirmVehicleEgzozDifferentDate();">Hayır</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="vehicle-egzoz-date-modal" class="egzoz-dialog-overlay">
+            <div class="egzoz-dialog-container" onclick="event.stopPropagation();">
+                <div class="egzoz-dialog-header">
+                    <h2>EGZOZ MUAYENESİ TARİHİ</h2>
+                    <button class="egzoz-dialog-close" onclick="cancelVehicleEgzozDateModal()">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="egzoz-dialog-body" onclick="event.stopPropagation();">
+                    <div class="egzoz-dialog-date-field">
+                        <label for="vehicle-egzoz-date-modal-input">Egzoz Muayenesi Bitiş Tarihi</label>
+                        <input type="text" id="vehicle-egzoz-date-modal-input" class="form-input" data-date-input="vehicle" inputmode="numeric" maxlength="10" placeholder="gg.aa.yyyy" autocomplete="off">
+                    </div>
+                    <div class="universal-btn-group">
+                        <button type="button" class="universal-btn-save" onclick="event.stopPropagation(); saveVehicleEgzozDateModal();">Kaydet</button>
+                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); cancelVehicleEgzozDateModal();">Vazgeç</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Olay Ekleme Modal'ları -->
+        <!-- Event Menu Modal (Olay seçim menüsü) -->`;
+    var fragment = document.createDocumentFragment();
+    while (host.firstChild) fragment.appendChild(host.firstChild);
+    document.body.appendChild(fragment);
+  }
+  window.__medisaMainSurfaceHydrators = window.__medisaMainSurfaceHydrators || {};
+  window.__medisaMainSurfaceHydrators['kayit'] = hydrateMedisaKayitMarkup;
+  hydrateMedisaKayitMarkup();
+
   let isEditMode = false;
   let editingVehicleId = null;
   let editingVehicleVersion = 1; // Çakışma kontrolü (Phase 3) – düzenleme açıldığında kaydedilir

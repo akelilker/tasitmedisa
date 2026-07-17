@@ -209,10 +209,11 @@ if (!/syncUserPasswordAdminActions/.test(ayarlarJs) || !/reopenUserPasswordSugge
 }
 
 const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
-if (/Hesap Durumu|user-account-status-summary|user-password-reset-self-hint|user-portal-toggle-btn/.test(indexHtml)) {
+const userFormMarkupOwner = ayarlarJs;
+if (/Hesap Durumu|user-account-status-summary|user-password-reset-self-hint|user-portal-toggle-btn/.test(userFormMarkupOwner)) {
   fail('Kullanici formunda teknik hesap durumu metinleri kalmamali.');
 }
-if (!/user-password-reset-btn/.test(indexHtml) || !/İlk Giriş Uyarısını Yeniden Göster/.test(indexHtml)) {
+if (!/user-password-reset-btn/.test(userFormMarkupOwner) || !/İlk Giriş Uyarısını Yeniden Göster/.test(userFormMarkupOwner)) {
   fail('Kullanici formunda parola yonetici butonlari eksik.');
 }
 if (!/settings-change-password-btn/.test(indexHtml) || !/Parolamı Değiştir/.test(indexHtml)) {
@@ -221,7 +222,7 @@ if (!/settings-change-password-btn/.test(indexHtml) || !/Parolamı Değiştir/.t
 if (!/main-password-modal/.test(indexHtml) || !/Mevcut Parolayla Devam Et/.test(indexHtml)) {
   fail('Ana uygulama parola onerisi modali eksik.');
 }
-if (/user-portal-status|user-password-suggestion-status|user-password-changed-at/.test(indexHtml)) {
+if (/user-portal-status|user-password-suggestion-status|user-password-changed-at/.test(userFormMarkupOwner)) {
   fail('Kullanici formunda eski teknik portal metinleri kalmamali.');
 }
 

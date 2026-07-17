@@ -96,12 +96,12 @@ document.addEventListener('click', (e) => {
   const menu = getMenu();
   const notif = getNotif();
   const submenu = getSubmenu();
-  
+
   // Settings menu içindeki click'leri ignore et (butonlar çalışsın)
   if (menu && menu.contains(e.target)) {
-    return; 
+    return;
   }
-  
+
   // Submenu içindeki click'leri de ignore et
   if (submenu && submenu.contains(e.target)) {
     return;
@@ -115,7 +115,7 @@ document.addEventListener('click', (e) => {
   if (e.target && e.target.closest && e.target.closest('.ayarlar-modal-overlay')) {
     return;
   }
-  
+
   // Dışarı tıklandığında menüleri kapat
   if (menu && menu.classList.contains('open')) {
     menu.classList.remove('open');
@@ -964,18 +964,18 @@ function startFooterAnimation() {
     // Footer bulunamadı
     return;
   }
-  
+
   // Önceki timeout'u temizle
   if (dimTimeout) {
     clearTimeout(dimTimeout);
     dimTimeout = null;
   }
-  
+
   // Başta dimmed ekle (versiyon ve durum normal, MEDISA soluk)
   footer.classList.add('dimmed');
   footer.classList.remove('delayed');
   // Footer animasyonu başladı
-  
+
   // 4 saniye sonra delayed class'ını ekle (versiyon ve durum soluk, MEDISA normal)
   dimTimeout = setTimeout(() => {
     if (footer) {
@@ -1098,13 +1098,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Lazy modül asset sürümleri — tek nesne; index.html içindeki style-core ?v= ile tasitlar sürümü uyumlu kalmalı
 var MEDISA_MODULE_VERSIONS = {
-  tasitlar: '20260717.3',
+  tasitlar: '20260717.4',
   notifications: '20260717.3',
-  raporlar: '20260712.1',
-  kayitJs: '20260712.3',
-  kayitCss: '20260708.1',
-  ayarlarJs: '20260717.3',
-  ayarlarCss: '20260716.3',
+  raporlar: '20260717.4',
+  kayitJs: '20260717.4',
+  kayitCss: '20260717.4',
+  ayarlarJs: '20260717.4',
+  ayarlarCss: '20260717.4',
   tasitlarYazici: '20260517.5',
   vehicleNotificationDomain: '20260712.1'
 };
@@ -1305,6 +1305,139 @@ window.ensureMedisaVehicleNotificationDomainReady = function() {
   return promise;
 };
 
+// Ana uygulama feature surface ownerı: tek load Promise, ID doğrulama, retry ve teknik metrik.
+(function createMedisaMainSurfaceRegistry() {
+  var definitions = Object.create(null);
+  var inflight = Object.create(null);
+  var hydrated = Object.create(null);
+  var metrics = null;
+
+  function perfEnabled() {
+    try {
+      if (localStorage.getItem('medisa_perf_debug') === '1') return true;
+    } catch (e0) {}
+    try {
+      return /(?:^|[?&])medisaPerf=1(?:&|$)/.test(window.location.search || '');
+    } catch (e1) {
+      return false;
+    }
+  }
+
+  function getMetricsOwner() {
+    if (!perfEnabled()) return null;
+    if (!metrics) {
+      metrics = {
+        initialHtmlBytes: typeof Blob === 'function'
+          ? new Blob([document.documentElement.outerHTML]).size
+          : document.documentElement.outerHTML.length,
+        initialDomNodes: document.getElementsByTagName('*').length,
+        initialHiddenNodes: 0,
+        hydratedSurfaces: [],
+        surfaceHydrationMs: {},
+        surfaceInjectionCounts: {},
+        duplicateIdCount: 0,
+        appReadyAt: window.__medisaAppReadyAt || 0,
+        splashHiddenAt: window.__medisaSplashHiddenAt || 0
+      };
+      window.__medisaMainShellMetrics = metrics;
+    }
+    return metrics;
+  }
+
+  function duplicateIdCount() {
+    var seen = Object.create(null);
+    var duplicate = Object.create(null);
+    var nodes = document.querySelectorAll('[id]');
+    for (var i = 0; i < nodes.length; i++) {
+      var id = String(nodes[i].id || '');
+      if (!id) continue;
+      if (seen[id]) duplicate[id] = true;
+      seen[id] = true;
+    }
+    return Object.keys(duplicate).length;
+  }
+
+  function verifyRequiredIds(name, definition) {
+    var ids = Array.isArray(definition.requiredIds) ? definition.requiredIds : [];
+    for (var i = 0; i < ids.length; i++) {
+      if (!document.getElementById(ids[i])) {
+        throw new Error(name + ' surface markup eksik: #' + ids[i]);
+      }
+    }
+    var duplicates = duplicateIdCount();
+    var ownerMetrics = getMetricsOwner();
+    if (ownerMetrics) ownerMetrics.duplicateIdCount = duplicates;
+    if (duplicates > 0) throw new Error(name + ' surface duplicate ID üretti');
+  }
+
+  function showSurfaceLoadError() {
+    var message = 'Bu bölüm ilk kullanım için internet bağlantısı gerektiriyor.';
+    if (typeof window.showCenteredInfoBox === 'function') {
+      window.showCenteredInfoBox(message);
+      return;
+    }
+    if (typeof window.showInfoModal === 'function') {
+      window.showInfoModal(message);
+      return;
+    }
+    if (typeof alert === 'function') alert(message);
+  }
+
+  window.MedisaMainSurfaceRegistry = {
+    register: function(name, definition) {
+      if (!name || !definition || typeof definition.load !== 'function') {
+        throw new Error('Geçersiz main surface tanımı');
+      }
+      definitions[name] = definition;
+    },
+    ensure: function(name) {
+      if (hydrated[name]) {
+        var readyDefinition = definitions[name];
+        return Promise.resolve(readyDefinition && typeof readyDefinition.getApi === 'function'
+          ? readyDefinition.getApi()
+          : window);
+      }
+      if (inflight[name]) return inflight[name];
+      var definition = definitions[name];
+      if (!definition) return Promise.reject(new Error('Main surface kayıtlı değil: ' + name));
+      var startedAt = typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();
+      var beforeRoot = definition.rootId ? document.getElementById(definition.rootId) : null;
+      var promise = Promise.resolve()
+        .then(definition.load)
+        .then(function() {
+          verifyRequiredIds(name, definition);
+          hydrated[name] = true;
+          var ownerMetrics = getMetricsOwner();
+          if (ownerMetrics) {
+            var endedAt = typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();
+            ownerMetrics.hydratedSurfaces.push(name);
+            ownerMetrics.surfaceHydrationMs[name] = Number((endedAt - startedAt).toFixed(2));
+            ownerMetrics.surfaceInjectionCounts[name] = beforeRoot ? 0 : 1;
+          }
+          return typeof definition.getApi === 'function' ? definition.getApi() : window;
+        })
+        .catch(function(error) {
+          hydrated[name] = false;
+          if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+            showSurfaceLoadError();
+          }
+          throw error;
+        })
+        .finally(function() {
+          if (inflight[name] === promise) delete inflight[name];
+        });
+      inflight[name] = promise;
+      return promise;
+    },
+    isHydrated: function(name) {
+      return hydrated[name] === true;
+    },
+    getMetrics: function() {
+      return getMetricsOwner();
+    }
+  };
+})();
+
 // Modal açma fonksiyonları: Lazy load – modül yüklenir, sonra ilgili açma fonksiyonu tetiklenir.
 // tasitlar.js / raporlar.js / kayit.js / ayarlar.js yüklendiğinde kendi open* implementasyonlarını yazar.
 (function() {
@@ -1380,27 +1513,10 @@ window.ensureMedisaVehicleNotificationDomainReady = function() {
    * @returns {Promise<void>}
    */
   window.ensureMedisaTasitlarModuleReady = function() {
-    var inflightKey = 'medisa:tasitlar-module-ready';
-    var inflight = window.__medisaModuleInflight;
-    if (inflight[inflightKey]) return inflight[inflightKey];
-
-    var promise = Promise.resolve()
-      .then(function() {
-        if (typeof window.ensureMedisaVehicleNotificationDomainReady !== 'function') {
-          throw new Error('vehicle notification domain loader hazir degil');
-        }
-        return window.ensureMedisaVehicleNotificationDomainReady();
-      })
-      .then(function() {
-        if (window.__medisaTasitlarModuleReady === true && window.__medisaTasitlarModuleVersion !== V.tasitlar) {
-          window.__medisaTasitlarModuleReady = false;
-        }
-        if (isMedisaTasitlarModuleReady()) return;
-        if (typeof window.loadAppModule !== 'function') {
-          throw new Error('Tasitlar module loader hazir degil');
-        }
-        return window.loadAppModule(TASITLAR_JS, TASITLAR_CSS_LIST);
-      })
+    if (window.__medisaTasitlarModuleReady === true && window.__medisaTasitlarModuleVersion !== V.tasitlar) {
+      window.__medisaTasitlarModuleReady = false;
+    }
+    return window.MedisaMainSurfaceRegistry.ensure('vehicles')
       .then(function() {
         if (!isMedisaTasitlarModuleReady()) {
           throw new Error('Taşıtlar modülü hazır duruma gelemedi');
@@ -1409,13 +1525,7 @@ window.ensureMedisaVehicleNotificationDomainReady = function() {
       .catch(function(err) {
         console.error('[Medisa] Taşıtlar modülü hazırlanamadı:', err);
         throw err;
-      })
-      .finally(function() {
-        if (inflight[inflightKey] === promise) delete inflight[inflightKey];
       });
-
-    inflight[inflightKey] = promise;
-    return promise;
   };
   var RAPORLAR_JS = base + 'raporlar.js?v=' + V.raporlar;
   var RAPORLAR_CSS = base + 'raporlar.css?v=' + V.raporlar;
@@ -1423,7 +1533,47 @@ window.ensureMedisaVehicleNotificationDomainReady = function() {
   var KAYIT_CSS = base + 'kayit.css?v=' + V.kayitCss;
   var AYARLAR_JS = base + 'ayarlar.js?v=' + V.ayarlarJs;
   var AYARLAR_CSS = base + 'ayarlar.css?v=' + V.ayarlarCss;
-  var ayarlarPreloadScheduled = false;
+
+  window.MedisaMainSurfaceRegistry.register('vehicles', {
+    rootId: 'vehicles-modal',
+    requiredIds: ['vehicles-modal', 'vehicle-detail-modal', 'event-menu-modal', 'dinamik-olay-modal', 'vehicle-history-modal'],
+    load: function() {
+      return Promise.resolve()
+        .then(window.ensureMedisaVehicleNotificationDomainReady)
+        .then(function() { return window.loadAppModule(TASITLAR_JS, TASITLAR_CSS_LIST); })
+        .then(function() { window.__medisaMainSurfaceHydrators.vehicles(); });
+    },
+    getApi: function() { return window; }
+  });
+  window.MedisaMainSurfaceRegistry.register('kayit', {
+    rootId: 'vehicle-modal',
+    requiredIds: ['vehicle-modal', 'vehicle-type-picker-overlay', 'tescil-tarih-confirm-modal', 'tescil-tarih-input-modal', 'vehicle-egzoz-confirm-modal', 'vehicle-egzoz-date-modal'],
+    load: function() {
+      return Promise.resolve()
+        .then(window.ensureMedisaVehicleNotificationDomainReady)
+        .then(function() { return window.loadAppModule(KAYIT_JS, KAYIT_CSS); })
+        .then(function() { window.__medisaMainSurfaceHydrators.kayit(); });
+    },
+    getApi: function() { return window; }
+  });
+  window.MedisaMainSurfaceRegistry.register('reports', {
+    rootId: 'reports-modal',
+    requiredIds: ['reports-modal', 'reports-body', 'reports-list-header-actions'],
+    load: function() {
+      return window.loadAppModule(RAPORLAR_JS, RAPORLAR_CSS)
+        .then(function() { window.__medisaMainSurfaceHydrators.reports(); });
+    },
+    getApi: function() { return window; }
+  });
+  window.MedisaMainSurfaceRegistry.register('settings', {
+    rootId: 'branch-modal',
+    requiredIds: ['branch-modal', 'user-modal', 'required-documents-modal', 'data-management-modal', 'dis-veri-panel'],
+    load: function() {
+      return window.loadAppModule(AYARLAR_JS, AYARLAR_CSS)
+        .then(function() { window.__medisaMainSurfaceHydrators.settings(); });
+    },
+    getApi: function() { return window; }
+  });
 
   function isMedisaKayitModuleReady() {
     return window.__medisaKayitModuleReady === true
@@ -1436,29 +1586,10 @@ window.ensureMedisaVehicleNotificationDomainReady = function() {
   }
 
   window.ensureMedisaKayitModuleReady = function() {
-    if (isMedisaKayitModuleReady()) return Promise.resolve();
-
-    var inflightKey = 'medisa:kayit-module-ready';
-    var inflight = window.__medisaModuleInflight;
-    if (inflight[inflightKey]) return inflight[inflightKey];
-
-    var promise = Promise.resolve()
-      .then(function() {
-        if (typeof window.ensureMedisaVehicleNotificationDomainReady !== 'function') {
-          throw new Error('vehicle notification domain loader hazir degil');
-        }
-        return window.ensureMedisaVehicleNotificationDomainReady();
-      })
-      .then(function() {
-        if (window.__medisaKayitModuleReady === true && window.__medisaKayitModuleVersion !== V.kayitJs) {
-          window.__medisaKayitModuleReady = false;
-        }
-        if (isMedisaKayitModuleReady()) return;
-        if (typeof window.loadAppModule !== 'function') {
-          throw new Error('Kayit module loader hazir degil');
-        }
-        return window.loadAppModule(KAYIT_JS, KAYIT_CSS);
-      })
+    if (window.__medisaKayitModuleReady === true && window.__medisaKayitModuleVersion !== V.kayitJs) {
+      window.__medisaKayitModuleReady = false;
+    }
+    return window.MedisaMainSurfaceRegistry.ensure('kayit')
       .then(function() {
         if (!isMedisaKayitModuleReady()) {
           throw new Error('Kayit modulu hazir duruma gelemedi');
@@ -1467,13 +1598,7 @@ window.ensureMedisaVehicleNotificationDomainReady = function() {
       .catch(function(err) {
         console.error('[Medisa] Kayit modulu hazirlanamadi:', err);
         throw err;
-      })
-      .finally(function() {
-        if (inflight[inflightKey] === promise) delete inflight[inflightKey];
       });
-
-    inflight[inflightKey] = promise;
-    return promise;
   };
 
   function lazyOpenVehicleModal() {
@@ -1487,27 +1612,6 @@ window.ensureMedisaVehicleNotificationDomainReady = function() {
     }).finally(function() {
       hideModuleSpinner();
     });
-  }
-
-  function preloadAyarlarModuleInIdleTime() {
-    if (ayarlarPreloadScheduled || window._ayarlarLoaded === true) return;
-    ayarlarPreloadScheduled = true;
-
-    var run = function() {
-      if (window._ayarlarLoaded === true || typeof window.loadAppModule !== 'function') return;
-      window.loadAppModule(AYARLAR_JS, AYARLAR_CSS).then(function() {
-        window._ayarlarLoaded = true;
-      }).catch(function(err) {
-        ayarlarPreloadScheduled = false;
-        console.warn('[Medisa] Ayarlar modulu arka planda yuklenemedi:', err);
-      });
-    };
-
-    if (typeof window.requestIdleCallback === 'function') {
-      window.requestIdleCallback(run, { timeout: 3500 });
-    } else {
-      setTimeout(run, 1200);
-    }
   }
 
   function showTasitlarModuleLoadError() {
@@ -1618,9 +1722,10 @@ window.ensureMedisaVehicleNotificationDomainReady = function() {
   window.openVehiclesView = lazyOpenVehiclesView;
 
   window.openReportsView = function() {
+    var args = arguments;
     showModuleSpinner();
-    window.loadAppModule(RAPORLAR_JS, RAPORLAR_CSS).then(function() {
-      if (typeof window.openReportsView === 'function') window.openReportsView();
+    window.MedisaMainSurfaceRegistry.ensure('reports').then(function(api) {
+      if (typeof api.openReportsView === 'function') api.openReportsView.apply(api, args);
     }).catch(function(err) {
       console.error('[Medisa] Raporlar modülü yüklenemedi:', err);
     }).finally(function() {
@@ -1634,10 +1739,10 @@ window.ensureMedisaVehicleNotificationDomainReady = function() {
     return function() {
       var args = arguments;
       showModuleSpinner();
-      window.loadAppModule(AYARLAR_JS, AYARLAR_CSS).then(function() {
+      window.MedisaMainSurfaceRegistry.ensure('settings').then(function(api) {
         window._ayarlarLoaded = true;
         try {
-          if (typeof window[fnName] === 'function') window[fnName].apply(window, args);
+          if (typeof api[fnName] === 'function') api[fnName].apply(api, args);
         } catch (e) {
           window.__medisaLogError('Ayarlar ekranı açılırken', e || new Error(String(e)));
         }
@@ -1659,12 +1764,6 @@ window.ensureMedisaVehicleNotificationDomainReady = function() {
   window.importData = wrapAyarlar('importData');
   window.tsbKaskoListesiIndir = wrapAyarlar('tsbKaskoListesiIndir');
   window.kaskoExcelYukle = wrapAyarlar('kaskoExcelYukle');
-
-  if (document.readyState === 'complete') {
-    preloadAyarlarModuleInIdleTime();
-  } else {
-    window.addEventListener('load', preloadAyarlarModuleInIdleTime, { once: true });
-  }
 
   window.closeVehiclesModal = function() {
     const modal = document.getElementById('vehicles-modal');

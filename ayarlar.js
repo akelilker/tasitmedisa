@@ -3,6 +3,351 @@
    ========================================= */
 
    (function () {
+  function hydrateMedisaSettingsMarkup() {
+    if (document.getElementById('branch-modal')) return;
+    var host = document.createElement('div');
+    host.setAttribute('data-medisa-surface', 'settings');
+    host.innerHTML = `<div id="branch-modal" class="modal-overlay ayarlar-modal-overlay">
+            <div class="modal-container">
+                <div class="modal-header">
+                    <h2>ŞUBE YÖNETİMİ</h2>
+                    <button class="modal-close" onclick="closeBranchManagement()">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="universal-back-bar universal-back-bar--standalone user-management-back-bar">
+                    <button type="button" class="universal-back-btn" aria-label="Ayarlar" onclick="medisaSettingsHistoryBack(event)">
+                        <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        <span class="universal-back-label">Ayarlar</span>
+                    </button>
+                    <div id="branch-management-search-wrap" class="user-management-search-wrap">
+                        <input
+                            type="search"
+                            id="branch-management-search-input"
+                            class="user-management-search-input"
+                            placeholder="Şube Ara"
+                            autocomplete="off"
+                            inputmode="search"
+                            onclick="event.stopPropagation()"
+                            oninput="if(window.setBranchManagementSearch) window.setBranchManagementSearch(this.value)">
+                        <button
+                            type="button"
+                            class="user-management-search-toggle"
+                            id="branch-management-search-toggle"
+                            aria-label="Şube Ara"
+                            aria-expanded="false"
+                            onclick="event.stopPropagation(); if(window.toggleBranchManagementSearch) window.toggleBranchManagementSearch();">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <circle cx="11" cy="11" r="7"></circle>
+                                <path d="M20 20l-3.5-3.5"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="u-p-16">
+                        <button onclick="openBranchFormModal()" class="settings-add-text-btn user-add-btn">+ Yeni Şube</button>
+                        <div id="branch-list"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="branch-form-modal" class="modal-overlay ayarlar-modal-overlay">
+            <div class="modal-container">
+                <div class="modal-header">
+                    <h2>YENİ ŞUBE EKLE</h2>
+                    <button class="modal-close" onclick="closeBranchFormModal()">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="universal-back-bar universal-back-bar--standalone">
+                    <button type="button" class="universal-back-btn" aria-label="Şube Yönetimi" onclick="medisaSettingsHistoryBack(event)">
+                        <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        <span class="universal-back-label">Şube Yönetimi</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="branch-form" class="u-p-16">
+                        <input type="hidden" id="branch-id">
+                        <div class="form-section">
+                            <label class="form-label" for="branch-name">Şube Adı</label>
+                            <input type="text" id="branch-name" class="form-input" placeholder="Şube Adı" required>
+                        </div>
+                        <div class="form-section">
+                            <label class="form-label" for="branch-city">Şehir</label>
+                            <input type="text" id="branch-city" class="form-input" placeholder="Şehir">
+                        </div>
+                        <div class="universal-btn-group">
+                            <button type="button" class="universal-btn-save" onclick="saveBranch()">Kaydet</button>
+                            <button type="button" class="settings-btn-delete u-hidden" onclick="deleteBranch(document.getElementById('branch-id').value)" id="branch-delete-btn">Sil</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div id="user-modal" class="modal-overlay ayarlar-modal-overlay">
+            <div class="modal-container">
+                <div class="modal-header">
+                    <h2>KULLANICI YÖNETİMİ</h2>
+                    <button class="modal-close" onclick="closeUserManagement()">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="universal-back-bar universal-back-bar--standalone user-management-back-bar">
+                    <button type="button" class="universal-back-btn" aria-label="Ayarlar" onclick="medisaSettingsHistoryBack(event)">
+                        <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        <span class="universal-back-label">Ayarlar</span>
+                    </button>
+                    <div id="user-management-search-wrap" class="user-management-search-wrap">
+                        <input
+                            type="search"
+                            id="user-management-search-input"
+                            class="user-management-search-input"
+                            placeholder="Kullanıcı Ara"
+                            autocomplete="off"
+                            inputmode="search"
+                            onclick="event.stopPropagation()"
+                            oninput="if(window.setUserManagementSearch) window.setUserManagementSearch(this.value)">
+                        <button
+                            type="button"
+                            class="user-management-search-toggle"
+                            id="user-management-search-toggle"
+                            aria-label="Kullanıcı Ara"
+                            aria-expanded="false"
+                            onclick="event.stopPropagation(); if(window.toggleUserManagementSearch) window.toggleUserManagementSearch();">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <circle cx="11" cy="11" r="7"></circle>
+                                <path d="M20 20l-3.5-3.5"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="user-management-list-inner">
+                        <button onclick="openUserFormModal()" class="settings-add-text-btn user-add-btn">+ Yeni Kullanıcı</button>
+                        <div id="user-list"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="user-form-modal" class="modal-overlay ayarlar-modal-overlay">
+            <div class="modal-container">
+                <div class="modal-header">
+                    <h2>YENİ KULLANICI EKLE</h2>
+                    <button class="modal-close" onclick="closeUserFormModal()">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="universal-back-bar universal-back-bar--standalone">
+                    <button type="button" class="universal-back-btn" aria-label="Kullanıcı Yönetimi" onclick="medisaSettingsHistoryBack(event)">
+                        <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        <span class="universal-back-label">Kullanıcı Yönetimi</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="user-form" class="user-form-inner">
+                        <input type="hidden" id="user-id">
+                        <div class="form-section">
+                            <label class="form-label" for="user-name">Ad Soyad</label>
+                            <input type="text" id="user-name" class="form-input" placeholder="Ad Soyad" required>
+                        </div>
+                        <div class="form-section" id="user-branch-single-wrap">
+                            <label class="form-label" for="user-branch">Şube</label>
+                            <select id="user-branch" class="form-input" required>
+                                <option value="">Şube Seçin</option>
+                            </select>
+                        </div>
+                        <div class="form-section u-hidden" id="user-branch-readonly-wrap">
+                            <label class="form-label" for="user-branch-readonly">Şube</label>
+                            <input type="text" id="user-branch-readonly" class="form-input user-form-locked-input" readonly tabindex="-1" aria-readonly="true">
+                        </div>
+                        <div class="form-section" id="user-role-wrap">
+                            <label class="form-label" for="user-role">Rol</label>
+                            <select id="user-role" class="form-input">
+                                <option value="kullanici" selected>Kullanıcı</option>
+                                <option value="sube_yonetici">Yönetici</option>
+                                <option value="genel_yonetici">Genel Yönetici</option>
+                            </select>
+                        </div>
+                        <div class="form-section">
+                            <label class="form-label" for="user-username">Kullanıcı Adı</label>
+                            <input type="text" id="user-username" class="form-input" placeholder="Kullanıcı Adı" autocomplete="username">
+                        </div>
+                        <div class="form-section">
+                            <label class="form-label" for="user-active">Kullanıcı Durumu</label>
+                            <select id="user-active" class="form-input">
+                                <option value="true" selected>Aktif</option>
+                                <option value="false">Pasif</option>
+                            </select>
+                        </div>
+                        <div class="form-section user-account-admin-actions u-hidden">
+                            <button type="button" id="user-password-reset-btn" class="settings-add-text-btn u-hidden" onclick="resetUserInitialPassword()">Başlangıç Parolasını Yenile</button>
+                            <button type="button" id="user-password-suggestion-reopen-btn" class="settings-add-text-btn u-hidden" onclick="reopenUserPasswordSuggestion()">İlk Giriş Uyarısını Yeniden Göster</button>
+                        </div>
+                        <div class="universal-btn-group">
+                            <button type="button" class="universal-btn-save" onclick="saveUser()">Kullanıcıyı Güncelle</button>
+                            <button type="button" class="universal-btn-cancel" onclick="closeUserFormModal()">İptal</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div id="user-credential-result-modal" class="modal-overlay ayarlar-modal-overlay">
+            <div class="modal-container">
+                <div class="modal-header">
+                    <h2>BAŞLANGIÇ PORTAL HESABI</h2>
+                    <button class="modal-close" onclick="closeUserCredentialResultModal()">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="user-credential-result">
+                        <p>Bu bilgi yalnız bir kez gösterilir. Güvenli biçimde kullanıcıya iletin.</p>
+                        <label class="form-label" for="user-credential-result-username">Kullanıcı Adı</label>
+                        <input type="text" id="user-credential-result-username" class="form-input" readonly>
+                        <label class="form-label" for="user-credential-result-password">Başlangıç Parolası</label>
+                        <input type="text" id="user-credential-result-password" class="form-input" readonly>
+                        <div class="universal-btn-group">
+                            <button type="button" class="universal-btn-save" onclick="copyUserCredentialResult()">Kopyala</button>
+                            <button type="button" class="universal-btn-cancel" onclick="closeUserCredentialResultModal()">Kapat</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="required-documents-modal" class="modal-overlay ayarlar-modal-overlay">
+            <div class="modal-container">
+                <div class="modal-header">
+                    <h2>ZORUNLU EVRAKLAR</h2>
+                    <button class="modal-close" onclick="closeZorunluEvraklar()">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="universal-back-bar universal-back-bar--standalone">
+                    <button type="button" class="universal-back-btn" aria-label="Ayarlar" onclick="medisaSettingsHistoryBack(event)">
+                        <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        <span class="universal-back-label">Ayarlar</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="u-p-16">
+                        <h3 class="required-k2-section-title">K2 Taşıt Belgesi</h3>
+                        <div class="form-section">
+                            <div id="required-k2-document-area" class="required-k2-document-area">
+                                <button type="button" id="required-k2-document-picker" class="required-k2-document-picker">
+                                    <span class="required-k2-document-picker-icon">+</span>
+                                    <span class="required-k2-document-picker-label">Dosya Seç</span>
+                                </button>
+                            </div>
+                            <div id="required-k2-document-status" class="settings-card-count">Yüklü Değil</div>
+                            <input type="file" id="required-k2-document-input" accept="application/pdf,.pdf" class="form-input">
+                        </div>
+                        <div class="form-section required-k2-date-section">
+                            <label class="form-label" for="required-k2-expiry-date">Geçerlilik Süresi</label>
+                            <input type="text" id="required-k2-expiry-date" class="form-input" placeholder="gg/aa/yyyy" inputmode="numeric">
+                        </div>
+                        <div class="universal-btn-group">
+                            <button type="button" class="universal-btn-save" onclick="saveZorunluEvraklarK2()">Kaydet</button>
+                            <button type="button" class="universal-btn-cancel" onclick="closeZorunluEvraklar()">Vazgeç</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="data-management-modal" class="modal-overlay ayarlar-modal-overlay">
+            <div class="modal-container">
+                <div class="modal-header">
+                    <h2>VERİ YEDEKLEME</h2>
+                    <button class="modal-close" onclick="closeDataManagement()">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="universal-back-bar universal-back-bar--standalone">
+                    <button type="button" class="universal-back-btn" aria-label="Ayarlar" onclick="medisaSettingsHistoryBack(event)">
+                        <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        <span class="universal-back-label">Ayarlar</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="data-management-actions">
+                        <button onclick="exportData()" class="data-management-text-btn">
+                            <img class="data-management-action-icon" src="icon/data-backup.svg?v=20260611.1" alt="" aria-hidden="true">
+                            <span>Yedek Al</span>
+                        </button>
+                        <button onclick="restoreFromLastBackup()" class="data-management-text-btn">
+                            <img class="data-management-action-icon" src="icon/data-restore.svg?v=20260611.1" alt="" aria-hidden="true">
+                            <span>Son Yedekten Geri Yükle</span>
+                        </button>
+                        <button onclick="importData()" class="data-management-text-btn">
+                            <img class="data-management-action-icon" src="icon/data-import.svg?v=20260611.1" alt="" aria-hidden="true">
+                            <span>Dosyadan Geri Yükle</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="dis-veri-panel" class="modal-overlay ayarlar-modal-overlay">
+            <div class="modal-container">
+                <div class="modal-header">
+                    <h2>Dış Veri Yönetimi</h2>
+                    <button class="modal-close" onclick="closeDisVeriPanel()">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="universal-back-bar universal-back-bar--standalone">
+                    <button type="button" class="universal-back-btn" aria-label="Ayarlar" onclick="medisaSettingsHistoryBack(event)">
+                        <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        <span class="universal-back-label">Ayarlar</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="data-management-actions">
+                        <button type="button" id="tsb-indir-btn" class="data-management-text-btn" onclick="tsbKaskoListesiIndir()">TSB Kasko Listesi İndir</button>
+                        <button type="button" id="kasko-yukle-btn" class="data-management-text-btn" onclick="kaskoExcelYukle()">Kasko Excel Yükle</button>
+                        <input type="file" id="kasko-excel-input" accept=".xlsx,.xls" style="display: none;" aria-label="Kasko Excel dosyası seç (.xlsx, .xls)">
+                    </div>
+                </div>
+            </div>
+        </div>`;
+    var fragment = document.createDocumentFragment();
+    while (host.firstChild) fragment.appendChild(host.firstChild);
+    document.body.appendChild(fragment);
+  }
+  window.__medisaMainSurfaceHydrators = window.__medisaMainSurfaceHydrators || {};
+  window.__medisaMainSurfaceHydrators['settings'] = hydrateMedisaSettingsMarkup;
+  hydrateMedisaSettingsMarkup();
+
   
     function $(sel, root = document) { return root.querySelector(sel); }
 

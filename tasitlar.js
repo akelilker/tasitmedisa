@@ -9,7 +9,160 @@
    ========================================= */
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20260717.3';
+  function hydrateMedisaVehiclesMarkup() {
+    if (document.getElementById('vehicles-modal')) return;
+    var host = document.createElement('div');
+    host.setAttribute('data-medisa-surface', 'vehicles');
+    host.innerHTML = `<div id="vehicles-modal" class="modal-overlay tasitlar-modal-overlay" onclick="if(event.target === this) { event.stopPropagation(); }">
+          <div class="modal-container" onclick="event.stopPropagation();">
+            <div class="modal-header">
+              <button type="button" class="modal-home" onclick="closeAllModals()" aria-label="Ana sayfaya dön" title="Ana sayfa">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 10v10h14V10"/></svg>
+              </button>
+              <h2 class="premium-title">TAŞITLAR</h2>
+              <button class="modal-close" onclick="event.stopPropagation(); event.preventDefault(); closeVehiclesModal(event); return false;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+            </div>
+            <div class="modal-body"><div id="vehicles-modal-content"></div></div>
+          </div>
+        </div>
+
+        <div id="vehicle-detail-modal" class="modal-overlay tasitlar-modal-overlay" onclick="if(event.target === this) { event.stopPropagation(); event.preventDefault(); return false; }">
+          <div class="modal-container" onclick="event.stopPropagation();">
+            <div class="modal-header">
+              <button type="button" class="modal-home" onclick="closeAllModals()" aria-label="Ana sayfaya dön" title="Ana sayfa">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 10v10h14V10"/></svg>
+              </button>
+              <h2 class="premium-title">TAŞIT DETAYI</h2>
+              <button class="modal-close" onclick="typeof backFromVehicleDetailModal==='function'?backFromVehicleDetailModal():closeAllModals();">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div id="vehicle-detail-content">
+                <div class="detail-plate-row">
+                  <div class="detail-plate"></div>
+                </div>
+                <div class="detail-brand-year-row">
+                  <div class="detail-brand-year"></div>
+                </div>
+                <div class="vehicle-detail-scroll-wrap">
+                  <div class="vehicle-detail-columns">
+                    <div class="vehicle-detail-left"></div>
+                    <div class="vehicle-detail-right"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="event-menu-modal" class="modal-overlay tasitlar-modal-overlay ayarlar-modal-overlay olay-ekle-modal" onclick="if(event.target === this) { event.stopPropagation(); event.preventDefault(); return false; }">
+            <div class="modal-container" onclick="event.stopPropagation();">
+                <div class="modal-header">
+                    <button type="button" class="modal-home" onclick="closeAllModals()" aria-label="Ana sayfaya dön" title="Ana sayfa">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 10v10h14V10"/></svg>
+                    </button>
+                    <h2>OLAY EKLE</h2>
+                    <button class="modal-close" onclick="event.stopPropagation(); backToVehicleDetail();">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="universal-back-bar universal-back-bar--context">
+                    <button type="button" class="universal-back-btn" onclick="event.stopPropagation(); backToVehicleDetail();" title="Taşıt Detay'a dön">
+                        <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        <span class="universal-back-label">Taşıt Detay</span>
+                    </button>
+                </div>
+                <div class="modal-body" onclick="event.stopPropagation();">
+                    <div id="event-menu-list" class="event-menu-list"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="dinamik-olay-modal" class="modal-overlay tasitlar-modal-overlay ayarlar-modal-overlay olay-ekle-modal" onclick="if(event.target === this) { event.stopPropagation(); event.preventDefault(); return false; }">
+            <div class="modal-container" onclick="event.stopPropagation();">
+                <div class="modal-header">
+                    <button type="button" class="modal-home" onclick="closeAllModals()" aria-label="Ana sayfaya dön" title="Ana sayfa">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 10v10h14V10"/></svg>
+                    </button>
+                    <h2 id="dinamik-olay-baslik">OLAY EKLE</h2>
+                    <button class="modal-close" onclick="event.stopPropagation(); backToVehicleDetail();">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="universal-back-bar universal-back-bar--context">
+                    <button type="button" class="universal-back-btn" aria-label="Olay menüsüne dön">
+                        <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        <span class="universal-back-label">Olay Ekle</span>
+                    </button>
+                </div>
+                <div class="modal-body" onclick="event.stopPropagation();">
+
+                    <div id="dinamik-olay-form-icerik"></div>
+
+                    <div class="universal-btn-group" id="ruhsat-btn-group" style="margin-top: 16px;">
+                        <button type="button" class="universal-btn-save" id="dinamik-olay-kaydet-btn">Kaydet</button>
+                        <button type="button" class="universal-btn-cancel">Vazgeç</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tarihçe modalı (bakım, kaza, km, diğer sekmeleri burada doldurulur) -->
+        <div id="vehicle-history-modal" class="modal-overlay tasitlar-modal-overlay ayarlar-modal-overlay" onclick="if(event.target === this) { event.stopPropagation(); }">
+            <div class="modal-container" onclick="event.stopPropagation();">
+                <div class="modal-header">
+                    <button type="button" class="modal-home" onclick="closeAllModals()" aria-label="Ana sayfaya dön" title="Ana sayfa">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 10v10h14V10"/></svg>
+                    </button>
+                    <h2>TAŞIT TARİHÇESİ</h2>
+                    <button class="modal-close" onclick="closeVehicleHistoryModal();">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="universal-back-bar history-back-nav" aria-label="Geri navigasyon">
+                    <button type="button" class="universal-back-btn" onclick="if(window.backFromHistoryToVehicleDetail) window.backFromHistoryToVehicleDetail(); event.stopPropagation();" title="Taşıt detayına dön" aria-label="Taşıt detayına dön">
+                        <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        <span class="universal-back-label">Taşıt Detay</span>
+                    </button>
+                </div>
+                <div class="history-vehicle-identity vehicle-context-row" aria-label="İşlem yapılan taşıt">
+                    <span class="vehicle-context-plate"></span>
+                    <span class="vehicle-context-separator" aria-hidden="true">•</span>
+                    <span class="vehicle-context-model"></span>
+                </div>
+                <div class="modal-body">
+                    <div id="history-tabs">
+                        <button type="button" class="history-tab active" data-tab="bakim" onclick="switchHistoryTab('bakim')" aria-label="Bakım geçmişi">Bakım</button>
+                        <button type="button" class="history-tab" data-tab="kaza" onclick="switchHistoryTab('kaza')" aria-label="Kaza geçmişi">Kaza</button>
+                        <button type="button" class="history-tab" data-tab="km" onclick="switchHistoryTab('km')" aria-label="Km güncelleme geçmişi">KM</button>
+                        <button type="button" class="history-tab" data-tab="diger" onclick="switchHistoryTab('diger')" aria-label="Diğer geçmiş kayıtları">Diğer</button>
+                    </div>
+                    <div id="history-content"></div>
+                </div>
+            </div>
+        </div>`;
+    var fragment = document.createDocumentFragment();
+    while (host.firstChild) fragment.appendChild(host.firstChild);
+    document.body.appendChild(fragment);
+  }
+  window.__medisaMainSurfaceHydrators = window.__medisaMainSurfaceHydrators || {};
+  window.__medisaMainSurfaceHydrators['vehicles'] = hydrateMedisaVehiclesMarkup;
+  hydrateMedisaVehiclesMarkup();
+
+  const MEDISA_TASITLAR_MODULE_VERSION = '20260717.4';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 

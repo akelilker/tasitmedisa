@@ -55,6 +55,12 @@ npm run tool:verify-visible-store
 echo "[quality-gate] Visible store measurement gates"
 npm run tool:measure-visible-store
 
+echo "[quality-gate] Main shell lazy markup invariants"
+npm run tool:verify-main-shell
+
+echo "[quality-gate] Main shell measurement gates"
+npm run tool:measure-main-shell
+
 echo "[quality-gate] Save wire delta invariants"
 npm run tool:verify-save-wire
 
