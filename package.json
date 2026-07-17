@@ -18,6 +18,8 @@
     "tool:verify-kasko-lookup": "php scripts/verify-medisa-kasko-lookup-invariants.php",
     "tool:verify-save-wire": "node scripts/run-medisa-save-wire-verify.js",
     "tool:measure-save-wire": "node scripts/measure-medisa-save-wire.js",
+    "tool:verify-vehicle-render": "node scripts/verify-medisa-vehicle-render-invariants.js",
+    "tool:measure-vehicle-render": "node scripts/measure-medisa-vehicle-render.js",
     "tool:import-gpt-xlsx": "node scripts/import_gpt_xlsx.mjs",
     "tool:build-deploy-zip": "powershell -ExecutionPolicy Bypass -File scripts/build-deploy-zip.ps1"
   },

@@ -37,6 +37,12 @@ npm run tool:verify-roles
 echo "[quality-gate] Vehicle save invariants"
 npm run tool:verify-vehicle-save
 
+echo "[quality-gate] Vehicle render invariants"
+npm run tool:verify-vehicle-render
+
+echo "[quality-gate] Vehicle render measurement gates"
+npm run tool:measure-vehicle-render
+
 echo "[quality-gate] Save wire delta invariants"
 npm run tool:verify-save-wire
 
