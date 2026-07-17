@@ -293,12 +293,17 @@ pwAssert(
     preg_match('/medisaBuildErrorResult\([^)]*initialPassword/', $adminCredentialPhp) !== 1
 );
 
-// 15) save.php _medisaUserPasswordChanges reddi korunur (400 kontrat ihlali)
+// 15) save wire _medisaUserPasswordChanges reddi korunur (400 kontrat ihlali)
 $savePhp = file_get_contents(__DIR__ . '/../save.php');
-pwAssert('15 save passwordChanges reddi var', strpos($savePhp, '_medisaUserPasswordChanges') !== false);
+$corePhp = file_get_contents(__DIR__ . '/../core.php');
+pwAssert(
+    '15 save passwordChanges reddi var',
+    strpos($savePhp, 'medisaSaveApplyIncomingData') !== false
+        && strpos($corePhp, '_medisaUserPasswordChanges') !== false
+);
 pwAssert(
     '15 save passwordChanges HTTP 400 kontrat',
-    preg_match('/_medisaUserPasswordChanges[\s\S]{0,240}medisaBuildErrorResult\([^,]+,\s*400\)/', $savePhp) === 1
+    preg_match('/_medisaUserPasswordChanges[\s\S]{0,240}medisaBuildErrorResult\([^,]+,\s*400\)/', $corePhp) === 1
 );
 
 echo "Summary: PASS={$passed} FAIL={$failed}\n";

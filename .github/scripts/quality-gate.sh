@@ -37,6 +37,12 @@ npm run tool:verify-roles
 echo "[quality-gate] Vehicle save invariants"
 npm run tool:verify-vehicle-save
 
+echo "[quality-gate] Save wire delta invariants"
+npm run tool:verify-save-wire
+
+echo "[quality-gate] Save wire payload measurement gates"
+npm run tool:measure-save-wire
+
 echo "[quality-gate] Sensitive data invariants"
 npm run tool:verify-sensitive-data
 

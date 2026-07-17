@@ -157,14 +157,18 @@ if (!/Yeni parolanız en az 6 karakter olmalıdır/.test(dataManagerJs)) {
 }
 
 const savePhp = fs.readFileSync(path.join(repoRoot, 'save.php'), 'utf8');
-if (!/medisaReconcileUserCredentials\s*\(/.test(savePhp)) {
-  fail('save.php credential reconciliation cagrisi eksik.');
+const saveWireOwnerPhp = fs.readFileSync(path.join(repoRoot, 'core.php'), 'utf8');
+if (!/medisaSaveApplyIncomingData\s*\(/.test(savePhp)) {
+  fail('save.php medisaSaveApplyIncomingData owner cagrisi eksik.');
 }
-if (!/_medisaUserPasswordChanges/.test(savePhp)) {
-  fail('save.php transient parola okuma eksik.');
+if (!/medisaReconcileUserCredentials\s*\(/.test(saveWireOwnerPhp)) {
+  fail('core.php credential reconciliation cagrisi eksik.');
 }
-if (!/Parola yönetimi yalnız güvenli başlangıç parolası yenileme/.test(savePhp)) {
-  fail('save.php eski manuel parola payloadunu reddetmiyor.');
+if (!/_medisaUserPasswordChanges/.test(saveWireOwnerPhp)) {
+  fail('core.php transient parola okuma eksik.');
+}
+if (!/Parola yönetimi yalnız güvenli başlangıç parolası yenileme/.test(saveWireOwnerPhp)) {
+  fail('core.php eski manuel parola payloadunu reddetmiyor.');
 }
 
 const adminCredentialPhp = fs.readFileSync(path.join(repoRoot, 'admin', 'user_portal_credentials.php'), 'utf8');

@@ -1827,6 +1827,143 @@ function medisaFilterReportDataForContext($data, $context) {
     return medisaFilterDataForContextWithUserPredicate($data, $context, 'medisaCanViewReportUserRecord');
 }
 
+/** save.php üzerinden persist edilen top-level koleksiyonlar (delta allowlist). */
+function medisaSavePersistCollectionAllowlist() {
+    return [
+        'tasitlar',
+        'kayitlar',
+        'branches',
+        'users',
+        'ayarlar',
+        'sifreler',
+        'notificationReadState',
+        'monthlyTodoWhatsAppLogs',
+    ];
+}
+
+function medisaSaveWireMetadataKeys() {
+    return ['_medisaWire', '_medisaMutation', '_medisaUserPasswordChanges'];
+}
+
+/**
+ * Wire modunu çözümler.
+ * @return array{ok:bool,mode?:string,isDelta?:bool,error?:array}
+ */
+function medisaSaveResolveWireMode(array $incomingData) {
+    $wire = is_array($incomingData['_medisaWire'] ?? null) ? $incomingData['_medisaWire'] : null;
+    if ($wire === null) {
+        return ['ok' => true, 'mode' => 'legacy-full', 'isDelta' => false];
+    }
+    if (!is_array($wire)) {
+        return ['ok' => false, 'error' => medisaBuildErrorResult('Geçersiz wire protokolü.', 400)];
+    }
+    $schemaVersion = $wire['schemaVersion'] ?? null;
+    $mode = isset($wire['mode']) ? (string)$wire['mode'] : '';
+    if ((int)$schemaVersion === 1 && $mode === 'delta-v1') {
+        return ['ok' => true, 'mode' => 'delta-v1', 'isDelta' => true];
+    }
+    return ['ok' => false, 'error' => medisaBuildErrorResult('Geçersiz wire protokolü.', 400)];
+}
+
+/**
+ * Delta-v1 katı kontrat doğrulaması. Başarısızsa error result döner; aksi halde true.
+ * @return true|array
+ */
+function medisaSaveValidateDeltaWireContract(array $incomingData, $mutationCollections, $changedVehicleIds, $deletedVehicleIds, $deletedVehicleVersions) {
+    if (!is_array($incomingData['_medisaMutation'] ?? null)) {
+        return medisaBuildErrorResult('Delta mutation zorunludur.', 400);
+    }
+    if (!is_array($mutationCollections)) {
+        return medisaBuildErrorResult('Delta collections zorunludur.', 400);
+    }
+
+    $rawCollections = $incomingData['_medisaMutation']['collections'] ?? null;
+    if (!is_array($rawCollections)) {
+        return medisaBuildErrorResult('Delta collections zorunludur.', 400);
+    }
+    if (count($rawCollections) !== count($mutationCollections)) {
+        return medisaBuildErrorResult('Delta collections yinelenemez.', 400);
+    }
+
+    $allowlist = medisaSavePersistCollectionAllowlist();
+    $allowLookup = array_fill_keys($allowlist, true);
+    foreach ($mutationCollections as $collectionName) {
+        if (!isset($allowLookup[$collectionName])) {
+            return medisaBuildErrorResult('Bilinmeyen koleksiyon.', 400);
+        }
+    }
+
+    $metadataLookup = array_fill_keys(medisaSaveWireMetadataKeys(), true);
+    $declaredLookup = array_fill_keys($mutationCollections, true);
+    foreach (array_keys($incomingData) as $topKey) {
+        $topKey = (string)$topKey;
+        if (isset($metadataLookup[$topKey])) {
+            continue;
+        }
+        if (!isset($allowLookup[$topKey])) {
+            return medisaBuildErrorResult('Bilinmeyen alan.', 400);
+        }
+        if (!isset($declaredLookup[$topKey])) {
+            return medisaBuildErrorResult('Koleksiyon listesi eşleşmiyor.', 400);
+        }
+    }
+    foreach ($mutationCollections as $collectionName) {
+        if (!array_key_exists($collectionName, $incomingData)) {
+            return medisaBuildErrorResult('Koleksiyon listesi eşleşmiyor.', 400);
+        }
+    }
+
+    $changedVehicleIds = is_array($changedVehicleIds) ? array_values($changedVehicleIds) : [];
+    $deletedVehicleIds = is_array($deletedVehicleIds) ? array_values($deletedVehicleIds) : [];
+    $deletedVehicleVersions = is_array($deletedVehicleVersions) ? $deletedVehicleVersions : [];
+    $changedLookup = array_fill_keys($changedVehicleIds, true);
+    foreach ($deletedVehicleIds as $deletedId) {
+        if (isset($changedLookup[$deletedId])) {
+            return medisaBuildErrorResult('Taşıt değişim/silme çakışması.', 400);
+        }
+        if (!array_key_exists($deletedId, $deletedVehicleVersions) || $deletedVehicleVersions[$deletedId] === null || $deletedVehicleVersions[$deletedId] === '') {
+            return medisaBuildErrorResult('Silinen taşıt sürümü zorunlu.', 400);
+        }
+    }
+
+    if (in_array('tasitlar', $mutationCollections, true)) {
+        if (!is_array($incomingData['tasitlar'] ?? null)) {
+            return medisaBuildErrorResult('Taşıt delta dizisi zorunlu.', 400);
+        }
+        $payloadVehicles = $incomingData['tasitlar'];
+        $payloadIds = [];
+        $payloadLookup = [];
+        foreach ($payloadVehicles as $vehicle) {
+            if (!is_array($vehicle)) {
+                return medisaBuildErrorResult('Geçersiz taşıt kaydı.', 400);
+            }
+            $id = isset($vehicle['id']) ? trim((string)$vehicle['id']) : '';
+            if ($id === '') {
+                return medisaBuildErrorResult('Taşıt kimliği zorunlu.', 400);
+            }
+            if (isset($payloadLookup[$id])) {
+                return medisaBuildErrorResult('Yinelenen taşıt kimliği.', 400);
+            }
+            $payloadLookup[$id] = true;
+            $payloadIds[] = $id;
+            if (!isset($changedLookup[$id])) {
+                return medisaBuildErrorResult('Bildirilmeyen taşıt.', 400);
+            }
+            if (!array_key_exists('version', $vehicle)) {
+                return medisaBuildErrorResult('Taşıt sürümü zorunlu.', 400);
+            }
+        }
+        sort($payloadIds);
+        $expectedChanged = $changedVehicleIds;
+        sort($expectedChanged);
+        if ($payloadIds !== $expectedChanged) {
+            return medisaBuildErrorResult('Taşıt delta kimlikleri eşleşmiyor.', 400);
+        }
+    }
+
+    return true;
+}
+
 function medisaSaveNormalizeCollection($value) {
     return is_array($value) ? array_values($value) : [];
 }
@@ -2044,6 +2181,347 @@ function medisaSaveBuildVehicleVersions($vehicles) {
         ];
     }
     return $vehicleVersions;
+}
+
+/**
+ * save.php mutation owner — auth sonrası incoming payload'ı mevcut data'ya uygular.
+ * @return array
+ */
+function medisaSaveApplyIncomingData(array $incomingData, array &$data, array $context) {
+    $wireResolved = medisaSaveResolveWireMode($incomingData);
+    if (($wireResolved['ok'] ?? false) !== true) {
+        return $wireResolved['error'];
+    }
+    $wireMode = (string)($wireResolved['mode'] ?? 'legacy-full');
+    $isDelta = ($wireResolved['isDelta'] ?? false) === true;
+
+    $incomingVehicles = medisaSaveNormalizeCollection($incomingData['tasitlar'] ?? []);
+    $incomingUsers = medisaSaveNormalizeCollection($incomingData['users'] ?? []);
+    $currentVehicles = medisaSaveNormalizeCollection($data['tasitlar'] ?? []);
+    $currentUsers = medisaSaveNormalizeCollection($data['users'] ?? []);
+    $currentVehiclesById = medisaSaveIndexVehiclesById($currentVehicles);
+    $passwordChanges = is_array($incomingData['_medisaUserPasswordChanges'] ?? null)
+        ? $incomingData['_medisaUserPasswordChanges']
+        : null;
+    if (is_array($passwordChanges) && count($passwordChanges) > 0) {
+        return medisaBuildErrorResult('Parola yönetimi yalnız güvenli başlangıç parolası yenileme işlemiyle yapılabilir.', 400);
+    }
+
+    $mutation = is_array($incomingData['_medisaMutation'] ?? null) ? $incomingData['_medisaMutation'] : null;
+    $mutationCollections = $mutation !== null && is_array($mutation['collections'] ?? null)
+        ? array_values(array_unique(array_map('strval', $mutation['collections'])))
+        : null;
+    $changedVehicleIds = $mutation !== null && is_array($mutation['changedVehicleIds'] ?? null)
+        ? array_values(array_unique(array_filter(array_map('strval', $mutation['changedVehicleIds']), 'strlen')))
+        : null;
+    $deletedVehicleIds = $mutation !== null && is_array($mutation['deletedVehicleIds'] ?? null)
+        ? array_values(array_unique(array_filter(array_map('strval', $mutation['deletedVehicleIds']), 'strlen')))
+        : [];
+    $deletedVehicleVersions = $mutation !== null && is_array($mutation['deletedVehicleVersions'] ?? null)
+        ? $mutation['deletedVehicleVersions']
+        : [];
+
+    if ($isDelta) {
+        $deltaValidation = medisaSaveValidateDeltaWireContract(
+            $incomingData,
+            $mutationCollections,
+            $changedVehicleIds,
+            $deletedVehicleIds,
+            $deletedVehicleVersions
+        );
+        if ($deltaValidation !== true) {
+            return $deltaValidation;
+        }
+    }
+
+    if ($mutationCollections !== null && (!empty($changedVehicleIds) || !empty($deletedVehicleIds)) && !in_array('tasitlar', $mutationCollections, true)) {
+        $mutationCollections[] = 'tasitlar';
+    }
+    $collectionChanged = function ($name) use ($mutationCollections) {
+        return $mutationCollections === null || in_array($name, $mutationCollections, true);
+    };
+    $usersCollectionChanged = $collectionChanged('users') || (is_array($passwordChanges) && count($passwordChanges) > 0);
+
+    $versionCheck = medisaSaveValidateIncomingVehicleVersions($incomingVehicles, $currentVehiclesById, $context, $changedVehicleIds);
+    if ($versionCheck !== true) {
+        return $versionCheck;
+    }
+    $savedVehicleIds = $changedVehicleIds;
+    if ($changedVehicleIds === null) {
+        $incomingVehicles = medisaSaveApplyVehicleVersions($incomingVehicles, $currentVehiclesById);
+    } else {
+        foreach ($deletedVehicleIds as $deletedVehicleId) {
+            $currentVehicle = $currentVehiclesById[$deletedVehicleId] ?? null;
+            if ($currentVehicle !== null && !medisaCanManageVehicleRecord($currentVehicle, $context)) {
+                return medisaBuildErrorResult('Bu taşıtı silme yetkiniz yok.', 403);
+            }
+            if ($currentVehicle !== null && (int)($deletedVehicleVersions[$deletedVehicleId] ?? 0) !== medisaGetVehicleVersion($currentVehicle)) {
+                return medisaBuildConflictResult('vehicle', $deletedVehicleId, 'Bu taşıt başka biri tarafından güncellendi. Güncel veriler yüklendi.');
+            }
+        }
+        $incomingVehicles = medisaSaveApplyVehicleMutation($currentVehicles, $incomingVehicles, $changedVehicleIds, $deletedVehicleIds);
+    }
+
+    if (($context['role'] ?? '') === 'genel_yonetici') {
+        if ($collectionChanged('tasitlar')) $data['tasitlar'] = $incomingVehicles;
+        if ($collectionChanged('kayitlar')) $data['kayitlar'] = is_array($incomingData['kayitlar'] ?? null) ? $incomingData['kayitlar'] : ($data['kayitlar'] ?? []);
+        if ($collectionChanged('branches')) $data['branches'] = medisaSaveNormalizeCollection($incomingData['branches'] ?? []);
+        if ($usersCollectionChanged) {
+            $reconciledUsers = medisaReconcileUserCredentials($currentUsers, $incomingUsers, $passwordChanges, $context);
+            if (($reconciledUsers['success'] ?? false) !== true) {
+                return $reconciledUsers;
+            }
+            $data['users'] = $reconciledUsers['users'];
+        }
+        if ($collectionChanged('ayarlar')) $data['ayarlar'] = is_array($incomingData['ayarlar'] ?? null) ? $incomingData['ayarlar'] : ($data['ayarlar'] ?? []);
+        if ($collectionChanged('sifreler')) $data['sifreler'] = medisaSaveNormalizeCollection($incomingData['sifreler'] ?? []);
+    } else {
+        $changedVehicleLookup = $changedVehicleIds === null ? null : array_fill_keys($changedVehicleIds, true);
+        $vehiclesToAuthorize = $changedVehicleLookup === null
+            ? $incomingVehicles
+            : array_values(array_filter($incomingVehicles, function ($vehicle) use ($changedVehicleLookup) {
+                return isset($changedVehicleLookup[(string)($vehicle['id'] ?? '')]);
+            }));
+        if (($collectionChanged('tasitlar') && !medisaSaveEnsureScopedVehiclesAreAllowed($vehiclesToAuthorize, $context)) || ($usersCollectionChanged && !medisaSaveEnsureScopedUsersAreAllowed($incomingUsers, $context))) {
+            return medisaBuildErrorResult('Kapsam dışı veri kaydı engellendi.', 403);
+        }
+
+        if ($collectionChanged('tasitlar')) {
+            $data['tasitlar'] = $changedVehicleIds === null
+                ? medisaSaveMergeScopedCollection(
+                    $currentVehicles,
+                    $incomingVehicles,
+                    function ($vehicle) use ($context) { return medisaCanManageVehicleRecord($vehicle, $context); },
+                    function ($vehicle) use ($context) { return medisaCanManageVehicleRecord($vehicle, $context); }
+                )
+                : $incomingVehicles;
+        }
+
+        if ($usersCollectionChanged) {
+            $reconciledUsers = medisaReconcileUserCredentials($currentUsers, $incomingUsers, $passwordChanges, $context);
+            if (($reconciledUsers['success'] ?? false) !== true) {
+                return $reconciledUsers;
+            }
+            $data['users'] = medisaSaveMergeScopedCollection(
+                $currentUsers,
+                $reconciledUsers['users'],
+                function ($user) use ($context) { return medisaCanManageUserRecord($user, $context); },
+                function ($user) use ($context) { return medisaCanManageUserRecord($user, $context); }
+            );
+        }
+    }
+
+    // Ham kasko listesi save_kasko.php üzerinden; eski istemci payload yoksayıldı (ana data.json şişmez).
+
+    if (!is_array($data['notificationReadState'] ?? null)) {
+        $data['notificationReadState'] = [];
+    }
+    $incomingReadState = $incomingData['notificationReadState'] ?? null;
+    if ($collectionChanged('notificationReadState') && is_array($incomingReadState)) {
+        $isListArray = function ($value) {
+            if (!is_array($value)) return false;
+            if (function_exists('array_is_list')) return array_is_list($value);
+            $expectedIndex = 0;
+            foreach ($value as $key => $_) {
+                if ($key !== $expectedIndex) return false;
+                $expectedIndex++;
+            }
+            return true;
+        };
+        $normalizeKeys = function ($keys) {
+            $clean = [];
+            if (!is_array($keys)) return $clean;
+            foreach ($keys as $key) {
+                $normalized = trim((string)$key);
+                if ($normalized === '') continue;
+                if (!in_array($normalized, $clean, true)) $clean[] = $normalized;
+            }
+            return array_slice($clean, -500);
+        };
+        $normalizeScopeState = function ($scopeState) use ($normalizeKeys, $isListArray) {
+            if ($isListArray($scopeState)) {
+                $readKeys = $normalizeKeys($scopeState);
+                return [
+                    'readKeys' => $readKeys,
+                    'dismissedKeys' => [],
+                    'firstSeenDates' => [],
+                    'migratedFromLocalStorage' => false,
+                    'updatedAt' => '',
+                ];
+            }
+            $scopeState = is_array($scopeState) ? $scopeState : [];
+            $dismissedKeys = $normalizeKeys($scopeState['dismissedKeys'] ?? []);
+            $readKeysRaw = is_array($scopeState['readKeys'] ?? null) ? $scopeState['readKeys'] : [];
+            $readKeys = $normalizeKeys(array_merge($readKeysRaw, $dismissedKeys));
+            return [
+                'readKeys' => $readKeys,
+                'dismissedKeys' => $dismissedKeys,
+                // İstemci prune key set authoritative; değer resolve save tarafında.
+                'firstSeenDates' => medisaNotificationNormalizeFirstSeenDates($scopeState['firstSeenDates'] ?? []),
+                'migratedFromLocalStorage' => ($scopeState['migratedFromLocalStorage'] ?? false) === true,
+                'updatedAt' => trim((string)($scopeState['updatedAt'] ?? '')),
+            ];
+        };
+        $mergeUnique = function ($a, $b) use ($normalizeKeys) {
+            return $normalizeKeys(array_merge(is_array($a) ? $a : [], is_array($b) ? $b : []));
+        };
+        $scopeDescriptor = medisaBuildNotificationScopeDescriptor($context);
+        $allowedScopeKeys = $scopeDescriptor['saveAllowedKeys'];
+        $canonicalKey = $scopeDescriptor['canonicalKey'];
+        $userLegacyKey = $scopeDescriptor['userLegacyKey'];
+        $canonicalIncomingPresent = array_key_exists($canonicalKey, $incomingReadState)
+            && is_array($incomingReadState[$canonicalKey]);
+
+        $serverLegacyRaw = ($userLegacyKey !== '' && array_key_exists($userLegacyKey, $data['notificationReadState']))
+            ? $data['notificationReadState'][$userLegacyKey]
+            : [];
+        $serverCanonicalRaw = array_key_exists($canonicalKey, $data['notificationReadState'])
+            ? $data['notificationReadState'][$canonicalKey]
+            : [];
+        $incomingLegacyRaw = ($userLegacyKey !== '' && array_key_exists($userLegacyKey, $incomingReadState))
+            ? $incomingReadState[$userLegacyKey]
+            : [];
+        $incomingCanonicalRaw = $canonicalIncomingPresent ? $incomingReadState[$canonicalKey] : [];
+
+        $firstSeenDecision = medisaNotificationResolveScopeFirstSeenSave(
+            is_array($serverLegacyRaw) ? $serverLegacyRaw : [],
+            is_array($serverCanonicalRaw) ? $serverCanonicalRaw : [],
+            is_array($incomingLegacyRaw) ? $incomingLegacyRaw : [],
+            is_array($incomingCanonicalRaw) ? $incomingCanonicalRaw : [],
+            $canonicalIncomingPresent
+        );
+
+        foreach ($allowedScopeKeys as $allowedScopeKey) {
+            if (!array_key_exists($allowedScopeKey, $incomingReadState) || !is_array($incomingReadState[$allowedScopeKey])) continue;
+            $serverScope = $normalizeScopeState($data['notificationReadState'][$allowedScopeKey] ?? []);
+            $clientScope = $normalizeScopeState($incomingReadState[$allowedScopeKey]);
+            $dismissedKeys = $mergeUnique($serverScope['dismissedKeys'], $clientScope['dismissedKeys']);
+            $readKeys = $mergeUnique(array_merge($serverScope['readKeys'], $clientScope['readKeys']), $dismissedKeys);
+
+            if ($allowedScopeKey === $canonicalKey) {
+                $firstSeenDates = $firstSeenDecision['canonicalFirstSeen'];
+            } elseif ($userLegacyKey !== '' && $allowedScopeKey === $userLegacyKey) {
+                // Canonical payload varken incoming legacy firstSeen yok sayılır / boş kalır.
+                $firstSeenDates = $firstSeenDecision['legacyFirstSeen'];
+            } else {
+                $firstSeenDates = medisaNotificationResolveFirstSeenDates(
+                    $serverScope['firstSeenDates'],
+                    $clientScope['firstSeenDates']
+                );
+            }
+
+            $migrated = $serverScope['migratedFromLocalStorage'] || $clientScope['migratedFromLocalStorage'];
+            $sameRead = medisaNotificationKeyListsEqual($readKeys, $serverScope['readKeys']);
+            $sameDismissed = medisaNotificationKeyListsEqual($dismissedKeys, $serverScope['dismissedKeys']);
+            $sameFirstSeen = medisaNotificationFirstSeenMapsEqual($firstSeenDates, $serverScope['firstSeenDates']);
+            $sameMigrated = $migrated === $serverScope['migratedFromLocalStorage'];
+
+            if ($sameRead && $sameDismissed && $sameFirstSeen && $sameMigrated) {
+                continue;
+            }
+            $data['notificationReadState'][$allowedScopeKey] = [
+                'readKeys' => $readKeys,
+                'dismissedKeys' => $dismissedKeys,
+                'firstSeenDates' => $firstSeenDates,
+                'migratedFromLocalStorage' => $migrated,
+                'updatedAt' => date('c'),
+            ];
+        }
+
+        // Canonical geldiyse legacy firstSeen owner boşaltımı (payload'da legacy olmasa da).
+        if ($canonicalIncomingPresent
+            && $firstSeenDecision['clearLegacyFirstSeen']
+            && $userLegacyKey !== ''
+            && array_key_exists($userLegacyKey, $data['notificationReadState'])
+            && is_array($data['notificationReadState'][$userLegacyKey])) {
+            $legacyExisting = $normalizeScopeState($data['notificationReadState'][$userLegacyKey]);
+            if (!medisaNotificationFirstSeenMapsEqual($legacyExisting['firstSeenDates'], [])) {
+                $data['notificationReadState'][$userLegacyKey] = [
+                    'readKeys' => $legacyExisting['readKeys'],
+                    'dismissedKeys' => $legacyExisting['dismissedKeys'],
+                    'firstSeenDates' => [],
+                    'migratedFromLocalStorage' => $legacyExisting['migratedFromLocalStorage'],
+                    'updatedAt' => date('c'),
+                ];
+            }
+        }
+    }
+
+    if (!is_array($data['monthlyTodoWhatsAppLogs'] ?? null)) {
+        $data['monthlyTodoWhatsAppLogs'] = [];
+    }
+    $incomingMonthlyWaLogs = $incomingData['monthlyTodoWhatsAppLogs'] ?? null;
+    if ($collectionChanged('monthlyTodoWhatsAppLogs') && is_array($incomingMonthlyWaLogs)) {
+        $validShortCodes = ['s', 'k', 'sk', 'm', 'e', 'me', 'km'];
+        $mergeMonthlyWaEntry = function ($serverEntry, $clientEntry) {
+            $serverEntry = is_array($serverEntry) ? $serverEntry : [];
+            $clientEntry = is_array($clientEntry) ? $clientEntry : [];
+            $sCount = (int)($serverEntry['openedCount'] ?? 0);
+            $cCount = (int)($clientEntry['openedCount'] ?? 0);
+            $openedCount = max($sCount, $cCount, 1);
+            $sFirst = trim((string)($serverEntry['firstOpenedAt'] ?? ''));
+            $cFirst = trim((string)($clientEntry['firstOpenedAt'] ?? ''));
+            $firstOpenedAt = ($sFirst !== '' && $cFirst !== '')
+                ? (strcmp($sFirst, $cFirst) <= 0 ? $sFirst : $cFirst)
+                : ($sFirst !== '' ? $sFirst : $cFirst);
+            $sLast = trim((string)($serverEntry['lastOpenedAt'] ?? ''));
+            $cLast = trim((string)($clientEntry['lastOpenedAt'] ?? ''));
+            $lastOpenedAt = ($sLast !== '' && $cLast !== '')
+                ? (strcmp($sLast, $cLast) >= 0 ? $sLast : $cLast)
+                : ($sLast !== '' ? $sLast : $cLast);
+            if ($lastOpenedAt === '') {
+                $lastOpenedAt = date('c');
+            }
+            return [
+                'vehicleId' => trim((string)($clientEntry['vehicleId'] ?? $serverEntry['vehicleId'] ?? '')),
+                'plate' => trim((string)($clientEntry['plate'] ?? $serverEntry['plate'] ?? '')),
+                'type' => trim((string)($clientEntry['type'] ?? $serverEntry['type'] ?? '')),
+                'field' => trim((string)($clientEntry['field'] ?? $serverEntry['field'] ?? '')),
+                'date' => trim((string)($clientEntry['date'] ?? $serverEntry['date'] ?? '')),
+                'firstOpenedAt' => $firstOpenedAt !== '' ? $firstOpenedAt : date('c'),
+                'lastOpenedAt' => $lastOpenedAt,
+                'openedCount' => $openedCount,
+                'openedBy' => mb_substr(trim((string)($clientEntry['openedBy'] ?? $serverEntry['openedBy'] ?? '')), 0, 200, 'UTF-8'),
+            ];
+        };
+        foreach ($incomingMonthlyWaLogs as $rawKey => $entry) {
+            $key = trim((string)$rawKey);
+            if ($key === '' || !is_array($entry) || strlen($key) > 320) {
+                continue;
+            }
+            if (!preg_match('/^monthlyTodo:/', $key)) {
+                continue;
+            }
+            $typeCode = strtolower(trim((string)($entry['type'] ?? '')));
+            if ($typeCode !== '' && !in_array($typeCode, $validShortCodes, true) && !preg_match('/^[a-z0-9_+]{1,40}$/', $typeCode)) {
+                continue;
+            }
+            $entry['type'] = $typeCode;
+            $serverEntry = is_array($data['monthlyTodoWhatsAppLogs'][$key] ?? null) ? $data['monthlyTodoWhatsAppLogs'][$key] : [];
+            $data['monthlyTodoWhatsAppLogs'][$key] = $mergeMonthlyWaEntry($serverEntry, $entry);
+        }
+        if (count($data['monthlyTodoWhatsAppLogs']) > 4000) {
+            uasort($data['monthlyTodoWhatsAppLogs'], function ($a, $b) {
+                $la = is_array($a) ? trim((string)($a['lastOpenedAt'] ?? '')) : '';
+                $lb = is_array($b) ? trim((string)($b['lastOpenedAt'] ?? '')) : '';
+                return strcmp($lb, $la);
+            });
+            $data['monthlyTodoWhatsAppLogs'] = array_slice($data['monthlyTodoWhatsAppLogs'], 0, 3000, true);
+        }
+    }
+
+    $appliedCollections = $mutationCollections !== null
+        ? $mutationCollections
+        : medisaSavePersistCollectionAllowlist();
+
+    return [
+        'success' => true,
+        'wireMode' => $wireMode,
+        'appliedCollections' => $appliedCollections,
+        'vehicleVersions' => medisaSaveBuildVehicleVersions(array_values(array_filter($incomingVehicles, function ($vehicle) use ($savedVehicleIds) {
+            return $savedVehicleIds === null || in_array((string)($vehicle['id'] ?? ''), $savedVehicleIds, true);
+        }))),
+    ];
 }
 
 function medisaGetVehicleDocumentConfig(string $documentType): ?array {
