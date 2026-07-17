@@ -9,7 +9,7 @@
    ========================================= */
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20260712.6';
+  const MEDISA_TASITLAR_MODULE_VERSION = '20260717.2';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
@@ -789,7 +789,92 @@
   let isAutoSingleBranchVehiclesView = false;
 
   let lastVehiclesRenderSignature = '';
+  let lastVehiclesInputSignature = '';
+  let lastVehiclesRenderedCount = 0;
   let lastDashboardRenderSignature = '';
+  let vehicleRenderLookupCache = {
+    signature: '',
+    branchMap: Object.create(null),
+    userMap: Object.create(null)
+  };
+  let vehicleFitSignatures = {
+    dashboard: '',
+    card: '',
+    detail: ''
+  };
+  let lastVehicleResizeLayoutKey = '';
+
+  function isVehicleRenderPerfEnabled() {
+    try {
+      return /(?:\?|&)medisaPerf=1(?:&|$)/.test(String(window.location && window.location.search || ''))
+        || localStorage.getItem('medisa_perf_debug') === '1';
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function publishVehicleRenderMetrics(metrics) {
+    if (!isVehicleRenderPerfEnabled()) return;
+    window.__medisaVehicleRenderMetrics = Object.assign({
+      renderMs: 0,
+      htmlBuildMs: 0,
+      domWriteMs: 0,
+      fitMs: 0,
+      fitCalls: 0,
+      vehicleCount: 0,
+      viewMode: viewMode,
+      cacheHit: false,
+      domWrites: 0
+    }, metrics || {});
+  }
+
+  function getVehicleLayoutBucket() {
+    if (window.innerWidth <= 640) return 'mobile';
+    if (window.innerWidth <= 768) return 'tablet';
+    return 'desktop';
+  }
+
+  function buildVehicleLookupSignature(branches, users) {
+    let signature = 'b' + branches.length + ':';
+    for (let i = 0; i < branches.length; i++) {
+      const branch = branches[i] || {};
+      signature += String(branch.id ?? '') + '\u001f' + String(branch.name || '') + '\u001e';
+    }
+    signature += '|u' + users.length + ':';
+    for (let i = 0; i < users.length; i++) {
+      const user = users[i] || {};
+      signature += String(user.id ?? '') + '\u001f'
+        + String(user.name || user.isim || user.fullName || '') + '\u001e';
+    }
+    return signature;
+  }
+
+  function getVehicleRenderLookups() {
+    const branches = readBranches();
+    const users = readUsers();
+    const signature = buildVehicleLookupSignature(branches, users);
+    if (vehicleRenderLookupCache.signature === signature) {
+      return vehicleRenderLookupCache;
+    }
+
+    const branchMap = Object.create(null);
+    const userMap = Object.create(null);
+    // Duplicate ID parity: mevcut davranış gibi son görünür kayıt kazanır.
+    for (let i = 0; i < branches.length; i++) {
+      const branch = branches[i];
+      if (branch && branch.id != null) branchMap[String(branch.id)] = branch;
+    }
+    for (let i = 0; i < users.length; i++) {
+      const user = users[i];
+      if (user && user.id != null) userMap[String(user.id)] = user;
+    }
+    vehicleRenderLookupCache = {
+      signature: signature,
+      branchMap: branchMap,
+      userMap: userMap
+    };
+    return vehicleRenderLookupCache;
+  }
 
   window.medisaSetVehicleDetailReturnToMonthlyTodo = function(active) {
     returnToMonthlyTodoAfterVehicleDetail = active === true;
@@ -810,7 +895,13 @@
 
   function invalidateVehicleListRenderCache() {
     lastVehiclesRenderSignature = '';
+    lastVehiclesInputSignature = '';
+    lastVehiclesRenderedCount = 0;
     lastDashboardRenderSignature = '';
+    vehicleFitSignatures.dashboard = '';
+    vehicleFitSignatures.card = '';
+    vehicleFitSignatures.detail = '';
+    lastVehicleResizeLayoutKey = '';
     if (DOM && DOM.vehiclesModalContent) {
       delete DOM.vehiclesModalContent.dataset.renderScope;
       delete DOM.vehiclesModalContent.dataset.renderSignature;
@@ -821,37 +912,25 @@
     }
   }
 
-  function buildVehicleRenderSignature(vehicles, query, listDisplayOrder) {
-    const branches = window.appData?.branches || [];
-    const users = window.appData?.users || [];
-
-    const branchNameMap = {};
-    for (let i = 0; i < branches.length; i++) {
-      const b = branches[i];
-      branchNameMap[String(b.id)] = String(b.name || '');
-    }
-
-    const userNameMap = {};
-    for (let i = 0; i < users.length; i++) {
-      const u = users[i];
-      userNameMap[String(u.id)] = String(u.name || u.isim || u.fullName || '');
-    }
-
-    const compactVehicleState = vehicles.map(function(v) {
-      const branchName = branchNameMap[String(v.branchId)] || '';
-      const userName = userNameMap[String(v.assignedUserId)] || '';
-
+  function buildVehicleRenderSignature(viewModels, query, listDisplayOrder, lookupSignature) {
+    const compactVehicleState = viewModels.map(function(vm) {
       return [
-        String(v.id ?? ''),
-        String(v.version ?? ''),
-        String(v.guncelKm ?? v.km ?? ''),
-        String(v.branchId ?? ''),
-        branchName,
-        String(v.assignedUserId ?? ''),
-        userName,
-        String(v.tahsisKisi ?? ''),
-        String(v.transmission ?? ''),
-        String(v.satildiMi === true ? 1 : 0)
+        vm.id,
+        String(vm.vehicle.version ?? ''),
+        vm.plate,
+        vm.brandModel,
+        String(vm.vehicle.year ?? ''),
+        vm.kmLabel,
+        vm.vehicleTypeLabel,
+        vm.transmissionLabel,
+        String(vm.vehicle.branchId ?? ''),
+        vm.branchLabel,
+        String(vm.vehicle.assignedUserId ?? ''),
+        vm.userName,
+        String(vm.vehicle.tahsisKisi ?? ''),
+        vm.isArchive ? String(vm.vehicle.satisTarihi || '') : '',
+        vm.vehicleDateSeverityClass,
+        vm.isUnassigned ? '1' : '0'
       ].join(':');
     }).join('|');
 
@@ -864,9 +943,56 @@
       String(sortColumn || ''),
       String(sortDirection || ''),
       String(currentFilter || ''),
-      window.innerWidth <= 768 ? 'mobile' : 'desktop',
+      getVehicleLayoutBucket(),
       Array.isArray(listDisplayOrder) ? listDisplayOrder.join(',') : '',
+      String(lookupSignature || ''),
       compactVehicleState
+    ].join('__');
+  }
+
+  function buildVehicleRenderInputSignature(vehicles, query, listDisplayOrder, lookupSignature) {
+    let vehicleState = '';
+    for (let i = 0; i < vehicles.length; i++) {
+      const vehicle = vehicles[i] || {};
+      vehicleState += [
+        String(vehicle.id ?? ''),
+        String(vehicle.version ?? ''),
+        String(vehicle.plate ?? ''),
+        String(vehicle.brandModel ?? ''),
+        String(vehicle.year ?? ''),
+        String(vehicle.guncelKm ?? vehicle.km ?? ''),
+        String(vehicle.vehicleType ?? ''),
+        String(vehicle.transmission ?? ''),
+        String(vehicle.assignedUserId ?? ''),
+        String(vehicle.branchId ?? ''),
+        String(vehicle.tahsisKisi ?? ''),
+        vehicle.satildiMi === true ? '1' : '0',
+        vehicle.arsiv === true ? '1' : '0',
+        vehicle.pasif === true ? '1' : '0',
+        vehicle.aktif === false ? '0' : '1',
+        vehicle.aktifMi === false ? '0' : '1',
+        String(vehicle.durum ?? ''),
+        String(vehicle.satisTarihi ?? ''),
+        String(vehicle.sigortaDate ?? ''),
+        String(vehicle.kaskoDate ?? ''),
+        String(vehicle.muayeneDate ?? ''),
+        String(vehicle.egzozMuayeneDate ?? '')
+      ].join(':') + '|';
+    }
+    return [
+      String(currentView),
+      String(viewMode),
+      String(activeBranchId),
+      String(query || ''),
+      String(transmissionFilter || ''),
+      String(sortColumn || ''),
+      String(sortDirection || ''),
+      String(currentFilter || ''),
+      getVehicleLayoutBucket(),
+      Array.isArray(listDisplayOrder) ? listDisplayOrder.join(',') : '',
+      String(lookupSignature || ''),
+      new Date().toISOString().slice(0, 10),
+      vehicleState
     ].join('__');
   }
   
@@ -1042,55 +1168,69 @@
     });
   }
 
-  function fitVehicleTextBoxes(root) {
-    if (typeof window.medisaFitTextWithinBox !== 'function') return;
-    const scope = root || document;
-    const listFitStep = window.innerWidth <= 640 ? 0.5 : 1;
-    window.medisaFitTextWithinBox(scope, [
-      '.branch-name',
-      '.view-card .card-brand-model',
-      '.view-card .card-third-line',
-      '.view-list .list-cell.list-branch',
-      '#vehicle-detail-modal .detail-row-value'
-    ].join(', '), {
-      minFontSize: window.innerWidth <= 640 ? 8.5 : 9,
-      maxReduction: 7,
-      step: listFitStep
-    });
-
-    window.medisaFitTextWithinBox(scope, '.view-list .list-cell.list-brand', {
-      minFontSize: window.innerWidth <= 640 ? 11.5 : 12,
-      maxReduction: 2.5,
-      step: listFitStep
-    });
-
-    window.medisaFitTextWithinBox(scope, '.view-list .list-cell.list-plate .vehicle-plate-row-text', {
-      minFontSize: window.innerWidth <= 640 ? 10.5 : 10,
-      maxReduction: 4,
-      step: listFitStep
-    });
-
-    // Kullanıcı adında genel shrink agresif görünüyordu; burada sadece isim satırlarına
-    // daha yumuşak küçültme uygula ki kısa isimler normal boyutta kalsın.
-    window.medisaFitTextWithinBox(scope, [
-      '.view-list .list-cell.list-user .user-name-line1',
-      '.view-list .list-cell.list-user .user-name-line2'
-    ].join(', '), {
-      minFontSize: window.innerWidth <= 640 ? 8.5 : 9,
-      maxReduction: window.innerWidth <= 640 ? 4 : 4,
-      step: window.innerWidth <= 640 ? listFitStep : 0.5,
-      tolerance: 0
-    });
+  function getVehicleFitConfig(mode) {
+    if (mode === 'dashboard') {
+      return {
+        selector: '.branch-name',
+        options: { minFontSize: window.innerWidth <= 640 ? 8.5 : 9, maxReduction: 7, step: 0.5 }
+      };
+    }
+    if (mode === 'card') {
+      return {
+        selector: [
+          '.view-card .card-plate',
+          '.view-card .card-brand-model',
+          '.view-card .card-third-line'
+        ].join(', '),
+        options: { minFontSize: window.innerWidth <= 640 ? 9.5 : 10, maxReduction: 3, step: 0.5 }
+      };
+    }
+    if (mode === 'detail') {
+      return {
+        selector: '#vehicle-detail-modal .detail-row-value',
+        options: { minFontSize: window.innerWidth <= 640 ? 8.5 : 9, maxReduction: 7, step: 0.5 }
+      };
+    }
+    // Liste satırlarında CSS ellipsis / line-clamp owner; JS text-fit yok.
+    return null;
   }
 
-  let vehicleFitResizeTimer = null;
-  window.addEventListener('resize', function() {
-    clearTimeout(vehicleFitResizeTimer);
-    vehicleFitResizeTimer = setTimeout(function() {
-      fitVehicleTextBoxes(document.getElementById('vehicles-modal'));
-      fitVehicleTextBoxes(document.getElementById('vehicle-detail-modal'));
-    }, 120);
-  });
+  function buildVehicleFitSignature(root, mode, selector) {
+    const elements = root.querySelectorAll(selector);
+    let signature = mode + '|' + root.clientWidth + '|' + root.clientHeight + '|' + elements.length;
+    Array.prototype.forEach.call(elements, function(el) {
+      signature += '\u001e' + String(el.textContent || '') + '\u001f' + el.clientWidth + 'x' + el.clientHeight;
+    });
+    return signature;
+  }
+
+  function fitVehicleTextBoxes(root, mode) {
+    if (typeof window.medisaFitTextWithinBox !== 'function') return false;
+    const scope = root || document;
+    const fitMode = mode || (scope && scope.id === 'vehicle-detail-modal' ? 'detail' : viewMode);
+    const config = getVehicleFitConfig(fitMode);
+    if (!config || !scope || typeof scope.querySelectorAll !== 'function') return false;
+
+    const runFit = function() {
+      if (scope !== document && (!scope.getClientRects || scope.getClientRects().length === 0)) return;
+      const signature = buildVehicleFitSignature(scope, fitMode, config.selector);
+      if (vehicleFitSignatures[fitMode] === signature) return;
+      vehicleFitSignatures[fitMode] = signature;
+      if (fitMode === 'dashboard') {
+        lastVehicleResizeLayoutKey = getVehicleLayoutBucket() + '|' + scope.clientWidth;
+      }
+      window.medisaFitTextWithinBox(scope, config.selector, config.options);
+    };
+
+    if (document.fonts && document.fonts.ready && typeof document.fonts.ready.then === 'function') {
+      document.fonts.ready.then(function() {
+        requestAnimationFrame(runFit);
+      });
+    } else {
+      requestAnimationFrame(runFit);
+    }
+    return true;
+  }
 
   function toTitleCase(str) { return (typeof window.toTitleCase === 'function' ? window.toTitleCase(str) : str); }
   function formatBrandModel(str) { return (typeof window.formatBrandModel === 'function' ? window.formatBrandModel(str) : toTitleCase(str)); }
@@ -1176,8 +1316,8 @@
     }
   }
 
-  function buildVehicleUserNameHtml(rawName) {
-    const userName = formatAdSoyad(rawName || '-');
+  function buildVehicleUserNameHtml(rawName, alreadyFormatted) {
+    const userName = alreadyFormatted ? rawName : formatAdSoyad(rawName || '-');
     const cleanName = String(userName || '-').trim();
     if (!cleanName || cleanName === '-') return escapeHtml(cleanName || '-');
 
@@ -1191,9 +1331,9 @@
     return '<span class="user-name-line1" title="' + escapeHtml(givenNames) + '">' + escapeHtml(givenNames) + '</span>' +
       '<span class="user-name-line2" title="' + escapeHtml(surname) + '">' + escapeHtml(surname) + '</span>';
   }
-  function highlightVehicleSearchText(text, query, hitKind) {
+  function highlightVehicleSearchText(text, query, hitKind, normalizedQuery) {
     const t = String(text == null ? '' : text);
-    const q = window.MedisaVehicleSearch.normalizeText(query);
+    const q = normalizedQuery != null ? normalizedQuery : window.MedisaVehicleSearch.normalizeText(query);
     if (!q) return escapeHtml(t);
     const tl = t.toLocaleLowerCase('tr-TR');
     const ql = q.toLocaleLowerCase('tr-TR');
@@ -1215,19 +1355,20 @@
     return out;
   }
 
-  function maybeHighlightCell(displayText, query, hit, hitKind) {
-    const q = window.MedisaVehicleSearch.normalizeText(query);
+  function maybeHighlightCell(displayText, query, hit, hitKind, normalizedQuery) {
+    const q = normalizedQuery != null ? normalizedQuery : window.MedisaVehicleSearch.normalizeText(query);
     if (!hit || !q) return escapeHtml(String(displayText == null ? '' : displayText));
-    const hi = highlightVehicleSearchText(String(displayText), query, hitKind);
+    const hi = highlightVehicleSearchText(String(displayText), query, hitKind, q);
     if (hi.indexOf('<mark') === -1) return escapeHtml(String(displayText));
     return hi;
   }
 
   /** Plaka araması: harf boyaması yok — arka plan/çerçeve yok, yalnızca sol şerit. */
-  function wrapPlateSearchHighlight(displayText, query, plateHit) {
+  function wrapPlateSearchHighlight(displayText, query, plateHit, normalizedQuery) {
     const text = String(displayText == null ? '' : displayText);
     const escaped = escapeHtml(text);
-    if (!plateHit || !window.MedisaVehicleSearch.normalizeText(query)) return escaped;
+    const q = normalizedQuery != null ? normalizedQuery : window.MedisaVehicleSearch.normalizeText(query);
+    if (!plateHit || !q) return escaped;
     return (
       '<span class="vehicle-search-plate-cell">' +
       '<span class="vehicle-search-plate-accent" aria-hidden="true"></span>' +
@@ -1239,8 +1380,8 @@
   }
 
   /** Tarih uyarısı (sigorta/muayene vb.): plaka yanında ! — kırmızı veya turuncu. */
-  function buildPlateCellHtml(plate, query, plateHit, vehicleDateSeverityClass) {
-    const inner = wrapPlateSearchHighlight(formatPlaka(plate), query, plateHit);
+  function buildPlateCellHtml(plate, query, plateHit, vehicleDateSeverityClass, normalizedQuery) {
+    const inner = wrapPlateSearchHighlight(formatPlaka(plate), query, plateHit, normalizedQuery);
     const cls = vehicleDateSeverityClass || '';
     if (cls.indexOf('vehicle-date-warning-red') !== -1) {
       return (
@@ -1261,11 +1402,11 @@
     return inner;
   }
 
-  function buildVehicleUserNameHtmlWithSearch(rawName, query, userHit) {
-    const q = window.MedisaVehicleSearch.normalizeText(query);
-    if (!userHit || !q) return buildVehicleUserNameHtml(rawName);
+  function buildVehicleUserNameHtmlWithSearch(rawName, query, userHit, normalizedQuery, alreadyFormatted) {
+    const q = normalizedQuery != null ? normalizedQuery : window.MedisaVehicleSearch.normalizeText(query);
+    if (!userHit || !q) return buildVehicleUserNameHtml(rawName, alreadyFormatted);
 
-    const userName = formatAdSoyad(rawName || '-');
+    const userName = alreadyFormatted ? rawName : formatAdSoyad(rawName || '-');
     const cleanName = String(userName || '-').trim();
     if (!cleanName || cleanName === '-') return escapeHtml(cleanName || '-');
 
@@ -1275,7 +1416,7 @@
         '<span class="user-name-line1 user-name-single" title="' +
         escapeHtml(cleanName) +
         '">' +
-        highlightVehicleSearchText(cleanName, query, 'user') +
+        highlightVehicleSearchText(cleanName, query, 'user', q) +
         '</span>'
       );
     }
@@ -1286,12 +1427,12 @@
       '<span class="user-name-line1" title="' +
       escapeHtml(givenNames) +
       '">' +
-      highlightVehicleSearchText(givenNames, query, 'user') +
+      highlightVehicleSearchText(givenNames, query, 'user', q) +
       '</span>' +
       '<span class="user-name-line2" title="' +
       escapeHtml(surname) +
       '">' +
-      highlightVehicleSearchText(surname, query, 'user') +
+      highlightVehicleSearchText(surname, query, 'user', q) +
       '</span>'
     );
   }
@@ -1802,17 +1943,32 @@
     });
   }
 
-  // Mobil: pencere boyutu değişince başlık font-size tekrar hesaplansın (debounce)
+  // Aktif taşıt modalı resize owner: HTML rebuild yok; yalnız layout gerçekten değişince
+  // mobil header veya aktif dashboard/card text-fit güncellenir.
   if (modalContent && !modalContent._headerResizeBound) {
     modalContent._headerResizeBound = true;
     var onResize = window.debounce ? window.debounce(function () {
-      if (window.innerWidth <= 640 && modalContent.querySelector('.list-header-row')) {
+      const modal = DOM.vehiclesModal;
+      if (!modal || !modal.classList.contains('active') || modal.style.display === 'none') return;
+      const layoutKey = getVehicleLayoutBucket() + '|' + modalContent.clientWidth;
+      if (lastVehicleResizeLayoutKey === layoutKey) return;
+      lastVehicleResizeLayoutKey = layoutKey;
+      if (currentView === 'list' && viewMode === 'list' && window.innerWidth <= 640 && modalContent.querySelector('.list-header-row')) {
         applyMobileListHeaderFontSize(modalContent);
       }
+      if (currentView === 'dashboard') fitVehicleTextBoxes(modalContent, 'dashboard');
+      else if (viewMode === 'card') fitVehicleTextBoxes(modalContent, 'card');
     }, 150) : function () {
-      if (window.innerWidth <= 640 && modalContent.querySelector('.list-header-row')) {
+      const modal = DOM.vehiclesModal;
+      if (!modal || !modal.classList.contains('active') || modal.style.display === 'none') return;
+      const layoutKey = getVehicleLayoutBucket() + '|' + modalContent.clientWidth;
+      if (lastVehicleResizeLayoutKey === layoutKey) return;
+      lastVehicleResizeLayoutKey = layoutKey;
+      if (currentView === 'list' && viewMode === 'list' && window.innerWidth <= 640 && modalContent.querySelector('.list-header-row')) {
         applyMobileListHeaderFontSize(modalContent);
       }
+      if (currentView === 'dashboard') fitVehicleTextBoxes(modalContent, 'dashboard');
+      else if (viewMode === 'card') fitVehicleTextBoxes(modalContent, 'card');
     };
     window.addEventListener('resize', onResize);
   }
@@ -1928,7 +2084,7 @@
 
     // BEKLEMEDEN ANINDA MEVCUT VERİYLE EKRANI ÇİZ!
     // Modal her açıldığında önce şube seçim ekranı (dashboard) gösterilsin; filtre butonu sadece şube seçildikten sonra görünsün.
-    renderBranchDashboard(true);
+    renderBranchDashboard(false);
   };
 
   window.closeVehiclesModal = function(event) {
@@ -2058,6 +2214,7 @@
    * - 3+ kart: Mobil 4 kolon, Desktop 5 kolon
    */
   window.renderBranchDashboard = function(forceRender = false, options = {}) {
+    const renderStartedAt = performance.now();
     currentView = 'dashboard';
     activeBranchId = null;
     closeSearchBox(true);
@@ -2101,15 +2258,26 @@
       String(unassignedCount),
       branchSig
     ].join('__');
+    const dashboardLayoutKey = getVehicleLayoutBucket() + '|' + (modalContent ? modalContent.clientWidth : 0);
 
     if (
-      !forceRender &&
       modalContent &&
       modalContent.dataset.renderScope === 'dashboard' &&
       lastDashboardRenderSignature === renderSignature
     ) {
       syncVehiclesListModeClass(false);
-      fitVehicleTextBoxes(modalContent);
+      const layoutChanged = lastVehicleResizeLayoutKey !== dashboardLayoutKey;
+      if (layoutChanged) {
+        lastVehicleResizeLayoutKey = dashboardLayoutKey;
+        fitVehicleTextBoxes(modalContent, 'dashboard');
+      }
+      publishVehicleRenderMetrics({
+        vehicleCount: activeVehicles.length,
+        viewMode: 'dashboard',
+        cacheHit: true,
+        domWrites: 0,
+        fitCalls: layoutChanged ? 1 : 0
+      });
       return;
     }
 
@@ -2135,12 +2303,26 @@
     }
 
     html += '</div>';
+    const domWriteStartedAt = performance.now();
     modalContent.innerHTML = html;
+    const domWriteMs = performance.now() - domWriteStartedAt;
+    vehicleFitSignatures.dashboard = '';
     modalContent.dataset.renderScope = 'dashboard';
     modalContent.dataset.renderSignature = renderSignature;
     lastDashboardRenderSignature = renderSignature;
+    lastVehicleResizeLayoutKey = dashboardLayoutKey;
     syncVehiclesListModeClass(false);
-    fitVehicleTextBoxes(modalContent);
+    fitVehicleTextBoxes(modalContent, 'dashboard');
+    publishVehicleRenderMetrics({
+      renderMs: Number((performance.now() - renderStartedAt).toFixed(3)),
+      htmlBuildMs: Number((domWriteStartedAt - renderStartedAt).toFixed(3)),
+      domWriteMs: Number(domWriteMs.toFixed(3)),
+      vehicleCount: activeVehicles.length,
+      viewMode: 'dashboard',
+      cacheHit: false,
+      domWrites: 1,
+      fitCalls: 1
+    });
 
     /* Layout flex ile; kolon sayısı .branch-card width/flex ile belirlenir */
   };
@@ -2154,6 +2336,72 @@
         <div class="branch-count">${count} Taşıt</div>
       </div>
     `;
+  }
+
+  function buildVehicleRenderViewModels(vehicles, query, lookups) {
+    const normalizedQuery = window.MedisaVehicleSearch.normalizeText(query);
+    const branchMap = lookups.branchMap;
+    const userMap = lookups.userMap;
+    const isArchive = activeBranchId === '__archive__';
+    const formattedUserNameCache = Object.create(null);
+    function formatUserNameOnce(rawName) {
+      const cacheKey = String(rawName || '-');
+      if (!Object.prototype.hasOwnProperty.call(formattedUserNameCache, cacheKey)) {
+        formattedUserNameCache[cacheKey] = formatAdSoyad(cacheKey);
+      }
+      return formattedUserNameCache[cacheKey];
+    }
+    return vehicles.map(function(vehicle) {
+      const searchHits = window.MedisaVehicleSearch.getFieldHits(vehicle, normalizedQuery);
+      const plate = vehicle.plate || '-';
+      const brandModel = vehicle.brandModel || '-';
+      const formattedBrandModel = formatBrandModel(brandModel);
+      const assignedUser = vehicle.assignedUserId ? userMap[String(vehicle.assignedUserId)] : null;
+      const userNameRaw = (assignedUser && (assignedUser.name || assignedUser.isim || assignedUser.fullName))
+        || vehicle.tahsisKisi
+        || '-';
+      const userName = formatUserNameOnce(userNameRaw);
+      const branchName = (branchMap[String(vehicle.branchId)] && branchMap[String(vehicle.branchId)].name) || '';
+      const branchLabel = toTitleCase(branchName || 'Tahsis Edilmemiş');
+      const kmValue = vehicle.guncelKm || vehicle.km;
+      const vehicleTypeRaw = String(vehicle.vehicleType || '-').trim();
+      const vehicleTypeLabel = vehicleTypeRaw === '-'
+        ? '-'
+        : getVehicleTypeLabel(vehicleTypeRaw.toLowerCase());
+      let thirdLine = '';
+      if (isArchive) {
+        thirdLine = vehicle.satisTarihi ? 'Satış: ' + vehicle.satisTarihi : '';
+      } else if (activeBranchId === 'all') {
+        thirdLine = branchName;
+      } else {
+        thirdLine = vehicle.tahsisKisi || '';
+      }
+      const thirdLineDisplay = thirdLine
+        ? (isArchive ? toTitleCase(thirdLine) : (activeBranchId === 'all' ? toTitleCase(thirdLine) : formatUserNameOnce(thirdLine)))
+        : '';
+
+      return {
+        vehicle: vehicle,
+        id: vehicle.id != null ? String(vehicle.id) : '',
+        plate: plate,
+        formattedPlate: formatPlaka(plate),
+        brandModel: brandModel,
+        formattedBrandModel: formattedBrandModel,
+        kmLabel: kmValue ? formatNumber(kmValue) : '-',
+        vehicleTypeLabel: vehicleTypeLabel,
+        transmissionLabel: getTransmissionShortLabel(vehicle.transmission),
+        branchLabel: branchLabel,
+        assignedUser: assignedUser,
+        userName: userName,
+        userNameRaw: userNameRaw,
+        vehicleDateSeverityClass: getVehicleDateSeverityClass(vehicle),
+        searchHits: searchHits,
+        normalizedQuery: normalizedQuery,
+        isArchive: isArchive,
+        isUnassigned: !vehicle.branchId,
+        thirdLineDisplay: thirdLineDisplay
+      };
+    });
   }
 
   // --- 2. LİSTE RENDER (Şube Detayı) ---
@@ -2192,6 +2440,7 @@
 
   /** Taşıt listesini şube/arama/filtre/sıralamadan sonra kart veya liste olarak render eder. @param {string} [query] Opsiyonel metin araması */
   function renderVehicles(query = '') {
+    const renderStartedAt = performance.now();
     try {
       const listContainer = DOM.vehiclesModalContent;
       if (!listContainer) return;
@@ -2199,19 +2448,38 @@
       // Veri Çek
       let vehicles = readVehicles();
       if (!Array.isArray(vehicles)) return;
-      const branches = window.appData?.branches || [];
-      const users = window.appData?.users || [];
+      const lookups = getVehicleRenderLookups();
 
-      const branchMap = {};
-      for (let i = 0; i < branches.length; i++) {
-        const b = branches[i];
-        branchMap[String(b.id)] = b;
-      }
-
-      const userMap = {};
-      for (let i = 0; i < users.length; i++) {
-        const u = users[i];
-        userMap[String(u.id)] = u;
+      // Görünür kolon/layout state'i business filtrelerden bağımsızdır; hızlı
+      // input signature hit'inde format/filter/sort/view-model üretimine girilmez.
+      const safeColumnOrder = Array.isArray(vehicleColumnOrder) ? vehicleColumnOrder : ['year', 'plate', 'brand', 'km', 'type', 'transmission', 'user', 'branch'];
+      const displayColumnOrder = (activeBranchId === 'all' || activeBranchId === '__archive__') ? safeColumnOrder : safeColumnOrder.filter(function(k) { return k !== 'branch'; });
+      const isMobileList = window.innerWidth <= 768;
+      const isCompactHeader = window.innerWidth <= 640;
+      const listDisplayOrder = isMobileList
+        ? displayColumnOrder.filter(function(k) {
+            if (k === 'type' || k === 'transmission') return false;
+            if (activeBranchId === '__archive__' && k === 'user') return false;
+            return true;
+          })
+        : displayColumnOrder;
+      const inputSignature = buildVehicleRenderInputSignature(vehicles, query, listDisplayOrder, lookups.signature);
+      if (
+        listContainer.dataset.renderScope === 'vehicles' &&
+        lastVehiclesInputSignature === inputSignature
+      ) {
+        lastVehiclesInputSignature = inputSignature;
+        lastVehiclesRenderedCount = viewModels.length;
+        syncVehiclesListModeClass(viewMode === 'list');
+        publishVehicleRenderMetrics({
+          renderMs: Number((performance.now() - renderStartedAt).toFixed(3)),
+          vehicleCount: lastVehiclesRenderedCount,
+          viewMode: viewMode,
+          cacheHit: true,
+          domWrites: 0,
+          fitCalls: 0
+        });
+        return;
       }
 
     // 1. Arşiv veya Şube Filtresi
@@ -2241,56 +2509,50 @@
     }
 
       // 3. Sıralama
-      vehicles = applyFilter(vehicles);
+      vehicles = applyFilter(vehicles, lookups);
 
       // Kırmızı tarih uyarısı olan satırlar (sigorta/kasko/muayene/egzoz) listenin üstünde sabit
+      let viewModels = buildVehicleRenderViewModels(vehicles, query, lookups);
       (function pinCriticalDateWarningsFirst(list) {
         if (!Array.isArray(list) || list.length < 2) return;
-        function warnRank(v) {
-          var c = getVehicleDateSeverityClass(v);
+        function warnRank(vm) {
+          var c = vm.vehicleDateSeverityClass;
           if (c.indexOf('vehicle-date-warning-red') !== -1) return 0;
           return 1;
         }
-        var tagged = list.map(function(v, i) { return { v: v, i: i }; });
+        var tagged = list.map(function(vm, i) { return { vm: vm, i: i }; });
         tagged.sort(function(A, B) {
-          var ra = warnRank(A.v);
-          var rb = warnRank(B.v);
+          var ra = warnRank(A.vm);
+          var rb = warnRank(B.vm);
           if (ra !== rb) return ra - rb;
           return A.i - B.i;
         });
         for (var ti = 0; ti < tagged.length; ti++) {
-          list[ti] = tagged[ti].v;
+          list[ti] = tagged[ti].vm;
         }
-      })(vehicles);
+      })(viewModels);
 
-      // Şube seçiliyken liste görünümünde şube sütunu gösterilmez
-      const safeColumnOrder = Array.isArray(vehicleColumnOrder) ? vehicleColumnOrder : ['year', 'plate', 'brand', 'km', 'type', 'transmission', 'user', 'branch'];
-      const displayColumnOrder = (activeBranchId === 'all' || activeBranchId === '__archive__') ? safeColumnOrder : safeColumnOrder.filter(function(k) { return k !== 'branch'; });
-      const isMobileList = window.innerWidth <= 768;
-      const isCompactHeader = window.innerWidth <= 640; /* dar ekranda kısa başlık etiketleri */
-      // Mobil/tablet (≤768px): Taşıt Tipi + Şanzıman sütunlarını göstermiyoruz (yer kaplamasın)
-      // Arşiv + mobil: Kullanıcı sütunu gösterilmez (masaüstü arşiv listesi aynı kalır)
-      const listDisplayOrder = isMobileList
-        ? displayColumnOrder.filter(function(k) {
-            if (k === 'type' || k === 'transmission') return false;
-            if (activeBranchId === '__archive__' && k === 'user') return false;
-            return true;
-          })
-        : displayColumnOrder;
-
-      const renderSignature = buildVehicleRenderSignature(vehicles, query, listDisplayOrder);
+      const renderSignature = buildVehicleRenderSignature(viewModels, query, listDisplayOrder, lookups.signature);
       if (
         listContainer.dataset.renderScope === 'vehicles' &&
         lastVehiclesRenderSignature === renderSignature
       ) {
         syncVehiclesListModeClass(viewMode === 'list');
+        publishVehicleRenderMetrics({
+          renderMs: Number((performance.now() - renderStartedAt).toFixed(3)),
+          vehicleCount: viewModels.length,
+          viewMode: viewMode,
+          cacheHit: true,
+          domWrites: 0,
+          fitCalls: 0
+        });
         return;
       }
 
       cleanupVehicleColumnTouchDrag(listContainer);
 
       // 4. HTML – boş liste: liste görünümünde başlıkları koru, tek satırda mesaj göster
-      if (vehicles.length === 0) {
+      if (viewModels.length === 0) {
           const emptyMsg = (activeBranchId === '__archive__') ? 'Arşivde kayıt bulunamadı.' : 'Kayıt bulunamadı.';
           if (viewMode === 'list') {
             loadVehicleColumnOrder();
@@ -2309,12 +2571,16 @@
             listContainer.dataset.renderScope = 'vehicles';
             listContainer.dataset.renderSignature = renderSignature;
             lastVehiclesRenderSignature = renderSignature;
+            lastVehiclesInputSignature = inputSignature;
+            lastVehiclesRenderedCount = 0;
             syncVehiclesListModeClass(true);
           } else {
             listContainer.innerHTML = `<div style="text-align:center; padding:40px; color:#666">${emptyMsg}</div>`;
             listContainer.dataset.renderScope = 'vehicles';
             listContainer.dataset.renderSignature = renderSignature;
             lastVehiclesRenderSignature = renderSignature;
+            lastVehiclesInputSignature = inputSignature;
+            lastVehiclesRenderedCount = 0;
             syncVehiclesListModeClass(false);
           }
           return;
@@ -2362,47 +2628,41 @@
         html += '</div>';
         html += '<div class="vehicles-list-scroll">';
       }
-      html += `<div class="view-${viewMode}${extraClass}">` + vehicles.map(v => {
-        const searchHits = window.MedisaVehicleSearch.getFieldHits(v, query);
+      const htmlBuildStartedAt = performance.now();
+      html += `<div class="view-${viewMode}${extraClass}">` + viewModels.map(vm => {
+        const v = vm.vehicle;
+        const searchHits = vm.searchHits;
 
         // Plaka (1. satır - tek satır maksimum)
-        const plate = v.plate || '-';
+        const plate = vm.plate;
         
         // Marka/Model (2. satır - 2 satıra inebilir)
-        const brandModel = v.brandModel || '-';
+        const brandModel = vm.brandModel;
         
         // 3. satır: Arşivde satış tarihi, Tümü'de şube, şube görünümünde kullanıcı
-        const isArchive = (activeBranchId === '__archive__');
-        let thirdLine = '';
-        if (isArchive) {
-          thirdLine = v.satisTarihi ? `Satış: ${v.satisTarihi}` : '';
-        } else if (activeBranchId === 'all') {
-          thirdLine = branchMap[String(v.branchId)]?.name || '';
-        } else {
-          thirdLine = v.tahsisKisi || '';
-        }
-        const thirdLineDisplay = thirdLine ? (isArchive ? toTitleCase(thirdLine) : (activeBranchId === 'all' ? toTitleCase(thirdLine) : formatAdSoyad(thirdLine))) : '';
+        const isArchive = vm.isArchive;
+        const thirdLineDisplay = vm.thirdLineDisplay;
         const satildiCardSpan = isArchive ? ' <span style="color:#d40000;font-size:12px;">(SATILDI)</span>' : '';
         const satildiBrandLine = isArchive ? '<span class="archive-satildi-line">(SATILDI)</span>' : '';
 
         // Tahsis edilmemiş taşıtlar için kırmızı class (liste ve kartta her zaman)
-        const isUnassigned = !v.branchId;
+        const isUnassigned = vm.isUnassigned;
         const unassignedClass = isUnassigned ? ' unassigned-vehicle-card' : '';
-        const vehicleDateSeverityClass = getVehicleDateSeverityClass(v);
+        const vehicleDateSeverityClass = vm.vehicleDateSeverityClass;
 
         if (viewMode === 'card') {
             // Üçüncü satır boşsa div'i render etme
-            const plateCardHtml = buildPlateCellHtml(plate, query, searchHits.plate, vehicleDateSeverityClass);
-            const brandCardHtml = maybeHighlightCell(formatBrandModel(brandModel), query, searchHits.brand, 'brand');
+            const plateCardHtml = buildPlateCellHtml(plate, query, searchHits.plate, vehicleDateSeverityClass, vm.normalizedQuery);
+            const brandCardHtml = maybeHighlightCell(vm.formattedBrandModel, query, searchHits.brand, 'brand', vm.normalizedQuery);
             let thirdInner = escapeHtml(thirdLineDisplay);
             if (
               thirdLineDisplay &&
               searchHits.user &&
-              window.MedisaVehicleSearch.normalizeText(query) &&
+              vm.normalizedQuery &&
               !isArchive &&
               activeBranchId !== 'all'
             ) {
-              thirdInner = highlightVehicleSearchText(thirdLineDisplay, query, 'user');
+              thirdInner = highlightVehicleSearchText(thirdLineDisplay, query, 'user', vm.normalizedQuery);
             }
             const thirdLineHtml = thirdLineDisplay
               ? `<div class="card-third-line" title="${escapeHtml(thirdLineDisplay)}">${thirdInner}</div>`
@@ -2417,14 +2677,10 @@
             `;
         } else {
             // Liste görünümü: Sıralamaya göre dinamik
-            const kmValue = v.guncelKm || v.km;
-            const kmLabel = kmValue ? formatNumber(kmValue) : '-';
-            const vehicleTypeRaw = String(v.vehicleType || '-').trim();
-            const vehicleTypeLabel = vehicleTypeRaw === '-'
-              ? '-'
-              : getVehicleTypeLabel(vehicleTypeRaw.toLowerCase());
-            const transmissionLabel = getTransmissionShortLabel(v.transmission);
-            const branchLabel = toTitleCase(branchMap[String(v.branchId)]?.name || 'Tahsis Edilmemiş');
+            const kmLabel = vm.kmLabel;
+            const vehicleTypeLabel = vm.vehicleTypeLabel;
+            const transmissionLabel = vm.transmissionLabel;
+            const branchLabel = vm.branchLabel;
             
             let cellHtml = '';
             listDisplayOrder.forEach(columnKey => {
@@ -2432,24 +2688,24 @@
               let cellClass = '';
               switch(columnKey) {
                 case 'year':
-                  cellContent = maybeHighlightCell(v.year || '-', query, searchHits.year, 'year');
+                  cellContent = maybeHighlightCell(v.year || '-', query, searchHits.year, 'year', vm.normalizedQuery);
                   cellClass = 'list-year';
                   break;
                 case 'plate':
-                  cellContent = buildPlateCellHtml(plate, query, searchHits.plate, vehicleDateSeverityClass);
+                  cellContent = buildPlateCellHtml(plate, query, searchHits.plate, vehicleDateSeverityClass, vm.normalizedQuery);
                   cellClass = 'list-plate';
                   break;
                 case 'brand':
                   if (isArchive) {
                     cellContent =
                       '<span class="archive-brand-main" title="' +
-                      escapeHtml(formatBrandModel(brandModel)) +
+                      escapeHtml(vm.formattedBrandModel) +
                       '">' +
-                      maybeHighlightCell(formatBrandModel(brandModel), query, searchHits.brand, 'brand') +
+                      maybeHighlightCell(vm.formattedBrandModel, query, searchHits.brand, 'brand', vm.normalizedQuery) +
                       '</span>' +
                       satildiBrandLine;
                   } else {
-                    cellContent = maybeHighlightCell(formatBrandModel(brandModel), query, searchHits.brand, 'brand');
+                    cellContent = maybeHighlightCell(vm.formattedBrandModel, query, searchHits.brand, 'brand', vm.normalizedQuery);
                   }
                   cellClass = 'list-brand';
                   break;
@@ -2466,9 +2722,7 @@
                   cellClass = 'list-transmission';
                   break;
                 case 'user':
-                  const assignedUser = v.assignedUserId ? userMap[String(v.assignedUserId)] : null;
-                  const userNameRaw = assignedUser?.name || assignedUser?.isim || assignedUser?.fullName || v.tahsisKisi || '-';
-                  cellContent = buildVehicleUserNameHtmlWithSearch(userNameRaw, query, searchHits.user);
+                  cellContent = buildVehicleUserNameHtmlWithSearch(vm.userName, query, searchHits.user, vm.normalizedQuery, true);
                   cellClass = 'list-user';
                   break;
                 case 'branch':
@@ -2493,17 +2747,23 @@
 
       // PERFORMANS: Browser'ın yerleşik C++ HTML parser'ını doğrudan kullanıyoruz.
       // Fragment ve tek tek node taşıma işlemi (Layout Thrashing) iptal edildi.
+      const htmlBuildMs = performance.now() - htmlBuildStartedAt;
+      const domWriteStartedAt = performance.now();
       listContainer.innerHTML = html;
+      const domWriteMs = performance.now() - domWriteStartedAt;
+      if (viewMode === 'card') vehicleFitSignatures.card = '';
       listContainer.dataset.renderScope = 'vehicles';
       listContainer.dataset.renderSignature = renderSignature;
       lastVehiclesRenderSignature = renderSignature;
+      lastVehiclesInputSignature = inputSignature;
+      lastVehiclesRenderedCount = viewModels.length;
       syncVehiclesListModeClass(viewMode === 'list');
 
       // Taşıt kartları için grid'i dinamik yap (sadece card view'da)
       if (viewMode === 'card') {
           const gridEl = listContainer.querySelector('.view-card');
           if (gridEl) {
-              const totalCards = vehicles.length;
+              const totalCards = viewModels.length;
               const isMobile = window.innerWidth <= 640;
               let cols;
               if (totalCards === 1) {
@@ -2521,12 +2781,24 @@
       if (viewMode === 'list' && window.innerWidth <= 640) {
           applyMobileListHeaderFontSize(listContainer);
       }
-      fitVehicleTextBoxes(listContainer);
+      if (viewMode === 'card') {
+        fitVehicleTextBoxes(listContainer, 'card');
+      }
       
       // Mobil: sütun başlıklarına touch ile sürükle-bırak (yer değiştirme)
       if (viewMode === 'list') {
           attachVehicleColumnTouchListeners(listContainer);
       }
+      publishVehicleRenderMetrics({
+        renderMs: Number((performance.now() - renderStartedAt).toFixed(3)),
+        htmlBuildMs: Number(htmlBuildMs.toFixed(3)),
+        domWriteMs: Number(domWriteMs.toFixed(3)),
+        vehicleCount: viewModels.length,
+        viewMode: viewMode,
+        cacheHit: false,
+        domWrites: 1,
+        fitCalls: viewMode === 'card' ? 1 : 0
+      });
     } catch (error) {
       console.error('renderVehicles hatası:', error);
       const target = DOM.vehiclesModalContent;
@@ -2845,7 +3117,7 @@
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         applyVehicleDetailSubeShrink();
-        fitVehicleTextBoxes(modal);
+        fitVehicleTextBoxes(modal, 'detail');
       });
     });
     };
@@ -3072,7 +3344,20 @@
       }
   };
 
+  var vehicleSearchCompositionActive = false;
+  document.addEventListener('compositionstart', function(event) {
+      if (event.target && event.target.id === 'v-search-input') {
+          vehicleSearchCompositionActive = true;
+      }
+  }, true);
+  document.addEventListener('compositionend', function(event) {
+      if (!event.target || event.target.id !== 'v-search-input') return;
+      vehicleSearchCompositionActive = false;
+      window.handleSearch(event.target.value || '');
+  }, true);
+
   var handleSearchImpl = function(val) {
+      if (vehicleSearchCompositionActive) return;
       if (searchMode === 'local') {
           renderVehicles(val);
       } else {
@@ -3124,7 +3409,7 @@
     renderVehicles(getVSearchInput()?.value || '');
   };
 
-  function applyFilter(list) {
+  function applyFilter(list, lookups) {
       if (!sortColumn) {
           // Varsayılan sıralama yoksa orijinal sırayı koru
           return list;
@@ -3136,19 +3421,14 @@
       // şubeleri önden tek seferlik bir objeye (O(M)) mapliyoruz.
       const branchNameCache = {};
       if (sortColumn === 'branch') {
-          const branches = readBranches() || [];
-          for (let i = 0; i < branches.length; i++) {
-              branchNameCache[String(branches[i].id)] = (branches[i].name || '').toLowerCase();
+          const branchMap = lookups && lookups.branchMap ? lookups.branchMap : getVehicleRenderLookups().branchMap;
+          const branchIds = Object.keys(branchMap);
+          for (let i = 0; i < branchIds.length; i++) {
+              const branch = branchMap[branchIds[i]];
+              branchNameCache[branchIds[i]] = (branch.name || '').toLowerCase();
           }
       }
-      const userMapForSort = {};
-      if (sortColumn === 'user') {
-          const users = window.appData && Array.isArray(window.appData.users) ? window.appData.users : [];
-          for (let ui = 0; ui < users.length; ui++) {
-              const u = users[ui];
-              userMapForSort[String(u.id)] = u;
-          }
-      }
+      const userMapForSort = lookups && lookups.userMap ? lookups.userMap : getVehicleRenderLookups().userMap;
       const getBranchName = (branchId) => {
           if (!branchId) return 'zzz_tahsis_edilmemis';
           return branchNameCache[String(branchId)] || 'zzz_unknown';
@@ -3158,64 +3438,55 @@
           return (assignedUser && (assignedUser.name || assignedUser.isim || assignedUser.fullName)) || v.tahsisKisi || '-';
       };
 
-      sorted.sort((a, b) => {
-          let aVal, bVal;
-          
-          switch(sortColumn) {
-              case 'year':
-                  aVal = parseInt(a.year) || 0;
-                  bVal = parseInt(b.year) || 0;
-                  return (aVal - bVal) * dir;
-                  
-              case 'brand':
-                  aVal = (a.brandModel || '').toLowerCase();
-                  bVal = (b.brandModel || '').toLowerCase();
-                  return aVal.localeCompare(bVal) * dir;
-                  
-              case 'plate':
-                  aVal = (a.plate || '').toLowerCase();
-                  bVal = (b.plate || '').toLowerCase();
-                  return aVal.localeCompare(bVal) * dir;
-                  
-              case 'km':
-                  aVal = parseInt((a.guncelKm || a.km || '0').toString().replace(/\./g, '')) || 0;
-                  bVal = parseInt((b.guncelKm || b.km || '0').toString().replace(/\./g, '')) || 0;
-                  return (aVal - bVal) * dir;
-                  
-              case 'type':
-                  aVal = (a.vehicleType || '').toLowerCase();
-                  bVal = (b.vehicleType || '').toLowerCase();
-                  return aVal.localeCompare(bVal) * dir;
-
-              case 'transmission':
-                  aVal = getTransmissionLabel(a.transmission).toLowerCase();
-                  bVal = getTransmissionLabel(b.transmission).toLowerCase();
-                  return aVal.localeCompare(bVal) * dir;
-                  
-              case 'branch':
-                  aVal = getBranchName(a.branchId);
-                  bVal = getBranchName(b.branchId);
-                  return aVal.localeCompare(bVal) * dir;
-
-              case 'user': {
-                  const rawA = getUserNameRawForSort(a);
-                  const rawB = getUserNameRawForSort(b);
-                  const emptyA = !String(rawA).trim() || String(rawA).trim() === '-';
-                  const emptyB = !String(rawB).trim() || String(rawB).trim() === '-';
-                  if (emptyA && emptyB) return 0;
-                  if (emptyA) return 1;
-                  if (emptyB) return -1;
-                  const sortA = String(formatAdSoyad(rawA)).trim();
-                  const sortB = String(formatAdSoyad(rawB)).trim();
-                  return sortA.localeCompare(sortB, 'tr', { sensitivity: 'base' }) * dir;
-              }
-                  
-              default:
-                  return 0;
+      const decorated = sorted.map(function(vehicle, index) {
+          let value;
+          let empty = false;
+          switch (sortColumn) {
+            case 'year':
+              value = parseInt(vehicle.year) || 0;
+              break;
+            case 'brand':
+              value = (vehicle.brandModel || '').toLowerCase();
+              break;
+            case 'plate':
+              value = (vehicle.plate || '').toLowerCase();
+              break;
+            case 'km':
+              value = parseInt((vehicle.guncelKm || vehicle.km || '0').toString().replace(/\./g, '')) || 0;
+              break;
+            case 'type':
+              value = (vehicle.vehicleType || '').toLowerCase();
+              break;
+            case 'transmission':
+              value = getTransmissionLabel(vehicle.transmission).toLowerCase();
+              break;
+            case 'branch':
+              value = getBranchName(vehicle.branchId);
+              break;
+            case 'user': {
+              const raw = getUserNameRawForSort(vehicle);
+              empty = !String(raw).trim() || String(raw).trim() === '-';
+              value = empty ? '' : String(formatAdSoyad(raw)).trim();
+              break;
+            }
+            default:
+              value = '';
           }
+          return { vehicle: vehicle, value: value, empty: empty, index: index };
       });
-      
-      return sorted;
+
+      decorated.sort(function(a, b) {
+          if (sortColumn === 'user' && a.empty !== b.empty) return a.empty ? 1 : -1;
+          let compared;
+          if (typeof a.value === 'number' && typeof b.value === 'number') {
+            compared = a.value - b.value;
+          } else {
+            compared = String(a.value).localeCompare(String(b.value), sortColumn === 'user' ? 'tr' : undefined, { sensitivity: 'base' });
+          }
+          return compared === 0 ? a.index - b.index : compared * dir;
+      });
+
+      return decorated.map(function(item) { return item.vehicle; });
   }
 
   window.toggleViewMode = function() {
