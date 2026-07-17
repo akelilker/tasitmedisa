@@ -22,6 +22,8 @@
     "tool:measure-vehicle-render": "node scripts/measure-medisa-vehicle-render.js",
     "tool:verify-driver-lazy": "node scripts/verify-medisa-driver-lazy-invariants.js",
     "tool:measure-driver-boot": "node scripts/measure-medisa-driver-boot.js",
+    "tool:verify-visible-store": "node scripts/verify-medisa-visible-store-invariants.js",
+    "tool:measure-visible-store": "node scripts/measure-medisa-visible-store.js",
     "tool:import-gpt-xlsx": "node scripts/import_gpt_xlsx.mjs",
     "tool:build-deploy-zip": "powershell -ExecutionPolicy Bypass -File scripts/build-deploy-zip.ps1"
   },

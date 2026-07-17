@@ -2319,7 +2319,7 @@
    * Bildirimleri güncelle (muayene, sigorta, kasko + kullanıcı paneli işlemleri)
    */
   window.updateNotifications = function() {
-    if (!window.appData || !Array.isArray(window.appData.tasitlar)) {
+    if (!window.appData || typeof window.getMedisaVehicles !== 'function') {
       invalidateVehicleDateTasksCache();
       updateMonthlyTodoHeaderBadge();
       return;

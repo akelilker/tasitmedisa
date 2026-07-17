@@ -49,6 +49,12 @@ npm run tool:verify-driver-lazy
 echo "[quality-gate] Driver boot measurement gates"
 npm run tool:measure-driver-boot
 
+echo "[quality-gate] Visible store invariants"
+npm run tool:verify-visible-store
+
+echo "[quality-gate] Visible store measurement gates"
+npm run tool:measure-visible-store
+
 echo "[quality-gate] Save wire delta invariants"
 npm run tool:verify-save-wire
 

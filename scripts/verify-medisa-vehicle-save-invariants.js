@@ -13,13 +13,13 @@ const ROOT = path.join(__dirname, '..');
 
 const EXPECTED_DIRECT_DATAAPI_CALLERS = 0;
 const EXPECTED_KAYIT_JS = '20260712.3';
-const EXPECTED_TASITLAR_JS = '20260717.2';
-const EXPECTED_AYARLAR_JS = '20260716.4';
-const EXPECTED_SCRIPT_CORE_QUERY = '20260717.2';
+const EXPECTED_TASITLAR_JS = '20260717.3';
+const EXPECTED_AYARLAR_JS = '20260717.3';
+const EXPECTED_SCRIPT_CORE_QUERY = '20260717.3';
 const EXPECTED_VEHICLE_NOTIFICATION_DOMAIN = '20260712.1';
 const EXPECTED_DRIVER_SCRIPT_QUERY = '20260717.3';
-const EXPECTED_SW_CACHE = 'medisa-v2.240';
-const EXPECTED_NOTIFICATIONS = '20260716.1';
+const EXPECTED_SW_CACHE = 'medisa-v2.241';
+const EXPECTED_NOTIFICATIONS = '20260717.3';
 const EXPECTED_RAPORLAR = '20260712.1';
 const EXPECTED_KAYIT_CSS = '20260708.1';
 const EXPECTED_AYARLAR_CSS = '20260716.3';
@@ -705,6 +705,7 @@ function createBrowserContext(options) {
 }
 
 function loadDataServiceApi(ctx, saveImpl, loadImpl) {
+  loadDataManager(ctx);
   if (saveImpl) ctx.window.saveDataToServer = saveImpl;
   if (loadImpl) ctx.window.loadDataFromServer = loadImpl;
   ctx.loadScript('data-service.js');
@@ -832,12 +833,15 @@ async function runDataServiceTests() {
   await test('data-service saveVehiclesList save false', async function() {
     var ctx = createBrowserContext();
     var c = ctx.counters;
+    var previous = [{ id: 'keep', version: 1 }];
     var saveVehiclesList = loadDataServiceApi(ctx, async function() {
       c.saveDataToServer += 1;
       return false;
     }, async function() {
       c.loadDataFromServer += 1;
+      throw new Error('reload failed');
     });
+    ctx.window.appData.tasitlar = previous.slice();
 
     await assert.rejects(function() {
       return saveVehiclesList([{ id: 'v3', version: 1 }]);
@@ -847,6 +851,7 @@ async function runDataServiceTests() {
 
     assert.equal(c.saveDataToServer, 1);
     assert.equal(c.loadDataFromServer, 1);
+    assert.deepEqual(ctx.window.appData.tasitlar, previous);
     assert.equal(c.invalidateVehicleDateTasksCache, 0);
     assert.equal(c.updateNotifications, 0);
   });
@@ -870,8 +875,7 @@ async function runDataServiceTests() {
     });
 
     assert.equal(c.loadDataFromServer, 1);
-    assert.equal(c.conflictWarn, 1);
-    assert.equal(c.alert, 0);
+    assert.equal(c.alert, 1);
     assert.equal(c.invalidateVehicleDateTasksCache, 0);
     assert.equal(c.updateNotifications, 0);
   });
@@ -889,7 +893,7 @@ async function runDataServiceTests() {
     await assert.rejects(function() {
       return saveVehiclesList([{ id: 'v5', version: 1 }]);
     }, function(err) {
-      return err && err.message === 'Sunucuya kayıt yapılamadı.' && err.conflict !== true;
+      return err && err.message === 'NetworkError' && err.conflict !== true;
     });
 
     assert.equal(c.loadDataFromServer, 1);
@@ -900,32 +904,35 @@ async function runDataServiceTests() {
 }
 
 async function runWriteVehiclesTests() {
-  await test('writeVehicles dataApi success', async function() {
+  await test('writeVehicles saveDataToServer success', async function() {
     var ctx = createBrowserContext();
     loadDataManager(ctx);
     var c = ctx.counters;
-    ctx.window.dataApi = {
-      saveVehiclesList: async function() {
-        c.dataApiSave += 1;
-      },
+    ctx.window.dataApi = null;
+    ctx.window.saveDataToServer = async function() {
+      c.saveDataToServer += 1;
+      return true;
     };
 
     await ctx.window.writeVehicles([{ id: 'w1', version: 1 }]);
-    assert.equal(c.dataApiSave, 1);
-    assert.equal(c.saveDataToServer, 0);
+    assert.equal(c.saveDataToServer, 1);
     assert.equal(c.alert, 0);
   });
 
-  await test('writeVehicles dataApi conflict', async function() {
+  await test('writeVehicles saveDataToServer conflict', async function() {
     var ctx = createBrowserContext();
     loadDataManager(ctx);
     var c = ctx.counters;
     var conflictErr = new Error('Conflict');
     conflictErr.conflict = true;
-    ctx.window.dataApi = {
-      saveVehiclesList: async function() {
-        throw conflictErr;
-      },
+    ctx.window.dataApi = null;
+    ctx.window.saveDataToServer = async function() {
+      c.saveDataToServer += 1;
+      throw conflictErr;
+    };
+    ctx.window.loadDataFromServer = async function(force) {
+      c.loadDataFromServer += 1;
+      assert.equal(force, true);
     };
 
     await assert.rejects(function() {
@@ -934,18 +941,22 @@ async function runWriteVehiclesTests() {
       return err === conflictErr;
     });
     assert.equal(c.alert, 1);
-    assert.equal(c.loadDataFromServer, 0);
+    assert.equal(c.loadDataFromServer, 1);
   });
 
-  await test('writeVehicles dataApi non-conflict error', async function() {
+  await test('writeVehicles saveDataToServer non-conflict error', async function() {
     var ctx = createBrowserContext();
     loadDataManager(ctx);
     var c = ctx.counters;
     var errObj = new Error('save failed');
-    ctx.window.dataApi = {
-      saveVehiclesList: async function() {
-        throw errObj;
-      },
+    ctx.window.dataApi = null;
+    ctx.window.saveDataToServer = async function() {
+      c.saveDataToServer += 1;
+      throw errObj;
+    };
+    ctx.window.loadDataFromServer = async function() {
+      c.loadDataFromServer += 1;
+      return ctx.window.appData;
     };
 
     await assert.rejects(function() {
@@ -997,7 +1008,7 @@ async function runWriteVehiclesTests() {
     assert.equal(c.alert, 0);
   });
 
-  await test('writeVehicles dataApi success notifies exactly once', async function() {
+  await test('writeVehicles save success notifies exactly once', async function() {
     var ctx = createBrowserContext();
     var c = ctx.counters;
     loadDataManagerAndService(ctx, async function() {
@@ -1027,16 +1038,20 @@ async function runWriteVehiclesTests() {
     assert.equal(c.alert, 0);
   });
 
-  await test('writeVehicles dataApi conflict caller-owned', async function() {
+  await test('writeVehicles conflict caller-owned', async function() {
     var ctx = createBrowserContext();
     loadDataManager(ctx);
     var c = ctx.counters;
     var conflictErr = new Error('Conflict');
     conflictErr.conflict = true;
-    ctx.window.dataApi = {
-      saveVehiclesList: async function() {
-        throw conflictErr;
-      },
+    ctx.window.dataApi = null;
+    ctx.window.saveDataToServer = async function() {
+      c.saveDataToServer += 1;
+      throw conflictErr;
+    };
+    ctx.window.loadDataFromServer = async function(force) {
+      c.loadDataFromServer += 1;
+      assert.equal(force, true);
     };
 
     await assert.rejects(function() {
@@ -1045,8 +1060,8 @@ async function runWriteVehiclesTests() {
       return err === conflictErr;
     });
     assert.equal(c.alert, 0);
-    assert.equal(c.loadDataFromServer, 0);
-    assert.equal(c.saveDataToServer, 0);
+    assert.equal(c.loadDataFromServer, 1);
+    assert.equal(c.saveDataToServer, 1);
   });
 
   await test('writeVehicles fallback conflict caller-owned', async function() {
@@ -1373,9 +1388,12 @@ async function runBaselineSnapshotTests() {
 
 function runStaticInvariants() {
   var ds = read('data-service.js');
-  assert.match(ds, /function notifyVehicleListPersisted\(\)/);
-  assert.match(ds, /invalidateVehicleDateTasksCache/);
-  assert.match(ds, /updateNotifications/);
+  var dm = read('data-manager.js');
+  assert.match(dm, /function notifyWriteVehiclesFallbackPersisted\(\)/);
+  assert.match(dm, /invalidateVehicleDateTasksCache/);
+  assert.doesNotMatch(ds, /window\.appData\.tasitlar\s*=/);
+  assert.match(ds, /window\.writeVehicles/);
+  assert.doesNotMatch(ds, /function notifyVehicleListPersisted\(\)/);
 
   var kayit = read('kayit.js');
   var callers = findDirectDataApiCallersInKayit(kayit);
@@ -1553,8 +1571,10 @@ function runStaticInvariants() {
   assert.match(sw, new RegExp("CACHE_VERSION = '" + EXPECTED_SW_CACHE + "'"));
 
   var indexHtml = read('index.html');
-  assert.match(indexHtml, /data-manager\.js\?v=20260717\.1/);
-  assert.match(indexHtml, /data-service\.js\?v=20260716\.4/);
+  assert.match(indexHtml, /data-manager\.js\?v=20260717\.3/);
+  assert.match(indexHtml, /data-service\.js\?v=20260717\.3/);
+  assert.match(indexHtml, /script-core\.js\?v=20260717\.3/);
+  assert.doesNotMatch(indexHtml, /data-service\.js\?v=20260716\.4/);
   assert.doesNotMatch(indexHtml, /data-manager\.js\?v=20260716\.4/);
   assert.doesNotMatch(indexHtml, /data-manager\.js\?v=20260716\.1/);
   assert.doesNotMatch(indexHtml, /data-manager\.js\?v=20260712\.5/);
