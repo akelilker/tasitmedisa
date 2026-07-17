@@ -18,7 +18,7 @@ const EXPECTED_AYARLAR_JS = '20260716.4';
 const EXPECTED_SCRIPT_CORE_QUERY = '20260716.2';
 const EXPECTED_VEHICLE_NOTIFICATION_DOMAIN = '20260712.1';
 const EXPECTED_DRIVER_SCRIPT_QUERY = '20260716.1';
-const EXPECTED_SW_CACHE = 'medisa-v2.237';
+const EXPECTED_SW_CACHE = 'medisa-v2.238';
 const EXPECTED_NOTIFICATIONS = '20260716.1';
 const EXPECTED_RAPORLAR = '20260712.1';
 const EXPECTED_KAYIT_CSS = '20260708.1';
@@ -1133,11 +1133,14 @@ async function runSaveMutexTests() {
       return {
         ok: true,
         status: 200,
-        json: async function() { return { vehicleVersions: [] }; },
+        json: async function() { return { vehicleVersions: [{ id: 'v1', version: 2 + postCount }] }; },
       };
     };
 
+    ctx.window.appData.tasitlar[0].km = '101';
     var p1 = ctx.window.saveDataToServer();
+    await flushMicrotasks(5);
+    ctx.window.appData.tasitlar[0].notes = 'mutex-note';
     var p2 = ctx.window.saveDataToServer();
     await flushMicrotasks(5);
     assert.equal(ctx.counters.maxActiveFetches, 1);
@@ -1172,8 +1175,14 @@ async function runSaveMutexTests() {
     var p2 = ctx.window.saveDataToServer();
     await Promise.all([p1, p2]);
 
-    assert.equal(bodies.length, 2);
+    assert.ok(bodies.length >= 1, 'at least one delta save is posted');
+    assert.equal(bodies[0]._medisaWire.mode, 'delta-v1');
+    assert.equal(bodies[0].tasitlar.length, 1);
     assert.equal(bodies[0].tasitlar[0].km, '2222', 'queue mode: payload uses global state at mutex time, not call time');
+    // Birinci kayıt global state'i (2222) yazdıysa ikinci çağrı no-op olabilir.
+    if (bodies.length === 2) {
+      assert.equal(bodies[1].tasitlar[0].km, '2222');
+    }
     console.log('  queue mode: serialized global-state coalescing');
   });
 
@@ -1189,8 +1198,10 @@ async function runSaveMutexTests() {
       return { ok: true, status: 200, json: async function() { return { vehicleVersions: [] }; } };
     };
 
+    ctx.window.appData.tasitlar[0].km = '501';
     var first = await ctx.window.saveDataToServer();
     assert.equal(first, false);
+    ctx.window.appData.tasitlar[0].km = '502';
     var second = await ctx.window.saveDataToServer();
     assert.equal(second, true);
     assert.equal(attempt, 2);
@@ -1214,14 +1225,30 @@ async function runSaveMutexTests() {
       return { ok: true, status: 200, json: async function() { return { vehicleVersions: [] }; } };
     };
 
+    ctx.window.appData.tasitlar[0].km = '601';
     await assert.rejects(function() {
       return ctx.window.saveDataToServer();
     }, function(err) {
       return err && err.conflict === true;
     });
+    ctx.window.appData.tasitlar[0].km = '602';
     var second = await ctx.window.saveDataToServer();
     assert.equal(second, true);
     assert.equal(attempt, 2);
+  });
+
+  await test('saveDataToServer no-op skips network when mutation empty', async function() {
+    var ctx = createBrowserContext();
+    loadDataManager(ctx);
+    await bootstrapTrustedDataset(ctx);
+    var postCount = 0;
+    ctx._fetchImpl = async function() {
+      postCount += 1;
+      return { ok: true, status: 200, json: async function() { return { vehicleVersions: [] }; } };
+    };
+    var okSave = await ctx.window.saveDataToServer();
+    assert.equal(okSave, true);
+    assert.equal(postCount, 0);
   });
 }
 
@@ -1273,6 +1300,9 @@ async function runBaselineSnapshotTests() {
 
     assert.equal(bodies[0].tasitlar[0].km, '200');
     assert.equal(bodies[0].tasitlar[0].notes, '');
+    assert.equal(bodies[0]._medisaWire.mode, 'delta-v1');
+    assert.equal(bodies[0].users, undefined);
+    assert.equal(bodies[0].branches, undefined);
 
     var p2 = ctx.window.saveDataToServer();
     await Promise.all([p2]);
@@ -1281,6 +1311,7 @@ async function runBaselineSnapshotTests() {
     assert.equal(bodies[1]._medisaMutation.collections.indexOf('tasitlar'), 0);
     assert.equal(bodies[1]._medisaMutation.changedVehicleIds.indexOf('v1'), 0);
     assert.equal(bodies[1].tasitlar[0].notes, 'yeni not');
+    assert.equal(bodies[1]._medisaWire.mode, 'delta-v1');
     assert.equal(ctx.counters.maxActiveFetches, 1);
     console.log('  baseline snapshot: second save detects notes drift after first request snapshot');
   });
@@ -1325,6 +1356,8 @@ async function runBaselineSnapshotTests() {
     assert.equal(ctx.window.appData.users[0].name, 'Yeni Lokal');
 
     assert.equal(bodies[0].users[0].name, 'Gönderilen');
+    assert.equal(bodies[0]._medisaWire.mode, 'delta-v1');
+    assert.equal(bodies[0].tasitlar, undefined);
 
     var p2 = ctx.window.saveDataToServer();
     var save2Result = await p2;
@@ -1519,8 +1552,9 @@ function runStaticInvariants() {
   assert.match(sw, new RegExp("CACHE_VERSION = '" + EXPECTED_SW_CACHE + "'"));
 
   var indexHtml = read('index.html');
-  assert.match(indexHtml, /data-manager\.js\?v=20260716\.4/);
+  assert.match(indexHtml, /data-manager\.js\?v=20260717\.1/);
   assert.match(indexHtml, /data-service\.js\?v=20260716\.4/);
+  assert.doesNotMatch(indexHtml, /data-manager\.js\?v=20260716\.4/);
   assert.doesNotMatch(indexHtml, /data-manager\.js\?v=20260716\.1/);
   assert.doesNotMatch(indexHtml, /data-manager\.js\?v=20260712\.5/);
   assert.doesNotMatch(indexHtml, /data-manager\.js\?v=20260712\.4/);

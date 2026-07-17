@@ -445,7 +445,11 @@ assertTrue(strpos((string)$loadPhp, "mode === 'legacy'") !== false || strpos((st
 assertTrue(strpos((string)$dm, '__medisaKaskoLookupIndex') !== false, 'dm has lookup owner');
 
 // save payload exclusion still in data-manager
-assertTrue(strpos((string)$dm, 'delete payloadObj.kaskoDegerListesi') !== false, 'save excludes kaskoDegerListesi');
+assertTrue(
+    strpos((string)$dm, 'delete payloadObj.kaskoDegerListesi') !== false
+        || strpos((string)$dm, 'delete wirePayload.kaskoDegerListesi') !== false,
+    'save excludes kaskoDegerListesi'
+);
 assertTrue(strpos((string)$dm, 'rows: []') !== false, 'offline/normalize keeps rows empty');
 assertTrue(strpos((string)$dm, '__medisaKaskoLookupIndex') !== false && strpos(file_get_contents($ROOT . '/data-manager.js'), 'persistOfflineAppDataSnapshot') !== false, 'offline snapshot owner exists');
 

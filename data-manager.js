@@ -1017,11 +1017,38 @@ function medisaValuesEqual(a, b) {
     return JSON.stringify(a) === JSON.stringify(b);
 }
 
+/** save.php persist allowlist — arac_aylik_hareketler / duzeltme_talepleri driver|admin owner. */
+var MEDISA_SAVE_PERSIST_COLLECTIONS = [
+    'kayitlar',
+    'branches',
+    'users',
+    'ayarlar',
+    'sifreler',
+    'notificationReadState',
+    'monthlyTodoWhatsAppLogs'
+];
+
+function medisaFindDuplicateVehicleIds(vehicles) {
+    var seen = {};
+    var duplicates = [];
+    (Array.isArray(vehicles) ? vehicles : []).forEach(function(vehicle) {
+        if (!vehicle || vehicle.id == null) return;
+        var id = String(vehicle.id).trim();
+        if (!id) return;
+        if (seen[id]) {
+            if (duplicates.indexOf(id) === -1) duplicates.push(id);
+            return;
+        }
+        seen[id] = true;
+    });
+    return duplicates;
+}
+
 function buildSaveMutationIntent() {
     var current = window.appData || {};
     var baseline = serverDatasetBaseline || {};
     var collections = [];
-    ['kayitlar', 'branches', 'users', 'ayarlar', 'sifreler', 'notificationReadState', 'monthlyTodoWhatsAppLogs'].forEach(function(key) {
+    MEDISA_SAVE_PERSIST_COLLECTIONS.forEach(function(key) {
         if (!medisaValuesEqual(current[key], baseline[key])) collections.push(key);
     });
 
@@ -1056,6 +1083,123 @@ function buildSaveMutationIntent() {
         changedVehicleIds: changedVehicleIds,
         deletedVehicleIds: deletedVehicleIds,
         deletedVehicleVersions: deletedVehicleVersions
+    };
+}
+
+/**
+ * Delta-v1 save wire owner. Full appData kopyalamaz.
+ * @returns {{
+ *   ok: boolean,
+ *   reason?: string,
+ *   isNoOp?: boolean,
+ *   wirePayload?: object,
+ *   mutationIntent?: object,
+ *   baselinePatchSnapshot?: object,
+ *   wireMetrics?: object
+ * }}
+ */
+function buildSaveWirePayload(options) {
+    options = options || {};
+    var current = window.appData || {};
+    var duplicateIds = medisaFindDuplicateVehicleIds(current.tasitlar);
+    if (duplicateIds.length) {
+        return { ok: false, reason: 'duplicate_vehicle_ids', duplicateVehicleIds: duplicateIds };
+    }
+
+    var mutationIntent = buildSaveMutationIntent();
+    var passwordChanges = options.userPasswordChanges && typeof options.userPasswordChanges === 'object'
+        ? options.userPasswordChanges
+        : null;
+    var sanitizedPasswordChanges = null;
+    if (passwordChanges) {
+        sanitizedPasswordChanges = {};
+        Object.keys(passwordChanges).forEach(function(userId) {
+            var key = String(userId || '').trim();
+            if (!key) return;
+            var value = passwordChanges[userId];
+            if (value == null || typeof value === 'object') return;
+            sanitizedPasswordChanges[key] = String(value);
+        });
+        if (Object.keys(sanitizedPasswordChanges).length === 0) {
+            sanitizedPasswordChanges = null;
+        } else if ((mutationIntent.collections || []).indexOf('users') === -1) {
+            mutationIntent.collections = (mutationIntent.collections || []).concat(['users']);
+        }
+    }
+
+    var isNoOp = !(mutationIntent.collections || []).length
+        && !(mutationIntent.changedVehicleIds || []).length
+        && !(mutationIntent.deletedVehicleIds || []).length
+        && !sanitizedPasswordChanges;
+    if (isNoOp) {
+        return {
+            ok: true,
+            isNoOp: true,
+            mutationIntent: mutationIntent,
+            wirePayload: null,
+            baselinePatchSnapshot: null,
+            wireMetrics: { legacyBytes: 0, deltaBytes: 0, networkBytes: 0 }
+        };
+    }
+
+    var wirePayload = {
+        _medisaWire: {
+            schemaVersion: 1,
+            mode: 'delta-v1'
+        },
+        _medisaMutation: mutationIntent
+    };
+    if (sanitizedPasswordChanges) {
+        wirePayload._medisaUserPasswordChanges = sanitizedPasswordChanges;
+    }
+
+    var changedLookup = {};
+    (mutationIntent.changedVehicleIds || []).forEach(function(id) {
+        changedLookup[String(id)] = true;
+    });
+    var baselinePatchSnapshot = {};
+
+    (mutationIntent.collections || []).forEach(function(key) {
+        if (key === 'tasitlar') {
+            var currentVehicles = Array.isArray(current.tasitlar) ? current.tasitlar : [];
+            var changedVehicles = currentVehicles.filter(function(vehicle) {
+                return vehicle && vehicle.id != null && changedLookup[String(vehicle.id)];
+            }).map(function(vehicle) {
+                return cloneServerDatasetValue(vehicle);
+            });
+            wirePayload.tasitlar = changedVehicles;
+            baselinePatchSnapshot.tasitlar = cloneServerDatasetValue(changedVehicles);
+            return;
+        }
+        var cloned = cloneServerDatasetValue(current[key]);
+        wirePayload[key] = cloned;
+        baselinePatchSnapshot[key] = cloneServerDatasetValue(cloned);
+    });
+
+    delete wirePayload.kaskoDegerListesi;
+    delete wirePayload.__medisaKaskoLookupIndex;
+    delete wirePayload.__medisaKaskoLookupYears;
+    delete baselinePatchSnapshot.kaskoDegerListesi;
+    delete baselinePatchSnapshot.__medisaKaskoLookupIndex;
+    delete baselinePatchSnapshot.__medisaKaskoLookupYears;
+
+    var deltaBytes = 0;
+    try {
+        deltaBytes = JSON.stringify(wirePayload).length;
+    } catch (e) {
+        return { ok: false, reason: 'stringify_failed' };
+    }
+
+    return {
+        ok: true,
+        isNoOp: false,
+        wirePayload: wirePayload,
+        mutationIntent: mutationIntent,
+        baselinePatchSnapshot: baselinePatchSnapshot,
+        wireMetrics: {
+            deltaBytes: deltaBytes,
+            networkBytes: deltaBytes
+        }
     };
 }
 
@@ -1115,38 +1259,34 @@ async function saveDataToServer(options) {
     isSaving = true;
     syncDataLoadState();
     try {
-        var payloadObj = Object.assign({}, window.appData);
-        delete payloadObj.kaskoDegerListesi;
-        var mutationIntent = buildSaveMutationIntent();
-        var passwordChanges = options && options.userPasswordChanges && typeof options.userPasswordChanges === 'object'
-            ? options.userPasswordChanges
-            : null;
-        if (passwordChanges) {
-            var sanitizedPasswordChanges = {};
-            Object.keys(passwordChanges).forEach(function(userId) {
-                var key = String(userId || '').trim();
-                if (!key) return;
-                var value = passwordChanges[userId];
-                if (value == null || typeof value === 'object') return;
-                sanitizedPasswordChanges[key] = String(value);
-            });
-            if (Object.keys(sanitizedPasswordChanges).length > 0) {
-                payloadObj._medisaUserPasswordChanges = sanitizedPasswordChanges;
-                if ((mutationIntent.collections || []).indexOf('users') === -1) {
-                    mutationIntent.collections = (mutationIntent.collections || []).concat(['users']);
-                }
+        var built = buildSaveWirePayload(options || {});
+        if (!built || built.ok === false) {
+            if (built && built.reason === 'duplicate_vehicle_ids') {
+                console.warn('[Medisa] Yinelenen taşıt kimliği nedeniyle kayıt engellendi.');
             }
-        }
-        payloadObj._medisaMutation = mutationIntent;
-        var requestBody = JSON.stringify(payloadObj);
-        var requestSnapshot;
-        try {
-            requestSnapshot = JSON.parse(requestBody);
-        } catch (snapshotParseErr) {
-            console.warn('[Medisa] Kayıt snapshot doğrulanamadı:', snapshotParseErr && snapshotParseErr.message);
             return false;
         }
+        if (built.isNoOp) {
+            return true;
+        }
+
+        var payloadObj = built.wirePayload;
+        var mutationIntent = built.mutationIntent;
+        delete payloadObj.kaskoDegerListesi;
+        var requestBody = JSON.stringify(payloadObj);
+        var requestSnapshot = built.baselinePatchSnapshot
+            ? cloneServerDatasetValue(built.baselinePatchSnapshot)
+            : null;
+        if (!requestSnapshot) {
+            try {
+                requestSnapshot = JSON.parse(requestBody);
+            } catch (snapshotParseErr) {
+                console.warn('[Medisa] Kayıt snapshot doğrulanamadı:', snapshotParseErr && snapshotParseErr.message);
+                return false;
+            }
+        }
         delete requestSnapshot._medisaMutation;
+        delete requestSnapshot._medisaWire;
         delete requestSnapshot._medisaUserPasswordChanges;
 
         var response = await fetch(API_SAVE, {
@@ -1549,6 +1689,8 @@ window.normalizeUsers = normalizeUsers;
 window.getMedisaSession = function() { return window.medisaSession || getDefaultSession(); };
 window.loadDataFromServer = loadDataFromServer;
 window.saveDataToServer = saveDataToServer;
+window.buildSaveWirePayload = buildSaveWirePayload;
+window.buildSaveMutationIntent = buildSaveMutationIntent;
 window.buildAuthHeaders = buildAuthHeaders;
 
 var MAIN_APP_PASSWORD_SUGGESTION_URL = API_BASE + 'driver/driver_password_suggestion.php';
