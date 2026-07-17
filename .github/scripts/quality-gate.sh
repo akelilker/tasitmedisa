@@ -43,6 +43,12 @@ npm run tool:verify-vehicle-render
 echo "[quality-gate] Vehicle render measurement gates"
 npm run tool:measure-vehicle-render
 
+echo "[quality-gate] Driver lazy module invariants"
+npm run tool:verify-driver-lazy
+
+echo "[quality-gate] Driver boot measurement gates"
+npm run tool:measure-driver-boot
+
 echo "[quality-gate] Save wire delta invariants"
 npm run tool:verify-save-wire
 

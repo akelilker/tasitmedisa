@@ -31,7 +31,16 @@ $allowed = [
     'ayarlar.css',
 // Kullanıcı paneli
     'driver/driver-script.js',
+    'driver/driver-login.js',
+    'driver/driver-dashboard-core.js',
+    'driver/driver-feature-history.js',
+    'driver/driver-feature-documents.js',
+    'driver/driver-feature-feedback.js',
+    'driver/driver-feature-password.js',
+    'driver/driver-feature-actions.js',
     'driver/driver-style.css',
+    'driver/driver-shell.css',
+    'driver/driver-features.css',
     // Admin
     'admin/admin-report.js',
     'admin/admin-report.css',

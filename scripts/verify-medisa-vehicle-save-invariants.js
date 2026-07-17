@@ -17,8 +17,8 @@ const EXPECTED_TASITLAR_JS = '20260717.2';
 const EXPECTED_AYARLAR_JS = '20260716.4';
 const EXPECTED_SCRIPT_CORE_QUERY = '20260717.2';
 const EXPECTED_VEHICLE_NOTIFICATION_DOMAIN = '20260712.1';
-const EXPECTED_DRIVER_SCRIPT_QUERY = '20260716.1';
-const EXPECTED_SW_CACHE = 'medisa-v2.239';
+const EXPECTED_DRIVER_SCRIPT_QUERY = '20260717.3';
+const EXPECTED_SW_CACHE = 'medisa-v2.240';
 const EXPECTED_NOTIFICATIONS = '20260716.1';
 const EXPECTED_RAPORLAR = '20260712.1';
 const EXPECTED_KAYIT_CSS = '20260708.1';
@@ -1487,9 +1487,9 @@ function runStaticInvariants() {
   assert.doesNotMatch(yaziciJs, /'otomobil':\s*'Otomobil'/);
   assert.doesNotMatch(yaziciJs, /'on-tampon':\s*'Ön Tampon'/);
 
-  var driverScriptJs = read('driver/driver-script.js');
-  assert.match(driverScriptJs, /function getVehicleTypeRuleProfileDriver\s*\(/);
-  assert.match(driverScriptJs, /MedisaVehicleNotificationDomain\.getVehicleTypeRuleProfile/);
+  var driverDashboardCoreJs = read('driver/driver-dashboard-core.js');
+  assert.match(driverDashboardCoreJs, /function getVehicleTypeRuleProfileDriver\s*\(/);
+  assert.match(driverDashboardCoreJs, /MedisaVehicleNotificationDomain\.getVehicleTypeRuleProfile/);
 
   var driverEventPhp = read('driver/driver_event.php');
   assert.match(driverEventPhp, /medisaGetVehicleTypeRuleProfile\s*\(\s*\$vehicleType\s*\)/);
@@ -1536,11 +1536,12 @@ function runStaticInvariants() {
     assert.equal(phpOut, pair[1], 'PHP profile for ' + JSON.stringify(pair[0]));
   });
 
-  DRIVER_HTML_FILES.forEach(function(rel) {
-    var html = read(rel);
-    assert.match(html, new RegExp('vehicle-notification-domain\\.js\\?v=' + EXPECTED_VEHICLE_NOTIFICATION_DOMAIN));
-    assert.match(html, new RegExp('driver-script\\.js\\?v=' + EXPECTED_DRIVER_SCRIPT_QUERY));
-  });
+  var loginHtml = read('driver/index.html');
+  assert.doesNotMatch(loginHtml, /vehicle-notification-domain\.js/);
+  assert.match(loginHtml, new RegExp('driver-script\\.js\\?v=' + EXPECTED_DRIVER_SCRIPT_QUERY));
+  var dashboardHtml = read('driver/dashboard.html');
+  assert.match(dashboardHtml, new RegExp('vehicle-notification-domain\\.js\\?v=' + EXPECTED_VEHICLE_NOTIFICATION_DOMAIN));
+  assert.match(dashboardHtml, new RegExp('driver-script\\.js\\?v=' + EXPECTED_DRIVER_SCRIPT_QUERY));
 
   SCRIPT_CORE_HTML_FILES.forEach(function(rel) {
     var html = read(rel);
