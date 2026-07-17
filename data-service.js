@@ -1,7 +1,7 @@
 /* =========================================
    VERİ SERVİSİ - SERVER-FIRST MİMARİ
-   Tüm taşıt veri işlemleri bu API üzerinden yapılır.
-   Modüller doğrudan localStorage veya saveDataToServer kullanmaz.
+   Taşıt yazma owner'ı data-manager.writeVehicles.
+   Bu dosya kasko lookup + compatibility wrapper taşır.
    ========================================= */
 
 (function() {
@@ -37,7 +37,6 @@
         monthlyTodoWhatsAppLogs: {}
       };
     }
-    if (!Array.isArray(window.appData.tasitlar)) window.appData.tasitlar = [];
     if (!window.appData.kaskoDegerListesi || typeof window.appData.kaskoDegerListesi !== 'object') {
       window.appData.kaskoDegerListesi = { updatedAt: '', period: '', sourceFileName: '', rows: [] };
     }
@@ -47,43 +46,16 @@
     }
   }
 
-  function notifyVehicleListPersisted() {
-    if (typeof window.invalidateVehicleDateTasksCache === 'function') {
-      window.invalidateVehicleDateTasksCache();
-    }
-    if (typeof window.updateNotifications === 'function') {
-      window.updateNotifications();
-    }
-  }
-
   /**
-   * Taşıt listesini toplu günceller (sunucuya yazar). Başarı yalnızca sunucu OK döndüğünde.
-   * @param {Array} vehicles - Yeni taşıt listesi
-   * @returns {Promise<void>} Başarılıysa resolve, değilse reject
+   * Compatibility wrapper — canonical owner window.writeVehicles.
+   * @param {Array} vehicles
+   * @returns {Promise<void>}
    */
   async function saveVehiclesList(vehicles) {
-    ensureAppData();
-    window.appData.tasitlar = Array.isArray(vehicles) ? vehicles : [];
-    try {
-      const ok = await window.saveDataToServer();
-      if (ok !== true && typeof window.loadDataFromServer === 'function') {
-        await window.loadDataFromServer(true).catch(function() {});
-      }
-      if (ok !== true) return Promise.reject(new Error('Sunucuya kayıt yapılamadı.'));
-      notifyVehicleListPersisted();
-    } catch (e) {
-      if (!(e && e.conflict === true) && typeof window.loadDataFromServer === 'function') {
-        await window.loadDataFromServer(true).catch(function() {});
-      }
-      if (e && e.conflict === true) {
-        if (typeof window.loadDataFromServer === 'function') {
-          await window.loadDataFromServer(true).catch(function() {});
-        }
-        console.warn('[Medisa] Çakışma: Veri başka biri tarafından güncellenmiş. Veriler sunucudan yenilendi.');
-        return Promise.reject(e);
-      }
-      return Promise.reject(new Error('Sunucuya kayıt yapılamadı.'));
+    if (typeof window.writeVehicles !== 'function') {
+      return Promise.reject(new Error('[Medisa] writeVehicles owner hazır değil; kayıt yapılamadı.'));
     }
+    await window.writeVehicles(vehicles);
   }
 
   // Kasko kompakt lookup API'si (satır matrisi yok; O(1) index)
@@ -195,17 +167,34 @@
   function guncelleTumKaskoDegerleri() {
     return ensureKaskoListLoaded().then(function() {
       ensureAppData();
-      var vehicles = (typeof window.getMedisaVehicles === 'function' ? window.getMedisaVehicles() : null) || [];
-      if (!Array.isArray(vehicles) || vehicles.length === 0) return false;
+      var source = (typeof window.getMedisaVehicles === 'function' ? window.getMedisaVehicles() : null) || [];
+      if (!Array.isArray(source) || source.length === 0) return false;
 
       var tarih = new Date().toISOString();
-      vehicles.forEach(function(v) {
+      var changed = false;
+      var nextVehicles = source.map(function(v) {
+        if (!v || typeof v !== 'object') return v;
         var yearForKasko = v.year || v.modelYili || '';
-        v.kaskoDegeri = getKaskoDegeri(v.kaskoKodu, yearForKasko);
-        v.kaskoDegeriYuklemeTarihi = tarih;
+        var nextValue = getKaskoDegeri(v.kaskoKodu, yearForKasko);
+        if (String(v.kaskoDegeri || '') === String(nextValue) && String(v.kaskoDegeriYuklemeTarihi || '') === tarih) {
+          return v;
+        }
+        changed = true;
+        return Object.assign({}, v, {
+          kaskoDegeri: nextValue,
+          kaskoDegeriYuklemeTarihi: tarih
+        });
       });
 
-      return saveVehiclesList(vehicles).catch(function(err) {
+      if (!changed) return false;
+
+      if (typeof window.writeVehicles !== 'function') {
+        return Promise.reject(new Error('[Medisa] writeVehicles owner hazır değil; kayıt yapılamadı.'));
+      }
+
+      return window.writeVehicles(nextVehicles).then(function() {
+        return true;
+      }).catch(function(err) {
         if (err && err.conflict === true) {
           alert('Dikkat! Bu taşıt siz işlem yaparken başka biri tarafından güncellenmiş. Veri ezilmesini önlemek için lütfen sayfayı yenileyip güncel durumu kontrol edin.');
           if (typeof window.renderBranchDashboard === 'function') window.renderBranchDashboard();

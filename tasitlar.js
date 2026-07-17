@@ -9,7 +9,7 @@
    ========================================= */
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20260717.2';
+  const MEDISA_TASITLAR_MODULE_VERSION = '20260717.3';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
@@ -769,11 +769,14 @@
     if (typeof window.writeVehicles === 'function') {
       return window.writeVehicles(arr);
     }
-    if (window.dataApi && typeof window.dataApi.saveVehiclesList === 'function') {
-      return window.dataApi.saveVehiclesList(arr);
+    return Promise.reject(new Error('[Medisa] writeVehicles owner hazır değil; kayıt yapılamadı.'));
+  }
+
+  function readAppVehiclesSnapshot() {
+    if (typeof window.getMedisaCollectionSnapshot === 'function') {
+      return window.getMedisaCollectionSnapshot('vehicles');
     }
-    if (window.appData) window.appData.tasitlar = Array.isArray(arr) ? arr : [];
-    return Promise.resolve();
+    return readVehicles();
   }
 
   // Global State
@@ -5806,7 +5809,7 @@
   function findVehicleForDocumentUpload(vehicleId) {
     const rawId = String(vehicleId || '').trim();
     if (!rawId) return null;
-    var appTasitlar = window.appData && Array.isArray(window.appData.tasitlar) ? window.appData.tasitlar : [];
+    var appTasitlar = readAppVehiclesSnapshot();
     var vehicle = appTasitlar.find(function(v) { return String(v.id) === rawId; });
     if (vehicle) return vehicle;
     var vehicles = readVehicles();
@@ -6084,7 +6087,7 @@
     if (!rawId) return '';
     const dt = String(documentType || 'ruhsat').trim() || 'ruhsat';
     var verParam = '';
-    var appTasitlar = window.appData && Array.isArray(window.appData.tasitlar) ? window.appData.tasitlar : [];
+    var appTasitlar = readAppVehiclesSnapshot();
     var appV = appTasitlar.find(function(x) { return String(x.id) === rawId; });
     if (appV && appV.version != null) {
       verParam = String(Number(appV.version) || 1);
@@ -6127,7 +6130,7 @@
   function getVehicleRuhsatPath(vehicleId) {
     const rawId = String(vehicleId || window.currentDetailVehicleId || '').trim();
     if (!rawId) return '';
-    var appTasitlar = window.appData && Array.isArray(window.appData.tasitlar) ? window.appData.tasitlar : [];
+    var appTasitlar = readAppVehiclesSnapshot();
     var vehicle = appTasitlar.find(function(item) { return String(item.id) === rawId; });
     if (!vehicle) {
       const vehicles = readVehicles();
@@ -6162,7 +6165,7 @@
     const absoluteUrl = toAbsoluteRuhsatUrl(ruhsatUrl);
     const dt = String(documentType || 'ruhsat').trim() || 'ruhsat';
     if (!rawId || !absoluteUrl) return '';
-    var appTasitlar = window.appData && Array.isArray(window.appData.tasitlar) ? window.appData.tasitlar : [];
+    var appTasitlar = readAppVehiclesSnapshot();
     var fv = appTasitlar.find(function(x) { return String(x.id) === rawId; });
     var verSeg = fv && fv.version != null ? String(Number(fv.version) || 1) : '1';
     return rawId + '::' + dt + '::' + verSeg + '::' + absoluteUrl;
@@ -6291,7 +6294,7 @@
     const absoluteUrl = toAbsoluteRuhsatUrl(ruhsatUrl);
     const dt = String(documentType || 'ruhsat').trim() || 'ruhsat';
     if (!rawId || !absoluteUrl) return '';
-    var appTasitlar = window.appData && Array.isArray(window.appData.tasitlar) ? window.appData.tasitlar : [];
+    var appTasitlar = readAppVehiclesSnapshot();
     var fv = appTasitlar.find(function(x) { return String(x.id) === rawId; });
     var verSeg = fv && fv.version != null ? String(Number(fv.version) || 1) : '1';
     return rawId + '::' + dt + '::' + verSeg + '::' + absoluteUrl;
@@ -6575,7 +6578,7 @@
   function warmRuhsatPreview(vehicleId, ruhsatUrl, documentType) {
     const dt = documentType || 'ruhsat';
     const url = toAbsoluteRuhsatUrl(ruhsatUrl);
-    var appTasitlar = window.appData && Array.isArray(window.appData.tasitlar) ? window.appData.tasitlar : [];
+    var appTasitlar = readAppVehiclesSnapshot();
     var v = appTasitlar.find(function(x) { return String(x.id) === String(vehicleId); });
     if (!v) {
       v = readVehicles().find(function(x) { return String(x.id) === String(vehicleId); });
@@ -6621,7 +6624,7 @@
     const cfg = getVehicleDocumentConfig(dt);
     const url = toAbsoluteRuhsatUrl(ruhsatUrl);
     if (!url) return;
-    var appTasitlar = window.appData && Array.isArray(window.appData.tasitlar) ? window.appData.tasitlar : [];
+    var appTasitlar = readAppVehiclesSnapshot();
     var vehicle = appTasitlar.find(function(v) { return String(v.id) === String(vehicleId || window.currentDetailVehicleId); });
     if (!vehicle) {
       vehicle = readVehicles().find(function(v) { return String(v.id) === String(vehicleId || window.currentDetailVehicleId); });
@@ -6974,7 +6977,7 @@
     if (!content || !saveBtn) return false;
     const viewerOptions = options || {};
     const isIosPwaViewer = typeof window.isIOSPWA === 'function' && window.isIOSPWA();
-    var appTasitlar = window.appData && Array.isArray(window.appData.tasitlar) ? window.appData.tasitlar : [];
+    var appTasitlar = readAppVehiclesSnapshot();
     var vehicle = appTasitlar.find(function(v) { return String(v.id) === String(vehicleId || window.currentDetailVehicleId); });
     if (!vehicle) {
       vehicle = readVehicles().find(function(v) { return String(v.id) === String(vehicleId || window.currentDetailVehicleId); });
@@ -7791,9 +7794,10 @@
             k2State.updatedAt = new Date().toISOString();
           }
         } else {
-          const currentVehicles = window.appData?.tasitlar || [];
-          const v = currentVehicles.find(function(x) { return String(x.id) === String(vehicleId); });
-          if (v) {
+          const currentVehicles = readAppVehiclesSnapshot();
+          const vehicleIndex = currentVehicles.findIndex(function(x) { return String(x.id) === String(vehicleId); });
+          if (vehicleIndex >= 0) {
+            const v = Object.assign({}, currentVehicles[vehicleIndex]);
             if (newPath) {
               v[cfg.pathField] = newPath;
             }
@@ -7817,19 +7821,25 @@
               v.takografExpiryDate = data.takografExpiryDate;
               documentDateUpdated = true;
             }
-            if (documentDateUpdated && typeof window.updateNotifications === 'function') {
-              window.updateNotifications();
-            }
             if (data.documentEvent && typeof data.documentEvent === 'object') {
-              if (!Array.isArray(v.events)) v.events = [];
+              var nextEvents = Array.isArray(v.events) ? v.events.slice() : [];
               const documentEventId = String(data.documentEvent.id || '');
-              const hasDocumentEvent = documentEventId && v.events.some(function(ev) {
+              const hasDocumentEvent = documentEventId && nextEvents.some(function(ev) {
                 return String(ev && ev.id || '') === documentEventId;
               });
-              if (!hasDocumentEvent) v.events.unshift(data.documentEvent);
+              if (!hasDocumentEvent) nextEvents.unshift(data.documentEvent);
+              v.events = nextEvents;
             }
             if (data.vehicleVersion != null) {
               v.version = Number(data.vehicleVersion) || v.version;
+            }
+            var nextVehicles = currentVehicles.slice();
+            nextVehicles[vehicleIndex] = v;
+            if (typeof window.replaceMedisaVehicles === 'function') {
+              window.replaceMedisaVehicles(nextVehicles, { reason: 'document-upload-sync' });
+            }
+            if (documentDateUpdated && typeof window.updateNotifications === 'function') {
+              window.updateNotifications();
             }
           }
         }
@@ -7892,7 +7902,7 @@
     const vid = (vehicleId || window.currentDetailVehicleId || '').toString();
     if (!vid) return;
 
-    var appTasitlar = window.appData && Array.isArray(window.appData.tasitlar) ? window.appData.tasitlar : [];
+    var appTasitlar = readAppVehiclesSnapshot();
     var vehicle = appTasitlar.find(function(v) { return String(v.id) === vid; });
     if (!vehicle) {
       vehicle = readVehicles().find(function(v) { return String(v.id) === vid; });

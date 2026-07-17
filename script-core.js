@@ -1098,12 +1098,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Lazy modül asset sürümleri — tek nesne; index.html içindeki style-core ?v= ile tasitlar sürümü uyumlu kalmalı
 var MEDISA_MODULE_VERSIONS = {
-  tasitlar: '20260717.2',
-  notifications: '20260716.1',
+  tasitlar: '20260717.3',
+  notifications: '20260717.3',
   raporlar: '20260712.1',
   kayitJs: '20260712.3',
   kayitCss: '20260708.1',
-  ayarlarJs: '20260716.4',
+  ayarlarJs: '20260717.3',
   ayarlarCss: '20260716.3',
   tasitlarYazici: '20260517.5',
   vehicleNotificationDomain: '20260712.1'
@@ -1206,8 +1206,6 @@ function medisaResolveRecorderDisplayName() {
         var users = [];
         if (typeof window.getMedisaUsers === 'function') {
           users = window.getMedisaUsers() || [];
-        } else if (window.appData && Array.isArray(window.appData.users)) {
-          users = window.appData.users;
         }
         var found = Array.isArray(users) ? users.find(function(x) {
           return String(x && x.id) === String(u.id);

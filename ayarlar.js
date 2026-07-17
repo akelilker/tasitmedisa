@@ -422,9 +422,6 @@
         var result = window.getMedisaBranches();
         return Array.isArray(result) ? result.slice() : [];
       }
-      if (window.appData && Array.isArray(window.appData.branches)) {
-        return window.appData.branches.slice();
-      }
       return [];
     }
     function writeBranches(arr) {
@@ -437,9 +434,6 @@
       if (typeof window.getMedisaVehicles === 'function') {
         var result = window.getMedisaVehicles();
         return Array.isArray(result) ? result.slice() : [];
-      }
-      if (window.appData && Array.isArray(window.appData.tasitlar)) {
-        return window.appData.tasitlar.slice();
       }
       return [];
     }
@@ -491,14 +485,21 @@
     }
 
     function syncActiveVehicleTasitKartiExpiryWithK2(isoDate) {
-      if (!window.appData || !Array.isArray(window.appData.tasitlar)) return 0;
-      let syncedCount = 0;
-      window.appData.tasitlar.forEach(function(vehicle) {
-        if (!isZorunluEvrakVehicleActive(vehicle) || !zorunluEvrakVehicleNeedsK2(vehicle)) return;
-        if (String(vehicle.tasitKartiExpiryDate || '') === isoDate) return;
-        vehicle.tasitKartiExpiryDate = isoDate;
+      var source = (typeof window.getMedisaVehicles === 'function' ? window.getMedisaVehicles() : null) || [];
+      if (!Array.isArray(source) || !source.length) return 0;
+      var syncedCount = 0;
+      var nextVehicles = source.map(function(vehicle) {
+        if (!isZorunluEvrakVehicleActive(vehicle) || !zorunluEvrakVehicleNeedsK2(vehicle)) return vehicle;
+        if (String(vehicle.tasitKartiExpiryDate || '') === isoDate) return vehicle;
         syncedCount += 1;
+        return Object.assign({}, vehicle, { tasitKartiExpiryDate: isoDate });
       });
+      if (syncedCount === 0) return 0;
+      if (typeof window.writeVehicles === 'function') {
+        window.writeVehicles(nextVehicles).catch(function(err) {
+          console.warn('[Medisa] K2 taşıt kartı senkronu kaydedilemedi:', err && err.message);
+        });
+      }
       return syncedCount;
     }
 
@@ -1369,7 +1370,6 @@
   
         const persisted = await writeBranches(branches);
         if (persisted !== true) {
-          if (window.appData) window.appData.branches = previousBranches;
           renderBranchList();
           alert('Şube sunucuya kaydedilemedi. Lütfen tekrar deneyin.');
           return;
@@ -1383,8 +1383,7 @@
   
         alert(id ? 'Şube güncellendi.' : 'Şube Eklendi.');
       } catch (error) {
-        if (previousBranches && window.appData) {
-          window.appData.branches = previousBranches;
+        if (previousBranches) {
           renderBranchList();
         }
         alert('Şube kaydı sırasında bir hata Oluştu! Lütfen tekrar deneyin.');
@@ -1426,13 +1425,11 @@
       try {
         const persisted = await writeBranches(filtered);
         if (persisted !== true) {
-          if (window.appData) window.appData.branches = branches;
           renderBranchList();
           alert('Şube silme işlemi sunucuya kaydedilemedi. Lütfen tekrar deneyin.');
           return;
         }
       } catch (error) {
-        if (window.appData) window.appData.branches = branches;
         renderBranchList();
         alert('Şube silinirken bir hata oluştu! Lütfen tekrar deneyin.');
         return;
@@ -1511,31 +1508,36 @@
         var result = window.getMedisaUsers();
         return Array.isArray(result) ? result.slice() : [];
       }
-      if (window.appData && Array.isArray(window.appData.users)) {
-        var users = window.appData.users.slice();
-        return (typeof window.normalizeUsers === 'function' ? window.normalizeUsers(users) : users);
-      }
       return [];
     }
 
     function readAllUsers() {
-      if (window.appData && Array.isArray(window.appData.users)) {
-        const allUsers = window.appData.users.slice();
+      if (typeof window.getMedisaCollectionSnapshot === 'function') {
+        const allUsers = window.getMedisaCollectionSnapshot('users');
         return (typeof window.normalizeUsers === 'function' ? window.normalizeUsers(allUsers) : allUsers);
+      }
+      if (typeof window.getMedisaUsers === 'function') {
+        return window.getMedisaUsers() || [];
       }
       return [];
     }
 
     function readAllVehicles() {
-      if (window.appData && Array.isArray(window.appData.tasitlar)) {
-        return window.appData.tasitlar.slice();
+      if (typeof window.getMedisaCollectionSnapshot === 'function') {
+        return window.getMedisaCollectionSnapshot('vehicles');
+      }
+      if (typeof window.getMedisaVehicles === 'function') {
+        return window.getMedisaVehicles() || [];
       }
       return [];
     }
 
     function readAllBranches() {
-      if (window.appData && Array.isArray(window.appData.branches)) {
-        return window.appData.branches.slice();
+      if (typeof window.getMedisaCollectionSnapshot === 'function') {
+        return window.getMedisaCollectionSnapshot('branches');
+      }
+      if (typeof window.getMedisaBranches === 'function') {
+        return window.getMedisaBranches() || [];
       }
       return [];
     }
@@ -1723,11 +1725,10 @@
       syncUserFormCustomSelects(document.getElementById('user-form-modal'));
     }
 
-    function syncUsersToAppData(arr, options) {
-      if (!window.appData) return;
+    function buildSyncedUsersList(arr) {
       const list = arr != null ? arr : readAllUsers();
       const vehicles = readAllVehicles();
-      window.appData.users = list.map(u => {
+      return list.map(u => {
         const zimmetliAraclar = vehicles
           .filter(v => (v.assignedUserId != null && String(v.assignedUserId) === String(u.id)))
           .map(v => (typeof v.id === 'number' ? v.id : Number(v.id)) || v.id);
@@ -1773,6 +1774,14 @@
           son_giris: u.son_giris || null
         };
       });
+    }
+
+    function syncUsersToAppData(arr, options) {
+      if (!window.appData) return;
+      const nextUsers = buildSyncedUsersList(arr);
+      if (typeof window.replaceMedisaUsers === 'function') {
+        window.replaceMedisaUsers(nextUsers, { reason: 'ayarlar-sync-users' });
+      }
       if (!(options && options.skipServerSave === true) && window.saveDataToServer) {
         window.saveDataToServer().catch(err => {
           console.error('Sunucuya kaydetme hatası (sessiz):', err);
@@ -1782,9 +1791,9 @@
   
     function writeUsers(arr) {
       if (!window.appData) return Promise.resolve(false);
-      syncUsersToAppData(arr, { skipServerSave: true });
+      const nextUsers = buildSyncedUsersList(arr);
       if (typeof window.writeUsers === 'function') {
-        return window.writeUsers(window.appData.users);
+        return window.writeUsers(nextUsers);
       }
       return Promise.resolve(false);
     }
@@ -1799,7 +1808,9 @@
 
     function setUserManagementLocalState(users, vehicles) {
       if (!window.appData) return;
-      window.appData.tasitlar = Array.isArray(vehicles) ? vehicles : [];
+      if (typeof window.replaceMedisaVehicles === 'function') {
+        window.replaceMedisaVehicles(Array.isArray(vehicles) ? vehicles : [], { reason: 'user-mgmt-local' });
+      }
       syncUsersToAppData(Array.isArray(users) ? users : [], { skipServerSave: true });
     }
 
@@ -3555,21 +3566,12 @@
     }
 
     function applyRestoredBackup(backup) {
-      writeBranches(backup.branches);
-      writeUsers(backup.users);
-      if (typeof window.writeVehicles === 'function') {
-        window.writeVehicles(backup.vehicles);
-      } else if (window.appData) {
-        window.appData.tasitlar = Array.isArray(backup.vehicles) ? backup.vehicles : [];
-      }
-
       const existingApp = window.appData || {};
-      const normalizedUsers = (window.appData && Array.isArray(window.appData.users)) ? window.appData.users : backup.users;
       const restoredBlob = {
-        tasitlar: backup.vehicles,
+        tasitlar: Array.isArray(backup.vehicles) ? backup.vehicles : [],
         kayitlar: backup.kayitlar != null ? backup.kayitlar : (existingApp.kayitlar || []),
-        branches: backup.branches,
-        users: normalizedUsers,
+        branches: Array.isArray(backup.branches) ? backup.branches : [],
+        users: Array.isArray(backup.users) ? backup.users : [],
         ayarlar: backup.ayarlar || existingApp.ayarlar || getDefaultAyarlarBackup(),
         sifreler: backup.sifreler != null ? backup.sifreler : (existingApp.sifreler || []),
         arac_aylik_hareketler: backup.arac_aylik_hareketler != null ? backup.arac_aylik_hareketler : (existingApp.arac_aylik_hareketler || []),
@@ -3590,13 +3592,16 @@
           ) ? existingApp.monthlyTodoWhatsAppLogs : {}
       };
 
+      if (typeof window.commitMedisaAppDataSnapshot === 'function') {
+        window.commitMedisaAppDataSnapshot(restoredBlob, { reason: 'backup-restore' });
+      }
+
       localStorage.setItem("medisa_data_v1", JSON.stringify(restoredBlob));
       localStorage.setItem("medisa_server_backup", JSON.stringify({
         ...backup,
         upload_date: new Date().toISOString()
       }));
       sessionStorage.setItem("medisa_just_restored", "1");
-      window.appData = restoredBlob;
     }
 
     window.restoreFromLastBackup = async function restoreFromLastBackup() {
@@ -3757,13 +3762,19 @@
 
         // appData'yı yedek snapshot ile hizala
         if (window.appData && typeof window.appData === "object") {
-          const hasAppUsers = Array.isArray(window.appData.users) && window.appData.users.length > 0;
-          window.appData = {
-            ...window.appData,
+          const hasAppUsers = typeof window.getMedisaCollectionSnapshot === 'function'
+            ? window.getMedisaCollectionSnapshot('users').length > 0
+            : (Array.isArray(window.appData.users) && window.appData.users.length > 0);
+          const aligned = Object.assign({}, window.appData, {
             branches: branches,
             tasitlar: vehicles,
-            users: hasAppUsers ? window.appData.users : users
-          };
+            users: hasAppUsers
+              ? (typeof window.getMedisaCollectionSnapshot === 'function' ? window.getMedisaCollectionSnapshot('users') : window.appData.users)
+              : users
+          });
+          if (typeof window.commitMedisaAppDataSnapshot === 'function') {
+            window.commitMedisaAppDataSnapshot(aligned, { reason: 'local-backup-align' });
+          }
         }
 
         const serverSaved = await window.saveDataToServer();
