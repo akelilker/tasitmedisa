@@ -804,6 +804,120 @@
 
   let lastVehiclesRenderSignature = '';
   let lastDashboardRenderSignature = '';
+  let vehicleLookupCache = {
+    branchesRev: -1,
+    usersRev: -1,
+    branchMap: null,
+    userMap: null
+  };
+  let vehicleRenderMetrics = null;
+  let vehicleRenderMetricsDisabled = false;
+  let lastVehicleFitSignature = '';
+  let vehicleFitRaf = 0;
+
+  function isVehicleRenderPerfEnabled() {
+    try {
+      if (typeof localStorage !== 'undefined' && localStorage.getItem('medisa_perf_debug') === '1') return true;
+    } catch (e0) {}
+    try {
+      var search = (window.location && window.location.search) || '';
+      return /(?:^|[?&])medisaPerf=1(?:&|$)/.test(search);
+    } catch (e1) {
+      return false;
+    }
+  }
+
+  function ensureVehicleRenderMetrics() {
+    if (vehicleRenderMetricsDisabled) return null;
+    if (vehicleRenderMetrics) return vehicleRenderMetrics;
+    if (!isVehicleRenderPerfEnabled()) {
+      vehicleRenderMetricsDisabled = true;
+      try { delete window.__medisaVehicleRenderMetrics; } catch (eDel) { window.__medisaVehicleRenderMetrics = undefined; }
+      return null;
+    }
+    vehicleRenderMetrics = {
+      renderCalls: 0,
+      renderSkips: 0,
+      domWrites: 0,
+      lookupBuilds: 0,
+      viewModelBuilds: 0,
+      filterRuns: 0,
+      sortRuns: 0,
+      textFitCalls: 0,
+      layoutReads: 0,
+      layoutWrites: 0,
+      lastSignature: '',
+      lastReason: ''
+    };
+    window.__medisaVehicleRenderMetrics = vehicleRenderMetrics;
+    return vehicleRenderMetrics;
+  }
+
+  function bumpVehicleRenderMetric(key, n) {
+    var m = ensureVehicleRenderMetrics();
+    if (!m || !Object.prototype.hasOwnProperty.call(m, key)) return;
+    m[key] = (Number(m[key]) || 0) + (n == null ? 1 : n);
+  }
+
+  function getVehicleCollectionRevisions() {
+    if (typeof window.getMedisaCollectionRevisions === 'function') {
+      return window.getMedisaCollectionRevisions();
+    }
+    return { vehicles: 0, branches: 0, users: 0, session: 0 };
+  }
+
+  function getCachedVehicleLookupMaps() {
+    var revs = getVehicleCollectionRevisions();
+    if (
+      vehicleLookupCache.branchMap &&
+      vehicleLookupCache.userMap &&
+      vehicleLookupCache.branchesRev === revs.branches &&
+      vehicleLookupCache.usersRev === revs.users
+    ) {
+      return vehicleLookupCache;
+    }
+    bumpVehicleRenderMetric('lookupBuilds');
+    var branches = (typeof window.getMedisaBranches === 'function' ? window.getMedisaBranches() : null)
+      || window.appData?.branches || [];
+    var users = (typeof window.getMedisaUsers === 'function' ? window.getMedisaUsers() : null)
+      || window.appData?.users || [];
+    var branchMap = {};
+    for (var i = 0; i < branches.length; i++) {
+      var b = branches[i];
+      branchMap[String(b.id)] = b;
+    }
+    var userMap = {};
+    for (var u = 0; u < users.length; u++) {
+      var user = users[u];
+      userMap[String(user.id)] = user;
+    }
+    vehicleLookupCache = {
+      branchesRev: revs.branches,
+      usersRev: revs.users,
+      branchMap: branchMap,
+      userMap: userMap
+    };
+    return vehicleLookupCache;
+  }
+
+  function getVehicleLayoutBucket() {
+    var w = window.innerWidth || 0;
+    if (w <= 360) return 'w360';
+    if (w <= 390) return 'w390';
+    if (w <= 430) return 'w430';
+    if (w <= 640) return 'w640';
+    if (w <= 768) return 'w768';
+    if (w <= 1024) return 'w1024';
+    return 'w1280';
+  }
+
+  function getVehicleDateWarningDayBucket() {
+    try {
+      return new Date().toISOString().slice(0, 10);
+    } catch (e) {
+      return 'day0';
+    }
+  }
 
   window.medisaSetVehicleDetailReturnToMonthlyTodo = function(active) {
     returnToMonthlyTodoAfterVehicleDetail = active === true;
@@ -825,6 +939,11 @@
   function invalidateVehicleListRenderCache() {
     lastVehiclesRenderSignature = '';
     lastDashboardRenderSignature = '';
+    lastVehicleFitSignature = '';
+    vehicleLookupCache.branchesRev = -1;
+    vehicleLookupCache.usersRev = -1;
+    vehicleLookupCache.branchMap = null;
+    vehicleLookupCache.userMap = null;
     if (DOM && DOM.vehiclesModalContent) {
       delete DOM.vehiclesModalContent.dataset.renderScope;
       delete DOM.vehiclesModalContent.dataset.renderSignature;
@@ -835,41 +954,13 @@
     }
   }
 
-  function buildVehicleRenderSignature(vehicles, query, listDisplayOrder) {
-    const branches = window.appData?.branches || [];
-    const users = window.appData?.users || [];
-
-    const branchNameMap = {};
-    for (let i = 0; i < branches.length; i++) {
-      const b = branches[i];
-      branchNameMap[String(b.id)] = String(b.name || '');
-    }
-
-    const userNameMap = {};
-    for (let i = 0; i < users.length; i++) {
-      const u = users[i];
-      userNameMap[String(u.id)] = String(u.name || u.isim || u.fullName || '');
-    }
-
-    const compactVehicleState = vehicles.map(function(v) {
-      const branchName = branchNameMap[String(v.branchId)] || '';
-      const userName = userNameMap[String(v.assignedUserId)] || '';
-
-      return [
-        String(v.id ?? ''),
-        String(v.version ?? ''),
-        String(v.guncelKm ?? v.km ?? ''),
-        String(v.branchId ?? ''),
-        branchName,
-        String(v.assignedUserId ?? ''),
-        userName,
-        String(v.tahsisKisi ?? ''),
-        String(v.transmission ?? ''),
-        String(v.satildiMi === true ? 1 : 0)
-      ].join(':');
-    }).join('|');
-
+  function buildVehicleRenderSignature(query, listDisplayOrder) {
+    const revs = getVehicleCollectionRevisions();
     return [
+      'v' + String(revs.vehicles || 0),
+      'b' + String(revs.branches || 0),
+      'u' + String(revs.users || 0),
+      's' + String(revs.session || 0),
       String(currentView),
       String(viewMode),
       String(activeBranchId),
@@ -878,9 +969,9 @@
       String(sortColumn || ''),
       String(sortDirection || ''),
       String(currentFilter || ''),
-      window.innerWidth <= 768 ? 'mobile' : 'desktop',
-      Array.isArray(listDisplayOrder) ? listDisplayOrder.join(',') : '',
-      compactVehicleState
+      getVehicleLayoutBucket(),
+      getVehicleDateWarningDayBucket(),
+      Array.isArray(listDisplayOrder) ? listDisplayOrder.join(',') : ''
     ].join('__');
   }
   
@@ -1056,45 +1147,49 @@
     });
   }
 
-  function fitVehicleTextBoxes(root) {
+  function fitVehicleTextBoxes(root, options) {
     if (typeof window.medisaFitTextWithinBox !== 'function') return;
+    const opts = options || {};
     const scope = root || document;
-    const listFitStep = window.innerWidth <= 640 ? 0.5 : 1;
-    window.medisaFitTextWithinBox(scope, [
-      '.branch-name',
-      '.view-card .card-brand-model',
-      '.view-card .card-third-line',
-      '.view-list .list-cell.list-branch',
-      '#vehicle-detail-modal .detail-row-value'
-    ].join(', '), {
-      minFontSize: window.innerWidth <= 640 ? 8.5 : 9,
-      maxReduction: 7,
-      step: listFitStep
-    });
+    const fitSignature = [
+      getVehicleLayoutBucket(),
+      String(viewMode || ''),
+      String(activeBranchId || ''),
+      scope && scope.id ? String(scope.id) : 'root',
+      String(opts.force === true ? Date.now() : (lastVehiclesRenderSignature || ''))
+    ].join('|');
+    if (opts.force !== true && fitSignature === lastVehicleFitSignature) {
+      return;
+    }
+    lastVehicleFitSignature = fitSignature;
+    bumpVehicleRenderMetric('textFitCalls');
 
-    window.medisaFitTextWithinBox(scope, '.view-list .list-cell.list-brand', {
-      minFontSize: window.innerWidth <= 640 ? 11.5 : 12,
-      maxReduction: 2.5,
-      step: listFitStep
-    });
+    const runFit = function() {
+      vehicleFitRaf = 0;
+      // Liste satırlarında JS text-fit yok — CSS ellipsis/line-clamp owner.
+      // Card + şube adı + detay value için conditional fit.
+      const selectors = [];
+      if (scope.querySelector && scope.querySelector('.branch-name')) {
+        selectors.push('.branch-name');
+      }
+      if (scope.querySelector && scope.querySelector('.view-card')) {
+        selectors.push('.view-card .card-brand-model', '.view-card .card-third-line');
+      }
+      if (scope.querySelector && scope.querySelector('#vehicle-detail-modal .detail-row-value, .detail-row-value')) {
+        selectors.push('.detail-row-value');
+      }
+      if (!selectors.length) return;
+      window.medisaFitTextWithinBox(scope, selectors.join(', '), {
+        minFontSize: window.innerWidth <= 640 ? 8.5 : 9,
+        maxReduction: 7,
+        step: window.innerWidth <= 640 ? 0.5 : 1
+      });
+    };
 
-    window.medisaFitTextWithinBox(scope, '.view-list .list-cell.list-plate .vehicle-plate-row-text', {
-      minFontSize: window.innerWidth <= 640 ? 10.5 : 10,
-      maxReduction: 4,
-      step: listFitStep
-    });
-
-    // Kullanıcı adında genel shrink agresif görünüyordu; burada sadece isim satırlarına
-    // daha yumuşak küçültme uygula ki kısa isimler normal boyutta kalsın.
-    window.medisaFitTextWithinBox(scope, [
-      '.view-list .list-cell.list-user .user-name-line1',
-      '.view-list .list-cell.list-user .user-name-line2'
-    ].join(', '), {
-      minFontSize: window.innerWidth <= 640 ? 8.5 : 9,
-      maxReduction: window.innerWidth <= 640 ? 4 : 4,
-      step: window.innerWidth <= 640 ? listFitStep : 0.5,
-      tolerance: 0
-    });
+    if (vehicleFitRaf) {
+      try { cancelAnimationFrame(vehicleFitRaf); } catch (eCancel) {}
+    }
+    vehicleFitRaf = requestAnimationFrame(runFit);
   }
 
   let vehicleFitResizeTimer = null;
@@ -2258,26 +2353,17 @@
     try {
       const listContainer = DOM.vehiclesModalContent;
       if (!listContainer) return;
+      bumpVehicleRenderMetric('renderCalls');
       loadVehicleColumnOrder(); // Sütun sıralamasını yükle
       // Veri Çek
       let vehicles = readVehicles();
       if (!Array.isArray(vehicles)) return;
-      const branches = window.appData?.branches || [];
-      const users = window.appData?.users || [];
-
-      const branchMap = {};
-      for (let i = 0; i < branches.length; i++) {
-        const b = branches[i];
-        branchMap[String(b.id)] = b;
-      }
-
-      const userMap = {};
-      for (let i = 0; i < users.length; i++) {
-        const u = users[i];
-        userMap[String(u.id)] = u;
-      }
+      const lookupMaps = getCachedVehicleLookupMaps();
+      const branchMap = lookupMaps.branchMap || {};
+      const userMap = lookupMaps.userMap || {};
 
     // 1. Arşiv veya Şube Filtresi
+    bumpVehicleRenderMetric('filterRuns');
     if (activeBranchId === '__archive__') {
         vehicles = vehicles.filter(v => v.satildiMi === true);
     } else {
@@ -2304,6 +2390,7 @@
     }
 
       // 3. Sıralama
+      bumpVehicleRenderMetric('sortRuns');
       vehicles = applyFilter(vehicles);
 
       // Kırmızı tarih uyarısı olan satırlar (sigorta/kasko/muayene/egzoz) listenin üstünde sabit
@@ -2341,11 +2428,17 @@
           })
         : displayColumnOrder;
 
-      const renderSignature = buildVehicleRenderSignature(vehicles, query, listDisplayOrder);
+      const renderSignature = buildVehicleRenderSignature(query, listDisplayOrder);
       if (
         listContainer.dataset.renderScope === 'vehicles' &&
         lastVehiclesRenderSignature === renderSignature
       ) {
+        bumpVehicleRenderMetric('renderSkips');
+        var mSkip = ensureVehicleRenderMetrics();
+        if (mSkip) {
+          mSkip.lastSignature = renderSignature;
+          mSkip.lastReason = 'unchanged-signature';
+        }
         syncVehiclesListModeClass(viewMode === 'list');
         return;
       }
@@ -2556,10 +2649,17 @@
 
       // PERFORMANS: Browser'ın yerleşik C++ HTML parser'ını doğrudan kullanıyoruz.
       // Fragment ve tek tek node taşıma işlemi (Layout Thrashing) iptal edildi.
+      bumpVehicleRenderMetric('domWrites');
+      bumpVehicleRenderMetric('viewModelBuilds');
       listContainer.innerHTML = html;
       listContainer.dataset.renderScope = 'vehicles';
       listContainer.dataset.renderSignature = renderSignature;
       lastVehiclesRenderSignature = renderSignature;
+      var mWrite = ensureVehicleRenderMetrics();
+      if (mWrite) {
+        mWrite.lastSignature = renderSignature;
+        mWrite.lastReason = 'dom-write';
+      }
       syncVehiclesListModeClass(viewMode === 'list');
 
       // Taşıt kartları için grid'i dinamik yap (sadece card view'da)
@@ -2584,7 +2684,10 @@
       if (viewMode === 'list' && window.innerWidth <= 640) {
           applyMobileListHeaderFontSize(listContainer);
       }
-      fitVehicleTextBoxes(listContainer);
+      // Liste: JS text-fit yok. Card: conditional fit batch.
+      if (viewMode === 'card') {
+          fitVehicleTextBoxes(listContainer);
+      }
       
       // Mobil: sütun başlıklarına touch ile sürükle-bırak (yer değiştirme)
       if (viewMode === 'list') {
