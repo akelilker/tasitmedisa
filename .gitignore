@@ -54,3 +54,5 @@ data/takograf_preview/
 *.rej
 *.swp
 *.swo
+
+.tools/
