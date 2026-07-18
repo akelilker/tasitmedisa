@@ -6,6 +6,16 @@ if (!runtime) throw new Error('MedisaDriverRuntime eksik');
 var s = runtime.state;
 var h = runtime.helpers;
 var p = runtime.paths;
+var getDriverVehicleTypeKey = h.getDriverVehicleTypeKey;
+var normalizeDriverVehicleTypeKey = h.normalizeDriverVehicleTypeKey;
+var driverVehicleNeedsK2 = h.driverVehicleNeedsK2;
+var driverVehicleNeedsTakograf = h.driverVehicleNeedsTakograf;
+if (typeof getDriverVehicleTypeKey !== 'function'
+|| typeof normalizeDriverVehicleTypeKey !== 'function'
+|| typeof driverVehicleNeedsK2 !== 'function'
+|| typeof driverVehicleNeedsTakograf !== 'function') {
+throw new Error('MedisaDriverRuntime vehicle document helpers eksik');
+}
 const DRIVER_DOCUMENT_TYPES = [
 { key: 'ruhsat', title: 'Ruhsat', pathField: 'ruhsatPath', icon: 'document' },
 { key: 'sigorta', title: 'Sigorta Poliçesi', pathField: 'sigortaPolicePath', icon: 'shield' },
@@ -13,38 +23,6 @@ const DRIVER_DOCUMENT_TYPES = [
 { key: 'tasit_karti', title: 'Taşıt Kartı', pathField: 'tasitKartiPath', icon: 'id-card' },
 { key: 'takograf', title: 'Takograf Belgesi', pathField: 'takografBelgesiPath', icon: 'gauge' }
 ];
-
-function getDriverVehicleTypeKey(vehicle) {
-return String((vehicle && (vehicle.vehicleType || vehicle.tip)) || '').trim().toLowerCase();
-}
-
-function normalizeDriverVehicleTypeKey(typeKey) {
-return String(typeKey || '')
-.toLowerCase()
-.replace(/ğ/g, 'g')
-.replace(/ü/g, 'u')
-.replace(/ş/g, 's')
-.replace(/ı/g, 'i')
-.replace(/ö/g, 'o')
-.replace(/ç/g, 'c')
-.replace(/\s+/g, '_')
-.trim();
-}
-
-function driverVehicleNeedsK2(vehicle) {
-var typeKey = getDriverVehicleTypeKey(vehicle);
-var normalizedType = normalizeDriverVehicleTypeKey(typeKey);
-return normalizedType === 'minivan'
-|| normalizedType === 'kucuk_ticari'
-|| normalizedType === 'kamyon'
-|| normalizedType === 'buyuk_ticari'
-|| normalizedType === 'romork';
-}
-
-function driverVehicleNeedsTakograf(vehicle) {
-var normalizedType = normalizeDriverVehicleTypeKey(getDriverVehicleTypeKey(vehicle));
-return normalizedType === 'kamyon' || normalizedType === 'buyuk_ticari';
-}
 
 function driverVehicleIsHeavyCommercial(vehicle) {
 var normalized = normalizeDriverVehicleTypeKey(getDriverVehicleTypeKey(vehicle));

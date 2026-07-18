@@ -2,18 +2,18 @@
 (function() {
 'use strict';
 
-var VERSION = '20260718.1';
+var VERSION = '20260718.2';
 window.MEDISA_DRIVER_ASSET_VERSIONS = window.MEDISA_DRIVER_ASSET_VERSIONS || {
-bootstrap: VERSION,
-login: VERSION,
-dashboardCore: VERSION,
-history: VERSION,
-documents: VERSION,
-feedback: VERSION,
-password: VERSION,
-actions: VERSION,
-shellCss: VERSION,
-featureCss: VERSION
+bootstrap: '20260718.2',
+login: '20260718.1',
+dashboardCore: '20260718.2',
+history: '20260718.1',
+documents: '20260718.2',
+feedback: '20260718.1',
+password: '20260718.1',
+actions: '20260718.1',
+shellCss: '20260718.1',
+featureCss: '20260718.1'
 };
 
 var APP_ROOT = (function() {
@@ -146,6 +146,38 @@ password: { js: 'driver-feature-password.js', versionKey: 'password' },
 actions: { js: 'driver-feature-actions.js', versionKey: 'actions' }
 };
 
+function getDriverVehicleTypeKey(vehicle) {
+return String((vehicle && (vehicle.vehicleType || vehicle.tip)) || '').trim().toLowerCase();
+}
+
+function normalizeDriverVehicleTypeKey(typeKey) {
+return String(typeKey || '')
+.toLowerCase()
+.replace(/ğ/g, 'g')
+.replace(/ü/g, 'u')
+.replace(/ş/g, 's')
+.replace(/ı/g, 'i')
+.replace(/ö/g, 'o')
+.replace(/ç/g, 'c')
+.replace(/\s+/g, '_')
+.trim();
+}
+
+function driverVehicleNeedsK2(vehicle) {
+var typeKey = getDriverVehicleTypeKey(vehicle);
+var normalizedType = normalizeDriverVehicleTypeKey(typeKey);
+return normalizedType === 'minivan'
+|| normalizedType === 'kucuk_ticari'
+|| normalizedType === 'kamyon'
+|| normalizedType === 'buyuk_ticari'
+|| normalizedType === 'romork';
+}
+
+function driverVehicleNeedsTakograf(vehicle) {
+var normalizedType = normalizeDriverVehicleTypeKey(getDriverVehicleTypeKey(vehicle));
+return normalizedType === 'kamyon' || normalizedType === 'buyuk_ticari';
+}
+
 var runtime = {
 version: VERSION,
 paths: {
@@ -157,7 +189,12 @@ MAIN_APP_URL: MAIN_APP_URL,
 MAIN_SESSION_URL: MAIN_SESSION_URL
 },
 state: {},
-helpers: {},
+helpers: {
+getDriverVehicleTypeKey: getDriverVehicleTypeKey,
+normalizeDriverVehicleTypeKey: normalizeDriverVehicleTypeKey,
+driverVehicleNeedsK2: driverVehicleNeedsK2,
+driverVehicleNeedsTakograf: driverVehicleNeedsTakograf
+},
 features: {},
 registerFeature: function(name, api) {
 runtime.features[name] = api || {};
