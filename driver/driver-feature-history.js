@@ -320,30 +320,6 @@ if (t === 'oneri' || t === 'öneri') return 'Önerildi.';
 return 'Talep Edildi.';
 }
 
-
-function bindDriverDashboardTitleCase(areaEl) {
-if (!areaEl || areaEl.nodeType !== 1) return;
-areaEl.querySelectorAll('textarea, input[type="text"]').forEach(function(el) {
-var id = el.id || '';
-if (/km-|kaza-tutar-|bakim-km-|bakim-tutar-|iletisim-/i.test(id)) return;
-if (el.classList.contains('driver-km-input')) return;
-if (el.getAttribute('inputmode') === 'numeric') return;
-el.addEventListener('blur', function () {
-var raw = el.value;
-var v = raw.trim();
-if (!v) return;
-if (/[^\s@]+@[^\s@]+\.[^\s@]+/.test(v)) return;
-var out = window.capitalizeWords(v);
-if (out !== raw) {
-el.value = out;
-try {
-el.dispatchEvent(new Event('input', { bubbles: true }));
-} catch (e) {}
-}
-});
-});
-}
-
 function renderHistoryList() {
 var listEl = document.getElementById('history-list');
 if (!listEl) return;
