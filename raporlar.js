@@ -2,6 +2,46 @@
    RAPORLAR MODÜLÜ - SEKME YAPILI
    ========================================= */
 
+(function () {
+  function hydrateMedisaReportsMarkup() {
+    if (document.getElementById('reports-modal')) return;
+    var host = document.createElement('div');
+    host.setAttribute('data-medisa-surface', 'reports');
+    host.innerHTML = `<div id="reports-modal" class="modal-overlay">
+            <div class="modal-container">
+                <div class="modal-header">
+                    <button type="button" class="modal-home" onclick="closeAllModals()" aria-label="Ana sayfaya dön" title="Ana sayfa">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 10v10h14V10"/></svg>
+                    </button>
+                    <h2 class="premium-title">RAPORLAR</h2>
+                    <button class="modal-close" onclick="closeReportsModal()">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div id="reports-list-header-actions" class="reports-list-header-actions" aria-hidden="true"></div>
+
+                <div class="modal-body" id="reports-body">
+                    <div id="view-stok" class="report-view active">
+                        <div id="stok-branch-grid" class="stok-branch-grid"></div>
+                        <!-- class stok-list-container sadece iç scroll sarmalayıcıda (raporlar.js); dışta olursa overflow-x:auto sticky th’yi bozar -->
+                        <div id="stok-list-container" class="stok-list-root u-hidden"></div>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+    var fragment = document.createDocumentFragment();
+    while (host.firstChild) fragment.appendChild(host.firstChild);
+    document.body.appendChild(fragment);
+  }
+  window.__medisaMainSurfaceHydrators = window.__medisaMainSurfaceHydrators || {};
+  window.__medisaMainSurfaceHydrators['reports'] = hydrateMedisaReportsMarkup;
+  hydrateMedisaReportsMarkup();
+})();
+
+
 (function() {
     // Taşıt listesi: getMedisaVehicles (oturum kapsamı); arşiv satildiMi === true hariç — taşıtlar şube kartları ile aynı kural.
     function getVehicles() {
@@ -50,7 +90,7 @@
     let stokCurrentBranchId = null;
     let stokSortState = {}; // { columnKey: 'asc' | 'desc' | null }
     let stokAutoSingleBranchView = false;
-    
+
     let stokActiveColumns = {
         sigorta: false,
         kasko: false,
@@ -214,7 +254,7 @@
 
 
     // --- 1. SEKME: STOK GÖRÜNÜMÜ ---
-    
+
     // Sütun başlık metinleri (responsive; opts.preferFull: Excel/yazdır — viewport’tan bağımsız tam etiket)
     function getColumnHeaderText(colKey, opts) {
         var full = opts && opts.preferFull === true;
@@ -222,7 +262,7 @@
         const isVerySmall = full ? false : window.innerWidth <= 480;
         const isTiny = full ? false : window.innerWidth <= 360;
         const isDesktop = full ? true : window.innerWidth >= 641;
-        
+
         const headers = {
             'sira': 'No',
             'sube': 'Şube',
@@ -246,7 +286,7 @@
             'tescil': isVerySmall ? 'Tescil' : isMobile ? 'Tescil T.' : 'Tescil Tarihi',
             'kaskoDegeri': isVerySmall ? 'Kas.' : isMobile ? 'Kasko Değeri' : 'Kasko Değeri'
         };
-        
+
         return headers[colKey] || colKey;
     }
 
@@ -349,21 +389,21 @@
         setReportsModalStokDetailMenuLayoutOpen(false);
         setReportsModalStokListLayoutActive(false);
         if (!gridContainer) return;
-        
+
         const branches = getBranches();
         const vehicles = getVehicles();
-        
+
         // Grid görünümünü göster, liste görünümünü gizle
         if (gridContainer) gridContainer.style.display = 'flex';
         if (listContainer) {
             listContainer.style.display = 'none';
             listContainer.innerHTML = '';
         }
-        
+
         // "Tümü" kartı
         const totalCount = vehicles.length;
         let html = `
-            <div class="stok-branch-card all-card ${stokCurrentBranchId === 'all' ? 'active' : ''}" 
+            <div class="stok-branch-card all-card ${stokCurrentBranchId === 'all' ? 'active' : ''}"
                  onclick="selectStokBranch('all')">
                 <div class="stok-branch-name">${buildStokBranchNameHtml('TÜMÜ')}</div>
                 <div class="stok-branch-count">${totalCount} Taşıt</div>
@@ -375,16 +415,16 @@
             const branchVehicles = vehicles.filter(v => v.branchId === branch.id);
             const count = branchVehicles.length;
             const isActive = stokCurrentBranchId === branch.id;
-            
+
             html += `
-                <div class="stok-branch-card ${isActive ? 'active' : ''}" 
+                <div class="stok-branch-card ${isActive ? 'active' : ''}"
                      onclick="selectStokBranch('${escapeHtml(branch.id)}')">
                     <div class="stok-branch-name">${buildStokBranchNameHtml(branch.name)}</div>
                     <div class="stok-branch-count">${count} Taşıt</div>
                 </div>
             `;
         });
-        
+
         gridContainer.innerHTML = html;
     }
 
@@ -467,7 +507,7 @@
         options = options || {};
         const gridContainer = document.getElementById('stok-branch-grid');
         const listContainer = document.getElementById('stok-list-container');
-        
+
         if (!listContainer) return;
         if (listContainer._stokMqAbort) {
             try { listContainer._stokMqAbort.abort(); } catch (e) {}
@@ -481,16 +521,16 @@
         cleanupStokTouchColumnDrag();
         normalizeStokColumnState();
         ensureStokDetailKeysInColumnOrder();
-        
+
         // Detay menü açık/kapalı tek kaynak: stokDetailMenuOpen (liste yeniden render'da korunur)
-        
+
         // Grid görünümünü gizle, liste görünümünü göster
         if (gridContainer) gridContainer.style.display = 'none';
         if (listContainer) listContainer.style.display = 'block';
-        
+
         let vehicles = getVehicles();
         const branches = getBranches();
-        
+
         // Filtreleme
         if (stokCurrentBranchId === 'all') {
             // Tüm taşıtlar
@@ -502,7 +542,7 @@
             setReportsModalStokListLayoutActive(false);
             return;
         }
-        
+
         // Arama filtresi
         const searchTerm = window.stokSearchTerm || '';
         if (searchTerm) {
@@ -511,22 +551,22 @@
                 const brandModel = (v.brandModel || '').toLowerCase();
                 const user = getVehicleUser(v).toLowerCase();
                 const branch = v.branchId ? (branches.find(b => b.id === v.branchId)?.name || '').toLowerCase() : '';
-                
-                return year.includes(searchTerm) || 
-                       brandModel.includes(searchTerm) || 
-                       user.includes(searchTerm) || 
+
+                return year.includes(searchTerm) ||
+                       brandModel.includes(searchTerm) ||
+                       user.includes(searchTerm) ||
                        branch.includes(searchTerm);
             });
         }
-        
+
         // Sıralama uygula
         vehicles = applyStokSorting(vehicles);
-        
+
         // Sütun başlığı + tüm satırlar aynı grid-template-columns (tek hesap)
         const stokDomColumnLayout = buildStokListDomColumnLayout();
         const headerRow = createStokHeaderRow(stokDomColumnLayout);
         const rows = vehicles.map((v, index) => createStokDataRow(v, index + 1, branches, stokDomColumnLayout));
-        
+
         // Bugünün tarihini formatla (gg/aa/yyyy)
         const today = new Date();
         const todayStr = `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear()}`;
@@ -691,13 +731,13 @@
 
         // Detay menüsünü render et
         renderStokDetailMenu();
-        
+
         // Tarih inputlarına placeholder ekle
         setTimeout(() => {
             const startInput = document.getElementById('stok-date-start');
             const endInput = document.getElementById('stok-date-end');
             const mutedDateColor = '#a0aec0';
-            
+
             // Başlangıç tarihi: boş <input type="date"> WebKit bazen tema CSS’ini beyaza basar — bitiş ile aynı satır içi gri
             if (startInput) {
                 const existingPlaceholder = startInput.parentElement.querySelector('.date-placeholder');
@@ -718,7 +758,7 @@
                     requestAnimationFrame(keepStartMuted);
                 });
             }
-            
+
             // Bitiş tarihi için value zaten var, placeholder ekleme
             // setupDatePlaceholder HİÇ çağrılmasın çünkü rengi transparent yapıyor
             if (endInput) {
@@ -726,18 +766,18 @@
                 const today = new Date();
                 const todayValue = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
                 endInput.value = todayValue;
-                
+
                 // Input'un rengini gri tut
                 endInput.style.setProperty('color', mutedDateColor, 'important');
                 endInput.style.setProperty('-webkit-text-fill-color', mutedDateColor, 'important');
                 endInput.style.color = mutedDateColor;
-                
+
                 // Eğer bir şekilde placeholder oluşturulmuşsa kaldır
                 const existingPlaceholder = endInput.parentElement.querySelector('.date-placeholder');
                 if (existingPlaceholder) {
                     existingPlaceholder.remove();
                 }
-                
+
                 // Input'un rengini koru - herhangi bir değişiklikte tekrar set et
                 const keepColorMuted = () => {
                     if (endInput.value) {
@@ -745,18 +785,18 @@
                         endInput.style.setProperty('-webkit-text-fill-color', mutedDateColor, 'important');
                     }
                 };
-                
+
                 // Input değiştiğinde rengi koru
                 endInput.addEventListener('change', keepColorMuted);
                 endInput.addEventListener('input', keepColorMuted);
                 endInput.addEventListener('focus', keepColorMuted);
                 endInput.addEventListener('blur', keepColorMuted);
-                
+
                 // İlk yüklemede de rengi set et
                 keepColorMuted();
             }
         }, 50);
-        
+
         // Mobil: liste tek hamlede ya yatay ya dikey kaysın (eksen kilidi)
         attachStokColumnTouchListeners(listContainer);
         attachStokSortSuppressReset(listContainer);
@@ -954,15 +994,15 @@
             const sortState = stokSortState[col.key] || null;
             const sortIcon = sortState === 'asc' ? '↑' : sortState === 'desc' ? '↓' : '↕';
             const sortClass = sortState ? 'active' : '';
-            
+
             const draggableAttr = (isMobileStokViewport() || col.key === 'egzozMuayene') ? '' : 'draggable="true"';
-            
+
             if (col.sortable) {
                 const headerLabel = (col.key === 'tasitTipi' && isMobileStokViewport())
                     ? getStokTasitTipiHeaderIconHtml()
                     : `<span class="stok-header-text">${getColumnHeaderText(col.key)}</span>`;
                 return `
-                    <th class="stok-list-header-cell stok-sortable-header" 
+                    <th class="stok-list-header-cell stok-sortable-header"
                         data-col="${col.key}"
                         ${draggableAttr}
                         ondragstart="handleColumnHeaderDragStart(event, '${col.key}')"
@@ -979,7 +1019,7 @@
             } else {
                 const headerText = getColumnHeaderText(col.key);
                 return `
-                    <th class="stok-list-header-cell" 
+                    <th class="stok-list-header-cell"
                         data-col="${col.key}"
                         ${draggableAttr}
                         ondragstart="handleColumnHeaderDragStart(event, '${col.key}')"
@@ -1116,13 +1156,13 @@
     function applyStokSorting(vehicles) {
         const sortedVehicles = [...vehicles];
         const branches = getBranches();
-        
+
         // Aktif sıralama var mı kontrol et
         const activeSort = Object.entries(stokSortState).find(([key, dir]) => dir);
         if (!activeSort) return sortedVehicles;
-        
+
         const [columnKey, direction] = activeSort;
-        
+
         sortedVehicles.sort((a, b) => {
             if (columnKey === 'sanziman') {
                 // Manuel → Otm. (asc), Otm. → Manuel (desc)
@@ -1182,7 +1222,7 @@
                 return direction === 'asc' ? aVal.localeCompare(bVal, 'tr') : bVal.localeCompare(aVal, 'tr');
             }
         });
-        
+
         return sortedVehicles;
     }
 
@@ -1190,7 +1230,7 @@
     window.sortStokList = function(columnKey) {
         if (stokTouchColumnDrag.suppressClickUntil > Date.now()) return;
         const currentState = stokSortState[columnKey];
-        
+
         // Sıralama durumunu değiştir: null → asc → desc → null
         if (!currentState || currentState === null) {
             // Tüm sütunları sıfırla, sadece bu sütunu asc yap
@@ -1201,7 +1241,7 @@
         } else {
             stokSortState[columnKey] = null;
         }
-        
+
         renderStokList();
     };
 
@@ -1262,7 +1302,7 @@
     function renderStokDetailMenu() {
         const menu = document.getElementById('stok-detail-menu');
         if (!menu) return;
-        
+
         const detailOptions = [
             { key: 'sigorta', label: 'Sigorta T.' },
             { key: 'kasko', label: 'Kasko T.' },
@@ -1280,11 +1320,11 @@
 
         menu.innerHTML = detailOptions.map((opt) => {
             const isActive = stokActiveColumns[opt.key];
-            
+
         return `
-                <div class="stok-detail-menu-item ${isActive ? 'draggable' : ''}" 
+                <div class="stok-detail-menu-item ${isActive ? 'draggable' : ''}"
                      data-column-key="${opt.key}">
-                    <button class="stok-detail-menu-btn ${isActive ? 'active' : ''}" 
+                    <button class="stok-detail-menu-btn ${isActive ? 'active' : ''}"
                             onclick="toggleStokDetailColumn('${opt.key}')"
                             title="${escapeHtml(opt.label)}">
                         <span>${escapeHtml(opt.label)}</span>
@@ -1317,7 +1357,7 @@
     window.toggleStokDetailColumn = function(columnKey) {
         const wasActive = stokActiveColumns[columnKey];
         stokActiveColumns[columnKey] = !stokActiveColumns[columnKey];
-        
+
         if (stokActiveColumns[columnKey] && !stokColumnOrder.includes(columnKey)) {
             // Yeni aktif olan sütunu sıranın sonuna ekle
             stokColumnOrder.push(columnKey);
@@ -1325,7 +1365,7 @@
             // Pasif olan sütunu sıradan çıkar
             stokColumnOrder = stokColumnOrder.filter(key => key !== columnKey);
         }
-        
+
         saveStokColumnState();
         // Buton seçimi yapıldığında menü açık kalsın - renderStokList'te durum korunacak
         renderStokList({ resetHorizontalScroll: true });
@@ -1341,17 +1381,17 @@
         }
         const detailColumns = ['sigorta', 'kasko', 'kaskoDegeri', 'muayene', 'kredi', 'lastik', 'utts', 'takip', 'tramer', 'boya', 'kullanici', 'tescil'];
         const baseColumns = STOK_BASE_COLUMNS.slice();
-        
+
         // Detay sütunları için aktif kontrolü
         if (detailColumns.includes(columnKey) && !stokActiveColumns[columnKey]) {
             event.preventDefault();
             return;
         }
-        
+
         draggedColumnKey = columnKey;
         event.dataTransfer.effectAllowed = 'move';
         event.dataTransfer.setData('text/plain', columnKey);
-        
+
         // Tüm satırı vurgula (muayene + egzoz birlikte)
         const allRows = document.querySelectorAll('.stok-list-row');
         allRows.forEach(row => {
@@ -1442,13 +1482,13 @@
                 cell.style.opacity = '1';
             });
         });
-        
+
         // Tüm başlıkları normale döndür
         document.querySelectorAll('.stok-list-header-cell').forEach(cell => {
             cell.style.opacity = '1';
             cell.classList.remove('drag-over', 'touch-drag-source');
         });
-        
+
         draggedColumnKey = null;
     };
 
@@ -2054,7 +2094,7 @@
         // ExcelJS ile Excel oluştur
         const workbook = new Excel.Workbook();
         const worksheet = workbook.addWorksheet('Stok Raporu');
-        
+
         // Başlık satırı
         const titleRow = worksheet.addRow([titleText]);
         worksheet.mergeCells(1, 1, 1, excelColumns.length);
@@ -2073,7 +2113,7 @@
             right: { style: 'thin', color: { argb: 'FF333333' } }
         };
         titleRow.height = 25;
-        
+
         // Tarih satırı
         const dateRow = worksheet.addRow([dateRangeText]);
         worksheet.mergeCells(2, 1, 2, excelColumns.length);
@@ -2092,10 +2132,10 @@
             right: { style: 'thin', color: { argb: 'FF333333' } }
         };
         dateRow.height = 20;
-        
+
         // Boş satır
         worksheet.addRow([]);
-        
+
         // Sütun başlıkları
         const headerRow = worksheet.addRow(excelColumns.map(col => getColumnHeaderText(col.key, { preferFull: true })));
         headerRow.eachCell((cell, colNumber) => {
@@ -2114,7 +2154,7 @@
             };
         });
         headerRow.height = 38;
-        
+
         // Veri satırları
         vehicles.forEach((vehicle, index) => {
             const row = excelColumns.map(col => getStokCellValue(vehicle, col, index, excelSplitMuayeneOpts));
@@ -2136,7 +2176,7 @@
                 };
             });
         });
-        
+
         // Sütun genişliklerini içeriğe göre otomatik ayarla
         excelColumns.forEach((col, colIndex) => {
             const headerText = getColumnHeaderText(col.key, { preferFull: true });
@@ -2152,7 +2192,7 @@
             widthChars = Math.max(widthChars, headerText.length + 2);
             worksheet.getColumn(colIndex + 1).width = widthChars;
         });
-        
+
         // Dosya adı
         let branchName = 'Tumu';
         if (stokCurrentBranchId !== 'all' && stokCurrentBranchId) {

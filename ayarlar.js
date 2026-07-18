@@ -2,8 +2,366 @@
    AYARLAR MODÜLÜ - ŞUBE & KULLANICI YÖNETİMİ
    ========================================= */
 
+(function () {
+  function hydrateMedisaSettingsMarkup() {
+    if (document.getElementById('branch-modal')) return;
+    var host = document.createElement('div');
+    host.setAttribute('data-medisa-surface', 'settings');
+    host.innerHTML = `<div id="branch-modal" class="modal-overlay ayarlar-modal-overlay">
+            <div class="modal-container">
+                <div class="modal-header">
+                    <h2>ŞUBE YÖNETİMİ</h2>
+                    <button class="modal-close" onclick="closeBranchManagement()">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="universal-back-bar universal-back-bar--standalone user-management-back-bar">
+                    <button type="button" class="universal-back-btn" aria-label="Ayarlar" onclick="medisaSettingsHistoryBack(event)">
+                        <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        <span class="universal-back-label">Ayarlar</span>
+                    </button>
+                    <div id="branch-management-search-wrap" class="user-management-search-wrap">
+                        <input
+                            type="search"
+                            id="branch-management-search-input"
+                            class="user-management-search-input"
+                            placeholder="Şube Ara"
+                            autocomplete="off"
+                            inputmode="search"
+                            onclick="event.stopPropagation()"
+                            oninput="if(window.setBranchManagementSearch) window.setBranchManagementSearch(this.value)">
+                        <button
+                            type="button"
+                            class="user-management-search-toggle"
+                            id="branch-management-search-toggle"
+                            aria-label="Şube Ara"
+                            aria-expanded="false"
+                            onclick="event.stopPropagation(); if(window.toggleBranchManagementSearch) window.toggleBranchManagementSearch();">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <circle cx="11" cy="11" r="7"></circle>
+                                <path d="M20 20l-3.5-3.5"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="u-p-16">
+                        <button onclick="openBranchFormModal()" class="settings-add-text-btn user-add-btn">+ Yeni Şube</button>
+                        <div id="branch-list"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+<div id="branch-form-modal" class="modal-overlay ayarlar-modal-overlay">
+            <div class="modal-container">
+                <div class="modal-header">
+                    <h2>YENİ ŞUBE EKLE</h2>
+                    <button class="modal-close" onclick="closeBranchFormModal()">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="universal-back-bar universal-back-bar--standalone">
+                    <button type="button" class="universal-back-btn" aria-label="Şube Yönetimi" onclick="medisaSettingsHistoryBack(event)">
+                        <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        <span class="universal-back-label">Şube Yönetimi</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="branch-form" class="u-p-16">
+                        <input type="hidden" id="branch-id">
+                        <div class="form-section">
+                            <label class="form-label" for="branch-name">Şube Adı</label>
+                            <input type="text" id="branch-name" class="form-input" placeholder="Şube Adı" required>
+                        </div>
+                        <div class="form-section">
+                            <label class="form-label" for="branch-city">Şehir</label>
+                            <input type="text" id="branch-city" class="form-input" placeholder="Şehir">
+                        </div>
+                        <div class="universal-btn-group">
+                            <button type="button" class="universal-btn-save" onclick="saveBranch()">Kaydet</button>
+                            <button type="button" class="settings-btn-delete u-hidden" onclick="deleteBranch(document.getElementById('branch-id').value)" id="branch-delete-btn">Sil</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+<div id="user-modal" class="modal-overlay ayarlar-modal-overlay">
+            <div class="modal-container">
+                <div class="modal-header">
+                    <h2>KULLANICI YÖNETİMİ</h2>
+                    <button class="modal-close" onclick="closeUserManagement()">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="universal-back-bar universal-back-bar--standalone user-management-back-bar">
+                    <button type="button" class="universal-back-btn" aria-label="Ayarlar" onclick="medisaSettingsHistoryBack(event)">
+                        <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        <span class="universal-back-label">Ayarlar</span>
+                    </button>
+                    <div id="user-management-search-wrap" class="user-management-search-wrap">
+                        <input
+                            type="search"
+                            id="user-management-search-input"
+                            class="user-management-search-input"
+                            placeholder="Kullanıcı Ara"
+                            autocomplete="off"
+                            inputmode="search"
+                            onclick="event.stopPropagation()"
+                            oninput="if(window.setUserManagementSearch) window.setUserManagementSearch(this.value)">
+                        <button
+                            type="button"
+                            class="user-management-search-toggle"
+                            id="user-management-search-toggle"
+                            aria-label="Kullanıcı Ara"
+                            aria-expanded="false"
+                            onclick="event.stopPropagation(); if(window.toggleUserManagementSearch) window.toggleUserManagementSearch();">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <circle cx="11" cy="11" r="7"></circle>
+                                <path d="M20 20l-3.5-3.5"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="user-management-list-inner">
+                        <button onclick="openUserFormModal()" class="settings-add-text-btn user-add-btn">+ Yeni Kullanıcı</button>
+                        <div id="user-list"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+<div id="user-form-modal" class="modal-overlay ayarlar-modal-overlay">
+            <div class="modal-container">
+                <div class="modal-header">
+                    <h2>YENİ KULLANICI EKLE</h2>
+                    <button class="modal-close" onclick="closeUserFormModal()">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="universal-back-bar universal-back-bar--standalone">
+                    <button type="button" class="universal-back-btn" aria-label="Kullanıcı Yönetimi" onclick="medisaSettingsHistoryBack(event)">
+                        <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        <span class="universal-back-label">Kullanıcı Yönetimi</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="user-form" class="user-form-inner">
+                        <input type="hidden" id="user-id">
+                        <div class="form-section">
+                            <label class="form-label" for="user-name">Ad Soyad</label>
+                            <input type="text" id="user-name" class="form-input" placeholder="Ad Soyad" required>
+                        </div>
+                        <div class="form-section" id="user-branch-single-wrap">
+                            <label class="form-label" for="user-branch">Şube</label>
+                            <select id="user-branch" class="form-input" required>
+                                <option value="">Şube Seçin</option>
+                            </select>
+                        </div>
+                        <div class="form-section u-hidden" id="user-branch-readonly-wrap">
+                            <label class="form-label" for="user-branch-readonly">Şube</label>
+                            <input type="text" id="user-branch-readonly" class="form-input user-form-locked-input" readonly tabindex="-1" aria-readonly="true">
+                        </div>
+                        <div class="form-section" id="user-role-wrap">
+                            <label class="form-label" for="user-role">Kullanıcı Tipi</label>
+                            <select id="user-role" class="form-input">
+                                <option value="kullanici" selected>Kullanıcı</option>
+                                <option value="sube_yonetici">Yönetici</option>
+                                <option value="genel_yonetici">Genel Yönetici</option>
+                            </select>
+                        </div>
+                        <div class="form-section">
+                            <label class="form-label" for="user-phone">Telefon</label>
+                            <input type="text" id="user-phone" class="form-input" placeholder="Telefon" inputmode="tel">
+                        </div>
+                        <div class="form-section">
+                            <label class="form-label" for="user-email">E-posta</label>
+                            <input type="email" id="user-email" class="form-input" placeholder="E-posta">
+                        </div>
+                        <div class="form-section">
+                            <label class="form-label" for="user-username">Kullanıcı Adı (portal girişi)</label>
+                            <input type="text" id="user-username" class="form-input" placeholder="Plaka veya Kullanıcı Adı" autocomplete="username">
+                        </div>
+                        <div class="form-section">
+                            <label class="form-label" for="user-password">Şifre (portal girişi)</label>
+                            <input type="password" id="user-password" class="form-input" placeholder="Şifre" autocomplete="new-password">
+                        </div>
+                        <div class="form-section form-section-vehicles">
+                            <span id="user-vehicles-label" class="form-label">Tahsis Edilecek Taşıt</span>
+                            <div class="user-vehicles-wrap">
+                                <div id="user-vehicles-trigger" class="user-vehicles-trigger form-input" tabindex="0" role="combobox" aria-labelledby="user-vehicles-label" aria-controls="user-vehicles-dropdown" aria-haspopup="listbox" aria-expanded="false" onclick="if(window.toggleUserVehiclesDropdown) window.toggleUserVehiclesDropdown()">
+                                    <span class="user-vehicles-trigger-text">Taşıt Seçin</span>
+                                    <svg class="user-vehicles-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+                                </div>
+                                <div id="user-vehicles-dropdown" class="user-vehicles-dropdown" style="display:none;" role="listbox" aria-hidden="true">
+                                    <div id="user-vehicles-container" class="user-vehicles-checkbox-list" role="group"></div>
+                                    <div class="user-vehicles-search-wrap">
+                                        <input type="text" id="user-vehicles-search" class="form-input user-vehicles-search-input" placeholder="Plaka İle Ara..." aria-label="Plaka İle Ara" oninput="if(window.handleUserVehiclesSearch) window.handleUserVehiclesSearch(this.value)">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="universal-btn-group">
+                            <button type="button" class="universal-btn-save" onclick="saveUser()">Kaydet</button>
+                            <button type="button" class="settings-btn-delete u-hidden" onclick="deleteUser(document.getElementById('user-id').value)" id="user-delete-btn">Sil</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+<div id="required-documents-modal" class="modal-overlay ayarlar-modal-overlay">
+            <div class="modal-container">
+                <div class="modal-header">
+                    <h2>ZORUNLU EVRAKLAR</h2>
+                    <button class="modal-close" onclick="closeZorunluEvraklar()">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="universal-back-bar universal-back-bar--standalone">
+                    <button type="button" class="universal-back-btn" aria-label="Ayarlar" onclick="medisaSettingsHistoryBack(event)">
+                        <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        <span class="universal-back-label">Ayarlar</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="u-p-16">
+                        <h3 class="required-k2-section-title">K2 Taşıt Belgesi</h3>
+                        <div class="form-section">
+                            <div id="required-k2-document-area" class="required-k2-document-area">
+                                <button type="button" id="required-k2-document-picker" class="required-k2-document-picker">
+                                    <span class="required-k2-document-picker-icon">+</span>
+                                    <span class="required-k2-document-picker-label">Dosya Seç</span>
+                                </button>
+                            </div>
+                            <div id="required-k2-document-status" class="settings-card-count">Yüklü Değil</div>
+                            <input type="file" id="required-k2-document-input" accept="application/pdf,.pdf" class="form-input">
+                        </div>
+                        <div class="form-section required-k2-date-section">
+                            <label class="form-label" for="required-k2-expiry-date">Geçerlilik Süresi</label>
+                            <input type="text" id="required-k2-expiry-date" class="form-input" placeholder="gg/aa/yyyy" inputmode="numeric">
+                        </div>
+                        <div class="universal-btn-group">
+                            <button type="button" class="universal-btn-save" onclick="saveZorunluEvraklarK2()">Kaydet</button>
+                            <button type="button" class="universal-btn-cancel" onclick="closeZorunluEvraklar()">Vazgeç</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+<div id="data-management-modal" class="modal-overlay ayarlar-modal-overlay">
+            <div class="modal-container">
+                <div class="modal-header">
+                    <h2>VERİ YEDEKLEME</h2>
+                    <button class="modal-close" onclick="closeDataManagement()">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="universal-back-bar universal-back-bar--standalone">
+                    <button type="button" class="universal-back-btn" aria-label="Ayarlar" onclick="medisaSettingsHistoryBack(event)">
+                        <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        <span class="universal-back-label">Ayarlar</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="data-management-actions">
+                        <button onclick="exportData()" class="data-management-text-btn">
+                            <img class="data-management-action-icon" src="icon/data-backup.svg?v=20260611.1" alt="" aria-hidden="true">
+                            <span>Yedek Al</span>
+                        </button>
+                        <button onclick="restoreFromLastBackup()" class="data-management-text-btn">
+                            <img class="data-management-action-icon" src="icon/data-restore.svg?v=20260611.1" alt="" aria-hidden="true">
+                            <span>Son Yedekten Geri Yükle</span>
+                        </button>
+                        <button onclick="importData()" class="data-management-text-btn">
+                            <img class="data-management-action-icon" src="icon/data-import.svg?v=20260611.1" alt="" aria-hidden="true">
+                            <span>Dosyadan Geri Yükle</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+<div id="dis-veri-panel" class="modal-overlay ayarlar-modal-overlay">
+            <div class="modal-container">
+                <div class="modal-header">
+                    <h2>Dış Veri Yönetimi</h2>
+                    <button class="modal-close" onclick="closeDisVeriPanel()">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="universal-back-bar universal-back-bar--standalone">
+                    <button type="button" class="universal-back-btn" aria-label="Ayarlar" onclick="medisaSettingsHistoryBack(event)">
+                        <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        <span class="universal-back-label">Ayarlar</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="data-management-actions">
+                        <button type="button" id="tsb-indir-btn" class="data-management-text-btn" onclick="tsbKaskoListesiIndir()">TSB Kasko Listesi İndir</button>
+                        <button type="button" id="kasko-yukle-btn" class="data-management-text-btn" onclick="kaskoExcelYukle()">Kasko Excel Yükle</button>
+                        <input type="file" id="kasko-excel-input" accept=".xlsx,.xls" style="display: none;" aria-label="Kasko Excel dosyası seç (.xlsx, .xls)">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+<div id="cache-confirm-modal" class="modal-overlay ayarlar-modal-overlay">
+            <div class="modal-container" style="max-width: 400px; height: 210px;" onclick="event.stopPropagation();">
+                <div class="modal-header">
+                    <h2>ÖNBELLEK TEMİZLEME</h2>
+                    <button class="modal-close" onclick="closeCacheConfirmModal()">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="modal-body" onclick="event.stopPropagation();">
+                    <p id="cache-confirm-message" style="color: var(--form-label-color); font-size: 14px; line-height: 1.6; margin-bottom: 18px; text-align: center;"></p>
+                    <div class="universal-btn-group">
+                        <button type="button" class="universal-btn-save" onclick="event.stopPropagation(); confirmCacheClear();">Evet</button>
+                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); closeCacheConfirmModal();">Hayır</button>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+    var fragment = document.createDocumentFragment();
+    while (host.firstChild) fragment.appendChild(host.firstChild);
+    document.body.appendChild(fragment);
+  }
+  window.__medisaMainSurfaceHydrators = window.__medisaMainSurfaceHydrators || {};
+  window.__medisaMainSurfaceHydrators['settings'] = hydrateMedisaSettingsMarkup;
+  hydrateMedisaSettingsMarkup();
+})();
+
+
    (function () {
-  
+
     function $(sel, root = document) { return root.querySelector(sel); }
     function $all(sel, root = document) { return Array.from(root.querySelectorAll(sel)); }
 
@@ -413,11 +771,11 @@
       if (activeUserFormCustomSelect) closeUserFormCustomSelect();
     });
 
-  
+
     // ========================================
     // Şube YÖNETİMİ
     // ========================================
-  
+
     function readBranches() {
       if (typeof window.getMedisaBranches === 'function') {
         var result = window.getMedisaBranches();
@@ -1056,7 +1414,7 @@
         alert((err && err.message) ? err.message : 'K2 belgesi kaydedilemedi.');
       }
     };
-  
+
     // Modal Kontrolü (Ana Liste)
     window.openBranchManagement = function openBranchManagement() {
       closeSettingsDropdown();
@@ -1076,7 +1434,7 @@
       });
       pushSettingsHistoryLayer('settings-branch');
     };
-  
+
     window.closeBranchManagement = function closeBranchManagement(options) {
       const modal = document.getElementById('branch-modal');
       if (!modal) return;
@@ -1250,18 +1608,18 @@
     window.openBranchFormModal = function openBranchFormModal(editId = null) {
       const modal = document.getElementById('branch-form-modal');
       if (!modal) return;
-  
+
       const form = $('#branch-form', modal);
       const idInput = $('#branch-id', modal);
       const nameInput = $('#branch-name', modal);
       const cityInput = $('#branch-city', modal);
       const title = $('.modal-header h2', modal);
       const deleteBtn = $('#branch-delete-btn', modal);
-  
+
       // Form temizle
       if (form) form.reset();
       if (idInput) idInput.value = '';
-  
+
       if (editId) {
         // DÜZENLEME MODU
         const branches = readBranches();
@@ -1286,18 +1644,18 @@
           deleteBtn.style.display = 'none';
         }
       }
-  
+
       // Modalı aç
       modal.style.display = 'flex';
       requestAnimationFrame(() => modal.classList.add('active'));
       pushSettingsHistoryLayer('settings-branch-form');
-  
+
       // Focus
       if (nameInput && shouldAutofocusSettingsForm()) {
         setTimeout(() => nameInput.focus(), 350);
       }
     };
-  
+
     window.closeBranchFormModal = function closeBranchFormModal(options) {
       const modal = document.getElementById('branch-form-modal');
       if (!modal) return;
@@ -1317,11 +1675,11 @@
         try { history.back(); } catch (e) {}
       }
     };
-  
+
     // CRUD İşlemleri
     /**
      * Şube kaydını formdan okuyup appData üzerinden sunucuya kaydeder (Create/Update)
-     * 
+     *
      * Validasyon + Kaydetme akışı:
      * 1. Form alanlarını oku (id, name, city)
      * 2. Şube Adı validasyonu yap (zorunlu alan)
@@ -1329,7 +1687,7 @@
      * 4. appData'ya yaz ve sunucu kaydını bekle
      * 5. Form modalını kapat ve ana listeyi güncelle
      * 6. Kullanıcıya başarı mesajı göster
-     * 
+     *
      * Sunucu kaydı başarısız olursa modal açık kalır ve başarı mesajı gösterilmez.
      */
     window.saveBranch = async function saveBranch() {
@@ -1343,21 +1701,21 @@
         const idInput = $('#branch-id', modal);
       const nameInput = $('#branch-name', modal);
       const cityInput = $('#branch-city', modal);
-  
+
       const id = idInput ? idInput.value.trim() : '';
       const name = nameInput ? nameInput.value.trim() : '';
       const city = cityInput ? cityInput.value.trim() : '';
-  
+
       // Validasyon
       if (!name) {
         alert('Şube Adı Giriniz.');
         if (nameInput) nameInput.focus();
         return;
       }
-  
+
       previousBranches = cloneStorageState(readBranches());
       const branches = cloneStorageState(previousBranches);
-  
+
       if (id) {
         // güncelleME
         const idx = branches.findIndex(b => b.id === id);
@@ -1376,7 +1734,7 @@
 
         branches.push(newBranch);
       }
-  
+
         const persisted = await writeBranches(branches);
         if (persisted !== true) {
           if (typeof window.replaceMedisaBranches === 'function') {
@@ -1388,13 +1746,13 @@
           alert('Şube sunucuya kaydedilemedi. Lütfen tekrar deneyin.');
           return;
         }
-  
+
         // Form modalını kapat
         closeBranchFormModal();
-  
+
         // Ana modalı güncelle
         renderBranchList();
-  
+
         alert(id ? 'Şube güncellendi.' : 'Şube Eklendi.');
       } catch (error) {
         if (previousBranches) {
@@ -1410,25 +1768,25 @@
         if (saveBtn) saveBtn.disabled = false;
       }
     };
-  
+
     window.editBranch = function editBranch(id) {
       openBranchFormModal(id);
     };
-  
+
     window.deleteBranch = async function deleteBranch(id) {
       if (!id) return; // ID yoksa işlem yapma
-      
+
       // Taşıt kontrolü
       const vehicles = readVehicles();
       const vehicleCount = vehicles.filter(v => v.branchId === id).length;
-  
+
       // Kullanıcı kontrolü (ŞUBEye atanmış Kullanıcılar)
       const users = readUsers();
       const userCount = users.filter(u => {
         const ids = (u.branchIds && u.branchIds.length) ? u.branchIds : (u.branchId ? [u.branchId] : []);
         return ids.some(function (bid) { return String(bid) === String(id); });
       }).length;
-  
+
       if (vehicleCount > 0 || userCount > 0) {
         let msg = 'ŞUBEye ilişkin kayıtlı veri bulunduğundan silme yapılamaz!\n\n';
         if (vehicleCount > 0) msg += `• ${vehicleCount} Adet Taşıt\n`;
@@ -1436,9 +1794,9 @@
         alert(msg);
         return;
       }
-  
+
       if (!confirm('Bu ŞUBEyi silmek istediğinizden emin misiniz?')) return;
-  
+
       const branches = readBranches();
       const filtered = branches.filter(b => b.id !== id);
       try {
@@ -1463,13 +1821,13 @@
         alert('Şube silinirken bir hata oluştu! Lütfen tekrar deneyin.');
         return;
       }
-      
+
       // Form modalını kapat
       closeBranchFormModal();
-      
+
       // Ana modalı güncelle
       renderBranchList();
-  
+
       alert('Şube Silindi.');
     };
 
@@ -1481,7 +1839,7 @@
       const branches = readBranches();
       const vehicles = readVehicles();
       const normalizedQuery = normalizeUserManagementSearchText(branchManagementSearchQuery);
-  
+
       if (branches.length === 0) {
         container.innerHTML = `
           <div style="text-align:center; padding:20px; color:var(--muted);">
@@ -1509,7 +1867,7 @@
         `;
         return;
       }
-  
+
       const rows = filteredBranches.map(branch => {
         const vehicleCount = vehicles.filter(v => v.branchId === branch.id).length;
         const branchName = String(branch.name || '');
@@ -1524,14 +1882,14 @@
           </div>
         `;
       }).join('');
-  
+
       container.innerHTML = rows;
     }
-  
+
     // ========================================
     // KULLANICI YÖNETİMİ
     // ========================================
-  
+
     function readUsers() {
       if (typeof window.getMedisaUsers === 'function') {
         var result = window.getMedisaUsers();
@@ -1810,7 +2168,7 @@
         });
       }
     }
-  
+
     function writeUsers(arr) {
       if (!window.appData) return Promise.resolve(false);
       syncUsersToAppData(arr, { skipServerSave: true });
@@ -1884,7 +2242,7 @@
       if (serverMsg) return serverMsg + '\n\n' + tail;
       return 'Taşıt veya liste sunucuda güncellenmişti.\n\n' + tail;
     }
-  
+
     // Modal Kontrolü (Ana Liste)
     window.openUserManagement = function openUserManagement() {
       closeSettingsDropdown();
@@ -1895,7 +2253,7 @@
       userManagementSearchOpen = false;
       // Listeyi render et
       renderUserList();
-  
+
       // Modalı aç
       modal.style.display = 'flex';
       requestAnimationFrame(() => {
@@ -1906,7 +2264,7 @@
       });
       pushSettingsHistoryLayer('settings-user');
     };
-  
+
     window.closeUserManagement = function closeUserManagement(options) {
       const modal = document.getElementById('user-modal');
       if (!modal) return;
@@ -2212,7 +2570,7 @@
       window.__medisaUserVehiclesTypeaheadKeyBound = true;
       document.addEventListener('keydown', onUserVehiclesGlobalTypeaheadKeydown, true);
     }
-  
+
     // Kullanıcı formu: atanmış Taşıtlar checkbox listesi doldur (arama + filtreleme)
     function populateUserVehiclesMulti(searchFilter = '') {
       const container = document.getElementById('user-vehicles-container');
@@ -2282,12 +2640,12 @@
       });
       updateUserVehiclesTriggerText();
     }
-  
+
     var handleUserVehiclesSearchImpl = function(value) {
       populateUserVehiclesMulti(value);
     };
     window.handleUserVehiclesSearch = (typeof window.debounce === 'function') ? window.debounce(handleUserVehiclesSearchImpl, 200) : handleUserVehiclesSearchImpl;
-  
+
     function updateUserVehiclesTriggerText() {
       const trigger = document.getElementById('user-vehicles-trigger');
       if (!trigger) return;
@@ -2295,7 +2653,7 @@
       const textEl = trigger.querySelector('.user-vehicles-trigger-text');
       if (textEl) textEl.textContent = n === 0 ? 'Taşıt Seçin' : (n === 1 ? '1 Taşıt Seçildi' : n + ' Taşıt Seçildi');
     }
-  
+
     function isUserVehiclesDropdownOpen(dropdown) {
       return !!dropdown && dropdown.style.display !== 'none';
     }
@@ -2319,7 +2677,7 @@
       if (isUserVehiclesDropdownOpen(dropdown)) closeUserVehiclesDropdown(options);
       else openUserVehiclesDropdown(options);
     }
-  
+
     function closeUserVehiclesDropdown(options) {
       const opts = options || {};
       const dropdown = document.getElementById('user-vehicles-dropdown');
@@ -2381,7 +2739,7 @@
         });
       }
     }
-  
+
     window.toggleUserVehiclesDropdown = toggleUserVehiclesDropdown;
 
     if (document.readyState === 'loading') {
@@ -2389,7 +2747,7 @@
     } else {
       bindUserVehiclesDropdownA11y();
     }
-  
+
     document.addEventListener('click', function(ev) {
       const wrap = document.querySelector('.user-vehicles-wrap');
       const dropdown = document.getElementById('user-vehicles-dropdown');
@@ -2397,7 +2755,7 @@
         closeUserVehiclesDropdown();
       }
     });
-  
+
     window.openUserFormModal = function openUserFormModal(editId = null, options) {
       const opts = options && typeof options === 'object' ? options : {};
       if (!opts.fromVehicleAssign && typeof window.medisaDismissVehicleAssignUserSavedListener === 'function') {
@@ -2428,7 +2786,7 @@
       if (searchInput) searchInput.value = '';
       populateUserRoleOptions(scope, 'kullanici');
       syncUserFormCustomSelects(modal);
-  
+
       // Form temizle
       if (form) form.reset();
       if (idInput) idInput.value = '';
@@ -2446,7 +2804,7 @@
       if (scope.isBranchManager && branchReadonly) {
         branchReadonly.value = managedBranch ? (managedBranch.name || '') : '';
       }
-  
+
       if (editId) {
         // DÜZENLEME MODU
         const users = readAllUsers();
@@ -2492,7 +2850,7 @@
           deleteBtn.style.display = 'none';
         }
       }
-  
+
       syncUserRoleBranchUI({ scope: scope });
       syncUserFormCustomSelects(modal);
 
@@ -2500,13 +2858,13 @@
       modal.style.display = 'flex';
       requestAnimationFrame(() => modal.classList.add('active'));
       pushSettingsHistoryLayer('settings-user-form');
-  
+
       // Focus
       if (nameInput && shouldAutofocusSettingsForm()) {
         setTimeout(() => nameInput.focus(), 350);
       }
     };
-  
+
     window.closeUserFormModal = function closeUserFormModal(options) {
       if (typeof window.medisaDismissVehicleAssignUserSavedListener === 'function') {
         window.medisaDismissVehicleAssignUserSavedListener();
@@ -2534,7 +2892,7 @@
         try { history.back(); } catch (e) {}
       }
     };
-  
+
     // Şube Dropdown Doldur
     function populateBranchDropdown() {
       const select = document.getElementById('user-branch');
@@ -2595,11 +2953,11 @@
         rs.addEventListener('change', function () { syncUserRoleBranchUI(); });
       }
     });
-  
+
     // CRUD İşlemleri
     /**
      * Kullanıcı kaydını formdan okuyup appData üzerinden sunucuya kaydeder (Create/Update)
-     * 
+     *
      * Validasyon + Kaydetme akışı:
      * 1. Form alanlarını oku (id, name, branchId, phone, email, role)
      * 2. Ad Soyad ve Şube validasyonu yap (zorunlu alanlar)
@@ -2607,7 +2965,7 @@
      * 4. appData'ya yaz ve sunucu kaydını bekle
      * 5. Form modalını kapat ve ana listeyi güncelle
      * 6. Kullanıcıya başarı mesajı göster
-     * 
+     *
      * Sunucu kaydı başarısız olursa modal açık kalır ve başarı mesajı gösterilmez.
      */
     function formatUserFullName(rawName) {
@@ -2629,7 +2987,7 @@
       });
       return `${firstParts.join(' ')} ${lastName}`;
     }
-  
+
     window.saveUser = async function saveUser() {
       const modal = document.getElementById('user-form-modal');
       if (!modal) return;
@@ -2641,7 +2999,7 @@
           alert('Form modalı bulunamadı!');
           return;
         }
-  
+
         const idInput = document.getElementById('user-id');
         const nameInput = document.getElementById('user-name');
         const branchSelect = document.getElementById('user-branch');
@@ -2652,12 +3010,12 @@
         const passwordInput = document.getElementById('user-password');
         const vehiclesContainer = document.getElementById('user-vehicles-container');
         const scope = getUserManagementSessionScope();
-  
+
         if (!nameInput) {
           alert('Form alanları bulunamadı!');
           return;
         }
-  
+
         const id = idInput ? idInput.value.trim() : '';
         const nameRaw = nameInput.value.trim();
         const name = formatUserFullName(nameRaw);
@@ -2698,14 +3056,14 @@
         }
         const kullanici_adi = usernameInput ? usernameInput.value.trim() : '';
         const sifre = passwordInput ? passwordInput.value.trim() : '';
-  
+
         // Validasyon
         if (!name || !name.trim()) {
           alert('Ad Soyad giriniz.');
           nameInput.focus();
           return;
         }
-  
+
         const previousUsers = cloneStorageState(readAllUsers());
         const previousVehicles = cloneStorageState(readAllVehicles());
         const users = cloneStorageState(previousUsers);
@@ -2725,7 +3083,7 @@
           alert('Bu kullanıcıyı kaydetme yetkiniz yok.');
           return;
         }
-  
+
         // Portal girişi: Kullanıcı veya şube yöneticisine taşıt atanmışsa kullanıcı adı ve şifre zorunlu
         const needsPortalCredentials = hasAssignedVehicles && (role === 'kullanici' || role === 'sube_yonetici');
         const hasExistingPortalPassword = !!(existingUser && (
@@ -2772,7 +3130,7 @@
             return;
           }
         }
-  
+
         if (id) {
           // güncelleME
           const idx = users.findIndex(u => String(u.id) === String(id));
@@ -2812,7 +3170,7 @@
           users.push(newUser);
           savedUserId = newUser.id;
         }
-  
+
         // atanmış Taşıtlar: tek kaynak vehicle.assignedUserId
         vehicles.forEach(v => {
           if (scope.isBranchManager && !isWithinUserManagementBranch(v && v.branchId, scope)) return;
@@ -2837,7 +3195,7 @@
           alert('Kullanici sunucuya kaydedilemedi. Bu nedenle portal girisi acilmaz. Lutfen tekrar deneyin.');
           return;
         }
-  
+
         if (savedUserId) {
           window.dispatchEvent(new CustomEvent('userSaved', { detail: { id: savedUserId } }));
         }
@@ -2864,11 +3222,11 @@
         if (saveBtn) saveBtn.disabled = false;
       }
     };
-  
+
     window.editUser = function editUser(id) {
       openUserFormModal(id);
     };
-  
+
     window.deleteUser = async function deleteUser(id) {
       if (!id) return; // ID yoksa işlem yapma
       const scope = getUserManagementSessionScope();
@@ -2879,18 +3237,18 @@
         alert('Bu kullanıcıyı silme yetkiniz yok.');
         return;
       }
-      
+
       // Taşıt kontrolü
       const vehicles = readAllVehicles();
       const count = vehicles.filter(v => String(v.assignedUserId || '') === String(id)).length;
-  
+
       if (count > 0) {
         alert(`Bu Kullanıcıya ${count} adet Taşıt tahsis edilmiş. Önce Taşıtları başka Kullanıcıya aktarın.`);
         return;
       }
-  
+
       if (!confirm('Bu Kullanıcıyı silmek istediğinizden emin misiniz?')) return;
-  
+
       const previousVehicles = cloneStorageState(vehicles);
       const filtered = previousUsers.filter(u => String(u.id) !== String(id));
       let persisted = false;
@@ -2916,13 +3274,13 @@
         alert('Kullanici silme islemi sunucuya kaydedilemedi. Lutfen tekrar deneyin.');
         return;
       }
-      
+
       // Form modalını kapat
       closeUserFormModal();
-      
+
       // Ana modalı güncelle
       renderUserList();
-  
+
       alert('Kullanıcı Silindi.');
     };
 
@@ -2972,7 +3330,7 @@
       const users = getScopedUsersForUserManagement(readUsers(), scope);
       const branches = readBranches();
       const normalizedQuery = normalizeUserManagementSearchText(userManagementSearchQuery);
-  
+
       if (users.length === 0) {
         container.innerHTML = `
           <div style="text-align:center; padding:20px; color:var(--muted);">
@@ -3058,11 +3416,11 @@
       container.innerHTML = rows;
       fitUserManagementCardNames();
     }
-  
+
     // ========================================
     // YARDIMCI FONKSİYONLAR
     // ========================================
-  
+
     function formatDate(isoString) {
       if (!isoString) return '-';
       const date = new Date(isoString);
@@ -3074,14 +3432,14 @@
         minute: '2-digit'
       });
     }
-  
+
     // ========================================
     // ESC & OVERLAY KAPAT
     // ========================================
-  
+
     document.addEventListener('keydown', (e) => {
       if (e.key !== 'Escape') return;
-  
+
       const branchModal = document.getElementById('branch-modal');
       const userModal = document.getElementById('user-modal');
       const branchFormModal = document.getElementById('branch-form-modal');
@@ -3108,7 +3466,7 @@
         e.stopPropagation();
       }
     });
-  
+
     function isAyarlarOverlayVisiblyOpen(el) {
       if (!el) return false;
       if (el.classList.contains('active') || el.classList.contains('open')) return true;
@@ -3146,24 +3504,24 @@
         closeDataManagement();
       }
     });
-  
+
     // ========================================
     // VERİ YÖNETİMİ
     // ========================================
-  
+
     // Modal Kontrolü
     window.openDataManagement = function openDataManagement(event) {
       if (event && typeof event.stopPropagation === 'function') {
         event.stopPropagation();
         event.preventDefault();
       }
-  
+
       closeSettingsDropdown();
       const dataSubmenu = document.getElementById('data-submenu');
       if (dataSubmenu) {
         dataSubmenu.classList.remove('open');
       }
-  
+
       const modal = document.getElementById('data-management-modal');
       if (!modal) return;
       if (modal.classList.contains('active') || modal.style.display === 'flex') {
@@ -3173,7 +3531,7 @@
       requestAnimationFrame(() => modal.classList.add('active'));
       pushSettingsHistoryLayer('settings-data');
     };
-  
+
     window.closeDataManagement = function closeDataManagement(options) {
       const modal = document.getElementById('data-management-modal');
       if (!modal) return;
@@ -3473,12 +3831,12 @@
         const backup = buildFullBackupPayload();
         const dataStr = JSON.stringify(backup, null, 2);
         const dataBlob = new Blob([dataStr], { type: 'application/json' });
-        
+
         const link = document.createElement('a');
         link.href = URL.createObjectURL(dataBlob);
         link.download = `medisa_yedek_${new Date().toISOString().split('T')[0]}.json`;
         link.click();
-        
+
         URL.revokeObjectURL(link.href);
 
         setTimeout(function() {
@@ -3489,7 +3847,7 @@
         notifyExportDataResult('Yedekleme sırasında hata oluştu!', true);
       }
     };
-  
+
     // Son yedekten geri yükle: önce sunucu (restore.php), yoksa yerel medisa_server_backup.
     function normalizeBackupPayload(raw, source) {
       if (!raw || typeof raw !== "object") return null;
@@ -3658,11 +4016,11 @@
         input.style.position = 'fixed';
         input.style.left = '-9999px';
         input.style.opacity = '0';
-  
+
         input.onchange = function(e) {
           const file = e.target.files[0];
           if (!file) return;
-  
+
           const reader = new FileReader();
           reader.onload = function(event) {
             try {
@@ -3684,7 +4042,7 @@
                             `Taşıtlar: ${backup.vehicles.length}` +
                             kayitLine +
                             `\n\nMevcut veriler silinecek! Emin misiniz?`;
-  
+
               if (!confirm(message)) return;
 
               applyRestoredBackup(backup);
@@ -3693,11 +4051,11 @@
               alert('Yedek Dosyası Okunamadı!');
             }
           };
-  
+
           reader.readAsText(file);
           if (input.parentNode) input.parentNode.removeChild(input);
         };
-  
+
         document.body.appendChild(input);
         input.click();
         setTimeout(function() {
@@ -3707,7 +4065,7 @@
         alert('Dosya seçici açılamadı. Lütfen tekrar deneyin.');
       }
     };
-  
+
     // Önbellek temizliğinden önce çağrılır: sunucu ve/veya yerel yedek.
     async function uploadToServer() {
       try {
@@ -3780,24 +4138,24 @@
         };
       }
     }
-  
+
     /** Tarayıcı uygulama verisini temizler: onay modalı → yedek → confirmCacheClear (anahtarlar silinir, sayfa yenilenir). Geri alınamaz. */
     window.clearCache = async function clearCache() {
       try {
         // Onay sonrası yedekleme (sunucu yalnızca kullanıcı akışında)
         const confirmMessage = 'Tarayıcı Belleği Temizlenecektir, Devam Etmek istediğinize Emin Misiniz?';
         window.openCacheConfirmModal(confirmMessage);
-   
+
       } catch (error) {
         window.showInfoModal('Bir Hata Oluştu!');
       }
     };
-  
+
     // ÖNBELLEK TEMİZLEME ONAY MODALI
     let cacheClearConfirmed = false;
     let allowCacheClearWithLocalBackupOnly = false;
     let allowCacheClearWithoutBackup = false;
-  
+
     window.openCacheConfirmModal = function openCacheConfirmModal(message, options = {}) {
       const modal = document.getElementById('cache-confirm-modal');
       const messageEl = document.getElementById('cache-confirm-message');
@@ -3809,14 +4167,14 @@
       cacheClearConfirmed = false;
       allowCacheClearWithLocalBackupOnly = options && options.allowLocalBackupOnly === true;
       allowCacheClearWithoutBackup = options && options.allowClearWithoutBackup === true;
-  
+
       // Body'ye modal-open class'ı ekle
       document.body.classList.add('modal-open');
-  
+
       modal.style.display = 'flex';
       requestAnimationFrame(() => modal.classList.add('active'));
     };
-  
+
     window.closeCacheConfirmModal = function closeCacheConfirmModal() {
       const modal = document.getElementById('cache-confirm-modal');
       if (!modal) return;
@@ -3831,11 +4189,11 @@
         }
       }, 300);
     };
-  
+
     window.confirmCacheClear = async function confirmCacheClear() {
       cacheClearConfirmed = true;
       closeCacheConfirmModal();
-  
+
       try {
         window.showInfoModal('Veriler Yedekleniyor...');
         const result = await uploadToServer();
@@ -3860,7 +4218,7 @@
           window.openCacheConfirmModal(retryMessage, { allowLocalBackupOnly: true });
           return;
         }
-  
+
         var legacyLocalStorageKeys = [
           'medisa_branches_v1',
           'medisa_users_v1',
@@ -3885,22 +4243,22 @@
         try {
           sessionStorage.removeItem('notifViewedKeysV2');
         } catch (sessionPurgeErr) {}
-        
+
         const backupResultMessage = result.serverBackup
           ? 'Veriler sunucuya yedeklendi ve tarayıcı belleği temizlendi.'
           : 'Yerel yedek korunarak tarayıcı belleği temizlendi.';
         window.showInfoModal(backupResultMessage);
-        
+
         // 3. Sayfayı yenile
         setTimeout(() => {
           window.location.reload();
         }, 2000);
-  
+
       } catch (error) {
         window.showInfoModal('Bir Hata Oluştu!');
       }
     };
-  
+
     // BİLGİ MODALI (Alert yerine)
     window.showInfoModal = function showInfoModal(message) {
       const modal = document.getElementById('info-modal');

@@ -1,0 +1,2894 @@
+
+
+/* --- style-core.css border çakışmalarını temizle (driver sayfalarında border tek kaynaktan gelsin) --- */
+/* style-core .app-container üst border – ::before ile çiziliyor, iptal */
+.dashboard-page .app-container.driver-dashboard-container,
+.login-page .app-container.driver-dashboard-container {
+  border-top: none !important;
+}
+/* style-core .app-container::after inset red glow – container kendi glow'unu kullanır, iptal */
+.dashboard-page .app-container.driver-dashboard-container::after,
+.login-page .app-container.driver-dashboard-container::after {
+  box-shadow: none !important;
+}
+/* style-core .content-wrap sol/sağ border + glow – container zaten veriyor, iptal */
+.dashboard-page .content-wrap.driver-content-wrap,
+.login-page .content-wrap.driver-content-wrap {
+  border-left: none !important;
+  border-right: none !important;
+  box-shadow: none !important;
+}
+/* Mobil: style-core .content-wrap::before da yan çizgi çiziyor; çift görünmesin, sadece container ::before kalsın */
+.dashboard-page .content-wrap.driver-content-wrap::before,
+.login-page .content-wrap.driver-content-wrap::before {
+  display: none !important;
+}
+
+/* --- Splash ekranı –  link/PWA ile açılışta 3 sn --- */
+.driver-splash {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.4s ease;
+  /* iOS PWA: Çentik/home indicator alanına taşmasın */
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  box-sizing: border-box;
+}
+.driver-splash.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+body.dashboard-page.driver-splash-active .app-container.driver-dashboard-container,
+body.dashboard-page.driver-splash-active #pwa-install-wrapper,
+body.login-page.login-gate-active .app-container.driver-dashboard-container,
+body.login-page.login-gate-active #pwa-install-wrapper {
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+.driver-splash-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  min-width: var(--driver-splash-inner-min-width, 120px); /* Logo yüklenmeden önce layout kaymasını önler */
+}
+/* Splash: açılış logosu 120px, aspect-ratio ile alan rezerve */
+.driver-splash-logo {
+  width: var(--driver-splash-logo-width, 120px);
+  height: var(--driver-splash-logo-height, 69px); /* SVG oranı 624.89:357.04 – layout shift önleme */
+  flex-shrink: 0;
+  object-fit: contain;
+  filter: brightness(0.88);
+}
+.driver-splash-title {
+  font-size: clamp(calc(17px - 0.5pt), 4.5vw, calc(25px - 0.5pt));
+  font-weight: 800;
+  letter-spacing: clamp(1px, 0.5vw, 4px);
+  text-transform: uppercase;
+  margin: 0;
+  background: linear-gradient(to bottom, #c2d4df 0%, #ffffff 40%, #9aadba 52%, #d6e0e8 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-family: 'Inter', sans-serif;
+}
+/* KULLANICI PANELİ: başlık altında, 1pt küçük, aynı renk */
+.driver-splash-subtitle {
+  font-size: clamp(calc(15px - 0.5pt), 4vw, calc(22px - 0.5pt));
+  font-weight: 800;
+  letter-spacing: clamp(1px, 0.5vw, 3.5px);
+  text-transform: uppercase;
+  margin: 0;
+  margin-top: 2px;
+  background: linear-gradient(to bottom, #c2d4df 0%, #ffffff 40%, #9aadba 52%, #d6e0e8 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-family: 'Inter', sans-serif;
+}
+
+.driver-splash--dashboard {
+  --driver-splash-inner-min-width: 150px;
+  --driver-splash-logo-width: 150px;
+  --driver-splash-logo-height: 86px;
+}
+
+/* --- Overflow: yatay taşma yok; safe-area sadece html'de (style-core) – çift padding önlenir --- */
+body.login-page,
+body.dashboard-page {
+  overflow: hidden !important;
+  overflow-x: hidden !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+/* --- DASHBOARD: html/body scroll kilidi (mobil bounce onarımı) --- */
+html:has(body.dashboard-page) {
+  height: 100%;
+  overflow: hidden !important;
+  overscroll-behavior: none;
+}
+body.dashboard-page {
+  height: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow: hidden !important;
+  overscroll-behavior: none;
+}
+
+/* --- DASHBOARD SAYFA YAPISI --- */
+.dashboard-page {
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: 0;
+}
+
+/* Header dikey yükseklik 4px daralt (12px -> 10px) – panel ve giriş aynı */
+.dashboard-page .hero,
+.login-page .hero {
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
+}
+/* İsim tek satır + sütun genişleyince style-core .hero overflow:hidden kesmesin; logo sol çerçeveye 2px */
+.dashboard-page .hero {
+  overflow: visible !important;
+  padding-left: 2px !important;
+}
+
+.driver-dashboard-container {
+  height: 100vh;
+  height: 100dvh;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  overflow: hidden;
+  overscroll-behavior: none;
+  position: relative;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+}
+/* Codex standart: driver sayfalarında footer yüksekliği merkezi değişkenden */
+.dashboard-page { --app-footer-real-height: 42px; }
+.login-page { --app-footer-real-height: 46px; }
+.dashboard-page .driver-dashboard-container,
+.login-page .driver-dashboard-container {
+  padding-bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0));
+}
+.driver-dashboard-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
+  border-top: 0.5px solid var(--border-red-tech);
+  border-left: 0.5px solid var(--border-red-tech);
+  border-right: 0.5px solid var(--border-red-tech);
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  pointer-events: none;
+  z-index: 10010;
+}
+
+/* Ana başlık (hero + driver-below-hero) sabit üstte – üst çizgi ::before'da, header'da yok */
+.driver-header-fixed {
+  flex-shrink: 0;
+  background: var(--bg);
+  z-index: 10006;
+  padding: max(12px, env(safe-area-inset-top)) 4px 4px 4px;
+  box-sizing: border-box;
+  border-top: none !important;
+  overflow: visible;
+}
+
+/* Ortadaki bölüm: sol grid sabit, sadece sağ grid kendi içinde kayar; barın üstüne binmemesi için z-index */
+.driver-scroll-area {
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+  overflow-x: hidden;
+  overscroll-behavior: none;
+  padding-top: 0 !important;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 10004;
+}
+
+/* Dashboard: footer yüksekliği merkezi değişkenden (modal bottom ile uyumlu).
+   style-core #app-footer miraslarını sıfırla: tam genişlik, merkez/kesme yok. */
+.dashboard-page #app-footer {
+  position: fixed !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  transform: none !important;
+  max-width: none !important;
+  width: 100% !important;
+  margin: 0 !important;
+  clip-path: none !important;
+  flex-shrink: 0;
+  z-index: 10005 !important;
+  height: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
+  min-height: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
+  box-sizing: border-box !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-top: 1px solid rgba(128, 128, 128, 0.52) !important;
+  border-left: 0.5px solid rgba(255, 255, 255, 0.10) !important;
+  border-right: 0.5px solid rgba(255, 255, 255, 0.10) !important;
+}
+
+.driver-content-wrap {
+  overflow-y: hidden !important;
+  overflow-x: hidden !important;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding-bottom: 0 !important;
+}
+
+.driver-content-wrap::-webkit-scrollbar {
+  display: none;
+}
+
+/* Driver: Başlık alanı – 3 sütunlu grid (logo | başlık bloğu | spacer), tam ortalama */
+.hero.hero-two-rows {
+  display: grid !important;
+  grid-template-columns: var(--hero-logo-width) 1fr var(--hero-logo-width);
+  align-items: center;
+  gap: 8px;
+  flex-direction: unset !important;
+}
+/* Kullanıcı paneli: sol sütun logo+isim genişliğine göre büyüsün (isim tek satır) */
+.dashboard-page .hero.hero-two-rows {
+  grid-template-columns: minmax(var(--hero-logo-width), max-content) 1fr var(--hero-logo-width);
+}
+.hero.hero-two-rows .hero-logo {
+  grid-column: 1;
+  justify-self: start;
+  flex-shrink: 0;
+  margin-left: 10px; /* Login: hafif sağa; kullanıcı paneli aşağıda margin-left:0 */
+  transform: translateY(-6px);
+}
+.hero.hero-two-rows .hero-logo img {
+  width: 94% !important;
+  height: auto !important;
+  max-height: 100%;
+  object-fit: contain;
+}
+/* Kullanıcı paneli: isim logo altında; tek satır, sütun genişliği isme göre */
+.dashboard-page .hero.hero-two-rows .hero-logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  width: max-content;
+  min-width: var(--hero-logo-width);
+  max-width: min(200px, 46vw);
+  overflow: visible;
+  margin-left: 0;
+  /* Yatay -18px / PWA -23px zıplamasın: hizayı grid + justify-self ile veriyoruz; +3px aşağı */
+  transform: translate(0, -3px);
+}
+.dashboard-page .hero.hero-two-rows .hero-logo picture {
+  display: block;
+  width: 100%;
+  max-width: 54px;
+  margin: 0 auto;
+}
+.dashboard-page .hero.hero-two-rows .hero-logo img {
+  width: 100% !important;
+  height: auto !important;
+  max-height: none;
+  object-fit: contain;
+}
+.dashboard-page .main-header-user-name {
+  display: block;
+  max-width: none;
+  overflow: visible;
+  color: rgba(238, 246, 255, 0.98);
+  font-size: clamp(9px, 1.65vw, 10.5px);
+  font-weight: 700;
+  text-shadow: none !important;
+  filter: none !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.15;
+  text-align: center;
+  letter-spacing: 0.01em;
+  word-break: normal;
+  white-space: nowrap;
+  transform: translate(3px, 2px); /* +3px sağ, +2px yukarı (önceki 4px Y) */
+}
+.dashboard-page .main-header-user-name.is-empty {
+  display: none;
+}
+/* Masaüstü (641px+): logo+isim satırın altına (grid align-self); sol oval köşe için iç boşluk; isimde hafif optik sağ */
+@media (min-width: 641px) {
+  .dashboard-page .hero.hero-two-rows .hero-logo {
+    align-self: end;
+    padding-left: 11px;
+    box-sizing: content-box;
+  }
+  .dashboard-page .main-header-user-name {
+    transform: translate(0, 2px);
+  }
+}
+.hero.hero-two-rows .hero-title-block {
+  grid-column: 2;
+  justify-self: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+}
+/* Dashboard: başlık + alt satır (metalik alt başlık) logoyla aynı optik bantta; çok hafif aşağı */
+.dashboard-page .hero.hero-two-rows .hero-title-block {
+  transform: translateY(3px);
+}
+.hero.hero-two-rows .hero-spacer {
+  grid-column: 3;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 0;
+}
+.driver-mobile-notification-slot {
+  width: 100%;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  min-height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.driver-mobile-notification-slot[aria-hidden="true"] {
+  display: none !important;
+}
+.driver-mobile-notification-slot[aria-hidden="false"] {
+  display: flex !important;
+}
+.hero.hero-two-rows .hero-title-block .hero-title-line {
+  flex: 0 1 auto;
+  min-width: 0;
+  margin: 0;
+  font-size: clamp(calc(16px - 0.5pt), 4.5vw, calc(24px - 0.5pt));
+  font-weight: 800;
+  letter-spacing: clamp(1px, 0.5vw, 4px);
+  text-transform: uppercase;
+  text-align: center;
+  background: linear-gradient(to bottom, #c2d4df 0%, #ffffff 40%, #9aadba 52%, #d6e0e8 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  color: transparent !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.hero.hero-two-rows .hero-title-block .hero-panel-subtitle {
+  margin: 0;
+}
+
+/* --- Üst durum ikonları (geçmiş / motor uyarı / anahtar) - 8px çerçeve boşluğu --- */
+.driver-below-hero {
+  margin-top: 0;
+  margin-bottom: 1px;
+  padding: 0 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 2px;
+}
+
+.driver-below-hero-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+.driver-below-hero-pwa-slot {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.driver-below-hero-pwa-slot:empty {
+  display: none;
+}
+.driver-status-icon-row {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 100%;
+  gap: 0;
+}
+.driver-status-icon-slot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 36px;
+}
+.driver-status-icon-slot-history {
+  justify-self: start;
+  justify-content: flex-start;
+  padding-left: 6px;
+}
+.driver-status-icon-slot-warning {
+  justify-self: center;
+  justify-content: center;
+  width: auto;
+  overflow: visible;
+}
+.driver-status-icon-slot-key {
+  justify-self: end;
+  justify-content: flex-end;
+  gap: 8px;
+  padding-right: 6px;
+}
+.driver-below-hero-notification-slot {
+  flex: 0 0 auto;
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+}
+.driver-below-hero-notification-slot:empty {
+  display: none;
+}
+.driver-below-hero-notification-slot .driver-sliding-warning {
+  flex: 0 0 auto;
+  width: auto;
+  min-width: 0;
+  max-width: 100%;
+  margin: 0 auto;
+  justify-content: center;
+}
+.driver-status-icon-slot-warning .driver-warning-trigger {
+  margin-left: auto;
+  margin-right: auto;
+}
+.driver-status-icon-slot-warning .driver-warning-icon-engine {
+  width: 24px;
+  height: 24px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.driver-status-icon-slot-warning .driver-warning-icon-engine-red,
+.driver-status-icon-slot-warning .driver-warning-icon-engine-orange {
+  width: 28px;
+  height: 24px;
+}
+
+.driver-below-hero-row .driver-btn-password,
+.driver-below-hero-row .driver-btn-header-logout {
+  width: auto;
+  flex: none;
+  margin: 0;
+  padding: 2px;
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  -webkit-appearance: none;
+  appearance: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.driver-below-hero-row .driver-btn-password:hover,
+.driver-below-hero-row .driver-btn-password:focus,
+.driver-below-hero-row .driver-btn-password:active,
+.driver-below-hero-row .driver-btn-header-logout:hover,
+.driver-below-hero-row .driver-btn-header-logout:focus,
+.driver-below-hero-row .driver-btn-header-logout:active {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.driver-below-hero-row .driver-btn-password {
+  color: #5889b5;
+}
+.driver-below-hero-row .driver-btn-password:hover,
+.driver-below-hero-row .driver-btn-password:focus {
+  color: #6a9bc4;
+}
+.driver-below-hero-row .driver-btn-header-logout {
+  color: rgba(236, 46, 46, 0.9);
+}
+.driver-below-hero-row .driver-btn-header-logout:hover,
+.driver-below-hero-row .driver-btn-header-logout:focus {
+  color: #ff2b2b;
+}
+.driver-below-hero-row .driver-btn-header-logout-icon {
+  width: 22px;
+  height: 22px;
+  stroke-width: 1.8;
+}
+
+/* KULLANICI PANELİ: h1 altında, 1pt küçük, aynı renk (metalik gradient) */
+.hero-title-block .hero-panel-subtitle {
+  font-size: calc(17px - 0.5pt);
+  font-weight: 800;
+  margin: 0;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  text-align: center;
+  flex: none;
+  background: linear-gradient(to bottom,
+    #c2d4df 0%,
+    #ffffff 40%,
+    #9aadba 52%,
+    #d6e0e8 100%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  text-shadow: none;
+  filter: none;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Sadece kullanıcı paneli: alt başlık (KULLANICI PANELİ) 0.7 pt küçük; üst satıra dokunulmaz */
+.dashboard-page .hero-title-block .hero-panel-subtitle {
+  font-size: calc(17px - 0.7pt - 0.5pt);
+}
+
+/* Ara aralık (641px–768px): logo başlık üzerine binmesin – 56px sütunlar, margin yok */
+@media (min-width: 641px) and (max-width: 768px) {
+  .dashboard-page .hero.hero-two-rows {
+    grid-template-columns: minmax(56px, max-content) minmax(0, 1fr) 56px !important;
+  }
+  .login-page .hero.hero-two-rows {
+    grid-template-columns: 56px 1fr 56px !important;
+  }
+  .dashboard-page .hero.hero-two-rows .hero-logo {
+    flex: 0 1 auto !important;
+    width: max-content !important;
+    min-width: 52px !important;
+    max-width: min(200px, 46vw) !important;
+    margin-left: 0 !important;
+    /* align-self: end (641+) alta sabitler; fazla negatif Y ile tekrar yukarı kaçmasın */
+    transform: translate(0, -2px) !important;
+  }
+  .dashboard-page .hero.hero-two-rows .hero-logo picture {
+    max-width: 52px !important;
+  }
+  .login-page .hero.hero-two-rows .hero-logo {
+    flex: 0 0 56px !important;
+    width: 56px !important;
+    margin-left: 0 !important;
+    transform: translate(0, -6px) !important;
+  }
+  .dashboard-page .hero.hero-two-rows .hero-logo img,
+  .login-page .hero.hero-two-rows .hero-logo img {
+    width: 100% !important;
+  }
+  /* Başlık metinleri 1pt küçük (641–768px) */
+  .dashboard-page .hero.hero-two-rows .hero-title-block .hero-title-line,
+  .login-page .hero.hero-two-rows .hero-title-block .hero-title-line {
+    font-size: clamp(calc(16px - 1pt - 0.5pt), 4.2vw, calc(20px - 1pt - 0.5pt)) !important;
+    letter-spacing: clamp(1px, 0.4vw, 3px) !important;
+  }
+  .dashboard-page .hero-title-block .hero-panel-subtitle {
+    font-size: calc(17px - 1pt - 0.7pt - 0.5pt) !important;
+  }
+  .login-page .hero-title-block .hero-panel-subtitle {
+    font-size: calc(17px - 1pt - 0.5pt) !important;
+  }
+}
+
+/* Masaüstü: Kullanıcı Paneli başlığı, driver-below-hero boşluk, çerçeve kalınlığı, logo boyutu */
+@media (min-width: 769px) {
+  .hero-title-block .hero-panel-subtitle {
+    font-size: calc(17px - 0.5pt);
+    letter-spacing: 3px;
+  }
+  .dashboard-page .hero-title-block .hero-panel-subtitle {
+    font-size: calc(17px - 0.7pt - 0.5pt);
+  }
+  /* Kullanıcı Paneli + Login: başlık kutunun içine sığsın */
+  .dashboard-page .hero.hero-two-rows .hero-title-line,
+  .login-page .hero.hero-two-rows .hero-title-line {
+    font-size: clamp(calc(16px - 0.5pt), 4.5vw, calc(20px - 0.5pt)) !important;
+    letter-spacing: clamp(1px, 0.45vw, 3px) !important;
+  }
+  .dashboard-page .hero {
+    margin-bottom: 0 !important;
+  }
+  .dashboard-page .driver-below-hero {
+    margin-top: 0 !important;
+    margin-bottom: -1px !important;
+  }
+  /* Tarihçe/Çıkış butonları alanı ile alttaki içerik arası 1px */
+  .dashboard-page .driver-header-fixed {
+    padding-bottom: 0 !important;
+  }
+  .dashboard-page .driver-below-hero-row .driver-btn-password,
+  .dashboard-page .driver-below-hero-row .driver-btn-header-logout {
+    margin: 0 !important;
+  }
+  .dashboard-page .driver-below-hero-row .driver-btn-password {
+    display: none !important;
+  }
+  .dashboard-page .driver-below-hero-row .driver-btn-header-logout {
+    color: rgba(236, 46, 46, 0.9) !important;
+  }
+  .dashboard-page .driver-below-hero-row .driver-btn-header-logout:hover,
+  .dashboard-page .driver-below-hero-row .driver-btn-header-logout:focus {
+    color: #ff2b2b !important;
+  }
+  /* PWA: absolute sol overlay — icon row tam genişlik kalır, çıkış kapısı oynamaz */
+  .dashboard-page .driver-below-hero-row {
+    position: relative !important;
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    gap: 8px !important;
+  }
+  .dashboard-page .driver-below-hero-pwa-slot {
+    position: absolute !important;
+    left: 0 !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    z-index: 2 !important;
+    max-width: min(168px, 42%) !important;
+    min-width: 0 !important;
+  }
+  .dashboard-page .driver-status-icon-row {
+    flex: 1 1 auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    gap: 8px !important;
+  }
+  .dashboard-page .driver-status-icon-slot {
+    min-height: 32px;
+  }
+  /* Motor uyarı ikonu: hover büyüme + kesilme önleme (tarihçe ikonu ile aynı mantık) */
+  .dashboard-page .driver-status-icon-row,
+  .dashboard-page .driver-status-icon-slot-warning,
+  .dashboard-page .driver-below-hero-notification-slot,
+  .dashboard-page .driver-below-hero-notification-slot .driver-sliding-warning {
+    overflow: visible !important;
+  }
+  .dashboard-page .driver-status-icon-slot-warning .driver-warning-trigger {
+    width: 36px;
+    height: 36px;
+    transform: translateZ(0);
+    transition: box-shadow 0.18s ease;
+  }
+  .dashboard-page .driver-status-icon-slot-warning .driver-warning-icon-engine {
+    transition: transform 0.18s ease;
+    transform-origin: center center;
+  }
+  .dashboard-page .driver-below-hero-row .driver-btn-header-logout .driver-btn-header-logout-icon {
+    width: 24px !important;
+    height: 24px !important;
+    stroke-width: 1.7 !important;
+  }
+
+  /* Footer: masaüstünde ana uygulama/login ile aynı gri üst çizgi + dashboard glow */
+  .dashboard-page #app-footer {
+    border-top: 1px solid rgba(128, 128, 128, 0.52) !important;
+    border-left: 0.6px solid rgba(255, 255, 255, 0.24) !important;
+    border-right: 0.6px solid rgba(255, 255, 255, 0.24) !important;
+    box-shadow: 0 -13px 26px rgba(var(--footer-glow-rgb), 0.42) !important;
+  }
+  .dashboard-page #app-footer .footer-content {
+    display: flex !important;
+    align-items: center !important;
+    height: 100% !important;
+    padding: 3px 12px !important;
+    padding-bottom: max(4px, env(safe-area-inset-bottom, 0)) !important;
+    /* Container ile hizalı: footer içeriği panel genişliği (500px) ile sınırlı ve ortada */
+    max-width: 500px !important;
+    width: 100% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    box-sizing: border-box !important;
+  }
+
+  .login-page #app-footer.login-footer {
+    border-top: none !important;
+    border-left: 0.5px solid rgba(255, 255, 255, 0.20) !important;
+    border-right: 0.5px solid rgba(255, 255, 255, 0.20) !important;
+    box-shadow: 0 -10px 20px rgba(var(--theme-color-rgb), 0.38) !important;
+  }
+  /* ========== MASAÜSTÜ (769px+) – Header logo: 76×76px, pozisyon (-18px, 6.5px) ========== */
+  .dashboard-page .hero.hero-two-rows {
+    grid-template-columns: minmax(68px, max-content) minmax(0, 1fr) 72px !important;
+  }
+  .dashboard-page .hero.hero-two-rows .hero-logo {
+    flex: 0 1 auto !important;
+    width: max-content !important;
+    min-width: 68px !important;
+    max-width: min(220px, 30vw) !important;
+    transform: translate(0, 0) !important;
+  }
+  .dashboard-page .hero.hero-two-rows .hero-logo picture {
+    max-width: 66px !important;
+  }
+  .login-page .hero.hero-two-rows .hero-logo {
+    flex: 0 0 76px !important;
+    width: 76px !important;
+    transform: translate(-18px, 6.5px) !important;
+  }
+  .dashboard-page .hero.hero-two-rows .hero-logo img,
+  .login-page .hero.hero-two-rows .hero-logo img {
+    width: 100% !important;
+  }
+  .dashboard-page .hero.hero-two-rows .hero-title-line,
+  .login-page .hero.hero-two-rows .hero-title-line {
+    line-height: 1.35 !important;
+  }
+  /* Plaka 1 punto küçült (masaüstü) */
+  .dashboard-page .driver-left-panel .driver-current-plaka {
+    font-size: 15px !important;
+  }
+  /* Sol grid: etiket + açıklama sonrası 3px boşluk (masaüstü); Şube ve altı plaka/modelden bir satır aşağı */
+  .dashboard-page .driver-left-panel .driver-vehicle-info {
+    gap: 6px !important;
+    margin-top: 4px !important;
+  }
+  .dashboard-page .driver-left-panel-content {
+    flex: 1 1 0;
+    min-height: 0;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    display: flex;
+    flex-direction: column;
+  }
+  /* Açıklama alt satıra inince etiket–açıklama arası 0; etiket+açıklama arası 1.6px (masaüstü) */
+  .dashboard-page .driver-left-panel .driver-info-item:has(.value) {
+    row-gap: 0 !important;
+    column-gap: 1.6px !important;
+  }
+  .dashboard-page .driver-left-panel .driver-info-item:has(.value) .value {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+    line-height: 1.25;
+  }
+  .dashboard-page .driver-left-quick-actions {
+    display: grid;
+    flex: 0 0 auto;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 4px;
+    margin-top: auto;
+    padding-top: 2px;
+    border-top: none;
+  }
+  /* Büyük ticari/kamyon: sol panel yoğun mod (masaüstü, class ile) */
+  .dashboard-page .driver-dashboard-container.driver-heavy-commercial-active .driver-left-panel-content {
+    gap: 4px;
+    padding-bottom: 2px;
+  }
+  .dashboard-page .driver-dashboard-container.driver-heavy-commercial-active .driver-user-plate-row.driver-user-plate-in-panel {
+    gap: 0;
+    margin-top: -2px;
+    margin-bottom: 1px;
+  }
+  .dashboard-page .driver-dashboard-container.driver-heavy-commercial-active .driver-left-panel .driver-vehicle-info {
+    gap: 3px !important;
+    margin-top: 2px !important;
+  }
+  .dashboard-page .driver-dashboard-container.driver-heavy-commercial-active .driver-left-panel .driver-info-item:has(.value) .value {
+    line-height: 1.18;
+  }
+  .dashboard-page .driver-dashboard-container.driver-heavy-commercial-active .driver-left-quick-actions {
+    margin-top: auto;
+    margin-bottom: 2px;
+    gap: 3px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    transform: none;
+  }
+  .dashboard-page .driver-dashboard-container.driver-heavy-commercial-active .driver-right-panel {
+    padding-bottom: 8px !important;
+  }
+  .dashboard-page .driver-dashboard-container.driver-heavy-commercial-active .driver-left-quick-action {
+    min-height: 24px;
+  }
+  .dashboard-page .driver-dashboard-container.driver-heavy-commercial-active .driver-left-panel .driver-footer-back-wrap {
+    flex: 0 0 auto;
+    align-self: flex-start;
+    align-items: center;
+    gap: 0 !important;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    min-height: 0;
+    height: auto;
+    width: auto !important;
+    max-width: none !important;
+    padding: 0 !important;
+    margin-top: auto !important;
+    margin-bottom: 0 !important;
+    overflow: visible !important;
+  }
+  .dashboard-page .driver-dashboard-container.driver-heavy-commercial-active .driver-left-panel .driver-footer-back-wrap .universal-back-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 4px 0 !important;
+    line-height: 1.1;
+    min-height: 0;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+  }
+  .dashboard-page .driver-left-quick-action {
+    width: 100%;
+    min-width: 0;
+    min-height: 28px;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    color: #a0aec0;
+    font: inherit;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: none;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: color 0.18s ease;
+  }
+  .dashboard-page .driver-left-quick-action-icon {
+    width: 18px;
+    height: 18px;
+    flex: 0 0 auto;
+    color: currentColor;
+    transform-origin: center center;
+    transition: transform 0.18s ease, color 0.18s ease, filter 0.18s ease;
+  }
+  .dashboard-page .driver-left-quick-action-documents .driver-left-quick-action-icon,
+  .dashboard-page .driver-left-quick-action-feedback .driver-left-quick-action-icon,
+  .dashboard-page .driver-left-quick-action-password .driver-left-quick-action-icon {
+    width: 24px;
+    height: 24px;
+  }
+  .dashboard-page .driver-left-quick-action-password .driver-left-quick-action-icon {
+    transform: translateY(-5px);
+  }
+  .dashboard-page .driver-left-quick-action-password:hover .driver-left-quick-action-icon,
+  .dashboard-page .driver-left-quick-action-password:focus-visible .driver-left-quick-action-icon {
+    transform: translateY(-5px) scale(1.18);
+    filter: drop-shadow(0 0 3px rgba(238, 246, 255, 0.2));
+  }
+  .dashboard-page .driver-left-quick-action:hover,
+  .dashboard-page .driver-left-quick-action:focus-visible {
+    color: #ffffff;
+    background: transparent;
+    box-shadow: none;
+    outline: none;
+  }
+  .dashboard-page .driver-left-quick-action:not(.driver-left-quick-action-password):hover .driver-left-quick-action-icon,
+  .dashboard-page .driver-left-quick-action:not(.driver-left-quick-action-password):focus-visible .driver-left-quick-action-icon {
+    transform: scale(1.18);
+    filter: drop-shadow(0 0 3px rgba(238, 246, 255, 0.2));
+  }
+  /* Plaka liste çerçevesi: ince gri, parlak (masaüstü) */
+  .dashboard-page .driver-left-panel .driver-plate-dropdown {
+    border: 1px solid rgba(255, 255, 255, 0.38) !important;
+    box-shadow: 0 2px 14px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.08) !important;
+  }
+  /* Plakalar arası yatay çizgi: çerçeve ile aynı gri ton */
+  .dashboard-page .driver-left-panel .driver-plate-dropdown-item {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.38) !important;
+  }
+  .dashboard-page .driver-left-panel .driver-plate-dropdown-item:last-child {
+    border-bottom: none !important;
+  }
+  /* Sağ grid: aksiyon alanı üstten hafif boşlukla görsel dengeye alınır, satır aralığı sıfırlanır */
+  .dashboard-page .driver-action-area {
+    padding-top: 8px;
+  }
+  .dashboard-page .driver-action-area-inner {
+    gap: 0 !important;
+  }
+  /* İç dikey padding: aşağıdaki 641 + 769 bloklarında birleştirilir */
+  /* Sağ grid: alt boşluk sıfır – çerçeveye tam yanaşsın */
+  .dashboard-page .driver-two-panel {
+    padding-top: 3px !important;
+    padding-bottom: 0 !important;
+  }
+  .dashboard-page .driver-right-panel {
+    gap: 0 !important;
+    overflow-x: visible !important;
+    padding-left: 10px !important;
+    padding-right: 14px !important;
+    padding-bottom: 4px;
+    box-sizing: border-box !important;
+  }
+  .dashboard-page .driver-action-area {
+    display: flex !important;
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    padding-top: 6px;
+  }
+  .dashboard-page .driver-action-group {
+    margin-bottom: 6px;
+    gap: 4px;
+  }
+  /* Bildir öncesi: Lastik satırı ile footer arası +8px */
+  .dashboard-page .driver-action-area-inner > .driver-action-group:has(.driver-action-btn[data-action="lastik"]) {
+    margin-bottom: 14px;
+  }
+  .dashboard-page .driver-action-btn {
+    border-color: rgba(238, 246, 255, 0.46);
+  }
+  .dashboard-page .driver-action-btn.data-entered {
+    border-color: rgba(238, 246, 255, 0.46);
+  }
+  .dashboard-page .driver-action-area .form-group label {
+    margin-bottom: 4px !important;
+  }
+}
+
+/* Scroll alanı öğelerinde üst çizgi yok */
+.driver-scroll-area #loading-spinner,
+.driver-scroll-area .driver-empty-state {
+  border-top: none !important;
+}
+.driver-scroll-area .driver-two-panel {
+  border-top: none !important;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- KAYAN UYARI (hero, mobil slot veya below-hero) --- */
+.driver-sliding-warning {
+  flex: 1;
+  min-width: 0;
+  overflow-x: hidden;
+  overflow-y: visible;
+  font-size: 13px;
+  color: var(--theme-color);
+  text-align: center;
+  white-space: nowrap;
+  padding: 0 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+.driver-sliding-warning.driver-warning-popover {
+  flex: 0 0 auto;
+  width: auto;
+  min-width: 0;
+  position: relative;
+  overflow: visible;
+  padding: 0;
+}
+.driver-warning-trigger {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  box-shadow: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  cursor: pointer;
+  overflow: visible;
+  flex-shrink: 0;
+  transform-origin: center center;
+}
+.driver-warning-trigger:hover,
+.driver-warning-trigger:focus-visible {
+  color: inherit;
+  background: transparent;
+  box-shadow: none;
+  outline: none;
+}
+.driver-warning-panel-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 5px 10px;
+  border-radius: 7px;
+  border: 1px solid rgba(130, 130, 130, 0.55);
+  background: linear-gradient(180deg, rgba(12, 18, 30, 0.94) 0%, rgba(8, 13, 22, 0.92) 100%);
+  line-height: 1.3;
+  font-size: 12px;
+  text-align: left;
+  white-space: normal;
+}
+button.driver-warning-panel-item {
+  width: 100%;
+  margin: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  font-size: 12px;
+  font-family: inherit;
+  font-weight: inherit;
+  line-height: 1.3;
+  color: inherit;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+button.driver-warning-panel-item:focus-visible {
+  outline: 1px solid rgba(var(--theme-color-rgb), 0.55);
+  outline-offset: 1px;
+}
+@media (hover: hover) {
+  button.driver-warning-panel-item-action:hover {
+    background: linear-gradient(180deg, rgba(18, 26, 42, 0.98) 0%, rgba(12, 18, 30, 0.96) 100%);
+  }
+  button.driver-warning-panel-item-action.driver-warning-panel-item-red:hover {
+    border-color: rgba(var(--theme-color-rgb), 0.78);
+  }
+  button.driver-warning-panel-item-action.driver-warning-panel-item-orange:hover {
+    border-color: rgba(var(--orange-warn-rgb), 0.78);
+  }
+}
+.driver-warning-panel-item .driver-warning-icon-engine {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+  margin-top: 1px;
+}
+.driver-warning-panel-item-red {
+  border-color: rgba(var(--theme-color-rgb), 0.6);
+  box-shadow: 0 0 8px rgba(var(--theme-color-rgb), 0.2);
+}
+.driver-warning-panel-item-red .driver-warning-icon-engine-red {
+  color: var(--theme-color);
+}
+.driver-warning-panel-item-orange {
+  border-color: rgba(var(--orange-warn-rgb), 0.6);
+  box-shadow: 0 0 8px rgba(var(--orange-warn-rgb), 0.2);
+}
+.driver-warning-panel-item-orange .driver-warning-icon-engine-orange {
+  color: var(--orange-warn);
+}
+.driver-warning-panel-text {
+  flex: 1;
+  min-width: 0;
+  color: #a0aec0;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+@media (min-width: 769px) {
+  /* Masaüstü: bildirim metni biraz daha okunaklı; boyut/layout aynı */
+  .driver-notifications-dropdown .driver-warning-panel-text {
+    color: #cbd5e0;
+  }
+}
+@media (max-width: 768px) {
+  /* Mobil: bildirim metinleri blur arka planda kaybolmasın — beyaz + 0.5pt */
+  .dashboard-page .driver-notifications-dropdown .driver-warning-panel-text,
+  .dashboard-page .driver-notifications-dropdown .driver-notification-empty {
+    color: #ffffff;
+    font-size: calc(12px + 0.5pt);
+  }
+  .dashboard-page .driver-notifications-dropdown .driver-warning-panel-item,
+  .dashboard-page .driver-notifications-dropdown button.driver-warning-panel-item {
+    font-size: calc(12px + 0.5pt);
+  }
+}
+.driver-notification-empty {
+  padding: 10px 8px;
+  border-radius: 6px;
+  border: 1px dashed rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.02);
+  color: #a0aec0;
+  text-align: center;
+  font-size: 12px;
+}
+
+/* Bildirim dropdown — ayarlar referansı: başlık/yan ikonlar blur; motor + panel net */
+.driver-notifications-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 10040;
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  cursor: default;
+}
+.driver-notifications-dropdown {
+  display: none;
+  position: fixed;
+  z-index: 10052;
+  width: min(420px, calc(100vw - 24px));
+  max-height: min(60vh, 480px);
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 10px;
+  box-sizing: border-box;
+  border-radius: 10px;
+  border: 1px solid rgba(var(--theme-color-rgb), 0.35);
+  background: linear-gradient(180deg, rgba(12, 18, 30, 0.98) 0%, rgba(8, 13, 22, 0.96) 100%);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+  isolation: isolate;
+  filter: none !important;
+  opacity: 1 !important;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+.driver-notifications-dropdown-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+body.dashboard-page.driver-notifications-open .driver-notifications-backdrop {
+  display: block;
+}
+body.dashboard-page.driver-notifications-open .driver-notifications-dropdown.is-open {
+  display: flex;
+  flex-direction: column;
+  z-index: 10065 !important;
+}
+body.dashboard-page.driver-notifications-open .driver-dashboard-container::before {
+  z-index: 10058 !important;
+}
+body.dashboard-page.driver-notifications-open .driver-header-fixed {
+  position: relative;
+  z-index: 10050 !important;
+}
+body.dashboard-page.driver-notifications-open .driver-header-fixed .hero,
+body.dashboard-page.driver-notifications-open .driver-header-fixed .driver-below-hero-pwa-slot,
+body.dashboard-page.driver-notifications-open .driver-header-fixed .driver-status-icon-slot-history,
+body.dashboard-page.driver-notifications-open .driver-header-fixed .driver-status-icon-slot-key {
+  filter: blur(2px);
+  opacity: 0.92;
+  transition: filter 0.18s ease, opacity 0.18s ease;
+}
+body.dashboard-page.driver-notifications-open .driver-status-icon-slot-warning {
+  position: relative;
+  z-index: 10051;
+  filter: none !important;
+  opacity: 1 !important;
+}
+body.dashboard-page.driver-notifications-open .driver-warning-trigger {
+  position: relative;
+  z-index: 10052;
+  filter: none !important;
+  opacity: 1 !important;
+}
+body.dashboard-page.driver-notifications-open .driver-scroll-area {
+  filter: blur(2px);
+  opacity: 0.92;
+  transition: filter 0.18s ease, opacity 0.18s ease;
+  pointer-events: none;
+}
+
+/* Tarih yaklaşıyor (turuncu): sol panel driver-warn-orange ile aynı ton */
+.driver-sliding-warning.driver-sliding-warning-orange {
+  color: var(--orange-warn);
+}
+.driver-sliding-warning.driver-sliding-warning-orange .driver-warning-icon {
+  color: var(--orange-warn);
+}
+.driver-warning-icon {
+  color: var(--theme-color);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-right: 0;
+  vertical-align: middle;
+  line-height: 1;
+  overflow: visible;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+.driver-warning-icon-engine {
+  --driver-warning-engine-mask: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%20224%20144'%3E%3Cpath%20d%3D'M16%20110V47h22V34h28V18h62v16H99v13h39l18%2018h18l16%2049h13c7-24%207-49%200-73h-13l-22%2058h-18l-12%2034H66L39%2099H38v11H16'%20fill%3D'none'%20stroke%3D'%23000'%20stroke-width%3D'16'%20stroke-linejoin%3D'round'%20stroke-linecap%3D'square'%2F%3E%3C%2Fsvg%3E");
+  display: inline-flex;
+  width: 21px;
+  height: 21px;
+  background-color: currentColor;
+  -webkit-mask-image: var(--driver-warning-engine-mask);
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  -webkit-mask-size: contain;
+  mask-image: var(--driver-warning-engine-mask);
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
+}
+.driver-warning-icon-engine svg {
+  display: none;
+}
+.driver-warning-icon-engine-orange {
+  color: var(--orange-warn);
+}
+.driver-warning-icon-engine-red {
+  color: var(--theme-color);
+  width: 23px;
+  height: 23px;
+}
+
+@media (hover: hover) and (min-width: 769px) {
+  .dashboard-page .driver-status-icon-slot-warning .driver-warning-trigger:hover,
+  .dashboard-page .driver-status-icon-slot-warning .driver-warning-trigger:focus-visible {
+    box-shadow: 0 0 7px rgba(var(--theme-color-rgb), 0.28);
+  }
+  .dashboard-page .driver-status-icon-slot-warning .driver-warning-trigger:hover:has(.driver-warning-icon-engine-orange),
+  .dashboard-page .driver-status-icon-slot-warning .driver-warning-trigger:focus-visible:has(.driver-warning-icon-engine-orange) {
+    box-shadow: 0 0 7px rgba(var(--orange-warn-rgb), 0.28);
+  }
+  .dashboard-page .driver-status-icon-slot-warning .driver-warning-trigger:hover .driver-warning-icon-engine,
+  .dashboard-page .driver-status-icon-slot-warning .driver-warning-trigger:focus-visible .driver-warning-icon-engine {
+    transform: scale(1.08);
+  }
+}
+
+/* --- İKİ PANELLİ LAYOUT --- */
+.driver-two-panel {
+  display: flex !important;
+  flex-direction: column;
+  flex: 1;
+  width: 100%;
+  max-width: 500px;
+  min-width: 0;
+  margin: 0 auto;
+  padding: 8px 12px 0;
+  gap: 4px;
+  box-sizing: border-box;
+  min-height: 0;
+}
+.driver-user-plate-in-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;       /* Plaka ile marka/model arası total 1px */
+  align-items: center;
+  text-align: center;
+  flex-shrink: 0;
+  margin-bottom: 4px; /* Plaka altı: plaka ile taşıt bilgisi arası 4px */
+  width: 100%;
+}
+.driver-panels-inner {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  gap: 12px;
+  overflow: hidden;
+}
+.driver-left-panel {
+  flex: 0 0 30%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-right: 1.2px solid var(--border-red-tech);
+  padding-right: 12px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+/* Sol panel: Üst içerik (plaka + taşıt bilgisi) kayar, Yönetim Sistemi altta sabit */
+.driver-left-panel-content {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.driver-left-panel-content::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+.driver-right-panel {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  overflow-y: auto !important;
+  overflow-x: hidden !important; /* Sadece asagi-yukari kayma; saga-sola hareket yok */
+  overscroll-behavior-y: contain; /* Masaüstü: bounce icerikte kalsin. Mobilde none ile override edilir (parmak ile asagi cekince gelmesin). */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 5px;
+}
+.driver-right-panel::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+.driver-user-plate-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+  text-align: center;
+}
+.driver-user-plate-row.driver-user-plate-in-panel {
+  gap: 1px; /* Panelde plaka–model arası toplam 1px (.driver-user-plate-row 4px'i override eder) */
+}
+.driver-plate-subtitle {
+  font-size: 14px;
+  color: #a0aec0;
+  margin-top: 2px;
+  line-height: 1.2;
+}
+.driver-user-plate-in-panel .driver-plate-subtitle {
+  font-size: calc(15px - 1pt); /* Marka/model 1pt küçük */
+  margin-top: 0;
+  text-align: center;
+  align-self: center;
+}
+.driver-left-quick-actions {
+  display: none;
+}
+.driver-vehicle-shortcuts {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .dashboard-page .driver-left-quick-actions {
+    display: grid;
+    flex: 0 0 auto;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 3px;
+    margin-top: 2px;
+    padding-top: 0;
+    border-top: none;
+  }
+  .dashboard-page .driver-left-quick-action {
+    width: 100%;
+    min-width: 0;
+    min-height: 28px;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    color: #a0aec0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: none;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: color 0.18s ease;
+  }
+  .dashboard-page .driver-left-quick-action-icon {
+    width: 18px;
+    height: 18px;
+    flex: 0 0 auto;
+    color: currentColor;
+    transform-origin: center center;
+    transition: transform 0.18s ease, color 0.18s ease, filter 0.18s ease;
+  }
+  .dashboard-page .driver-left-quick-action-documents .driver-left-quick-action-icon,
+  .dashboard-page .driver-left-quick-action-feedback .driver-left-quick-action-icon {
+    width: 25px;
+    height: 25px;
+  }
+  .dashboard-page .driver-left-quick-action:hover,
+  .dashboard-page .driver-left-quick-action:focus-visible {
+    color: #ffffff;
+    background: transparent;
+    box-shadow: none;
+    outline: none;
+  }
+  .dashboard-page .driver-left-quick-action:hover .driver-left-quick-action-icon,
+  .dashboard-page .driver-left-quick-action:focus-visible .driver-left-quick-action-icon {
+    transform: scale(1.14);
+    filter: drop-shadow(0 0 3px rgba(238, 246, 255, 0.18));
+  }
+  /* Mobil: orijinal ikonu (driver-left-panel-content içindeki) gizle */
+  .dashboard-page .driver-left-panel-content .driver-left-quick-actions {
+    display: none;
+  }
+  /* Tablet/mobil: üst satır Taşıt Kısayolları (grid/apps) + açılır panel */
+  /* style-core .app-container>* z-index:1 override'ını geri al (2-sınıf specificity ile eşitle, cascade kazanır) */
+  .dashboard-page .driver-header-fixed {
+    position: relative;
+    z-index: 10006;
+  }
+  .dashboard-page .driver-status-icon-slot-history {
+    overflow: visible;
+  }
+  .dashboard-page .driver-status-icon-row {
+    overflow: visible;
+  }
+  .dashboard-page .driver-below-hero-row {
+    overflow: visible;
+  }
+  .dashboard-page .driver-below-hero {
+    overflow: visible;
+  }
+  /* Düz karartma — açık durumda tam ekran (blur yok; ana modal kontratı ile uyumlu) */
+  .dashboard-page .driver-shortcuts-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(3, 7, 14, 0.68);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    z-index: 10042;
+    cursor: default;
+  }
+  .dashboard-page .driver-vehicle-shortcuts.is-open .driver-shortcuts-overlay {
+    display: block;
+  }
+  .dashboard-page .driver-vehicle-shortcuts {
+    display: block;
+    position: relative;
+    overflow: visible;
+    flex: 0 0 auto;
+    z-index: 1;
+  }
+  .dashboard-page .driver-vehicle-shortcuts.is-open {
+    z-index: 10041;
+  }
+  .dashboard-page .driver-vehicle-shortcuts-toggle {
+    width: auto;
+    flex: none;
+    margin: 0;
+    padding: 2px;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    outline: none;
+    color: #a0aec0;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-appearance: none;
+    appearance: none;
+    position: relative;
+    z-index: 10044;
+  }
+  .dashboard-page .driver-vehicle-shortcuts-toggle:hover,
+  .dashboard-page .driver-vehicle-shortcuts-toggle:focus,
+  .dashboard-page .driver-vehicle-shortcuts-toggle:active {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    outline: none;
+    color: #ffffff;
+  }
+  .dashboard-page .driver-vehicle-shortcuts.is-open .driver-vehicle-shortcuts-toggle {
+    color: #ffffff;
+  }
+  .dashboard-page .driver-vehicle-shortcuts-toggle-icon {
+    width: 22px;
+    height: 22px;
+    display: block;
+    color: currentColor;
+  }
+  .dashboard-page .driver-vehicle-shortcuts-panel {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10050;
+    width: min(380px, calc(100vw - 24px));
+    min-height: 0;
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    align-items: center;
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .dashboard-page .driver-vehicle-shortcuts.is-open .driver-vehicle-shortcuts-panel {
+    display: grid;
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .dashboard-page .driver-vehicle-shortcuts-item {
+    display: grid;
+    grid-template-rows: 52px 38px;
+    align-items: center;
+    justify-items: center;
+    gap: 8px;
+    min-height: 128px;
+    padding: 14px 8px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: #a0aec0;
+    font: inherit;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.2;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: none;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .dashboard-page .driver-vehicle-shortcuts-item-label {
+    color: #ffffff;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.1;
+    min-height: 32px;
+    max-width: 118px;
+    text-align: center;
+    white-space: normal;
+  }
+  .dashboard-page .driver-vehicle-shortcuts-item-icon {
+    width: 44px;
+    height: 44px;
+    max-width: 44px;
+    max-height: 44px;
+    flex: none;
+    color: currentColor;
+  }
+  .dashboard-page .driver-vehicle-shortcuts-item-documents .driver-vehicle-shortcuts-item-icon,
+  .dashboard-page .driver-vehicle-shortcuts-item-feedback .driver-vehicle-shortcuts-item-icon {
+    width: 44px;
+    height: 44px;
+    max-width: 44px;
+    max-height: 44px;
+  }
+  .dashboard-page .driver-vehicle-shortcuts-item-history .driver-vehicle-shortcuts-item-icon {
+    width: 42px;
+    height: 42px;
+    max-width: 42px;
+    max-height: 42px;
+  }
+  .dashboard-page .driver-vehicle-shortcuts-item-password .driver-vehicle-shortcuts-item-icon {
+    width: 52px;
+    height: 52px;
+    max-width: 52px;
+    max-height: 52px;
+    transform: translateY(-4px);
+  }
+  .dashboard-page .driver-vehicle-shortcuts-item:hover,
+  .dashboard-page .driver-vehicle-shortcuts-item:focus-visible {
+    color: #ffffff;
+    border: none;
+    background: transparent;
+    box-shadow: none;
+    outline: none;
+  }
+}
+.driver-plate-dropdown-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+  width: 100%;
+  min-width: 0;
+}
+.driver-left-panel .driver-plate-dropdown {
+  left: 0;
+  transform: none;
+  top: 100%;
+  margin-top: 4px;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+/* Plaka ortalanırken kırmızı işaret (chevron) hesaba katılmaz; sanki yokmuş gibi tam ortada */
+.driver-plate-dropdown-row .driver-current-plaka {
+  flex: 1;
+  text-align: center;
+  min-width: 0;
+}
+/* Kırmızı chevron akıştan çıkarılır, plaka ortalama etkilenmez; sağdan 3px boşluk (harf kesilmesin) */
+.driver-plate-dropdown-row .driver-plate-trigger {
+  position: absolute;
+  right: -3px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.driver-current-plaka {
+  font-size: calc(14px - 1pt); /* Plaka 1pt küçük */
+  font-weight: 700;
+  color: var(--txt);
+}
+.driver-plate-trigger {
+  flex-shrink: 0;
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 6px; /* Tıklanabilir alan 1.6x (100–160) */
+  min-width: 28px;
+  min-height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.driver-plate-trigger:hover { color: var(--txt); }
+.driver-plate-chevron { font-size: 19px; } /* 100–160 (1.6x): 12px → 19px */
+
+.driver-vehicle-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+  padding: 0;
+}
+.driver-info-item {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0; /* Etiket ile açıklama arası 0 */
+  text-align: left;
+}
+
+.driver-btn-password {
+  padding: 6px 8px;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.2s, transform 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #5889b5;
+}
+.driver-btn-password .driver-btn-password-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.driver-btn-password:hover,
+.driver-btn-password:focus,
+.driver-btn-password:active {
+  color: #6a9bc4;
+  background: transparent !important;
+  border: none !important;
+  transform: scale(1.12);
+  filter: drop-shadow(0 0 4px rgba(106, 155, 196, 0.22));
+}
+
+/* --- YÜKLEME --- */
+.driver-loading {
+  text-align: center;
+  padding: 48px 20px;
+}
+
+.driver-loading p {
+  margin-top: 16px;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.driver-spinner {
+  width: 44px;
+  height: 44px;
+  border: 3px solid var(--br);
+  border-top-color: var(--theme-color);
+  border-radius: 50%;
+  animation: driver-spin 0.8s linear infinite;
+  margin: 0 auto;
+}
+
+@keyframes driver-spin {
+  to { transform: rotate(360deg); }
+}
+.driver-plate-dropdown {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 100%;
+  margin-top: 6px;
+  min-width: 200px;
+  max-width: 90vw;
+  max-height: 240px;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  background: var(--bg);
+  border: 1px solid rgba(var(--theme-color-rgb), 0.25);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(var(--theme-color-rgb), 0.08);
+  z-index: 100;
+}
+.driver-plate-dropdown::-webkit-scrollbar {
+  display: none;
+}
+.driver-plate-dropdown-item {
+  padding: 10px 14px;
+  font-size: 12px;
+  color: var(--txt);
+  display: grid;
+  grid-template-columns: 8px 9ch 0.75em minmax(0, 1fr);
+  align-items: start;
+  column-gap: 0.35em;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  transition: background 0.15s, color 0.15s;
+  width: 100%;
+  overflow: hidden;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+.driver-plate-warning-dot {
+  grid-column: 1;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  margin-top: 0.45em;
+  justify-self: center;
+}
+.driver-plate-warning-dot-red {
+  background: var(--theme-color);
+}
+.driver-plate-warning-dot-orange {
+  background: var(--orange-warn);
+}
+.driver-plate-dropdown-item-plate {
+  grid-column: 2;
+  width: 100%;
+  text-align: left;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+.driver-plate-dropdown-item-separator {
+  grid-column: 3;
+  justify-self: center;
+  opacity: 0.75;
+}
+.driver-plate-dropdown-item-separator.is-hidden {
+  visibility: hidden;
+  pointer-events: none;
+}
+.driver-plate-dropdown-item-brand {
+  grid-column: 4;
+  min-width: 0;
+  text-align: left;
+  white-space: normal;
+  overflow: hidden;
+  overflow-wrap: normal;
+  word-break: normal;
+  line-height: 1.3;
+  box-sizing: border-box;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  text-overflow: clip;
+}
+.driver-plate-dropdown-item:last-child {
+  border-bottom: none;
+}
+.driver-plate-dropdown-item:hover,
+.driver-plate-dropdown-item:focus {
+  background: rgba(var(--theme-color-rgb), 0.12);
+  color: var(--txt);
+  outline: none;
+}
+.driver-plate-dropdown-item[aria-selected="true"] {
+  background: rgba(var(--theme-color-rgb), 0.15);
+}
+.driver-plate-dropdown-item:nth-child(even):not(:hover):not(:focus):not([aria-selected="true"]) {
+  background: rgba(255, 255, 255, 0.045);
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- BOŞ DURUM --- */
+.driver-empty-state {
+  text-align: center;
+  padding: 48px 24px;
+}
+
+.driver-empty-icon {
+  font-size: 56px;
+  margin-bottom: 16px;
+  line-height: 1;
+}
+
+.driver-empty-state h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--txt);
+  margin: 0 0 8px 0;
+}
+
+.driver-empty-state p {
+  font-size: 14px;
+  color: var(--muted);
+  margin: 0;
+}
+
+.driver-current-km {
+  margin: 0 0 16px 0;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.driver-current-km strong {
+  color: var(--txt);
+}
+
+/* =========================================
+   LOGIN SAYFASI (Değişiklik yok)
+   ========================================= */
+.login-page {
+  overflow-x: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  width: 100% !important;
+  max-width: 100vw !important;
+  box-sizing: border-box !important;
+  direction: ltr !important;
+}
+
+.login-page .hero {
+  margin-bottom: 0 !important;
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
+}
+
+/* Login (masaüstü): PWA kurulum çubuğu header alt çerçevesinin 4px altında; sadece buton yatayda ortada (X hesaba katılmaz) */
+@media (min-width: 769px) {
+  .login-page .content-wrap.driver-content-wrap.driver-scroll-area {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  /* Login (masaüstü): form dikey kolon; style-core .login-container için touch-action */
+  .login-page .login-container {
+    width: 100%;
+    max-width: min(380px, 100%);
+    margin-left: auto;
+    margin-right: auto;
+    padding: 12px 16px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+    touch-action: auto !important;
+  }
+
+  .login-page #login-form.login-form {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+  }
+
+  .login-page #login-form .form-group {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+    margin: 0;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .login-page #login-form .form-group > label {
+    display: block;
+    width: 100%;
+    margin: 0;
+  }
+
+  .login-page #login-form .form-group input[type="text"],
+  .login-page #login-form .form-group input[type="password"] {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    box-sizing: border-box;
+  }
+
+  .login-page #login-form .form-group-checkbox {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    width: 100%;
+  }
+
+  .login-page #login-form .form-group-checkbox input[type="checkbox"] {
+    flex: 0 0 auto;
+    margin: 0;
+  }
+
+  .login-page #login-form .form-group-checkbox label {
+    margin: 0;
+    flex: 1 1 auto;
+    min-width: 0;
+    display: inline;
+    cursor: pointer;
+  }
+
+  .login-page #login-form #login-btn.btn-login {
+    width: min(160px, 100%);
+    box-sizing: border-box;
+    align-self: center;
+    margin-top: 4px;
+    padding: 9px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 34px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid rgba(74, 222, 128, 0.65);
+    background: transparent;
+    color: var(--green, #4ade80);
+    transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.15s;
+  }
+
+  .login-page #login-form #login-btn.btn-login:hover:not(:disabled) {
+    background: rgba(74, 222, 128, 0.14);
+    border-color: rgba(74, 222, 128, 0.9);
+    transform: translateY(-1px);
+  }
+
+  .login-page #login-form #login-btn.btn-login:active:not(:disabled),
+  .login-page #login-form #login-btn.btn-login:focus-visible:not(:disabled) {
+    background: rgba(74, 222, 128, 0.18);
+    border-color: var(--green, #4ade80);
+    color: rgba(74, 222, 128, 0.98);
+  }
+
+  .login-page #login-form #login-btn.btn-login:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .login-page #pwa-install-wrapper.pwa-install-center {
+    margin-top: 4px !important;
+    margin-bottom: 0 !important;
+    width: 100% !important;
+    flex-shrink: 0 !important;
+  }
+  .login-page .pwa-install-bar {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    width: max-content !important;
+    max-width: max-content !important;
+    padding-right: 0 !important;
+  }
+  .login-page .pwa-install-bar .pwa-install-close {
+    margin-left: 0 !important;
+  }
+  /* PWA Butonu Masaüstü: sol sütunda, durum ikonları ortada sabit */
+  .dashboard-page .driver-below-hero-pwa-slot #pwa-install-wrapper {
+    display: flex !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .dashboard-page .driver-below-hero-pwa-slot .pwa-install-bar {
+    background: transparent !important;
+    border: none !important;
+    padding: 4px 0 4px 8px !important;
+    border-radius: 6px !important;
+    width: auto !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    gap: 4px !important;
+    box-sizing: border-box !important;
+  }
+
+  .dashboard-page .driver-below-hero-pwa-slot .pwa-install-btn {
+    font-size: 11px !important;
+    padding: 4px 8px !important;
+    white-space: nowrap !important;
+  }
+
+  .dashboard-page .driver-below-hero-pwa-slot .pwa-install-close {
+    font-size: 14px !important;
+    margin-left: 0 !important;
+  }
+}
+
+/* Mobil: PWA sol panelde (plaka/marka-model ile şube arası slot) */
+@media (max-width: 768px) {
+  .dashboard-page #driver-mobile-notification-slot #pwa-install-wrapper {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100% !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+  }
+  .dashboard-page #driver-mobile-notification-slot .pwa-install-bar {
+    background: transparent !important;
+    border: none !important;
+    padding: 4px 8px !important;
+    margin: 0 auto !important;
+  }
+}
+
+.login-page .app-container {
+  min-height: 100vh !important;
+  min-height: 100dvh !important;
+  display: flex !important;
+  flex-direction: column !important;
+  width: 100% !important;
+  max-width: 500px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  box-sizing: border-box !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+}
+
+/* Login content-wrap: anasayfa ile aynı hizalama (padding, safe-area) */
+.login-page .content-wrap {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  min-width: 0 !important;
+  padding: 4px !important;
+  padding-top: max(12px, env(safe-area-inset-top)) !important;
+  padding-bottom: 16px !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+  -webkit-overflow-scrolling: touch !important;
+  touch-action: pan-y !important;
+  overscroll-behavior-y: contain !important;
+}
+
+/* Şifre ekranı: ana uygulamadaki yan boşluk matematiği korunsun */
+.login-page .content-wrap {
+  padding-left: 4px !important;
+  padding-right: 4px !important;
+}
+.login-page .content-wrap::-webkit-scrollbar {
+  display: none !important;
+}
+
+.login-page #app-footer.login-footer {
+  position: fixed !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  right: auto !important;
+  bottom: 0 !important;
+  flex-shrink: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  max-width: 500px !important;
+  min-height: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
+  height: var(--app-footer-real-height, 46px) !important;
+  box-sizing: border-box !important;
+  margin: 0 auto !important;
+  padding-top: 2px !important;
+  padding-bottom: calc(2px + env(safe-area-inset-bottom, 0)) !important;
+  background: var(--bg) !important;
+  isolation: isolate !important;
+  border-top: 1px solid rgba(128, 128, 128, 0.52) !important;
+  border-left: 0.5px solid rgba(255, 255, 255, 0.20) !important;
+  border-right: 0.5px solid rgba(255, 255, 255, 0.20) !important;
+  box-shadow:
+    0 -1px 0 rgba(255, 255, 255, 0.12),
+    0 -16px 30px rgba(var(--theme-color-rgb), 0.42) !important;
+}
+
+.login-page #app-footer.login-footer .footer-content {
+  display: flex !important;
+  align-items: center !important;
+  height: 100% !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+  max-width: 500px !important;
+  margin: 0 auto !important;
+  padding: 6px 12px !important;
+  padding-bottom: max(6px, env(safe-area-inset-bottom, 0)) !important;
+  box-sizing: border-box !important;
+  font-size: 13px !important;
+  color: #bbb !important;
+  line-height: 1.4 !important;
+}
+
+.login-page #app-footer.login-footer .version {
+  color: var(--form-label-color) !important;
+  font-weight: 500 !important;
+  transition: opacity 1s ease !important;
+}
+
+.login-page #app-footer.login-footer .status.status-ready {
+  color: #4ade80 !important;
+  font-weight: 600 !important;
+  transition: opacity 1s ease !important;
+}
+
+.login-page #app-footer.login-footer .brand img {
+  height: 12.5px !important;
+  width: auto !important;
+  opacity: 0.4 !important;
+  filter: drop-shadow(0 0 6px rgba(var(--theme-color-rgb), 0.4)) !important;
+  transform: scaleX(1.1) !important;
+  transition: opacity 1s ease !important;
+}
+
+.login-page #app-footer.login-footer.dimmed .version,
+.login-page #app-footer.login-footer.dimmed .version#version-display {
+  opacity: 1 !important;
+}
+
+.login-page #app-footer.login-footer.dimmed .status,
+.login-page #app-footer.login-footer.dimmed .status.status-ready {
+  opacity: 1 !important;
+}
+
+.login-page #app-footer.login-footer.dimmed .brand img {
+  opacity: 0.3 !important;
+}
+
+.login-page #app-footer.login-footer.dimmed.delayed .version,
+.login-page #app-footer.login-footer.dimmed.delayed .version#version-display {
+  opacity: 0.3 !important;
+}
+
+.login-page #app-footer.login-footer.dimmed.delayed .status,
+.login-page #app-footer.login-footer.dimmed.delayed .status.status-ready {
+  opacity: 0.3 !important;
+}
+
+.login-page #app-footer.login-footer.dimmed.delayed .brand img {
+  opacity: 0.8 !important;
+}
+.driver-footer-back-wrap {
+  box-sizing: border-box;
+  padding-left: 12px !important;
+  padding-right: 12px !important;
+  overflow: hidden;
+  display: flex;
+  justify-content: flex-start;
+}
+/* Dashboard: Yönetim Sistemi barı footer'ın 5px üstünde, sola yaslı (sadece login / eski yer – dashboard'ta artık sol panelde) */
+.dashboard-page .driver-footer-back-wrap {
+  position: relative;
+  bottom: auto;
+  left: auto;
+  right: auto;
+  margin: 0 0 5px 0;
+  flex-shrink: 0;
+  width: 100%;
+  max-width: 100%;
+  z-index: 10003;
+  justify-content: flex-start;
+  padding-left: 12px !important;
+}
+/* Sol panel içindeki Yönetim Sistemi: altta sabit, sola yaslı; negatif margin yok ki ok kesilmesin */
+.driver-left-panel .driver-footer-back-wrap {
+  margin-top: auto !important;
+  margin-bottom: 0 !important;
+  width: auto !important;
+  max-width: none !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  z-index: auto !important;
+  justify-content: flex-start !important;
+  overflow: visible !important;
+}
+.driver-left-panel .driver-footer-back-wrap .universal-back-btn {
+  flex-shrink: 0;
+  transform: translateY(-3px);
+}
+.driver-left-panel .driver-footer-back-wrap .back-icon-svg {
+  flex-shrink: 0;
+  width: 18px !important;
+  height: 18px !important;
+  min-width: 18px;
+  min-height: 18px;
+}
+/* Empty state: Yönetim Sistemi linki (sol panel görünmeyince), sola yaslı */
+.driver-back-in-empty {
+  margin-top: 16px !important;
+  justify-content: flex-start !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+.driver-footer-back-wrap .universal-back-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 3px !important;
+  max-width: 100%;
+  color: var(--theme-color) !important; /* Kırmızı, pasifken yarı saydam */
+  opacity: 0.55;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  transition: opacity 0.2s, color 0.2s;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.driver-footer-back-wrap .universal-back-btn:hover {
+  color: var(--theme-color) !important;
+  opacity: 1;
+}
+.driver-footer-back-wrap .universal-back-label {
+  color: var(--theme-color) !important;
+  opacity: 0.55;
+}
+.driver-footer-back-wrap .universal-back-btn:hover .universal-back-label {
+  color: var(--theme-color) !important;
+  opacity: 1;
+}
+/* Yönetim Sistemi butonunun solundaki ok işareti – demet gibi yarı saydam */
+.driver-footer-back-wrap .universal-back-btn .back-icon-svg {
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+.driver-footer-back-wrap .universal-back-btn:hover .back-icon-svg {
+  opacity: 1;
+}
+@media (min-width: 769px) {
+  .dashboard-page .driver-footer-back-wrap {
+    margin: 0 0 5px 0;
+    padding-left: 12px !important;
+  }
+  .driver-left-panel .driver-footer-back-wrap {
+    padding-left: 0 !important;
+  }
+  .driver-footer-back-wrap .universal-back-label {
+    font-size: 13px;
+  }
+}
+
+@media (min-width: 769px) {
+  /* Masaüstü: footer tabanda sabit; gerçek yükseklik kilitli (34px/38px) */
+  .dashboard-page #app-footer,
+  .login-page #app-footer.login-footer {
+    box-shadow: 0 -12px 35px rgba(var(--theme-color-rgb), 0.35) !important;
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 10006 !important;
+    box-sizing: border-box !important;
+  }
+  .dashboard-page #app-footer {
+    border-top-color: rgba(156, 166, 180, 0.68) !important;
+    box-shadow:
+      0 -1px 0 rgba(235, 240, 248, 0.22),
+      0 -12px 35px rgba(var(--theme-color-rgb), 0.35) !important;
+    height: 42px !important;
+    min-height: 42px !important;
+    width: 100% !important;
+    max-width: 500px !important;
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) !important;
+  }
+  /* Masaüstü: login footer ferah min-height, içerik ortalanmış (max-width 500px) */
+  .login-page #app-footer.login-footer {
+    height: var(--app-footer-real-height) !important;
+    min-height: var(--app-footer-real-height) !important;
+    width: 100% !important;
+    max-width: 500px !important;
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) !important;
+  }
+  .login-page #app-footer.login-footer .footer-content {
+    display: flex !important;
+    align-items: center !important;
+    height: 100% !important;
+    padding: 3px 12px !important;
+    padding-bottom: max(4px, env(safe-area-inset-bottom, 0)) !important;
+  }
+  /* Masaüstü: footer MEDISA logosu ana uygulama ile aynı (14px) */
+  .dashboard-page #app-footer .brand img,
+  .login-page #app-footer.login-footer .brand img {
+    height: 14px !important;
+    max-height: 14px !important;
+  }
+  /* Masaüstü: kırmızı çizgiler footer'ın tam üstünde biter */
+  .dashboard-page .driver-dashboard-container::before,
+  .login-page .driver-dashboard-container::before {
+    top: 0 !important;
+    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0) + 1px) !important;
+    height: auto !important;
+    border-top: 0.85px solid rgba(var(--theme-color-rgb), 0.74) !important;
+    border-left: 0.85px solid rgba(var(--theme-color-rgb), 0.74) !important;
+    border-right: 0.85px solid rgba(var(--theme-color-rgb), 0.74) !important;
+    box-shadow:
+      0 0 7px rgba(var(--theme-color-rgb), 0.12),
+      inset 0 0 7px rgba(var(--theme-color-rgb), 0.05) !important;
+  }
+}
+
+
+@media (max-width: 768px) {
+  .driver-footer-back-wrap .universal-back-btn {
+    transform: translateY(3px);
+  }
+  .dashboard-page .driver-left-panel .driver-footer-back-wrap .universal-back-btn {
+    transform: translateY(-3px) !important;
+    font-size: 12px !important;
+    letter-spacing: 0.2px !important;
+    gap: 2px !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+  }
+  .dashboard-page .driver-left-panel .driver-footer-back-wrap .universal-back-label {
+    font-size: 12px !important;
+    line-height: 1.1 !important;
+  }
+  .dashboard-page .driver-left-panel .driver-footer-back-wrap .back-icon-svg {
+    width: 15px !important;
+    height: 15px !important;
+    min-width: 15px !important;
+    min-height: 15px !important;
+  }
+  .dashboard-page .driver-dashboard-container,
+  .login-page .driver-dashboard-container {
+    padding-bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
+    overflow-x: hidden !important;
+    overflow-y: visible !important; /* Footer'dan çıkan kırmızı ışık (box-shadow) kesilmesin */
+  }
+  .dashboard-page .driver-dashboard-container::before,
+  .login-page .driver-dashboard-container::before {
+    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0) + 1px) !important;
+  }
+  .dashboard-page .driver-right-panel {
+    padding-bottom: 5px !important;
+    padding-right: 12px !important;
+    box-sizing: border-box !important;
+    overscroll-behavior-y: none !important; /* Sağ grid: parmakla aşağı çekince gelmesin; sadece içerik uzarsa yukarı kaydırılır */
+  }
+  .login-page {
+    max-width: 100% !important;
+    /* Safe-area üst boşluğu driver-header-fixed tarafından zaten uygulanıyor.
+       Body'ye tekrar eklemek 100dvh kabını viewport dışına itip iOS PWA'da formu aşağı kaydırıyordu. */
+    padding-top: 0 !important;
+    padding-left: env(safe-area-inset-left, 0) !important;
+    padding-right: env(safe-area-inset-right, 0) !important;
+  }
+  .dashboard-page {
+    padding-left: env(safe-area-inset-left, 0) !important;
+    padding-right: env(safe-area-inset-right, 0) !important;
+  }
+  .login-page .app-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+  /* Giriş formu yatayda ve dikeyde ortalan (iOS PWA) */
+  .login-page .content-wrap.driver-content-wrap.driver-scroll-area {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  .login-page .login-container {
+    max-width: min(400px, 100%) !important;
+    width: 100% !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    box-sizing: border-box !important;
+  }
+
+  .login-form .form-group input {
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Sol panel taşıt bilgisi (Sigorta/Kasko/Muayene dahil): Plaka/Marka ile aynı sol hiza */
+  .dashboard-page .driver-left-panel .driver-vehicle-info {
+    text-align: left !important;
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+  }
+  .dashboard-page .driver-left-panel .driver-info-item {
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+  }
+  /* Tarih uyarı çerçevesi kalsın; sola itmeyi kaldırdık, hiza için negatif margin */
+}
+
+/* iOS ana ekran uygulamasında tam dikey merkez, geniş üst boşluk üretip klavye
+   açıldığında formu aşağıda bırakıyor. Formu üst üçte tut; içerik alanı kaydırılabilir kalır. */
+@media (max-width: 768px) and (display-mode: standalone) {
+  .login-page .content-wrap.driver-content-wrap.driver-scroll-area {
+    justify-content: flex-start !important;
+  }
+  .login-page .login-container {
+    margin-top: clamp(48px, 12dvh, 104px) !important;
+  }
+}
+
+@media (max-width: 768px) and (max-height: 700px) and (display-mode: standalone) {
+  .login-page .login-container {
+    margin-top: 24px !important;
+  }
+}
+
+.login-container {
+  width: 100%;
+  max-width: 400px;
+  min-width: 0;
+  margin-top: 0;
+  margin-left: auto;
+  margin-right: auto;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 24px 30px;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+.login-form .form-group {
+  margin-bottom: 20px;
+  min-width: 0;
+}
+
+.login-form .form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--form-label-color, #ffffff);
+}
+
+/* Şifre ekranı: varsayılan gri çerçeve, focus'ta kırmızı */
+.login-form .form-group input {
+  width: 100%;
+  max-width: 100%;
+  padding: 8px 16px;
+  background: #0f1418 !important;
+  background-color: #0f1418 !important;
+  border: none !important;
+  box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.35) !important;
+  border-radius: 8px;
+  color: var(--data-value-color, #a0aec0);
+  font-size: 16px;
+  transition: box-shadow 0.2s;
+  box-sizing: border-box;
+}
+
+.login-form {
+  min-width: 0;
+  width: 100%;
+}
+
+.login-form .form-group input:-webkit-autofill,
+.login-form .form-group input:-webkit-autofill:hover,
+.login-form .form-group input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 30px #0f1418 inset, inset 0 0 0 0.5px rgba(255, 255, 255, 0.35) !important;
+  box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.35) !important;
+  -webkit-text-fill-color: var(--data-value-color, #a0aec0) !important;
+  background: #0f1418 !important;
+  background-color: #0f1418 !important;
+  border: none !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Boş / invalid: sadece focus yok ve dolu değilken gri çerçeve (yoksa focus/has-value kırmızı kazanır) */
+.login-form .form-group input:not(:focus):not(.has-value):invalid,
+.login-form .form-group input:not(:focus):not(.has-value):placeholder-shown {
+  box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.35) !important;
+}
+
+/* Tıklanınca (focus) kırmızı çerçeve */
+.login-form .form-group input:focus,
+.login-page .login-form .form-group input:focus {
+  outline: none !important;
+  box-shadow: inset 0 0 0 0.5px var(--theme-color) !important;
+}
+
+/* İçinde yazı varken (has-value) kırmızı çerçeve */
+.login-form .form-group input.has-value,
+.login-page .login-form .form-group input.has-value {
+  box-shadow: inset 0 0 0 0.5px var(--theme-color) !important;
+}
+
+.login-form .form-group input::placeholder {
+  color: rgba(160, 174, 192, 0.6) !important; /* örn: Savaş – çok az daha silik */
+  opacity: 1;
+}
+
+.form-group-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.form-group-checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.form-group-checkbox label {
+  font-size: 14px;
+  color: var(--data-value-color, #a0aec0);
+  cursor: pointer;
+}
+
+/* Beni Hatırla: gri arka plan + kırmızı çerçeve (masaüstü + mobil) */
+.login-page .form-group-checkbox input[type="checkbox"] {
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  background: #0f1418 !important;
+  background-color: #0f1418 !important;
+  border: none !important;
+  box-shadow: inset 0 0 0 0.5px rgba(var(--theme-color-rgb), 0.6) !important;
+  border-radius: 4px;
+}
+.login-page .form-group-checkbox input[type="checkbox"]:checked {
+  background: #0f1418 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d40000' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E") center/55% no-repeat !important;
+  box-shadow: inset 0 0 0 0.5px var(--theme-color) !important;
+}
+
+.error-message {
+  background: rgba(239, 68, 68, 0.12);
+  border-left: 3px solid var(--red);
+  padding: 12px;
+  border-radius: 4px;
+  color: var(--red);
+  font-size: 14px;
+  margin-bottom: 20px;
+  display: none;
+}
+
+.error-message.show {
+  display: block;
+}
+
+.btn-login {
+  width: 100%;
+  padding: 12px;
+  background: transparent;
+  color: var(--green);
+  border: 1px solid #1a5d35; /* GÜNCELLENDİ: Solid koyu yeşil */
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 300;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-login:hover {
+  background: rgba(74, 222, 128, 0.12);
+  color: var(--green);
+  border-color: rgba(74, 222, 128, 0.7);
+  transform: translateY(-1px);
+}
+
+.btn-login:disabled {
+  background: transparent;
+  color: #666;
+  border-color: #555;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* =========================================
+   RESPONSIVE
+   ========================================= */
+@media (max-width: 480px) {
+  .login-page .hero-title-block .hero-panel-subtitle {
+    font-size: calc(22px - 0.5pt); /* h1 (23px) - 1pt küçük − 0.5pt */
+  }
+  .dashboard-page .hero-title-block .hero-panel-subtitle {
+    font-size: calc(22px - 0.7pt - 0.5pt);
+  }
+}
+/* === MOBİL GÜNCELLEMELER 2026.01.31 === */
+
+/* Çıkış butonu büyüt */
+.driver-btn-password {
+  font-size: 14px !important;
+}
+
+/* #history-modal, #edit-request-modal, Driver overlay modalları mobil: overlay-bottom stratejisi (style-core ile uyumlu) */
+@media (max-width: 640px) {
+
+  /* Mobil arka plan tüm sayfalarla aynı (--bg) */
+  .dashboard-page .driver-header-fixed,
+  .dashboard-page .driver-scroll-area {
+    background: var(--bg) !important;
+  }
+  /* Mobil/PWA: tüm çerçeve ::before'da (0.99px), köşe birleşme sorunu yok */
+  .dashboard-page .driver-header-fixed,
+  .login-page .driver-header-fixed {
+    border-top: none !important;
+  }
+@media (min-width: 769px) {
+  .dashboard-page .driver-dashboard-container::before,
+  .login-page .driver-dashboard-container::before {
+    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0) + 1px) !important;
+  }
+}
+
+
+/* Mobil dashboard: alt yatay kesme ve buton clipping düzeltmesi */
+@media (max-width: 768px) {
+  /* Tam-genişlik fixed geri-barı sağ panelin üstüne biniyordu; sol panel akışına geri al */
+  .dashboard-page .driver-left-panel .driver-footer-back-wrap {
+    position: relative !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    z-index: auto !important;
+    margin: auto 0 0 0 !important;
+    padding: 0 !important;
+    max-width: none !important;
+    background: transparent !important;
+    border-top: none !important;
+  }
+
+  /* Fixed bar için eklenmiş yapay boşluk mobilde kesme üretiyordu */
+  .dashboard-page .driver-two-panel {
+    padding-bottom: 0 !important;
+  }
+
+  /* Sağ panel altına küçük güvenli boşluk */
+  .dashboard-page .driver-right-panel {
+    padding-bottom: 4px !important;
+  }
+
+  .dashboard-page .driver-status-icon-slot-warning .driver-below-hero-notification-slot {
+    flex: 0 0 auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    margin-left: 0 !important;
+    padding-right: 0 !important;
+    overflow: visible !important;
+    display: flex !important;
+    justify-content: center !important;
+  }
+  .dashboard-page .driver-status-icon-slot-warning .driver-below-hero-notification-slot .driver-sliding-warning {
+    width: auto !important;
+    max-width: 100% !important;
+    justify-content: center !important;
+    padding-right: 0 !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+}
+
+/* =========================================
+   SON RÖTUŞLAR VE İNCE AYARLAR
+   ========================================= */
+/* 1. Gri üst çizgi sadece login footer’da kalsın; dashboard kendi glow mantığını korur */
+.login-page #app-footer.login-footer {
+    border-top: 1px solid rgba(128, 128, 128, 0.52) !important;
+}
+
+/* 2. Ortadaki kırmızı dikey çizgi footera değmeden Bildir butonu hizasında kesilsin (Mobil) */
+@media (max-width: 768px) {
+    /* Mobil aksiyon ritmi tek owner: genel 6px, Lastik -> Bildir net 4px */
+    .dashboard-page .driver-action-area {
+        padding-top: 4px;
+    }
+    .dashboard-page .driver-action-area-inner {
+        justify-content: flex-start;
+        gap: 6px;
+    }
+    .dashboard-page .driver-action-area-inner > .driver-action-group {
+        margin-bottom: 0;
+    }
+    .dashboard-page .driver-action-area .driver-action-group > .driver-action-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 42px;
+        height: 42px;
+        line-height: 1.1;
+        padding-top: 9px;
+        padding-bottom: 9px;
+        border-radius: 8px;
+    }
+    .dashboard-page .driver-left-panel {
+        margin-bottom: 0 !important;
+    }
+    .dashboard-page .driver-left-panel-content {
+        margin-bottom: 10px !important;
+    }
+}
+
+/* iOS/Android PWA mobil: Bildir footer'a yaklaşsın (üstteki margin-top:8px yerine auto) */
+@media (max-width: 768px) and (display-mode: standalone) {
+    .dashboard-page .driver-action-area {
+        min-height: 100%;
+        box-sizing: border-box;
+    }
+    .dashboard-page .driver-action-area-inner {
+        min-height: 100%;
+    }
+}
+
+/* Masaüstü (769px+): işlem satırı butonları kompakt dikey padding */
+@media (min-width: 769px) {
+  .dashboard-page .driver-action-area .driver-action-group > .driver-action-btn {
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
+    min-height: 36px !important;
+  }
+}
+
+/* Masaüstü kısa ekran: kullanıcı paneli footer'a taşmadan tam sığsın */
+@media (min-width: 769px) and (max-height: 980px) {
+  .dashboard-page .driver-left-panel-content {
+    gap: 5px;
+    overflow-y: auto !important;
+  }
+
+  .dashboard-page .driver-left-quick-actions,
+  .dashboard-page .driver-left-panel .driver-footer-back-wrap {
+    flex-shrink: 0;
+  }
+
+  .dashboard-page .driver-left-panel .driver-user-plate-row.driver-user-plate-in-panel {
+    gap: 0;
+    margin-bottom: 1px;
+    margin-top: -2px;
+  }
+
+  .dashboard-page .driver-left-panel .driver-current-plaka {
+    font-size: 13.2px !important;
+  }
+
+  .dashboard-page .driver-left-panel .driver-plate-subtitle,
+  .dashboard-page .driver-left-panel .driver-user-plate-in-panel .driver-plate-subtitle {
+    font-size: 13.9px !important;
+  }
+
+  .dashboard-page .driver-left-panel .driver-vehicle-info {
+    gap: 3px !important;
+    margin-top: 2px !important;
+  }
+
+  .dashboard-page .driver-left-panel .driver-info-item,
+  .dashboard-page .driver-left-panel .driver-info-item .label,
+  .dashboard-page .driver-left-panel .driver-info-item .value {
+    font-size: 13.6px !important;
+    line-height: 1.16;
+  }
+
+  .dashboard-page .driver-right-panel {
+    padding-bottom: 1px;
+  }
+
+  .dashboard-page .driver-action-area {
+    padding-top: 2px;
+  }
+
+  .dashboard-page .driver-action-group {
+    margin-bottom: 2px;
+    gap: 2px;
+  }
+
+  .dashboard-page .driver-action-btn {
+    padding: 4px 8px;
+    line-height: 1.08;
+  }
+}
+
+@media (min-width: 769px) {
+    .dashboard-page .driver-left-panel {
+        position: relative;
+        min-height: 0;
+        overflow: hidden;
+        border-right: none !important;
+    }
+    .dashboard-page .driver-left-panel::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 12px;
+        width: 1.2px;
+        background: var(--border-red-tech);
+        pointer-events: none;
+    }
+}}
+
+
+/* Login plain .hero > h1: 500px shell + letter-spacing Arial/fallback taşmayı kapat */
+.login-page .hero > h1 {
+  flex: 1 1 0;
+  min-width: 0;
+  width: auto;
+  max-width: 100%;
+  padding-inline: 2px;
+  font-size: 20px;
+  letter-spacing: 2.4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: clip;
+}
+
+@media (max-width: 768px) {
+  .login-page .hero > h1 {
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+    font-size: clamp(14.5px, 4.4vw, 18.5px) !important;
+    letter-spacing: clamp(0.4px, 0.32vw, 1.2px) !important;
+    line-height: 1.2 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: clip !important;
+    padding: 0 2px !important;
+  }
+}
