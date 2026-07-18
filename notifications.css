@@ -1805,6 +1805,10 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
     min-height: 42px;
     padding-top: 4px;
     padding-bottom: 5px;
+    padding-left: 9px;
+    padding-right: 9px;
+    --monthly-todo-wa-track: 24px;
+    --monthly-todo-wa-gap: 6px;
   }
   #monthly-todo-modal .monthly-todo-list-scroll {
     padding-top: 2px;
@@ -1858,6 +1862,12 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
     padding-right: 0;
     line-height: 1.25;
     text-align: center;
+  }
+
+  /* Kullanıcı başlığı: ortalamada WhatsApp track yok sayılır (isim hücresiyle hizalı). */
+  #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h:not(.monthly-todo-col-h--middle):not(.monthly-todo-col-h--desc) {
+    box-sizing: border-box;
+    padding-right: calc(var(--monthly-todo-wa-track) + var(--monthly-todo-wa-gap));
   }
 }
 
