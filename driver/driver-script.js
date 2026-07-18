@@ -2,12 +2,12 @@
 (function() {
 'use strict';
 
-var VERSION = '20260718.3';
+var VERSION = '20260718.4';
 window.MEDISA_DRIVER_ASSET_VERSIONS = window.MEDISA_DRIVER_ASSET_VERSIONS || {
-bootstrap: '20260718.3',
+bootstrap: '20260718.4',
 login: '20260718.1',
-dashboardCore: '20260718.3',
-history: '20260718.1',
+dashboardCore: '20260718.4',
+history: '20260718.4',
 documents: '20260718.3',
 feedback: '20260718.1',
 password: '20260718.1',
@@ -183,6 +183,31 @@ var normalized = normalizeDriverVehicleTypeKey(getDriverVehicleTypeKey(vehicle))
 return normalized === 'kamyon' || normalized === 'buyuk_ticari';
 }
 
+function bindDriverDashboardTitleCase(areaEl) {
+if (!areaEl || areaEl.nodeType !== 1) return;
+areaEl.querySelectorAll('textarea, input[type="text"]').forEach(function(el) {
+if (el.getAttribute('data-driver-titlecase-bound') === '1') return;
+var id = el.id || '';
+if (/km-|kaza-tutar-|bakim-km-|bakim-tutar-|iletisim-/i.test(id)) return;
+if (el.classList.contains('driver-km-input')) return;
+if (el.getAttribute('inputmode') === 'numeric') return;
+el.setAttribute('data-driver-titlecase-bound', '1');
+el.addEventListener('blur', function () {
+var raw = el.value;
+var v = raw.trim();
+if (!v) return;
+if (/[^\s@]+@[^\s@]+\.[^\s@]+/.test(v)) return;
+var out = window.capitalizeWords(v);
+if (out !== raw) {
+el.value = out;
+try {
+el.dispatchEvent(new Event('input', { bubbles: true }));
+} catch (e) {}
+}
+});
+});
+}
+
 var runtime = {
 version: VERSION,
 paths: {
@@ -199,7 +224,8 @@ getDriverVehicleTypeKey: getDriverVehicleTypeKey,
 normalizeDriverVehicleTypeKey: normalizeDriverVehicleTypeKey,
 driverVehicleNeedsK2: driverVehicleNeedsK2,
 driverVehicleNeedsTakograf: driverVehicleNeedsTakograf,
-driverVehicleIsHeavyCommercial: driverVehicleIsHeavyCommercial
+driverVehicleIsHeavyCommercial: driverVehicleIsHeavyCommercial,
+bindDriverDashboardTitleCase: bindDriverDashboardTitleCase
 },
 features: {},
 registerFeature: function(name, api) {
