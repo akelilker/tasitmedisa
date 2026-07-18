@@ -4,6 +4,7 @@
 # Favicon: bu dizinde favicon.ico isteği icon/favicon.ico'dan servis edilsin
 <IfModule mod_rewrite.c>
   RewriteEngine On
+  RewriteRule ^(?:\.git|\.github)(?:/|$) - [F,L,NC]
   RewriteRule ^data(/|$) - [F,L,NC]
   RewriteRule ^favicon\.ico$ icon/favicon.ico [L]
 </IfModule>
@@ -18,5 +19,10 @@
 
 # Dokümantasyon (.md) sunucuda servis edilmesin
 <FilesMatch "\.md$">
+    Require all denied
+</FilesMatch>
+
+# Deploy state ve geliştirme dosyaları web üzerinden servis edilmesin
+<FilesMatch "^(?:\.cpanel\.yml|\.editorconfig|\.ftp-deploy-sync-state\.json|package\.json)$">
     Require all denied
 </FilesMatch>
