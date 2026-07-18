@@ -112,6 +112,7 @@ function getDefaultAppData() {
             updatedAt: '',
             period: '',
             sourceFileName: '',
+            rowCount: 0,
             rows: []
         },
         notificationReadState: {},
@@ -890,6 +891,7 @@ function normalizeOfflineAppDataSnapshot(data) {
             updatedAt: String((data.kaskoDegerListesi && data.kaskoDegerListesi.updatedAt) || ''),
             period: String((data.kaskoDegerListesi && data.kaskoDegerListesi.period) || ''),
             sourceFileName: String((data.kaskoDegerListesi && data.kaskoDegerListesi.sourceFileName) || ''),
+            rowCount: Number((data.kaskoDegerListesi && data.kaskoDegerListesi.rowCount) || 0) || 0,
             rows: []
         },
         notificationReadState: (data.notificationReadState && typeof data.notificationReadState === 'object' && !Array.isArray(data.notificationReadState))
@@ -932,13 +934,14 @@ function loadDataFromLocalStorage() {
 }
 
 /**
- * Ham kasko listesini ayrı endpoint’ten doldurur (data/kasko-deger-listesi.json).
+ * Compact kasko index yükler (load_kasko.php?mode=index).
+ * Tam rows appData'ya yazılmaz; runtime Map window.__medisaKaskoLookupIndex üzerindedir.
  * @returns {Promise<boolean>}
  */
 async function loadKaskoListIntoAppData() {
     try {
         if (!ensureMainAppSession()) return false;
-        var url = API_LOAD_KASKO + '?t=' + Date.now();
+        var url = API_LOAD_KASKO + '?mode=index&t=' + Date.now();
         var response = await fetch(url, {
             method: 'GET',
             headers: buildAuthHeaders({
@@ -951,12 +954,41 @@ async function loadKaskoListIntoAppData() {
         var txt = await response.text();
         var kd = JSON.parse(txt);
         if (!kd || typeof kd !== 'object') return false;
+        if (String(kd.format || '') !== 'packed-v1') return false;
+        if (!Array.isArray(kd.keys) || !Array.isArray(kd.values) || !Array.isArray(kd.dictionary) || !Array.isArray(kd.years)) {
+            return false;
+        }
+        if (kd.keys.length !== kd.values.length) return false;
+
+        var map = new Map();
+        for (var i = 0; i < kd.keys.length; i++) {
+            map.set(String(kd.keys[i]), kd.values[i]);
+        }
+        var yearIndex = Object.create(null);
+        for (var yi = 0; yi < kd.years.length; yi++) {
+            yearIndex[String(kd.years[yi])] = yi;
+        }
+
+        window.__medisaKaskoLookupIndex = {
+            format: 'packed-v1',
+            sourceFingerprint: String(kd.sourceFingerprint || ''),
+            updatedAt: String(kd.updatedAt || ''),
+            period: String(kd.period || ''),
+            sourceFileName: String(kd.sourceFileName || ''),
+            rowCount: Number(kd.rowCount || kd.keys.length) || kd.keys.length,
+            years: kd.years.slice(),
+            yearIndex: yearIndex,
+            dictionary: kd.dictionary.slice(),
+            map: map
+        };
+
         if (!window.appData || typeof window.appData !== 'object') window.appData = getDefaultAppData();
         window.appData.kaskoDegerListesi = {
             updatedAt: String(kd.updatedAt || ''),
             period: String(kd.period || ''),
             sourceFileName: String(kd.sourceFileName || ''),
-            rows: Array.isArray(kd.rows) ? kd.rows : []
+            rowCount: Number(kd.rowCount || kd.keys.length) || kd.keys.length,
+            rows: []
         };
         if (typeof window.clearKaskoCache === 'function') window.clearKaskoCache();
         return true;
@@ -966,6 +998,9 @@ async function loadKaskoListIntoAppData() {
 }
 
 window.loadKaskoListFromServer = loadKaskoListIntoAppData;
+window.clearMedisaKaskoLookupIndex = function() {
+    try { window.__medisaKaskoLookupIndex = null; } catch (e) {}
+};
 
 async function loadDataFromServer(forceRefresh) {
     if (forceRefresh !== true && serverDatasetTrusted === true && hasUsableAppData(window.appData)) {
@@ -1836,6 +1871,14 @@ window.writeUsers = function(arr) {
 window.getMedisaVehicles = getMedisaVehicles;
 window.getMedisaBranches = getMedisaBranches;
 window.getMedisaUsers = getMedisaUsers;
+window.getMedisaCollectionRevisions = function() {
+    return {
+        vehicles: Number(medisaCollectionRevisions.vehicles) || 0,
+        branches: Number(medisaCollectionRevisions.branches) || 0,
+        users: Number(medisaCollectionRevisions.users) || 0,
+        session: Number(medisaCollectionRevisions.session) || 0
+    };
+};
 window.replaceMedisaVehicles = function(arr, options) {
     return replaceMedisaCollection('vehicles', arr, options || { reason: 'replace-vehicles' });
 };

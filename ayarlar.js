@@ -3319,19 +3319,28 @@
               updatedAt: nowIso,
               period: period,
               sourceFileName: sourceName,
+              rowCount: Array.isArray(jsonData) ? jsonData.length : 0,
               rows: Array.isArray(jsonData) ? jsonData : []
             };
 
             if (typeof window.clearKaskoCache === 'function') window.clearKaskoCache();
 
             var afterSave = function() {
-              var updatePromise = (typeof window.guncelleTumKaskoDegerleri === 'function')
-                ? window.guncelleTumKaskoDegerleri()
+              var reloadIndex = (typeof window.loadKaskoListFromServer === 'function')
+                ? window.loadKaskoListFromServer()
                 : Promise.resolve(false);
-              return Promise.resolve(updatePromise).then(function() {
-                if (typeof window.updateNotifications === 'function') {
-                  window.updateNotifications();
+              return Promise.resolve(reloadIndex).then(function() {
+                if (window.appData && window.appData.kaskoDegerListesi) {
+                  window.appData.kaskoDegerListesi.rows = [];
                 }
+                var updatePromise = (typeof window.guncelleTumKaskoDegerleri === 'function')
+                  ? window.guncelleTumKaskoDegerleri()
+                  : Promise.resolve(false);
+                return Promise.resolve(updatePromise).then(function() {
+                  if (typeof window.updateNotifications === 'function') {
+                    window.updateNotifications();
+                  }
+                });
               });
             };
 

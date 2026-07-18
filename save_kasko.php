@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/core.php';
+require_once __DIR__ . '/kasko-index.php';
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, OPTIONS');
@@ -85,8 +86,18 @@ if (!medisaAtomicWriteFile($path, $json)) {
     exit;
 }
 
+$indexOk = false;
+$indexFingerprint = '';
+$packed = medisaBuildOrLoadKaskoPackedIndex(true);
+if (is_array($packed) && medisaValidateKaskoPackedIndex($packed)) {
+    $indexOk = true;
+    $indexFingerprint = (string)($packed['sourceFingerprint'] ?? '');
+}
+
 echo json_encode([
     'success' => true,
     'updatedAt' => $payload['updatedAt'],
     'period' => $payload['period'],
+    'indexRebuilt' => $indexOk,
+    'indexFingerprint' => $indexFingerprint,
 ], JSON_UNESCAPED_UNICODE);
