@@ -6055,7 +6055,7 @@
 
   function openBlankDocumentTab() {
     try {
-      return window.open('about:blank', '_blank', 'noopener,noreferrer');
+      return window.open('about:blank', '_blank');
     } catch (e) {
       return null;
     }
