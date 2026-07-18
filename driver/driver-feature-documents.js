@@ -10,10 +10,12 @@ var getDriverVehicleTypeKey = h.getDriverVehicleTypeKey;
 var normalizeDriverVehicleTypeKey = h.normalizeDriverVehicleTypeKey;
 var driverVehicleNeedsK2 = h.driverVehicleNeedsK2;
 var driverVehicleNeedsTakograf = h.driverVehicleNeedsTakograf;
+var driverVehicleIsHeavyCommercial = h.driverVehicleIsHeavyCommercial;
 if (typeof getDriverVehicleTypeKey !== 'function'
 || typeof normalizeDriverVehicleTypeKey !== 'function'
 || typeof driverVehicleNeedsK2 !== 'function'
-|| typeof driverVehicleNeedsTakograf !== 'function') {
+|| typeof driverVehicleNeedsTakograf !== 'function'
+|| typeof driverVehicleIsHeavyCommercial !== 'function') {
 throw new Error('MedisaDriverRuntime vehicle document helpers eksik');
 }
 const DRIVER_DOCUMENT_TYPES = [
@@ -23,11 +25,6 @@ const DRIVER_DOCUMENT_TYPES = [
 { key: 'tasit_karti', title: 'Taşıt Kartı', pathField: 'tasitKartiPath', icon: 'id-card' },
 { key: 'takograf', title: 'Takograf Belgesi', pathField: 'takografBelgesiPath', icon: 'gauge' }
 ];
-
-function driverVehicleIsHeavyCommercial(vehicle) {
-var normalized = normalizeDriverVehicleTypeKey(getDriverVehicleTypeKey(vehicle));
-return normalized === 'kamyon' || normalized === 'buyuk_ticari';
-}
 
 function getDriverDocumentTypeConfig(key) {
 return DRIVER_DOCUMENT_TYPES.find(function(item) { return item.key === key; });

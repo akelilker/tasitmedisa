@@ -2,13 +2,13 @@
 (function() {
 'use strict';
 
-var VERSION = '20260718.2';
+var VERSION = '20260718.3';
 window.MEDISA_DRIVER_ASSET_VERSIONS = window.MEDISA_DRIVER_ASSET_VERSIONS || {
-bootstrap: '20260718.2',
+bootstrap: '20260718.3',
 login: '20260718.1',
-dashboardCore: '20260718.2',
+dashboardCore: '20260718.3',
 history: '20260718.1',
-documents: '20260718.2',
+documents: '20260718.3',
 feedback: '20260718.1',
 password: '20260718.1',
 actions: '20260718.1',
@@ -178,6 +178,11 @@ var normalizedType = normalizeDriverVehicleTypeKey(getDriverVehicleTypeKey(vehic
 return normalizedType === 'kamyon' || normalizedType === 'buyuk_ticari';
 }
 
+function driverVehicleIsHeavyCommercial(vehicle) {
+var normalized = normalizeDriverVehicleTypeKey(getDriverVehicleTypeKey(vehicle));
+return normalized === 'kamyon' || normalized === 'buyuk_ticari';
+}
+
 var runtime = {
 version: VERSION,
 paths: {
@@ -193,7 +198,8 @@ helpers: {
 getDriverVehicleTypeKey: getDriverVehicleTypeKey,
 normalizeDriverVehicleTypeKey: normalizeDriverVehicleTypeKey,
 driverVehicleNeedsK2: driverVehicleNeedsK2,
-driverVehicleNeedsTakograf: driverVehicleNeedsTakograf
+driverVehicleNeedsTakograf: driverVehicleNeedsTakograf,
+driverVehicleIsHeavyCommercial: driverVehicleIsHeavyCommercial
 },
 features: {},
 registerFeature: function(name, api) {

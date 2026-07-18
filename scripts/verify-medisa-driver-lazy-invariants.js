@@ -212,12 +212,14 @@ test('Bootstrap ortak vehicle helper ownerıdır', () => {
   assert.match(files.bootstrap, /function normalizeDriverVehicleTypeKey\s*\(/);
   assert.match(files.bootstrap, /function driverVehicleNeedsK2\s*\(/);
   assert.match(files.bootstrap, /function driverVehicleNeedsTakograf\s*\(/);
+  assert.match(files.bootstrap, /function driverVehicleIsHeavyCommercial\s*\(/);
 });
 test('Dört helper runtime.helpers içine publish edilir', () => {
   assert.match(files.bootstrap, /helpers:\s*\{[\s\S]*getDriverVehicleTypeKey\s*:/);
   assert.match(files.bootstrap, /helpers:\s*\{[\s\S]*normalizeDriverVehicleTypeKey\s*:/);
   assert.match(files.bootstrap, /helpers:\s*\{[\s\S]*driverVehicleNeedsK2\s*:/);
   assert.match(files.bootstrap, /helpers:\s*\{[\s\S]*driverVehicleNeedsTakograf\s*:/);
+  assert.match(files.bootstrap, /helpers:\s*\{[\s\S]*driverVehicleIsHeavyCommercial\s*:/);
   assert.match(files.bootstrap, /window\.MedisaDriverRuntime\s*=\s*runtime/);
   const helpersBlock = files.bootstrap.slice(
     files.bootstrap.indexOf('helpers: {'),
@@ -226,12 +228,15 @@ test('Dört helper runtime.helpers içine publish edilir', () => {
   assert.ok(helpersBlock.indexOf('getDriverVehicleTypeKey') >= 0);
   assert.ok(helpersBlock.indexOf('driverVehicleNeedsK2') >= 0);
   assert.ok(helpersBlock.indexOf('driverVehicleNeedsTakograf') >= 0);
+  assert.ok(helpersBlock.indexOf('driverVehicleIsHeavyCommercial') >= 0);
 });
 test('Dashboard core helperları runtime.helpers üzerinden çözer', () => {
   assert.match(files.core, /var h = runtime\.helpers/);
   assert.match(files.core, /var driverVehicleNeedsK2 = h && h\.driverVehicleNeedsK2/);
   assert.match(files.core, /var driverVehicleNeedsTakograf = h && h\.driverVehicleNeedsTakograf/);
+  assert.match(files.core, /var driverVehicleIsHeavyCommercial = h && h\.driverVehicleIsHeavyCommercial/);
   assert.match(files.core, /MedisaDriverRuntime vehicle document helpers eksik/);
+  assert.match(files.core, /function clearSavedDriverPassword\s*\(/);
 });
 test('Documents feature helperları runtime.helpers üzerinden çözer', () => {
   assert.match(files.documents, /var h = runtime\.helpers/);
@@ -239,16 +244,19 @@ test('Documents feature helperları runtime.helpers üzerinden çözer', () => {
   assert.match(files.documents, /var normalizeDriverVehicleTypeKey = h\.normalizeDriverVehicleTypeKey/);
   assert.match(files.documents, /var driverVehicleNeedsK2 = h\.driverVehicleNeedsK2/);
   assert.match(files.documents, /var driverVehicleNeedsTakograf = h\.driverVehicleNeedsTakograf/);
+  assert.match(files.documents, /var driverVehicleIsHeavyCommercial = h\.driverVehicleIsHeavyCommercial/);
 });
 test('Dashboard core içinde local vehicle helper function declaration yoktur', () => {
   assert.doesNotMatch(files.core, /function\s+driverVehicleNeedsK2\s*\(/);
   assert.doesNotMatch(files.core, /function\s+driverVehicleNeedsTakograf\s*\(/);
+  assert.doesNotMatch(files.core, /function\s+driverVehicleIsHeavyCommercial\s*\(/);
   assert.doesNotMatch(files.core, /function\s+getDriverVehicleTypeKey\s*\(/);
   assert.doesNotMatch(files.core, /function\s+normalizeDriverVehicleTypeKey\s*\(/);
 });
 test('Documents feature içinde mükerrer vehicle helper function declaration yoktur', () => {
   assert.doesNotMatch(files.documents, /function\s+driverVehicleNeedsK2\s*\(/);
   assert.doesNotMatch(files.documents, /function\s+driverVehicleNeedsTakograf\s*\(/);
+  assert.doesNotMatch(files.documents, /function\s+driverVehicleIsHeavyCommercial\s*\(/);
   assert.doesNotMatch(files.documents, /function\s+getDriverVehicleTypeKey\s*\(/);
   assert.doesNotMatch(files.documents, /function\s+normalizeDriverVehicleTypeKey\s*\(/);
 });
@@ -259,6 +267,10 @@ test('driverVehicleNeedsK2 toplam canonical function declaration sayısı = 1', 
 test('driverVehicleNeedsTakograf toplam canonical function declaration sayısı = 1', () => {
   const all = files.bootstrap + files.core + files.documents + files.history + files.feedback + files.password + files.actions + files.login;
   assert.equal(count(all, /function\s+driverVehicleNeedsTakograf\s*\(/g), 1);
+});
+test('driverVehicleIsHeavyCommercial toplam canonical function declaration sayısı = 1', () => {
+  const all = files.bootstrap + files.core + files.documents + files.history + files.feedback + files.password + files.actions + files.login;
+  assert.equal(count(all, /function\s+driverVehicleIsHeavyCommercial\s*\(/g), 1);
 });
 test('Documents feature hâlâ lazydir', () => {
   assert.match(files.bootstrap, /documents:\s*\{\s*js:\s*'driver-feature-documents\.js'/);
@@ -283,13 +295,13 @@ test('Takograf tip matrisi aynıdır', () => {
   assert.match(files.bootstrap, /normalizedType === 'kamyon' \|\| normalizedType === 'buyuk_ticari'/);
 });
 test('Driver asset version matrisi dar bump kullanır', () => {
-  assert.match(files.bootstrap, /bootstrap:\s*'20260718\.2'/);
-  assert.match(files.bootstrap, /dashboardCore:\s*'20260718\.2'/);
-  assert.match(files.bootstrap, /documents:\s*'20260718\.2'/);
+  assert.match(files.bootstrap, /bootstrap:\s*'20260718\.3'/);
+  assert.match(files.bootstrap, /dashboardCore:\s*'20260718\.3'/);
+  assert.match(files.bootstrap, /documents:\s*'20260718\.3'/);
   assert.match(files.bootstrap, /login:\s*'20260718\.1'/);
   assert.match(files.bootstrap, /history:\s*'20260718\.1'/);
-  assert.match(files.loginHtml, /driver-script\.js\?v=20260718\.2/);
-  assert.match(files.dashboardHtml, /driver-script\.js\?v=20260718\.2/);
+  assert.match(files.loginHtml, /driver-script\.js\?v=20260718\.3/);
+  assert.match(files.dashboardHtml, /driver-script\.js\?v=20260718\.3/);
   assert.match(files.loginHtml, /driver-shell\.css\?v=20260718\.1/);
   assert.match(files.dashboardHtml, /driver-shell\.css\?v=20260718\.1/);
 });
