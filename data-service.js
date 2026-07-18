@@ -39,9 +39,10 @@
     }
     if (!Array.isArray(window.appData.tasitlar)) window.appData.tasitlar = [];
     if (!window.appData.kaskoDegerListesi || typeof window.appData.kaskoDegerListesi !== 'object') {
-      window.appData.kaskoDegerListesi = { updatedAt: '', period: '', sourceFileName: '', rows: [] };
+      window.appData.kaskoDegerListesi = { updatedAt: '', period: '', sourceFileName: '', rowCount: 0, rows: [] };
     }
     if (!Array.isArray(window.appData.kaskoDegerListesi.rows)) window.appData.kaskoDegerListesi.rows = [];
+    if (window.appData.kaskoDegerListesi.rowCount == null) window.appData.kaskoDegerListesi.rowCount = 0;
     if (!window.appData.notificationReadState || typeof window.appData.notificationReadState !== 'object' || Array.isArray(window.appData.notificationReadState)) {
       window.appData.notificationReadState = {};
     }
@@ -121,8 +122,14 @@
 
   function getKaskoDegerListesiState() {
     ensureAppData();
+    if (!window.appData.kaskoDegerListesi || typeof window.appData.kaskoDegerListesi !== 'object') {
+      window.appData.kaskoDegerListesi = { updatedAt: '', period: '', sourceFileName: '', rowCount: 0, rows: [] };
+    }
     if (!Array.isArray(window.appData.kaskoDegerListesi.rows)) {
       window.appData.kaskoDegerListesi.rows = [];
+    }
+    if (window.appData.kaskoDegerListesi.rowCount == null) {
+      window.appData.kaskoDegerListesi.rowCount = 0;
     }
     return window.appData.kaskoDegerListesi;
   }
@@ -134,12 +141,17 @@
   }
 
   function hasAnyKaskoListData() {
+    var idx = window.__medisaKaskoLookupIndex;
+    if (idx && idx.map && typeof idx.map.size === 'number' && idx.map.size > 0) return true;
     var state = getKaskoDegerListesiState();
+    if (Number(state.rowCount) > 0) return true;
     if (Array.isArray(state.rows) && state.rows.length > 0) return true;
     return false;
   }
 
   function ensureKaskoListLoaded() {
+    var idx = window.__medisaKaskoLookupIndex;
+    if (idx && idx.map && idx.map.size > 0) return Promise.resolve(true);
     var state = getKaskoDegerListesiState();
     if (Array.isArray(state.rows) && state.rows.length > 0) return Promise.resolve(true);
     if (kaskoListRequestPromise) return kaskoListRequestPromise;
@@ -163,9 +175,35 @@
     return kaskoListRequestPromise;
   }
 
+  function formatKaskoNumericValue(numVal) {
+    if (!isNaN(numVal) && numVal > 0) {
+      return numVal.toLocaleString('tr-TR') + ' ₺';
+    }
+    return 'Değer Yok (Excel: 0)';
+  }
+
+  function getKaskoDegeriFromPackedIndex(kaskoKodu, modelYili) {
+    var idx = window.__medisaKaskoLookupIndex;
+    if (!idx || !idx.map || !idx.dictionary || !idx.yearIndex) return null;
+    var targetYear = String(modelYili || '').trim();
+    if (!Object.prototype.hasOwnProperty.call(idx.yearIndex, targetYear)) {
+      return 'Yıl Bulunamadı (' + targetYear + ')';
+    }
+    var targetClean = String(kaskoKodu).replace(/[^0-9]/g, '').replace(/^0+/, '');
+    var cells = idx.map.get(targetClean);
+    if (!cells) return 'Kasko Kodu Bulunamadı';
+    var yearPos = idx.yearIndex[targetYear];
+    var dictId = cells[yearPos];
+    var numVal = Number(idx.dictionary[dictId]) || 0;
+    return formatKaskoNumericValue(numVal);
+  }
+
   function getKaskoDegeri(kaskoKodu, modelYili) {
     if (!kaskoKodu) return '-';
     try {
+      var packedHit = getKaskoDegeriFromPackedIndex(kaskoKodu, modelYili);
+      if (packedHit !== null) return packedHit;
+
       if (!window._kaskoCache) {
         window._kaskoCache = getKaskoRowsFromSource();
       }
@@ -220,10 +258,7 @@
           }
 
           var numVal = parseFloat(cleanVal) || parseInt(cleanVal.replace(/\D/g, ''), 10);
-          if (!isNaN(numVal) && numVal > 0) {
-            return numVal.toLocaleString('tr-TR') + ' ₺';
-          }
-          return 'Değer Yok (Excel: 0)';
+          return formatKaskoNumericValue(numVal);
         }
       }
       return 'Kasko Kodu Bulunamadı';
