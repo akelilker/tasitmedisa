@@ -19,11 +19,13 @@ function assert(name, cond, detail) {
 }
 
 const core = read('core.php');
+const driverDashFn = core.slice(core.indexOf('function medisaComputeDriverDashboard'));
 assert(
   'medisaComputeDriverDashboard_uses_vehicle',
-  /return medisaUserHasAssignedVehicle\(\$data, \$userId\)/.test(core) &&
-    /'genel_yonetici'/.test(core.slice(core.indexOf('function medisaComputeDriverDashboard'))),
-  'Genel yönetici dahil panel yalnızca atanmış taşıt ile olmalı'
+  /medisaIsYoneticiOnlyUser\(\$user\)/.test(driverDashFn) &&
+    /in_array\(\$role, \['sube_yonetici', 'genel_yonetici'\], true\)/.test(driverDashFn) &&
+    /return medisaUserHasAssignedVehicle\(\$data, \$userId\)/.test(driverDashFn),
+  'Driver dashboard: yonetici_only false; genel/sube true; kullanici yalnız atanmış taşıt'
 );
 assert(
   'medisaIsBranchManagerRole_sube_only',
