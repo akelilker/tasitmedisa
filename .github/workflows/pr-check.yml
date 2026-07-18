@@ -50,6 +50,13 @@ jobs:
             ayarlar.js \
             sw.js \
             driver/driver-script.js \
+            driver/driver-login.js \
+            driver/driver-dashboard-core.js \
+            driver/driver-feature-history.js \
+            driver/driver-feature-documents.js \
+            driver/driver-feature-feedback.js \
+            driver/driver-feature-password.js \
+            driver/driver-feature-actions.js \
             admin/admin-report.js \
             scripts/verify-medisa-role-invariants.js \
             scripts/verify-driver-login-title-fit.js \
@@ -58,12 +65,16 @@ jobs:
             scripts/verify-medisa-save-wire-client.js \
             scripts/run-medisa-save-wire-verify.js \
             scripts/measure-medisa-save-wire.js \
+            scripts/verify-medisa-driver-lazy-invariants.js \
+            scripts/measure-medisa-driver-boot.js \
+            scripts/verify-medisa-main-shell-lazy-invariants.js \
+            scripts/measure-medisa-main-shell.js \
             scripts/hydrate-demo-data-branches.js
           do
             node --check "$f"
           done
 
-      - name: Visible store + login fit + save wire invariants
+      - name: Visible store + login fit + save wire + lazy invariants
         shell: bash
         run: |
           set -euo pipefail
@@ -72,6 +83,10 @@ jobs:
           npm run tool:verify-roles
           npm run tool:verify-save-wire
           npm run tool:measure-save-wire
+          npm run tool:verify-driver-lazy
+          npm run tool:measure-driver-boot
+          npm run tool:verify-main-shell
+          npm run tool:measure-main-shell
 
   http-smoke:
     name: HTTP smoke (php -S + curl)

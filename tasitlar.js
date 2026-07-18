@@ -8,6 +8,161 @@
    • Olay menüsü + dinamik formlar (kaydet / güncelle)
    ========================================= */
 
+(function () {
+  function hydrateMedisaVehiclesMarkup() {
+    if (document.getElementById('vehicles-modal')) return;
+    var host = document.createElement('div');
+    host.setAttribute('data-medisa-surface', 'vehicles');
+    host.innerHTML = `<div id="vehicles-modal" class="modal-overlay tasitlar-modal-overlay" onclick="if(event.target === this) { event.stopPropagation(); }">
+          <div class="modal-container" onclick="event.stopPropagation();">
+            <div class="modal-header">
+              <button type="button" class="modal-home" onclick="closeAllModals()" aria-label="Ana sayfaya dön" title="Ana sayfa">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 10v10h14V10"/></svg>
+              </button>
+              <h2 class="premium-title">TAŞITLAR</h2>
+              <button class="modal-close" onclick="event.stopPropagation(); event.preventDefault(); closeVehiclesModal(event); return false;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+            </div>
+            <div class="modal-body"><div id="vehicles-modal-content"></div></div>
+          </div>
+        </div>
+
+<div id="vehicle-detail-modal" class="modal-overlay tasitlar-modal-overlay" onclick="if(event.target === this) { event.stopPropagation(); event.preventDefault(); return false; }">
+          <div class="modal-container" onclick="event.stopPropagation();">
+            <div class="modal-header">
+              <button type="button" class="modal-home" onclick="closeAllModals()" aria-label="Ana sayfaya dön" title="Ana sayfa">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 10v10h14V10"/></svg>
+              </button>
+              <h2 class="premium-title">TAŞIT DETAYI</h2>
+              <button class="modal-close" onclick="typeof backFromVehicleDetailModal==='function'?backFromVehicleDetailModal():closeAllModals();">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div id="vehicle-detail-content">
+                <div class="detail-plate-row">
+                  <div class="detail-plate"></div>
+                </div>
+                <div class="detail-brand-year-row">
+                  <div class="detail-brand-year"></div>
+                </div>
+                <div class="vehicle-detail-scroll-wrap">
+                  <div class="vehicle-detail-columns">
+                    <div class="vehicle-detail-left"></div>
+                    <div class="vehicle-detail-right"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+<div id="event-menu-modal" class="modal-overlay tasitlar-modal-overlay ayarlar-modal-overlay olay-ekle-modal" onclick="if(event.target === this) { event.stopPropagation(); event.preventDefault(); return false; }">
+            <div class="modal-container" onclick="event.stopPropagation();">
+                <div class="modal-header">
+                    <button type="button" class="modal-home" onclick="closeAllModals()" aria-label="Ana sayfaya dön" title="Ana sayfa">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 10v10h14V10"/></svg>
+                    </button>
+                    <h2>OLAY EKLE</h2>
+                    <button class="modal-close" onclick="event.stopPropagation(); backToVehicleDetail();">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="universal-back-bar universal-back-bar--context">
+                    <button type="button" class="universal-back-btn" onclick="event.stopPropagation(); backToVehicleDetail();" title="Taşıt Detay'a dön">
+                        <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        <span class="universal-back-label">Taşıt Detay</span>
+                    </button>
+                </div>
+                <div class="modal-body" onclick="event.stopPropagation();">
+                    <div id="event-menu-list" class="event-menu-list"></div>
+                </div>
+            </div>
+        </div>
+
+<div id="dinamik-olay-modal" class="modal-overlay tasitlar-modal-overlay ayarlar-modal-overlay olay-ekle-modal" onclick="if(event.target === this) { event.stopPropagation(); event.preventDefault(); return false; }">
+            <div class="modal-container" onclick="event.stopPropagation();">
+                <div class="modal-header">
+                    <button type="button" class="modal-home" onclick="closeAllModals()" aria-label="Ana sayfaya dön" title="Ana sayfa">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 10v10h14V10"/></svg>
+                    </button>
+                    <h2 id="dinamik-olay-baslik">OLAY EKLE</h2>
+                    <button class="modal-close" onclick="event.stopPropagation(); backToVehicleDetail();">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="universal-back-bar universal-back-bar--context">
+                    <button type="button" class="universal-back-btn" aria-label="Olay menüsüne dön">
+                        <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        <span class="universal-back-label">Olay Ekle</span>
+                    </button>
+                </div>
+                <div class="modal-body" onclick="event.stopPropagation();">
+
+                    <div id="dinamik-olay-form-icerik"></div>
+
+                    <div class="universal-btn-group" id="ruhsat-btn-group" style="margin-top: 16px;">
+                        <button type="button" class="universal-btn-save" id="dinamik-olay-kaydet-btn">Kaydet</button>
+                        <button type="button" class="universal-btn-cancel">Vazgeç</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+<div id="vehicle-history-modal" class="modal-overlay tasitlar-modal-overlay ayarlar-modal-overlay" onclick="if(event.target === this) { event.stopPropagation(); }">
+            <div class="modal-container" onclick="event.stopPropagation();">
+                <div class="modal-header">
+                    <button type="button" class="modal-home" onclick="closeAllModals()" aria-label="Ana sayfaya dön" title="Ana sayfa">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 10v10h14V10"/></svg>
+                    </button>
+                    <h2>TAŞIT TARİHÇESİ</h2>
+                    <button class="modal-close" onclick="closeVehicleHistoryModal();">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="universal-back-bar history-back-nav" aria-label="Geri navigasyon">
+                    <button type="button" class="universal-back-btn" onclick="if(window.backFromHistoryToVehicleDetail) window.backFromHistoryToVehicleDetail(); event.stopPropagation();" title="Taşıt detayına dön" aria-label="Taşıt detayına dön">
+                        <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        <span class="universal-back-label">Taşıt Detay</span>
+                    </button>
+                </div>
+                <div class="history-vehicle-identity vehicle-context-row" aria-label="İşlem yapılan taşıt">
+                    <span class="vehicle-context-plate"></span>
+                    <span class="vehicle-context-separator" aria-hidden="true">•</span>
+                    <span class="vehicle-context-model"></span>
+                </div>
+                <div class="modal-body">
+                    <div id="history-tabs">
+                        <button type="button" class="history-tab active" data-tab="bakim" onclick="switchHistoryTab('bakim')" aria-label="Bakım geçmişi">Bakım</button>
+                        <button type="button" class="history-tab" data-tab="kaza" onclick="switchHistoryTab('kaza')" aria-label="Kaza geçmişi">Kaza</button>
+                        <button type="button" class="history-tab" data-tab="km" onclick="switchHistoryTab('km')" aria-label="Km güncelleme geçmişi">KM</button>
+                        <button type="button" class="history-tab" data-tab="diger" onclick="switchHistoryTab('diger')" aria-label="Diğer geçmiş kayıtları">Diğer</button>
+                    </div>
+                    <div id="history-content"></div>
+                </div>
+            </div>
+        </div>`;
+    var fragment = document.createDocumentFragment();
+    while (host.firstChild) fragment.appendChild(host.firstChild);
+    document.body.appendChild(fragment);
+  }
+  window.__medisaMainSurfaceHydrators = window.__medisaMainSurfaceHydrators || {};
+  window.__medisaMainSurfaceHydrators['vehicles'] = hydrateMedisaVehiclesMarkup;
+  hydrateMedisaVehiclesMarkup();
+})();
+
+
 (function() {
   const MEDISA_TASITLAR_MODULE_VERSION = '20260708.7';
   window.__medisaTasitlarModuleReady = false;
@@ -793,7 +948,7 @@
   // Global State
   let currentView = 'dashboard'; // 'dashboard' | 'list'
   let activeBranchId = null; // null = dashboard, 'all' = tümü, 'id' = şube
-  let viewMode = 'list'; 
+  let viewMode = 'list';
   let sortColumn = null; // 'year', 'brand', 'plate', 'km', 'type', 'transmission', 'user', 'branch', ...
   let sortDirection = 'asc'; // 'asc' | 'desc'
   let currentFilter = 'az'; // 'az' | 'newest' | 'oldest' | 'type' (liste filtre dropdown)
@@ -974,10 +1129,10 @@
       Array.isArray(listDisplayOrder) ? listDisplayOrder.join(',') : ''
     ].join('__');
   }
-  
+
   // Sütun Sıralaması State
   let vehicleColumnOrder = ['year', 'plate', 'brand', 'km', 'type', 'transmission', 'user', 'branch']; // Varsayılan sıralama
-  
+
   var defaultVehicleColumnOrder = ['year', 'plate', 'brand', 'km', 'type', 'transmission', 'user', 'branch'];
   function normalizeVehicleColumnOrder(order) {
     var validOrder = Array.isArray(order)
@@ -2095,7 +2250,7 @@
       event.stopPropagation();
       event.preventDefault();
     }
-    
+
     const modal = DOM.vehiclesModal;
     if (modal) {
       setVehiclesDetailUnderlay(false);
@@ -2118,14 +2273,14 @@
   // --- TOOLBAR YÖNETİMİ ---
   /**
    * Toolbar içeriğini mode'a göre dinamik olarak günceller
-   * 
+   *
    * @param {string} mode - 'dashboard' | 'detail' (görünüm modu)
    * @param {string} [title=''] - Detail modunda gösterilecek şube/başlık adı
-   * 
+   *
    * Mantık:
    * - Dashboard modu: Sağda Genel Arama + Arşiv butonları
    * - Detail modu: Solda Geri butonu + başlık, Sağda Yerel Arama/Filtre/Görünüm butonları
-   * 
+   *
    * Toolbar içeriği HTML olarak innerHTML'e set edilir
    */
   function updateToolbar(mode, title = '') {
@@ -2190,7 +2345,7 @@
                     </div>
                 </div>
                 <button class="vt-icon-btn" onclick="toggleViewMode()" title="Görünüm">
-                    ${viewMode === 'card' 
+                    ${viewMode === 'card'
                         ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>'
                         : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>'
                     }
@@ -2203,13 +2358,13 @@
   // --- 1. DASHBOARD RENDER ---
   /**
    * Ana şube dashboard grid'ini render eder
-   * 
+   *
    * Render mantığı:
    * 1. "TÜMÜ" kartı eklenir (tüm taşıtları gösterir)
    * 2. Her şube için kart oluşturulur (şube adı + taşıt sayısı)
    * 3. Tahsis edilmemiş taşıt varsa "Tahsis Edilmemiş" kartı eklenir
    * 4. Grid kolon sayısı dinamik ayarlanır (kart sayısına göre)
-   * 
+   *
    * Grid kolon stratejisi:
    * - 1 kart: 1 kolon
    * - 2 kart: 2 kolon
@@ -2486,11 +2641,11 @@
           if (sortColumn !== column) {
             return '<svg class="sort-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 9l4-4 4 4M8 15l4 4 4-4"/></svg>';
           }
-          return sortDirection === 'asc' 
+          return sortDirection === 'asc'
             ? '<svg class="sort-icon active" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 9l4-4 4 4"/></svg>'
             : '<svg class="sort-icon active" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 15l4 4 4-4"/></svg>';
         };
-        
+
         // Sütun başlık tanımları (≤640px: kısa etiket; masaüstü: tam kelime + CSS satır kırılması)
         const columnDefs = getVehicleListColumnDefs(isCompactHeader);
         html += '<div class="list-header-row" style="grid-template-columns: ' + gridStr + '">';
@@ -2500,7 +2655,7 @@
           if (def) {
             let labelHtml = buildVehicleHeaderLabelStackHtml(def.label);
             html += `
-              <div class="list-cell ${def.class} sortable-header" 
+              <div class="list-cell ${def.class} sortable-header"
                    data-col="${columnKey}"
                    ${isMobile ? '' : 'draggable="true"'}
                    ondragstart="handleVehicleColumnDragStart(event, '${columnKey}')"
@@ -2523,10 +2678,10 @@
 
         // Plaka (1. satır - tek satır maksimum)
         const plate = v.plate || '-';
-        
+
         // Marka/Model (2. satır - 2 satıra inebilir)
         const brandModel = v.brandModel || '-';
-        
+
         // 3. satır: Arşivde satış tarihi, Tümü'de şube, şube görünümünde kullanıcı
         const isArchive = (activeBranchId === '__archive__');
         let thirdLine = '';
@@ -2581,7 +2736,7 @@
               : getVehicleTypeLabel(vehicleTypeRaw.toLowerCase());
             const transmissionLabel = getTransmissionShortLabel(v.transmission);
             const branchLabel = toTitleCase(branchMap[String(v.branchId)]?.name || 'Tahsis Edilmemiş');
-            
+
             let cellHtml = '';
             listDisplayOrder.forEach(columnKey => {
               let cellContent = '';
@@ -2636,7 +2791,7 @@
                 cellHtml += `<div class="list-cell ${cellClass}">${cellContent}</div>`;
               }
             });
-            
+
             const vid = v.id != null ? String(v.id).replace(/"/g, '&quot;') : '';
             const archiveRowClass = isArchive ? ' archive-vehicle-row' : '';
             return `
@@ -2679,7 +2834,7 @@
               gridEl.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
           }
       }
-      
+
       // Mobil: başlıklar tek punto, en fazla 1pt küçülebilir (biri sığmazsa hepsi küçülür)
       if (viewMode === 'list' && window.innerWidth <= 640) {
           applyMobileListHeaderFontSize(listContainer);
@@ -2688,7 +2843,7 @@
       if (viewMode === 'card') {
           fitVehicleTextBoxes(listContainer);
       }
-      
+
       // Mobil: sütun başlıklarına touch ile sürükle-bırak (yer değiştirme)
       if (viewMode === 'list') {
           attachVehicleColumnTouchListeners(listContainer);
@@ -2706,15 +2861,15 @@
   // --- Taşıt Detay Göster (Kutuya tıklanınca) ---
   /**
    * Taşıt detay modal'ını açar ve seçili taşıtın bilgilerini gösterir
-   * 
+   *
    * @param {string} vehicleId - Gösterilecek taşıtın ID'si
-   * 
+   *
    * Mantık:
    * 1. Taşıt ID'si ile localStorage'dan taşıt bilgisini bul
    * 2. Bulunamazsa kullanıcıya uyarı göster
    * 3. vehicle-detail-modal'ı aç
    * 4. Plaka ve Marka/Model + Yıl bilgilerini modal içine yerleştir
-   * 
+   *
    * Not: Modal açma/kapama animasyonları CSS transition ile yönetilir
    */
   window.showVehicleDetail = function(vehicleId) {
@@ -2771,7 +2926,7 @@
       const existingPlateEl = contentEl.querySelector('.detail-plate');
       plateRow = document.createElement('div');
       plateRow.className = 'detail-plate-row';
-      
+
       // Yeni plaka elementi oluştur
       const plateEl = document.createElement('div');
       plateEl.className = 'detail-plate';
@@ -2780,9 +2935,9 @@
       } else {
         plateEl.textContent = vehicle.plate || '-';
       }
-      
+
       plateRow.appendChild(plateEl);
-      
+
       // Mevcut plaka elementini değiştir veya ekle
       if (existingPlateEl && existingPlateEl.parentNode) {
         existingPlateEl.parentNode.replaceChild(plateRow, existingPlateEl);
@@ -2845,14 +3000,14 @@
     // Toolbar oluştur/kontrol et (detay modalında) - Her durumda geri tuşu ekle
     const modalHeader = modal.querySelector('.modal-header');
     let detailToolbar = modal.querySelector('.vehicle-detail-toolbar');
-    
+
     // Toolbar yoksa oluştur
     if (!detailToolbar && modalHeader) {
       detailToolbar = document.createElement('div');
       detailToolbar.className = 'vehicle-detail-toolbar';
       modalHeader.after(detailToolbar);
     }
-    
+
     if (detailToolbar) {
       // Toolbar içeriğini temizle
       detailToolbar.innerHTML = '';
@@ -2891,12 +3046,12 @@
       };
       backBar.appendChild(backBtn);
       toolbarLeft.appendChild(backBar);
-      
+
       // Orta taraf (tahsis butonu - sadece tahsis edilmemiş taşıtlar için)
       // Yatayda ortalı: sol ok ve Taşıtlar dikkate alınmadan, tam ekran ortası
       const toolbarCenter = document.createElement('div');
       toolbarCenter.className = 'detail-toolbar-center-absolute';
-      
+
       if (isArchiveSoldDetail) {
         const soldBadge = document.createElement('span');
         soldBadge.className = 'detail-sold-badge';
@@ -2913,7 +3068,7 @@
         };
         toolbarCenter.appendChild(assignBtn);
       }
-      
+
       // Sağ taraf (tarihçe + ruhsat + yazdır)
       const toolbarRight = document.createElement('div');
       toolbarRight.className = 'toolbar-right';
@@ -2995,7 +3150,7 @@
         });
       };
       toolbarRight.appendChild(printBtn);
-      
+
       // Toolbar'a bölümleri ekle
       detailToolbar.appendChild(toolbarLeft);
       detailToolbar.appendChild(toolbarCenter);
@@ -3136,7 +3291,7 @@
       const box = getVSearchContainer();
       const input = getVSearchInput();
       if (!box || !input) return;
-      
+
       if (box.classList.contains('open')) {
           closeSearchBox();
       } else {
@@ -3157,7 +3312,7 @@
       if (input) input.value = '';
 
       if (silent === true) return;
-      
+
       // Arama kapanınca listeyi resetle (eğer global aramadaysak dashboarda dön)
       if (currentView === 'dashboard' && modalContent && modalContent.dataset.renderScope === 'search-global') {
           renderBranchDashboard();
@@ -3295,7 +3450,7 @@
           // Varsayılan sıralama yoksa orijinal sırayı koru
           return list;
       }
-      
+
       const sorted = Array.isArray(list) ? [...list] : [];
       const dir = sortDirection === 'asc' ? 1 : -1;
       // PERFORMANS: Sort döngüsü içinde find() (O(N log N * M)) yapmak yerine
@@ -3326,28 +3481,28 @@
 
       sorted.sort((a, b) => {
           let aVal, bVal;
-          
+
           switch(sortColumn) {
               case 'year':
                   aVal = parseInt(a.year) || 0;
                   bVal = parseInt(b.year) || 0;
                   return (aVal - bVal) * dir;
-                  
+
               case 'brand':
                   aVal = (a.brandModel || '').toLowerCase();
                   bVal = (b.brandModel || '').toLowerCase();
                   return aVal.localeCompare(bVal) * dir;
-                  
+
               case 'plate':
                   aVal = (a.plate || '').toLowerCase();
                   bVal = (b.plate || '').toLowerCase();
                   return aVal.localeCompare(bVal) * dir;
-                  
+
               case 'km':
                   aVal = parseInt((a.guncelKm || a.km || '0').toString().replace(/\./g, '')) || 0;
                   bVal = parseInt((b.guncelKm || b.km || '0').toString().replace(/\./g, '')) || 0;
                   return (aVal - bVal) * dir;
-                  
+
               case 'type':
                   aVal = (a.vehicleType || '').toLowerCase();
                   bVal = (b.vehicleType || '').toLowerCase();
@@ -3357,7 +3512,7 @@
                   aVal = getTransmissionLabel(a.transmission).toLowerCase();
                   bVal = getTransmissionLabel(b.transmission).toLowerCase();
                   return aVal.localeCompare(bVal) * dir;
-                  
+
               case 'branch':
                   aVal = getBranchName(a.branchId);
                   bVal = getBranchName(b.branchId);
@@ -3375,12 +3530,12 @@
                   const sortB = String(formatAdSoyad(rawB)).trim();
                   return sortA.localeCompare(sortB, 'tr', { sensitivity: 'base' }) * dir;
               }
-                  
+
               default:
                   return 0;
           }
       });
-      
+
       return sorted;
   }
 
@@ -3815,24 +3970,24 @@
   function renderVehicleDetailRight(vehicle) {
     const rightEl = DOM.vehicleDetailRight;
     if (!rightEl) return;
-    
+
     let html = '';
     const isSoldOrArchivedVehicle = window.MedisaVehicleNotificationDomain.isVehicleOperationallyInactive(vehicle);
-    
+
     // Sigorta bitiş tarihi
     const sigortaDate = vehicle.sigortaDate || '';
     const sigortaWarning = checkDateWarnings(sigortaDate);
     const sigortaWarningClass = isSoldOrArchivedVehicle ? '' : sigortaWarning.class;
     const sigortaDisplay = formatDateForDetailModal(sigortaDate);
     html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Sigorta Bitiş Tarihi</span><span class="detail-row-colon">:</span></div><span class="detail-row-value ${sigortaWarningClass}"> ${escapeHtml(sigortaDisplay || '-')}</span></div>`;
-    
+
     // Kasko bitiş tarihi
     const kaskoDate = vehicle.kaskoDate || '';
     const kaskoWarning = checkDateWarnings(kaskoDate);
     const kaskoWarningClass = isSoldOrArchivedVehicle ? '' : kaskoWarning.class;
     const kaskoDisplay = formatDateForDetailModal(kaskoDate);
     html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Kasko Bitiş Tarihi</span><span class="detail-row-colon">:</span></div><span class="detail-row-value ${kaskoWarningClass}"> ${escapeHtml(kaskoDisplay || '-')}</span></div>`;
-    
+
     // Muayene bitiş tarihi (taşıt tipi yoksa uyarı + tooltip + Tıklayınız)
     const muayeneDate = vehicle.muayeneDate || '';
     const muayeneWarning = checkDateWarnings(muayeneDate);
@@ -3869,7 +4024,7 @@
       const takografWarningClass = isSoldOrArchivedVehicle ? '' : takografWarning.class;
       html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Takograf Kalib. Bitiş</span><span class="detail-row-colon">:</span></div><span class="detail-row-value ${takografWarningClass}"> ${escapeHtml(formatDateForDetailModal(takografDate) || '-')}</span></div>`;
     }
-    
+
     // var/yok alanları: boş = Belirtilmedi (kesin Yoktur./Hayır gösterilmez)
     const detailVarYokLabel = function(raw, detailVal) {
       if (raw == null || String(raw).trim() === '') return 'Belirtilmedi';
@@ -3889,19 +4044,19 @@
     // Detay: yedek anahtar durumu
     const anahtarLabel = detailVarYokLabel(vehicle.anahtar, vehicle.anahtarNerede);
     html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Yedek Anahtar</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(anahtarLabel)}</span></div>`;
-    
+
     // Hak Mahrumiyeti
     const krediLabel = detailVarYokLabel(vehicle.kredi, vehicle.krediDetay);
     html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Hak Mahrumiyeti</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(krediLabel)}</span></div>`;
-    
+
     // Yazlık/ Kışlık Lastik (Yoktur "r" hizası için referans)
     const lastikLabel = detailVarYokLabel(vehicle.lastikDurumu, vehicle.lastikAdres);
     html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Yazlık/ Kışlık Lastik</span><span class="detail-row-colon">:</span></div><span class="detail-row-value detail-yoktur-r-ref"> ${escapeHtml(lastikLabel)}</span></div>`;
-    
+
     // UTTS
     const utts = detailBoolEvetHayir(vehicle.uttsTanimlandi);
     html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">UTTS</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(utts)}</span></div>`;
-    
+
     // Arvento
     const takipCihazi = detailBoolEvetHayir(vehicle.takipCihaziMontaj);
     html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Arvento</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(takipCihazi)}</span></div>`;
@@ -3957,7 +4112,7 @@
       ? '<button type="button" class="detail-notes-edit-btn" title="Notlar\u0131 d\u00fczenle" aria-label="Notlar\u0131 d\u00fczenle"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button>'
       : '';
     html += `<div class="detail-row detail-row-block detail-row-notes"><div class="detail-row-header detail-row-header-notes"><span class="detail-row-label">Notlar</span>${notesPencil}<span class="detail-row-colon">:</span></div><span class="detail-row-value detail-row-value-notes"><span class="detail-notes-admin-cell">${adminNotesHtml}</span>${userNoteSuffixHtml}</span></div>`;
-    
+
     rightEl.innerHTML = html;
 
     const notesBtn = rightEl.querySelector('.detail-notes-edit-btn');
@@ -4768,10 +4923,10 @@
       }
       const modal = DOM.eventMenuModal;
       if (!modal) return;
-      
+
       const menuList = DOM.eventMenuList;
       if (!menuList) return;
-      
+
       // Menü listesini oluştur
       const currentMenuVehicle = readVehicles().find(v => String(v.id) === String(effectiveVid));
       renderVehicleContextRow(modal, currentMenuVehicle);
@@ -4807,7 +4962,7 @@
       } else {
         renderEventMenuCategoryRoot();
       }
-      
+
       modal.style.display = 'flex';
       requestAnimationFrame(() => {
         modal.classList.add('active');
@@ -5159,11 +5314,11 @@
           btn.addEventListener('click', function(e) {
             e.preventDefault();
             e.stopPropagation();
-            
+
             radioBtns.forEach(b => { b.classList.remove('active', 'green'); });
             this.classList.add('active');
             if (this.dataset.value === 'var') this.classList.add('green');
-            
+
             if (this.dataset.value === 'var') {
               if (detayWrapper) detayWrapper.style.display = 'block';
               if (detayInput) setTimeout(function() { detayInput.focus(); requestAnimationFrame(syncDetayGrow); }, 100);
@@ -5200,11 +5355,11 @@
           btn.addEventListener('click', function(e) {
             e.preventDefault();
             e.stopPropagation();
-            
+
             radioBtns.forEach(b => { b.classList.remove('active', 'green'); });
             this.classList.add('active');
             if (this.dataset.value === 'var') this.classList.add('green');
-            
+
             if (this.dataset.value === 'var') {
               if (detayWrapper) detayWrapper.style.display = 'block';
               if (detayInput) setTimeout(function() { detayInput.focus(); requestAnimationFrame(syncDetayGrow); }, 100);
@@ -5234,7 +5389,7 @@
         const adresWrapper = document.getElementById('lastik-adres-wrapper-event');
         const adresInput = document.getElementById('lastik-adres-event');
         const syncAdresGrow = bindOlayDetayTextareaAutogrow(adresInput);
-        
+
         radioBtns.forEach(b => b.classList.remove('active', 'green'));
         if (adresWrapper) adresWrapper.style.display = 'none';
         if (adresInput) adresInput.value = '';
@@ -5243,11 +5398,11 @@
           btn.addEventListener('click', function(e) {
             e.preventDefault();
             e.stopPropagation();
-            
+
             radioBtns.forEach(b => { b.classList.remove('active', 'green'); });
             this.classList.add('active');
             if (this.dataset.value === 'var') this.classList.add('green');
-            
+
             if (this.dataset.value === 'var') {
               if (adresWrapper) adresWrapper.style.display = 'block';
               if (adresInput) setTimeout(function() { adresInput.focus(); requestAnimationFrame(syncAdresGrow); }, 100);
@@ -5323,7 +5478,7 @@
             const radioBtns = refreshModalRadioButtons(modal);
             if (radioBtns.length > 0) {
               radioBtns.forEach(b => b.classList.remove('active', 'green'));
-              
+
               radioBtns.forEach(btn => {
                 btn.addEventListener('click', function(e) {
                   e.preventDefault();
@@ -5357,7 +5512,7 @@
             }
           });
         }
-        
+
         // Event menu'yu kapat (modal açıldıktan sonra)
         closeEventMenuModal();
 
@@ -5394,9 +5549,9 @@
    */
   window.closeEventModal = function(type) {
     const modalId = getEventModalId(type);
-    
+
     if (!modalId) return;
-    
+
     const modal = document.getElementById(modalId);
     if (modal) {
       resetModalState(modal);
@@ -7846,9 +8001,9 @@
 
     getParsedKaportaSvg().then(function(svgClone) {
         if (!svgClone) return;
-        
+
         container.innerHTML = '';
-        
+
         // Şema wrapper'ı oluştur (kaporta-schema-wrapper: masaüstü +10px CSS ile uyumlu)
         const schemaWrapper = document.createElement('div');
         schemaWrapper.className = 'kaza-kaporta-schema-inner';
@@ -7874,14 +8029,14 @@
         svgClone.style.display = 'block';
         svgClone.style.transform = 'rotate(90deg)';
         svgClone.style.transformOrigin = 'center center';
-        
+
         const defaultGrayKaza = '#959595'; /* Taşıt simgesi gri – çok az daha açık ton */
         const allParts = svgClone.querySelectorAll('path[id]');
         allParts.forEach(part => {
           part.setAttribute('fill', defaultGrayKaza);
           part.style.fill = defaultGrayKaza;
         });
-        
+
         // Mevcut durumları uygula (readonly)
         const boyaliParcalar = vehicle.boyaliParcalar || {};
         Object.keys(boyaliParcalar).forEach(partId => {
@@ -7902,7 +8057,7 @@
             part.style.opacity = '0.7';
           }
         });
-        
+
         // Yeni hasarlar için tıklanabilir yap (sadece boyasız parçalar)
         allParts.forEach(part => {
           const partId = part.getAttribute('id');
@@ -7911,12 +8066,12 @@
             part.style.pointerEvents = 'auto';
             part.style.cursor = 'pointer';
             part.dataset.state = 'boyasiz';
-            
+
             // Tıklama event'i ekle (sadece yeni hasarlar için)
             part.addEventListener('click', function(e) {
               e.preventDefault();
               e.stopPropagation();
-              
+
               // 3 durumlu toggle: boyasiz -> boyali (yeşil) -> degisen (kırmızı) -> boyasiz
               const currentState = this.dataset.state || 'boyasiz';
               if (currentState === 'boyasiz') {
@@ -7938,7 +8093,7 @@
             });
           }
         });
-        
+
         // Legend ekle (şemanın sağına, alt alta)
         const legend = document.createElement('div');
         legend.className = 'boya-legend';
@@ -7958,7 +8113,7 @@
         `;
         // Legend'i wrapper'a ekle (şemanın sağına)
         schemaWrapper.appendChild(legend);
-        
+
         // Wrapper'ı container'a ekle
         container.appendChild(schemaWrapper);
       })
@@ -7994,18 +8149,18 @@
     const vehicleId = svc.vehicleId;
     const vehicle = svc.vehicle;
     const vehicles = svc.vehicles;
-    
+
     const tarih = document.getElementById('bakim-tarih')?.value.trim() || '';
     const islemler = document.getElementById('bakim-islemler')?.value.trim() || '';
     const servis = document.getElementById('bakim-servis')?.value.trim() || '';
     const km = document.getElementById('bakim-km')?.value.trim() || '';
     const tutar = document.getElementById('bakim-tutar')?.value.trim() || '';
-    
+
     if (!tarih || !islemler) {
       alert('Tarih ve Yapılan İşlemler zorunludur!');
       return;
     }
-    
+
     if (!vehicle.events) vehicle.events = [];
 
     const bakimKmNum = parseDynamicKmValue(km);
@@ -8031,7 +8186,7 @@
         };
       }
     }
-    
+
     const data = {
       islemler: islemler,
       servis: servis,
@@ -8046,7 +8201,7 @@
       timestamp: new Date().toISOString(),
       data: data
     };
-    
+
     if (kmRevisionEvent) vehicle.events.unshift(kmRevisionEvent);
     vehicle.events.unshift(event);
     return writeVehicles(vehicles).then(function() {
@@ -8067,17 +8222,17 @@
     const vehicleId = svc.vehicleId;
     const vehicle = svc.vehicle;
     const vehicles = svc.vehicles;
-    
+
     const tarih = document.getElementById('kaza-tarih')?.value.trim() || '';
     const surucu = document.getElementById('kaza-surucu')?.value.trim() || '';
     const hasarTutari = document.getElementById('kaza-tutar')?.value.trim() || '';
     const aciklama = document.getElementById('kaza-aciklama')?.value.trim() || '';
-    
+
     if (!tarih) {
       alert('Tarih zorunludur!');
       return;
     }
-    
+
     // Kaza şemasından yeni hasarları topla
     const container = document.getElementById('kaza-kaporta-container');
     const newDamages = {};
@@ -8094,10 +8249,10 @@
         });
       }
     }
-    
+
     if (!vehicle.events) vehicle.events = [];
     if (!vehicle.boyaliParcalar) vehicle.boyaliParcalar = {};
-    
+
     // Yeni hasarları mevcut boyaliParcalar'a ekle
     Object.keys(newDamages).forEach(partId => {
       vehicle.boyaliParcalar[partId] = newDamages[partId];
@@ -8105,7 +8260,7 @@
     if (Object.keys(newDamages).length > 0) {
       vehicle.boya = 'var';
     }
-    
+
     const tramerEvetEl = document.querySelector('#dinamik-olay-modal .tramer-evet');
     const tramerHayirEl = document.querySelector('#dinamik-olay-modal .tramer-hayir');
     const tramerKaydi = (tramerEvetEl && tramerEvetEl.classList.contains('active') && !tramerEvetEl.classList.contains('green')) ? 'evet'
@@ -8127,7 +8282,7 @@
         tramerTutar: tramerKaydi === 'evet' ? tramerTutar : undefined
       }
     };
-    
+
     vehicle.events.unshift(event);
     return writeVehicles(vehicles).then(function() {
       return completeDynamicEventSave({
@@ -8442,7 +8597,7 @@
     const egzozDifferent = !!(egzozCheckbox && egzozCheckbox.checked);
     const egzozYapilmaGgAa = egzozDifferent ? normalizeGgAaYyyyInputElement(egzozInput) : '';
     const egzozYapilmaIso = egzozDifferent ? parseGgAaYyyyToIso(egzozYapilmaGgAa) : '';
-    
+
     if (!tarih) {
       alert('Tarih zorunludur!');
       return;
@@ -8458,9 +8613,9 @@
     const vehicleId = svc.vehicleId;
     const vehicle = svc.vehicle;
     const vehicles = svc.vehicles;
-    
+
     if (!vehicle.events) vehicle.events = [];
-    
+
     // Muayene bitiş tarihi hesapla
     const bitisTarihi = calculateNextMuayene(vehicle, tarih);
     let egzozMuayeneDate = '';
@@ -8471,10 +8626,10 @@
     } else {
       egzozMuayeneDate = bitisTarihi;
     }
-    
+
     vehicle.muayeneDate = bitisTarihi;
     vehicle.egzozMuayeneDate = egzozMuayeneDate;
-    
+
     const event = {
       id: Date.now().toString(),
       type: 'muayene-guncelle',
@@ -8487,7 +8642,7 @@
         surucu: getEventPerformerName(vehicle)
       }
     };
-    
+
     vehicle.events.unshift(event);
     return writeVehicles(vehicles).then(function() {
       // Bildirimleri güncelle
@@ -8630,13 +8785,13 @@
   window.updateKmInfo = function() {
     const kmInput = document.getElementById('km-guncelle-input');
     if (!kmInput) return;
-    
+
     const yeniKm = kmInput.value.trim().replace(/\./g, ''); // Noktaları temizle
     if (!yeniKm) {
       alert('Lütfen kilometre bilgisi giriniz!');
       return;
     }
-    
+
     // Numeric kontrol
     if (isNaN(yeniKm) || !/^\d+$/.test(yeniKm)) {
       alert('Lütfen geçerli bir kilometre değeri giriniz!');
@@ -8648,9 +8803,9 @@
     const vehicleId = svc.vehicleId;
     const vehicle = svc.vehicle;
     const vehicles = svc.vehicles;
-    
+
     if (!vehicle.events) vehicle.events = [];
-    
+
     // Eski km değerini al (guncelKm varsa onu, yoksa vehicle.km'i kullan)
     const eskiKm = vehicle.guncelKm || vehicle.km || '';
     const eskiKmNum = parseInt(String(eskiKm).replace(/\D/g, ''), 10) || 0;
@@ -8659,10 +8814,10 @@
       alert('Bildirilmek İstenen Km, Önceki Kayıtlarla Uyuşmamaktadır. Şirket Yetkilisi İle Görüşün');
       return;
     }
-    
+
     // Güncel km'yi güncelle
     vehicle.guncelKm = yeniKm;
-    
+
     // Event kaydı oluştur
     const event = {
       id: Date.now().toString(),
@@ -8675,7 +8830,7 @@
         surucu: getEventPerformerName(vehicle)
       }
     };
-    
+
     vehicle.events.unshift(event);
     return writeVehicles(vehicles).then(function() {
       kmInput.value = '';
@@ -8758,17 +8913,17 @@
     const vehicleId = svc.vehicleId;
     const vehicle = svc.vehicle;
     const vehicles = svc.vehicles;
-    
+
     const radioBtns = document.querySelectorAll('#dinamik-olay-modal .radio-btn');
     const activeBtn = Array.from(radioBtns).find(btn => btn.classList.contains('active'));
     const durum = activeBtn?.dataset.value || 'yok';
     const adres = durum === 'var' ? (document.getElementById('lastik-adres-event')?.value.trim() || '') : '';
-    
+
     if (!vehicle.events) vehicle.events = [];
-    
+
     vehicle.lastikDurumu = durum;
     vehicle.lastikAdres = adres;
-    
+
     const event = {
       id: Date.now().toString(),
       type: 'lastik-guncelle',
@@ -8781,7 +8936,7 @@
         kaydeden: getRecorderDisplayName()
       }
     };
-    
+
     vehicle.events.unshift(event);
     return writeVehicles(vehicles).then(function() {
       if (window.updateNotifications) window.updateNotifications();
@@ -8799,7 +8954,7 @@
   window.updateSubeDegisiklik = function() {
     const selectEl = document.getElementById('sube-select');
     if (!selectEl) return;
-    
+
     const yeniSubeId = selectEl.value;
     if (!yeniSubeId) {
       alert('Lütfen bir şube seçiniz!');
@@ -8816,16 +8971,16 @@
       else alert('Arşivdeki taşıtlarda kullanıcı/şube ataması yapılamaz.');
       return;
     }
-    
+
     if (!vehicle.events) vehicle.events = [];
-    
+
     const branches = readBranches();
     const eskiSubeId = vehicle.branchId || '';
     const eskiSube = branches.find(b => String(b.id) === String(eskiSubeId));
     const yeniSube = branches.find(b => String(b.id) === String(yeniSubeId));
     const normalizedSubeId = yeniSube ? yeniSube.id : yeniSubeId;
     vehicle.branchId = normalizedSubeId;
-    
+
     const event = {
       id: Date.now().toString(),
       type: 'sube-degisiklik',
@@ -8840,7 +8995,7 @@
         kaydeden: getRecorderDisplayName()
       }
     };
-    
+
     vehicle.events.unshift(event);
     return writeVehicles(vehicles).then(function() {
       return completeDynamicEventSave({
@@ -8947,7 +9102,7 @@
     const tarih = document.getElementById('satis-tarih')?.value.trim() || '';
     const tutar = document.getElementById('satis-tutar')?.value.trim() || '';
     const aciklama = document.getElementById('satis-aciklama')?.value.trim() || '';
-    
+
     if (!tarih) {
       alert('Satış/Pert tarihi zorunludur!');
       return;
@@ -8958,13 +9113,13 @@
     const vehicleId = svc.vehicleId;
     const vehicle = svc.vehicle;
     const vehicles = svc.vehicles;
-    
+
     if (!vehicle.events) vehicle.events = [];
-    
+
     vehicle.satildiMi = true;
     vehicle.satisTarihi = tarih;
     vehicle.satisTutari = tutar;
-    
+
     const event = {
       id: Date.now().toString(),
       type: 'satis',
@@ -8979,7 +9134,7 @@
         pertIsaret: /\bpert\b/i.test(aciklama)
       }
     };
-    
+
     vehicle.events.unshift(event);
     return writeVehicles(vehicles).then(function() {
       return completeDynamicEventSave({
@@ -9002,15 +9157,15 @@
     function doShowVehicleHistory() {
     const vid = vehicleId || window.currentDetailVehicleId;
     if (!vid) return;
-    
+
     const modal = DOM.vehicleHistoryModal;
     if (!modal) return;
     const historyVehicle = readVehicles().find(v => String(v.id) === String(vid));
     renderVehicleContextRow(modal, historyVehicle);
-    
+
     const tab = (initialTab && /^(bakim|kaza|km|diger)$/.test(initialTab)) ? initialTab : 'bakim';
     switchHistoryTab(tab, vid);
-    
+
     modal.style.display = 'flex';
     requestAnimationFrame(() => modal.classList.add('active'));
     }
@@ -9521,7 +9676,7 @@
     draggedVehicleColumnKey = columnKey;
     event.dataTransfer.effectAllowed = 'move';
     event.dataTransfer.setData('text/plain', columnKey);
-    
+
     // Tüm satırları vurgula
     const allRows = document.querySelectorAll('.list-item');
     allRows.forEach(row => {
@@ -9562,7 +9717,7 @@
     event.preventDefault();
     event.stopPropagation();
     event.currentTarget.classList.remove('drag-over');
-    
+
     if (!draggedVehicleColumnKey || draggedVehicleColumnKey === targetColumnKey) {
       draggedVehicleColumnKey = null;
       return;
@@ -9570,14 +9725,14 @@
 
     const draggedIndex = vehicleColumnOrder.indexOf(draggedVehicleColumnKey);
     const targetIndex = vehicleColumnOrder.indexOf(targetColumnKey);
-    
+
     if (draggedIndex !== -1 && targetIndex !== -1) {
       vehicleColumnOrder.splice(draggedIndex, 1);
       vehicleColumnOrder.splice(targetIndex, 0, draggedVehicleColumnKey);
       saveVehicleColumnOrder();
       renderVehicles(); // Listeyi yeniden render et
     }
-    
+
     draggedVehicleColumnKey = null;
   };
 
@@ -9591,13 +9746,13 @@
         cell.style.opacity = '1';
       });
     });
-    
+
     // Tüm başlıkları normale döndür
     document.querySelectorAll('.list-header-row .list-cell').forEach(cell => {
       cell.style.opacity = '1';
       cell.classList.remove('drag-over', 'touch-drag-source');
     });
-    
+
     draggedVehicleColumnKey = null;
   };
 

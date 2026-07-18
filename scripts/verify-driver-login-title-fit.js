@@ -23,7 +23,7 @@ function assert(name, cond, detail) {
 
 const indexHtml = read('driver/index.html');
 const dashHtml = read('driver/dashboard.html');
-const driverStyle = read('driver/driver-style.css');
+const driverShell = read('driver/driver-shell.css');
 const styleCore = read('style-core.css');
 
 assert(
@@ -35,48 +35,48 @@ assert(
 );
 
 assert(
-  'login_loads_driver_style',
-  /href="driver-style\.css\?v=20260718\.1"/.test(indexHtml),
-  'Login driver-style.css?v=20260718.1 yüklemeli'
+  'login_loads_driver_shell',
+  /href="driver-shell\.css\?v=20260718\.1"/.test(indexHtml),
+  'Login driver-shell.css?v=20260718.1 yüklemeli'
 );
 
 assert(
-  'login_no_driver_shell',
-  !/driver-shell\.css/.test(indexHtml),
-  'Login driver-shell.css yüklememeli'
+  'login_no_blocking_features_css',
+  !/href="driver-features\.css/.test(indexHtml),
+  'Login driver-features.css blocking yüklememeli'
 );
 
 assert(
-  'login_no_driver_features_css',
-  !/driver-features\.css/.test(indexHtml),
-  'Login driver-features.css yüklememeli'
+  'login_no_blocking_style_aggregator',
+  !/href="driver-style\.css/.test(indexHtml),
+  'Login driver-style.css aggregator blocking yüklememeli'
 );
 
 assert(
   'login_h1_direct_child_selector',
-  /\.login-page\s+\.hero\s*>\s*h1\s*\{/.test(driverStyle),
-  'driver-style.css .login-page .hero > h1 selector içermeli'
+  /\.login-page\s+\.hero\s*>\s*h1\s*\{/.test(driverShell),
+  'driver-shell.css .login-page .hero > h1 selector içermeli'
 );
 
 assert(
   'login_fit_contract_min_width_flex',
-  /\.login-page\s+\.hero\s*>\s*h1\s*\{[^}]*min-width:\s*0/.test(driverStyle) &&
-    /\.login-page\s+\.hero\s*>\s*h1\s*\{[^}]*flex:\s*1\s+1\s+0/.test(driverStyle),
+  /\.login-page\s+\.hero\s*>\s*h1\s*\{[^}]*min-width:\s*0/.test(driverShell) &&
+    /\.login-page\s+\.hero\s*>\s*h1\s*\{[^}]*flex:\s*1\s+1\s+0/.test(driverShell),
   'Login h1 min-width/flex kontratı olmalı'
 );
 
 assert(
   'login_desktop_fit_contract',
-  /\.login-page\s+\.hero\s*>\s*h1\s*\{[^}]*font-size:\s*20px/.test(driverStyle) &&
-    /\.login-page\s+\.hero\s*>\s*h1\s*\{[^}]*letter-spacing:\s*2\.4px/.test(driverStyle) &&
-    /\.login-page\s+\.hero\s*>\s*h1\s*\{[^}]*text-overflow:\s*clip/.test(driverStyle),
+  /\.login-page\s+\.hero\s*>\s*h1\s*\{[^}]*font-size:\s*20px/.test(driverShell) &&
+    /\.login-page\s+\.hero\s*>\s*h1\s*\{[^}]*letter-spacing:\s*2\.4px/.test(driverShell) &&
+    /\.login-page\s+\.hero\s*>\s*h1\s*\{[^}]*text-overflow:\s*clip/.test(driverShell),
   'Desktop login fit kontratı (20px / 2.4px / clip) olmalı'
 );
 
 assert(
   'login_mobile_fit_contract',
-  /clamp\(14\.5px,\s*4\.4vw,\s*18\.5px\)/.test(driverStyle) &&
-    /clamp\(0\.4px,\s*0\.32vw,\s*1\.2px\)/.test(driverStyle),
+  /clamp\(14\.5px,\s*4\.4vw,\s*18\.5px\)/.test(driverShell) &&
+    /clamp\(0\.4px,\s*0\.32vw,\s*1\.2px\)/.test(driverShell),
   'Tablet/mobile login fit clamp kontratı olmalı'
 );
 
@@ -101,16 +101,9 @@ assert(
 );
 
 assert(
-  'dashboard_style_version_aligned',
-  /href="driver-style\.css\?v=20260718\.1"/.test(dashHtml),
-  'Dashboard driver-style version login ile aynı olmalı'
-);
-
-assert(
-  'no_shell_feature_files_required',
-  !fs.existsSync(path.join(root, 'driver/driver-shell.css')) &&
-    !fs.existsSync(path.join(root, 'driver/driver-features.css')),
-  'Bu hatta shell/features dosyası beklenmez'
+  'dashboard_shell_version_aligned',
+  /href="driver-shell\.css\?v=20260718\.1"/.test(dashHtml),
+  'Dashboard driver-shell version login ile aynı olmalı'
 );
 
 if (failed) {
