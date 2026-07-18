@@ -63,7 +63,28 @@
    */
   async function saveVehiclesList(vehicles) {
     ensureAppData();
-    window.appData.tasitlar = Array.isArray(vehicles) ? vehicles : [];
+    if (typeof window.writeVehicles === 'function') {
+      try {
+        await window.writeVehicles(Array.isArray(vehicles) ? vehicles : []);
+        notifyVehicleListPersisted();
+        return;
+      } catch (e) {
+        if (e && e.conflict === true) {
+          if (typeof window.onMedisaConflict === 'function') {
+            window.onMedisaConflict();
+          } else {
+            console.warn('[Medisa] Çakışma: Veri başka biri tarafından güncellenmiş. Veriler sunucudan yenilendi.');
+          }
+          return Promise.reject(e);
+        }
+        return Promise.reject(e instanceof Error ? e : new Error('Sunucuya kayıt yapılamadı.'));
+      }
+    }
+    if (typeof window.replaceMedisaCollection === 'function') {
+      window.replaceMedisaCollection('vehicles', Array.isArray(vehicles) ? vehicles : [], { reason: 'data-service-fallback' });
+    } else {
+      window.appData.tasitlar = Array.isArray(vehicles) ? vehicles : [];
+    }
     try {
       const ok = await window.saveDataToServer();
       if (ok !== true && typeof window.loadDataFromServer === 'function') {
