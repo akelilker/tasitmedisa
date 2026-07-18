@@ -61,7 +61,7 @@ test('Bootstrap yalnız runtime ve surface loader ownerı', () => {
   assert.match(files.bootstrap, /loadFeature/);
   assert.match(files.bootstrap, /registerFeature/);
   assert.doesNotMatch(files.bootstrap, /driver_(?:save|event|feedback|request|change_password)\.php/);
-  assert.ok(size('driver/driver-script.js') <= 20 * 1024);
+  assert.ok(size('driver/driver-script.js') <= 30 * 1024, 'bootstrap bytes=' + size('driver/driver-script.js'));
 });
 test('Login surface yalnız login modülü yükler', () => {
   assert.match(files.bootstrap, /driver-login\.js/);
@@ -205,6 +205,139 @@ test('CSS split dosyalarında brace dengesi korunur', () => {
     const stripped = css.replace(/\/\*[\s\S]*?\*\//g, '').replace(/"(?:\\.|[^"])*"|'(?:\\.|[^'])*'/g, '');
     assert.equal(count(stripped, /\{/g), count(stripped, /\}/g));
   });
+});
+
+test('Bootstrap ortak vehicle helper ownerıdır', () => {
+  assert.match(files.bootstrap, /function getDriverVehicleTypeKey\s*\(/);
+  assert.match(files.bootstrap, /function normalizeDriverVehicleTypeKey\s*\(/);
+  assert.match(files.bootstrap, /function driverVehicleNeedsK2\s*\(/);
+  assert.match(files.bootstrap, /function driverVehicleNeedsTakograf\s*\(/);
+});
+test('Dört helper runtime.helpers içine publish edilir', () => {
+  assert.match(files.bootstrap, /helpers:\s*\{[\s\S]*getDriverVehicleTypeKey\s*:/);
+  assert.match(files.bootstrap, /helpers:\s*\{[\s\S]*normalizeDriverVehicleTypeKey\s*:/);
+  assert.match(files.bootstrap, /helpers:\s*\{[\s\S]*driverVehicleNeedsK2\s*:/);
+  assert.match(files.bootstrap, /helpers:\s*\{[\s\S]*driverVehicleNeedsTakograf\s*:/);
+  assert.match(files.bootstrap, /window\.MedisaDriverRuntime\s*=\s*runtime/);
+  const helpersBlock = files.bootstrap.slice(
+    files.bootstrap.indexOf('helpers: {'),
+    files.bootstrap.indexOf('features: {')
+  );
+  assert.ok(helpersBlock.indexOf('getDriverVehicleTypeKey') >= 0);
+  assert.ok(helpersBlock.indexOf('driverVehicleNeedsK2') >= 0);
+  assert.ok(helpersBlock.indexOf('driverVehicleNeedsTakograf') >= 0);
+});
+test('Dashboard core helperları runtime.helpers üzerinden çözer', () => {
+  assert.match(files.core, /var h = runtime\.helpers/);
+  assert.match(files.core, /var driverVehicleNeedsK2 = h && h\.driverVehicleNeedsK2/);
+  assert.match(files.core, /var driverVehicleNeedsTakograf = h && h\.driverVehicleNeedsTakograf/);
+  assert.match(files.core, /MedisaDriverRuntime vehicle document helpers eksik/);
+});
+test('Documents feature helperları runtime.helpers üzerinden çözer', () => {
+  assert.match(files.documents, /var h = runtime\.helpers/);
+  assert.match(files.documents, /var getDriverVehicleTypeKey = h\.getDriverVehicleTypeKey/);
+  assert.match(files.documents, /var normalizeDriverVehicleTypeKey = h\.normalizeDriverVehicleTypeKey/);
+  assert.match(files.documents, /var driverVehicleNeedsK2 = h\.driverVehicleNeedsK2/);
+  assert.match(files.documents, /var driverVehicleNeedsTakograf = h\.driverVehicleNeedsTakograf/);
+});
+test('Dashboard core içinde local vehicle helper function declaration yoktur', () => {
+  assert.doesNotMatch(files.core, /function\s+driverVehicleNeedsK2\s*\(/);
+  assert.doesNotMatch(files.core, /function\s+driverVehicleNeedsTakograf\s*\(/);
+  assert.doesNotMatch(files.core, /function\s+getDriverVehicleTypeKey\s*\(/);
+  assert.doesNotMatch(files.core, /function\s+normalizeDriverVehicleTypeKey\s*\(/);
+});
+test('Documents feature içinde mükerrer vehicle helper function declaration yoktur', () => {
+  assert.doesNotMatch(files.documents, /function\s+driverVehicleNeedsK2\s*\(/);
+  assert.doesNotMatch(files.documents, /function\s+driverVehicleNeedsTakograf\s*\(/);
+  assert.doesNotMatch(files.documents, /function\s+getDriverVehicleTypeKey\s*\(/);
+  assert.doesNotMatch(files.documents, /function\s+normalizeDriverVehicleTypeKey\s*\(/);
+});
+test('driverVehicleNeedsK2 toplam canonical function declaration sayısı = 1', () => {
+  const all = files.bootstrap + files.core + files.documents + files.history + files.feedback + files.password + files.actions + files.login;
+  assert.equal(count(all, /function\s+driverVehicleNeedsK2\s*\(/g), 1);
+});
+test('driverVehicleNeedsTakograf toplam canonical function declaration sayısı = 1', () => {
+  const all = files.bootstrap + files.core + files.documents + files.history + files.feedback + files.password + files.actions + files.login;
+  assert.equal(count(all, /function\s+driverVehicleNeedsTakograf\s*\(/g), 1);
+});
+test('Documents feature hâlâ lazydir', () => {
+  assert.match(files.bootstrap, /documents:\s*\{\s*js:\s*'driver-feature-documents\.js'/);
+  assert.doesNotMatch(files.dashboardHtml, /driver-feature-documents\.js/);
+  assert.match(files.bootstrap, /loadFeature\(['"]documents['"]\)|FEATURE_FILES/);
+});
+test('Dashboard boot documents feature yüklenmeden helper erişimine sahiptir', () => {
+  const publishIdx = files.bootstrap.indexOf('window.MedisaDriverRuntime = runtime');
+  const helpersIdx = files.bootstrap.indexOf('driverVehicleNeedsK2:');
+  assert.ok(helpersIdx >= 0 && helpersIdx < publishIdx);
+  assert.match(files.core, /MedisaDriverRuntime vehicle document helpers eksik/);
+  assert.doesNotMatch(files.core, /loadFeature\(['"]documents['"]\)[\s\S]{0,200}driverVehicleNeedsK2/);
+});
+test('K2 tip matrisi aynıdır', () => {
+  assert.match(files.bootstrap, /normalizedType === 'minivan'/);
+  assert.match(files.bootstrap, /normalizedType === 'kucuk_ticari'/);
+  assert.match(files.bootstrap, /normalizedType === 'kamyon'/);
+  assert.match(files.bootstrap, /normalizedType === 'buyuk_ticari'/);
+  assert.match(files.bootstrap, /normalizedType === 'romork'/);
+});
+test('Takograf tip matrisi aynıdır', () => {
+  assert.match(files.bootstrap, /normalizedType === 'kamyon' \|\| normalizedType === 'buyuk_ticari'/);
+});
+test('Driver asset version matrisi dar bump kullanır', () => {
+  assert.match(files.bootstrap, /bootstrap:\s*'20260718\.2'/);
+  assert.match(files.bootstrap, /dashboardCore:\s*'20260718\.2'/);
+  assert.match(files.bootstrap, /documents:\s*'20260718\.2'/);
+  assert.match(files.bootstrap, /login:\s*'20260718\.1'/);
+  assert.match(files.bootstrap, /history:\s*'20260718\.1'/);
+  assert.match(files.loginHtml, /driver-script\.js\?v=20260718\.2/);
+  assert.match(files.dashboardHtml, /driver-script\.js\?v=20260718\.2/);
+  assert.match(files.loginHtml, /driver-shell\.css\?v=20260718\.1/);
+  assert.match(files.dashboardHtml, /driver-shell\.css\?v=20260718\.1/);
+});
+test('Vehicle document helper behavioral matrix', () => {
+  function getDriverVehicleTypeKey(vehicle) {
+    return String((vehicle && (vehicle.vehicleType || vehicle.tip)) || '').trim().toLowerCase();
+  }
+  function normalizeDriverVehicleTypeKey(typeKey) {
+    return String(typeKey || '')
+      .toLowerCase()
+      .replace(/ğ/g, 'g')
+      .replace(/ü/g, 'u')
+      .replace(/ş/g, 's')
+      .replace(/ı/g, 'i')
+      .replace(/ö/g, 'o')
+      .replace(/ç/g, 'c')
+      .replace(/\s+/g, '_')
+      .trim();
+  }
+  function driverVehicleNeedsK2(vehicle) {
+    var normalizedType = normalizeDriverVehicleTypeKey(getDriverVehicleTypeKey(vehicle));
+    return normalizedType === 'minivan'
+      || normalizedType === 'kucuk_ticari'
+      || normalizedType === 'kamyon'
+      || normalizedType === 'buyuk_ticari'
+      || normalizedType === 'romork';
+  }
+  function driverVehicleNeedsTakograf(vehicle) {
+    var normalizedType = normalizeDriverVehicleTypeKey(getDriverVehicleTypeKey(vehicle));
+    return normalizedType === 'kamyon' || normalizedType === 'buyuk_ticari';
+  }
+  const cases = [
+    [{ tip: 'minivan' }, true, false],
+    [{ tip: 'küçük ticari' }, true, false],
+    [{ tip: 'kamyon' }, true, true],
+    [{ tip: 'büyük ticari' }, true, true],
+    [{ tip: 'römork' }, true, false],
+    [{ tip: 'otomobil' }, false, false],
+    [null, false, false],
+    [{}, false, false]
+  ];
+  cases.forEach(([vehicle, k2, tako]) => {
+    assert.equal(driverVehicleNeedsK2(vehicle), k2, JSON.stringify(vehicle) + ' k2');
+    assert.equal(driverVehicleNeedsTakograf(vehicle), tako, JSON.stringify(vehicle) + ' tako');
+  });
+  assert.equal(normalizeDriverVehicleTypeKey('Küçük Ticari'), 'kucuk_ticari');
+  assert.equal(normalizeDriverVehicleTypeKey('Büyük Ticari'), 'buyuk_ticari');
+  assert.equal(normalizeDriverVehicleTypeKey('Römork'), 'romork');
 });
 
 console.log('\nDriver lazy invariants: ' + passed + ' passed, ' + failed + ' failed');

@@ -21,6 +21,13 @@ const MAIN_APP_URL = (APP_ROOT === '/' ? '/index.html' : APP_ROOT + 'index.html'
 const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php');
 var runtime = window.MedisaDriverRuntime;
 if (!runtime) throw new Error('MedisaDriverRuntime eksik');
+var h = runtime.helpers;
+var driverVehicleNeedsK2 = h && h.driverVehicleNeedsK2;
+var driverVehicleNeedsTakograf = h && h.driverVehicleNeedsTakograf;
+if (typeof driverVehicleNeedsK2 !== 'function'
+|| typeof driverVehicleNeedsTakograf !== 'function') {
+throw new Error('MedisaDriverRuntime vehicle document helpers eksik');
+}
 runtime.paths.APP_ROOT = APP_ROOT;
 runtime.paths.API_BASE = API_BASE;
 runtime.paths.ICON_BASE = ICON_BASE;
@@ -1857,6 +1864,8 @@ window.location.href = DRIVER_PAGE_BASE + 'index.html';
 window.logout = logout;
 function publishDriverRuntimeHelpers() {
 var h = runtime.helpers;
+h.driverVehicleNeedsK2 = driverVehicleNeedsK2;
+h.driverVehicleNeedsTakograf = driverVehicleNeedsTakograf;
 h.ensureDriverOnlineForWrite = ensureDriverOnlineForWrite;
 h.showDriverOfflineReadonlyMessage = showDriverOfflineReadonlyMessage;
 h.escapeHtmlDriver = escapeHtmlDriver;
@@ -1880,8 +1889,6 @@ h.renderLeftPanel = renderLeftPanel;
 h.renderRightPanel = renderRightPanel;
 h.calculateNextMuayeneDate = calculateNextMuayeneDate;
 h.getVehicleTypeRuleProfileDriver = getVehicleTypeRuleProfileDriver;
-h.driverVehicleNeedsK2 = driverVehicleNeedsK2;
-h.driverVehicleNeedsTakograf = driverVehicleNeedsTakograf;
 h.clearStoredPortalTokens = clearStoredPortalTokens;
 h.clearSavedDriverPassword = clearSavedDriverPassword;
 h.logout = logout;
