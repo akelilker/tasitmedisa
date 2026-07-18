@@ -150,20 +150,165 @@ let serverDatasetTrusted = false;
 /** Ardışık save isteklerini sıraya alır; eşzamanlı çağrılarda biri false dönüp veri kaybı yaşanmasın. */
 let saveMutex = Promise.resolve();
 let offlineReadonlyWarnAt = 0;
-let visibleCacheVersion = 0;
-let visibleCache = {
-    key: '',
-    vehicles: null,
-    users: null,
-    branches: null
+var MEDISA_COLLECTION_APP_KEYS = {
+    vehicles: 'tasitlar',
+    branches: 'branches',
+    users: 'users'
 };
 
+var medisaCollectionRevisions = {
+    vehicles: 0,
+    branches: 0,
+    users: 0,
+    session: 0
+};
+
+var visibleCollectionCache = {
+    vehicles: { key: '', value: null },
+    branches: { key: '', value: null },
+    users: { key: '', value: null }
+};
+
+var medisaVisibleStoreMetrics = null;
+var medisaVisibleStoreMetricsDisabled = false;
+var medisaCollectionsChangedQueue = null;
+var medisaCollectionsChangedScheduled = false;
+var medisaCachedSessionFingerprint = { quick: '', value: '' };
+
+function isMedisaVisibleStorePerfEnabled() {
+    try {
+        if (typeof localStorage !== 'undefined' && localStorage.getItem('medisa_perf_debug') === '1') {
+            return true;
+        }
+    } catch (e0) {}
+    try {
+        var search = (window.location && window.location.search) || '';
+        return /(?:^|[?&])medisaPerf=1(?:&|$)/.test(search);
+    } catch (e1) {
+        return false;
+    }
+}
+
+function ensureMedisaVisibleStoreMetrics() {
+    if (medisaVisibleStoreMetricsDisabled) return null;
+    if (medisaVisibleStoreMetrics) {
+        medisaVisibleStoreMetrics.revisions = medisaCollectionRevisions;
+        return medisaVisibleStoreMetrics;
+    }
+    if (!isMedisaVisibleStorePerfEnabled()) {
+        medisaVisibleStoreMetricsDisabled = true;
+        if (typeof window !== 'undefined') {
+            try { delete window.__medisaVisibleStoreMetrics; } catch (eDel) { window.__medisaVisibleStoreMetrics = undefined; }
+        }
+        return null;
+    }
+    medisaVisibleStoreMetrics = {
+        revisions: medisaCollectionRevisions,
+        cacheHits: { vehicles: 0, branches: 0, users: 0 },
+        cacheMisses: { vehicles: 0, branches: 0, users: 0 },
+        buildCounts: { vehicles: 0, branches: 0, users: 0 },
+        invalidations: 0,
+        eventsDispatched: 0,
+        lastInvalidationReason: ''
+    };
+    window.__medisaVisibleStoreMetrics = medisaVisibleStoreMetrics;
+    return medisaVisibleStoreMetrics;
+}
+
+function bumpMedisaCollectionRevision(kind) {
+    if (!Object.prototype.hasOwnProperty.call(medisaCollectionRevisions, kind)) return;
+    medisaCollectionRevisions[kind] = (Number(medisaCollectionRevisions[kind]) || 0) + 1;
+    ensureMedisaVisibleStoreMetrics();
+}
+
+function clearMedisaVisibleCacheSlot(kind) {
+    if (!visibleCollectionCache[kind]) return;
+    visibleCollectionCache[kind].key = '';
+    visibleCollectionCache[kind].value = null;
+}
+
+function queueMedisaCollectionsChanged(collections, reason) {
+    var list = Array.isArray(collections) ? collections.filter(Boolean) : [];
+    if (!list.length) return;
+    if (!medisaCollectionsChangedQueue) {
+        medisaCollectionsChangedQueue = {
+            collections: {},
+            reason: reason || ''
+        };
+    }
+    list.forEach(function(kind) {
+        medisaCollectionsChangedQueue.collections[kind] = true;
+    });
+    if (reason) medisaCollectionsChangedQueue.reason = reason;
+    if (medisaCollectionsChangedScheduled) return;
+    medisaCollectionsChangedScheduled = true;
+    var schedule = typeof queueMicrotask === 'function'
+        ? queueMicrotask
+        : function(fn) { Promise.resolve().then(fn); };
+    schedule(function() {
+        medisaCollectionsChangedScheduled = false;
+        var queued = medisaCollectionsChangedQueue;
+        medisaCollectionsChangedQueue = null;
+        if (!queued) return;
+        var changed = Object.keys(queued.collections);
+        if (!changed.length) return;
+        var metrics = ensureMedisaVisibleStoreMetrics();
+        if (metrics) metrics.eventsDispatched += 1;
+        try {
+            if (typeof window !== 'undefined' && typeof window.dispatchEvent === 'function' && typeof CustomEvent === 'function') {
+                window.dispatchEvent(new CustomEvent('medisa:collections-changed', {
+                    detail: {
+                        collections: changed.slice(),
+                        revisions: {
+                            vehicles: medisaCollectionRevisions.vehicles,
+                            branches: medisaCollectionRevisions.branches,
+                            users: medisaCollectionRevisions.users
+                        },
+                        reason: queued.reason || ''
+                    }
+                }));
+            }
+        } catch (eventErr) {}
+    });
+}
+
+function invalidateMedisaCollectionCache(kind, reason) {
+    var metrics = ensureMedisaVisibleStoreMetrics();
+    if (metrics) {
+        metrics.invalidations += 1;
+        metrics.lastInvalidationReason = reason || '';
+    }
+    if (kind === 'vehicles') {
+        clearMedisaVisibleCacheSlot('vehicles');
+        clearMedisaVisibleCacheSlot('branches');
+        return;
+    }
+    if (kind === 'users') {
+        clearMedisaVisibleCacheSlot('users');
+        clearMedisaVisibleCacheSlot('branches');
+        return;
+    }
+    if (kind === 'branches') {
+        clearMedisaVisibleCacheSlot('branches');
+        return;
+    }
+    clearMedisaVisibleCacheSlot('vehicles');
+    clearMedisaVisibleCacheSlot('users');
+    clearMedisaVisibleCacheSlot('branches');
+}
+
+function invalidateAllMedisaVisibleCaches(reason) {
+    medisaCachedSessionFingerprint.quick = '';
+    medisaCachedSessionFingerprint.value = '';
+    bumpMedisaCollectionRevision('vehicles');
+    bumpMedisaCollectionRevision('branches');
+    bumpMedisaCollectionRevision('users');
+    invalidateMedisaCollectionCache('all', reason || 'invalidate-all');
+    queueMedisaCollectionsChanged(['vehicles', 'branches', 'users'], reason || 'invalidate-all');
+}
+
 function invalidateMedisaVisibleCache() {
-    visibleCacheVersion += 1;
-    visibleCache.key = '';
-    visibleCache.vehicles = null;
-    visibleCache.users = null;
-    visibleCache.branches = null;
+    invalidateAllMedisaVisibleCaches('legacy-invalidate');
 }
 
 function getMedisaSessionFingerprint() {
@@ -173,35 +318,143 @@ function getMedisaSessionFingerprint() {
     var branchIds = Array.isArray(session.branch_ids)
         ? session.branch_ids.map(String).filter(Boolean).sort().join('|')
         : '';
-    return [
+    var quick = [
+        String(medisaCollectionRevisions.session || 0),
+        session.authenticated ? '1' : '0',
+        role || '',
+        userId,
+        branchIds
+    ].join(':');
+    if (medisaCachedSessionFingerprint.quick === quick && medisaCachedSessionFingerprint.value) {
+        return medisaCachedSessionFingerprint.value;
+    }
+    var value = [
         session.authenticated ? '1' : '0',
         role || '',
         userId,
         branchIds,
         String(session.raw_role || ''),
         session.yonetici_only === true ? '1' : '0',
-        getStoredPortalToken() ? '1' : '0'
+        getStoredPortalToken() ? '1' : '0',
+        's' + String(medisaCollectionRevisions.session || 0)
     ].join(':');
+    medisaCachedSessionFingerprint.quick = quick;
+    medisaCachedSessionFingerprint.value = value;
+    return value;
 }
 
-function getMedisaVisibleCacheRuntimeKey() {
-    return String(visibleCacheVersion) + '|' + getMedisaSessionFingerprint();
+function getMedisaVisibleCacheRuntimeKey(kind) {
+    var sessionFp = getMedisaSessionFingerprint();
+    if (kind === 'vehicles') {
+        return sessionFp + '|v' + String(medisaCollectionRevisions.vehicles || 0);
+    }
+    if (kind === 'users') {
+        return sessionFp + '|u' + String(medisaCollectionRevisions.users || 0);
+    }
+    return sessionFp
+        + '|b' + String(medisaCollectionRevisions.branches || 0)
+        + '|v' + String(medisaCollectionRevisions.vehicles || 0)
+        + '|u' + String(medisaCollectionRevisions.users || 0);
 }
 
 function getCachedMedisaVisibleList(kind, builder) {
-    var runtimeKey = getMedisaVisibleCacheRuntimeKey();
-    if (visibleCache.key === runtimeKey && Array.isArray(visibleCache[kind])) {
-        return visibleCache[kind].slice();
+    var slot = visibleCollectionCache[kind] || (visibleCollectionCache[kind] = { key: '', value: null });
+    var runtimeKey = getMedisaVisibleCacheRuntimeKey(kind);
+    if (slot.key === runtimeKey && Array.isArray(slot.value)) {
+        var hitMetrics = medisaVisibleStoreMetrics;
+        if (hitMetrics && hitMetrics.cacheHits[kind] != null) hitMetrics.cacheHits[kind] += 1;
+        return slot.value.slice();
     }
-    if (visibleCache.key !== runtimeKey) {
-        visibleCache.key = runtimeKey;
-        visibleCache.vehicles = null;
-        visibleCache.users = null;
-        visibleCache.branches = null;
+    var metrics = ensureMedisaVisibleStoreMetrics();
+    if (metrics) {
+        if (metrics.cacheMisses[kind] != null) metrics.cacheMisses[kind] += 1;
+        if (metrics.buildCounts[kind] != null) metrics.buildCounts[kind] += 1;
     }
     var built = builder();
-    visibleCache[kind] = Array.isArray(built) ? built : [];
-    return visibleCache[kind].slice();
+    slot.key = runtimeKey;
+    slot.value = Array.isArray(built) ? built : [];
+    return slot.value.slice();
+}
+
+function getRawMedisaCollection(kind) {
+    var appKey = MEDISA_COLLECTION_APP_KEYS[kind];
+    if (!appKey) return [];
+    if (!window.appData) window.appData = getDefaultAppData();
+    if (!Array.isArray(window.appData[appKey])) window.appData[appKey] = [];
+    return window.appData[appKey];
+}
+
+function replaceMedisaCollection(kind, nextList, options) {
+    var appKey = MEDISA_COLLECTION_APP_KEYS[kind];
+    if (!appKey) {
+        throw new Error('[Medisa] Bilinmeyen koleksiyon: ' + String(kind));
+    }
+    if (!window.appData) window.appData = getDefaultAppData();
+    var list = Array.isArray(nextList) ? nextList.slice() : [];
+    window.appData[appKey] = list;
+    bumpMedisaCollectionRevision(kind);
+    invalidateMedisaCollectionCache(kind, (options && options.reason) || ('replace-' + kind));
+    syncDataLoadState();
+    queueMedisaCollectionsChanged([kind], (options && options.reason) || ('replace-' + kind));
+    if (kind === 'users') {
+        applyMainAppSessionUiState();
+    }
+    if (kind === 'vehicles') {
+        medisaInvalidateVehicleDateTasksCacheIfAvailable();
+    }
+    return list.slice();
+}
+
+function commitMedisaAppDataSnapshot(nextAppData, options) {
+    var reason = (options && options.reason) || 'appdata-snapshot';
+    var incoming = nextAppData && typeof nextAppData === 'object' ? nextAppData : getDefaultAppData();
+    var current = window.appData && typeof window.appData === 'object' ? window.appData : getDefaultAppData();
+    var defaults = getDefaultAppData();
+    window.appData = {
+        tasitlar: Array.isArray(incoming.tasitlar) ? incoming.tasitlar.slice() : [],
+        kayitlar: Array.isArray(incoming.kayitlar) ? incoming.kayitlar : (current.kayitlar || []),
+        branches: Array.isArray(incoming.branches) ? incoming.branches.slice() : [],
+        users: Array.isArray(incoming.users) ? incoming.users.slice() : [],
+        ayarlar: incoming.ayarlar && typeof incoming.ayarlar === 'object' ? incoming.ayarlar : (current.ayarlar || defaults.ayarlar),
+        sifreler: Array.isArray(incoming.sifreler) ? incoming.sifreler : (current.sifreler || []),
+        arac_aylik_hareketler: Array.isArray(incoming.arac_aylik_hareketler) ? incoming.arac_aylik_hareketler : (current.arac_aylik_hareketler || []),
+        duzeltme_talepleri: Array.isArray(incoming.duzeltme_talepleri) ? incoming.duzeltme_talepleri : (current.duzeltme_talepleri || []),
+        kaskoDegerListesi: incoming.kaskoDegerListesi && typeof incoming.kaskoDegerListesi === 'object'
+            ? incoming.kaskoDegerListesi
+            : (current.kaskoDegerListesi || defaults.kaskoDegerListesi),
+        notificationReadState: incoming.notificationReadState && typeof incoming.notificationReadState === 'object' && !Array.isArray(incoming.notificationReadState)
+            ? incoming.notificationReadState
+            : (current.notificationReadState || {}),
+        monthlyTodoWhatsAppLogs: incoming.monthlyTodoWhatsAppLogs && typeof incoming.monthlyTodoWhatsAppLogs === 'object' && !Array.isArray(incoming.monthlyTodoWhatsAppLogs)
+            ? incoming.monthlyTodoWhatsAppLogs
+            : (current.monthlyTodoWhatsAppLogs || {})
+    };
+    bumpMedisaCollectionRevision('vehicles');
+    bumpMedisaCollectionRevision('branches');
+    bumpMedisaCollectionRevision('users');
+    invalidateMedisaCollectionCache('all', reason);
+    syncDataLoadState();
+    applyMainAppSessionUiState();
+    queueMedisaCollectionsChanged(['vehicles', 'branches', 'users'], reason);
+    return window.appData;
+}
+
+async function restoreMedisaCollectionAfterWriteFailure(kind, previousList, reason) {
+    var restored = false;
+    if (typeof window.loadDataFromServer === 'function') {
+        try {
+            await window.loadDataFromServer(true);
+            restored = true;
+        } catch (reloadErr) {
+            console.warn('[Medisa] Yazma sonrası sunucu yenileme başarısız:', reloadErr && reloadErr.message);
+        }
+    }
+    if (!restored) {
+        replaceMedisaCollection(kind, Array.isArray(previousList) ? previousList : [], {
+            reason: reason || ('rollback-' + kind)
+        });
+    }
+    return restored;
 }
 
 function syncDataLoadState() {
@@ -274,7 +527,7 @@ function clearStoredPortalTokens() {
 function medisaMainAppLogout() {
     try {
         clearStoredPortalTokens();
-        window.medisaSession = getDefaultSession();
+        setMedisaSession(getDefaultSession());
         if (typeof document !== 'undefined' && document.body) {
             document.body.removeAttribute('data-medisa-role');
         }
@@ -283,7 +536,6 @@ function medisaMainAppLogout() {
         var sub = document.getElementById('data-submenu');
         if (sub) sub.classList.remove('open');
     } catch (e) {}
-    invalidateMedisaVisibleCache();
     if (typeof window === 'undefined') return;
     window.__medisaRedirecting = true;
     window.location.href = DRIVER_INDEX_URL;
@@ -492,8 +744,10 @@ function setMedisaSession(sessionData) {
         nextSession.user.kullanici_paneli = !!nextSession.kullanici_paneli;
     }
     window.medisaSession = nextSession;
+    bumpMedisaCollectionRevision('session');
+    medisaCachedSessionFingerprint.quick = '';
+    medisaCachedSessionFingerprint.value = '';
     applyMainAppSessionUiState();
-    invalidateMedisaVisibleCache();
 }
 
 function resolveMainAppHeaderUserName(sessionData) {
@@ -661,7 +915,7 @@ function persistOfflineAppDataSnapshot(data) {
 
 function loadDataFromLocalStorage() {
     var offlineSnapshot = readOfflineAppDataSnapshot();
-    window.appData = offlineSnapshot || getDefaultAppData();
+    commitMedisaAppDataSnapshot(offlineSnapshot || getDefaultAppData(), { reason: 'offline-local-load' });
     setMedisaSession(getSessionFromToken());
     serverDatasetTrusted = false;
     syncDataLoadState();
@@ -710,10 +964,9 @@ async function loadDataFromServer(forceRefresh) {
     }
 
     if (!ensureMainAppSession()) {
-        window.appData = getDefaultAppData();
+        commitMedisaAppDataSnapshot(getDefaultAppData(), { reason: 'session-missing' });
         serverDatasetTrusted = false;
         syncDataLoadState();
-        invalidateMedisaVisibleCache();
         return Promise.reject(new Error('Medisa oturum yok'));
     }
 
@@ -727,10 +980,10 @@ async function loadDataFromServer(forceRefresh) {
     loadPromise = (async function() {
         function finishLoadError(optionalErr) {
             serverDatasetTrusted = false;
-            window.appData = hasUsableAppData(window.appData)
+            var fallback = hasUsableAppData(window.appData)
                 ? getSafeAppDataFallback()
                 : (readOfflineAppDataSnapshot() || getSafeAppDataFallback());
-            invalidateMedisaVisibleCache();
+            commitMedisaAppDataSnapshot(fallback, { reason: 'load-error-fallback' });
             if (hasUsableAppData(window.appData)) {
                 showOfflineReadonlyWarning();
                 return window.appData;
@@ -768,8 +1021,7 @@ async function loadDataFromServer(forceRefresh) {
                 clearStoredPortalTokens();
                 redirectToPortalLogin();
                 serverDatasetTrusted = false;
-                window.appData = getDefaultAppData();
-                invalidateMedisaVisibleCache();
+                commitMedisaAppDataSnapshot(getDefaultAppData(), { reason: 'auth-gate' });
                 var authErr = new Error('Unauthorized');
                 authErr.medisaHttpStatus = response.status;
                 throw authErr;
@@ -798,7 +1050,7 @@ async function loadDataFromServer(forceRefresh) {
                 return finishLoadError(new Error('Invalid load payload'));
             }
 
-            window.appData = {
+            commitMedisaAppDataSnapshot({
                 tasitlar: data.tasitlar || [],
                 kayitlar: data.kayitlar || [],
                 branches: data.branches || [],
@@ -829,9 +1081,8 @@ async function loadDataFromServer(forceRefresh) {
                 monthlyTodoWhatsAppLogs: (data.monthlyTodoWhatsAppLogs && typeof data.monthlyTodoWhatsAppLogs === 'object' && !Array.isArray(data.monthlyTodoWhatsAppLogs))
                     ? data.monthlyTodoWhatsAppLogs
                     : {}
-            };
+            }, { reason: 'server-load' });
 
-            invalidateMedisaVisibleCache();
             setMedisaSession(data.session || getSessionFromToken());
 
             serverDatasetTrusted = true;
@@ -1030,14 +1281,14 @@ async function saveDataToServer(options) {
                 versionMap[id] = Number(item.version) || 1;
             });
 
-            window.appData.tasitlar = window.appData.tasitlar.map(function(vehicle) {
+            replaceMedisaCollection('vehicles', window.appData.tasitlar.map(function(vehicle) {
                 if (!vehicle || vehicle.id == null) return vehicle;
                 var vehicleId = String(vehicle.id);
                 if (!Object.prototype.hasOwnProperty.call(versionMap, vehicleId)) return vehicle;
                 return Object.assign({}, vehicle, {
                     version: versionMap[vehicleId]
                 });
-            });
+            }), { reason: 'version-patch' });
         }
 
         try {
@@ -1076,7 +1327,6 @@ async function saveDataToServer(options) {
     } finally {
         isSaving = false;
         syncDataLoadState();
-        invalidateMedisaVisibleCache();
         if (typeof releaseNext === 'function') releaseNext();
     }
 }
@@ -1222,12 +1472,12 @@ function getVisibleBranches(branches) {
     (session.branch_ids || []).forEach(function(branchId) {
         visibleBranchIds[String(branchId)] = true;
     });
-    getMedisaVehicles().forEach(function(vehicle) {
+    getVisibleVehicles(getRawMedisaCollection('vehicles')).forEach(function(vehicle) {
         if (vehicle && vehicle.branchId != null && vehicle.branchId !== '') {
             visibleBranchIds[String(vehicle.branchId)] = true;
         }
     });
-    getMedisaUsers().forEach(function(user) {
+    getVisibleUsers(getRawMedisaCollection('users')).forEach(function(user) {
         getUserBranchIds(user).forEach(function(branchId) {
             visibleBranchIds[String(branchId)] = true;
         });
@@ -1247,92 +1497,123 @@ function getMedisaData(key) {
 
 function getMedisaVehicles() {
     return getCachedMedisaVisibleList('vehicles', function() {
-        return getVisibleVehicles(getMedisaData('tasitlar'));
+        return getVisibleVehicles(getRawMedisaCollection('vehicles'));
     });
 }
 
 function getMedisaBranches() {
     return getCachedMedisaVisibleList('branches', function() {
-        return getVisibleBranches(getMedisaData('branches'));
+        return getVisibleBranches(getRawMedisaCollection('branches'));
     });
 }
 
 function getMedisaUsers() {
     return getCachedMedisaVisibleList('users', function() {
-        return getVisibleUsers(getMedisaData('users'));
+        return getVisibleUsers(getRawMedisaCollection('users'));
     });
 }
 
 window.writeVehicles = function(arr) {
     if (!window.appData) window.appData = getDefaultAppData();
     applyMainAppSessionUiState();
-    if (window.dataApi && typeof window.dataApi.saveVehiclesList === 'function') {
-        return window.dataApi.saveVehiclesList(arr)
-            .then(function(result) {
-                syncDataLoadState();
-                invalidateMedisaVisibleCache();
-                return result;
-            })
-            .catch(function(err) {
-                if (err && err.conflict) {
-                    if (typeof window.onMedisaConflict === 'function') window.onMedisaConflict();
-                    else alert('Dikkat! Veri başka biri tarafından güncellenmiş. Lütfen sayfayı yenileyin.');
-                    return Promise.reject(err);
-                }
-                console.error('Sunucuya kaydetme hatası:', err);
-                return Promise.reject(err);
+    var previousVehicles = getRawMedisaCollection('vehicles').slice();
+    var vehicles = Array.isArray(arr) ? arr.slice() : [];
+    replaceMedisaCollection('vehicles', vehicles, { reason: 'vehicle-write' });
+
+    if (typeof window.saveDataToServer !== 'function') {
+        return Promise.reject(new Error('[Medisa] writeVehicles owner hazır değil; kayıt yapılamadı.'));
+    }
+
+    return window.saveDataToServer().then(function(ok) {
+        if (ok !== true) {
+            return restoreMedisaCollectionAfterWriteFailure('vehicles', previousVehicles, 'vehicle-write-false').then(function() {
+                return Promise.reject(new Error('Sunucuya kayıt yapılamadı.'));
             });
-    }
-    window.appData.tasitlar = Array.isArray(arr) ? arr : [];
-    syncDataLoadState();
-    invalidateMedisaVisibleCache();
-    if (typeof window.saveDataToServer === 'function') {
-        return window.saveDataToServer().catch(function(err) {
-            if (err && err.conflict) {
-                if (typeof window.onMedisaConflict === 'function') window.onMedisaConflict();
-                else alert('Dikkat! Veri başka biri tarafından güncellenmiş. Lütfen sayfayı yenileyin.');
-                return Promise.reject(err);
-            }
-            console.error('Sunucuya kaydetme hatası:', err);
+        }
+        medisaInvalidateVehicleDateTasksCacheIfAvailable();
+        return ok;
+    }).catch(async function(err) {
+        if (err && err.message === 'Sunucuya kayıt yapılamadı.') {
             return Promise.reject(err);
-        });
-    }
-    medisaInvalidateVehicleDateTasksCacheIfAvailable();
-    return Promise.resolve();
+        }
+        if (err && err.conflict) {
+            if (typeof window.loadDataFromServer === 'function') {
+                try {
+                    await window.loadDataFromServer(true);
+                } catch (reloadErr) {
+                    console.warn('[Medisa] Çakışma sonrası taşıt verisi yenilenemedi:', reloadErr && reloadErr.message);
+                    replaceMedisaCollection('vehicles', previousVehicles, { reason: 'vehicle-conflict-rollback' });
+                }
+            } else {
+                replaceMedisaCollection('vehicles', previousVehicles, { reason: 'vehicle-conflict-rollback' });
+            }
+            if (typeof window.onMedisaConflict === 'function') window.onMedisaConflict();
+            else alert('Dikkat! Veri başka biri tarafından güncellenmiş. Lütfen sayfayı yenileyin.');
+            return Promise.reject(err);
+        }
+        await restoreMedisaCollectionAfterWriteFailure('vehicles', previousVehicles, 'vehicle-write-error');
+        console.error('Sunucuya kaydetme hatası:', err);
+        return Promise.reject(err);
+    });
 };
 
 window.writeBranches = function(arr) {
     if (!window.appData) return Promise.resolve(false);
-    window.appData.branches = Array.isArray(arr) ? arr : [];
-    syncDataLoadState();
-    invalidateMedisaVisibleCache();
-    if (typeof window.saveDataToServer === 'function') {
-        return window.saveDataToServer().catch(function(err) {
-            console.error('Sunucuya kaydetme hatası:', err);
+    var previousBranches = getRawMedisaCollection('branches').slice();
+    replaceMedisaCollection('branches', Array.isArray(arr) ? arr : [], { reason: 'branch-write' });
+    if (typeof window.saveDataToServer !== 'function') {
+        return Promise.resolve(true);
+    }
+    return window.saveDataToServer().then(function(ok) {
+        if (ok === true) return true;
+        return restoreMedisaCollectionAfterWriteFailure('branches', previousBranches, 'branch-write-false').then(function() {
             return false;
         });
-    }
-    return Promise.resolve(true);
+    }).catch(function(err) {
+        console.error('Sunucuya kaydetme hatası:', err);
+        return restoreMedisaCollectionAfterWriteFailure('branches', previousBranches, 'branch-write-error').then(function() {
+            return false;
+        });
+    });
 };
 
 window.writeUsers = function(arr) {
     if (!window.appData) return Promise.resolve(false);
-    window.appData.users = Array.isArray(arr) ? arr : [];
-    syncDataLoadState();
-    invalidateMedisaVisibleCache();
-    applyMainAppSessionUiState();
-    if (typeof window.saveDataToServer === 'function') {
-        return window.saveDataToServer().catch(function(err) {
-            console.error('Sunucuya kaydetme hatası:', err);
+    var previousUsers = getRawMedisaCollection('users').slice();
+    replaceMedisaCollection('users', Array.isArray(arr) ? arr : [], { reason: 'user-write' });
+    if (typeof window.saveDataToServer !== 'function') {
+        return Promise.resolve(true);
+    }
+    return window.saveDataToServer().then(function(ok) {
+        if (ok === true) return true;
+        return restoreMedisaCollectionAfterWriteFailure('users', previousUsers, 'user-write-false').then(function() {
             return false;
         });
-    }
-    return Promise.resolve(true);
+    }).catch(function(err) {
+        console.error('Sunucuya kaydetme hatası:', err);
+        return restoreMedisaCollectionAfterWriteFailure('users', previousUsers, 'user-write-error').then(function() {
+            return false;
+        });
+    });
 };
 
 window.getMedisaVehicles = getMedisaVehicles;
 window.getMedisaBranches = getMedisaBranches;
 window.getMedisaUsers = getMedisaUsers;
+window.replaceMedisaVehicles = function(arr, options) {
+    return replaceMedisaCollection('vehicles', arr, options || { reason: 'replace-vehicles' });
+};
+window.replaceMedisaBranches = function(arr, options) {
+    return replaceMedisaCollection('branches', arr, options || { reason: 'replace-branches' });
+};
+window.replaceMedisaUsers = function(arr, options) {
+    return replaceMedisaCollection('users', arr, options || { reason: 'replace-users' });
+};
+window.replaceMedisaCollection = replaceMedisaCollection;
+window.commitMedisaAppDataSnapshot = commitMedisaAppDataSnapshot;
+window.getMedisaCollectionSnapshot = function(kind) {
+    return getRawMedisaCollection(kind).slice();
+};
 window.normalizeUsers = normalizeUsers;
 window.getMedisaSession = function() { return window.medisaSession || getDefaultSession(); };
 window.loadDataFromServer = loadDataFromServer;

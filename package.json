@@ -8,6 +8,8 @@
   "scripts": {
     "tool:verify-roles": "node scripts/verify-medisa-role-invariants.js",
     "tool:verify-login-title-fit": "node scripts/verify-driver-login-title-fit.js",
+    "tool:verify-visible-store": "node scripts/verify-medisa-visible-store-invariants.js",
+    "tool:measure-visible-store": "node scripts/measure-medisa-visible-store.js",
     "tool:import-gpt-xlsx": "node scripts/import_gpt_xlsx.mjs",
     "tool:build-deploy-zip": "powershell -ExecutionPolicy Bypass -File scripts/build-deploy-zip.ps1"
   },

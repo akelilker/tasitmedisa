@@ -782,6 +782,10 @@
     if (window.dataApi && typeof window.dataApi.saveVehiclesList === 'function') {
       return window.dataApi.saveVehiclesList(arr);
     }
+    if (typeof window.replaceMedisaCollection === 'function') {
+      window.replaceMedisaCollection('vehicles', Array.isArray(arr) ? arr : [], { reason: 'tasitlar-fallback' });
+      return Promise.resolve();
+    }
     if (window.appData) window.appData.tasitlar = Array.isArray(arr) ? arr : [];
     return Promise.resolve();
   }
