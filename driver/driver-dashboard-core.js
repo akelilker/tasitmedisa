@@ -24,8 +24,10 @@ if (!runtime) throw new Error('MedisaDriverRuntime eksik');
 var h = runtime.helpers;
 var driverVehicleNeedsK2 = h && h.driverVehicleNeedsK2;
 var driverVehicleNeedsTakograf = h && h.driverVehicleNeedsTakograf;
+var driverVehicleIsHeavyCommercial = h && h.driverVehicleIsHeavyCommercial;
 if (typeof driverVehicleNeedsK2 !== 'function'
-|| typeof driverVehicleNeedsTakograf !== 'function') {
+|| typeof driverVehicleNeedsTakograf !== 'function'
+|| typeof driverVehicleIsHeavyCommercial !== 'function') {
 throw new Error('MedisaDriverRuntime vehicle document helpers eksik');
 }
 runtime.paths.APP_ROOT = APP_ROOT;
@@ -1856,6 +1858,9 @@ resize();
 
 
 
+function clearSavedDriverPassword() {
+try { localStorage.removeItem('driver_saved_password'); } catch (e) {}
+}
 function logout() {
 clearSavedDriverPassword();
 clearStoredPortalTokens();
@@ -1866,6 +1871,7 @@ function publishDriverRuntimeHelpers() {
 var h = runtime.helpers;
 h.driverVehicleNeedsK2 = driverVehicleNeedsK2;
 h.driverVehicleNeedsTakograf = driverVehicleNeedsTakograf;
+h.driverVehicleIsHeavyCommercial = driverVehicleIsHeavyCommercial;
 h.ensureDriverOnlineForWrite = ensureDriverOnlineForWrite;
 h.showDriverOfflineReadonlyMessage = showDriverOfflineReadonlyMessage;
 h.escapeHtmlDriver = escapeHtmlDriver;
