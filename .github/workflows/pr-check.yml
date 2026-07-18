@@ -59,6 +59,7 @@ jobs:
             driver/driver-feature-actions.js \
             admin/admin-report.js \
             scripts/verify-medisa-role-invariants.js \
+            scripts/run-medisa-role-matrix-verify.js \
             scripts/verify-driver-login-title-fit.js \
             scripts/verify-medisa-visible-store-invariants.js \
             scripts/measure-medisa-visible-store.js \
