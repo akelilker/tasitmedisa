@@ -393,6 +393,13 @@ function replaceMedisaCollection(kind, nextList, options) {
     var list = Array.isArray(nextList) ? nextList.slice() : [];
     window.appData[appKey] = list;
     bumpMedisaCollectionRevision(kind);
+    if (kind === 'vehicles') {
+        medisaCachedVehicleMutationIntent = buildVehicleMutationAgainstBaseline(list);
+        medisaCachedVehicleMutationIntent.revision = medisaCollectionRevisions.vehicles;
+        medisaCurrentCollectionFingerprintCache.tasitlar = null;
+    } else if (kind === 'branches' || kind === 'users') {
+        medisaCurrentCollectionFingerprintCache[appKey] = null;
+    }
     invalidateMedisaCollectionCache(kind, (options && options.reason) || ('replace-' + kind));
     syncDataLoadState();
     queueMedisaCollectionsChanged([kind], (options && options.reason) || ('replace-' + kind));
@@ -432,6 +439,8 @@ function commitMedisaAppDataSnapshot(nextAppData, options) {
     bumpMedisaCollectionRevision('vehicles');
     bumpMedisaCollectionRevision('branches');
     bumpMedisaCollectionRevision('users');
+    medisaCachedVehicleMutationIntent = null;
+    medisaCurrentCollectionFingerprintCache = {};
     invalidateMedisaCollectionCache('all', reason);
     syncDataLoadState();
     applyMainAppSessionUiState();
@@ -1109,6 +1118,22 @@ async function loadDataFromServer(forceRefresh) {
 }
 
 var serverDatasetBaseline = null;
+var serverDatasetBaselineFingerprints = {
+    collections: {},
+    vehicles: {},
+    tasitlarArray: ''
+};
+var medisaCurrentCollectionFingerprintCache = {};
+var medisaCachedVehicleMutationIntent = null;
+var MEDISA_SAVE_PERSIST_COLLECTIONS = [
+    'kayitlar',
+    'branches',
+    'users',
+    'ayarlar',
+    'sifreler',
+    'notificationReadState',
+    'monthlyTodoWhatsAppLogs'
+];
 
 function cloneServerDatasetValue(value) {
     try {
@@ -1118,36 +1143,90 @@ function cloneServerDatasetValue(value) {
     }
 }
 
+function medisaFingerprintValue(value) {
+    try {
+        return JSON.stringify(value);
+    } catch (e) {
+        return '\u0000';
+    }
+}
+
+function medisaFingerprintCollectionCurrent(key, value) {
+    // Aynı dizi/nesne referansı için tekrar stringify etme (in-place vehicle edit bu cache'i kullanmaz).
+    var cached = medisaCurrentCollectionFingerprintCache[key];
+    if (cached && cached.ref === value) {
+        return cached.fp;
+    }
+    var fp = medisaFingerprintValue(value);
+    medisaCurrentCollectionFingerprintCache[key] = { ref: value, fp: fp };
+    return fp;
+}
+
+function rebuildServerDatasetBaselineFingerprints() {
+    var collections = {};
+    var vehicles = {};
+    var baseline = serverDatasetBaseline || {};
+    MEDISA_SAVE_PERSIST_COLLECTIONS.forEach(function(key) {
+        collections[key] = medisaFingerprintValue(baseline[key]);
+    });
+    var baselineVehicles = Array.isArray(baseline.tasitlar) ? baseline.tasitlar : [];
+    baselineVehicles.forEach(function(vehicle) {
+        if (!vehicle || vehicle.id == null) return;
+        vehicles[String(vehicle.id)] = medisaFingerprintValue(vehicle);
+    });
+    serverDatasetBaselineFingerprints = {
+        collections: collections,
+        vehicles: vehicles,
+        tasitlarArray: medisaFingerprintValue(baselineVehicles)
+    };
+    medisaCurrentCollectionFingerprintCache = {};
+    medisaCachedVehicleMutationIntent = null;
+}
+
 function setServerDatasetBaseline(data) {
     serverDatasetBaseline = cloneServerDatasetValue(data);
+    rebuildServerDatasetBaselineFingerprints();
 }
 
 function medisaValuesEqual(a, b) {
-    return JSON.stringify(a) === JSON.stringify(b);
+    if (a === b) return true;
+    return medisaFingerprintValue(a) === medisaFingerprintValue(b);
 }
 
-function buildSaveMutationIntent() {
-    var current = window.appData || {};
-    var baseline = serverDatasetBaseline || {};
-    var collections = [];
-    ['kayitlar', 'branches', 'users', 'ayarlar', 'sifreler', 'notificationReadState', 'monthlyTodoWhatsAppLogs'].forEach(function(key) {
-        if (!medisaValuesEqual(current[key], baseline[key])) collections.push(key);
+function medisaFindDuplicateVehicleIds(vehicles) {
+    var seen = {};
+    var duplicates = [];
+    (Array.isArray(vehicles) ? vehicles : []).forEach(function(vehicle) {
+        if (!vehicle || vehicle.id == null) return;
+        var id = String(vehicle.id);
+        if (!id) return;
+        if (seen[id]) {
+            if (duplicates.indexOf(id) === -1) duplicates.push(id);
+            return;
+        }
+        seen[id] = true;
     });
+    return duplicates;
+}
 
-    var currentVehicles = Array.isArray(current.tasitlar) ? current.tasitlar : [];
+function buildVehicleMutationAgainstBaseline(currentVehicles) {
+    var baseline = serverDatasetBaseline || {};
+    var vehicleFp = (serverDatasetBaselineFingerprints && serverDatasetBaselineFingerprints.vehicles) || {};
     var baselineVehicles = Array.isArray(baseline.tasitlar) ? baseline.tasitlar : [];
     var currentById = {};
     var baselineById = {};
-    currentVehicles.forEach(function(vehicle) {
+    (Array.isArray(currentVehicles) ? currentVehicles : []).forEach(function(vehicle) {
         if (vehicle && vehicle.id != null) currentById[String(vehicle.id)] = vehicle;
     });
     baselineVehicles.forEach(function(vehicle) {
         if (vehicle && vehicle.id != null) baselineById[String(vehicle.id)] = vehicle;
     });
-
     var changedVehicleIds = [];
     Object.keys(currentById).forEach(function(id) {
-        if (!Object.prototype.hasOwnProperty.call(baselineById, id) || !medisaValuesEqual(currentById[id], baselineById[id])) {
+        var baselineVehicleFingerprint = Object.prototype.hasOwnProperty.call(vehicleFp, id)
+            ? vehicleFp[id]
+            : (baselineById[id] ? medisaFingerprintValue(baselineById[id]) : null);
+        if (baselineVehicleFingerprint == null || medisaFingerprintValue(currentById[id]) !== baselineVehicleFingerprint) {
             changedVehicleIds.push(id);
         }
     });
@@ -1158,6 +1237,42 @@ function buildSaveMutationIntent() {
     deletedVehicleIds.forEach(function(id) {
         deletedVehicleVersions[id] = Number(baselineById[id] && baselineById[id].version) || 1;
     });
+    return {
+        changedVehicleIds: changedVehicleIds,
+        deletedVehicleIds: deletedVehicleIds,
+        deletedVehicleVersions: deletedVehicleVersions
+    };
+}
+
+function buildSaveMutationIntent() {
+    var current = window.appData || {};
+    var baseline = serverDatasetBaseline || {};
+    var collectionFp = (serverDatasetBaselineFingerprints && serverDatasetBaselineFingerprints.collections) || {};
+    var collections = [];
+    MEDISA_SAVE_PERSIST_COLLECTIONS.forEach(function(key) {
+        var baselineFp = Object.prototype.hasOwnProperty.call(collectionFp, key)
+            ? collectionFp[key]
+            : medisaFingerprintValue(baseline[key]);
+        if (medisaFingerprintCollectionCurrent(key, current[key]) !== baselineFp) collections.push(key);
+    });
+
+    var changedVehicleIds = [];
+    var deletedVehicleIds = [];
+    var deletedVehicleVersions = {};
+    var currentVehicles = Array.isArray(current.tasitlar) ? current.tasitlar : [];
+    if (
+        medisaCachedVehicleMutationIntent
+        && medisaCachedVehicleMutationIntent.revision === medisaCollectionRevisions.vehicles
+    ) {
+        changedVehicleIds = (medisaCachedVehicleMutationIntent.changedVehicleIds || []).slice();
+        deletedVehicleIds = (medisaCachedVehicleMutationIntent.deletedVehicleIds || []).slice();
+        deletedVehicleVersions = Object.assign({}, medisaCachedVehicleMutationIntent.deletedVehicleVersions || {});
+    } else {
+        var computed = buildVehicleMutationAgainstBaseline(currentVehicles);
+        changedVehicleIds = computed.changedVehicleIds;
+        deletedVehicleIds = computed.deletedVehicleIds;
+        deletedVehicleVersions = computed.deletedVehicleVersions;
+    }
     if (changedVehicleIds.length || deletedVehicleIds.length) collections.push('tasitlar');
 
     return {
@@ -1168,14 +1283,101 @@ function buildSaveMutationIntent() {
     };
 }
 
-function updateServerDatasetBaselineAfterSave(intent) {
-    if (!serverDatasetBaseline) {
-        setServerDatasetBaseline(window.appData);
+/**
+ * Delta-v1 save wire owner. Full appData kopyalamaz.
+ */
+function buildSaveWirePayload(options) {
+    options = options || {};
+    var current = window.appData || {};
+    var duplicateIds = medisaFindDuplicateVehicleIds(current.tasitlar);
+    if (duplicateIds.length) {
+        return { ok: false, reason: 'duplicate_vehicle_ids', duplicateVehicleIds: duplicateIds };
+    }
+
+    var mutationIntent = buildSaveMutationIntent();
+    var isNoOp = !(mutationIntent.collections || []).length
+        && !(mutationIntent.changedVehicleIds || []).length
+        && !(mutationIntent.deletedVehicleIds || []).length;
+    if (isNoOp) {
+        return {
+            ok: true,
+            isNoOp: true,
+            mutationIntent: mutationIntent,
+            wirePayload: null,
+            baselinePatchSnapshot: null,
+            wireMetrics: { legacyBytes: 0, deltaBytes: 0, networkBytes: 0 }
+        };
+    }
+
+    var wirePayload = {
+        _medisaWire: {
+            schemaVersion: 1,
+            mode: 'delta-v1'
+        },
+        _medisaMutation: mutationIntent
+    };
+
+    var changedLookup = {};
+    (mutationIntent.changedVehicleIds || []).forEach(function(id) {
+        changedLookup[String(id)] = true;
+    });
+    var baselinePatchSnapshot = {};
+
+    (mutationIntent.collections || []).forEach(function(key) {
+        if (key === 'tasitlar') {
+            var currentVehicles = Array.isArray(current.tasitlar) ? current.tasitlar : [];
+            var changedVehicles = currentVehicles.filter(function(vehicle) {
+                return vehicle && vehicle.id != null && changedLookup[String(vehicle.id)];
+            }).map(function(vehicle) {
+                return cloneServerDatasetValue(vehicle);
+            });
+            wirePayload.tasitlar = changedVehicles;
+            baselinePatchSnapshot.tasitlar = cloneServerDatasetValue(changedVehicles);
+            return;
+        }
+        var cloned = cloneServerDatasetValue(current[key]);
+        wirePayload[key] = cloned;
+        baselinePatchSnapshot[key] = cloneServerDatasetValue(cloned);
+    });
+
+    delete wirePayload.kaskoDegerListesi;
+    delete wirePayload.__medisaKaskoLookupIndex;
+    delete wirePayload.__medisaKaskoLookupYears;
+    delete baselinePatchSnapshot.kaskoDegerListesi;
+    delete baselinePatchSnapshot.__medisaKaskoLookupIndex;
+    delete baselinePatchSnapshot.__medisaKaskoLookupYears;
+
+    var deltaBytes = 0;
+    try {
+        deltaBytes = JSON.stringify(wirePayload).length;
+    } catch (e) {
+        return { ok: false, reason: 'stringify_failed' };
+    }
+
+    return {
+        ok: true,
+        isNoOp: false,
+        wirePayload: wirePayload,
+        mutationIntent: mutationIntent,
+        baselinePatchSnapshot: baselinePatchSnapshot,
+        wireMetrics: {
+            deltaBytes: deltaBytes,
+            networkBytes: deltaBytes
+        }
+    };
+}
+
+function updateServerDatasetBaselineAfterSave(intent, requestSnapshot, versionMap) {
+    if (!requestSnapshot || typeof requestSnapshot !== 'object') {
         return;
     }
-    var current = window.appData || {};
+    versionMap = versionMap && typeof versionMap === 'object' ? versionMap : {};
+    if (!serverDatasetBaseline) {
+        setServerDatasetBaseline(requestSnapshot);
+        return;
+    }
     (intent.collections || []).forEach(function(key) {
-        if (key !== 'tasitlar') serverDatasetBaseline[key] = cloneServerDatasetValue(current[key]);
+        if (key !== 'tasitlar') serverDatasetBaseline[key] = cloneServerDatasetValue(requestSnapshot[key]);
     });
     if ((intent.collections || []).indexOf('tasitlar') === -1) return;
 
@@ -1183,19 +1385,26 @@ function updateServerDatasetBaselineAfterSave(intent) {
     (intent.changedVehicleIds || []).forEach(function(id) { changedIds[String(id)] = true; });
     var deletedIds = {};
     (intent.deletedVehicleIds || []).forEach(function(id) { deletedIds[String(id)] = true; });
-    var currentVehicles = Array.isArray(current.tasitlar) ? current.tasitlar : [];
+    var snapshotVehicles = Array.isArray(requestSnapshot.tasitlar) ? requestSnapshot.tasitlar : [];
     var baselineVehicles = Array.isArray(serverDatasetBaseline.tasitlar) ? serverDatasetBaseline.tasitlar : [];
-    var currentById = {};
-    currentVehicles.forEach(function(vehicle) {
-        if (vehicle && vehicle.id != null) currentById[String(vehicle.id)] = vehicle;
+    var snapshotById = {};
+    snapshotVehicles.forEach(function(vehicle) {
+        if (vehicle && vehicle.id != null) snapshotById[String(vehicle.id)] = vehicle;
     });
     serverDatasetBaseline.tasitlar = baselineVehicles.filter(function(vehicle) {
         var id = vehicle && vehicle.id != null ? String(vehicle.id) : '';
         return id && !deletedIds[id] && !changedIds[id];
     });
     Object.keys(changedIds).forEach(function(id) {
-        if (currentById[id]) serverDatasetBaseline.tasitlar.push(cloneServerDatasetValue(currentById[id]));
+        if (!snapshotById[id]) return;
+        var vehicle = cloneServerDatasetValue(snapshotById[id]);
+        if (Object.prototype.hasOwnProperty.call(versionMap, id)) {
+            vehicle.version = versionMap[id];
+        }
+        serverDatasetBaseline.tasitlar.push(vehicle);
     });
+    rebuildServerDatasetBaselineFingerprints();
+    medisaCachedVehicleMutationIntent = null;
 }
 
 async function saveDataToServer(options) {
@@ -1216,17 +1425,42 @@ async function saveDataToServer(options) {
     isSaving = true;
     syncDataLoadState();
     try {
-        var payloadObj = Object.assign({}, window.appData);
+        var built = buildSaveWirePayload(options || {});
+        if (!built || built.ok === false) {
+            if (built && built.reason === 'duplicate_vehicle_ids') {
+                console.warn('[Medisa] Yinelenen taşıt kimliği nedeniyle kayıt engellendi.');
+            }
+            return false;
+        }
+        if (built.isNoOp) {
+            return true;
+        }
+
+        var payloadObj = built.wirePayload;
+        var mutationIntent = built.mutationIntent;
         delete payloadObj.kaskoDegerListesi;
-        var mutationIntent = buildSaveMutationIntent();
-        payloadObj._medisaMutation = mutationIntent;
+        var requestBody = JSON.stringify(payloadObj);
+        var requestSnapshot = built.baselinePatchSnapshot
+            ? cloneServerDatasetValue(built.baselinePatchSnapshot)
+            : null;
+        if (!requestSnapshot) {
+            try {
+                requestSnapshot = JSON.parse(requestBody);
+            } catch (snapshotParseErr) {
+                console.warn('[Medisa] Kayıt snapshot doğrulanamadı:', snapshotParseErr && snapshotParseErr.message);
+                return false;
+            }
+        }
+        delete requestSnapshot._medisaMutation;
+        delete requestSnapshot._medisaWire;
+        delete requestSnapshot._medisaUserPasswordChanges;
 
         var response = await fetch(API_SAVE, {
             method: 'POST',
             headers: buildAuthHeaders({
                 'Content-Type': 'application/json'
             }),
-            body: JSON.stringify(payloadObj)
+            body: requestBody
         });
 
         if (!response.ok) {
@@ -1273,14 +1507,16 @@ async function saveDataToServer(options) {
             throw conflictErr;
         }
 
-        if (data && Array.isArray(data.vehicleVersions) && window.appData && Array.isArray(window.appData.tasitlar)) {
-            var versionMap = {};
+        var versionMap = {};
+        if (data && Array.isArray(data.vehicleVersions)) {
             data.vehicleVersions.forEach(function(item) {
                 var id = item && item.id != null ? String(item.id) : '';
                 if (!id) return;
                 versionMap[id] = Number(item.version) || 1;
             });
+        }
 
+        if (Object.keys(versionMap).length && window.appData && Array.isArray(window.appData.tasitlar)) {
             replaceMedisaCollection('vehicles', window.appData.tasitlar.map(function(vehicle) {
                 if (!vehicle || vehicle.id == null) return vehicle;
                 var vehicleId = String(vehicle.id);
@@ -1301,7 +1537,7 @@ async function saveDataToServer(options) {
             localStorage.setItem('medisa_server_backup', JSON.stringify(autoBackup));
         } catch (storageErr) {}
         persistOfflineAppDataSnapshot(window.appData);
-        updateServerDatasetBaselineAfterSave(mutationIntent);
+        updateServerDatasetBaselineAfterSave(mutationIntent, requestSnapshot, versionMap);
 
         medisaInvalidateVehicleDateTasksCacheIfAvailable();
         return true;
@@ -1619,6 +1855,9 @@ window.getMedisaSession = function() { return window.medisaSession || getDefault
 window.loadDataFromServer = loadDataFromServer;
 window.saveDataToServer = saveDataToServer;
 window.buildAuthHeaders = buildAuthHeaders;
+window.setServerDatasetBaseline = setServerDatasetBaseline;
+window.buildSaveWirePayload = buildSaveWirePayload;
+window.buildSaveMutationIntent = buildSaveMutationIntent;
 
 document.addEventListener('DOMContentLoaded', async function() {
     syncMainAppPortalLinks();

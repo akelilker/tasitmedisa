@@ -55,18 +55,23 @@ jobs:
             scripts/verify-driver-login-title-fit.js \
             scripts/verify-medisa-visible-store-invariants.js \
             scripts/measure-medisa-visible-store.js \
+            scripts/verify-medisa-save-wire-client.js \
+            scripts/run-medisa-save-wire-verify.js \
+            scripts/measure-medisa-save-wire.js \
             scripts/hydrate-demo-data-branches.js
           do
             node --check "$f"
           done
 
-      - name: Visible store + login fit invariants
+      - name: Visible store + login fit + save wire invariants
         shell: bash
         run: |
           set -euo pipefail
           npm run tool:verify-visible-store
           npm run tool:verify-login-title-fit
           npm run tool:verify-roles
+          npm run tool:verify-save-wire
+          npm run tool:measure-save-wire
 
   http-smoke:
     name: HTTP smoke (php -S + curl)
