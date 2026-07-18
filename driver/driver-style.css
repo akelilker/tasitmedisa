@@ -2359,16 +2359,18 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
   .login-page .hero-logo img {
     transform: translateY(0) !important;
   }
-  .login-page .hero h1 {
-    font-size: clamp(calc(18.5px - 0.5pt), 5.15vw, calc(23px - 0.5pt)) !important;
-    letter-spacing: clamp(0.35px, 1.05vw, 2.2px) !important;
+  .login-page .hero > h1 {
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+    font-size: clamp(14.5px, 4.4vw, 18.5px) !important;
+    letter-spacing: clamp(0.4px, 0.32vw, 1.2px) !important;
     line-height: 1.2 !important;
     transform: none !important;
     white-space: nowrap !important;
     overflow: hidden !important;
-    text-overflow: ellipsis !important;
+    text-overflow: clip !important;
     word-break: normal !important;
-    padding: 0 2px 0 0 !important;
+    padding: 0 2px !important;
     -webkit-font-smoothing: antialiased !important;
     text-rendering: optimizeLegibility !important;
     text-shadow: 0 0 1px rgba(255, 255, 255, 0.22) !important;
@@ -5492,10 +5494,11 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     font-size: clamp(19px, 5.2vw, 22px) !important;
     letter-spacing: clamp(0.45px, 0.38vw, 1.45px) !important;
   }
-  .login-page .hero h1 {
-    font-size: clamp(calc(17.8px - 0.5pt), 5.1vw, calc(21.8px - 0.5pt)) !important;
-    letter-spacing: 2px !important;
+  .login-page .hero > h1 {
+    font-size: clamp(14.5px, 4.4vw, 18.5px) !important;
+    letter-spacing: clamp(0.4px, 0.32vw, 1.2px) !important;
     padding: 0 2px !important;
+    text-overflow: clip !important;
   }
 
 }
@@ -5731,6 +5734,20 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   text-rendering: optimizeLegibility;
   line-height: 1.6;
   margin: 0;
+}
+
+/* Login plain .hero > h1: 500px shell + 4px letter-spacing Arial/fallback'ta taşmayı kapat */
+.login-page .hero > h1 {
+  flex: 1 1 0;
+  min-width: 0;
+  width: auto;
+  max-width: 100%;
+  padding-inline: 2px;
+  font-size: 20px;
+  letter-spacing: 2.4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: clip;
 }
 
 /* Desktop plate dropdown: stays inside the dashboard frame */
