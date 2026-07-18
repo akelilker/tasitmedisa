@@ -1379,7 +1379,11 @@
   
         const persisted = await writeBranches(branches);
         if (persisted !== true) {
-          if (window.appData) window.appData.branches = previousBranches;
+          if (typeof window.replaceMedisaBranches === 'function') {
+            window.replaceMedisaBranches(previousBranches, { reason: 'branch-save-rollback' });
+          } else if (window.appData) {
+            window.appData.branches = previousBranches;
+          }
           renderBranchList();
           alert('Şube sunucuya kaydedilemedi. Lütfen tekrar deneyin.');
           return;
@@ -1393,8 +1397,12 @@
   
         alert(id ? 'Şube güncellendi.' : 'Şube Eklendi.');
       } catch (error) {
-        if (previousBranches && window.appData) {
-          window.appData.branches = previousBranches;
+        if (previousBranches) {
+          if (typeof window.replaceMedisaBranches === 'function') {
+            window.replaceMedisaBranches(previousBranches, { reason: 'branch-save-error-rollback' });
+          } else if (window.appData) {
+            window.appData.branches = previousBranches;
+          }
           renderBranchList();
         }
         alert('Şube kaydı sırasında bir hata Oluştu! Lütfen tekrar deneyin.');
@@ -1436,13 +1444,21 @@
       try {
         const persisted = await writeBranches(filtered);
         if (persisted !== true) {
-          if (window.appData) window.appData.branches = branches;
+          if (typeof window.replaceMedisaBranches === 'function') {
+            window.replaceMedisaBranches(branches, { reason: 'branch-delete-rollback' });
+          } else if (window.appData) {
+            window.appData.branches = branches;
+          }
           renderBranchList();
           alert('Şube silme işlemi sunucuya kaydedilemedi. Lütfen tekrar deneyin.');
           return;
         }
       } catch (error) {
-        if (window.appData) window.appData.branches = branches;
+        if (typeof window.replaceMedisaBranches === 'function') {
+          window.replaceMedisaBranches(branches, { reason: 'branch-delete-error-rollback' });
+        } else if (window.appData) {
+          window.appData.branches = branches;
+        }
         renderBranchList();
         alert('Şube silinirken bir hata oluştu! Lütfen tekrar deneyin.');
         return;
@@ -1737,7 +1753,7 @@
       if (!window.appData) return;
       const list = arr != null ? arr : readAllUsers();
       const vehicles = readAllVehicles();
-      window.appData.users = list.map(u => {
+      const nextUsers = list.map(u => {
         const zimmetliAraclar = vehicles
           .filter(v => (v.assignedUserId != null && String(v.assignedUserId) === String(u.id)))
           .map(v => (typeof v.id === 'number' ? v.id : Number(v.id)) || v.id);
@@ -1781,6 +1797,13 @@
           son_giris: u.son_giris || null
         };
       });
+      if (typeof window.replaceMedisaUsers === 'function') {
+        window.replaceMedisaUsers(nextUsers, { reason: 'ayarlar-sync-users' });
+      } else if (typeof window.replaceMedisaCollection === 'function') {
+        window.replaceMedisaCollection('users', nextUsers, { reason: 'ayarlar-sync-users' });
+      } else {
+        window.appData.users = nextUsers;
+      }
       if (!(options && options.skipServerSave === true) && window.saveDataToServer) {
         window.saveDataToServer().catch(err => {
           console.error('Sunucuya kaydetme hatası (sessiz):', err);
@@ -1807,7 +1830,13 @@
 
     function setUserManagementLocalState(users, vehicles) {
       if (!window.appData) return;
-      window.appData.tasitlar = Array.isArray(vehicles) ? vehicles : [];
+      if (typeof window.replaceMedisaVehicles === 'function') {
+        window.replaceMedisaVehicles(Array.isArray(vehicles) ? vehicles : [], { reason: 'ayarlar-user-mgmt-local' });
+      } else if (typeof window.replaceMedisaCollection === 'function') {
+        window.replaceMedisaCollection('vehicles', Array.isArray(vehicles) ? vehicles : [], { reason: 'ayarlar-user-mgmt-local' });
+      } else {
+        window.appData.tasitlar = Array.isArray(vehicles) ? vehicles : [];
+      }
       syncUsersToAppData(Array.isArray(users) ? users : [], { skipServerSave: true });
     }
 
@@ -3499,25 +3528,17 @@
     }
 
     function applyRestoredBackup(backup) {
-      writeBranches(backup.branches);
-      writeUsers(backup.users);
-      if (typeof window.writeVehicles === 'function') {
-        window.writeVehicles(backup.vehicles);
-      } else if (window.appData) {
-        window.appData.tasitlar = Array.isArray(backup.vehicles) ? backup.vehicles : [];
-      }
-
       const existingApp = window.appData || {};
-      const normalizedUsers = (window.appData && Array.isArray(window.appData.users)) ? window.appData.users : backup.users;
       const restoredBlob = {
-        tasitlar: backup.vehicles,
+        tasitlar: Array.isArray(backup.vehicles) ? backup.vehicles : [],
         kayitlar: backup.kayitlar != null ? backup.kayitlar : (existingApp.kayitlar || []),
-        branches: backup.branches,
-        users: normalizedUsers,
+        branches: Array.isArray(backup.branches) ? backup.branches : [],
+        users: Array.isArray(backup.users) ? backup.users : [],
         ayarlar: backup.ayarlar || existingApp.ayarlar || getDefaultAyarlarBackup(),
         sifreler: backup.sifreler != null ? backup.sifreler : (existingApp.sifreler || []),
         arac_aylik_hareketler: backup.arac_aylik_hareketler != null ? backup.arac_aylik_hareketler : (existingApp.arac_aylik_hareketler || []),
         duzeltme_talepleri: backup.duzeltme_talepleri != null ? backup.duzeltme_talepleri : (existingApp.duzeltme_talepleri || []),
+        kaskoDegerListesi: existingApp.kaskoDegerListesi,
         notificationReadState: backup.notificationReadState != null
           ? backup.notificationReadState
           : (
@@ -3534,13 +3555,25 @@
           ) ? existingApp.monthlyTodoWhatsAppLogs : {}
       };
 
+      if (typeof window.commitMedisaAppDataSnapshot === 'function') {
+        window.commitMedisaAppDataSnapshot(restoredBlob, { reason: 'ayarlar-backup-restore' });
+      } else {
+        writeBranches(backup.branches);
+        writeUsers(backup.users);
+        if (typeof window.writeVehicles === 'function') {
+          window.writeVehicles(backup.vehicles);
+        } else if (window.appData) {
+          window.appData.tasitlar = Array.isArray(backup.vehicles) ? backup.vehicles : [];
+        }
+        window.appData = restoredBlob;
+      }
+
       localStorage.setItem("medisa_data_v1", JSON.stringify(restoredBlob));
       localStorage.setItem("medisa_server_backup", JSON.stringify({
         ...backup,
         upload_date: new Date().toISOString()
       }));
       sessionStorage.setItem("medisa_just_restored", "1");
-      window.appData = restoredBlob;
     }
 
     window.restoreFromLastBackup = async function restoreFromLastBackup() {
