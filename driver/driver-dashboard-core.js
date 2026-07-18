@@ -25,10 +25,14 @@ var h = runtime.helpers;
 var driverVehicleNeedsK2 = h && h.driverVehicleNeedsK2;
 var driverVehicleNeedsTakograf = h && h.driverVehicleNeedsTakograf;
 var driverVehicleIsHeavyCommercial = h && h.driverVehicleIsHeavyCommercial;
+var bindDriverDashboardTitleCase = h && h.bindDriverDashboardTitleCase;
 if (typeof driverVehicleNeedsK2 !== 'function'
 || typeof driverVehicleNeedsTakograf !== 'function'
 || typeof driverVehicleIsHeavyCommercial !== 'function') {
 throw new Error('MedisaDriverRuntime vehicle document helpers eksik');
+}
+if (typeof bindDriverDashboardTitleCase !== 'function') {
+throw new Error('MedisaDriverRuntime dashboard titlecase helper eksik');
 }
 runtime.paths.APP_ROOT = APP_ROOT;
 runtime.paths.API_BASE = API_BASE;
