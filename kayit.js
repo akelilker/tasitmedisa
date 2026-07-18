@@ -5,6 +5,297 @@
    ========================================= */
 
 (function () {
+  function hydrateMedisaKayitMarkup() {
+    if (document.getElementById('vehicle-modal')) return;
+    var host = document.createElement('div');
+    host.setAttribute('data-medisa-surface', 'kayit');
+    host.innerHTML = `<div id="vehicle-modal" class="modal-overlay">
+            <div class="modal-container">
+                <div class="modal-header">
+                    <button type="button" class="modal-home" onclick="closeAllModals()" aria-label="Ana sayfaya dön" title="Ana sayfa">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 10v10h14V10"/></svg>
+                    </button>
+                    <h2 class="premium-title">KAYIT İŞLEMLERİ</h2>
+                    <button class="modal-close" onclick="closeVehicleModal()">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="modal-columns">
+                        <div class="modal-column-left">
+                            <div class="form-section-inline">
+                                <label class="form-label" for="vehicle-type-otomobil">Taşıt Tipi</label>
+                                <div class="vehicle-type-group">
+                                    <button type="button" id="vehicle-type-otomobil" class="vehicle-type-btn" data-type="otomobil" title="Otomobil / SUV">
+                                        <img src="icon/otomobil.svg" alt="Otomobil" />
+                                    </button>
+                                    <button class="vehicle-type-btn" data-type="minivan" title="Küçük Ticari">
+                                        <img src="icon/kucuk-ticari.svg" alt="Küçük Ticari" />
+                                    </button>
+                                    <button class="vehicle-type-btn" data-type="kamyon" title="Büyük Ticari">
+                                        <img src="icon/buyuk-ticari.svg" alt="Büyük Ticari" />
+                                    </button>
+                                    <button class="vehicle-type-btn" data-type="romork" title="Römork">
+                                        <img src="icon/romork.svg?v=20260609.3" alt="Römork" />
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="form-section">
+                                <label class="form-label" for="vehicle-plate">Plaka</label>
+                                <input type="text" id="vehicle-plate" class="form-input" placeholder="34 ABC 123" maxlength="15">
+                            </div>
+                            <div class="form-section">
+                                <label class="form-label" for="vehicle-year">Üretim Yılı</label>
+                                <input type="number" id="vehicle-year" class="form-input" placeholder="2026" min="1950" max="2030" inputmode="numeric">
+                            </div>
+                            <div class="form-section">
+                                <label class="form-label" for="vehicle-brand-model">Marka / Model</label>
+                                <input type="text" id="vehicle-brand-model" class="form-input" placeholder="Hyundai Elantra">
+                            </div>
+                            <div class="form-section">
+                                <label class="form-label" for="vehicle-km">Km (Alındığı Tarih)</label>
+                                <input type="text" id="vehicle-km" class="form-input" placeholder="50.000" inputmode="numeric" pattern="[0-9]*">
+                            </div>
+                            <div class="form-section">
+                                <label class="form-label" for="vehicle-price">Taşıtın Alım Bedeli</label>
+                                <input type="text" id="vehicle-price" class="form-input" placeholder="150.000 TL" inputmode="numeric">
+                            </div>
+                            <div class="form-section-inline" data-section="transmission">
+                                <label class="form-label" for="sanziman-manuel">Şanzıman Tipi</label>
+                                <div class="radio-group">
+                                    <button type="button" id="sanziman-manuel" class="radio-btn" data-value="manuel">Manuel</button>
+                                    <button class="radio-btn" data-value="otomatik">Otomatik</button>
+                                </div>
+                            </div>
+                            <div class="form-section-inline" data-section="tramer">
+                                <label class="form-label" for="tramer-var">Tramer Kaydı</label>
+                                <div class="radio-group">
+                                    <button type="button" id="tramer-var" class="radio-btn" data-value="var">Var</button>
+                                    <button type="button" class="radio-btn" data-value="yok">Yok</button>
+                                </div>
+                            </div>
+                            <div class="form-section">
+                                <div id="tramer-records-container" class="u-hidden u-mt-6"></div>
+                            </div>
+                            <div class="form-section-inline" data-section="boya">
+                                <label class="form-label" for="boya-var">Boya / Değişen</label>
+                                <div class="radio-group">
+                                    <button type="button" id="boya-var" class="radio-btn" data-value="var">Var</button>
+                                    <button type="button" class="radio-btn" data-value="yok">Yok</button>
+                                </div>
+                            </div>
+                            <div class="form-section">
+                                <div id="boya-parts-container" class="u-hidden u-mt-6"></div>
+                            </div>
+                        </div>
+
+                        <div class="modal-column-right">
+                            <div class="form-section">
+                                <label class="form-label" for="vehicle-sigorta-date">Sigorta Bitiş Tarihi</label>
+                                <input type="text" id="vehicle-sigorta-date" class="form-input" data-date-input="vehicle" inputmode="numeric" maxlength="10" placeholder="gg.aa.yyyy" autocomplete="off">
+                            </div>
+                            <div class="form-section">
+                                <label class="form-label" for="vehicle-kasko-date">Kasko Bitiş Tarihi</label>
+                                <input type="text" id="vehicle-kasko-date" class="form-input" data-date-input="vehicle" inputmode="numeric" maxlength="10" placeholder="gg.aa.yyyy" autocomplete="off">
+                            </div>
+                            <div class="form-section">
+                                <label class="form-label" for="vehicle-muayene-date">Muayene Bitiş Tarihi</label>
+                                <input type="text" id="vehicle-muayene-date" class="form-input" data-date-input="vehicle" inputmode="numeric" maxlength="10" placeholder="gg.aa.yyyy" autocomplete="off">
+                            </div>
+                            <div class="form-section egzoz-toggle-section u-hidden" aria-hidden="true">
+                                <label class="egzoz-muayene-check" for="vehicle-egzoz-different">
+                                    <input type="checkbox" id="vehicle-egzoz-different" tabindex="-1">
+                                    <span>Egzoz Muayenesi Farklı Tarih İse İşaretleyin..</span>
+                                </label>
+                            </div>
+                            <div class="form-section egzoz-date-section u-hidden" id="vehicle-egzoz-date-section" aria-hidden="true">
+                                <label class="form-label" for="vehicle-egzoz-date">Egzoz Muayenesi Bitiş Tarihi</label>
+                                <input type="text" id="vehicle-egzoz-date" class="form-input" data-date-input="vehicle" inputmode="numeric" maxlength="10" placeholder="gg.aa.yyyy" autocomplete="off" disabled tabindex="-1">
+                            </div>
+                            <div class="form-section-inline" data-section="anahtar">
+                                <label class="form-label" for="yedek-anahtar-var">Yedek Anahtar</label>
+                                <div class="radio-group">
+                                    <button type="button" id="yedek-anahtar-var" class="radio-btn" data-value="var">Var</button>
+                                    <button type="button" class="radio-btn" data-value="yok">Yok</button>
+                                </div>
+                            </div>
+                            <div class="form-section">
+                                <label class="form-label form-label-reveal" for="anahtar-nerede">Anahtar Nerede</label>
+                                <textarea class="form-input form-input-reveal" rows="1" placeholder="Nerede?" id="anahtar-nerede"></textarea>
+                            </div>
+                            <div class="form-section-inline" data-section="kredi">
+                                <label class="form-label" for="kredi-var">Hak Mahrumiyeti?</label>
+                                <div class="radio-group">
+                                    <button type="button" id="kredi-var" class="radio-btn" data-value="var" data-group="kredi">Var</button>
+                                    <button type="button" class="radio-btn" data-value="yok" data-group="kredi">Yok</button>
+                                </div>
+                            </div>
+                            <div class="form-section">
+                                <label class="form-label form-label-reveal" for="kredi-detay">Açıklama</label>
+                                <textarea class="form-input form-input-reveal" rows="1" placeholder="Detay Ekleyin" id="kredi-detay"></textarea>
+                            </div>
+                            <div class="form-section" id="vehicle-branch-form-section">
+                                <span class="form-label" id="vehicle-branch-label">Tahsis Edilen Şube</span>
+                                <div class="vehicle-branch-dropdown-wrap">
+                                    <select id="vehicle-branch-select" class="form-input" aria-hidden="true" tabindex="-1">
+                                        <option value="">Seçiniz</option>
+                                    </select>
+                                    <div id="vehicle-branch-trigger" class="vehicle-branch-trigger form-input placeholder" tabindex="0" role="combobox" aria-expanded="false" aria-haspopup="listbox" aria-controls="vehicle-branch-list" aria-labelledby="vehicle-branch-label">Seçiniz</div>
+                                    <div id="vehicle-branch-list" class="vehicle-branch-list" role="listbox" aria-hidden="true"></div>
+                                </div>
+                            </div>
+                            <div class="form-section">
+                                <label class="form-label" for="vehicle-kasko-kodu">Kasko Kodu</label>
+                                <input type="text" id="vehicle-kasko-kodu" class="form-input" placeholder="" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+                            </div>
+                            <div class="form-section">
+                                <label class="form-label" for="vehicle-notes">Notlar</label>
+                                <textarea id="vehicle-notes" class="form-input notes-auto-expand" rows="1" placeholder="Ek Bilgiler..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="universal-btn-group">
+                        <button type="button" class="universal-btn-save" onclick="saveVehicleRecord()">Kaydet</button>
+                        <button type="button" class="universal-btn-cancel" onclick="closeVehicleModal()">Vazgeç</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+<div id="vehicle-type-picker-overlay" class="vehicle-type-picker-overlay u-hidden" aria-hidden="true">
+            <div class="vehicle-type-picker-backdrop"></div>
+            <div class="vehicle-type-picker-box">
+                <h3 class="vehicle-type-picker-title">Taşıt Tipi Seçin</h3>
+                <div class="vehicle-type-picker-options">
+                    <button type="button" class="vehicle-type-picker-option" data-type="otomobil">
+                        <img src="icon/otomobil.svg" alt="Otomobil">
+                        <span class="vehicle-type-picker-label">Otomobil/ SUV</span>
+                    </button>
+                    <button type="button" class="vehicle-type-picker-option" data-type="minivan">
+                        <img src="icon/kucuk-ticari.svg" alt="Küçük Ticari">
+                        <span class="vehicle-type-picker-label">Küçük Ticari</span>
+                    </button>
+                    <button type="button" class="vehicle-type-picker-option" data-type="kamyon">
+                        <img src="icon/buyuk-ticari.svg" alt="Büyük Ticari">
+                        <span class="vehicle-type-picker-label">Büyük Ticari</span>
+                    </button>
+                    <button type="button" class="vehicle-type-picker-option" data-type="romork">
+                        <img src="icon/romork.svg?v=20260609.3" alt="Römork">
+                        <span class="vehicle-type-picker-label">Römork</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+<div id="tescil-tarih-confirm-modal" class="modal-overlay ayarlar-modal-overlay">
+            <div class="modal-container" onclick="event.stopPropagation();">
+                <div class="modal-header">
+                    <h2>TESCİL TARİHİ ONAY</h2>
+                    <button class="modal-close" onclick="cancelOnay()">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="modal-body" onclick="event.stopPropagation();">
+                    <p id="tescil-confirm-message"></p>
+                    <div class="universal-btn-group">
+                        <button type="button" class="universal-btn-save" onclick="event.stopPropagation(); confirmOnay();">Evet</button>
+                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); cancelOnay();">Hayır</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+<div id="tescil-tarih-input-modal" class="modal-overlay ayarlar-modal-overlay">
+            <div class="modal-container" onclick="event.stopPropagation();">
+                <div class="modal-header">
+                    <h2>TESCİL TARİHİ</h2>
+                    <button class="modal-close" onclick="cancelTescilTarihi()">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="modal-body" onclick="event.stopPropagation();">
+                    <div class="tescil-tarih-input-stack">
+                        <label for="tescil-tarih-input" class="form-label tescil-tarih-field-label">Tescil Tarihi:</label>
+                        <div class="tescil-input-wrapper">
+                            <input type="text" id="tescil-tarih-input" class="form-input" placeholder="gg/aa/yyyy" maxlength="10" inputmode="numeric">
+                            <span id="tescil-tarih-overlay" class="tescil-tarih-overlay"></span>
+                        </div>
+                    </div>
+                    <div class="universal-btn-group">
+                        <button type="button" class="universal-btn-save" onclick="event.stopPropagation(); saveTescilTarihi();">Kaydet</button>
+                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); cancelTescilTarihi();">Vazgeç</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+<div id="vehicle-egzoz-confirm-modal" class="egzoz-dialog-overlay">
+            <div class="egzoz-dialog-container" onclick="event.stopPropagation();">
+                <div class="egzoz-dialog-header">
+                    <h2>EGZOZ MUAYENESİ</h2>
+                    <button class="egzoz-dialog-close" onclick="closeVehicleEgzozQuestionFlow()">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="egzoz-dialog-body" onclick="event.stopPropagation();">
+                    <p id="vehicle-egzoz-confirm-message">Egzoz Muayenesi Aynı Tarihte Mi Bitiyor?</p>
+                    <div class="universal-btn-group">
+                        <button type="button" class="universal-btn-save" onclick="event.stopPropagation(); confirmVehicleEgzozSameDate();">Evet</button>
+                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); confirmVehicleEgzozDifferentDate();">Hayır</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+<div id="vehicle-egzoz-date-modal" class="egzoz-dialog-overlay">
+            <div class="egzoz-dialog-container" onclick="event.stopPropagation();">
+                <div class="egzoz-dialog-header">
+                    <h2>EGZOZ MUAYENESİ TARİHİ</h2>
+                    <button class="egzoz-dialog-close" onclick="cancelVehicleEgzozDateModal()">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="egzoz-dialog-body" onclick="event.stopPropagation();">
+                    <div class="egzoz-dialog-date-field">
+                        <label for="vehicle-egzoz-date-modal-input">Egzoz Muayenesi Bitiş Tarihi</label>
+                        <input type="text" id="vehicle-egzoz-date-modal-input" class="form-input" data-date-input="vehicle" inputmode="numeric" maxlength="10" placeholder="gg.aa.yyyy" autocomplete="off">
+                    </div>
+                    <div class="universal-btn-group">
+                        <button type="button" class="universal-btn-save" onclick="event.stopPropagation(); saveVehicleEgzozDateModal();">Kaydet</button>
+                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); cancelVehicleEgzozDateModal();">Vazgeç</button>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+    var fragment = document.createDocumentFragment();
+    while (host.firstChild) fragment.appendChild(host.firstChild);
+    document.body.appendChild(fragment);
+  }
+  window.__medisaMainSurfaceHydrators = window.__medisaMainSurfaceHydrators || {};
+  window.__medisaMainSurfaceHydrators['kayit'] = hydrateMedisaKayitMarkup;
+  hydrateMedisaKayitMarkup();
+})();
+
+
+(function () {
   let isEditMode = false;
   let editingVehicleId = null;
   let editingVehicleVersion = 1; // Çakışma kontrolü (Phase 3) – düzenleme açıldığında kaydedilir
@@ -611,10 +902,10 @@
   // --- Helper Functions ---
   /**
    * Sayısal değerleri binlik ayırıcı (.) ile formatlar
-   * 
+   *
    * @param {string} value - Formatlanacak metin (örn: "150000" veya "150000 TL")
    * @returns {string} - Formatlanmış metin (örn: "150.000") veya boş string
-   * 
+   *
    * Örnek:
    * formatNumberWithSeparator("150000") -> "150.000"
    * formatNumberWithSeparator("150000 TL") -> "150.000"
@@ -648,7 +939,7 @@
 
   /**
    * gg/aa/yyyy formatını validate eder
-   * 
+   *
    * @param {string} dateStr - Validasyon yapılacak tarih (gg/aa/yyyy formatında)
    * @returns {{valid: boolean, message: string}} - Validasyon sonucu
    */
@@ -656,24 +947,24 @@
     if (!dateStr) {
       return { valid: false, message: 'Tarih boş olamaz!' };
     }
-    
+
     const datePattern = /^(\d{2})\/(\d{2})\/(\d{4})$/;
     const match = dateStr.match(datePattern);
-    
+
     if (!match) {
       return { valid: false, message: 'Geçersiz tarih formatı! (gg/aa/yyyy)' };
     }
-    
+
     const day = parseInt(match[1], 10);
     const month = parseInt(match[2], 10);
     const year = parseInt(match[3], 10);
-    
+
     // Tarih geçerliliği kontrolü
     const date = new Date(year, month - 1, day);
     if (date.getDate() !== day || date.getMonth() !== month - 1 || date.getFullYear() !== year) {
       return { valid: false, message: 'Geçersiz tarih!' };
     }
-    
+
     return { valid: true, message: '' };
   }
 
@@ -744,7 +1035,7 @@
 
   /**
    * Tramer tarihini validasyon yapar (bugünden ileriye yasak)
-   * 
+   *
    * @param {string} dateStr - Validasyon yapılacak tarih (gg/aa/yyyy formatında)
    * @returns {{valid: boolean, message: string}} - Validasyon sonucu
    */
@@ -752,81 +1043,81 @@
     if (!dateStr) {
       return { valid: true, message: '' }; // Boş tarih geçerli (opsiyonel)
     }
-    
+
     // Format kontrolü (gg/aa/yyyy)
     const datePattern = /^(\d{2})\/(\d{2})\/(\d{4})$/;
     const match = dateStr.match(datePattern);
-    
+
     if (!match) {
       return { valid: false, message: 'Geçersiz tarih formatı! (gg/aa/yyyy)' };
     }
-    
+
     const day = parseInt(match[1], 10);
     const month = parseInt(match[2], 10);
     const year = parseInt(match[3], 10);
-    
+
     // Tarih geçerliliği kontrolü
     const date = new Date(year, month - 1, day);
     if (date.getDate() !== day || date.getMonth() !== month - 1 || date.getFullYear() !== year) {
       return { valid: false, message: 'Geçersiz tarih!' };
     }
-    
+
     // Bugünden ileriye kontrolü
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    
+
     if (date > today) {
       return { valid: false, message: 'Gelecek bir tarih girilemez!' };
     }
-    
+
     return { valid: true, message: '' };
   }
 
   /**
    * Tramer tutarını formatlar (2000 → 2.000,00TL)
-   * 
+   *
    * @param {string} value - Formatlanacak tutar (örn: "2000" veya "2000,00")
    * @returns {string} - Formatlanmış tutar (örn: "2.000,00TL")
    */
   function formatTramerAmount(value) {
     if (!value) return '';
-    
+
     // TL ve noktalardan temizle
     let numericValue = value.replace(/TL/g, '').replace(/\./g, '').replace(/,/g, '.').trim();
-    
+
     // Sadece rakam ve nokta bırak
     numericValue = numericValue.replace(/[^\d.]/g, '');
-    
+
     if (!numericValue) return '';
-    
+
     // Ondalık kısmı ayır
     const parts = numericValue.split('.');
     const integerPart = parts[0] || '0';
     const decimalPart = parts[1] ? parts[1].substring(0, 2).padEnd(2, '0') : '00';
-    
+
     // Binlik ayırıcı ekle
     const integerFormatted = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-    
+
     return `${integerFormatted},${decimalPart}TL`;
   }
 
   /**
    * Tramer kayıt satırı ekler
-   * 
+   *
    * @param {string} [date=''] - Tarih değeri (opsiyonel)
    * @param {string} [amount=''] - Tutar değeri (opsiyonel)
    */
   function addTramerRecordRow(date = '', amount = '') {
     const container = document.getElementById('tramer-records-container');
     if (!container) return;
-    
+
     const rowId = `tramer-row-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     const isFirstRow = container.children.length === 0;
-    
+
     const row = document.createElement('div');
     row.className = 'tramer-record-row';
     row.id = rowId;
-    
+
     // Tarih input
     const dateInput = document.createElement('input');
     dateInput.type = 'text';
@@ -835,7 +1126,7 @@
     dateInput.value = date;
     dateInput.maxLength = 10;
     dateInput.setAttribute('inputmode', 'numeric');
-    
+
     // Tarih input event'leri: 8 rakamda anında gg/aa/yyyy; 6 rakam Tab/blur/Enter'da (ggmmaa yy pivot)
     dateInput.addEventListener('input', function() {
       const inputValue = this.value.replace(/[^\d]/g, '');
@@ -867,7 +1158,7 @@
         this.blur();
       }
     });
-    
+
     // Tutar input
     const amountInput = document.createElement('input');
     amountInput.type = 'text';
@@ -875,7 +1166,7 @@
     amountInput.placeholder = '2.000,00TL';
     amountInput.value = amount;
     amountInput.setAttribute('inputmode', 'numeric');
-    
+
     // Tutar input event'leri
     amountInput.addEventListener('blur', function() {
       if (this.value) {
@@ -883,14 +1174,14 @@
         this.value = formatted;
       }
     });
-    
+
     // Buton (+ veya X)
     const button = document.createElement('button');
     button.type = 'button';
     button.className = isFirstRow ? 'tramer-add-btn' : 'tramer-remove-btn';
     button.innerHTML = isFirstRow ? '+' : '×';
     button.title = isFirstRow ? 'Yeni satır ekle' : 'Satırı sil';
-    
+
     if (isFirstRow) {
       button.addEventListener('click', function() {
         addTramerRecordRow();
@@ -900,7 +1191,7 @@
         removeTramerRecordRow(this);
       });
     }
-    
+
     row.appendChild(dateInput);
     row.appendChild(amountInput);
     row.appendChild(button);
@@ -909,14 +1200,14 @@
 
   /**
    * Tramer kayıt satırını siler
-   * 
+   *
    * @param {HTMLElement} buttonElement - Silme butonu elementi
    */
   function removeTramerRecordRow(buttonElement) {
     const row = buttonElement.closest('.tramer-record-row');
     if (row) {
       row.remove();
-      
+
       // İlk satırda + butonu olması gerekiyor
       const container = document.getElementById('tramer-records-container');
       if (container && container.children.length > 0) {
@@ -936,23 +1227,23 @@
 
   /**
    * Tüm tramer kayıtlarını toplar
-   * 
+   *
    * @returns {Array<{date: string, amount: string}>} - Tramer kayıtları array'i
    */
   function getTramerRecords() {
     const container = document.getElementById('tramer-records-container');
     if (!container) return [];
-    
+
     const records = [];
     const rows = container.querySelectorAll('.tramer-record-row');
-    
+
     rows.forEach(row => {
       const dateInput = row.querySelector('.tramer-date-input');
       const amountInput = row.querySelector('.tramer-amount-input');
-      
+
       const date = dateInput ? dateInput.value.trim() : '';
       const amount = amountInput ? amountInput.value.trim() : '';
-      
+
       // Sadece hem tarih hem tutar dolu olan kayıtları ekle
       if (date && amount) {
         records.push({
@@ -961,7 +1252,7 @@
         });
       }
     });
-    
+
     return records;
   }
 
@@ -971,17 +1262,17 @@
   function initBoyaPartsSVG() {
     const container = document.getElementById('boya-parts-container');
     if (!container) return;
-    
+
     // SVG zaten yüklüyse tekrar yükleme
     if (container.querySelector('svg')) return;
-    
+
     // SVG içeriğini ortak cache'den al (script-core.getKaportaSvg)
     window.getKaportaSvg().then(svgText => {
         // SVG'yi kendi sahne alanına ekle
         container.innerHTML = '<div class="boya-svg-stage"></div>';
         const stage = container.querySelector('.boya-svg-stage');
         stage.innerHTML = svgText;
-        
+
         // Her parça path'ine tıklama event'i ekle
         const svg = stage.querySelector('svg');
         if (svg) {
@@ -993,16 +1284,16 @@
               part.classList.add('car-part');
               part.style.cursor = 'pointer';
               part.style.transition = 'fill 0.2s ease';
-              
+
               // Varsayılan gri rengini hafif griye güncelle (#c0c0c0 → #888888)
               const currentFill = part.getAttribute('fill') || part.style.fill || '#c0c0c0';
               if (currentFill === '#c0c0c0' || !part.getAttribute('fill')) {
                 part.setAttribute('fill', '#888888');
               }
-              
+
               // Varsayılan durumu boyasız olarak ayarla
               part.dataset.state = 'boyasiz';
-              
+
               part.addEventListener('click', function(e) {
                 e.preventDefault();
                 e.stopPropagation();
@@ -1011,7 +1302,7 @@
             }
           });
         }
-        
+
         // Renk açıklamalarını (legend) ekle
         const legend = document.createElement('div');
         legend.className = 'boya-legend';
@@ -1038,25 +1329,25 @@
 
   /**
    * Parça tıklamasında durumu değiştirir (boyasız → boyalı → değişen → boyasız)
-   * 
+   *
    * @param {string} partId - Parça ID'si (örn: "on-tampon", "kaput")
    */
   function handlePartClick(partId) {
     // SVG içindeki elementler için querySelector kullan
     const container = document.getElementById('boya-parts-container');
     if (!container) return;
-    
+
     const svg = container.querySelector('svg');
     if (!svg) return;
-    
+
     const part = svg.querySelector(`#${partId}`) || document.getElementById(partId);
     if (!part) {
       console.warn('Parça bulunamadı:', partId);
       return;
     }
-    
+
     const currentState = part.dataset.state || 'boyasiz';
-    
+
     // Durum döngüsü: boyasız → boyalı → değişen → boyasız
     let nextState;
     if (currentState === 'boyasiz') {
@@ -1066,14 +1357,14 @@
     } else {
       nextState = 'boyasiz';
     }
-    
+
     // Parça durumunu ve rengini güncelle
     updatePartColor(partId, nextState);
   }
 
   /**
    * Parça rengini durumuna göre günceller
-   * 
+   *
    * @param {string} partId - Parça ID'si
    * @param {string} state - Durum: "boyasiz" (gri), "boyali" (yeşil), "degisen" (kırmızı)
    */
@@ -1081,19 +1372,19 @@
     // SVG içindeki elementler için querySelector kullan
     const container = document.getElementById('boya-parts-container');
     if (!container) return;
-    
+
     const svg = container.querySelector('svg');
     if (!svg) return;
-    
+
     const part = svg.querySelector(`#${partId}`) || document.getElementById(partId);
     if (!part) {
       console.warn('Parça bulunamadı (updatePartColor):', partId);
       return;
     }
-    
+
     // Durumu dataset'e kaydet
     part.dataset.state = state;
-    
+
     // Renk belirle
     let color;
     if (state === 'boyali') {
@@ -1103,7 +1394,7 @@
     } else {
       color = '#888888'; // Hafif gri (boyasız)
     }
-    
+
     // Rengi güncelle (hem attribute hem style)
     part.setAttribute('fill', color);
     part.style.fill = color;
@@ -1111,19 +1402,19 @@
 
   /**
    * Tüm parça durumlarını object olarak döndürür
-   * 
+   *
    * @returns {Object} - Parça ID'leri ve durumları (örn: { "on-tampon": "boyali", "kaput": "degisen" })
    */
   function getBoyaPartsState() {
     const container = document.getElementById('boya-parts-container');
     if (!container) return {};
-    
+
     const svg = container.querySelector('svg');
     if (!svg) return {};
-    
+
     const state = {};
     const parts = svg.querySelectorAll('path[id]');
-    
+
     parts.forEach(part => {
       const partId = part.getAttribute('id');
       if (partId && partId !== 'araba-govde') {
@@ -1134,13 +1425,13 @@
         }
       }
     });
-    
+
     return state;
   }
 
   function capitalizeFirstLetter(text) {
     // Her kelimenin ilk harfini büyük yap
-    return text.split(' ').map(word => 
+    return text.split(' ').map(word =>
       word.length > 0 ? word.charAt(0).toUpperCase() + word.slice(1).toLowerCase() : word
     ).join(' ');
   }
@@ -1310,10 +1601,10 @@
     $all('input.form-input, textarea.form-input', modal).forEach(input => {
       // Tarih input'larını şimdilik atla
       if (input.type === 'date' || input.matches(VEHICLE_DATE_INPUT_SELECTOR)) return;
-      
+
       input.value = '';
       input.classList.remove('has-value');
-      
+
       if (input.id === 'vehicle-notes') {
           resizeVehicleNotesArea(input);
       }
@@ -1325,7 +1616,7 @@
       const today = new Date();
       const nextYear = new Date(today);
       nextYear.setFullYear(today.getFullYear() + 1);
-      
+
       // Tarihi YYYY-MM-DD formatına çevir
       const formatDate = (date) => {
         const year = date.getFullYear();
@@ -1333,17 +1624,17 @@
         const day = String(date.getDate()).padStart(2, '0');
         return `${year}-${month}-${day}`;
       };
-      
+
       // Sigorta Bitiş Tarihi (index 0) - bugün + 1 yıl
       if (dateInputs[0]) {
         setVehicleDateInputValue(dateInputs[0], formatDate(nextYear));
       }
-      
+
       // Kasko Bitiş Tarihi (index 1) boş kalacak
       if (dateInputs[1]) {
         setVehicleDateInputValue(dateInputs[1], '');
       }
-      
+
       // Muayene Bitiş Tarihi (index 2) boş kalacak
       if (dateInputs[2]) {
         setVehicleDateInputValue(dateInputs[2], '');
@@ -1365,7 +1656,7 @@
       branchSelect.value = '';
       syncBranchSelectPlaceholder();
     }
-    
+
     $all(".vehicle-type-btn", modal).forEach(btn => btn.classList.remove("active"));
     $all(".radio-btn", modal).forEach(btn => btn.classList.remove("active", "green"));
 
@@ -1679,9 +1970,9 @@
   // --- Date Placeholder Helper ---
   /**
    * Tarih input'larına özel placeholder ekler (iOS uyumlu)
-   * 
+   *
    * @param {HTMLInputElement} input - Tarih input elementi (type="date")
-   * 
+   *
    * Mantık:
    * 1. Eski placeholder'ı temizle (varsa)
    * 2. Mobil/Desktop kontrolü yap (left değeri farklı)
@@ -1689,8 +1980,8 @@
    * 4. Input pozisyonunu parent'a göre hesapla
    * 5. Yeni placeholder span oluştur ve parent'a ekle
    * 6. Focus/blur event'lerini dinle (placeholder görünürlüğü için)
-   * 
-   * Not: 
+   *
+   * Not:
    * - Mobil (<640px): left="4px", Desktop: left="8px"
    * - Input değeri varsa veya focus'ta placeholder gizlenir
    * - iOS Safari'de date input placeholder'ı göstermek için gerekli
@@ -1711,7 +2002,7 @@
     const isMobile = window.innerWidth <= 640;
     const isDynamicEventModalDate = isMobile && !!input.closest('#dinamik-olay-modal');
     const leftValue = isDynamicEventModalDate ? '50%' : (isMobile ? '12px' : '8px');
-    
+
     // Input'un padding ve height değerlerini al
     const inputStyle = window.getComputedStyle(input);
     var paddingTop = parseFloat(inputStyle.paddingTop);
@@ -1731,31 +2022,31 @@
     if (!Number.isFinite(lineHeight) || lineHeight <= 0 || lineHeight < 8) {
       lineHeight = fontSizePx * 1.2;
     }
-    
+
     // Placeholder'ın line-height'ını da hesapla
     const placeholderLineHeight = fontSizePx * 1.2;
-    
+
     // Input'un pozisyonunu al (parent'a göre)
     const inputRect = input.getBoundingClientRect();
     const parentRect = input.parentElement.getBoundingClientRect();
     const inputOffsetTop = inputRect.top - parentRect.top;
-    
+
     // Input'un içindeki metin alanının ortasını bul
     const contentHeight = inputHeight - paddingTop - paddingBottom;
     const contentCenter = inputOffsetTop + paddingTop + (contentHeight / 2);
-    
+
     // Placeholder'ın top değerini, placeholder'ın ortası contentCenter'a denk gelecek şekilde ayarla
     const topValue = contentCenter - (placeholderLineHeight / 2);
     const centeredPlaceholderStyles = isDynamicEventModalDate
       ? ' width: calc(100% - 36px); max-width: calc(100% - 36px); display: flex; align-items: center; justify-content: center; text-align: center; transform: translateX(-50%);'
       : '';
-    
+
     // Placeholder span oluştur
     const placeholder = document.createElement('span');
     placeholder.className = 'date-placeholder';
     placeholder.textContent = input.placeholder || 'gg.aa.yyyy';
     placeholder.style.cssText = `position: absolute; left: ${leftValue}; top: ${topValue}px; color: #666 !important; pointer-events: none; font-size: ${fontSizePx}px; z-index: 100; line-height: ${lineHeight}px;${centeredPlaceholderStyles}`;
-    
+
     // Input'un parent'ına ekle (input'un içinde görünmesi için)
     const parent = input.parentElement;
     if (parent) {
@@ -1763,7 +2054,7 @@
       parent.style.position = 'relative';
       parent.appendChild(placeholder);
     }
-    
+
     // Placeholder görünürlüğünü kontrol et
     function updatePlaceholder() {
       syncSingleDateInputVisibility(input);
@@ -1773,19 +2064,19 @@
         placeholder.style.display = 'block';
       }
     }
-    
+
       // Event listener'lar
       input.addEventListener('change', updatePlaceholder);
       input.addEventListener('input', updatePlaceholder);
-      
+
       input.addEventListener('focus', () => {
         updatePlaceholder();
       });
-      
+
       input.addEventListener('blur', () => {
         updatePlaceholder();
       });
-    
+
       // İlk durumu kontrol et
       updatePlaceholder();
     }
@@ -1905,7 +2196,7 @@
     const vehicleTypeSection = $('.vehicle-type-btn', modal)?.closest('.form-section-inline, .form-section');
     const transmissionBtn = $('.radio-group button.active', transmissionSection);
     const tramerBtn = $('.radio-group button.active', tramerSection);
-    
+
     // Tüm hata sınıflarını temizle
     [plateEl, yearEl, brandModelEl, kmEl, egzozDateEl].forEach(el => {
       if (el) el.classList.remove('field-error');
@@ -1913,7 +2204,7 @@
     if (transmissionSection) transmissionSection.classList.remove('field-error');
     if (tramerSection) tramerSection.classList.remove('field-error');
     if (vehicleTypeSection) vehicleTypeSection.classList.remove('field-error');
-    
+
     // Get form values (validation sonrası)
     const plate = plateEl?.value.trim() || '';
     const year = yearEl?.value || '';
@@ -1921,13 +2212,13 @@
     const km = kmEl?.value.trim() || '';
     const muayeneDateEl = document.getElementById('vehicle-muayene-date');
     const muayeneDate = readVehicleDateIso(muayeneDateEl);
-    
+
     const activeTypeBtn = $('.vehicle-type-btn.active', modal);
     const vehicleType = activeTypeBtn?.dataset.type || '';
-    
+
     const transmission = transmissionBtn?.dataset.value || '';
     const tramer = tramerBtn?.dataset.value || '';
-    
+
     // Zorunlu alanları kontrol et
     const errors = [];
     if (!plate) {
@@ -1969,17 +2260,17 @@
       errors.push('Egzoz Muayenesi Bitiş Tarihi');
       if (egzozDateEl) egzozDateEl.classList.add('field-error');
     }
-    
+
     // Hata varsa uyarı göster ve çık
     if (errors.length > 0) {
       alert(`Lütfen Aşağıdaki Alanları Doldurun:\n\n• ${errors.join('\n• ')}`);
-      
+
       // İlk hatalı alana focus
       if (plateEl && !plate) plateEl.focus();
       else if (yearEl && !year) yearEl.focus();
       else if (brandModelEl && !brandModel) brandModelEl.focus();
       else if (kmEl && !km) kmEl.focus();
-      
+
       return;
     }
 
@@ -1991,15 +2282,15 @@
     const tramerRecords = getTramerRecords();
     const boya = $('.radio-group button.active', $(`.form-section-inline[data-section="boya"]`, modal))?.dataset.value || '';
     const boyaliParcalar = getBoyaPartsState();
-    
+
     const sigortaDate = readVehicleDateIso(document.getElementById('vehicle-sigorta-date')) || '';
     const kaskoDate = readVehicleDateIso(document.getElementById('vehicle-kasko-date')) || '';
-    
+
     const anahtar = $('.radio-group button.active', $(`.form-section-inline[data-section="anahtar"]`, modal))?.dataset.value || '';
     const anahtarNerede = document.getElementById('anahtar-nerede')?.value.trim() || '';
     const kredi = $('.radio-group button.active', $(`.form-section-inline[data-section="kredi"]`, modal))?.dataset.value || '';
     const krediDetay = document.getElementById('kredi-detay')?.value.trim() || '';
-    
+
     let branchId = document.getElementById("vehicle-branch-select")?.value || '';
     if (!isEditMode && getMedisaMainAppSessionRole() === "sube_yonetici") {
       const sessionData = typeof window.getMedisaSession === "function"
@@ -2081,29 +2372,29 @@
   };
 
   // --- Tescil Tarihi Modal Functions ---
-  
+
   // Global değişken: kayıt işlemi için bekleyen record data
   let pendingRecordData = null;
 
   /**
    * Tescil tarihi onay modalını açar
-   * 
+   *
    * @param {Object} recordData - Hazırlanmış record object'i (tescilTarihi hariç)
    */
   function showTescilTarihConfirmModal(recordData) {
     pendingRecordData = recordData;
-    
+
     const modal = document.getElementById('tescil-tarih-confirm-modal');
     if (!modal) return;
-    
+
     const today = new Date();
     const todayFormatted = formatDateForDisplay(today);
     const messageEl = document.getElementById('tescil-confirm-message');
-    
+
     if (messageEl) {
       messageEl.textContent = `Tescil Tarihi ${todayFormatted} olarak kaydedilecektir. Farklı tarih belirlemek ister misiniz?`;
     }
-    
+
     modal.style.display = 'flex';
     requestAnimationFrame(() => {
       modal.classList.add('active');
@@ -2119,7 +2410,7 @@
       confirmModal.classList.remove('active');
       setTimeout(() => confirmModal.style.display = 'none', 300);
     }
-    
+
     const today = new Date();
     const todayFormatted = formatDateForDisplay(today);
     showTescilTarihInputModal(pendingRecordData, todayFormatted);
@@ -2134,7 +2425,7 @@
       confirmModal.classList.remove('active');
       setTimeout(() => confirmModal.style.display = 'none', 300);
     }
-    
+
     const today = new Date();
     const todayFormatted = formatDateForDisplay(today);
     performSave(pendingRecordData, todayFormatted);
@@ -2146,21 +2437,21 @@
   function updateTescilTarihDisplay() {
     const inputEl = document.getElementById('tescil-tarih-input');
     const overlayEl = document.getElementById('tescil-tarih-overlay');
-    
+
     if (!inputEl || !overlayEl) return;
-    
+
     const value = inputEl.value || '';
-    
+
     if (!value) {
       overlayEl.innerHTML = '';
       overlayEl.style.display = 'none';
       return;
     }
-    
+
     // Input'un stilini al
     const inputStyle = window.getComputedStyle(inputEl);
     const inputRect = inputEl.getBoundingClientRect();
-    
+
     // Overlay'i input'un tam üzerine yerleştir (input'un kendisinin üzerine, padding dahil)
     overlayEl.style.position = 'absolute';
     overlayEl.style.left = '0';
@@ -2179,19 +2470,19 @@
     overlayEl.style.paddingTop = inputStyle.paddingTop || '4px';
     overlayEl.style.paddingBottom = inputStyle.paddingBottom || '4px';
     overlayEl.style.boxSizing = 'border-box';
-    
+
     // Overlay'in background'unu transparent yap (input'un kendi background'u görünsün)
     overlayEl.style.background = 'transparent';
-    
+
     // gg/aa/yyyy formatını parse et
     const datePattern = /^(\d{2})\/(\d{2})\/(\d{4})$/;
     const match = value.match(datePattern);
-    
+
     if (match) {
       const day = match[1];
       const month = match[2];
       const year = match[3];
-      
+
       // Overlay içeriği: gg kısmı kırmızı, geri kalanı normal renk
       overlayEl.innerHTML = `<span class="tescil-day" style="color: #d40000;">${day}</span>/${month}/${year}`;
     } else if (value) {
@@ -2208,14 +2499,14 @@
 
   /**
    * Tescil tarihi giriş modalını açar
-   * 
+   *
    * @param {Object} recordData - Hazırlanmış record object'i
    * @param {string} defaultDate - Varsayılan tarih (gg/aa/yyyy formatında)
    */
   function showTescilTarihInputModal(recordData, defaultDate) {
     const modal = document.getElementById('tescil-tarih-input-modal');
     if (!modal) return;
-    
+
     const inputEl = document.getElementById('tescil-tarih-input');
     if (inputEl) {
       // Bugünün tarihini varsayılan olarak set et
@@ -2223,14 +2514,14 @@
       const todayFormatted = formatDateForDisplay(today);
       inputEl.value = defaultDate || todayFormatted;
       inputEl.classList.remove('field-error');
-      
+
       // Overlay'i başlangıçta güncelle
       updateTescilTarihDisplay();
-      
+
       // Event listener zaten varsa ekleme (sadece focus ver)
       if (!inputEl.hasAttribute('data-tescil-listener')) {
         inputEl.setAttribute('data-tescil-listener', 'true');
-        
+
         // 8 rakamda anında gg/aa/yyyy; 6 rakam blur/Enter'da; overlay güncelle
         inputEl.addEventListener('input', function() {
           const inputValue = this.value.replace(/[^\d]/g, '');
@@ -2252,7 +2543,7 @@
           }
         });
       }
-      
+
       // Focus ve cursor'u gg (gün) başına yerleştir
       setTimeout(() => {
         inputEl.focus();
@@ -2260,7 +2551,7 @@
         inputEl.setSelectionRange(0, 0);
       }, 350);
     }
-    
+
     modal.style.display = 'flex';
     requestAnimationFrame(function() {
       modal.classList.add('active');
@@ -2277,9 +2568,9 @@
   window.saveTescilTarihi = function() {
     const inputEl = document.getElementById('tescil-tarih-input');
     if (!inputEl || !pendingRecordData) return;
-    
+
     const dateStr = inputEl.value.trim();
-    
+
     // Validasyon
     const validation = validateDateInput(dateStr);
     if (!validation.valid) {
@@ -2288,14 +2579,14 @@
       inputEl.focus();
       return;
     }
-    
+
     // Modal kapat
     const inputModal = document.getElementById('tescil-tarih-input-modal');
     if (inputModal) {
       inputModal.classList.remove('active');
       setTimeout(() => inputModal.style.display = 'none', 300);
     }
-    
+
     // Kaydet
     performSave(pendingRecordData, dateStr);
   };
@@ -2309,14 +2600,14 @@
       inputModal.classList.remove('active');
       setTimeout(() => inputModal.style.display = 'none', 300);
     }
-    
+
     // Temizle
     const inputEl = document.getElementById('tescil-tarih-input');
     if (inputEl) {
       inputEl.value = '';
       inputEl.classList.remove('field-error');
     }
-    
+
     pendingRecordData = null;
   };
 
@@ -2385,7 +2676,7 @@
 
   /**
    * Kayıt işlemini yapar (tescilTarihi ile)
-   * 
+   *
    * @param {Object} recordData - Hazırlanmış record object'i (tescilTarihi hariç)
    * @param {string} tescilTarihi - Tescil tarihi (gg/aa/yyyy formatında)
    */
@@ -2399,7 +2690,7 @@
       if (isEditMode) record.version = editingVehicleVersion;
 
       let vehicles = readVehicles();
-      
+
       if (isEditMode) {
         const index = vehicles.findIndex(v => v.id === editingVehicleId);
         if (index !== -1) {
@@ -2411,7 +2702,7 @@
         syncVehicleTasitKartiFieldsForK2Scope(record);
         if (record.km) {
           record.guncelKm = record.km.replace(/\./g, ''); // Noktaları temizle
-          
+
           // İlk km revizyon event'i ekle (eskiKm: '-', yeniKm: ilk km)
           if (!record.events) record.events = [];
           const event = {
@@ -2442,7 +2733,7 @@
           }
         };
         record.events.unshift(createdEvent);
-        
+
         vehicles.unshift(record);
       }
 
@@ -2466,18 +2757,18 @@
   // --- Radio Button Hover Helper ---
   /**
    * Radio button gruplarına dinamik hover renkleri ekler
-   * 
+   *
    * Her grup tipine göre farklı hover renkleri:
    * - Şanzıman: Tüm butonlar kırmızı hover
    * - Tramer/Boya: Var=kırmızı, Yok=yeşil hover
    * - Yedek Anahtar: Var=yeşil, Yok=kırmızı hover
    * - Hak Mahrumiyeti: Var=kırmızı, Yok=yeşil hover
-   * 
+   *
    * Mantık:
    * 1. Tüm radio gruplarını bul
    * 2. Her grubun label'ından grup tipini belirle
    * 3. Aktif olmayan butonlara uygun hover class'ı ekle (hover-red veya hover-green)
-   * 
+   *
    * Not: Aktif butonlara hover class'ı eklenmez
    */
   function updateRadioButtonHover() {
@@ -2488,11 +2779,11 @@
       const isBoya = sectionLabel.includes("Boya") || sectionLabel.includes("Değişen");
       const isYedekAnahtar = sectionLabel.includes("Yedek Anahtar");
       const isKrediRehin = sectionLabel.includes("Hak Mahrumiyeti") || sectionLabel.includes("Kredi") || sectionLabel.includes("Rehin");
-      
+
       $all(".radio-btn", group).forEach(btn => {
         // Önce tüm hover class'larını kaldır
         btn.classList.remove("hover-red", "hover-green");
-        
+
         // Aktif buton değilse hover class'ı ekle
         if (!btn.classList.contains("active")) {
           if (isSanziman) {
@@ -2535,13 +2826,13 @@
         const group = btn.closest(".radio-group");
         $all(".radio-btn", group).forEach(b => b.classList.remove("active", "green"));
         btn.classList.add("active");
-        
+
         // Hata sınıfını kaldır (Şanzıman veya Tramer için)
         const section = btn.closest(".form-section-inline");
         if (section) {
           section.classList.remove('field-error');
         }
-        
+
         // Renk mantığı: Bölüme göre olumlu/olumsuz renk ataması
         const sectionLabel = section?.querySelector(".form-label")?.textContent || "";
         const isTransmission = section?.dataset?.section === "transmission";
@@ -2557,13 +2848,13 @@
             // Yedek Anahtar vb: Var = Yeşil (Olumlu), Yok = Kırmızı (Olumsuz)
             if (btn.dataset.value === "var") btn.classList.add("green");
         }
-        
+
         // Hover class'larını güncelle
         updateRadioButtonHover();
 
         // Tramer kaydı için özel mantık (sectionLabel zaten tanımlı)
         const isTramer = sectionLabel.includes("Tramer");
-        
+
         if (isTramer) {
           const container = document.getElementById('tramer-records-container');
           if (container) {
@@ -2580,10 +2871,10 @@
           }
           return; // Tramer için özel mantık uygulandı, genel mantığa geçme
         }
-        
+
         // Boya parçaları için özel mantık
         const isBoya = sectionLabel.includes("Boya") || sectionLabel.includes("Değişen");
-        
+
         if (isBoya) {
           const container = document.getElementById('boya-parts-container');
           if (container) {
@@ -2599,12 +2890,12 @@
           }
           return; // Boya için özel mantık uygulandı, genel mantığa geçme
         }
-        
+
         const nextElem = section?.nextElementSibling;
-        
+
         if (nextElem) {
             const conditionalInput = nextElem.querySelector("textarea") || nextElem.querySelector("input");
-            
+
             if (conditionalInput) {
                 if(btn.dataset.value === "var") {
                     nextElem.classList.add("input-visible");
@@ -2635,7 +2926,7 @@
     });
 
     setupVehicleDatePickers(document);
-    
+
     const egzozCheckbox = document.getElementById('vehicle-egzoz-different');
     if (egzozCheckbox) {
       egzozCheckbox.addEventListener('change', function() {
@@ -2753,7 +3044,7 @@
         }
       });
     }
-    
+
     // Üretim Yılı - Hata sınıfını kaldır
     const yearInput = document.getElementById("vehicle-year");
     if (yearInput) {
@@ -2763,7 +3054,7 @@
         }
       });
     }
-    
+
     // Marka / Model - Hata sınıfını kaldır ve ilk harf büyük
     const brandModelInputEl = document.getElementById("vehicle-brand-model");
     if (brandModelInputEl) {
@@ -2780,7 +3071,7 @@
         }
       });
     }
-    
+
     // Km alanı - Binlik ayırıcı ve hata sınıfını kaldır
     const kmInputEl = document.getElementById("vehicle-km");
     if (kmInputEl) {

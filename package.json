@@ -15,6 +15,10 @@
     "tool:verify-kasko-lookup": "node scripts/run-medisa-kasko-lookup-verify.js",
     "tool:verify-vehicle-render": "node scripts/verify-medisa-vehicle-render-invariants.js",
     "tool:measure-vehicle-render": "node scripts/measure-medisa-vehicle-render.js",
+    "tool:verify-driver-lazy": "node scripts/verify-medisa-driver-lazy-invariants.js",
+    "tool:measure-driver-boot": "node scripts/measure-medisa-driver-boot.js",
+    "tool:verify-main-shell": "node scripts/verify-medisa-main-shell-lazy-invariants.js",
+    "tool:measure-main-shell": "node scripts/measure-medisa-main-shell.js",
     "tool:import-gpt-xlsx": "node scripts/import_gpt_xlsx.mjs",
     "tool:build-deploy-zip": "powershell -ExecutionPolicy Bypass -File scripts/build-deploy-zip.ps1"
   },
