@@ -71,6 +71,9 @@ test('Dashboard surface yalnız core modülü yükler', () => {
   assert.match(files.bootstrap, /driver-dashboard-core\.js/);
   assert.doesNotMatch(files.dashboardHtml, /driver-login|driver-feature-/);
 });
+test('Dashboard ilk render feature CSS ile core modülünü birlikte yükler', () => {
+  assert.match(files.bootstrap, /surface === 'dashboard'[\s\S]{0,300}Promise\.all\(\[[\s\S]{0,160}ensureFeaturesCss\(\)[\s\S]{0,160}driver-dashboard-core\.js/);
+});
 ['history', 'documents', 'feedback', 'password', 'actions'].forEach((feature) => {
   test(feature + ' başlangıç HTML zincirinde yok', () => {
     assert.doesNotMatch(files.loginHtml + files.dashboardHtml, new RegExp('driver-feature-' + feature + '\\.js'));
@@ -317,7 +320,7 @@ test('Takograf tip matrisi aynıdır', () => {
   assert.match(files.bootstrap, /normalizedType === 'kamyon' \|\| normalizedType === 'buyuk_ticari'/);
 });
 test('Driver asset version matrisi dar bump kullanır', () => {
-  assert.match(files.bootstrap, /bootstrap:\s*'20260718\.4'/);
+  assert.match(files.bootstrap, /bootstrap:\s*'20260719\.1'/);
   assert.match(files.bootstrap, /dashboardCore:\s*'20260718\.4'/);
   assert.match(files.bootstrap, /history:\s*'20260718\.4'/);
   assert.match(files.bootstrap, /documents:\s*'20260718\.3'/);
@@ -325,8 +328,8 @@ test('Driver asset version matrisi dar bump kullanır', () => {
   assert.match(files.bootstrap, /feedback:\s*'20260718\.1'/);
   assert.match(files.bootstrap, /password:\s*'20260718\.1'/);
   assert.match(files.bootstrap, /actions:\s*'20260718\.1'/);
-  assert.match(files.loginHtml, /driver-script\.js\?v=20260718\.4/);
-  assert.match(files.dashboardHtml, /driver-script\.js\?v=20260718\.4/);
+  assert.match(files.loginHtml, /driver-script\.js\?v=20260719\.1/);
+  assert.match(files.dashboardHtml, /driver-script\.js\?v=20260719\.1/);
   assert.match(files.loginHtml, /driver-shell\.css\?v=20260718\.1/);
   assert.match(files.dashboardHtml, /driver-shell\.css\?v=20260718\.1/);
 });
