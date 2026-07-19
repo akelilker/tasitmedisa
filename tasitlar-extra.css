@@ -2716,6 +2716,41 @@
   }
   /* Ortak mobil container + iOS PWA: style-core.css (.modal-overlay .modal-container) */
   .tasitlar-modal-overlay .modal-close { font-size: 21px; }
+
+  /* Tasitlar liste modalı: Kayit/Raporlar ile ayni mobil krom.
+     Toolbar ikonlari yatay alani zorladiginda header kirmizisi ust/yan cerceveyi soluklastirmasin. */
+  #vehicles-modal.tasitlar-modal-overlay.modal-overlay .modal-container {
+    border-color: rgba(255, 255, 255, 0.35) !important;
+    border-top-color: rgba(255, 255, 255, 0.38) !important;
+    border-bottom-color: rgba(255, 255, 255, 0.32) !important;
+    background-clip: padding-box !important;
+    box-shadow:
+      0 0 40px var(--shadow-modal),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+  }
+
+  #vehicles-modal.tasitlar-modal-overlay .modal-header {
+    background-clip: padding-box !important;
+    border-top-left-radius: 9px !important;
+    border-top-right-radius: 9px !important;
+  }
+
+  #vehicles-modal .vehicles-toolbar {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    overflow: visible !important;
+  }
+
+  #vehicles-modal .vt-left,
+  #vehicles-modal .vt-right {
+    min-width: 0 !important;
+  }
+
+  #vehicles-modal .vt-right {
+    flex: 0 1 auto !important;
+    max-width: calc(100% - 44px) !important;
+  }
   
   /* --- MODAL KARARTMA (mobil): overlay ile aynı alan (top 0, height 100%) --- */
   .tasitlar-modal-overlay::before {
