@@ -2,9 +2,9 @@
 (function() {
 'use strict';
 
-var VERSION = '20260718.4';
+var VERSION = '20260719.1';
 window.MEDISA_DRIVER_ASSET_VERSIONS = window.MEDISA_DRIVER_ASSET_VERSIONS || {
-bootstrap: '20260718.4',
+bootstrap: '20260719.1',
 login: '20260718.1',
 dashboardCore: '20260718.4',
 history: '20260718.4',
@@ -367,7 +367,10 @@ function bootSurface() {
 var surface = detectSurface();
 publishBootMetrics({ surface: surface, bootStart: bootStart });
 var loader = surface === 'dashboard'
-? loadDriverScriptOnce(assetUrl('driver-dashboard-core.js', 'dashboardCore'))
+? Promise.all([
+ensureFeaturesCss(),
+loadDriverScriptOnce(assetUrl('driver-dashboard-core.js', 'dashboardCore'))
+])
 : loadDriverScriptOnce(assetUrl('driver-login.js', 'login'));
 loader.then(function() {
 publishBootMetrics({
