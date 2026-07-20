@@ -1650,9 +1650,13 @@
 
   const DINAMIK_OLAY_MODAL_ID = 'dinamik-olay-modal';
   function setVehiclesDetailUnderlay(active) {
+    var isActive = !!active;
+    if (document.body) {
+      document.body.classList.toggle('tasit-detail-stack-open', isActive);
+    }
     const vehiclesModal = DOM.vehiclesModal || document.getElementById('vehicles-modal');
     if (!vehiclesModal) return;
-    vehiclesModal.classList.toggle('detail-underlay', !!active);
+    vehiclesModal.classList.toggle('detail-underlay', isActive);
   }
 
   function getEventModalId(type) {
