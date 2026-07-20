@@ -3754,25 +3754,30 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     padding-right: 1px !important;
   }
 
-  .list-header-row .list-cell.list-type span {
+  /* Tip/Şanz. başlık: #vehicles-modal .header-r* genel clamp'ini yalnızca bu iki sütunda ezer */
+  #vehicles-modal .list-header-row .list-cell.list-type .header-label-stack .header-r1,
+  #vehicles-modal .list-header-row .list-cell.list-type .header-label-stack .header-r2,
+  #vehicles-modal .list-header-row .list-cell.list-type span {
     overflow: hidden !important;
     text-overflow: clip !important;
     white-space: nowrap !important;
     word-break: keep-all !important;
     overflow-wrap: normal !important;
     hyphens: none !important;
-    font-size: clamp(10px, 1.32vw, 11.25px) !important;
+    font-size: clamp(9px, 1.05vw, 10.25px) !important;
     letter-spacing: 0 !important;
   }
 
-  .list-header-row .list-cell.list-transmission span {
+  #vehicles-modal .list-header-row .list-cell.list-transmission .header-label-stack .header-r1,
+  #vehicles-modal .list-header-row .list-cell.list-transmission .header-label-stack .header-r2,
+  #vehicles-modal .list-header-row .list-cell.list-transmission span {
     overflow: hidden !important;
     text-overflow: clip !important;
     white-space: nowrap !important;
     word-break: keep-all !important;
     overflow-wrap: normal !important;
     hyphens: none !important;
-    font-size: clamp(10px, 1.32vw, 11.25px) !important;
+    font-size: clamp(9px, 1.05vw, 10.25px) !important;
     letter-spacing: 0 !important;
   }
 
@@ -3785,16 +3790,27 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     hyphens: none !important;
     font-size: clamp(10px, 1.32vw, 11.25px) !important;
   }
-  .list-header-row .list-cell.list-type.sortable-header,
-  .list-header-row .list-cell.list-transmission.sortable-header {
+  /* Dar 0.42fr Şanz. / 0.62fr Tip: ikon track'i daralt; tıklama hücrenin tamamında kalır */
+  #vehicles-modal .list-header-row .list-cell.list-type.sortable-header,
+  #vehicles-modal .list-header-row .list-cell.list-transmission.sortable-header {
     width: 100%;
     justify-content: center !important;
-    padding-right: 1px !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
     box-sizing: border-box;
+    grid-template-columns: minmax(0, 1fr) 8px;
+    column-gap: 0;
   }
-  .list-header-row .list-cell.list-type .sort-icon,
-  .list-header-row .list-cell.list-transmission .sort-icon {
-    right: 1px !important;
+  #vehicles-modal .list-header-row .list-cell.list-type .sort-icon,
+  #vehicles-modal .list-header-row .list-cell.list-transmission .sort-icon {
+    width: 9px !important;
+    height: 9px !important;
+    right: 0 !important;
+  }
+  /* Yalnız tip veri hücresi: Otomobil tek satır, Küçük Ticari ≤2 satır */
+  #vehicles-modal .view-list .list-cell.list-type {
+    font-size: clamp(10px, 1.15vw, 11px) !important;
+    line-height: 1.15 !important;
   }
 }
 .list-header-row .list-cell.list-branch {
