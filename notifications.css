@@ -1862,7 +1862,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
     width: 100%;
     max-width: 100%;
     min-height: 15px;
-    justify-content: center;
+    justify-content: flex-end;
     order: -1;
   }
   #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h--desc .monthly-todo-branch-filter-trigger {
@@ -1870,7 +1870,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
     max-width: 100%;
     min-height: 15px;
     height: auto;
-    justify-content: center;
+    justify-content: flex-end;
     gap: 3px;
   }
   #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h--desc .monthly-todo-branch-filter-trigger .monthly-todo-branch-filter-label {
