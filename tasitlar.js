@@ -1191,7 +1191,8 @@
 
   // Grid genişlikleri sütun kimliğine göre (sürükle-bırak sonrası genişlik doğru sütunla kalsın)
   function getVehicleColumnWidths(columnOrder) {
-    const defaultCols = '44px 86px minmax(0, 1.25fr) 56px minmax(0, 0.95fr) minmax(0, 0.7fr) minmax(0, 1.05fr) minmax(0, 1.05fr)';
+    // Masaüstü: kullanıcı/şube adları (Hamaloğlu, Akçaova, Medisa Giresun) marka/tip’ten yer alır.
+    const defaultCols = '44px 86px minmax(0, 1.25fr) 56px minmax(0, 0.7fr) minmax(0, 0.5fr) minmax(0, 1.5fr) minmax(0, 0.93fr)';
     try {
       if (!columnOrder || !Array.isArray(columnOrder) || columnOrder.length === 0) return defaultCols;
       const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
@@ -1210,22 +1211,22 @@
           ? {
               'year': '36px',
               'plate': '86px',
-              'brand': 'minmax(0, 1.52fr)',
+              'brand': 'minmax(0, 1.28fr)',
               'km': '49px',
-              'type': 'minmax(0, 0.88fr)',
-              'transmission': 'minmax(0, 0.6fr)',
-              'user': 'minmax(0, 0.9fr)',
-              'branch': 'minmax(0, 0.86fr)'
+              'type': 'minmax(0, 0.72fr)',
+              'transmission': 'minmax(0, 0.5fr)',
+              'user': 'minmax(0, 1.4fr)',
+              'branch': 'minmax(0, 0.9fr)'
             }
         : {
             'year': '44px',
             'plate': '86px',
-            'brand': 'minmax(0, 1.72fr)',
+            'brand': 'minmax(0, 1.28fr)',
             'km': '56px',
-            'type': 'minmax(0, 0.82fr)',
-            'transmission': 'minmax(0, 0.6fr)',
-            'user': 'minmax(0, 0.92fr)',
-            'branch': 'minmax(0, 0.82fr)'
+            'type': 'minmax(0, 0.7fr)',
+            'transmission': 'minmax(0, 0.48fr)',
+            'user': 'minmax(0, 1.5fr)',
+            'branch': 'minmax(0, 0.92fr)'
           };
       return columnOrder.map(key => widthMap[key] || '1fr').join(' ');
     } catch (e) {
