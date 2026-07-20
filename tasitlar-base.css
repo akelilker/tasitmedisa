@@ -3691,7 +3691,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     overflow-wrap: normal !important;
     hyphens: none !important;
     overflow: hidden !important;
-    text-overflow: clip !important;
+    text-overflow: ellipsis !important;
     line-height: 1.08 !important;
 }
 /* Kullanıcı sütun başlışı: dar kolonda küçülsün ve gerekirse satır kırılsın */
