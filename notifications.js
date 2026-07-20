@@ -1565,7 +1565,10 @@
     html += '<span class="monthly-todo-col-h-line monthly-todo-col-h-line--sub">Marka-Model</span>';
     html += '</span>';
     html += '<span class="monthly-todo-col-h">Kullanıcı</span>';
-    html += '<span class="monthly-todo-col-h monthly-todo-col-h--desc">' + getMonthlyTodoBranchFilterHtml(branches) + '<span>Açıklama</span></span>';
+    html += '<span class="monthly-todo-col-h monthly-todo-col-h--desc">';
+    html += getMonthlyTodoBranchFilterHtml(branches);
+    html += '<span class="monthly-todo-col-h-line">Açıklama</span>';
+    html += '</span>';
     html += '</div>';
     return html;
   }
