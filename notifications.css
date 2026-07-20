@@ -1580,6 +1580,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    white-space: normal;
+    overflow: visible;
+    line-height: 1.2;
   }
 
   #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h-line--sub {
@@ -1698,6 +1701,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
   text-align: center;
   justify-self: stretch;
   overflow: visible;
+  white-space: normal;
+  line-height: 1.2;
 }
 
 #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h--desc .monthly-todo-branch-filter {
@@ -1706,6 +1711,13 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
   width: 100%;
   max-width: 100%;
   justify-content: center;
+  order: -1;
+}
+
+#monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h--desc > .monthly-todo-col-h-line {
+  width: 100%;
+  max-width: 100%;
+  text-align: center;
 }
 
 #monthly-todo-modal .monthly-todo-branch-filter {
@@ -1720,8 +1732,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  min-height: 18px;
+  gap: 3px;
+  min-height: 16px;
   padding: 0;
   border: 0;
   outline: 0;
@@ -1746,8 +1758,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
 
 #monthly-todo-modal .monthly-todo-branch-filter-trigger .monthly-todo-branch-filter-caret {
   flex: 0 0 auto;
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
   opacity: 0.9;
 }
 
@@ -1841,22 +1853,25 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
     justify-content: center;
     gap: 2px;
     padding-top: 0;
-    white-space: nowrap;
+    overflow: visible;
+    white-space: normal;
+    line-height: 1.2;
   }
   #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h--desc .monthly-todo-branch-filter {
     position: relative;
     width: 100%;
     max-width: 100%;
-    min-height: 16px;
+    min-height: 15px;
     justify-content: center;
+    order: -1;
   }
   #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h--desc .monthly-todo-branch-filter-trigger {
     width: auto;
     max-width: 100%;
-    min-height: 16px;
+    min-height: 15px;
     height: auto;
     justify-content: center;
-    gap: 4px;
+    gap: 3px;
   }
   #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h--desc .monthly-todo-branch-filter-trigger .monthly-todo-branch-filter-label {
     display: block;
@@ -1866,10 +1881,10 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
     white-space: nowrap;
   }
   #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h--desc .monthly-todo-branch-filter-trigger .monthly-todo-branch-filter-caret {
-    width: 10px;
-    height: 10px;
+    width: 8px;
+    height: 8px;
   }
-  #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h--desc > span:last-child {
+  #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h--desc > .monthly-todo-col-h-line {
     width: 100%;
     padding-right: 0;
     line-height: 1.25;
@@ -2368,8 +2383,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
   }
 
   #monthly-todo-modal .monthly-todo-branch-filter-trigger .monthly-todo-branch-filter-caret {
-    width: 11px;
-    height: 11px;
+    width: 9px;
+    height: 9px;
   }
 
   #monthly-todo-modal .monthly-todo-branch-filter-menu {
