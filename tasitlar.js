@@ -164,7 +164,7 @@
 
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20260720.5';
+  const MEDISA_TASITLAR_MODULE_VERSION = '20260720.6';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
@@ -1211,10 +1211,10 @@
           ? {
               'year': '36px',
               'plate': '86px',
-              'brand': 'minmax(0, 1.1fr)',
+              'brand': 'minmax(0, 0.74fr)',
               'km': '49px',
-              'type': 'minmax(0, 0.62fr)',
-              'transmission': 'minmax(0, 0.42fr)',
+              'type': 'minmax(50px, 0.76fr)',
+              'transmission': 'minmax(44px, 0.64fr)',
               'user': 'minmax(96px, 1.65fr)',
               'branch': 'minmax(0, 0.95fr)'
             }

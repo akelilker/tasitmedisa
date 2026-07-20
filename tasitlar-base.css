@@ -3790,7 +3790,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     hyphens: none !important;
     font-size: clamp(10px, 1.32vw, 11.25px) !important;
   }
-  /* Dar 0.42fr Şanz. / 0.62fr Tip: ikon track'i daralt; tıklama hücrenin tamamında kalır */
+  /* Dar compact Tip/Şanz.: ikon track'i daralt; metin–ikon ≥1px; tıklama hücrenin tamamında kalır */
   #vehicles-modal .list-header-row .list-cell.list-type.sortable-header,
   #vehicles-modal .list-header-row .list-cell.list-transmission.sortable-header {
     width: 100%;
@@ -3799,7 +3799,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     padding-right: 0 !important;
     box-sizing: border-box;
     grid-template-columns: minmax(0, 1fr) 8px;
-    column-gap: 0;
+    column-gap: 2px;
   }
   #vehicles-modal .list-header-row .list-cell.list-type .sort-icon,
   #vehicles-modal .list-header-row .list-cell.list-transmission .sort-icon {
