@@ -1616,6 +1616,17 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu .m
   color: var(--theme-color);
   opacity: 0.85;
 }
+/* Masaüstü: yalnız iç SVG 22px ve merkezden +6px aşağı; buton kutusu/tıklama alanı aynı kalır */
+@media (min-width: 769px) {
+  .modal-overlay .modal-home > svg {
+    width: 22px;
+    height: 22px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, calc(-50% + 6px));
+  }
+}
 
 /* Sadece gövde (body) kaydırılabilir – çerçeve sabit (iOS zıplama engeli) */
 .modal-overlay .modal-body {
