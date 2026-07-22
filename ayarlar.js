@@ -3192,7 +3192,7 @@
         if (persisted !== true) {
           setUserManagementLocalState(previousUsers, previousVehicles);
           renderUserList();
-          alert('Kullanici sunucuya kaydedilemedi. Bu nedenle portal girisi acilmaz. Lutfen tekrar deneyin.');
+          alert('Kullanıcı sunucuya kaydedilemedi. Bu nedenle portal girişi açılmaz. Lütfen tekrar deneyin.');
           return;
         }
 
@@ -3271,7 +3271,7 @@
       if (persisted !== true) {
         setUserManagementLocalState(previousUsers, previousVehicles);
         renderUserList();
-        alert('Kullanici silme islemi sunucuya kaydedilemedi. Lutfen tekrar deneyin.');
+        alert('Kullanıcı silme işlemi sunucuya kaydedilemedi. Lütfen tekrar deneyin.');
         return;
       }
 

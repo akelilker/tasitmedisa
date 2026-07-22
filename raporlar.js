@@ -2194,7 +2194,7 @@
         });
 
         // Dosya adı
-        let branchName = 'Tumu';
+        let branchName = 'Tümü';
         if (stokCurrentBranchId !== 'all' && stokCurrentBranchId) {
             branchName = branches.find(b => b.id === stokCurrentBranchId)?.name || 'Stok';
         }
