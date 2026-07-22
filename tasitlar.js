@@ -164,7 +164,7 @@
 
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20260722.6';
+  const MEDISA_TASITLAR_MODULE_VERSION = '20260722.7';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
@@ -1323,9 +1323,13 @@
 
     const runFit = function() {
       vehicleFitRaf = 0;
-      // Liste satırlarında JS text-fit yok — CSS ellipsis/line-clamp owner.
+      // Liste marka/plaka/şube CSS ownerında kalır; yalnız kullanıcı adı taşarsa küçülür.
       // Card + şube adı + detay value için conditional fit.
       const selectors = [];
+      const hasListUserNames = scope.querySelector && scope.querySelector([
+        '.view-list .list-cell.list-user .user-name-line1',
+        '.view-list .list-cell.list-user .user-name-line2'
+      ].join(', '));
       if (scope.querySelector && scope.querySelector('.branch-name')) {
         selectors.push('.branch-name');
       }
@@ -1335,12 +1339,25 @@
       if (scope.querySelector && scope.querySelector('#vehicle-detail-modal .detail-row-value, .detail-row-value')) {
         selectors.push('.detail-row-value');
       }
-      if (!selectors.length) return;
-      window.medisaFitTextWithinBox(scope, selectors.join(', '), {
-        minFontSize: window.innerWidth <= 640 ? 8.5 : 9,
-        maxReduction: 7,
-        step: window.innerWidth <= 640 ? 0.5 : 1
-      });
+      if (!selectors.length && !hasListUserNames) return;
+      if (selectors.length) {
+        window.medisaFitTextWithinBox(scope, selectors.join(', '), {
+          minFontSize: window.innerWidth <= 640 ? 8.5 : 9,
+          maxReduction: 7,
+          step: window.innerWidth <= 640 ? 0.5 : 1
+        });
+      }
+      if (hasListUserNames) {
+        window.medisaFitTextWithinBox(scope, [
+          '.view-list .list-cell.list-user .user-name-line1',
+          '.view-list .list-cell.list-user .user-name-line2'
+        ].join(', '), {
+          minFontSize: window.innerWidth <= 640 ? 8.5 : 9,
+          maxReduction: 4,
+          step: 0.5,
+          tolerance: 0
+        });
+      }
     };
 
     if (vehicleFitRaf) {
@@ -2845,8 +2862,8 @@
       if (viewMode === 'list' && window.innerWidth <= 640) {
           applyMobileListHeaderFontSize(listContainer);
       }
-      // Liste: JS text-fit yok. Card: conditional fit batch.
-      if (viewMode === 'card') {
+      // Liste: yalnız kullanıcı adı; Card: conditional fit batch.
+      if (viewMode === 'list' || viewMode === 'card') {
           fitVehicleTextBoxes(listContainer);
       }
 

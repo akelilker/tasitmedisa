@@ -3334,14 +3334,14 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     background: var(--border-ultra) !important;
 }
 
-/* Taşıtlar modalı: tarih uyarısı — metin Premium Dark gri; uyarı sol şerit + kalınlık (tüm satır boyaması yok). */
+/* Taşıtlar modalı: tarih uyarısı — inset sol şerit grid genişliğini tüketmez, kolon merkezleri kaymaz. */
 #vehicles-modal .view-list .list-item.vehicle-date-warning-red {
-    border-left: 3px solid var(--theme-color) !important;
-    box-shadow: none !important;
+    border-left: 0 !important;
+    box-shadow: inset 3px 0 0 var(--theme-color) !important;
 }
 #vehicles-modal .view-list .list-item.vehicle-date-warning-orange {
-    border-left: 3px solid var(--orange-warn) !important;
-    box-shadow: none !important;
+    border-left: 0 !important;
+    box-shadow: inset 3px 0 0 var(--orange-warn) !important;
 }
 
 /* Tahsis edilmemiş (liste): satır arka plan kaldır; şube metni kırmızı (tasitlar-extra) */
@@ -3692,7 +3692,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     overflow-wrap: normal !important;
     hyphens: none !important;
     overflow: hidden !important;
-    text-overflow: ellipsis !important;
+    text-overflow: clip !important;
     line-height: 1.08 !important;
 }
 /* Kullanıcı sütun başlışı: dar kolonda küçülsün ve gerekirse satır kırılsın */

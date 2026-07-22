@@ -2352,12 +2352,6 @@
     background: rgba(255, 255, 255, 0.06) !important; /* Mobil: açık satır daha belirgin */
   }
 
-  /* Tarih uyarı: masaüstü ile aynı sol şerit (border tasitlar-base'de) */
-  #vehicles-modal .view-list .list-item.vehicle-date-warning-red,
-  #vehicles-modal .view-list .list-item.vehicle-date-warning-orange {
-    box-shadow: none !important;
-  }
-
   /* Mobil liste: uyarı satırı — hücre zemini şeffaf; zebra/hover satır zemininden gelir */
   #vehicles-modal .view-list .list-item.vehicle-date-warning-red:nth-child(odd) .list-cell,
   #vehicles-modal .view-list .list-item.vehicle-date-warning-orange:nth-child(odd) .list-cell,
