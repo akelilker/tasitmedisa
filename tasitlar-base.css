@@ -19,8 +19,7 @@
     align-items: center !important;
     pointer-events: none !important;
     padding-top: env(safe-area-inset-top, 0px) !important;
-    /* Safe-area zaten overlay bottom hesabında; çift rezervasyon gap'i şişirmesin */
-    padding-bottom: 0 !important;
+    padding-bottom: env(safe-area-inset-bottom, 0px) !important;
     padding-left: 0 !important;
     padding-right: 0 !important;
     overflow: hidden !important;
@@ -44,43 +43,62 @@
 
 /* Şube kartı hover kesilmesin – #vehicles-modal-content padding ile çözülür; container ve overlay hidden kalır */
 
-/* Vehicle Detail Modal: scroll modal-body / scroll-wrap içinde (ortak kurallar style-core'da).
+/* Vehicle Detail Modal: scroll modal-body / scroll-wrap içinde; yan taşmaya izin (ortak kurallar style-core'da).
    max-height 90vh kullanma: overlay yüksekliği footer için zaten kısaltılmış; 90vh tam viewport
    referans aldığı için modal alttan taşar, .tasitlar-modal-overlay overflow:hidden alt çerçeveyi keser.
-   Masaüstü: container overlay yüksekliğini doldurur; alt boşlukta arka menü/footer ışığı sızmasın. */
+   Masaüstü: container overlay yüksekliğini doldurur; alt boşlukta arka liste sızmasın (iç scroll scroll-wrap'te). */
 #vehicle-detail-modal .modal-container {
     max-height: 100% !important;
     min-height: 0 !important;
     overflow: hidden !important;
+    overflow-x: visible !important;
 }
 @media (min-width: 641px) {
     #vehicle-detail-modal .modal-container {
         height: 100%;
         min-height: 0;
     }
-    /* Kayıt/Rapor ile aynı mühür; gerçek gap overlay bottom'da */
-    #vehicles-modal.modal-overlay,
-    #vehicle-detail-modal.modal-overlay,
-    #event-menu-modal.modal-overlay,
-    #vehicle-history-modal.modal-overlay,
-    #dinamik-olay-modal.modal-overlay {
-        padding: 0 !important;
-        overflow: hidden !important;
-        align-items: stretch !important;
-        background: var(--bg) !important;
-        background-color: var(--bg) !important;
+}
+
+/* Masaüstü PWA: taşıt detay dış glow/çerçeve altta kesilmesin (iç scroll modal-body'de) */
+@media (min-width: 641px) {
+    #vehicle-detail-modal.tasitlar-modal-overlay.active,
+    #vehicle-detail-modal.tasitlar-modal-overlay.open {
+        overflow: visible !important;
     }
+}
+
+/*
+  Footer ışığı taşıt detay stack'te kayboluyordu:
+  - #app-footer z-index 10000
+  - #vehicle-detail-modal z-index 10030 (opak overlay)
+  Footer'ın yukarı glow'u overlay altında kalıyordu.
+  Çözüm: detay/olay/tarihçe açıkken gerçek footer'ı gap üstünde tut (z-index 100060).
+*/
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page).tasit-detail-stack-open #app-footer {
+    z-index: 100060 !important;
+}
+
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#vehicle-detail-modal.tasitlar-modal-overlay.active) #app-footer,
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#vehicle-detail-modal.tasitlar-modal-overlay.open) #app-footer,
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#event-menu-modal.tasitlar-modal-overlay.active) #app-footer,
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#event-menu-modal.tasitlar-modal-overlay.open) #app-footer,
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#vehicle-history-modal.tasitlar-modal-overlay.active) #app-footer,
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#vehicle-history-modal.tasitlar-modal-overlay.open) #app-footer,
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#dinamik-olay-modal.tasitlar-modal-overlay.active) #app-footer,
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#dinamik-olay-modal.tasitlar-modal-overlay.open) #app-footer {
+    z-index: 100060 !important;
 }
 
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicles-modal.tasitlar-modal-overlay.active,
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicles-modal.tasitlar-modal-overlay.open {
     z-index: 10020 !important;
 }
-/* Detay açıkken liste arka katman: içerik gizli; overlay+container opak (menü harfleri sızmasın) */
+/* Detay açıkken alttaki taşıt listesi sadece arka katman olsun; çifte çerçeve görünmesin */
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicles-modal.modal-overlay.detail-underlay.active,
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicles-modal.modal-overlay.detail-underlay.open {
-    background: var(--bg) !important;
-    background-color: var(--bg) !important;
+    background: transparent !important;
+    background-color: transparent !important;
 }
 #vehicles-modal.detail-underlay::before {
     display: none !important;
@@ -88,8 +106,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
 }
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicles-modal.modal-overlay.detail-underlay .modal-container,
 #vehicles-modal.detail-underlay .modal-container {
-    background: var(--bg) !important;
-    background-color: var(--bg) !important;
+    background: transparent !important;
+    background-color: transparent !important;
     border-color: transparent !important;
     outline: none !important;
     box-shadow: none !important;

@@ -1806,45 +1806,12 @@ body.modal-open .user-panel-link {
     z-index: 0;
 }
 
-/* Ana uygulama: klasik footer ışıltısı her zaman (clip-path yok → kapanış flash yok) */
+/* Ana uygulama: footer üstü her zaman belirgin gri çizgi + glow (sadece modal açıkken değil) */
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
     border-top: 1px solid var(--footer-top-border) !important;
     box-shadow:
         0 -1px 0 var(--footer-top-highlight),
         var(--footer-red-glow) !important;
-    overflow: visible !important;
-}
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer::before {
-    height: 0;
-    opacity: 0;
-    background: none;
-}
-
-/*
-  Modal açıkken:
-  - Footer z-index 10000 (yükseltme yok) — modal üstte kalır
-  - Kırmızı box-shadow KAPALI (blur modal altına yalıyordu)
-  - Gap ışığı yalnız #app-footer::before (height = --app-footer-gap)
-  clip-path / 10060 yok → sızıntı ve kapanış flash yok.
-  Modal kapalı: üstteki klasik box-shadow ışıltısı aynı kalır.
-*/
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #app-footer {
-    z-index: 10000 !important;
-    visibility: visible !important;
-    display: flex !important;
-    opacity: 1 !important;
-    pointer-events: auto !important;
-    box-shadow: 0 -1px 0 var(--footer-top-highlight) !important;
-}
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #app-footer::before {
-    height: var(--app-footer-gap);
-    opacity: 1;
-    background: linear-gradient(
-        to top,
-        rgba(var(--footer-glow-rgb), var(--footer-glow-opacity)) 0%,
-        rgba(var(--footer-glow-rgb), 0.28) 48%,
-        transparent 100%
-    );
 }
 
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.active,
@@ -2512,7 +2479,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         box-shadow: inset 0 0 26px rgba(var(--theme-color-rgb), 0.21);
     }
     
-    /* FOOTER IŞIKLARI: klasik yukarı kırmızı ışıltı */
+    /* FOOTER IŞIKLARI: Türk bayrağı kırmızısı, ışık yukarı */
     #app-footer {
         position: fixed;
         bottom: 0;
@@ -2520,11 +2487,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         border-left: none; /* Mobilde yan yok */
         border-right: none;
         border-top: 1px solid var(--footer-top-border) !important;
-    }
-    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
-        box-shadow:
-            0 -1px 0 var(--footer-top-highlight),
-            var(--footer-red-glow) !important;
     }
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu .menu-btn .ttl {
         font-size: clamp(16.5px, 3.35vw, 18.5px) !important;
@@ -3069,9 +3031,9 @@ body.modal-open .app-container {
   }
 }
 
-/* Masaüstü: klasik footer ışıltısı + kapanışta çerçeve flash yumuşatma */
+/* Masaüstü: glow footer genişliği içinde üretilir; sağ-sol taşma olmaz */
 @media (min-width: 769px) {
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page):not(.modal-open) #app-footer {
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
     border-left: 0.5px solid var(--footer-side-border) !important;
     border-right: 0.5px solid var(--footer-side-border) !important;
     border-top-color: rgba(156, 166, 180, 0.68) !important;
@@ -3080,28 +3042,11 @@ body.modal-open .app-container {
       0 -1px 0 rgba(235, 240, 248, 0.22),
       var(--footer-red-glow) !important;
   }
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #app-footer {
-    border-left: 0.5px solid var(--footer-side-border) !important;
-    border-right: 0.5px solid var(--footer-side-border) !important;
-    border-top-color: rgba(156, 166, 180, 0.68) !important;
-    box-shadow: 0 -1px 0 rgba(235, 240, 248, 0.22) !important;
-  }
-  /* Modal kapalı: ::before kapalı. Modal açık: gap şeridi (::before) geçer. */
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page):not(.modal-open) #app-footer::before {
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer::before {
     bottom: 100%;
     height: 0;
     opacity: 0;
     background: none;
-  }
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #app-footer::before {
-    height: var(--app-footer-gap);
-    opacity: 1;
-    background: linear-gradient(
-      to top,
-      rgba(var(--footer-glow-rgb), var(--footer-glow-opacity)) 0%,
-      rgba(var(--footer-glow-rgb), 0.28) 48%,
-      transparent 100%
-    );
   }
   /* İç kırmızı inset footer + modal–footer gap şeridine inmesin */
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-container::after {
@@ -3110,17 +3055,15 @@ body.modal-open .app-container {
   }
 
   /* Ana ekran masaüstü: modal kapalıyken yan çizgiler ve iç glow footer üstüne kadar insin */
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page):not(.modal-open):not(.modal-returning) .app-container::before,
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page):not(.modal-open):not(.modal-returning) .app-container::after {
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page):not(.modal-open) .app-container::before,
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page):not(.modal-open) .app-container::after {
     bottom: var(--app-footer-real-height);
     bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0));
   }
 
-  /* Kapanış flash: returning sırasında çerçeveyi gap üstünde tut (erken gap'e inmesin) */
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-returning .app-container::before,
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-returning .app-container::after {
-    bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap)) !important;
-    bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-returning .app-container::before {
+    bottom: var(--app-footer-real-height) !important;
+    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
   }
 
   /* Omnidirectional kırmızımsı halo footer köşelerinde birikmez */
