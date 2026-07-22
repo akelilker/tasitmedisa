@@ -164,7 +164,7 @@
 
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20260722.1';
+  const MEDISA_TASITLAR_MODULE_VERSION = '20260722.2';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
@@ -1191,8 +1191,8 @@
 
   // Grid genişlikleri sütun kimliğine göre (sürükle-bırak sonrası genişlik doğru sütunla kalsın)
   function getVehicleColumnWidths(columnOrder) {
-    // Masaüstü: kullanıcı/şube adları (Hamaloğlu, Akçaova, Medisa Giresun) marka/tip’ten yer alır.
-    const defaultCols = '44px 86px minmax(0, 1.1fr) 56px minmax(0, 0.62fr) minmax(0, 0.42fr) minmax(100px, 1.75fr) minmax(0, 1fr)';
+    // Masaüstü: Marka öncelikli; Kull./Şube yeterli kalsın, uzun isimde ellipsis (CSS) devreye girer.
+    const defaultCols = '44px 86px minmax(0, 1.5fr) 56px minmax(0, 0.7fr) minmax(0, 0.48fr) minmax(90px, 1.2fr) minmax(0, 0.95fr)';
     try {
       if (!columnOrder || !Array.isArray(columnOrder) || columnOrder.length === 0) return defaultCols;
       const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
@@ -1211,22 +1211,22 @@
           ? {
               'year': '36px',
               'plate': '86px',
-              'brand': 'minmax(0, 0.74fr)',
+              'brand': 'minmax(0, 1.2fr)',
               'km': '49px',
-              'type': 'minmax(50px, 0.76fr)',
-              'transmission': 'minmax(44px, 0.64fr)',
-              'user': 'minmax(96px, 1.65fr)',
-              'branch': 'minmax(0, 0.95fr)'
+              'type': 'minmax(50px, 0.72fr)',
+              'transmission': 'minmax(44px, 0.55fr)',
+              'user': 'minmax(90px, 1.15fr)',
+              'branch': 'minmax(0, 0.9fr)'
             }
         : {
             'year': '44px',
             'plate': '86px',
-            'brand': 'minmax(0, 1.1fr)',
+            'brand': 'minmax(0, 1.5fr)',
             'km': '56px',
-            'type': 'minmax(0, 0.62fr)',
-            'transmission': 'minmax(0, 0.42fr)',
-            'user': 'minmax(100px, 1.75fr)',
-            'branch': 'minmax(0, 1fr)'
+            'type': 'minmax(0, 0.7fr)',
+            'transmission': 'minmax(0, 0.48fr)',
+            'user': 'minmax(90px, 1.2fr)',
+            'branch': 'minmax(0, 0.95fr)'
           };
       return columnOrder.map(key => widthMap[key] || '1fr').join(' ');
     } catch (e) {
