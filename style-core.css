@@ -1821,10 +1821,12 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer::
 }
 
 /*
-  Modal açıkken footer z-index yükseltme yok (10000):
-  Overlay bottom = footer+gap → footer çubuğu gap altında görünür; upward box-shadow modal altına düşer.
-  Gap’teki kırmızı şerit: #app-footer::before (yükseklik = --app-footer-gap) — tüm ana app modalları.
-  clip-path / 10060 yok → modal içi sızıntı ve kapanış flash yok.
+  Modal açıkken:
+  - Footer z-index 10000 (yükseltme yok) — modal üstte kalır
+  - Kırmızı box-shadow KAPALI (blur modal altına yalıyordu)
+  - Gap ışığı yalnız #app-footer::before (height = --app-footer-gap)
+  clip-path / 10060 yok → sızıntı ve kapanış flash yok.
+  Modal kapalı: üstteki klasik box-shadow ışıltısı aynı kalır.
 */
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #app-footer {
     z-index: 10000 !important;
@@ -1832,6 +1834,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #a
     display: flex !important;
     opacity: 1 !important;
     pointer-events: auto !important;
+    box-shadow: 0 -1px 0 var(--footer-top-highlight) !important;
 }
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #app-footer::before {
     height: var(--app-footer-gap);
@@ -3068,7 +3071,7 @@ body.modal-open .app-container {
 
 /* Masaüstü: klasik footer ışıltısı + kapanışta çerçeve flash yumuşatma */
 @media (min-width: 769px) {
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page):not(.modal-open) #app-footer {
     border-left: 0.5px solid var(--footer-side-border) !important;
     border-right: 0.5px solid var(--footer-side-border) !important;
     border-top-color: rgba(156, 166, 180, 0.68) !important;
@@ -3077,7 +3080,13 @@ body.modal-open .app-container {
       0 -1px 0 rgba(235, 240, 248, 0.22),
       var(--footer-red-glow) !important;
   }
-  /* Modal kapalı: ::before kapalı. Modal açık: üstteki .modal-open #app-footer::before (gap şeridi) geçer. */
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #app-footer {
+    border-left: 0.5px solid var(--footer-side-border) !important;
+    border-right: 0.5px solid var(--footer-side-border) !important;
+    border-top-color: rgba(156, 166, 180, 0.68) !important;
+    box-shadow: 0 -1px 0 rgba(235, 240, 248, 0.22) !important;
+  }
+  /* Modal kapalı: ::before kapalı. Modal açık: gap şeridi (::before) geçer. */
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page):not(.modal-open) #app-footer::before {
     bottom: 100%;
     height: 0;
