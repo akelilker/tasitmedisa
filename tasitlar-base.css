@@ -68,28 +68,6 @@
     }
 }
 
-/*
-  Footer ışığı taşıt detay stack'te kayboluyordu:
-  - #app-footer z-index 10000
-  - #vehicle-detail-modal z-index 10030 (opak overlay)
-  Footer'ın yukarı glow'u overlay altında kalıyordu.
-  Çözüm: detay/olay/tarihçe açıkken gerçek footer'ı gap üstünde tut (z-index 100060).
-*/
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page).tasit-detail-stack-open #app-footer {
-    z-index: 100060 !important;
-}
-
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#vehicle-detail-modal.tasitlar-modal-overlay.active) #app-footer,
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#vehicle-detail-modal.tasitlar-modal-overlay.open) #app-footer,
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#event-menu-modal.tasitlar-modal-overlay.active) #app-footer,
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#event-menu-modal.tasitlar-modal-overlay.open) #app-footer,
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#vehicle-history-modal.tasitlar-modal-overlay.active) #app-footer,
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#vehicle-history-modal.tasitlar-modal-overlay.open) #app-footer,
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#dinamik-olay-modal.tasitlar-modal-overlay.active) #app-footer,
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#dinamik-olay-modal.tasitlar-modal-overlay.open) #app-footer {
-    z-index: 100060 !important;
-}
-
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicles-modal.tasitlar-modal-overlay.active,
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicles-modal.tasitlar-modal-overlay.open {
     z-index: 10020 !important;
