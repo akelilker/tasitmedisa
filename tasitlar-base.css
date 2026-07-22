@@ -60,14 +60,6 @@
     }
 }
 
-/* Masaüstü PWA: taşıt detay dış glow/çerçeve altta kesilmesin (iç scroll modal-body'de) */
-@media (min-width: 641px) {
-    #vehicle-detail-modal.tasitlar-modal-overlay.active,
-    #vehicle-detail-modal.tasitlar-modal-overlay.open {
-        overflow: visible !important;
-    }
-}
-
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicles-modal.tasitlar-modal-overlay.active,
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicles-modal.tasitlar-modal-overlay.open {
     z-index: 10020 !important;
