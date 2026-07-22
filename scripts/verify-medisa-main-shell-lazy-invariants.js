@@ -220,7 +220,7 @@ if (implementationPresent) {
   test('version ve SW cache beklenen değerde', function() {
     assert.match(core, /tasitlar: '20260722\.10'/);
     assert.match(index, /script-core\.js\?v=20260722\.10/);
-    assert.match(index, /style-core\.css\?v=20260722\.11/);
+    assert.match(index, /style-core\.css\?v=20260722\.12/);
     assert.match(sw, /medisa-v2\.237/);
   });
   test('package main shell araçlarını içerir', function() {
