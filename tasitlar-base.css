@@ -43,28 +43,28 @@
 
 /* Şube kartı hover kesilmesin – #vehicles-modal-content padding ile çözülür; container ve overlay hidden kalır */
 
-/* Vehicle Detail Modal: scroll modal-body / scroll-wrap içinde; yan taşmaya izin (ortak kurallar style-core'da).
+/* Vehicle Detail Modal: scroll modal-body / scroll-wrap içinde (ortak kurallar style-core'da).
    max-height 90vh kullanma: overlay yüksekliği footer için zaten kısaltılmış; 90vh tam viewport
    referans aldığı için modal alttan taşar, .tasitlar-modal-overlay overflow:hidden alt çerçeveyi keser.
-   Masaüstü: container overlay yüksekliğini doldurur; alt boşlukta arka liste sızmasın (iç scroll scroll-wrap'te). */
+   Masaüstü: container overlay yüksekliğini doldurur; alt boşlukta arka menü/footer ışığı sızmasın. */
 #vehicle-detail-modal .modal-container {
     max-height: 100% !important;
     min-height: 0 !important;
     overflow: hidden !important;
-    overflow-x: visible !important;
 }
 @media (min-width: 641px) {
     #vehicle-detail-modal .modal-container {
         height: 100%;
         min-height: 0;
     }
-}
-
-/* Masaüstü PWA: taşıt detay dış glow/çerçeve altta kesilmesin (iç scroll modal-body'de) */
-@media (min-width: 641px) {
-    #vehicle-detail-modal.tasitlar-modal-overlay.active,
-    #vehicle-detail-modal.tasitlar-modal-overlay.open {
-        overflow: visible !important;
+    /* Kayıt/Rapor ile aynı overlay mühürü: padding 0 + overflow hidden (footer ışığı içeri sızmasın) */
+    #vehicle-detail-modal.modal-overlay,
+    #event-menu-modal.modal-overlay,
+    #vehicle-history-modal.modal-overlay,
+    #dinamik-olay-modal.modal-overlay {
+        padding: 0 !important;
+        overflow: hidden !important;
+        align-items: stretch !important;
     }
 }
 
@@ -72,11 +72,11 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicles-modal.tasitlar-modal-overlay.open {
     z-index: 10020 !important;
 }
-/* Detay açıkken alttaki taşıt listesi sadece arka katman olsun; çifte çerçeve görünmesin */
+/* Detay açıkken liste arka katman: çerçeve/içerik gizli; overlay bg opak kalsın (menü+footer ışığı sızmasın) */
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicles-modal.modal-overlay.detail-underlay.active,
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicles-modal.modal-overlay.detail-underlay.open {
-    background: transparent !important;
-    background-color: transparent !important;
+    background: var(--bg) !important;
+    background-color: var(--bg) !important;
 }
 #vehicles-modal.detail-underlay::before {
     display: none !important;
