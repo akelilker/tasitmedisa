@@ -164,7 +164,7 @@
 
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20260722.2';
+  const MEDISA_TASITLAR_MODULE_VERSION = '20260722.3';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
@@ -1191,8 +1191,8 @@
 
   // Grid genişlikleri sütun kimliğine göre (sürükle-bırak sonrası genişlik doğru sütunla kalsın)
   function getVehicleColumnWidths(columnOrder) {
-    // Masaüstü: Marka öncelikli; Kull./Şube yeterli kalsın, uzun isimde ellipsis (CSS) devreye girer.
-    const defaultCols = '44px 86px minmax(0, 1.5fr) 56px minmax(0, 0.7fr) minmax(0, 0.48fr) minmax(90px, 1.2fr) minmax(0, 0.95fr)';
+    // Masaüstü: Marka öncelikli; Şube (Medisa Kayseri vb.) yatay sığsın; Kull. yeterli kalsın.
+    const defaultCols = '44px 86px minmax(0, 1.5fr) 56px minmax(0, 0.7fr) minmax(0, 0.48fr) minmax(90px, 1fr) minmax(110px, 1.3fr)';
     try {
       if (!columnOrder || !Array.isArray(columnOrder) || columnOrder.length === 0) return defaultCols;
       const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
@@ -1215,8 +1215,8 @@
               'km': '49px',
               'type': 'minmax(50px, 0.72fr)',
               'transmission': 'minmax(44px, 0.55fr)',
-              'user': 'minmax(90px, 1.15fr)',
-              'branch': 'minmax(0, 0.9fr)'
+              'user': 'minmax(90px, 1fr)',
+              'branch': 'minmax(100px, 1.2fr)'
             }
         : {
             'year': '44px',
@@ -1225,8 +1225,8 @@
             'km': '56px',
             'type': 'minmax(0, 0.7fr)',
             'transmission': 'minmax(0, 0.48fr)',
-            'user': 'minmax(90px, 1.2fr)',
-            'branch': 'minmax(0, 0.95fr)'
+            'user': 'minmax(90px, 1fr)',
+            'branch': 'minmax(110px, 1.3fr)'
           };
       return columnOrder.map(key => widthMap[key] || '1fr').join(' ');
     } catch (e) {
