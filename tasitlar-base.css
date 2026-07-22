@@ -58,7 +58,8 @@
         height: 100%;
         min-height: 0;
     }
-    /* Kayıt/Rapor ile aynı mühür; gerçek gap overlay bottom'da (iç padding ile sahte gap yok) */
+    /* Kayıt/Rapor ile aynı mühür; gerçek gap overlay bottom'da */
+    #vehicles-modal.modal-overlay,
     #vehicle-detail-modal.modal-overlay,
     #event-menu-modal.modal-overlay,
     #vehicle-history-modal.modal-overlay,
@@ -66,6 +67,8 @@
         padding: 0 !important;
         overflow: hidden !important;
         align-items: stretch !important;
+        background: var(--bg) !important;
+        background-color: var(--bg) !important;
     }
 }
 
@@ -73,7 +76,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicles-modal.tasitlar-modal-overlay.open {
     z-index: 10020 !important;
 }
-/* Detay açıkken liste arka katman: çerçeve/içerik gizli; overlay bg opak kalsın (menü+footer ışığı sızmasın) */
+/* Detay açıkken liste arka katman: içerik gizli; overlay+container opak (menü harfleri sızmasın) */
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicles-modal.modal-overlay.detail-underlay.active,
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicles-modal.modal-overlay.detail-underlay.open {
     background: var(--bg) !important;
@@ -85,8 +88,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
 }
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicles-modal.modal-overlay.detail-underlay .modal-container,
 #vehicles-modal.detail-underlay .modal-container {
-    background: transparent !important;
-    background-color: transparent !important;
+    background: var(--bg) !important;
+    background-color: var(--bg) !important;
     border-color: transparent !important;
     outline: none !important;
     box-shadow: none !important;

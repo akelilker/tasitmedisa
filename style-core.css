@@ -1821,11 +1821,12 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer::
 }
 
 /*
-  Modal açıkken footer her zaman görünür (detay stack 10050 üstünde).
-  Işıltı box-shadow ile kalır; clip-path kullanılmaz.
+  Modal açıkken footer z-index yükseltme:
+  Footer 10000'de kalır; overlay bottom = footer+gap → footer çubuğu gap altında görünür.
+  Glow modalın altında kalır → içeri sızmaz. (10060 + upward glow = modal içi sızıntı)
 */
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #app-footer {
-    z-index: 10060 !important;
+    z-index: 10000 !important;
     visibility: visible !important;
     display: flex !important;
     opacity: 1 !important;
