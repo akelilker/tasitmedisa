@@ -164,7 +164,7 @@
 
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20260722.9';
+  const MEDISA_TASITLAR_MODULE_VERSION = '20260723.1';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
@@ -1670,9 +1670,6 @@
   const DINAMIK_OLAY_MODAL_ID = 'dinamik-olay-modal';
   function setVehiclesDetailUnderlay(active) {
     var isActive = !!active;
-    if (document.body) {
-      document.body.classList.toggle('tasit-detail-stack-open', isActive);
-    }
     const vehiclesModal = DOM.vehiclesModal || document.getElementById('vehicles-modal');
     if (!vehiclesModal) return;
     vehiclesModal.classList.toggle('detail-underlay', isActive);
