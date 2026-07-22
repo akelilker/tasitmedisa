@@ -219,7 +219,7 @@ if (implementationPresent) {
   });
   test('version ve SW cache beklenen değerde', function() {
     assert.match(core, /tasitlar: '20260722\.10'/);
-    assert.match(index, /script-core\.js\?v=20260722\.9/);
+    assert.match(index, /script-core\.js\?v=20260722\.10/);
     assert.match(index, /style-core\.css\?v=20260722\.10/);
     assert.match(sw, /medisa-v2\.237/);
   });
