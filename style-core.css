@@ -1806,26 +1806,23 @@ body.modal-open .user-panel-link {
     z-index: 0;
 }
 
-/* Ana uygulama: kırmızı glow sabit gap şeridinde (::before) — clip-path toggle yok (kapanışta kesik çizgi flash olmaz) */
+/* Ana uygulama: klasik footer ışıltısı her zaman (clip-path yok → kapanış flash yok) */
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
     border-top: 1px solid var(--footer-top-border) !important;
-    box-shadow: 0 -1px 0 var(--footer-top-highlight) !important;
+    box-shadow:
+        0 -1px 0 var(--footer-top-highlight),
+        var(--footer-red-glow) !important;
     overflow: visible !important;
 }
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer::before {
-    height: var(--app-footer-gap);
-    opacity: 1;
-    background: linear-gradient(
-        to top,
-        rgba(var(--footer-glow-rgb), var(--footer-glow-opacity)) 0%,
-        rgba(var(--footer-glow-rgb), 0.28) 48%,
-        transparent 100%
-    );
+    height: 0;
+    opacity: 0;
+    background: none;
 }
 
 /*
   Modal açıkken footer her zaman görünür (detay stack 10050 üstünde).
-  Glow gap şeridinde (::before); gerçek gap overlay bottom = footer + gap.
+  Işıltı box-shadow ile kalır; clip-path kullanılmaz.
 */
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #app-footer {
     z-index: 10060 !important;
@@ -2500,17 +2497,19 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         box-shadow: inset 0 0 26px rgba(var(--theme-color-rgb), 0.21);
     }
     
-    /* FOOTER: ana uygulamada glow ::before gap şeridinde; box-shadow sadece üst highlight */
+    /* FOOTER IŞIKLARI: klasik yukarı kırmızı ışıltı */
     #app-footer {
         position: fixed;
         bottom: 0;
-        box-shadow: 0 -1px 0 var(--footer-top-highlight);
+        box-shadow: var(--footer-red-glow);
         border-left: none; /* Mobilde yan yok */
         border-right: none;
         border-top: 1px solid var(--footer-top-border) !important;
     }
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
-        box-shadow: 0 -1px 0 var(--footer-top-highlight) !important;
+        box-shadow:
+            0 -1px 0 var(--footer-top-highlight),
+            var(--footer-red-glow) !important;
     }
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu .menu-btn .ttl {
         font-size: clamp(16.5px, 3.35vw, 18.5px) !important;
@@ -2914,7 +2913,9 @@ body.modal-open .app-container {
     padding-top: 2px !important;
     padding-bottom: calc(2px + env(safe-area-inset-bottom, 0)) !important;
     border-top: 1px solid var(--footer-top-border) !important;
-    box-shadow: 0 -1px 0 var(--footer-top-highlight) !important;
+    box-shadow:
+      0 -1px 0 var(--footer-top-highlight),
+      var(--footer-red-glow) !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer .footer-content {
     height: 100% !important;
@@ -3053,25 +3054,22 @@ body.modal-open .app-container {
   }
 }
 
-/* Masaüstü: glow gap şeridinde (::before); box-shadow taşması yok */
+/* Masaüstü: klasik footer ışıltısı + kapanışta çerçeve flash yumuşatma */
 @media (min-width: 769px) {
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
     border-left: 0.5px solid var(--footer-side-border) !important;
     border-right: 0.5px solid var(--footer-side-border) !important;
     border-top-color: rgba(156, 166, 180, 0.68) !important;
     overflow: visible !important;
-    box-shadow: 0 -1px 0 rgba(235, 240, 248, 0.22) !important;
+    box-shadow:
+      0 -1px 0 rgba(235, 240, 248, 0.22),
+      var(--footer-red-glow) !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer::before {
     bottom: 100%;
-    height: var(--app-footer-gap);
-    opacity: 1;
-    background: linear-gradient(
-      to top,
-      rgba(var(--footer-glow-rgb), var(--footer-glow-opacity)) 0%,
-      rgba(var(--footer-glow-rgb), 0.28) 48%,
-      transparent 100%
-    );
+    height: 0;
+    opacity: 0;
+    background: none;
   }
   /* İç kırmızı inset footer + modal–footer gap şeridine inmesin */
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-container::after {
