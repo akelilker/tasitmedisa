@@ -164,7 +164,7 @@
 
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20260722.5';
+  const MEDISA_TASITLAR_MODULE_VERSION = '20260722.6';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
@@ -1192,8 +1192,8 @@
   // Grid genişlikleri sütun kimliğine göre (sürükle-bırak sonrası genişlik doğru sütunla kalsın)
   function getVehicleColumnWidths(columnOrder) {
     // Masaüstü: minmax px tabanı kullanma (dar modalda Marka ezilir). Oran: Marka > Şube > Kull.
-    // Plaka dar: ! + metin sıkı; kazanılan yatay alan fr sütunlara kalır.
-    const defaultCols = '44px 76px minmax(0, 1.55fr) 56px minmax(0, 0.65fr) minmax(0, 0.45fr) minmax(0, 0.95fr) minmax(0, 1.35fr)';
+    // Plaka: ! + metin hücrede kalsın (76 taşırıyordu); 80px + overflow:hidden Marka kaymasını keser.
+    const defaultCols = '44px 80px minmax(0, 1.55fr) 56px minmax(0, 0.65fr) minmax(0, 0.45fr) minmax(0, 0.95fr) minmax(0, 1.35fr)';
     try {
       if (!columnOrder || !Array.isArray(columnOrder) || columnOrder.length === 0) return defaultCols;
       const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
@@ -1211,7 +1211,7 @@
         : isCompactDesktop
           ? {
               'year': '36px',
-              'plate': '76px',
+              'plate': '80px',
               'brand': 'minmax(0, 1.35fr)',
               'km': '49px',
               'type': 'minmax(0, 0.65fr)',
@@ -1221,7 +1221,7 @@
             }
         : {
             'year': '44px',
-            'plate': '76px',
+            'plate': '80px',
             'brand': 'minmax(0, 1.55fr)',
             'km': '56px',
             'type': 'minmax(0, 0.65fr)',

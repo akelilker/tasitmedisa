@@ -125,6 +125,11 @@
     color: var(--orange-warn) !important;
 }
 @media (min-width: 769px) {
+    #vehicles-modal .view-list .list-cell.list-plate,
+    #vehicles-modal-content[data-render-scope="search-global"] .view-list .list-cell.list-plate {
+        overflow: hidden !important;
+        min-width: 0;
+    }
     #vehicles-modal .view-list .list-cell.list-plate .vehicle-plate-row-inner,
     #vehicles-modal-content[data-render-scope="search-global"] .view-list .list-cell.list-plate .vehicle-plate-row-inner {
         position: static;
@@ -132,7 +137,11 @@
         align-items: center;
         justify-content: center;
         gap: 1px;
+        width: auto;
         max-width: 100%;
+        min-width: 0;
+        overflow: hidden;
+        box-sizing: border-box;
     }
     #vehicles-modal .view-list .list-cell.list-plate .vehicle-plate-row-text,
     #vehicles-modal-content[data-render-scope="search-global"] .view-list .list-cell.list-plate .vehicle-plate-row-text {
@@ -140,6 +149,7 @@
         width: auto;
         max-width: 100%;
         min-width: 0;
+        overflow: hidden;
     }
     #vehicles-modal .view-list .list-cell.list-plate .vehicle-plate-row-text .vehicle-search-plate-cell,
     #vehicles-modal-content[data-render-scope="search-global"] .view-list .list-cell.list-plate .vehicle-plate-row-text .vehicle-search-plate-cell {
