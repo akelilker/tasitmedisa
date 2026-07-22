@@ -164,7 +164,7 @@
 
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20260722.8';
+  const MEDISA_TASITLAR_MODULE_VERSION = '20260722.9';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
@@ -1210,14 +1210,14 @@
           }
         : isCompactDesktop
           ? {
-              'year': '36px',
+              'year': '34px',
               'plate': '80px',
               'brand': 'minmax(0, 1.35fr)',
               'km': '49px',
-              'type': 'minmax(0, 0.65fr)',
-              'transmission': 'minmax(0, 0.5fr)',
+              'type': 'minmax(0, 0.78fr)',
+              'transmission': 'minmax(0, 0.6fr)',
               'user': 'minmax(0, 0.9fr)',
-              'branch': 'minmax(0, 1.25fr)'
+              'branch': 'minmax(0, 1.05fr)'
             }
         : {
             'year': '44px',
