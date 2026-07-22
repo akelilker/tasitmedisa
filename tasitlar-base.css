@@ -57,12 +57,12 @@
         height: 100%;
         min-height: 0;
     }
-    /* Kayıt/Rapor ile aynı overlay mühürü: padding 0 + overflow hidden (footer ışığı içeri sızmasın) */
+    /* Kayıt/Rapor ile aynı overlay mühürü: opak alt tampon footer ışığını modal çerçevesinden ayırır */
     #vehicle-detail-modal.modal-overlay,
     #event-menu-modal.modal-overlay,
     #vehicle-history-modal.modal-overlay,
     #dinamik-olay-modal.modal-overlay {
-        padding: 0 !important;
+        padding: 0 0 var(--app-footer-gap) 0 !important;
         overflow: hidden !important;
         align-items: stretch !important;
     }
