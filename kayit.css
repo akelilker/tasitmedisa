@@ -1158,19 +1158,24 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     filter: brightness(1.0) grayscale(0.35);
 }
 
-/* Taşıt tipi seçim ekranı (overlay) */
+/* Taşıt tipi seçim ekranı: footer+gap üstünde bitsin (inset:0 footer'ı örtmesin) */
 .vehicle-type-picker-overlay {
     position: fixed;
-    inset: 0;
-    z-index: 10060;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap)) !important;
+    bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
+    z-index: 10055;
     display: none;
     align-items: center;
     justify-content: center;
     padding: 20px;
     pointer-events: auto;
+    box-sizing: border-box;
 }
 .vehicle-type-picker-overlay.from-detail {
-    z-index: 10080;
+    z-index: 10055;
 }
 .vehicle-type-picker-backdrop {
     position: absolute;

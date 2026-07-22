@@ -19,7 +19,8 @@
     align-items: center !important;
     pointer-events: none !important;
     padding-top: env(safe-area-inset-top, 0px) !important;
-    padding-bottom: env(safe-area-inset-bottom, 0px) !important;
+    /* Safe-area zaten overlay bottom hesabında; çift rezervasyon gap'i şişirmesin */
+    padding-bottom: 0 !important;
     padding-left: 0 !important;
     padding-right: 0 !important;
     overflow: hidden !important;
@@ -57,12 +58,12 @@
         height: 100%;
         min-height: 0;
     }
-    /* Kayıt/Rapor ile aynı overlay mühürü: opak alt tampon footer ışığını modal çerçevesinden ayırır */
+    /* Kayıt/Rapor ile aynı mühür; gerçek gap overlay bottom'da (iç padding ile sahte gap yok) */
     #vehicle-detail-modal.modal-overlay,
     #event-menu-modal.modal-overlay,
     #vehicle-history-modal.modal-overlay,
     #dinamik-olay-modal.modal-overlay {
-        padding: 0 0 var(--app-footer-gap) 0 !important;
+        padding: 0 !important;
         overflow: hidden !important;
         align-items: stretch !important;
     }

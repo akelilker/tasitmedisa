@@ -1814,6 +1814,21 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
         var(--footer-red-glow) !important;
 }
 
+/*
+  Modal açıkken footer her zaman görünür (detay stack 10050 üstünde).
+  Glow yalnızca --app-footer-gap yüksekliğine kadar; modal içine/çerçeveye taşmaz.
+  Gerçek gap: overlay bottom = footer + gap (aşağıdaki .modal-overlay kontratı).
+*/
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #app-footer {
+    z-index: 10060 !important;
+    visibility: visible !important;
+    display: flex !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    clip-path: inset(calc(-1 * var(--app-footer-gap)) 0 0 0);
+    -webkit-clip-path: inset(calc(-1 * var(--app-footer-gap)) 0 0 0);
+}
+
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.active,
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.open {
     isolation: isolate !important; /* Modal dekor/pseudo katmanlarını kendi stack içinde kilitle */
