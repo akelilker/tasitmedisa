@@ -164,7 +164,7 @@
 
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20260722.7';
+  const MEDISA_TASITLAR_MODULE_VERSION = '20260722.8';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
@@ -1352,7 +1352,7 @@
           '.view-list .list-cell.list-user .user-name-line1',
           '.view-list .list-cell.list-user .user-name-line2'
         ].join(', '), {
-          minFontSize: window.innerWidth <= 640 ? 8.5 : 9,
+          minFontSize: 8.5,
           maxReduction: 4,
           step: 0.5,
           tolerance: 0
