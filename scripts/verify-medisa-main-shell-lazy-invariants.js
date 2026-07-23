@@ -221,7 +221,7 @@ if (implementationPresent) {
   test('version ve SW cache beklenen değerde', function() {
     assert.match(core, /tasitlar: '20260723\.3'/);
     assert.match(index, /script-core\.js\?v=20260723\.3/);
-    assert.match(index, /style-core\.css\?v=20260723\.5/);
+    assert.match(index, /style-core\.css\?v=20260723\.6/);
     assert.match(sw, /medisa-v2\.237/);
   });
   test('fiziksel footer gap layer owner kontratı', function() {
@@ -232,7 +232,7 @@ if (implementationPresent) {
     assert.ok(gapIdx > -1 && footerIdx > gapIdx, 'gap layer footer siblinginden önce olmalı');
     assert.match(style, /#app-footer-gap-layer\s*\{/);
     assert.match(style, /body:not\(\.dashboard-page\):not\(\.login-page\):not\(\.admin-report-page\)\.modal-open #app-footer-gap-layer\s*\{/);
-    assert.match(style, /#app-footer-gap-layer[\s\S]*?z-index:\s*10060/);
+    assert.match(style, /#app-footer-gap-layer[\s\S]*?z-index:\s*10010/);
     assert.match(style, /#app-footer-gap-layer[\s\S]*?pointer-events:\s*none/);
     assert.match(style, /#app-footer-gap-layer[\s\S]*?var\(--bg\)/);
     assert.match(style, /#app-footer-gap-layer[\s\S]*?var\(--app-footer-gap/);
@@ -240,6 +240,17 @@ if (implementationPresent) {
     assert.doesNotMatch(style, /:has\([^)]*\)\s*#app-footer::before/);
     assert.doesNotMatch(style, /body[^{]*\.modal-open[^{]*#app-footer::before\s*\{[^}]*opacity:\s*1/);
     assert.doesNotMatch(style, /z-index:\s*100060/);
+    var footerZMatch = style.match(/^#app-footer\s*\{[\s\S]*?z-index:\s*(\d+)/m);
+    var gapZMatch = style.match(/^#app-footer-gap-layer\s*\{[\s\S]*?z-index:\s*(\d+)/m);
+    var modalZMatch = style.match(/^\.modal-overlay\s*\{[\s\S]*?z-index:\s*(\d+)/m);
+    assert.ok(footerZMatch && gapZMatch && modalZMatch, 'footer/gap/modal z-index owner bulunmalı');
+    var footerZ = Number(footerZMatch[1]);
+    var gapZ = Number(gapZMatch[1]);
+    var modalZ = Number(modalZMatch[1]);
+    assert.strictEqual(footerZ, 10000);
+    assert.strictEqual(gapZ, 10010);
+    assert.strictEqual(modalZ, 10020);
+    assert.ok(footerZ < gapZ && gapZ < modalZ, '10000 < 10010 < 10020 sıralaması korunmalı');
   });
   test('package main shell araçlarını içerir', function() {
     assert.match(packageJson, /tool:verify-main-shell/);
