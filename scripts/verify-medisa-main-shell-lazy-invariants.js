@@ -220,9 +220,9 @@ if (implementationPresent) {
   });
   test('version ve SW cache beklenen değerde', function() {
     assert.match(core, /tasitlar: '20260723\.3'/);
-    assert.match(index, /script-core\.js\?v=20260723\.3/);
-    assert.match(index, /style-core\.css\?v=20260723\.6/);
-    assert.match(sw, /medisa-v2\.237/);
+    assert.match(index, /script-core\.js\?v=20260723\.4/);
+    assert.match(index, /style-core\.css\?v=20260723\.7/);
+    assert.match(sw, /medisa-v2\.238/);
   });
   test('fiziksel footer gap layer owner kontratı', function() {
     var gapMatches = index.match(/id="app-footer-gap-layer"/g) || [];
