@@ -1814,6 +1814,51 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
         var(--footer-red-glow) !important;
 }
 
+/* Modal açık: dış red shadow kapalı; ışık bağımsız fiziksel gap layer'da */
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #app-footer {
+    box-shadow:
+        0 -1px 0 var(--footer-top-highlight) !important;
+}
+
+/* Fiziksel modal–footer gap ışık katmanı (footer sibling; pseudo/shadow değil) */
+#app-footer-gap-layer {
+    position: fixed;
+    left: 50%;
+    transform: translate3d(-50%, 0, 0);
+    bottom: var(--app-footer-real-height, 42px);
+    width: 100%;
+    max-width: 500px;
+    height: calc(
+        var(--app-footer-gap, 14px) +
+        env(safe-area-inset-bottom, 0px)
+    );
+    box-sizing: border-box;
+    display: block;
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 10060;
+    isolation: isolate;
+    contain: layout paint style;
+    backface-visibility: hidden;
+    background:
+        linear-gradient(
+            to top,
+            rgba(var(--footer-glow-rgb), 0.54) 0%,
+            rgba(var(--footer-glow-rgb), 0.44) 24%,
+            rgba(var(--footer-glow-rgb), 0.30) 48%,
+            rgba(var(--footer-glow-rgb), 0.16) 72%,
+            rgba(var(--footer-glow-rgb), 0.06) 88%,
+            transparent 100%
+        ),
+        var(--bg);
+}
+
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #app-footer-gap-layer {
+    visibility: visible;
+    opacity: 1;
+}
+
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.active,
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.open {
     isolation: isolate !important; /* Modal dekor/pseudo katmanlarını kendi stack içinde kilitle */
