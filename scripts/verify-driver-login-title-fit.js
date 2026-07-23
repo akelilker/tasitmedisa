@@ -36,8 +36,8 @@ assert(
 
 assert(
   'login_loads_driver_shell',
-  /href="driver-shell\.css\?v=20260718\.1"/.test(indexHtml),
-  'Login driver-shell.css?v=20260718.1 yüklemeli'
+  /href="driver-shell\.css\?v=20260723\.1"/.test(indexHtml),
+  'Login driver-shell.css?v=20260723.1 yüklemeli'
 );
 
 assert(
@@ -75,8 +75,8 @@ assert(
 
 assert(
   'login_mobile_fit_contract',
-  /clamp\(14\.5px,\s*4\.4vw,\s*18\.5px\)/.test(driverShell) &&
-    /clamp\(0\.4px,\s*0\.32vw,\s*1\.2px\)/.test(driverShell),
+  /clamp\(16\.5px,\s*4\.9vw,\s*20px\)/.test(driverShell) &&
+    /clamp\(0\.9px,\s*0\.4vw,\s*1\.8px\)/.test(driverShell),
   'Tablet/mobile login fit clamp kontratı olmalı'
 );
 
@@ -102,8 +102,21 @@ assert(
 
 assert(
   'dashboard_shell_version_aligned',
-  /href="driver-shell\.css\?v=20260718\.1"/.test(dashHtml),
+  /href="driver-shell\.css\?v=20260723\.1"/.test(dashHtml),
   'Dashboard driver-shell version login ile aynı olmalı'
+);
+
+assert(
+  'login_footer_height_includes_safe_area',
+  /\.login-page\s+#app-footer\.login-footer\s*\{[^}]*height:\s*calc\(\s*var\(--app-footer-real-height\)\s*\+\s*env\(safe-area-inset-bottom,\s*0\)\s*\)/.test(driverShell),
+  'Login footer height safe-area dahil olmalı'
+);
+
+assert(
+  'login_footer_content_no_double_safe_area',
+  /\.login-page\s+#app-footer\.login-footer\s+\.footer-content\s*\{[^}]*padding-bottom:\s*4px\s*!important/.test(driverShell) &&
+    !/\.login-page\s+#app-footer\.login-footer\s+\.footer-content\s*\{[^}]*padding-bottom:\s*max\(6px,\s*env\(safe-area-inset-bottom/.test(driverShell),
+  'Login footer-content çift safe-area padding kullanmamalı'
 );
 
 if (failed) {

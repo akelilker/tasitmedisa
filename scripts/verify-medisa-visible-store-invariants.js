@@ -924,7 +924,7 @@ function runRuntimeTests() {
   test('42 PR #464 login title fit korunuyor', function() {
     const loginHtml = read('driver/index.html');
     const driverShell = read('driver/driver-shell.css');
-    assert.match(loginHtml, /driver-shell\.css\?v=20260718\.1/);
+    assert.match(loginHtml, /driver-shell\.css\?v=20260723\.1/);
     assert.match(driverShell, /\.login-page\s+\.hero\s*>\s*h1/);
     assert.match(loginHtml, />TAŞIT YÖNETİM SİSTEMİ</);
   });

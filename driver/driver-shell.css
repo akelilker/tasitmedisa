@@ -2126,8 +2126,9 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
   justify-content: center !important;
   width: 100% !important;
   max-width: 500px !important;
+  /* Dashboard / ana panel ile aynı: height safe-area dahil; metin home indicator üstünde ortalanır */
+  height: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
   min-height: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
-  height: var(--app-footer-real-height, 46px) !important;
   box-sizing: border-box !important;
   margin: 0 auto !important;
   padding-top: 2px !important;
@@ -2150,8 +2151,9 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
   width: 100% !important;
   max-width: 500px !important;
   margin: 0 auto !important;
-  padding: 6px 12px !important;
-  padding-bottom: max(6px, env(safe-area-inset-bottom, 0)) !important;
+  /* Safe-area yalnızca footer padding'inde; içerikte çift rezervasyon metni yukarı iter */
+  padding: 4px 12px !important;
+  padding-bottom: 4px !important;
   box-sizing: border-box !important;
   font-size: 13px !important;
   color: #bbb !important;
@@ -2333,8 +2335,8 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
   }
   /* Masaüstü: login footer ferah min-height, içerik ortalanmış (max-width 500px) */
   .login-page #app-footer.login-footer {
-    height: var(--app-footer-real-height) !important;
-    min-height: var(--app-footer-real-height) !important;
+    height: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
+    min-height: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
     width: 100% !important;
     max-width: 500px !important;
     left: 50% !important;
@@ -2346,7 +2348,7 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
     align-items: center !important;
     height: 100% !important;
     padding: 3px 12px !important;
-    padding-bottom: max(4px, env(safe-area-inset-bottom, 0)) !important;
+    padding-bottom: 3px !important;
   }
   /* Masaüstü: footer MEDISA logosu ana uygulama ile aynı (14px) */
   .dashboard-page #app-footer .brand img,
@@ -2883,8 +2885,9 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
   .login-page .hero > h1 {
     flex: 1 1 0 !important;
     min-width: 0 !important;
-    font-size: clamp(14.5px, 4.4vw, 18.5px) !important;
-    letter-spacing: clamp(0.4px, 0.32vw, 1.2px) !important;
+    /* Ana panel mobil hero h1 ile yakın kademe; clip ile taşma kontrollü */
+    font-size: clamp(16.5px, 4.9vw, 20px) !important;
+    letter-spacing: clamp(0.9px, 0.4vw, 1.8px) !important;
     line-height: 1.2 !important;
     white-space: nowrap !important;
     overflow: hidden !important;
