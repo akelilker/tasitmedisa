@@ -218,8 +218,8 @@ if (implementationPresent) {
     assert.match(index, /__medisaMainShellMetrics\.splashHiddenAt/);
   });
   test('version ve SW cache beklenen değerde', function() {
-    assert.match(core, /tasitlar: '20260723\.2'/);
-    assert.match(index, /script-core\.js\?v=20260723\.2/);
+    assert.match(core, /tasitlar: '20260723\.3'/);
+    assert.match(index, /script-core\.js\?v=20260723\.3/);
     assert.match(index, /style-core\.css\?v=20260723\.4/);
     assert.match(sw, /medisa-v2\.237/);
   });

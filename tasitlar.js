@@ -164,7 +164,7 @@
 
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20260723.2';
+  const MEDISA_TASITLAR_MODULE_VERSION = '20260723.3';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
@@ -956,6 +956,8 @@
   let lastListContext = null; // Son açılan liste bağlamı (geri dönüş hedefi)
   let returnToMonthlyTodoAfterVehicleDetail = false;
   let isAutoSingleBranchVehiclesView = false;
+  /** Taşıt detay aç/kapa async yarışını geçersiz kılan monoton owner sayaç */
+  var vehicleDetailRequestGeneration = 0;
 
   let lastVehiclesRenderSignature = '';
   let lastDashboardRenderSignature = '';
@@ -2893,7 +2895,54 @@
    * Not: Modal açma/kapama animasyonları CSS transition ile yönetilir
    */
   window.showVehicleDetail = function(vehicleId) {
+    var requestGen = ++vehicleDetailRequestGeneration;
+
+    const modal = DOM.vehicleDetailModal || document.getElementById('vehicle-detail-modal');
+    if (!modal) {
+      return;
+    }
+
+    const contentEl = DOM.vehicleDetailContent || document.getElementById('vehicle-detail-content');
+    if (!contentEl) {
+      return;
+    }
+
+    // Aynı taşıt zaten açık ve imza aynıysa gereksiz hide/show yapma; generation yine de eski callback'leri düşürür
+    (function maybeSkipSameDetail() {
+      const vehiclesPeek = readVehicles();
+      const vehiclePeek = vehiclesPeek.find(v => String(v.id) === String(vehicleId));
+      if (!vehiclePeek) return;
+      const signaturePeek = [
+        String(vehiclePeek.id ?? ''),
+        String(vehiclePeek.version ?? ''),
+        String(vehiclePeek.guncelKm ?? vehiclePeek.km ?? ''),
+        String(vehiclePeek.branchId ?? ''),
+        String(vehiclePeek.assignedUserId ?? ''),
+        String(vehiclePeek.tahsisKisi ?? ''),
+        String(vehiclePeek.ruhsatPath ?? ''),
+        String(vehiclePeek.satildiMi === true ? 1 : 0),
+        String(Array.isArray(vehiclePeek.events) ? vehiclePeek.events.length : 0)
+      ].join('|');
+      if (
+        modal.classList.contains('active') &&
+        String(window.currentDetailVehicleId) === String(vehicleId) &&
+        modal.dataset.detailSignature === signaturePeek
+      ) {
+        requestGen = -1; // runDetail'i atlat; generation artışı eski async'i geçersiz bıraktı
+      }
+    })();
+
+    if (requestGen !== -1) {
+      // Önceki stale yüzeyi anında paint dışına al
+      modal.style.display = 'none';
+      modal.classList.remove('active', 'open');
+      modal.style.pointerEvents = 'none';
+    }
+
     const runDetail = () => {
+      if (requestGen === -1) return;
+      if (requestGen !== vehicleDetailRequestGeneration) return;
+
       const vehicles = readVehicles();
       const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
       if (!vehicle) {
@@ -2908,16 +2957,6 @@
         window._printScriptPromise = loadScript(getTasitlarYaziciScriptSrc());
       }
 
-    const modal = DOM.vehicleDetailModal || document.getElementById('vehicle-detail-modal');
-    if (!modal) {
-      return;
-    }
-
-    const contentEl = DOM.vehicleDetailContent || document.getElementById('vehicle-detail-content');
-    if (!contentEl) {
-      return;
-    }
-
     const detailSignature = [
       String(vehicle.id ?? ''),
       String(vehicle.version ?? ''),
@@ -2930,14 +2969,6 @@
       String(Array.isArray(vehicle.events) ? vehicle.events.length : 0)
     ].join('|');
     const isArchiveSoldDetail = vehicle.satildiMi === true && lastListContext && lastListContext.mode === 'archive';
-
-    if (
-      modal.classList.contains('active') &&
-      String(window.currentDetailVehicleId) === String(vehicleId) &&
-      modal.dataset.detailSignature === detailSignature
-    ) {
-      return;
-    }
 
     // Plaka (üstte yatayda ortalı) - Satıldı durumu için kırmızı yazı ekle
     // Plaka container'ını kontrol et, yoksa oluştur
@@ -3177,14 +3208,17 @@
       detailToolbar.appendChild(toolbarRight);
     }
 
-    // Modalı aç
+    // Modalı yalnız içerik hazır olduktan sonra aç
+    if (requestGen !== vehicleDetailRequestGeneration) return;
     setVehiclesDetailUnderlay(true);
     modal.dataset.detailSignature = detailSignature;
+    modal.style.pointerEvents = '';
     modal.style.display = 'flex';
     modal.classList.add('active', 'open');
     if (typeof window.updateFooterDim === 'function') window.updateFooterDim();
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
+        if (requestGen !== vehicleDetailRequestGeneration) return;
         applyVehicleDetailSubeShrink();
         fitVehicleTextBoxes(modal);
       });
@@ -3192,7 +3226,13 @@
     };
     var flushBeforeDetail = flushVehicleDetailNotesInlineSave();
     if (flushBeforeDetail && typeof flushBeforeDetail.then === 'function') {
-      flushBeforeDetail.then(function() { runDetail(); }, function() { runDetail(); });
+      flushBeforeDetail.then(function() {
+        if (requestGen !== vehicleDetailRequestGeneration && requestGen !== -1) return;
+        runDetail();
+      }, function() {
+        if (requestGen !== vehicleDetailRequestGeneration && requestGen !== -1) return;
+        runDetail();
+      });
     } else {
       runDetail();
     }
@@ -3223,7 +3263,10 @@
 
   // --- Tüm Modalları Kapat ---
   window.closeAllModals = function() {
-    function doCloseAllModals() {
+    var closeGen = ++vehicleDetailRequestGeneration;
+    // Not flush'ını textarea hâlâ DOM'dayken başlat; görsel kapanışı bekleme
+    var flushAllP = flushVehicleDetailNotesInlineSave();
+
     const modalIds = [
       'vehicles-modal',
       'vehicle-detail-modal',
@@ -3244,6 +3287,7 @@
         resetModalState(modal);
         modal.classList.remove('active', 'open');
         modal.style.display = 'none';
+        modal.style.pointerEvents = 'none';
       }
     });
     setVehiclesDetailUnderlay(false);
@@ -3252,32 +3296,38 @@
     // iOS: print() çağrısı iframe.onload/setTimeout ile geç tetiklenebiliyor.
     // Kullanıcı başka ekrana giderken bekleyen print'in çalışmaması için token iptal ediyoruz.
     window.__ruhsatPrintToken = null;
+
+    function afterFlushAll() {
+      if (closeGen !== vehicleDetailRequestGeneration) return;
     }
-    var flushAllP = flushVehicleDetailNotesInlineSave();
     if (flushAllP && typeof flushAllP.then === 'function') {
-      flushAllP.then(doCloseAllModals, doCloseAllModals);
-    } else {
-      doCloseAllModals();
+      flushAllP.then(afterFlushAll, afterFlushAll);
     }
   };
 
   // --- Taşıt Detay Modalını Kapat ---
   window.closeVehicleDetailModal = function() {
-    function doCloseVehicleDetailModal() {
-      const modal = DOM.vehicleDetailModal;
-      if (modal) {
-        setVehiclesDetailUnderlay(false);
-        resetModalState(modal);
-        modal.classList.remove('active', 'open');
-        delete modal.dataset.detailSignature;
-        setTimeout(() => modal.style.display = 'none', 300);
-      }
-    }
+    var closeGen = ++vehicleDetailRequestGeneration;
+    const modal = DOM.vehicleDetailModal || document.getElementById('vehicle-detail-modal');
+    // Flush'ı textarea DOM'dayken başlat; görsel kapanış Promise beklemez
     var flushP = flushVehicleDetailNotesInlineSave();
+
+    if (modal) {
+      setVehiclesDetailUnderlay(false);
+      modal.style.pointerEvents = 'none';
+      modal.classList.remove('active', 'open');
+      modal.style.display = 'none';
+      delete modal.dataset.detailSignature;
+    }
+
+    function afterFlushClose() {
+      if (closeGen !== vehicleDetailRequestGeneration) return;
+      if (modal) resetModalState(modal);
+    }
     if (flushP && typeof flushP.then === 'function') {
-      flushP.then(doCloseVehicleDetailModal, doCloseVehicleDetailModal);
+      flushP.then(afterFlushClose, afterFlushClose);
     } else {
-      doCloseVehicleDetailModal();
+      afterFlushClose();
     }
   };
 
@@ -3890,11 +3940,11 @@
   }
 
   function commitVehicleDetailNotesInlineFromTextarea(ta) {
-    if (!ta || !ta.classList.contains('detail-notes-inline-textarea')) return Promise.resolve();
+    if (!ta || !ta.classList.contains('detail-notes-inline-textarea')) return null;
     var cell = ta.closest('.detail-notes-admin-cell');
-    if (!cell) return Promise.resolve();
+    if (!cell) return null;
     var buf = detailNotesEditBuffer;
-    if (!buf || !buf.vehicleId) return Promise.resolve();
+    if (!buf || !buf.vehicleId) return null;
     var savedBuf = buf;
     detailNotesEditBuffer = null;
 
@@ -3907,14 +3957,14 @@
 
     if (newTrim === origTrim) {
       setCellFromNotesString(savedBuf.originalNotes != null ? savedBuf.originalNotes : '');
-      return Promise.resolve();
+      return null;
     }
 
     var vehicles = readVehicles();
     var idx = vehicles.findIndex(function(v) { return String(v.id) === String(savedBuf.vehicleId); });
     if (idx === -1) {
       setCellFromNotesString(savedBuf.originalNotes != null ? savedBuf.originalNotes : '');
-      return Promise.resolve();
+      return null;
     }
 
     var v = vehicles[idx];
@@ -3936,10 +3986,12 @@
   }
 
   function flushVehicleDetailNotesInlineSave() {
-    var ta = document.querySelector('#vehicle-detail-modal .detail-notes-inline-textarea');
-    if (!ta) return Promise.resolve();
     if (detailNotesSavePromise) return detailNotesSavePromise;
-    detailNotesSavePromise = Promise.resolve(commitVehicleDetailNotesInlineFromTextarea(ta)).finally(function() {
+    var ta = document.querySelector('#vehicle-detail-modal .detail-notes-inline-textarea');
+    if (!ta) return null;
+    var result = commitVehicleDetailNotesInlineFromTextarea(ta);
+    if (!result || typeof result.then !== 'function') return null;
+    detailNotesSavePromise = result.finally(function() {
       detailNotesSavePromise = null;
     });
     return detailNotesSavePromise;
