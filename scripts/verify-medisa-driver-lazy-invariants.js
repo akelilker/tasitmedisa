@@ -47,11 +47,11 @@ function count(text, pattern) {
 
 test('Login HTML compatibility aggregator yüklemiyor', () => {
   assert.doesNotMatch(files.loginHtml, /driver-style\.css/);
-  assert.match(files.loginHtml, /driver-shell\.css\?v=20260723\.1/);
+  assert.match(files.loginHtml, /driver-shell\.css\?v=20260723\.2/);
 });
 test('Dashboard HTML compatibility aggregator yüklemiyor', () => {
   assert.doesNotMatch(files.dashboardHtml, /driver-style\.css/);
-  assert.match(files.dashboardHtml, /driver-shell\.css\?v=20260723\.1/);
+  assert.match(files.dashboardHtml, /driver-shell\.css\?v=20260723\.2/);
 });
 test('Login vehicle notification domain yüklemiyor', () => {
   assert.doesNotMatch(files.loginHtml, /vehicle-notification-domain\.js/);
@@ -330,8 +330,8 @@ test('Driver asset version matrisi dar bump kullanır', () => {
   assert.match(files.bootstrap, /actions:\s*'20260718\.1'/);
   assert.match(files.loginHtml, /driver-script\.js\?v=20260719\.1/);
   assert.match(files.dashboardHtml, /driver-script\.js\?v=20260719\.1/);
-  assert.match(files.loginHtml, /driver-shell\.css\?v=20260723\.1/);
-  assert.match(files.dashboardHtml, /driver-shell\.css\?v=20260723\.1/);
+  assert.match(files.loginHtml, /driver-shell\.css\?v=20260723\.2/);
+  assert.match(files.dashboardHtml, /driver-shell\.css\?v=20260723\.2/);
 });
 test('Vehicle document helper behavioral matrix', () => {
   function getDriverVehicleTypeKey(vehicle) {

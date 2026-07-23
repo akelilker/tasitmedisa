@@ -2173,7 +2173,7 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
 }
 
 .login-page #app-footer.login-footer .brand img {
-  height: 12.5px !important;
+  height: calc(12.5px + 1.5pt) !important;
   width: auto !important;
   opacity: 0.4 !important;
   filter: drop-shadow(0 0 6px rgba(var(--theme-color-rgb), 0.4)) !important;
@@ -2350,11 +2350,14 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
     padding: 3px 12px !important;
     padding-bottom: 3px !important;
   }
-  /* Masaüstü: footer MEDISA logosu ana uygulama ile aynı (14px) */
-  .dashboard-page #app-footer .brand img,
-  .login-page #app-footer.login-footer .brand img {
+  /* Masaüstü: footer MEDISA logosu — dashboard aynı, login +1.5pt */
+  .dashboard-page #app-footer .brand img {
     height: 14px !important;
     max-height: 14px !important;
+  }
+  .login-page #app-footer.login-footer .brand img {
+    height: calc(14px + 1.5pt) !important;
+    max-height: calc(14px + 1.5pt) !important;
   }
   /* Masaüstü: kırmızı çizgiler footer'ın tam üstünde biter */
   .dashboard-page .driver-dashboard-container::before,
