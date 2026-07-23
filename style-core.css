@@ -1837,7 +1837,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #a
     visibility: hidden;
     opacity: 0;
     pointer-events: none;
-    z-index: 10060;
+    z-index: 10010;
     isolation: isolate;
     contain: layout paint style;
     backface-visibility: hidden;
