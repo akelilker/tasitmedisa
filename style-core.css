@@ -1857,6 +1857,10 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #a
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #app-footer-gap-layer {
     visibility: visible;
     opacity: 1;
+    /* Görünürken hit-test edilebilir olsun: altındaki kapanmamış modal metni tıklama/aksesibilite
+       açısından da "arkada" kalsın (pointer-events:none olduğunda elementsFromPoint bu katmanı
+       atlayıp altındaki modalı döndürüyordu). */
+    pointer-events: auto;
 }
 
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.active,
