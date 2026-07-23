@@ -13,6 +13,7 @@ const ROOT = path.join(__dirname, '..');
 const read = (rel) => fs.readFileSync(path.join(ROOT, rel), 'utf8');
 const index = read('index.html');
 const core = read('script-core.js');
+const style = read('style-core.css');
 const measure = read('scripts/measure-medisa-main-shell.js');
 const owners = {
   kayit: read('kayit.js'),
@@ -220,8 +221,25 @@ if (implementationPresent) {
   test('version ve SW cache beklenen değerde', function() {
     assert.match(core, /tasitlar: '20260723\.3'/);
     assert.match(index, /script-core\.js\?v=20260723\.3/);
-    assert.match(index, /style-core\.css\?v=20260723\.4/);
+    assert.match(index, /style-core\.css\?v=20260723\.5/);
     assert.match(sw, /medisa-v2\.237/);
+  });
+  test('fiziksel footer gap layer owner kontratı', function() {
+    var gapMatches = index.match(/id="app-footer-gap-layer"/g) || [];
+    assert.strictEqual(gapMatches.length, 1, 'index içinde tek app-footer-gap-layer olmalı');
+    var gapIdx = index.indexOf('id="app-footer-gap-layer"');
+    var footerIdx = index.indexOf('id="app-footer"');
+    assert.ok(gapIdx > -1 && footerIdx > gapIdx, 'gap layer footer siblinginden önce olmalı');
+    assert.match(style, /#app-footer-gap-layer\s*\{/);
+    assert.match(style, /body:not\(\.dashboard-page\):not\(\.login-page\):not\(\.admin-report-page\)\.modal-open #app-footer-gap-layer\s*\{/);
+    assert.match(style, /#app-footer-gap-layer[\s\S]*?z-index:\s*10060/);
+    assert.match(style, /#app-footer-gap-layer[\s\S]*?pointer-events:\s*none/);
+    assert.match(style, /#app-footer-gap-layer[\s\S]*?var\(--bg\)/);
+    assert.match(style, /#app-footer-gap-layer[\s\S]*?var\(--app-footer-gap/);
+    assert.match(style, /body:not\(\.dashboard-page\):not\(\.login-page\):not\(\.admin-report-page\)\.modal-open #app-footer\s*\{[\s\S]*?box-shadow:\s*0 -1px 0 var\(--footer-top-highlight\)\s*!important/);
+    assert.doesNotMatch(style, /:has\([^)]*\)\s*#app-footer::before/);
+    assert.doesNotMatch(style, /body[^{]*\.modal-open[^{]*#app-footer::before\s*\{[^}]*opacity:\s*1/);
+    assert.doesNotMatch(style, /z-index:\s*100060/);
   });
   test('package main shell araçlarını içerir', function() {
     assert.match(packageJson, /tool:verify-main-shell/);
