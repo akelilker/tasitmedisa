@@ -12,7 +12,7 @@ documents: '20260718.3',
 feedback: '20260718.1',
 password: '20260718.1',
 actions: '20260718.1',
-shellCss: '20260718.1',
+shellCss: '20260723.1',
 featureCss: '20260718.1'
 };
 
