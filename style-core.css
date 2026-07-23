@@ -1806,47 +1806,12 @@ body.modal-open .user-panel-link {
     z-index: 0;
 }
 
-/* Ana uygulama: modal kapalı ve ilk seviye modallarda klasik footer glow korunur */
+/* Ana uygulama: bütün modal seviyeleri için ortak footer glow owner'ı */
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
     border-top: 1px solid var(--footer-top-border) !important;
     box-shadow:
         0 -1px 0 var(--footer-top-highlight),
         var(--footer-red-glow) !important;
-}
-
-/*
-  Taşıt detay stack:
-  Geniş footer shadow modal altında sönük kaldığı için yalnız bu stack'te kapatılır.
-  Işık mevcut #app-footer::before owner'ı ile fiziksel --app-footer-gap içine mühürlenir.
-*/
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open:has(#vehicle-detail-modal.tasitlar-modal-overlay.active) #app-footer,
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open:has(#vehicle-detail-modal.tasitlar-modal-overlay.open) #app-footer,
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open:has(#event-menu-modal.tasitlar-modal-overlay.active) #app-footer,
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open:has(#event-menu-modal.tasitlar-modal-overlay.open) #app-footer,
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open:has(#vehicle-history-modal.tasitlar-modal-overlay.active) #app-footer,
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open:has(#vehicle-history-modal.tasitlar-modal-overlay.open) #app-footer,
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open:has(#dinamik-olay-modal.tasitlar-modal-overlay.active) #app-footer,
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open:has(#dinamik-olay-modal.tasitlar-modal-overlay.open) #app-footer {
-    box-shadow: 0 -1px 0 var(--footer-top-highlight) !important;
-}
-
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open:has(#vehicle-detail-modal.tasitlar-modal-overlay.active) #app-footer::before,
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open:has(#vehicle-detail-modal.tasitlar-modal-overlay.open) #app-footer::before,
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open:has(#event-menu-modal.tasitlar-modal-overlay.active) #app-footer::before,
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open:has(#event-menu-modal.tasitlar-modal-overlay.open) #app-footer::before,
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open:has(#vehicle-history-modal.tasitlar-modal-overlay.active) #app-footer::before,
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open:has(#vehicle-history-modal.tasitlar-modal-overlay.open) #app-footer::before,
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open:has(#dinamik-olay-modal.tasitlar-modal-overlay.active) #app-footer::before,
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open:has(#dinamik-olay-modal.tasitlar-modal-overlay.open) #app-footer::before {
-    height: var(--app-footer-gap);
-    opacity: 1;
-    background: linear-gradient(
-        to top,
-        rgba(var(--footer-glow-rgb), var(--footer-glow-opacity)) 0%,
-        rgba(var(--footer-glow-rgb), 0.40) 2%,
-        rgba(var(--footer-glow-rgb), 0.38) 70%,
-        transparent 100%
-    );
 }
 
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.active,
