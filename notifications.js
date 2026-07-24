@@ -1900,14 +1900,24 @@
   }
 
   function wireMonthlyTodoModalCloseUiOnce(modalEl) {
-    if (!modalEl || modalEl._medisaMonthlyTodoCloseUiBound) return;
+    if (!modalEl) return;
     var closeBtn = modalEl.querySelector('button.modal-close.monthly-todo-modal-close');
-    if (!closeBtn) return;
-    modalEl._medisaMonthlyTodoCloseUiBound = true;
-    closeBtn.addEventListener('click', function(ev) {
-      ev.preventDefault();
-      closeMonthlyTodoModal();
-    });
+    var homeBtn = modalEl.querySelector('button.modal-home[data-action="monthly-todo-home"]');
+    if (!modalEl._medisaMonthlyTodoCloseUiBound) {
+      if (!closeBtn) return;
+      modalEl._medisaMonthlyTodoCloseUiBound = true;
+      closeBtn.addEventListener('click', function(ev) {
+        ev.preventDefault();
+        closeMonthlyTodoModal();
+      });
+    }
+    if (homeBtn && !homeBtn._medisaMonthlyTodoHomeBound) {
+      homeBtn._medisaMonthlyTodoHomeBound = true;
+      homeBtn.addEventListener('click', function(ev) {
+        ev.preventDefault();
+        closeMonthlyTodoModal();
+      });
+    }
   }
 
   function initMonthlyTodoHeaderButtonOnce() {
@@ -1930,7 +1940,7 @@
   }
 
   function getMonthlyTodoHomeButtonHtml() {
-    return '<button type="button" class="modal-home" onclick="closeAllModals()" aria-label="Ana sayfaya dön" title="Ana sayfa">' +
+    return '<button type="button" class="modal-home" data-action="monthly-todo-home" aria-label="Ana sayfaya dön" title="Ana sayfa">' +
       '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"></path><path d="M5 10v10h14V10"></path></svg>' +
       '</button>';
   }
@@ -1980,6 +1990,7 @@
   function openMonthlyTodoModal() {
     var modal = ensureMonthlyTodoModalMounted();
     syncMonthlyTodoModalHeader(modal);
+    wireMonthlyTodoModalCloseUiOnce(modal);
     closeMonthlyTodoBranchFilter(modal);
     if (monthlyTodoCloseTimer) {
       clearTimeout(monthlyTodoCloseTimer);

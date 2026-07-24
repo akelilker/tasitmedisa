@@ -220,16 +220,50 @@ if (implementationPresent) {
     assert.match(index, /__medisaMainShellMetrics\.splashHiddenAt/);
   });
   test('version ve SW cache beklenen değerde', function() {
-    assert.match(core, /tasitlar: '20260723\.6'/);
-    assert.match(owners.vehicles, /MEDISA_TASITLAR_MODULE_VERSION = '20260723\.6'/);
+    assert.match(core, /tasitlar: '20260725\.1'/);
+    assert.match(owners.vehicles, /MEDISA_TASITLAR_MODULE_VERSION = '20260725\.1'/);
     // Loader ile modül içi sürüm birebir eşleşmeli; aksi halde "hazır duruma gelemedi" düşer.
     var loaderVer = (core.match(/tasitlar:\s*'([^']+)'/) || [])[1];
     var moduleVer = (owners.vehicles.match(/MEDISA_TASITLAR_MODULE_VERSION\s*=\s*'([^']+)'/) || [])[1];
     assert.ok(loaderVer && moduleVer, 'tasitlar sürüm sabitleri bulunmalı');
     assert.strictEqual(loaderVer, moduleVer, 'MEDISA_MODULE_VERSIONS.tasitlar === MEDISA_TASITLAR_MODULE_VERSION');
-    assert.match(index, /script-core\.js\?v=20260723\.7/);
+    assert.match(index, /script-core\.js\?v=20260725\.1/);
     assert.match(index, /style-core\.css\?v=20260724\.1/);
-    assert.match(sw, /medisa-v2\.253/);
+    assert.match(sw, /medisa-v2\.254/);
+  });
+  test('KAYIT home closeVehicleModal owner kullanır', function() {
+    var kayitHome = owners.kayit.match(/id="vehicle-modal"[\s\S]*?class="modal-home"[^>]*>/);
+    assert.ok(kayitHome, 'KAYIT modal-home bulunmalı');
+    assert.match(kayitHome[0], /onclick="closeVehicleModal\(\)"/);
+    assert.doesNotMatch(kayitHome[0], /closeAllModals/);
+    assert.match(owners.kayit, /window\.closeVehicleModal\s*=\s*function/);
+  });
+  test('RAPORLAR home closeReportsModal owner kullanır', function() {
+    var reportsHome = owners.reports.match(/id="reports-modal"[\s\S]*?class="modal-home"[^>]*>/);
+    assert.ok(reportsHome, 'RAPORLAR modal-home bulunmalı');
+    assert.match(reportsHome[0], /onclick="closeReportsModal\(\)"/);
+    assert.doesNotMatch(reportsHome[0], /closeAllModals/);
+    assert.match(owners.reports, /window\.closeReportsModal\s*=\s*function/);
+  });
+  test('aylık yapılacaklar home closeAllModals taşımıyor; local owner bağlanır', function() {
+    var notifications = read('notifications.js');
+    assert.match(notifications, /data-action="monthly-todo-home"/);
+    assert.doesNotMatch(notifications, /getMonthlyTodoHomeButtonHtml[\s\S]*?onclick="closeAllModals\(\)"/);
+    assert.match(notifications, /function closeMonthlyTodoModal\s*\(/);
+    assert.match(notifications, /wireMonthlyTodoModalCloseUiOnce[\s\S]*?data-action="monthly-todo-home"[\s\S]*?closeMonthlyTodoModal\s*\(/);
+    assert.doesNotMatch(notifications, /window\.closeMonthlyTodoModal\s*=/);
+  });
+  test('taşıt dışı lazy markup onclick closeAllModals taşımaz', function() {
+    assert.doesNotMatch(owners.kayit, /onclick="closeAllModals\(\)"/);
+    assert.doesNotMatch(owners.reports, /onclick="closeAllModals\(\)"/);
+    var notifications = read('notifications.js');
+    assert.doesNotMatch(notifications, /onclick="closeAllModals\(\)"/);
+  });
+  test('taşıtlar closeAllModals owner ve güvenli iç çağrı korunur', function() {
+    assert.match(owners.vehicles, /window\.closeAllModals\s*=\s*function/);
+    assert.match(owners.vehicles, /onclick="closeAllModals\(\)"/);
+    assert.match(owners.vehicles, /else if \(typeof window\.closeAllModals === 'function'\) \{\s*window\.closeAllModals\(\);\s*\}/);
+    assert.doesNotMatch(owners.vehicles, /else \{\s*closeAllModals\(\);\s*\}/);
   });
   test('modal açıkken yan çerçeve gap bandına inmez', function() {
     assert.match(style, /body:not\(\.dashboard-page\):not\(\.login-page\):not\(\.admin-report-page\)\.modal-open \.app-container::before\s*\{[\s\S]*?var\(--app-footer-real-height\)\s*\+\s*var\(--app-footer-gap\)/);
