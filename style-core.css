@@ -626,8 +626,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
     top: 0;
     left: 0;
     right: 0;
-    bottom: var(--app-footer-real-height);
-    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0));
+    bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap));
+    bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0));
     border-top: 0.5px solid var(--border-red-tech);
     border-left: 0.5px solid var(--border-red-tech);
     border-right: 0.5px solid var(--border-red-tech);
@@ -1842,14 +1842,17 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #a
     isolation: isolate;
     contain: layout paint style;
     backface-visibility: hidden;
+    /* Işık, modal kapalıyken footer'ın --footer-red-glow box-shadow'unun gap
+       içinde ürettiği fiziksel profille eşleşir: bloom merkezi footer üst
+       kenarından ~18px yukarıda olduğu için gap içinde alttan üste ARTAR.
+       Böylece modal açık/kapalı ışık yoğunluğu aynı kalır (modal sadece üste
+       konmuş gibi). Alt katman var(--bg): alttaki modal metni sızıntı engeli. */
     background:
         linear-gradient(
             to top,
-            rgba(var(--footer-glow-rgb), 0.62) 0%,
-            rgba(var(--footer-glow-rgb), 0.44) 34%,
-            rgba(var(--footer-glow-rgb), 0.26) 62%,
-            rgba(var(--footer-glow-rgb), 0.12) 84%,
-            transparent 100%
+            rgba(var(--footer-glow-rgb), 0.30) 0%,
+            rgba(var(--footer-glow-rgb), 0.40) 50%,
+            rgba(var(--footer-glow-rgb), 0.50) 100%
         ),
         var(--bg);
 }
