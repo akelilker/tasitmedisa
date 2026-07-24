@@ -1854,7 +1854,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #a
         var(--bg);
 }
 
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #app-footer-gap-layer {
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer-gap-layer {
     visibility: visible;
     opacity: 1;
     /* Görünürken hit-test edilebilir olsun: altındaki kapanmamış modal metni tıklama/aksesibilite
@@ -2871,15 +2871,7 @@ body.modal-open .app-container {
     border-bottom-left-radius: 12px !important;
     border-bottom-right-radius: 12px !important;
   }
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .app-container::before {
-    bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap)) !important;
-    bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
-  }
-  /* Modal kapalıyken (≤768): ::before tabanı gap’siz — eski mobil/tablet görünümü. Masaüstü ≥769’da bu blok yok; taban kural (gap’li) geçer. */
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page):not(.modal-open) .app-container::before {
-    bottom: var(--app-footer-real-height) !important;
-    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
-  }
+  /* Gap bandı artık modal state'inden bağımsız sabit (footer + gap); ::before her zaman taban kuralla (satır ~629) aynı sınırda durur — ışık modal açık/kapalı diye büyüyüp küçülmez. */
 }
 
 @media (max-width: 640px) {
@@ -3103,17 +3095,7 @@ body.modal-open .app-container {
     bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0));
   }
 
-  /* Ana ekran masaüstü: modal kapalıyken yan çizgiler ve iç glow footer üstüne kadar insin */
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page):not(.modal-open) .app-container::before,
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page):not(.modal-open) .app-container::after {
-    bottom: var(--app-footer-real-height);
-    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0));
-  }
-
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-returning .app-container::before {
-    bottom: var(--app-footer-real-height) !important;
-    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
-  }
+  /* Gap bandı masaüstünde de modal state'inden bağımsız sabit (footer + gap); ::before/::after her zaman aynı sınırda durur. */
 
   /* Omnidirectional kırmızımsı halo footer köşelerinde birikmez */
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap {

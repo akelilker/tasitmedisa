@@ -231,7 +231,9 @@ if (implementationPresent) {
     var footerIdx = index.indexOf('id="app-footer"');
     assert.ok(gapIdx > -1 && footerIdx > gapIdx, 'gap layer footer siblinginden önce olmalı');
     assert.match(style, /#app-footer-gap-layer\s*\{/);
-    assert.match(style, /body:not\(\.dashboard-page\):not\(\.login-page\):not\(\.admin-report-page\)\.modal-open #app-footer-gap-layer\s*\{/);
+    // Gap ışığı modal state'inden bağımsız her zaman görünür (kesilme/sıçrama olmasın diye .modal-open şartı kaldırıldı)
+    assert.match(style, /body:not\(\.dashboard-page\):not\(\.login-page\):not\(\.admin-report-page\) #app-footer-gap-layer\s*\{/);
+    assert.doesNotMatch(style, /body:not\(\.dashboard-page\):not\(\.login-page\):not\(\.admin-report-page\)\.modal-open #app-footer-gap-layer\s*\{/);
     assert.match(style, /#app-footer-gap-layer[\s\S]*?z-index:\s*10010/);
     assert.match(style, /#app-footer-gap-layer[\s\S]*?pointer-events:\s*none/);
     assert.match(style, /#app-footer-gap-layer[\s\S]*?var\(--bg\)/);
