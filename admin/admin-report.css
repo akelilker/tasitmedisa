@@ -1,6 +1,13 @@
 /* Admin Aylık Kullanıcı Raporu – koyu tema (style-core ile uyumlu) */
 
 /* --- Admin sayfa layout override --- */
+html:has(body.admin-report-page) {
+  max-width: 100% !important;
+  width: 100% !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
 body.admin-report-page {
   max-width: 100% !important;
   overflow-x: hidden;
@@ -1593,20 +1600,21 @@ body.admin-report-page .main-header-user-name.is-empty {
 }
 
 .admin-footer-back-wrap {
+  /* Footer ile AYNI yatay kontrat: container (max 1200) sol kenarının 3px içi */
   position: fixed;
-  /* Admin container (max 1200) sol kenarına sabitle; viewport soluna kaçmasın */
-  left: max(0px, calc(50% - 600px));
+  left: 50%;
   right: auto;
   bottom: calc(var(--app-footer-real-height, 42px) + 6px + env(safe-area-inset-bottom, 0));
-  transform: none;
+  transform: translateX(-50%);
   box-sizing: border-box;
   display: flex;
   justify-content: flex-start;
-  width: auto;
-  max-width: none;
+  align-items: center;
+  width: 100%;
+  max-width: 1200px;
   margin: 0 !important;
   padding-left: 3px !important;
-  padding-right: 0 !important;
+  padding-right: 12px !important;
   overflow: visible;
   background: transparent;
   border: 0;
