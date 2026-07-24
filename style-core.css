@@ -626,8 +626,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
     top: 0;
     left: 0;
     right: 0;
-    bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap));
-    bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0));
+    bottom: var(--app-footer-real-height);
+    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0));
     border-top: 0.5px solid var(--border-red-tech);
     border-left: 0.5px solid var(--border-red-tech);
     border-right: 0.5px solid var(--border-red-tech);
@@ -687,6 +687,13 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
         box-shadow:
             0 0 16px rgba(var(--theme-color-rgb), 0.24),
             inset 0 0 18px rgba(var(--theme-color-rgb), 0.10);
+    }
+    /* Gap layer'ın yan çizgileri, container::before ile aynı kalınlık/renk — modal açıkken çerçeve kesintisiz footer'a iner */
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer-gap-layer {
+        border-left-width: 0.7px;
+        border-right-width: 0.7px;
+        border-left-color: rgba(var(--theme-color-rgb), 0.78);
+        border-right-color: rgba(var(--theme-color-rgb), 0.78);
     }
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap {
         padding-bottom: calc(var(--app-footer-real-height, 34px) + 16px + env(safe-area-inset-bottom, 0));
@@ -1842,14 +1849,16 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #a
     isolation: isolate;
     contain: layout paint style;
     backface-visibility: hidden;
+    border-left: 0.5px solid var(--border-red-tech);
+    border-right: 0.5px solid var(--border-red-tech);
     background:
         linear-gradient(
             to top,
-            rgba(var(--footer-glow-rgb), 0.54) 0%,
-            rgba(var(--footer-glow-rgb), 0.46) 24%,
-            rgba(var(--footer-glow-rgb), 0.34) 48%,
-            rgba(var(--footer-glow-rgb), 0.24) 72%,
-            rgba(var(--footer-glow-rgb), 0.18) 100%
+            rgba(var(--footer-glow-rgb), 0.62) 0%,
+            rgba(var(--footer-glow-rgb), 0.52) 24%,
+            rgba(var(--footer-glow-rgb), 0.42) 48%,
+            rgba(var(--footer-glow-rgb), 0.32) 72%,
+            rgba(var(--footer-glow-rgb), 0.24) 100%
         ),
         var(--bg);
 }
@@ -2519,6 +2528,13 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         border-left-width: 0.7px;
         border-right-width: 0.7px;
         border-top-color: rgba(var(--theme-color-rgb), 0.82);
+        border-left-color: rgba(var(--theme-color-rgb), 0.80);
+        border-right-color: rgba(var(--theme-color-rgb), 0.80);
+    }
+    /* Gap layer'ın yan çizgileri, container::before ile aynı kalınlık/renk — modal açıkken çerçeve kesintisiz footer'a iner */
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer-gap-layer {
+        border-left-width: 0.7px;
+        border-right-width: 0.7px;
         border-left-color: rgba(var(--theme-color-rgb), 0.80);
         border-right-color: rgba(var(--theme-color-rgb), 0.80);
     }
