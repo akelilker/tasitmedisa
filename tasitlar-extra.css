@@ -2945,9 +2945,16 @@
   }
 }
 
-/* TAŞITLAR listesi + Bu ay yapılacaklar: masaüstünde overlay altı (style-core .modal-overlay ile aynı footer formülü) */
+/* Taşıt modal zinciri: masaüstünde overlay altı (style-core .modal-overlay ile aynı footer formülü).
+   Overlay'ler tam genişlikte opak var(--bg) olduğu için bu sınır gap'e sarkarsa footer'ın kırmızı
+   bloom'unu komple örter. Zincirin tamamı (liste/detay/olay/tarihçe/dinamik) aynı sınırda durmalı;
+   aksi halde detay açılınca gap ışığı kayboluyordu. */
 @media (min-width: 769px) {
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicles-modal.modal-overlay {
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicles-modal.modal-overlay,
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicle-detail-modal.modal-overlay,
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #event-menu-modal.modal-overlay,
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicle-history-modal.modal-overlay,
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #dinamik-olay-modal.modal-overlay {
     bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
   }
 }
