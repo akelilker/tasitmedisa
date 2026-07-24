@@ -1845,11 +1845,10 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #a
         linear-gradient(
             to top,
             rgba(var(--footer-glow-rgb), 0.54) 0%,
-            rgba(var(--footer-glow-rgb), 0.44) 24%,
-            rgba(var(--footer-glow-rgb), 0.30) 48%,
-            rgba(var(--footer-glow-rgb), 0.16) 72%,
-            rgba(var(--footer-glow-rgb), 0.06) 88%,
-            transparent 100%
+            rgba(var(--footer-glow-rgb), 0.46) 24%,
+            rgba(var(--footer-glow-rgb), 0.34) 48%,
+            rgba(var(--footer-glow-rgb), 0.24) 72%,
+            rgba(var(--footer-glow-rgb), 0.18) 100%
         ),
         var(--bg);
 }
