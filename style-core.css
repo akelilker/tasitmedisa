@@ -1855,10 +1855,10 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #a
         linear-gradient(
             to top,
             rgba(var(--footer-glow-rgb), 0.62) 0%,
-            rgba(var(--footer-glow-rgb), 0.52) 24%,
-            rgba(var(--footer-glow-rgb), 0.42) 48%,
-            rgba(var(--footer-glow-rgb), 0.32) 72%,
-            rgba(var(--footer-glow-rgb), 0.24) 100%
+            rgba(var(--footer-glow-rgb), 0.44) 34%,
+            rgba(var(--footer-glow-rgb), 0.26) 62%,
+            rgba(var(--footer-glow-rgb), 0.12) 84%,
+            transparent 100%
         ),
         var(--bg);
 }
