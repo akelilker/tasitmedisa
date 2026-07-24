@@ -2232,18 +2232,30 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
 }
 /* Sol panel içindeki Yönetim Sistemi: altta sabit, sola yaslı; negatif margin yok ki ok kesilmesin */
 .driver-left-panel .driver-footer-back-wrap {
+  flex: 0 0 auto !important;
+  align-self: flex-start;
+  align-items: center;
   margin-top: auto !important;
   margin-bottom: 0 !important;
   width: auto !important;
   max-width: none !important;
   padding-left: 0 !important;
   padding-right: 0 !important;
+  min-height: 0;
+  height: auto;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
   z-index: auto !important;
   justify-content: flex-start !important;
   overflow: visible !important;
 }
 .driver-left-panel .driver-footer-back-wrap .universal-back-btn {
   flex-shrink: 0;
+  min-height: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
   transform: translateY(-3px);
 }
 .driver-left-panel .driver-footer-back-wrap .back-icon-svg {
