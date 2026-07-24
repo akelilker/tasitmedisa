@@ -2010,7 +2010,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
 #app-footer .brand img {
     max-width: 100%;
     height: auto;
-    max-height: 14px;
+    max-height: 14.27px;
     width: auto;
     opacity: 0.4; /* Başlangıç çok soluk */
     filter: none;
