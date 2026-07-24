@@ -1806,16 +1806,10 @@ body.modal-open .user-panel-link {
     z-index: 0;
 }
 
-/* Ana uygulama: bütün modal seviyeleri için ortak footer glow owner'ı */
+/* Ana uygulama: footer kendi box-shadow glow'unu taşımaz; tek ışık owner'ı fiziksel
+   gap layer'dır (#app-footer-gap-layer) — modal açık/kapalı fark etmeksizin sabit. */
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
     border-top: 1px solid var(--footer-top-border) !important;
-    box-shadow:
-        0 -1px 0 var(--footer-top-highlight),
-        var(--footer-red-glow) !important;
-}
-
-/* Modal açık: dış red shadow kapalı; ışık bağımsız fiziksel gap layer'da */
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #app-footer {
     box-shadow:
         0 -1px 0 var(--footer-top-highlight) !important;
 }
@@ -2931,8 +2925,7 @@ body.modal-open .app-container {
     padding-bottom: calc(2px + env(safe-area-inset-bottom, 0)) !important;
     border-top: 1px solid var(--footer-top-border) !important;
     box-shadow:
-      0 -1px 0 var(--footer-top-highlight),
-      var(--footer-red-glow) !important;
+      0 -1px 0 var(--footer-top-highlight) !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer .footer-content {
     height: 100% !important;
@@ -3079,14 +3072,7 @@ body.modal-open .app-container {
     border-top-color: rgba(156, 166, 180, 0.68) !important;
     overflow: visible !important;
     box-shadow:
-      0 -1px 0 rgba(235, 240, 248, 0.22),
-      var(--footer-red-glow) !important;
-  }
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page):not(.modal-open) #app-footer::before {
-    bottom: 100%;
-    height: 0;
-    opacity: 0;
-    background: none;
+      0 -1px 0 rgba(235, 240, 248, 0.22) !important;
   }
   /* İç kırmızı inset footer + modal–footer gap şeridine inmesin */
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-container::after {
