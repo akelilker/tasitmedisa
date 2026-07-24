@@ -912,8 +912,6 @@ let dimTimeout = null;
 
 var _cachedFooter;
 function getFooter() { return _cachedFooter || (_cachedFooter = document.getElementById('app-footer')); }
-var _cachedGapLayer;
-function getFooterGapLayer() { return _cachedGapLayer || (_cachedGapLayer = document.getElementById('app-footer-gap-layer')); }
 var _cachedModalOverlays = null;
 function refreshModalOverlays() { _cachedModalOverlays = document.querySelectorAll('.modal-overlay'); return _cachedModalOverlays; }
 function getModalOverlays() { return _cachedModalOverlays || refreshModalOverlays(); }
@@ -993,23 +991,12 @@ window.updateFooterDim = function() {
   if (!footer) return;
 
   let isAnyModalOpen = false;
-  let topOpenModalZ = 0;
   const overlays = getModalOverlays();
   for (let i = 0; i < overlays.length; i++) {
     if (isModalOverlayOpen(overlays[i])) {
       isAnyModalOpen = true;
-      const z = parseInt(getComputedStyle(overlays[i]).zIndex, 10);
-      if (!isNaN(z) && z > topOpenModalZ) topOpenModalZ = z;
+      break;
     }
-  }
-
-  // Gap layer, en üstte aktif olan modalın hemen altında kalmalı; altta "kapanmamış"
-  // (underlay) duran her modal katmanından her zaman yukarıda paint edilsin (canlı hata:
-  // detay/olay/tarihçe zincirinde alttaki modal metni gap içinde görünüyordu).
-  // Tek sabit z-index yerine üst modalın z'sine göre dinamik hesaplanır; ID bazlı özel durum yok.
-  const gapLayer = getFooterGapLayer();
-  if (gapLayer) {
-    gapLayer.style.zIndex = topOpenModalZ ? String(topOpenModalZ - 5) : '';
   }
 
   if (_footerDimModalOpen === isAnyModalOpen) return;

@@ -221,42 +221,31 @@ if (implementationPresent) {
   test('version ve SW cache beklenen değerde', function() {
     assert.match(core, /tasitlar: '20260723\.3'/);
     assert.match(index, /script-core\.js\?v=20260723\.5/);
-    assert.match(index, /style-core\.css\?v=20260723\.16/);
-    assert.match(sw, /medisa-v2\.248/);
+    assert.match(index, /style-core\.css\?v=20260723\.17/);
+    assert.match(sw, /medisa-v2\.249/);
   });
-  test('fiziksel footer gap layer owner kontratı', function() {
-    var gapMatches = index.match(/id="app-footer-gap-layer"/g) || [];
-    assert.strictEqual(gapMatches.length, 1, 'index içinde tek app-footer-gap-layer olmalı');
-    var gapIdx = index.indexOf('id="app-footer-gap-layer"');
-    var footerIdx = index.indexOf('id="app-footer"');
-    assert.ok(gapIdx > -1 && footerIdx > gapIdx, 'gap layer footer siblinginden önce olmalı');
-    assert.match(style, /#app-footer-gap-layer\s*\{/);
-    // Gap ışığı yalnız modal açıkken görünür (KAYIT/metin sızıntısı önleme); modal kapalıyken
-    // footer kendi doğal box-shadow'uyla yumuşak sönümlenir (eski davranış korunur).
-    assert.match(style, /body:not\(\.dashboard-page\):not\(\.login-page\):not\(\.admin-report-page\)\.modal-open #app-footer-gap-layer\s*\{/);
-    assert.match(style, /#app-footer-gap-layer[\s\S]*?z-index:\s*10010/);
-    assert.match(style, /#app-footer-gap-layer[\s\S]*?pointer-events:\s*none/);
-    assert.match(style, /#app-footer-gap-layer[\s\S]*?var\(--bg\)/);
-    assert.match(style, /#app-footer-gap-layer[\s\S]*?var\(--app-footer-gap/);
-    // Footer bloom'u modal açık/kapalı AYNI kalır: red-glow her durumda açıktır ve
-    // modal açılınca footer ışığı kapatılmaz (kullanıcı: "modal yokken nasılsa öyle").
+  test('footer red-glow tek ışık kaynağı (ayrı gap layer yok)', function() {
+    // Ayrı fiziksel gap ışık katmanı (#app-footer-gap-layer) tamamen kaldırıldı.
+    // Işık yalnız footer'ın kendi --footer-red-glow box-shadow'undan gelir ve modal
+    // açık/kapalı FARK ETMEKSİZİN aynı kalır (modal sadece üste biner).
+    assert.strictEqual(index.indexOf('id="app-footer-gap-layer"'), -1, 'gap layer div kaldırılmalı');
+    assert.doesNotMatch(style, /#app-footer-gap-layer/, 'gap layer CSS bloğu kaldırılmalı');
+    assert.doesNotMatch(core, /getFooterGapLayer|app-footer-gap-layer/, 'gap layer JS mantığı kaldırılmalı');
+    // Footer bloom'u modal açık/kapalı AYNI: red-glow her durumda açık; modal açılınca
+    // footer ışığını kapatan/sadeleştiren override yok (kullanıcı: "modal yokken nasılsa öyle").
     assert.match(style, /body:not\(\.dashboard-page\):not\(\.login-page\):not\(\.admin-report-page\) #app-footer\s*\{[\s\S]*?var\(--footer-red-glow\)\s*!important/);
     assert.doesNotMatch(style, /\.modal-open #app-footer\s*\{[\s\S]*?box-shadow:\s*0 -1px 0 var\(--footer-top-highlight\)\s*!important;/);
     assert.doesNotMatch(style, /:has\([^)]*\)\s*#app-footer::before/);
-    assert.doesNotMatch(style, /body[^{]*\.modal-open[^{]*#app-footer::before\s*\{[^}]*opacity:\s*1/);
     assert.doesNotMatch(style, /#app-footer::before\s*\{[^}]*background:\s*none/, 'ölü #app-footer::before override kaldırılmalı');
     assert.doesNotMatch(style, /z-index:\s*100060/);
     var footerZMatch = style.match(/^#app-footer\s*\{[\s\S]*?z-index:\s*(\d+)/m);
-    var gapZMatch = style.match(/^#app-footer-gap-layer\s*\{[\s\S]*?z-index:\s*(\d+)/m);
     var modalZMatch = style.match(/^\.modal-overlay\s*\{[\s\S]*?z-index:\s*(\d+)/m);
-    assert.ok(footerZMatch && gapZMatch && modalZMatch, 'footer/gap/modal z-index owner bulunmalı');
+    assert.ok(footerZMatch && modalZMatch, 'footer/modal z-index owner bulunmalı');
     var footerZ = Number(footerZMatch[1]);
-    var gapZ = Number(gapZMatch[1]);
     var modalZ = Number(modalZMatch[1]);
     assert.strictEqual(footerZ, 10000);
-    assert.strictEqual(gapZ, 10010);
     assert.strictEqual(modalZ, 10020);
-    assert.ok(footerZ < gapZ && gapZ < modalZ, '10000 < 10010 < 10020 sıralaması korunmalı');
+    assert.ok(footerZ < modalZ, 'footer modal altında (10000 < 10020) kalmalı');
   });
   test('package main shell araçlarını içerir', function() {
     assert.match(packageJson, /tool:verify-main-shell/);
