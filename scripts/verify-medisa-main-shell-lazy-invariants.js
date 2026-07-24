@@ -228,7 +228,7 @@ if (implementationPresent) {
     assert.ok(loaderVer && moduleVer, 'tasitlar sürüm sabitleri bulunmalı');
     assert.strictEqual(loaderVer, moduleVer, 'MEDISA_MODULE_VERSIONS.tasitlar === MEDISA_TASITLAR_MODULE_VERSION');
     assert.match(index, /script-core\.js\?v=20260723\.7/);
-    assert.match(index, /style-core\.css\?v=20260723\.18/);
+    assert.match(index, /style-core\.css\?v=20260724\.1/);
     assert.match(sw, /medisa-v2\.253/);
   });
   test('modal açıkken yan çerçeve gap bandına inmez', function() {
