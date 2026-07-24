@@ -221,8 +221,8 @@ if (implementationPresent) {
   test('version ve SW cache beklenen değerde', function() {
     assert.match(core, /tasitlar: '20260723\.3'/);
     assert.match(index, /script-core\.js\?v=20260723\.4/);
-    assert.match(index, /style-core\.css\?v=20260723\.11/);
-    assert.match(sw, /medisa-v2\.242/);
+    assert.match(index, /style-core\.css\?v=20260723\.12/);
+    assert.match(sw, /medisa-v2\.243/);
   });
   test('fiziksel footer gap layer owner kontratı', function() {
     var gapMatches = index.match(/id="app-footer-gap-layer"/g) || [];
