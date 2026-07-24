@@ -267,7 +267,8 @@ body.admin-report-page .main-header-user-name.is-empty {
     width: 69px !important;
     min-width: 69px !important;
     max-width: 69px !important;
-    transform: translateY(3px) !important;
+    /* Masaüstü: logo 3px yukarı (önceki translateY(3px) → 0); diğer hero hücreleri sabit */
+    transform: translateY(0) !important;
   }
 
   body.admin-report-page .hero.hero-two-rows .hero-logo picture {
@@ -1600,11 +1601,14 @@ body.admin-report-page .main-header-user-name.is-empty {
   display: flex;
   justify-content: flex-start;
   width: 100%;
-  max-width: 400px;
+  max-width: 1200px;
   margin: 0 !important;
-  padding-left: 6px !important;
+  padding-left: 3px !important;
   padding-right: 12px !important;
   overflow: visible;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
   z-index: 1001;
   pointer-events: none;
 }
@@ -1621,6 +1625,9 @@ body.admin-report-page .main-header-user-name.is-empty {
   transition: opacity 0.2s, color 0.2s;
   white-space: nowrap;
   pointer-events: auto;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
 }
 
 .admin-footer-back-wrap .universal-back-label {
@@ -1952,8 +1959,8 @@ body.admin-report-page .main-header-user-name.is-empty {
 
 .admin-tabs-container {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 180px));
-  justify-content: flex-start;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  justify-content: stretch;
   gap: 10px;
   margin-top: 0;
   margin-bottom: 8px;
@@ -1976,6 +1983,7 @@ body.admin-report-page .main-header-user-name.is-empty {
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.2px;
+  text-align: center;
   cursor: pointer;
   transition: color 0.2s ease, border-color 0.2s ease;
 }
