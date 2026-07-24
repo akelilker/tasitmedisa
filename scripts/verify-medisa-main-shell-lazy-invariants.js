@@ -221,8 +221,8 @@ if (implementationPresent) {
   test('version ve SW cache beklenen değerde', function() {
     assert.match(core, /tasitlar: '20260723\.3'/);
     assert.match(index, /script-core\.js\?v=20260723\.5/);
-    assert.match(index, /style-core\.css\?v=20260723\.14/);
-    assert.match(sw, /medisa-v2\.246/);
+    assert.match(index, /style-core\.css\?v=20260723\.15/);
+    assert.match(sw, /medisa-v2\.247/);
   });
   test('fiziksel footer gap layer owner kontratı', function() {
     var gapMatches = index.match(/id="app-footer-gap-layer"/g) || [];
@@ -238,7 +238,10 @@ if (implementationPresent) {
     assert.match(style, /#app-footer-gap-layer[\s\S]*?pointer-events:\s*none/);
     assert.match(style, /#app-footer-gap-layer[\s\S]*?var\(--bg\)/);
     assert.match(style, /#app-footer-gap-layer[\s\S]*?var\(--app-footer-gap/);
-    assert.match(style, /body:not\(\.dashboard-page\):not\(\.login-page\):not\(\.admin-report-page\)\.modal-open #app-footer\s*\{[\s\S]*?box-shadow:\s*0 -1px 0 var\(--footer-top-highlight\)\s*!important/);
+    // Footer bloom'u modal açık/kapalı AYNI kalır: red-glow her durumda açıktır ve
+    // modal açılınca footer ışığı kapatılmaz (kullanıcı: "modal yokken nasılsa öyle").
+    assert.match(style, /body:not\(\.dashboard-page\):not\(\.login-page\):not\(\.admin-report-page\) #app-footer\s*\{[\s\S]*?var\(--footer-red-glow\)\s*!important/);
+    assert.doesNotMatch(style, /\.modal-open #app-footer\s*\{[\s\S]*?box-shadow:\s*0 -1px 0 var\(--footer-top-highlight\)\s*!important;/);
     assert.doesNotMatch(style, /:has\([^)]*\)\s*#app-footer::before/);
     assert.doesNotMatch(style, /body[^{]*\.modal-open[^{]*#app-footer::before\s*\{[^}]*opacity:\s*1/);
     assert.doesNotMatch(style, /#app-footer::before\s*\{[^}]*background:\s*none/, 'ölü #app-footer::before override kaldırılmalı');
