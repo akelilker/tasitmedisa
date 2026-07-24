@@ -910,7 +910,7 @@ body.driver-modal-open {
 /* =========================================
    MODAL (Standart)
    ========================================= */
-/* Pozisyon/sınır: style-core .modal-overlay (6px boşluk, isolation, z-index) kullanılır; burada sadece görünüm */
+/* Pozisyon/sınır: style-core .modal-overlay (--app-footer-real-height + --app-footer-gap; isolation, z-index); burada sadece görünüm */
 .driver-modal {
   display: none;
   background: rgba(0, 0, 0, 0.85);
@@ -1035,7 +1035,7 @@ body.driver-modal-open {
   }
 }
 
-/* Masaüstü (769px+): modal–footer 6px boşluk kesin (overlay footer üstünde bitsin) */
+/* Masaüstü (769px+): overlay alt sınırı --app-footer-real-height + --app-footer-gap (footer üstünde bitsin) */
 @media (min-width: 769px) {
   body.dashboard-page #history-modal.driver-modal,
   body.dashboard-page #edit-request-modal.driver-modal,
@@ -1111,7 +1111,7 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
   z-index: 10015 !important;
 }
 
-/* Taşıtlar modalı ile aynı: genişlik 500px, yatay çerçeve. Diğer modallar: --modal-margin-bottom-desktop */
+/* Taşıtlar modalı ile aynı: genişlik 500px, yatay çerçeve. Overlay spacing: --app-footer-gap */
 #history-modal .driver-modal-content,
 #history-modal .modal-container,
 #edit-request-modal .driver-modal-content,
@@ -2408,7 +2408,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   body.dashboard-page:has(#edit-request-modal.driver-modal.show) #app-footer .brand img {
     opacity: 0.8 !important;
   }
-  /* Geçmiş Kayıtlar / Düzeltme Talebi açıkken modal–footer 6px boşluğunda kırmızı dikey parçalar kalmasın */
+  /* Geçmiş Kayıtlar / Düzeltme Talebi açıkken modal–footer gap bandında kırmızı dikey parçalar kalmasın */
   @supports not selector(body:has(*)) {
     body.dashboard-page.driver-history-or-edit-modal-open #app-footer .version,
     body.dashboard-page.driver-history-or-edit-modal-open #app-footer .version#version-display,

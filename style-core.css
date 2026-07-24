@@ -34,13 +34,10 @@ body::-webkit-scrollbar,
   --br: #333;
   --border-shiny: rgba(255, 255, 255, 0.25);
 
-  --modal-footer-gap: 12px;
   --app-footer-height: 30px;
-  /* Codex standart: modal overlay bottom tek formül (footer + 6px boşluk) */
+  /* Overlay alt sınırı: --app-footer-real-height + --app-footer-gap (+ safe-area) */
   --app-footer-real-height: 38px;
   --app-footer-gap: 17px;
-  --modal-footer-reserve: calc(var(--app-footer-height) + var(--modal-footer-gap));
-  --modal-gap-above-footer: 5px; /* Mobil/masaüstü tek değer */
 
   --modal-bg: #080d16;
   --modal-max-width: 500px;
@@ -62,8 +59,6 @@ body::-webkit-scrollbar,
   --modal-title-color: #d1dbe4;
   --modal-title-shadow: 0 1px 0 rgba(0, 0, 0, 0.55), 0 0 5px rgba(214, 224, 232, 0.12);
   --modal-title-weight: 700;
-  --modal-margin-bottom-desktop: calc(var(--app-footer-height) + var(--modal-gap-above-footer));
-  --modal-margin-bottom-mobile: calc(var(--modal-gap-above-footer) + var(--app-footer-height));
 
   --border-red-tech: rgba(var(--theme-color-rgb), 0.4);
   --border-red-side: rgba(var(--theme-color-rgb), 0.6);  /* Anasayfa sağ-sol kırmızı çerçeve */
@@ -114,13 +109,12 @@ body::-webkit-scrollbar,
   --hero-spacer-width: 30px;
 }
 
-/* Masaüstü (641px+): modal–footer arası 5px (anasayfa RAPORLAR/Taşıtlar vb.) */
+/* Masaüstü (641px+): footer yüksekliği + --app-footer-gap (overlay spacing owner) */
 @media (min-width: 641px) {
   :root {
     --app-footer-height: 34px;
     --app-footer-real-height: 42px;
     --app-footer-gap: 14px;
-    --modal-gap-above-footer: 1px;
   }
 }
 
@@ -2046,18 +2040,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
   text-shadow: 0 0 8px rgba(239, 68, 68, 0.4); /* Kırmızı glow */
 }
 
-/* MOBİL AYARLARI: 768px ve altında modal alt çerçeve footer ışığında ezilmesin; sınır sadece top/bottom */
+/* MOBİL AYARLARI: 768px ve altında modal alt çerçeve footer ışığında ezilmesin; bottom owner: .modal-overlay */
 @media (max-width: 768px) {
-    .modal-overlay {
-        bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap)) !important;
-        bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
-    }
-    #vehicle-modal.modal-overlay,
-    #reports-modal.modal-overlay,
-    .tasitlar-modal-overlay.modal-overlay {
-        bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap)) !important;
-        bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
-    }
     :is(#vehicle-modal, #reports-modal, #vehicles-modal, #vehicle-detail-modal, #dinamik-olay-modal, #event-menu-modal, #vehicle-history-modal).modal-overlay .modal-body {
         padding-bottom: 24px !important;
     }
@@ -2275,15 +2259,11 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         top: 0 !important;
         overflow: hidden !important;
         overscroll-behavior: none !important;
-        bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap)) !important;
-        bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
     }
     #vehicle-modal.modal-overlay,
     #reports-modal.modal-overlay,
     .tasitlar-modal-overlay.modal-overlay {
         top: 0 !important;
-        bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap)) !important;
-        bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
     }
 
     /* Mobil full-screen modal opt-in: küçük/ayarlar owner'larını genel rejimle ezme */
@@ -2560,8 +2540,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
 @media (max-width: 640px) and (display-mode: standalone) {
     .modal-overlay {
         padding-top: env(safe-area-inset-top) !important;
-        bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap)) !important;
-        bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
     }
     /* ≤768 padding:0 !important ezmesin: kayıt/rapor + taşıt zinciri çentik altında kalmasın */
     :is(#vehicle-modal, #reports-modal).modal-overlay {
@@ -2569,22 +2547,16 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         padding-right: 0 !important;
         padding-bottom: 0 !important;
         padding-left: 0 !important;
-        bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap)) !important;
-        bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
     }
     :is(#vehicles-modal, #vehicle-detail-modal, #dinamik-olay-modal, #event-menu-modal, #vehicle-history-modal).tasitlar-modal-overlay.modal-overlay {
         padding-top: env(safe-area-inset-top) !important;
         padding-right: 0 !important;
         padding-bottom: 0 !important;
         padding-left: 0 !important;
-        bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap)) !important;
-        bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
     }
     .tasitlar-modal-overlay {
         padding-top: env(safe-area-inset-top) !important;
         padding-bottom: 0 !important;
-        bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap)) !important;
-        bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
     }
     .tasitlar-modal-overlay::before {
         top: env(safe-area-inset-top) !important;
@@ -2810,16 +2782,6 @@ body.modal-open .app-container {
 
 /* === NOKTA ATIŞI: Ana + taşıt modalları alt çerçeve (768px) === */
 @media (max-width: 768px) {
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicle-modal.modal-overlay,
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #reports-modal.modal-overlay,
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicles-modal.modal-overlay,
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicle-detail-modal.modal-overlay,
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #dinamik-olay-modal.modal-overlay,
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #event-menu-modal.modal-overlay,
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicle-history-modal.modal-overlay {
-    bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap)) !important;
-    bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
-  }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicle-modal.modal-overlay .modal-container,
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #reports-modal.modal-overlay .modal-container,
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .tasitlar-modal-overlay.modal-overlay .modal-container,
@@ -2833,7 +2795,6 @@ body.modal-open .app-container {
     border-bottom-left-radius: 12px !important;
     border-bottom-right-radius: 12px !important;
   }
-  /* Gap bandı artık modal state'inden bağımsız sabit (footer + gap); ::before her zaman taban kuralla (satır ~629) aynı sınırda durur — ışık modal açık/kapalı diye büyüyüp küçülmez. */
 }
 
 @media (max-width: 640px) {

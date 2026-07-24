@@ -274,7 +274,6 @@ body.admin-report-page .main-header-user-name.is-empty {
     width: 69px !important;
     min-width: 69px !important;
     max-width: 69px !important;
-    /* Masaüstü: logo 3px yukarı (önceki translateY(3px) → 0); diğer hero hücreleri sabit */
     transform: translateY(0) !important;
   }
 
@@ -1600,10 +1599,9 @@ body.admin-report-page .main-header-user-name.is-empty {
 }
 
 .admin-footer-back-wrap {
-  /* Footer ile AYNI yatay kontrat: container (max 1200) sol kenarının 3px içi */
+  /* Footer ile aynı yatay kontrat; sol kenara 3px */
   position: fixed;
   left: 50%;
-  right: auto;
   bottom: calc(var(--app-footer-real-height, 42px) + 6px + env(safe-area-inset-bottom, 0));
   transform: translateX(-50%);
   box-sizing: border-box;
@@ -1969,7 +1967,6 @@ body.admin-report-page .main-header-user-name.is-empty {
 
 .admin-tabs-container {
   display: grid;
-  /* Sanal iki yarı: sol Aylık KM, sağ Kullanıcı Raporları */
   grid-template-columns: 1fr 1fr;
   justify-content: stretch;
   gap: 0;
@@ -2765,15 +2762,6 @@ body.admin-report-page .main-header-user-name.is-empty {
 }
 
 @media (max-width: 640px) {
-  .admin-tabs-container {
-    grid-template-columns: 1fr 1fr;
-    gap: 0;
-  }
-
-  .admin-tab-btn {
-    text-align: center;
-  }
-
   .monthly-stage-empty {
     padding: 10px 2px 0;
     font-size: 12px;
