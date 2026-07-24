@@ -626,8 +626,12 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
     top: 0;
     left: 0;
     right: 0;
-    bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap));
-    bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0));
+    /* Yan cizgiler footer UST kenarina kadar iner (footer'a deger) — gap bolgesinde
+       kopukluk/"bant" olusmaz. Modal acikken bu bolgeyi opak gap-layer (z10010)
+       ortterek sizinti segmenti engeller; modal kapaliyken gap-layer gizli oldugu
+       icin cizgiler footer ile birlesik gorunur. */
+    bottom: var(--app-footer-real-height);
+    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0));
     border-top: 0.5px solid var(--border-red-tech);
     border-left: 0.5px solid var(--border-red-tech);
     border-right: 0.5px solid var(--border-red-tech);
