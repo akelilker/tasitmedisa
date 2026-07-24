@@ -22,6 +22,7 @@ const owners = {
   settings: read('ayarlar.js')
 };
 const sw = read('sw.js');
+const tasitlarBase = read('tasitlar-base.css');
 const packageJson = read('package.json');
 const qualityGate = read('.github/scripts/quality-gate.sh');
 
@@ -219,16 +220,20 @@ if (implementationPresent) {
     assert.match(index, /__medisaMainShellMetrics\.splashHiddenAt/);
   });
   test('version ve SW cache beklenen değerde', function() {
-    assert.match(core, /tasitlar: '20260723\.5'/);
-    assert.match(owners.vehicles, /MEDISA_TASITLAR_MODULE_VERSION = '20260723\.5'/);
+    assert.match(core, /tasitlar: '20260723\.6'/);
+    assert.match(owners.vehicles, /MEDISA_TASITLAR_MODULE_VERSION = '20260723\.6'/);
     // Loader ile modül içi sürüm birebir eşleşmeli; aksi halde "hazır duruma gelemedi" düşer.
     var loaderVer = (core.match(/tasitlar:\s*'([^']+)'/) || [])[1];
     var moduleVer = (owners.vehicles.match(/MEDISA_TASITLAR_MODULE_VERSION\s*=\s*'([^']+)'/) || [])[1];
     assert.ok(loaderVer && moduleVer, 'tasitlar sürüm sabitleri bulunmalı');
     assert.strictEqual(loaderVer, moduleVer, 'MEDISA_MODULE_VERSIONS.tasitlar === MEDISA_TASITLAR_MODULE_VERSION');
-    assert.match(index, /script-core\.js\?v=20260723\.6/);
+    assert.match(index, /script-core\.js\?v=20260723\.7/);
     assert.match(index, /style-core\.css\?v=20260723\.17/);
-    assert.match(sw, /medisa-v2\.251/);
+    assert.match(sw, /medisa-v2\.252/);
+  });
+  test('detail-underlay boyama yapmaz (footer gap bloom ezilmesin)', function() {
+    assert.match(tasitlarBase, /#vehicles-modal\.detail-underlay[\s\S]*?visibility:\s*hidden\s*!important/);
+    assert.match(tasitlarBase, /#vehicles-modal\.detail-underlay[\s\S]*?isolation:\s*auto\s*!important/);
   });
   test('footer red-glow tek ışık kaynağı (ayrı gap layer yok)', function() {
     // Ayrı fiziksel gap ışık katmanı (#app-footer-gap-layer) tamamen kaldırıldı.
