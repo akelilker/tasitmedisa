@@ -2,7 +2,7 @@
    TAŞIT KAYIT FORMU - FINAL (PWA FIX & DESKTOP 52PX)
    ========================================= */
 
-/* Overlay konumu/style-core .modal-overlay (6px boşluk, z-index, isolation) kullanılır */
+/* Overlay alt sınırı: style-core .modal-overlay (--app-footer-real-height + --app-footer-gap; z-index, isolation) */
 #vehicle-modal.modal-overlay {
     display: none;
     background: var(--bg);
@@ -1506,7 +1506,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         border-color: var(--theme-color) !important; /* Aktif taşıt tipi daha belirgin */
     }
     
-    /* Overlay konumu style-core .modal-overlay (6px) kullanılır; ezme yok */
+    /* Overlay alt sınırı: style-core .modal-overlay (--app-footer-real-height + --app-footer-gap); ezme yok */
     #vehicle-modal .modal-container {
         isolation: isolate !important;
         max-height: 100% !important;
