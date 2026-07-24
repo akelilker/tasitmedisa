@@ -221,8 +221,8 @@ if (implementationPresent) {
   test('version ve SW cache beklenen değerde', function() {
     assert.match(core, /tasitlar: '20260723\.3'/);
     assert.match(index, /script-core\.js\?v=20260723\.4/);
-    assert.match(index, /style-core\.css\?v=20260723\.7/);
-    assert.match(sw, /medisa-v2\.238/);
+    assert.match(index, /style-core\.css\?v=20260723\.8/);
+    assert.match(sw, /medisa-v2\.239/);
   });
   test('fiziksel footer gap layer owner kontratı', function() {
     var gapMatches = index.match(/id="app-footer-gap-layer"/g) || [];
@@ -238,9 +238,15 @@ if (implementationPresent) {
     assert.match(style, /#app-footer-gap-layer[\s\S]*?pointer-events:\s*none/);
     assert.match(style, /#app-footer-gap-layer[\s\S]*?var\(--bg\)/);
     assert.match(style, /#app-footer-gap-layer[\s\S]*?var\(--app-footer-gap/);
-    assert.match(style, /body:not\(\.dashboard-page\):not\(\.login-page\):not\(\.admin-report-page\)\.modal-open #app-footer\s*\{[\s\S]*?box-shadow:\s*0 -1px 0 var\(--footer-top-highlight\)\s*!important/);
+    // Footer'ın kendi box-shadow glow'u tek owner olan gap layer lehine kaldırıldı;
+    // modal açık/kapalı için ayrı bir #app-footer box-shadow kuralı artık gerekmiyor.
+    var mainFooterRuleMatch = style.match(/body:not\(\.dashboard-page\):not\(\.login-page\):not\(\.admin-report-page\) #app-footer\s*\{([\s\S]*?)\}/);
+    assert.ok(mainFooterRuleMatch, 'ana uygulama footer owner kuralı bulunmalı');
+    assert.doesNotMatch(mainFooterRuleMatch[1], /footer-red-glow/, 'ana uygulama footer kendi box-shadow glow\'unu taşımamalı; tek owner gap layer olmalı');
+    assert.doesNotMatch(style, /body:not\(\.dashboard-page\):not\(\.login-page\):not\(\.admin-report-page\)\.modal-open #app-footer\s*\{/, 'modal-open özel footer box-shadow kuralı artık gereksiz (base zaten sabit)');
     assert.doesNotMatch(style, /:has\([^)]*\)\s*#app-footer::before/);
     assert.doesNotMatch(style, /body[^{]*\.modal-open[^{]*#app-footer::before\s*\{[^}]*opacity:\s*1/);
+    assert.doesNotMatch(style, /#app-footer::before\s*\{[^}]*background:\s*none/, 'ölü #app-footer::before override kaldırılmalı');
     assert.doesNotMatch(style, /z-index:\s*100060/);
     var footerZMatch = style.match(/^#app-footer\s*\{[\s\S]*?z-index:\s*(\d+)/m);
     var gapZMatch = style.match(/^#app-footer-gap-layer\s*\{[\s\S]*?z-index:\s*(\d+)/m);
