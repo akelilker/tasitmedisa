@@ -67,9 +67,17 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicles-modal.tasitlar-modal-overlay.open {
     z-index: 10020 !important;
 }
-/* Detay açıkken alttaki taşıt listesi sadece arka katman olsun; çifte çerçeve görünmesin */
+/* Detay açıkken alttaki taşıt listesi boyanmasın.
+   Şeffaf + isolation:isolate bırakmak Chrome'da footer'ın gap bloom'unu
+   (box-shadow) ara sıra ezebiliyor; minimize/geri-gelince katman yenilenince
+   ışık "sonradan yanıyor" gibi görünüyordu. visibility:hidden ile underlay
+   hiç paint etmez; DOM/state geri dönüş için yerinde kalır. */
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicles-modal.modal-overlay.detail-underlay.active,
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicles-modal.modal-overlay.detail-underlay.open {
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicles-modal.modal-overlay.detail-underlay.open,
+#vehicles-modal.detail-underlay {
+    visibility: hidden !important;
+    pointer-events: none !important;
+    isolation: auto !important;
     background: transparent !important;
     background-color: transparent !important;
 }
@@ -88,10 +96,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
 #vehicles-modal.detail-underlay .modal-container::before {
     display: none !important;
     content: none !important;
-}
-#vehicles-modal.detail-underlay .modal-header,
-#vehicles-modal.detail-underlay .modal-body {
-    visibility: hidden !important;
 }
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicle-detail-modal.tasitlar-modal-overlay.active,
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicle-detail-modal.tasitlar-modal-overlay.open {
