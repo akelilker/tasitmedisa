@@ -626,10 +626,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
     top: 0;
     left: 0;
     right: 0;
-    /* Yan cizgiler footer UST kenarina kadar iner (footer'a deger) — gap bolgesinde
-       kopukluk/"bant" olusmaz. Modal acikken bu bolgeyi opak gap-layer (z10010)
-       ortterek sizinti segmenti engeller; modal kapaliyken gap-layer gizli oldugu
-       icin cizgiler footer ile birlesik gorunur. */
+    /* Yan cizgiler footer UST kenarina kadar iner (footer'a deger); gap bolgesinde
+       kopukluk/"bant" olusmaz. Modal acik/kapali fark etmez, ::before ayni kalir. */
     bottom: var(--app-footer-real-height);
     bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0));
     border-top: 0.5px solid var(--border-red-tech);
@@ -1810,61 +1808,15 @@ body.modal-open .user-panel-link {
     z-index: 0;
 }
 
-/* Ana uygulama: footer'ın kendi (doğal, yumuşak/yayvan sönümlenen) box-shadow
-   bloom'u modal açık/kapalı FARK ETMEKSİZİN aynı kalır. Böylece modal yalnızca
-   üste konmuş gibi olur; alttaki footer ışığı azalmaz ve keskin "düz kutu"ya
-   dönmez. Gap layer sadece iç içe modal sızıntısını engelleyen opak bariyerdir;
-   footer bloom'unun feather kenarları onun etrafından görünmeye devam eder. */
+/* Ana uygulama: footer'ın kendi (doğal, yumuşak/yayvan sönümlenen) --footer-red-glow
+   box-shadow bloom'u tek ışık kaynağıdır ve modal açık/kapalı FARK ETMEKSİZİN aynı
+   kalır. Modal yalnızca üste konmuş gibi olur; alttaki footer ışığı değişmez, gap'te
+   görünmeye devam eder (ayrı bir gap katmanı yoktur). */
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
     border-top: 1px solid var(--footer-top-border) !important;
     box-shadow:
         0 -1px 0 var(--footer-top-highlight),
         var(--footer-red-glow) !important;
-}
-
-/* Fiziksel modal–footer gap ışık katmanı (footer sibling; pseudo/shadow değil) */
-#app-footer-gap-layer {
-    position: fixed;
-    left: 50%;
-    transform: translate3d(-50%, 0, 0);
-    bottom: var(--app-footer-real-height, 42px);
-    width: 100%;
-    max-width: 500px;
-    height: calc(
-        var(--app-footer-gap, 14px) +
-        env(safe-area-inset-bottom, 0px)
-    );
-    box-sizing: border-box;
-    display: block;
-    visibility: hidden;
-    opacity: 0;
-    pointer-events: none;
-    z-index: 10010;
-    isolation: isolate;
-    contain: layout paint style;
-    backface-visibility: hidden;
-    /* Işık, modal kapalıyken footer'ın --footer-red-glow box-shadow'unun gap
-       içinde ürettiği fiziksel profille eşleşir: bloom merkezi footer üst
-       kenarından ~18px yukarıda olduğu için gap içinde alttan üste ARTAR.
-       Böylece modal açık/kapalı ışık yoğunluğu aynı kalır (modal sadece üste
-       konmuş gibi). Alt katman var(--bg): alttaki modal metni sızıntı engeli. */
-    background:
-        linear-gradient(
-            to top,
-            rgba(var(--footer-glow-rgb), 0.30) 0%,
-            rgba(var(--footer-glow-rgb), 0.40) 50%,
-            rgba(var(--footer-glow-rgb), 0.50) 100%
-        ),
-        var(--bg);
-}
-
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #app-footer-gap-layer {
-    visibility: visible;
-    opacity: 1;
-    /* Görünürken hit-test edilebilir olsun: altındaki kapanmamış modal metni tıklama/aksesibilite
-       açısından da "arkada" kalsın (pointer-events:none olduğunda elementsFromPoint bu katmanı
-       atlayıp altındaki modalı döndürüyordu). */
-    pointer-events: auto;
 }
 
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.active,
