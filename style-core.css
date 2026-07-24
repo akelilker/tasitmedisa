@@ -1806,19 +1806,16 @@ body.modal-open .user-panel-link {
     z-index: 0;
 }
 
-/* Ana uygulama: modal kapalıyken footer'ın kendi (doğal, yumuşak sönümlenen) box-shadow
-   glow'u; modal açıkken bu shadow kapatılır, ışık fiziksel gap layer'a devreder. */
+/* Ana uygulama: footer'ın kendi (doğal, yumuşak/yayvan sönümlenen) box-shadow
+   bloom'u modal açık/kapalı FARK ETMEKSİZİN aynı kalır. Böylece modal yalnızca
+   üste konmuş gibi olur; alttaki footer ışığı azalmaz ve keskin "düz kutu"ya
+   dönmez. Gap layer sadece iç içe modal sızıntısını engelleyen opak bariyerdir;
+   footer bloom'unun feather kenarları onun etrafından görünmeye devam eder. */
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
     border-top: 1px solid var(--footer-top-border) !important;
     box-shadow:
         0 -1px 0 var(--footer-top-highlight),
         var(--footer-red-glow) !important;
-}
-
-/* Modal açık: dış red shadow kapalı; ışık bağımsız fiziksel gap layer'da */
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #app-footer {
-    box-shadow:
-        0 -1px 0 var(--footer-top-highlight) !important;
 }
 
 /* Fiziksel modal–footer gap ışık katmanı (footer sibling; pseudo/shadow değil) */
