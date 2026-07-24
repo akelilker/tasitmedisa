@@ -146,14 +146,6 @@ body::-webkit-scrollbar,
   }
 }
 
-/* Ana uygulama: modal–footer ışık boşluğu, footer bloom yüksekliğine yakın
-   olsun diye genişletildi. Tüm modal bottom'ları ve gap-layer yüksekliği aynı
-   değişkeni okuduğu için tek noktadan büyür; driver/admin/dashboard :root
-   değeriyle (14/17px) devam eder. */
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page) {
-  --app-footer-gap: 30px;
-}
-
 /* --- EVRENSEL GERİ DÖN NAVİGASYONU (tüm uygulama) --- */
 /* Masaüstü ve mobil ortak: geri dön ok + etiket hizalaması (3px gap, ok 5px aşağı, etiket 1px küçük) */
 
