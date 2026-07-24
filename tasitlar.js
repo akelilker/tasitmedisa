@@ -164,7 +164,7 @@
 
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20260723.6';
+  const MEDISA_TASITLAR_MODULE_VERSION = '20260725.1';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
@@ -5096,8 +5096,8 @@
 
         if (currentVehicleId && typeof window.closeEventModalAndShowEventMenu === 'function') {
           window.closeEventModalAndShowEventMenu(type);
-        } else {
-          closeAllModals();
+        } else if (typeof window.closeAllModals === 'function') {
+          window.closeAllModals();
         }
       };
 
