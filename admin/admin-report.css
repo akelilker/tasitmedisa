@@ -1594,17 +1594,19 @@ body.admin-report-page .main-header-user-name.is-empty {
 
 .admin-footer-back-wrap {
   position: fixed;
-  left: 50%;
+  /* Admin container (max 1200) sol kenarına sabitle; viewport soluna kaçmasın */
+  left: max(0px, calc(50% - 600px));
+  right: auto;
   bottom: calc(var(--app-footer-real-height, 42px) + 6px + env(safe-area-inset-bottom, 0));
-  transform: translateX(-50%);
+  transform: none;
   box-sizing: border-box;
   display: flex;
   justify-content: flex-start;
-  width: 100%;
-  max-width: 1200px;
+  width: auto;
+  max-width: none;
   margin: 0 !important;
   padding-left: 3px !important;
-  padding-right: 12px !important;
+  padding-right: 0 !important;
   overflow: visible;
   background: transparent;
   border: 0;
@@ -1959,9 +1961,10 @@ body.admin-report-page .main-header-user-name.is-empty {
 
 .admin-tabs-container {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  /* Sanal iki yarı: sol Aylık KM, sağ Kullanıcı Raporları */
+  grid-template-columns: 1fr 1fr;
   justify-content: stretch;
-  gap: 10px;
+  gap: 0;
   margin-top: 0;
   margin-bottom: 8px;
   width: 100%;
@@ -1984,6 +1987,9 @@ body.admin-report-page .main-header-user-name.is-empty {
   font-weight: 700;
   letter-spacing: 0.2px;
   text-align: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
   transition: color 0.2s ease, border-color 0.2s ease;
 }
@@ -2752,8 +2758,8 @@ body.admin-report-page .main-header-user-name.is-empty {
 
 @media (max-width: 640px) {
   .admin-tabs-container {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
   }
 
   .admin-tab-btn {
