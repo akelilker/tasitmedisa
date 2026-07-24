@@ -626,8 +626,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
     top: 0;
     left: 0;
     right: 0;
-    /* Yan cizgiler footer UST kenarina kadar iner (footer'a deger); gap bolgesinde
-       kopukluk/"bant" olusmaz. Modal acik/kapali fark etmez, ::before ayni kalir. */
+    /* Modal kapalı: yan çizgiler footer üst kenarına kadar iner (gap'te "bant" olmaz). */
     bottom: var(--app-footer-real-height);
     bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0));
     border-top: 0.5px solid var(--border-red-tech);
@@ -638,6 +637,13 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
     box-sizing: border-box;
     pointer-events: none;
     z-index: 2;
+}
+
+/* Modal açık: yan kırmızı çizgiler gap bandında görünmesin — çerçeve modal alt
+   kenarında (footer+gap) bitsin; gap'te yalnız footer bloom kalsın. */
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .app-container::before {
+    bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap));
+    bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0));
 }
 
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-returning .app-container::after {

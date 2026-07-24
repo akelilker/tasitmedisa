@@ -228,8 +228,11 @@ if (implementationPresent) {
     assert.ok(loaderVer && moduleVer, 'tasitlar sürüm sabitleri bulunmalı');
     assert.strictEqual(loaderVer, moduleVer, 'MEDISA_MODULE_VERSIONS.tasitlar === MEDISA_TASITLAR_MODULE_VERSION');
     assert.match(index, /script-core\.js\?v=20260723\.7/);
-    assert.match(index, /style-core\.css\?v=20260723\.17/);
-    assert.match(sw, /medisa-v2\.252/);
+    assert.match(index, /style-core\.css\?v=20260723\.18/);
+    assert.match(sw, /medisa-v2\.253/);
+  });
+  test('modal açıkken yan çerçeve gap bandına inmez', function() {
+    assert.match(style, /body:not\(\.dashboard-page\):not\(\.login-page\):not\(\.admin-report-page\)\.modal-open \.app-container::before\s*\{[\s\S]*?var\(--app-footer-real-height\)\s*\+\s*var\(--app-footer-gap\)/);
   });
   test('detail-underlay boyama yapmaz (footer gap bloom ezilmesin)', function() {
     assert.match(tasitlarBase, /#vehicles-modal\.detail-underlay[\s\S]*?visibility:\s*hidden\s*!important/);
