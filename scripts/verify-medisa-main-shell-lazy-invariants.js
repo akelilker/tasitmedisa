@@ -219,10 +219,10 @@ if (implementationPresent) {
     assert.match(index, /__medisaMainShellMetrics\.splashHiddenAt/);
   });
   test('version ve SW cache beklenen değerde', function() {
-    assert.match(core, /tasitlar: '20260723\.3'/);
+    assert.match(core, /tasitlar: '20260723\.4'/);
     assert.match(index, /script-core\.js\?v=20260723\.5/);
     assert.match(index, /style-core\.css\?v=20260723\.17/);
-    assert.match(sw, /medisa-v2\.249/);
+    assert.match(sw, /medisa-v2\.250/);
   });
   test('footer red-glow tek ışık kaynağı (ayrı gap layer yok)', function() {
     // Ayrı fiziksel gap ışık katmanı (#app-footer-gap-layer) tamamen kaldırıldı.
