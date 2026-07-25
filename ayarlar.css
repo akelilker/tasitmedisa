@@ -3109,16 +3109,6 @@ body.modal-open #info-modal .modal-container {
     }
 }
 
-/* Şube/Kullanıcı liste + düzenleme modalları: masaüstünde modal–footer dikey boşluk 3px azaltılır (TAŞITLAR listesi ile aynı formül; önbellek onay modalları hariç) */
-@media (min-width: 769px) {
-    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #branch-modal.modal-overlay,
-    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #user-modal.modal-overlay,
-    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #branch-form-modal.modal-overlay,
-    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #user-form-modal.modal-overlay {
-        bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0) - 3px) !important;
-    }
-}
-
 /* iOS/Android PWA: ayar full-screen modalları çentik altında kalmasın */
 @media (max-width: 768px) and (display-mode: standalone) {
     :is(#required-documents-modal, #branch-modal, #user-modal, #data-management-modal, #dis-veri-panel, #branch-form-modal, #user-form-modal).ayarlar-modal-overlay.modal-overlay {
