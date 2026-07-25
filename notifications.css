@@ -1464,6 +1464,12 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
     }
   }
 }
+/* Masaüstü tarayıcı: diğer ana modallerle aynı üst boşluk (style-core 12px → 2px) */
+@media (min-width: 641px) {
+  #monthly-todo-modal.monthly-todo-modal-overlay .modal-container {
+    margin-top: 2px !important;
+  }
+}
 @media (min-width: 769px) and (display-mode: standalone) {
   .monthly-todo-modal-overlay .modal-container {
     margin-top: 0 !important;
