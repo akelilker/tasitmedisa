@@ -68,6 +68,17 @@
 }
 
 /* Ayarlar modalları: branch/user/data-management container style-core'da; küçük modallar aşağıda override */
+/* Masaüstü tarayıcı: diğer ana modallerle aynı üst boşluk (style-core 12px → 2px). Standalone PWA: 0. */
+@media (min-width: 641px) {
+    :is(#branch-modal, #user-modal, #data-management-modal, #dis-veri-panel, #branch-form-modal, #user-form-modal, #required-documents-modal).ayarlar-modal-overlay .modal-container {
+        margin-top: 2px !important;
+    }
+}
+@media (min-width: 769px) and (display-mode: standalone) {
+    :is(#branch-modal, #user-modal, #data-management-modal, #dis-veri-panel, #branch-form-modal, #user-form-modal, #required-documents-modal).ayarlar-modal-overlay .modal-container {
+        margin-top: 0 !important;
+    }
+}
 
 #cache-confirm-modal .modal-container {
     background: var(--bg); 
