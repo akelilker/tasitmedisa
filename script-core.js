@@ -1104,7 +1104,7 @@ var MEDISA_MODULE_VERSIONS = {
   kayitJs: '20260725.1',
   kayitCss: '20260708.1',
   ayarlarJs: '20260722.1',
-  ayarlarCss: '20260725.2',
+  ayarlarCss: '20260725.3',
   tasitlarYazici: '20260517.5',
   vehicleNotificationDomain: '20260703.1'
 };
