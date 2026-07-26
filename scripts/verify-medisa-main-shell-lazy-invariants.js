@@ -220,16 +220,26 @@ if (implementationPresent) {
     assert.match(index, /__medisaMainShellMetrics\.splashHiddenAt/);
   });
   test('version ve SW cache beklenen değerde', function() {
-    assert.match(core, /tasitlar: '20260725\.1'/);
-    assert.match(owners.vehicles, /MEDISA_TASITLAR_MODULE_VERSION = '20260725\.1'/);
+    assert.match(core, /tasitlar: '20260726\.1'/);
+    assert.match(owners.vehicles, /MEDISA_TASITLAR_MODULE_VERSION = '20260726\.1'/);
     // Loader ile modül içi sürüm birebir eşleşmeli; aksi halde "hazır duruma gelemedi" düşer.
     var loaderVer = (core.match(/tasitlar:\s*'([^']+)'/) || [])[1];
     var moduleVer = (owners.vehicles.match(/MEDISA_TASITLAR_MODULE_VERSION\s*=\s*'([^']+)'/) || [])[1];
     assert.ok(loaderVer && moduleVer, 'tasitlar sürüm sabitleri bulunmalı');
     assert.strictEqual(loaderVer, moduleVer, 'MEDISA_MODULE_VERSIONS.tasitlar === MEDISA_TASITLAR_MODULE_VERSION');
-    assert.match(index, /script-core\.js\?v=20260725\.1/);
+    assert.match(core, /raporlar: '20260726\.1'/);
+    assert.match(index, /script-core\.js\?v=20260726\.1/);
     assert.match(index, /style-core\.css\?v=20260724\.1/);
-    assert.match(sw, /medisa-v2\.254/);
+    assert.match(sw, /medisa-v2\.255/);
+  });
+  test('Raporlar modül ve SW cache sürüm paritesi', function() {
+    var raporlarModuleVer = (core.match(/raporlar:\s*'([^']+)'/) || [])[1];
+    var raporlarCacheVer = (sw.match(/CACHE_RAPORLAR_VERSION\s*=\s*'medisa-raporlar-([^']+)'/) || [])[1];
+    assert.ok(raporlarModuleVer, 'MEDISA_MODULE_VERSIONS.raporlar bulunmalı');
+    assert.ok(raporlarCacheVer, 'CACHE_RAPORLAR_VERSION bulunmalı');
+    assert.strictEqual(raporlarModuleVer, '20260726.1', 'MEDISA_MODULE_VERSIONS.raporlar canonical sürüm');
+    assert.strictEqual(raporlarCacheVer, '20260726.1', 'CACHE_RAPORLAR_VERSION canonical sürüm');
+    assert.strictEqual(raporlarModuleVer, raporlarCacheVer, 'Raporlar modül ve SW cache aynı tarih sürümünü taşımalı');
   });
   test('KAYIT home closeVehicleModal owner kullanır', function() {
     var kayitHome = owners.kayit.match(/id="vehicle-modal"[\s\S]*?class="modal-home"[^>]*>/);
