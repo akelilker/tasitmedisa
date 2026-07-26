@@ -9269,8 +9269,19 @@
       return formatDateForDisplay(ev && ev.date ? ev.date : '');
     }
     const actionDateText = formatHistoryActionDate(event);
-    const dateText = escapeHtml((isDateRenewalEvent ? actionDateText : formatDateForDisplay(event.date)) || '-');
     const eventData = event.data || {};
+    const isPolicyExpiryHistoryEvent = eventType === 'kasko-guncelle' || eventType === 'sigorta-guncelle';
+    const policyExpiryIso = isPolicyExpiryHistoryEvent
+      ? getPolicyDateIso(eventData.bitisTarihi)
+      : '';
+    const policyExpiryDisplay = policyExpiryIso
+      ? formatDateForDisplay(policyExpiryIso)
+      : '';
+    const dateText = escapeHtml((
+      isPolicyExpiryHistoryEvent
+        ? (policyExpiryDisplay || actionDateText)
+        : (isDateRenewalEvent ? actionDateText : formatDateForDisplay(event.date))
+    ) || '-');
     const legacyAciklama = String(eventData.aciklama || eventData.description || '').trim();
     const performerRaw = eventData.kaydeden || eventData.surucu || eventData.kisi || '';
     const performerUpper = formatHistoryPerformerUpper(performerRaw || getRecorderDisplayName());
@@ -9307,27 +9318,27 @@
       const adres = (eventData.adres || '').trim();
       if (adres) pushDetail('Konum', toTitleCase(adres));
     } else if (eventType === 'kasko-guncelle') {
-      const bitis = formatDateForDisplay(eventData.bitisTarihi || '');
+      const bitis = policyExpiryDisplay;
       const firma = (eventData.firma || '').trim();
       const acente = (eventData.acente || '').trim();
       const iletisim = (eventData.iletisim || '').trim();
       if (bitis) {
-        summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Kasko Poli\u00e7esi Yenileme Tarihini </span><span class="history-detail-inline">' + escapeHtml(bitis) + '</span><span class="history-action-text"> Olarak G\u00FCncelledi.</span>';
+        summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Kasko Poli\u00e7esi Biti\u015F Tarihini </span><span class="history-detail-inline">' + escapeHtml(bitis) + '</span><span class="history-action-text"> Olarak G\u00FCncelledi.</span>';
       } else {
-        summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Kasko Poli\u00e7esi Yenileme Tarihini G\u00FCncelledi.</span>';
+        summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Kasko Poli\u00e7esi Biti\u015F Tarihini G\u00FCncelledi.</span>';
       }
       if (firma) pushDetail('Firma', toTitleCase(firma));
       if (acente) pushDetail('Acente', toTitleCase(acente));
       if (iletisim) pushDetail('\u0130leti\u015Fim', iletisim);
     } else if (eventType === 'sigorta-guncelle') {
-      const bitis = formatDateForDisplay(eventData.bitisTarihi || '');
+      const bitis = policyExpiryDisplay;
       const firma = (eventData.firma || '').trim();
       const acente = (eventData.acente || '').trim();
       const iletisim = (eventData.iletisim || '').trim();
       if (bitis) {
-        summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Sigorta Poli\u00e7esi Yenileme Tarihini </span><span class="history-detail-inline">' + escapeHtml(bitis) + '</span><span class="history-action-text"> Olarak G\u00FCncelledi.</span>';
+        summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Sigorta Poli\u00e7esi Biti\u015F Tarihini </span><span class="history-detail-inline">' + escapeHtml(bitis) + '</span><span class="history-action-text"> Olarak G\u00FCncelledi.</span>';
       } else {
-        summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Sigorta Poli\u00e7esi Yenileme Tarihini G\u00FCncelledi.</span>';
+        summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Sigorta Poli\u00e7esi Biti\u015F Tarihini G\u00FCncelledi.</span>';
       }
       if (firma) pushDetail('Firma', toTitleCase(firma));
       if (acente) pushDetail('Acente', toTitleCase(acente));
@@ -9433,12 +9444,12 @@
       if (note) pushDetail('Not', note.length > 120 ? note.slice(0, 120) + '...' : note);
     } else if (eventType === 'satis') {
       const rec = formatHistoryPerformerUpper(eventData.kaydeden || eventData.surucu || getRecorderDisplayName());
-      const plate = String(eventData.plakaSnapshot || vehicle.plate || '-').trim();
+      const plate = window.formatPlaka(eventData.plakaSnapshot || vehicle.plate || '-');
       const plateEsc = escapeHtml(plate);
       const pert = eventData.pertIsaret === true || (eventData.aciklama && /\bpert\b/i.test(String(eventData.aciklama)));
       const tail = pert
         ? ' Plakal\u0131 Ta\u015F\u0131t\u0131n Pert Oldu\u011funu Sisteme Kaydetti.'
-        : ' Plakal\u0131 Ta\u015F\u0131t\u0131n Sat\u0131ld\u0131\u011f\u0131n\u0131 Sisteme Kaydetti.';
+        : ' Plakal\u0131 Ta\u015F\u0131t\u0131n Sat\u0131ld\u0131\u011f\u0131n\u0131 Bildirdi.';
       summaryInner = '<span class="history-user-name">' + escapeHtml(rec) + '</span><span class="history-action-text">, </span><span class="history-detail-inline">' + plateEsc + '</span><span class="history-action-text">' + tail + '</span>';
       const tutar = (eventData.tutar || '').trim();
       const aciklama = (eventData.aciklama || '').trim();
