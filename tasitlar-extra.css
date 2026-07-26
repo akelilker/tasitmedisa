@@ -1998,7 +1998,7 @@
     aspect-ratio: 1 / 1;
     box-sizing: border-box;
     background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.30) !important;
+    border: 1px solid rgba(255, 255, 255, 0.45) !important;
     border-radius: 8px;
   }
 
@@ -2016,7 +2016,7 @@
 
   #vehicles-modal .branch-count {
     font-size: 15px;
-    color: rgba(248, 250, 252, 0.62);
+    color: rgba(248, 250, 252, 0.78);
   }
   
   /* Mobil: 3'lü grid, kartlar eşit yükseklik, alt satır (fiyat/buton) hep aynı hizada */
