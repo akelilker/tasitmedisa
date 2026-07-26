@@ -155,15 +155,22 @@ window.escapeAttr = function(s) {
   return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 };
 
+/** iOS / iPadOS cihaz (Safari + PWA); standalone şartı aramaz. */
+window.isMedisaIOSDevice = function isMedisaIOSDevice() {
+  var ua = navigator.userAgent || '';
+  return /iPad|iPhone|iPod/.test(ua) ||
+    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+};
+
 /** iOS ana ekran PWA (Safari dışı tam ekran); belge linkleri aynı webview'da kilitlenmesin diye tespit */
 window.isIOSPWA = function isIOSPWA() {
-  var ua = navigator.userAgent || '';
-  var isIOS = /iPad|iPhone|iPod/.test(ua) ||
-    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  if (typeof window.isMedisaIOSDevice !== 'function' || !window.isMedisaIOSDevice()) {
+    return false;
+  }
   var mm = typeof window.matchMedia === 'function' ? window.matchMedia : null;
   var isStandalone = !!(mm && (mm('(display-mode: standalone)').matches || mm('(display-mode: fullscreen)').matches)) ||
     window.navigator.standalone === true;
-  return !!(isIOS && isStandalone);
+  return !!isStandalone;
 };
 
 /** KM gösterimi: rakam + binlik nokta; boşta '–' (rapor/admin ile uyumlu) */
@@ -393,7 +400,7 @@ window.getUserRoleLabelAnalytics = function(user) {
 /** Gizli yazdırma iframe (ekran dışına taşıma) — tasitlar / tasitlar-yazici */
 window.MEDISA_PRINT_IFRAME_CSS_TEXT = 'position:fixed;left:0;top:0;width:100vw;height:100vh;border:0;opacity:0.01;pointer-events:none;visibility:visible;transform:translateX(-200vw);background:#fff;z-index:-1;';
 
-/** iOS PWA: otomatik print yerine kapanabilir ön izleme + kullanıcı tıklamasıyla native yazdırma. */
+/** iOS Safari + PWA: otomatik print yerine kapanabilir ön izleme; native print yalnız toolbar Yazdır tıklamasında. */
 window.openMedisaIosPwaPrintPreview = function openMedisaIosPwaPrintPreview(printHtml, title) {
   if (!printHtml) return false;
   var oldOverlay = document.getElementById('medisa-ios-print-preview-overlay');
@@ -1098,14 +1105,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Lazy modül asset sürümleri — tek nesne; index.html içindeki style-core ?v= ile tasitlar sürümü uyumlu kalmalı
 var MEDISA_MODULE_VERSIONS = {
-  tasitlar: '20260726.2',
+  tasitlar: '20260726.3',
   notifications: '20260725.2',
-  raporlar: '20260726.1',
+  raporlar: '20260726.2',
   kayitJs: '20260725.1',
   kayitCss: '20260708.1',
   ayarlarJs: '20260722.1',
   ayarlarCss: '20260725.3',
-  tasitlarYazici: '20260517.5',
+  tasitlarYazici: '20260726.3',
   vehicleNotificationDomain: '20260703.1'
 };
 window.MEDISA_MODULE_VERSIONS = MEDISA_MODULE_VERSIONS;

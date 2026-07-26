@@ -596,7 +596,7 @@
 '</body>' +
 '</html>';
 
-    if (typeof window.isIOSPWA === 'function' && window.isIOSPWA() && typeof window.openMedisaIosPwaPrintPreview === 'function') {
+    if (typeof window.isMedisaIOSDevice === 'function' && window.isMedisaIOSDevice() && typeof window.openMedisaIosPwaPrintPreview === 'function') {
       window.openMedisaIosPwaPrintPreview(printHtml, 'Taşıt Kartı Yazdır');
       return;
     }
