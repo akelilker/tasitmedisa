@@ -2002,7 +2002,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
         width: auto;
         padding-right: 2px;
         padding-left: 0;
-        border-right: 1px solid rgba(var(--theme-color-rgb), 0.28);
+        border-right: 1px solid rgba(var(--theme-color-rgb), 0.36);
         box-shadow: 10px 0 18px -18px rgba(var(--theme-color-rgb), 0.45);
     }
 
