@@ -2538,8 +2538,8 @@
         const printHtml = buildStokPrintIframeDocumentHtml(titleText, dateRangeText, tableMarkup, printTableClass, useLandscape);
 
         if (
-            typeof window.isIOSPWA === 'function' &&
-            window.isIOSPWA() &&
+            typeof window.isMedisaIOSDevice === 'function' &&
+            window.isMedisaIOSDevice() &&
             typeof window.openMedisaIosPwaPrintPreview === 'function'
         ) {
             window.openMedisaIosPwaPrintPreview(printHtml, 'Stok Raporu Yazdır');
@@ -2579,15 +2579,12 @@
             frameDoc.write(printHtml);
             frameDoc.close();
 
-            var isIOSWebKit = /iPhone|iPad|iPod/i.test(navigator.userAgent || '') && /WebKit/i.test(navigator.userAgent || '');
-
             function runIframePrint() {
                 if (done) return;
                 try {
-                    var cleanupMs = isIOSWebKit ? 12000 : 2000;
                     var cleanupTimer = window.setTimeout(function() {
                         finishPrintJob();
-                    }, cleanupMs);
+                    }, 2000);
                     var onAfterPrint = function() {
                         window.clearTimeout(cleanupTimer);
                         finishPrintJob();
@@ -2604,11 +2601,7 @@
                 }
             }
 
-            if (isIOSWebKit) {
-                window.setTimeout(runIframePrint, 200);
-            } else {
-                runIframePrint();
-            }
+            runIframePrint();
         } catch (iframeErr) {
             failPrintJob();
         }

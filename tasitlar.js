@@ -164,7 +164,7 @@
 
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20260726.2';
+  const MEDISA_TASITLAR_MODULE_VERSION = '20260726.3';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
@@ -6568,7 +6568,7 @@
   }
 
   function preloadIosPwaImageDocument(vehicleId, documentPath, documentType) {
-    if (!(typeof window.isIOSPWA === 'function' && window.isIOSPWA())) return;
+    if (!(typeof window.isMedisaIOSDevice === 'function' && window.isMedisaIOSDevice())) return;
     if (!documentPath || !isRuhsatImagePath(documentPath)) return;
     const dt = documentType || 'ruhsat';
     const preloadUrl = buildRuhsatDocumentUrl(vehicleId, dt) || toAbsoluteRuhsatUrl(documentPath);
@@ -6649,7 +6649,7 @@
   }
 
   function preloadIosPwaPrintDocument(vehicleId, documentPath, documentType) {
-    if (!(typeof window.isIOSPWA === 'function' && window.isIOSPWA())) return;
+    if (!(typeof window.isMedisaIOSDevice === 'function' && window.isMedisaIOSDevice())) return;
     if (!documentPath) return;
     const dt = documentType || 'ruhsat';
     if (isRuhsatImagePath(documentPath)) {
@@ -6770,9 +6770,15 @@
     const isImage = isRuhsatImageForVehicle(vehicleId, documentPath);
     const documentUrl = buildRuhsatDocumentUrl(vehicleId, dt) || url;
     const ua = navigator.userAgent || '';
-    const isIOSDevice = /iPhone|iPad|iPod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    const isIOSDevice = typeof window.isMedisaIOSDevice === 'function'
+      ? window.isMedisaIOSDevice()
+      : (/iPhone|iPad|iPod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1));
     const isWebKitEngine = /WebKit/i.test(ua);
-    const isIosPwa = !!(window.isIOSPWA && window.isIOSPWA());
+    const useIosManualPrintPreview = !!(
+      typeof window.isMedisaIOSDevice === 'function' &&
+      window.isMedisaIOSDevice() &&
+      typeof window.openMedisaIosPwaPrintPreview === 'function'
+    );
     if (isAndroidDevice()) {
       if (isImage) {
         openVehicleDocumentInNewTab(vehicleId, documentUrl, dt, '')
@@ -6790,14 +6796,14 @@
     }
 
     if (!isImage && isIOSDevice && isWebKitEngine) {
-      if (!(typeof window.isIOSPWA === 'function' && window.isIOSPWA())) {
+      if (!useIosManualPrintPreview) {
         openVehicleDocumentInNewTab(vehicleId, documentUrl, dt, 'toolbar=0&navpanes=0&zoom=page-width&view=FitH')
           .catch(function() {
             if (typeof window.viewRuhsatPdf === 'function') window.viewRuhsatPdf(vehicleId, dt, { skipIosPwaPrintRoute: true });
           });
         return;
       }
-      /* iOS PWA: sekmede PDF’e gitme; aşağıdaki iframe + print() ile aynı mobil yazdır akışı */
+      /* iOS Safari/PWA: sekmede PDF’e gitme; aşağıdaki manuel ön izleme + Yazdır */
     }
 
     // iOS: print() geç tetiklenirse kullanıcı gesture dışına çıkıp prompt üretebilir.
@@ -6806,83 +6812,24 @@
       var printCss = '<style>html,body{margin:0;padding:0;width:100%;height:100%;background:#fff;overflow:hidden;}body{display:flex;align-items:center;justify-content:center;}.ruhsat-print-page{width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#fff;}.ruhsat-print-page img{display:block;width:auto;height:auto;max-width:100%;max-height:100%;object-fit:contain;}@media print{@page{size:A4 portrait;margin:0;}html,body{width:210mm !important;height:297mm !important;overflow:hidden !important;background:#fff !important;}.ruhsat-print-page{width:210mm !important;height:297mm !important;overflow:hidden !important;page-break-inside:avoid !important;break-inside:avoid !important;page-break-after:avoid !important;break-after:avoid-page !important;}.ruhsat-print-page img{width:auto !important;height:auto !important;max-width:210mm !important;max-height:297mm !important;object-fit:contain !important;}}</style>';
       return '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">' + printCss + '<title>Ruhsat</title></head><body><div class="ruhsat-print-page"><img src="' + escapeHtml(imageUrl) + '" alt="Ruhsat"></div></body></html>';
     }
-    function cleanupIosPwaImagePrintFrame(frame) {
-      if (!frame) return;
-      try { frame.onload = null; } catch (cleanupOnloadErr) {}
-      if (frame.parentNode) {
-        try { frame.parentNode.removeChild(frame); } catch (cleanupRemoveErr) {}
-      }
-    }
-    function printCachedIosPwaImage(imageUrl) {
-      if (!imageUrl) {
-        alert('Belge henüz hazır değil. Lütfen tekrar deneyin.');
-        return;
-      }
-      var frame = document.createElement('iframe');
-      frame.setAttribute('aria-hidden', 'true');
-      frame.style.cssText = window.MEDISA_PRINT_IFRAME_CSS_TEXT || 'position:fixed;left:0;top:0;width:100vw;height:100vh;border:0;opacity:0.01;pointer-events:none;visibility:visible;transform:translateX(-200vw);background:#fff;z-index:-1;';
-      document.body.appendChild(frame);
-      try {
-        frame.srcdoc = buildImagePrintHtml(imageUrl);
-        var frameWindow = frame.contentWindow;
-        if (!frameWindow || typeof frameWindow.print !== 'function') {
-          cleanupIosPwaImagePrintFrame(frame);
-          alert('Yazdırma başlatılamadı. Lütfen tekrar deneyin.');
-          return;
-        }
-        try { frameWindow.focus(); } catch (focusErr) {}
-        frameWindow.print();
-        var cleaned = false;
-        var cleanup = function() {
-          if (cleaned) return;
-          cleaned = true;
-          cleanupIosPwaImagePrintFrame(frame);
-        };
-        try {
-          frameWindow.addEventListener('afterprint', cleanup, { once: true });
-        } catch (afterPrintErr) {}
-        setTimeout(cleanup, 1800);
-      } catch (printErr) {
-        cleanupIosPwaImagePrintFrame(frame);
-        alert('Yazdırma başlatılamadı. Lütfen tekrar deneyin.');
-      }
-    }
-    if (isIosPwa && isImage) {
+    if (useIosManualPrintPreview && isImage) {
       const cachedIosImageUrl = getCachedRuhsatDocumentObjectUrl(vehicleId, documentUrl, dt);
       if (!cachedIosImageUrl) {
         alert('Belge henüz hazır değil. Lütfen tekrar deneyin.');
         return;
       }
-      if (typeof window.openMedisaIosPwaPrintPreview === 'function') {
-        window.openMedisaIosPwaPrintPreview(buildImagePrintHtml(cachedIosImageUrl), cfg.label + ' Yazdır');
-        return;
-      }
-      printCachedIosPwaImage(cachedIosImageUrl);
+      window.openMedisaIosPwaPrintPreview(buildImagePrintHtml(cachedIosImageUrl), cfg.label + ' Yazdır');
       return;
     }
 
-    if (isIosPwa && !isImage) {
+    if (useIosManualPrintPreview && !isImage) {
       var iosPwaPdfCacheKey = getRuhsatDocumentCacheKey(vehicleId, documentUrl, dt);
       var iosPwaPdfEntry = iosPwaPdfCacheKey ? ruhsatDocumentCache.get(iosPwaPdfCacheKey) : null;
       if (!iosPwaPdfEntry || !iosPwaPdfEntry.pdfStagingReady || !Array.isArray(iosPwaPdfEntry.pdfPrintPageObjectUrls) || !iosPwaPdfEntry.pdfPrintPageObjectUrls.length) {
         alert('Belge henüz hazır değil. Lütfen tekrar deneyin.');
         return;
       }
-      if (typeof window.openMedisaIosPwaPrintPreview === 'function') {
-        window.openMedisaIosPwaPrintPreview(buildIosPwaPdfPrintHtml(iosPwaPdfEntry.pdfPrintPageObjectUrls), cfg.label + ' Yazdır');
-        return;
-      }
-      var iosPwaPdfWin = iosPwaPdfEntry.pdfStagingFrame.contentWindow;
-      if (!iosPwaPdfWin || typeof iosPwaPdfWin.print !== 'function') {
-        alert('Yazdırma başlatılamadı. Lütfen tekrar deneyin.');
-        return;
-      }
-      try { iosPwaPdfWin.focus(); } catch (iosPwaPdfFocusErr) {}
-      try {
-        iosPwaPdfWin.print();
-      } catch (iosPwaPdfPrintErr) {
-        alert('Yazdırma başlatılamadı. Lütfen tekrar deneyin.');
-      }
+      window.openMedisaIosPwaPrintPreview(buildIosPwaPdfPrintHtml(iosPwaPdfEntry.pdfPrintPageObjectUrls), cfg.label + ' Yazdır');
       return;
     }
 
