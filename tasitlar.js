@@ -1202,7 +1202,7 @@
       const isCompactDesktop = !isMobile && shouldUseCompactVehicleHeader();
       const widthMap = isMobile
         ? {
-            'year': '32px',
+            'year': '36px',
             'plate': '80px',
             'brand': '2.65fr',
             'km': '52px',
