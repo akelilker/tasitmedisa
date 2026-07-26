@@ -21,6 +21,7 @@ const owners = {
   reports: read('raporlar.js'),
   settings: read('ayarlar.js')
 };
+const vehiclesYazici = read('tasitlar-yazici.js');
 const sw = read('sw.js');
 const tasitlarBase = read('tasitlar-base.css');
 const packageJson = read('package.json');
@@ -220,25 +221,25 @@ if (implementationPresent) {
     assert.match(index, /__medisaMainShellMetrics\.splashHiddenAt/);
   });
   test('version ve SW cache beklenen değerde', function() {
-    assert.match(core, /tasitlar: '20260726\.2'/);
-    assert.match(owners.vehicles, /MEDISA_TASITLAR_MODULE_VERSION = '20260726\.2'/);
+    assert.match(core, /tasitlar: '20260726\.3'/);
+    assert.match(owners.vehicles, /MEDISA_TASITLAR_MODULE_VERSION = '20260726\.3'/);
     // Loader ile modül içi sürüm birebir eşleşmeli; aksi halde "hazır duruma gelemedi" düşer.
     var loaderVer = (core.match(/tasitlar:\s*'([^']+)'/) || [])[1];
     var moduleVer = (owners.vehicles.match(/MEDISA_TASITLAR_MODULE_VERSION\s*=\s*'([^']+)'/) || [])[1];
     assert.ok(loaderVer && moduleVer, 'tasitlar sürüm sabitleri bulunmalı');
     assert.strictEqual(loaderVer, moduleVer, 'MEDISA_MODULE_VERSIONS.tasitlar === MEDISA_TASITLAR_MODULE_VERSION');
-    assert.match(core, /raporlar: '20260726\.1'/);
-    assert.match(index, /script-core\.js\?v=20260726\.2/);
+    assert.match(core, /raporlar: '20260726\.2'/);
+    assert.match(index, /script-core\.js\?v=20260726\.3/);
     assert.match(index, /style-core\.css\?v=20260724\.1/);
-    assert.match(sw, /medisa-v2\.256/);
+    assert.match(sw, /medisa-v2\.257/);
   });
   test('Raporlar modül ve SW cache sürüm paritesi', function() {
     var raporlarModuleVer = (core.match(/raporlar:\s*'([^']+)'/) || [])[1];
     var raporlarCacheVer = (sw.match(/CACHE_RAPORLAR_VERSION\s*=\s*'medisa-raporlar-([^']+)'/) || [])[1];
     assert.ok(raporlarModuleVer, 'MEDISA_MODULE_VERSIONS.raporlar bulunmalı');
     assert.ok(raporlarCacheVer, 'CACHE_RAPORLAR_VERSION bulunmalı');
-    assert.strictEqual(raporlarModuleVer, '20260726.1', 'MEDISA_MODULE_VERSIONS.raporlar canonical sürüm');
-    assert.strictEqual(raporlarCacheVer, '20260726.1', 'CACHE_RAPORLAR_VERSION canonical sürüm');
+    assert.strictEqual(raporlarModuleVer, '20260726.2', 'MEDISA_MODULE_VERSIONS.raporlar canonical sürüm');
+    assert.strictEqual(raporlarCacheVer, '20260726.2', 'CACHE_RAPORLAR_VERSION canonical sürüm');
     assert.strictEqual(raporlarModuleVer, raporlarCacheVer, 'Raporlar modül ve SW cache aynı tarih sürümünü taşımalı');
   });
   test('KAYIT home closeVehicleModal owner kullanır', function() {
@@ -326,6 +327,52 @@ if (implementationPresent) {
   test('browser ölçümü 3 warm-up ve 10 run varsayılanını korur', function() {
     assert.match(measure, /MEDISA_BROWSER_WARMUPS \|\| 3/);
     assert.match(measure, /MEDISA_BROWSER_RUNS \|\| 10/);
+  });
+  test('iOS device helper global owner mevcut', function() {
+    assert.match(core, /window\.isMedisaIOSDevice\s*=\s*function\s+isMedisaIOSDevice\s*\(/);
+  });
+  test('isIOSPWA standalone şartını korur', function() {
+    assert.match(core, /window\.isIOSPWA\s*=\s*function\s+isIOSPWA\s*\(/);
+    assert.match(core, /isMedisaIOSDevice\(\)/);
+    assert.match(core, /display-mode:\s*standalone/);
+    assert.match(core, /navigator\.standalone/);
+  });
+  test('taşıt kartı iOS device helper ile manuel preview', function() {
+    assert.match(vehiclesYazici, /isMedisaIOSDevice\(\)[\s\S]*?openMedisaIosPwaPrintPreview\(printHtml,\s*'Taşıt Kartı Yazdır'\)/);
+    assert.doesNotMatch(vehiclesYazici, /isIOSPWA\(\)[\s\S]{0,120}openMedisaIosPwaPrintPreview\(printHtml,\s*'Taşıt Kartı Yazdır'\)/);
+  });
+  test('stok raporu iOS device helper ile manuel preview', function() {
+    assert.match(owners.reports, /isMedisaIOSDevice\(\)[\s\S]*?openMedisaIosPwaPrintPreview\(printHtml,\s*'Stok Raporu Yazdır'\)/);
+    assert.doesNotMatch(owners.reports, /setTimeout\(runIframePrint,\s*200\)/);
+    assert.doesNotMatch(owners.reports, /isIOSPWA\(\)[\s\S]{0,160}openMedisaIosPwaPrintPreview\(printHtml,\s*'Stok Raporu Yazdır'\)/);
+  });
+  test('belge image/PDF print iOS device helper sonrası preview', function() {
+    assert.match(owners.vehicles, /useIosManualPrintPreview[\s\S]*?isMedisaIOSDevice\(\)/);
+    assert.match(owners.vehicles, /useIosManualPrintPreview\s*&&\s*isImage[\s\S]*?openMedisaIosPwaPrintPreview\(buildImagePrintHtml/);
+    assert.match(owners.vehicles, /useIosManualPrintPreview\s*&&\s*!isImage[\s\S]*?openMedisaIosPwaPrintPreview\(buildIosPwaPdfPrintHtml/);
+  });
+  test('Android taşıt kartı preview owner korunur', function() {
+    assert.match(vehiclesYazici, /isAndroidDevice\(\)\s*&&\s*openPrintPreviewWindow\(printHtml\)/);
+  });
+  test('desktop/non-iOS iframe fallback owner korunur', function() {
+    assert.match(vehiclesYazici, /function printWithIframeFallback\s*\(/);
+    assert.match(vehiclesYazici, /printWithIframeFallback\(\);/);
+    assert.match(owners.reports, /function runIframePrint\s*\(/);
+    assert.match(owners.reports, /runIframePrint\(\);/);
+  });
+  test('preview helper native print yalnız toolbar print action içinde', function() {
+    var previewStart = core.indexOf('window.openMedisaIosPwaPrintPreview = function');
+    assert.ok(previewStart !== -1, 'openMedisaIosPwaPrintPreview owner bulunmalı');
+    var previewEnd = core.indexOf('\nwindow.formatPlaka', previewStart);
+    if (previewEnd === -1) previewEnd = previewStart + 6000;
+    var previewSlice = core.slice(previewStart, previewEnd);
+    assert.match(previewSlice, /action === 'print'/);
+    assert.match(previewSlice, /frameWindow\.print\(\)/);
+    assert.ok(previewSlice.indexOf("action === 'print'") < previewSlice.indexOf('frameWindow.print()'), 'print toolbar action içinde olmalı');
+    assert.doesNotMatch(previewSlice, /setTimeout\([^)]*print/);
+  });
+  test('tasitlarYazici sürüm registry paritesi', function() {
+    assert.match(core, /tasitlarYazici:\s*'20260726\.3'/);
   });
 }
 
