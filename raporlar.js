@@ -850,7 +850,7 @@
          */
         if (isMobile && !hasDetail) {
             const mobileFluidWidths = {
-                'sira': '14px',
+                'sira': '22px',
                 'sube': 'minmax(0, 0.75fr)',
                 'yil': '34px',
                 'marka': 'minmax(0, 1.25fr)',
