@@ -198,7 +198,7 @@
                         </div>
                         <div class="form-section">
                             <label class="form-label" for="user-password">Şifre (portal girişi)</label>
-                            <input type="password" id="user-password" class="form-input" placeholder="Şifre" autocomplete="new-password">
+                            <input type="password" id="user-password" class="form-input" placeholder="Şifre" autocomplete="new-password" minlength="6">
                         </div>
                         <div class="form-section form-section-vehicles">
                             <span id="user-vehicles-label" class="form-label">Tahsis Edilecek Taşıt</span>
@@ -290,15 +290,16 @@
                             <img class="data-management-action-icon" src="icon/data-backup.svg?v=20260611.1" alt="" aria-hidden="true">
                             <span>Yedek Al</span>
                         </button>
-                        <button onclick="restoreFromLastBackup()" class="data-management-text-btn">
+                        <button onclick="showLastBackupMetadata()" class="data-management-text-btn">
                             <img class="data-management-action-icon" src="icon/data-restore.svg?v=20260611.1" alt="" aria-hidden="true">
-                            <span>Son Yedekten Geri Yükle</span>
+                            <span>Son Yedek Bilgisi</span>
                         </button>
                         <button onclick="importData()" class="data-management-text-btn">
                             <img class="data-management-action-icon" src="icon/data-import.svg?v=20260611.1" alt="" aria-hidden="true">
                             <span>Dosyadan Geri Yükle</span>
                         </button>
                     </div>
+                    <p class="form-description">Güvenli sunucu geri yükleme özelliği henüz aktif değildir.</p>
                 </div>
             </div>
         </div>
@@ -2138,9 +2139,6 @@
           id: u.id,
           isim: u.name || u.isim || '',
           kullanici_adi: u.kullanici_adi || '',
-          sifre: u.sifre || '',
-          sifre_hash: u.sifre_hash || '',
-          sifre_guncellendi_at: u.sifre_guncellendi_at || '',
           telefon: u.phone || '',
           email: u.email || '',
           sube_id: sube_id,
@@ -2152,7 +2150,8 @@
           zimmetli_araclar: zimmetliAraclar,
           aktif: u.aktif !== false,
           kayit_tarihi: u.createdAt || new Date().toISOString(),
-          son_giris: u.son_giris || null
+          son_giris: u.son_giris || null,
+          portal_sifresi_var: u.portal_sifresi_var === true
         };
       });
       if (typeof window.replaceMedisaUsers === 'function') {
@@ -2198,10 +2197,10 @@
       syncUsersToAppData(Array.isArray(users) ? users : [], { skipServerSave: true });
     }
 
-    async function persistUserManagementState(users, vehicles) {
+    async function persistUserManagementState(users, vehicles, saveOptions) {
       setUserManagementLocalState(users, vehicles);
       if (typeof window.saveDataToServer === 'function') {
-        return await window.saveDataToServer();
+        return await window.saveDataToServer(saveOptions || {});
       }
       return true;
     }
@@ -2822,7 +2821,7 @@
         if (emailInput) emailInput.value = user.email || '';
         if (roleSelect) roleSelect.value = scope.isBranchManager ? 'kullanici' : getUiRoleFromUser(user);
         if (usernameInput) usernameInput.value = user.kullanici_adi || '';
-        if (passwordInput) passwordInput.value = user.sifre || '';
+        if (passwordInput) passwordInput.value = '';
         if (branchReadonly) {
           const userBranch = readAllBranches().find(function(branch) {
             return String(branch && branch.id) === String(getUserPrimaryBranchId(user));
@@ -3063,6 +3062,11 @@
           nameInput.focus();
           return;
         }
+        if (sifre !== '' && sifre.length < 6) {
+          alert('Şifre en az 6 karakter olmalıdır.');
+          if (passwordInput) passwordInput.focus();
+          return;
+        }
 
         const previousUsers = cloneStorageState(readAllUsers());
         const previousVehicles = cloneStorageState(readAllVehicles());
@@ -3086,10 +3090,7 @@
 
         // Portal girişi: Kullanıcı veya şube yöneticisine taşıt atanmışsa kullanıcı adı ve şifre zorunlu
         const needsPortalCredentials = hasAssignedVehicles && (role === 'kullanici' || role === 'sube_yonetici');
-        const hasExistingPortalPassword = !!(existingUser && (
-          (existingUser.sifre && String(existingUser.sifre).trim() !== '') ||
-          (existingUser.sifre_hash && String(existingUser.sifre_hash).trim() !== '')
-        ));
+        const hasExistingPortalPassword = !!(existingUser && existingUser.portal_sifresi_var === true);
         if (needsPortalCredentials && (!kullanici_adi || (!sifre && !hasExistingPortalPassword))) {
           alert('Taşıt atanan kullanıcı veya yönetici için "Kullanıcı Adı (portal girişi)" ve "Şifre (portal girişi)" zorunludur. Bu bilgilerle kullanıcı paneline girilebilir.');
           if (usernameInput) usernameInput.focus();
@@ -3144,11 +3145,8 @@
             users[idx].kullanici_paneli = kullanici_paneli;
             users[idx].surucu_paneli = kullanici_paneli;
             users[idx].kullanici_adi = kullanici_adi;
-            // Şifre: boş bırakılırsa eskisini koru (yanlışlıkla silinmesin)
             if (sifre !== '') {
-              users[idx].sifre = sifre;
-              delete users[idx].sifre_hash;
-              delete users[idx].sifre_guncellendi_at;
+              users[idx].portal_sifresi_var = true;
             }
           }
         } else {
@@ -3164,7 +3162,7 @@
             kullanici_paneli: kullanici_paneli,
             surucu_paneli: kullanici_paneli,
             kullanici_adi: kullanici_adi,
-            sifre: sifre,
+            portal_sifresi_var: sifre !== '',
             createdAt: new Date().toISOString()
           };
           users.push(newUser);
@@ -3188,7 +3186,14 @@
             if (u && !v.branchId && primarySube) v.branchId = primarySube;
           }
         });
-        const persisted = await persistUserManagementState(users, vehicles);
+        const userPasswordChanges = Object.create(null);
+        if (sifre !== '' && savedUserId) {
+          userPasswordChanges[String(savedUserId)] = sifre;
+        }
+        if (passwordInput) passwordInput.value = '';
+        const persisted = await persistUserManagementState(users, vehicles, {
+          userPasswordChanges: userPasswordChanges
+        });
         if (persisted !== true) {
           setUserManagementLocalState(previousUsers, previousVehicles);
           renderUserList();
@@ -3509,12 +3514,31 @@
     // VERİ YÖNETİMİ
     // ========================================
 
+    function canManageBackups() {
+      const session = typeof window.getMedisaSession === 'function'
+        ? (window.getMedisaSession() || {})
+        : (window.medisaSession || {});
+      return !!(
+        session.authenticated
+        && session.permissions
+        && session.permissions.manage_backups === true
+      );
+    }
+
+    function requireBackupPermission() {
+      if (canManageBackups()) return true;
+      alert('Veri yedekleme işlemleri yalnızca Genel Yönetici tarafından kullanılabilir.');
+      return false;
+    }
+
     // Modal Kontrolü
     window.openDataManagement = function openDataManagement(event) {
       if (event && typeof event.stopPropagation === 'function') {
         event.stopPropagation();
         event.preventDefault();
       }
+
+      if (!requireBackupPermission()) return;
 
       closeSettingsDropdown();
       const dataSubmenu = document.getElementById('data-submenu');
@@ -3769,6 +3793,12 @@
       return { sirketAdi: 'Medisa', yetkiliKisi: '', telefon: '', eposta: '' };
     }
 
+    function normalizeBackupUsers(users) {
+      return typeof window.normalizeUsers === 'function'
+        ? window.normalizeUsers(Array.isArray(users) ? users : [])
+        : [];
+    }
+
     /** PC indirme, önbellek öncesi yedek ve geri yükleme — tek tam yedek formatı (kasko Excel hariç). */
     function buildFullBackupPayload(meta) {
       const opts = meta && typeof meta === 'object' ? meta : {};
@@ -3827,6 +3857,7 @@
 
     // Veri dışa aktar (JSON indir)
     window.exportData = function exportData() {
+      if (!requireBackupPermission()) return;
       try {
         const backup = buildFullBackupPayload();
         const dataStr = JSON.stringify(backup, null, 2);
@@ -3848,12 +3879,12 @@
       }
     };
 
-    // Son yedekten geri yükle: önce sunucu (restore.php), yoksa yerel medisa_server_backup.
+    // Dosya yedeği normalize edilir; sunucu endpoint'i yalnız güvenli metadata sağlar.
     function normalizeBackupPayload(raw, source) {
       if (!raw || typeof raw !== "object") return null;
       const vehicles = Array.isArray(raw.vehicles) ? raw.vehicles : (Array.isArray(raw.tasitlar) ? raw.tasitlar : null);
       const branches = Array.isArray(raw.branches) ? raw.branches : null;
-      const users = Array.isArray(raw.users) ? raw.users : null;
+      const users = Array.isArray(raw.users) ? normalizeBackupUsers(raw.users) : null;
       if (vehicles == null || branches == null || users == null) return null;
       return {
         source: source || "unknown",
@@ -3879,7 +3910,7 @@
       };
     }
 
-    async function fetchServerLastBackup() {
+    async function fetchServerLastBackupMetadata() {
       try {
         const requestOptions = { cache: "no-store" };
         if (typeof buildAuthHeaders === "function") {
@@ -3888,7 +3919,14 @@
         const res = await fetch("restore.php?source=backup", requestOptions);
         if (!res.ok) return null;
         const payload = await res.json();
-        return normalizeBackupPayload(payload, "server");
+        if (!payload || payload.success !== true || payload.available !== true) return null;
+        return {
+          available: true,
+          modified_at: payload.modified_at || null,
+          size_bytes: Number(payload.size_bytes) || 0,
+          restore_enabled: payload.restore_enabled === true,
+          message: payload.message || ''
+        };
       } catch (_e) {
         return null;
       }
@@ -3943,47 +3981,25 @@
       sessionStorage.setItem("medisa_just_restored", "1");
     }
 
-    window.restoreFromLastBackup = async function restoreFromLastBackup() {
+    window.showLastBackupMetadata = async function showLastBackupMetadata() {
+      if (!requireBackupPermission()) return;
       try {
-        let backup = await fetchServerLastBackup();
-        if (!backup) {
-          const raw = localStorage.getItem("medisa_server_backup");
-          if (raw) backup = normalizeBackupPayload(JSON.parse(raw), "local");
-        }
-
-        if (!backup) {
+        const metadata = await fetchServerLastBackupMetadata();
+        if (!metadata) {
           alert("Son yedek bulunamadı.");
           return;
         }
-
-        const dateStr = backup.upload_date ? new Date(backup.upload_date).toLocaleString("tr-TR") : "Bilinmiyor";
-        const sourceLabel = backup.source === "server" ? "Sunucu yedeği" : "Yerel yedek";
-        const message = `Kaynak: ${sourceLabel}\nYedek Tarihi: ${dateStr}\n\n` +
-          `Şubeler: ${backup.branches.length}\n` +
-          `Kullanıcılar: ${backup.users.length}\n` +
-          `Taşıtlar: ${backup.vehicles.length}\n\n` +
-          `Mevcut veriler silinecek. Emin misiniz?`;
-        if (!confirm(message)) return;
-
-        applyRestoredBackup(backup);
-
-        if (typeof window.saveDataToServer === "function") {
-          try {
-            await Promise.race([
-              window.saveDataToServer(),
-              new Promise(function(resolve) { setTimeout(resolve, 8000); })
-            ]);
-          } catch (_syncErr) {
-            // Sync hatasi restore islemini kesmesin
-          }
-        }
-
-        alert("Yedek başarıyla geri yüklendi!\n\nSayfa yenilenecek.");
-        setTimeout(function() { window.location.reload(); }, 500);
+        const dateStr = metadata.modified_at
+          ? new Date(metadata.modified_at).toLocaleString("tr-TR")
+          : "Bilinmiyor";
+        alert(
+          `Son sunucu yedeği: ${dateStr}\n\n` +
+          `Güvenli sunucu geri yükleme özelliği henüz aktif değildir.`
+        );
       } catch (err) {
-        if (typeof window.__medisaLogError === "function") window.__medisaLogError("Yedek geri yükle (restoreFromLastBackup)", err);
-        else console.error("Yedek geri yükle hatası:", err);
-        alert("Yedek okunamadı. Lütfen geçerli bir yedek dosyası ile tekrar deneyin.");
+        if (typeof window.__medisaLogError === "function") window.__medisaLogError("Son yedek bilgisi", err);
+        else console.error("Son yedek bilgisi hatası:", err);
+        alert("Yedek bilgisi okunamadı.");
       }
     };
 
@@ -4008,6 +4024,7 @@
 
     // Dosyadan içe aktar (JSON seç)
     window.importData = function importData() {
+      if (!requireBackupPermission()) return;
       try {
         const input = document.createElement('input');
         input.type = 'file';

@@ -13,12 +13,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
+if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+    http_response_code(405);
+    header('Allow: GET, OPTIONS');
+    echo json_encode([
+        'success' => false,
+        'message' => 'Bu endpoint yalnız yedek bilgisini görüntüler.',
+    ], JSON_UNESCAPED_UNICODE);
+    exit;
+}
+
 $currentData = loadData();
 if (!is_array($currentData)) {
     $currentData = medisaDefaultData();
 }
 
-$auth = medisaResolveAuthorizedContext($currentData, 'manage_data');
+$auth = medisaResolveAuthorizedContext($currentData, 'manage_backups');
 if (($auth['success'] ?? false) !== true) {
     http_response_code((int)($auth['status'] ?? 403));
     echo json_encode([
@@ -31,37 +41,35 @@ if (($auth['success'] ?? false) !== true) {
 }
 
 $backupFile = getMainBackupFilePath();
-$sourceTag = 'data.json.backup';
+$sourceTag = 'main_backup';
 
 if (!file_exists($backupFile)) {
     $fallback = findLatestSnapshotPath();
     if ($fallback !== null && is_readable($fallback)) {
         $backupFile = $fallback;
-        $sourceTag = basename($fallback);
+        $sourceTag = 'latest_snapshot';
     }
 }
 
 if (!file_exists($backupFile)) {
     http_response_code(404);
-    echo json_encode(['error' => 'Son yedek bulunamadı.'], JSON_UNESCAPED_UNICODE);
+    echo json_encode([
+        'success' => false,
+        'available' => false,
+        'restore_enabled' => false,
+        'message' => 'Son yedek bulunamadı.',
+    ], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
-$content = file_get_contents($backupFile);
-if ($content === false) {
-    http_response_code(500);
-    echo json_encode(['error' => 'Yedek dosyası okunamadı.'], JSON_UNESCAPED_UNICODE);
-    exit;
-}
-
-$data = json_decode($content, true);
-if (!is_array($data)) {
-    http_response_code(500);
-    echo json_encode(['error' => 'Yedek dosya formatı geçersiz.'], JSON_UNESCAPED_UNICODE);
-    exit;
-}
-
-$data['_backup_source'] = $sourceTag;
-$data['_backup_file_mtime'] = date('c', filemtime($backupFile));
-
-echo json_encode($data, JSON_UNESCAPED_UNICODE);
+$modifiedAt = filemtime($backupFile);
+$sizeBytes = filesize($backupFile);
+echo json_encode([
+    'success' => true,
+    'available' => true,
+    'restore_enabled' => false,
+    'source' => $sourceTag,
+    'modified_at' => $modifiedAt !== false ? date('c', $modifiedAt) : null,
+    'size_bytes' => $sizeBytes !== false ? (int)$sizeBytes : null,
+    'message' => 'Güvenli geri yükleme özelliği henüz aktif değil.',
+], JSON_UNESCAPED_UNICODE);
