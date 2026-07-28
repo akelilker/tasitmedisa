@@ -668,7 +668,8 @@ function buildFallbackPermissions(role) {
         manage_users: hasMainAppAccess,
         manage_branches: normalizedRole === 'genel_yonetici',
         manage_data: canManageGlobalData,
-        manage_settings: canManageGlobalData
+        manage_settings: canManageGlobalData,
+        manage_backups: false
     };
 }
 
@@ -676,6 +677,9 @@ function normalizeSessionPermissions(role, permissions) {
     var normalizedRole = normalizeSessionRole(role);
     var fallback = buildFallbackPermissions(normalizedRole);
     var canManageGlobalData = normalizedRole === 'genel_yonetici' || normalizedRole === 'sube_yonetici';
+    var supplied = permissions && typeof permissions === 'object' && !Array.isArray(permissions)
+        ? permissions
+        : {};
 
     return {
         view_main_app: !!fallback.view_main_app,
@@ -683,7 +687,8 @@ function normalizeSessionPermissions(role, permissions) {
         manage_users: !!fallback.manage_users,
         manage_branches: normalizedRole === 'genel_yonetici',
         manage_data: canManageGlobalData,
-        manage_settings: canManageGlobalData
+        manage_settings: canManageGlobalData,
+        manage_backups: supplied.manage_backups === true
     };
 }
 
@@ -848,7 +853,7 @@ function applyMainAppSessionUiState() {
     if (disVeriBtn) {
         disVeriBtn.style.display = (session.permissions.manage_data && !medisaIsDisVeriPanelUnavailableOnDevice()) ? '' : 'none';
     }
-    if (backupWrap) backupWrap.style.display = session.permissions.manage_data ? '' : 'none';
+    if (backupWrap) backupWrap.style.display = session.permissions.manage_backups === true ? '' : 'none';
     if (clearCacheBtn) {
         clearCacheBtn.style.display = (session.permissions.manage_data || session.permissions.manage_settings) ? '' : 'none';
     }

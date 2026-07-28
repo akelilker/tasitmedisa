@@ -947,6 +947,31 @@ function runRuntimeTests() {
     await flushMicrotasks();
     assert.ok(Array.isArray(ctx.window.getMedisaVehicles()));
   });
+
+  test('47 manage_backups yalnız sunucu session payload true ise açılır', function() {
+    const ctx = createBrowserContext();
+    ctx.window.setMedisaSession({
+      authenticated: true,
+      role: 'genel_yonetici',
+      permissions: {},
+      user: { id: 'u1', role: 'genel_yonetici' },
+    });
+    assert.equal(ctx.window.medisaSession.permissions.manage_backups, false);
+    ctx.window.setMedisaSession({
+      authenticated: true,
+      role: 'genel_yonetici',
+      permissions: { manage_backups: true },
+      user: { id: 'u1', role: 'genel_yonetici' },
+    });
+    assert.equal(ctx.window.medisaSession.permissions.manage_backups, true);
+    ctx.window.setMedisaSession({
+      authenticated: true,
+      role: 'sube_yonetici',
+      permissions: { manage_backups: false },
+      user: { id: 'u4', role: 'sube_yonetici' },
+    });
+    assert.equal(ctx.window.medisaSession.permissions.manage_backups, false);
+  });
 }
 
 async function main() {

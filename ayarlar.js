@@ -290,15 +290,16 @@
                             <img class="data-management-action-icon" src="icon/data-backup.svg?v=20260611.1" alt="" aria-hidden="true">
                             <span>Yedek Al</span>
                         </button>
-                        <button onclick="restoreFromLastBackup()" class="data-management-text-btn">
+                        <button onclick="showLastBackupMetadata()" class="data-management-text-btn">
                             <img class="data-management-action-icon" src="icon/data-restore.svg?v=20260611.1" alt="" aria-hidden="true">
-                            <span>Son Yedekten Geri Yükle</span>
+                            <span>Son Yedek Bilgisi</span>
                         </button>
                         <button onclick="importData()" class="data-management-text-btn">
                             <img class="data-management-action-icon" src="icon/data-import.svg?v=20260611.1" alt="" aria-hidden="true">
                             <span>Dosyadan Geri Yükle</span>
                         </button>
                     </div>
+                    <p class="form-description">Güvenli sunucu geri yükleme özelliği henüz aktif değildir.</p>
                 </div>
             </div>
         </div>
@@ -3509,12 +3510,31 @@
     // VERİ YÖNETİMİ
     // ========================================
 
+    function canManageBackups() {
+      const session = typeof window.getMedisaSession === 'function'
+        ? (window.getMedisaSession() || {})
+        : (window.medisaSession || {});
+      return !!(
+        session.authenticated
+        && session.permissions
+        && session.permissions.manage_backups === true
+      );
+    }
+
+    function requireBackupPermission() {
+      if (canManageBackups()) return true;
+      alert('Veri yedekleme işlemleri yalnızca Genel Yönetici tarafından kullanılabilir.');
+      return false;
+    }
+
     // Modal Kontrolü
     window.openDataManagement = function openDataManagement(event) {
       if (event && typeof event.stopPropagation === 'function') {
         event.stopPropagation();
         event.preventDefault();
       }
+
+      if (!requireBackupPermission()) return;
 
       closeSettingsDropdown();
       const dataSubmenu = document.getElementById('data-submenu');
@@ -3827,6 +3847,7 @@
 
     // Veri dışa aktar (JSON indir)
     window.exportData = function exportData() {
+      if (!requireBackupPermission()) return;
       try {
         const backup = buildFullBackupPayload();
         const dataStr = JSON.stringify(backup, null, 2);
@@ -3848,7 +3869,7 @@
       }
     };
 
-    // Son yedekten geri yükle: önce sunucu (restore.php), yoksa yerel medisa_server_backup.
+    // Dosya yedeği normalize edilir; sunucu endpoint'i yalnız güvenli metadata sağlar.
     function normalizeBackupPayload(raw, source) {
       if (!raw || typeof raw !== "object") return null;
       const vehicles = Array.isArray(raw.vehicles) ? raw.vehicles : (Array.isArray(raw.tasitlar) ? raw.tasitlar : null);
@@ -3879,7 +3900,7 @@
       };
     }
 
-    async function fetchServerLastBackup() {
+    async function fetchServerLastBackupMetadata() {
       try {
         const requestOptions = { cache: "no-store" };
         if (typeof buildAuthHeaders === "function") {
@@ -3888,7 +3909,14 @@
         const res = await fetch("restore.php?source=backup", requestOptions);
         if (!res.ok) return null;
         const payload = await res.json();
-        return normalizeBackupPayload(payload, "server");
+        if (!payload || payload.success !== true || payload.available !== true) return null;
+        return {
+          available: true,
+          modified_at: payload.modified_at || null,
+          size_bytes: Number(payload.size_bytes) || 0,
+          restore_enabled: payload.restore_enabled === true,
+          message: payload.message || ''
+        };
       } catch (_e) {
         return null;
       }
@@ -3943,47 +3971,25 @@
       sessionStorage.setItem("medisa_just_restored", "1");
     }
 
-    window.restoreFromLastBackup = async function restoreFromLastBackup() {
+    window.showLastBackupMetadata = async function showLastBackupMetadata() {
+      if (!requireBackupPermission()) return;
       try {
-        let backup = await fetchServerLastBackup();
-        if (!backup) {
-          const raw = localStorage.getItem("medisa_server_backup");
-          if (raw) backup = normalizeBackupPayload(JSON.parse(raw), "local");
-        }
-
-        if (!backup) {
+        const metadata = await fetchServerLastBackupMetadata();
+        if (!metadata) {
           alert("Son yedek bulunamadı.");
           return;
         }
-
-        const dateStr = backup.upload_date ? new Date(backup.upload_date).toLocaleString("tr-TR") : "Bilinmiyor";
-        const sourceLabel = backup.source === "server" ? "Sunucu yedeği" : "Yerel yedek";
-        const message = `Kaynak: ${sourceLabel}\nYedek Tarihi: ${dateStr}\n\n` +
-          `Şubeler: ${backup.branches.length}\n` +
-          `Kullanıcılar: ${backup.users.length}\n` +
-          `Taşıtlar: ${backup.vehicles.length}\n\n` +
-          `Mevcut veriler silinecek. Emin misiniz?`;
-        if (!confirm(message)) return;
-
-        applyRestoredBackup(backup);
-
-        if (typeof window.saveDataToServer === "function") {
-          try {
-            await Promise.race([
-              window.saveDataToServer(),
-              new Promise(function(resolve) { setTimeout(resolve, 8000); })
-            ]);
-          } catch (_syncErr) {
-            // Sync hatasi restore islemini kesmesin
-          }
-        }
-
-        alert("Yedek başarıyla geri yüklendi!\n\nSayfa yenilenecek.");
-        setTimeout(function() { window.location.reload(); }, 500);
+        const dateStr = metadata.modified_at
+          ? new Date(metadata.modified_at).toLocaleString("tr-TR")
+          : "Bilinmiyor";
+        alert(
+          `Son sunucu yedeği: ${dateStr}\n\n` +
+          `Güvenli sunucu geri yükleme özelliği henüz aktif değildir.`
+        );
       } catch (err) {
-        if (typeof window.__medisaLogError === "function") window.__medisaLogError("Yedek geri yükle (restoreFromLastBackup)", err);
-        else console.error("Yedek geri yükle hatası:", err);
-        alert("Yedek okunamadı. Lütfen geçerli bir yedek dosyası ile tekrar deneyin.");
+        if (typeof window.__medisaLogError === "function") window.__medisaLogError("Son yedek bilgisi", err);
+        else console.error("Son yedek bilgisi hatası:", err);
+        alert("Yedek bilgisi okunamadı.");
       }
     };
 
@@ -4008,6 +4014,7 @@
 
     // Dosyadan içe aktar (JSON seç)
     window.importData = function importData() {
+      if (!requireBackupPermission()) return;
       try {
         const input = document.createElement('input');
         input.type = 'file';

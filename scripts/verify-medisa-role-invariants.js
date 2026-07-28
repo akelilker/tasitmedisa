@@ -45,6 +45,33 @@ assert(
     /kullanici_paneli: driverDash/.test(dm),
   'JWT panel alanı driver_dashboard ile hizalı olmalı'
 );
+assert(
+  'manage_backups_server_authoritative',
+  /manage_backups:\s*supplied\.manage_backups === true/.test(dm) &&
+    /manage_backups:\s*false/.test(dm) &&
+    /backupWrap\.style\.display = session\.permissions\.manage_backups === true/.test(dm),
+  'Backup izni token rolünden türetilmemeli; sunucu payload değeri true değilse kapalı kalmalı'
+);
+
+const restore = read('restore.php');
+assert(
+  'restore_metadata_only',
+  /medisaResolveAuthorizedContext\(\$currentData,\s*'manage_backups'\)/.test(restore) &&
+    /'restore_enabled'\s*=>\s*false/.test(restore) &&
+    !/file_get_contents\s*\(/.test(restore) &&
+    !/json_decode\s*\(/.test(restore),
+  'restore.php yalnız genel yönetici metadata cevabı vermeli; backup gövdesini okumamalı'
+);
+
+const settings = read('ayarlar.js');
+assert(
+  'backup_ui_has_no_silent_local_fallback',
+  /window\.showLastBackupMetadata/.test(settings) &&
+    /fetchServerLastBackupMetadata/.test(settings) &&
+    !/window\.restoreFromLastBackup/.test(settings) &&
+    !/fetchServerLastBackup\(\)[\s\S]{0,300}medisa_server_backup/.test(settings),
+  'Sunucu metadata hatası eski localStorage yedeğini sessizce uygulamamalı'
+);
 
 const login = read('driver/driver_login.php');
 assert(
