@@ -182,7 +182,7 @@ if (implementationPresent) {
   });
   test('global ayarlar proxyleri registry ensure kullanır', function() {
     assert.match(core, /MedisaMainSurfaceRegistry\.ensure\('settings'\)/);
-    ['openBranchManagement', 'openUserManagement', 'openZorunluEvraklar', 'openDataManagement', 'openDisVeriPanel', 'exportData', 'restoreFromLastBackup', 'importData'].forEach(function(name) {
+    ['openBranchManagement', 'openUserManagement', 'openZorunluEvraklar', 'openDataManagement', 'openDisVeriPanel', 'exportData', 'showLastBackupMetadata', 'importData'].forEach(function(name) {
       assert.ok(core.includes("wrapAyarlar('" + name + "')"), name + ' proxy eksik');
     });
   });
@@ -229,9 +229,11 @@ if (implementationPresent) {
     assert.ok(loaderVer && moduleVer, 'tasitlar sürüm sabitleri bulunmalı');
     assert.strictEqual(loaderVer, moduleVer, 'MEDISA_MODULE_VERSIONS.tasitlar === MEDISA_TASITLAR_MODULE_VERSION');
     assert.match(core, /raporlar: '20260726\.2'/);
-    assert.match(index, /script-core\.js\?v=20260726\.3/);
+    assert.match(index, /data-manager\.js\?v=20260729\.2/);
+    assert.match(index, /script-core\.js\?v=20260729\.2/);
+    assert.match(core, /ayarlarJs: '20260729\.2'/);
     assert.match(index, /style-core\.css\?v=20260724\.1/);
-    assert.match(sw, /medisa-v2\.257/);
+    assert.match(sw, /medisa-v2\.259/);
   });
   test('Raporlar modül ve SW cache sürüm paritesi', function() {
     var raporlarModuleVer = (core.match(/raporlar:\s*'([^']+)'/) || [])[1];

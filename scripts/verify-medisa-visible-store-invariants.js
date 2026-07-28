@@ -947,6 +947,92 @@ function runRuntimeTests() {
     await flushMicrotasks();
     assert.ok(Array.isArray(ctx.window.getMedisaVehicles()));
   });
+
+  test('45 user collection güvenlik alanlarını kalıcı state öncesi temizler', function() {
+    const ctx = createBrowserContext();
+    ctx.window.replaceMedisaUsers([{
+      id: 'u-secret',
+      isim: 'Secret User',
+      rol: 'kullanici',
+      sube_ids: ['b1'],
+      sifre: 'PlainSecret1!',
+      sifre_hash: 'hash-secret',
+      sifre_guncellendi_at: '2026-01-01T00:00:00Z',
+      reset_token: 'reset-secret',
+      auth_metadata: { source: 'legacy' },
+    }], { reason: 'security-projection' });
+    const stored = ctx.window.getMedisaCollectionSnapshot('users')[0];
+    assert.equal(stored.portal_sifresi_var, true);
+    assert.equal(Object.prototype.hasOwnProperty.call(stored, 'sifre'), false);
+    assert.equal(Object.prototype.hasOwnProperty.call(stored, 'sifre_hash'), false);
+    assert.equal(Object.prototype.hasOwnProperty.call(stored, 'sifre_guncellendi_at'), false);
+    assert.equal(Object.prototype.hasOwnProperty.call(stored, 'reset_token'), false);
+    assert.equal(Object.prototype.hasOwnProperty.call(stored, 'auth_metadata'), false);
+  });
+
+  test('46 legacy offline snapshot okunurken temizlenip yeniden yazılır', function() {
+    const ctx = createBrowserContext();
+    ctx.window.localStorage.setItem('medisa_data_v1', JSON.stringify({
+      branches: [{ id: 'b1', name: 'Merkez' }],
+      users: [{
+        id: 'u-secret',
+        name: 'Secret User',
+        role: 'kullanici',
+        branchIds: ['b1'],
+        password_hash: 'legacy-hash',
+        reset_token: 'legacy-reset',
+      }],
+      tasitlar: [],
+      kayitlar: [],
+    }));
+    ctx.window.localStorage.setItem('medisa_server_backup', JSON.stringify({
+      branches: [{ id: 'b1', name: 'Merkez' }],
+      users: [{
+        id: 'u-shadow-secret',
+        name: 'Shadow Secret',
+        role: 'kullanici',
+        branchIds: ['b1'],
+        sifre: 'shadow-plain-secret',
+      }],
+      tasitlar: [],
+      kayitlar: [],
+    }));
+    const snapshot = ctx.window.readOfflineAppDataSnapshot();
+    assert.equal(snapshot.users[0].portal_sifresi_var, true);
+    const rewritten = ctx.window.localStorage.getItem('medisa_data_v1');
+    assert.equal(rewritten.includes('legacy-hash'), false);
+    assert.equal(rewritten.includes('legacy-reset'), false);
+    assert.equal(rewritten.includes('password_hash'), false);
+    assert.equal(rewritten.includes('reset_token'), false);
+    const rewrittenShadow = ctx.window.localStorage.getItem('medisa_server_backup');
+    assert.equal(rewrittenShadow.includes('shadow-plain-secret'), false);
+    assert.equal(rewrittenShadow.includes('"sifre"'), false);
+  });
+
+  test('47 manage_backups yalnız sunucu session payload true ise açılır', function() {
+    const ctx = createBrowserContext();
+    ctx.window.setMedisaSession({
+      authenticated: true,
+      role: 'genel_yonetici',
+      permissions: {},
+      user: { id: 'u1', role: 'genel_yonetici' },
+    });
+    assert.equal(ctx.window.medisaSession.permissions.manage_backups, false);
+    ctx.window.setMedisaSession({
+      authenticated: true,
+      role: 'genel_yonetici',
+      permissions: { manage_backups: true },
+      user: { id: 'u1', role: 'genel_yonetici' },
+    });
+    assert.equal(ctx.window.medisaSession.permissions.manage_backups, true);
+    ctx.window.setMedisaSession({
+      authenticated: true,
+      role: 'sube_yonetici',
+      permissions: { manage_backups: false },
+      user: { id: 'u4', role: 'sube_yonetici' },
+    });
+    assert.equal(ctx.window.medisaSession.permissions.manage_backups, false);
+  });
 }
 
 async function main() {

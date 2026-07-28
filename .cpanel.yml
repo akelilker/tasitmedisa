@@ -78,13 +78,14 @@ deployment:
     - /bin/test -f driver/driver_save.php
     - /bin/test -f driver/index.html
     - /bin/test -f driver/manifest.json
+    - /bin/test -f .htaccess
     - /bin/test -f t/.htaccess
     - /bin/test -f t/index.php
     - /bin/test -f sw.js
     - /bin/mkdir -p "$DEPLOYPATH/admin"
     - /bin/mkdir -p "$DEPLOYPATH/driver"
     - /bin/mkdir -p "$DEPLOYPATH/t"
-    - /bin/cp -a index.html manifest.json favicon.ico portal-session.js "$DEPLOYPATH/"
+    - /bin/cp -a .htaccess index.html manifest.json favicon.ico portal-session.js "$DEPLOYPATH/"
     - /bin/cp -a core.php load.php load_kasko.php save.php save_kasko.php kasko-index.php asset.php restore.php ruhsat.php ruhsat_preview.php upload_ruhsat.php document_token.php "$DEPLOYPATH/"
     - /bin/cp -a script-core.js data-manager.js data-service.js vehicle-notification-domain.js notifications.js notifications.css tasitlar.js tasitlar-yazici.js tasitlar-base.css tasitlar-extra.css kayit.js kayit.css raporlar.js raporlar.css ayarlar.js ayarlar.css style-core.css "$DEPLOYPATH/"
     - /bin/cp -a admin/admin-report.css admin/admin-report.js admin/admin_approve.php admin/admin_export.php admin/admin_report.php admin/driver-report.html admin/manifest.json "$DEPLOYPATH/admin/"
