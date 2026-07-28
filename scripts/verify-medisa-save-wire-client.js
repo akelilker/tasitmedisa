@@ -263,7 +263,7 @@ function setBaseline(ctx, data) {
     const src = read('data-manager.js');
     assert.match(src, /mode:\s*'delta-v1'/);
     assert.match(src, /function buildSaveWirePayload/);
-    assert.doesNotMatch(src, /_medisaUserPasswordChanges\s*=/);
+    assert.match(src, /wirePayload\._medisaUserPasswordChanges/);
     const ctx = createCtx();
     setBaseline(ctx, sampleAppData());
     ctx.window.appData.tasitlar[0].km = '1';
@@ -274,6 +274,51 @@ function setBaseline(ctx, data) {
     assert.equal(body.includes('duzeltme_talepleri'), false);
     assert.equal(body.includes('password'), false);
     assert.equal(body.includes('Authorization'), false);
+  });
+
+  await run('user password stays transient and storage remains secretsiz', async function() {
+    const ctx = createCtx();
+    const data = sampleAppData({
+      users: [{
+        id: 'u1',
+        name: 'Admin',
+        role: 'genel_yonetici',
+        portal_sifresi_var: true,
+      }],
+    });
+    setBaseline(ctx, data);
+    const secret = 'TransientPass1!';
+    const preview = ctx.window.buildSaveWirePayload({
+      userPasswordChanges: { u1: secret },
+    });
+    assert.equal(preview.ok, true);
+    assert.equal(preview.isNoOp, false);
+    assert.equal(preview.mutationIntent.collections.includes('users'), true);
+    assert.equal(preview.wirePayload._medisaUserPasswordChanges.u1, secret);
+    assert.equal(JSON.stringify(preview.baselinePatchSnapshot).includes(secret), false);
+    assert.equal(JSON.stringify(preview.baselinePatchSnapshot).includes('sifre_hash'), false);
+
+    let requestBody = null;
+    ctx.fetch = async function(url, opts) {
+      requestBody = JSON.parse(opts.body);
+      return { ok: true, status: 200, json: async () => ({ success: true, vehicleVersions: [] }) };
+    };
+    ctx.window.fetch = ctx.fetch;
+    vm.runInContext('serverDatasetTrusted = true', ctx);
+    const options = { userPasswordChanges: { u1: secret } };
+    const saved = await ctx.window.saveDataToServer(options);
+    assert.equal(saved, true);
+    assert.equal(requestBody._medisaUserPasswordChanges.u1, secret);
+    assert.equal(JSON.stringify(requestBody.users).includes(secret), false);
+    assert.equal(requestBody.users[0].isim, 'Admin');
+    assert.equal(Object.prototype.hasOwnProperty.call(requestBody.users[0], 'name'), false);
+    assert.equal(options.userPasswordChanges.u1, '');
+    assert.equal(JSON.stringify(ctx.window.appData).includes(secret), false);
+    assert.equal((ctx.localStorage.getItem('medisa_data_v1') || '').includes(secret), false);
+    assert.equal((ctx.localStorage.getItem('medisa_server_backup') || '').includes(secret), false);
+    assert.equal((ctx.localStorage.getItem('medisa_data_v1') || '').includes('sifre_hash'), false);
+    assert.equal((ctx.localStorage.getItem('medisa_server_backup') || '').includes('sifre_hash'), false);
+    assert.equal(ctx.window.buildSaveWirePayload().isNoOp, true);
   });
 
   await run('baseline advances only applied collections', async function() {

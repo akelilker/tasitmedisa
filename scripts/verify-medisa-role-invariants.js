@@ -72,6 +72,21 @@ assert(
     !/fetchServerLastBackup\(\)[\s\S]{0,300}medisa_server_backup/.test(settings),
   'Sunucu metadata hatası eski localStorage yedeğini sessizce uygulamamalı'
 );
+assert(
+  'user_password_ui_uses_safe_flag',
+  /existingUser\.portal_sifresi_var === true/.test(settings) &&
+    /passwordInput\.value = ''/.test(settings) &&
+    !/existingUser\.sifre_hash/.test(settings),
+  'Kullanıcı formu parola hash veya açık parola alanına bağımlı olmamalı'
+);
+assert(
+  'backup_import_export_uses_safe_users',
+  /function normalizeBackupUsers/.test(settings) &&
+    /Array\.isArray\(raw\.users\)\s*\?\s*normalizeBackupUsers\(raw\.users\)/.test(settings) &&
+    /const users = readUsers\(\)/.test(settings) &&
+    !/sifre_hash:\s*u\.sifre_hash/.test(settings),
+  'Import, export ve kullanıcı serializer güvenli kullanıcı projeksiyonunu kullanmalı'
+);
 
 const login = read('driver/driver_login.php');
 assert(

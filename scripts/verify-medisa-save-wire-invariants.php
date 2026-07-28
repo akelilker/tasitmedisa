@@ -54,6 +54,7 @@ function swFixtureBase() {
                 'id' => 'u-user',
                 'isim' => 'Kullanici',
                 'role' => 'kullanici',
+                'branchIds' => ['b1'],
             ],
         ],
         'ayarlar' => [
@@ -499,9 +500,9 @@ $entry = $data['monthlyTodoWhatsAppLogs']['monthlyTodo:v1:s:2026-01'];
 swAssertSame('Monthly firstOpened retained earlier', '2026-01-02T10:00:00+03:00', $entry['firstOpenedAt'] ?? null);
 swAssertSame('Monthly openedCount max', 2, (int)($entry['openedCount'] ?? 0));
 
-// Password changes rejected
+// Password changes use the transient metadata channel; user records never carry client secrets.
 $data = swFixtureBase();
-$pwReject = swDeltaWire([
+$pwChange = swDeltaWire([
     'collections' => ['users'],
     'changedVehicleIds' => [],
     'deletedVehicleIds' => [],
@@ -509,9 +510,103 @@ $pwReject = swDeltaWire([
 ], [
     'users' => $data['users'],
 ]);
-$pwReject['_medisaUserPasswordChanges'] = ['admin1' => 'NewPass123!'];
-$r = medisaSaveApplyIncomingData($pwReject, $data, swAdminContext());
-swAssert('Password changes rejected 400', ($r['success'] ?? true) === false && (int)($r['status'] ?? 0) === 400);
+$pwChange['_medisaUserPasswordChanges'] = ['admin1' => 'NewPass123!'];
+$r = medisaSaveApplyIncomingData($pwChange, $data, swAdminContext());
+swAssert('Password change success', ($r['success'] ?? false) === true);
+swAssert('Password change hashed server-side', password_verify('NewPass123!', $data['users'][0]['sifre_hash'] ?? ''));
+swAssert('Password change plaintext not stored', !array_key_exists('sifre', $data['users'][0]));
+
+$data = swFixtureBase();
+$branchPwChange = swDeltaWire([
+    'collections' => ['users'],
+    'changedVehicleIds' => [],
+    'deletedVehicleIds' => [],
+    'deletedVehicleVersions' => [],
+], [
+    'users' => [
+        ['id' => 'u-user', 'isim' => 'Kullanici', 'role' => 'kullanici', 'branchIds' => ['b1']],
+    ],
+]);
+$branchPwChange['_medisaUserPasswordChanges'] = ['u-user' => 'BranchUserPass1!'];
+$r = medisaSaveApplyIncomingData($branchPwChange, $data, swBranchContext());
+swAssert('Branch normal-user password change success', ($r['success'] ?? false) === true);
+$changedBranchUser = null;
+foreach (($data['users'] ?? []) as $candidate) {
+    if (($candidate['id'] ?? '') === 'u-user') $changedBranchUser = $candidate;
+}
+swAssert('Branch normal-user password hashed', password_verify('BranchUserPass1!', $changedBranchUser['sifre_hash'] ?? ''));
+
+$data = swFixtureBase();
+$peerPwChange = swDeltaWire([
+    'collections' => ['users'],
+    'changedVehicleIds' => [],
+    'deletedVehicleIds' => [],
+    'deletedVehicleVersions' => [],
+], [
+    'users' => [
+        ['id' => 'u-branch', 'isim' => 'Sube Yonetici', 'role' => 'sube_yonetici', 'branchIds' => ['b1']],
+    ],
+]);
+$peerPwChange['_medisaUserPasswordChanges'] = ['u-branch' => 'PeerManagerPass1!'];
+$r = medisaSaveApplyIncomingData($peerPwChange, $data, swBranchContext());
+swAssert('Branch manager password target denied 403', ($r['success'] ?? true) === false && (int)($r['status'] ?? 0) === 403);
+
+$data = swFixtureBase();
+$spoofedPeerPwChange = swDeltaWire([
+    'collections' => ['users'],
+    'changedVehicleIds' => [],
+    'deletedVehicleIds' => [],
+    'deletedVehicleVersions' => [],
+], [
+    'users' => [
+        ['id' => 'u-branch', 'isim' => 'Sube Yonetici', 'role' => 'kullanici', 'branchIds' => ['b1']],
+    ],
+]);
+$spoofedPeerPwChange['_medisaUserPasswordChanges'] = ['u-branch' => 'SpoofedPeerPass1!'];
+$r = medisaSaveApplyIncomingData($spoofedPeerPwChange, $data, swBranchContext());
+swAssert('Spoofed peer-manager password target denied 403', ($r['success'] ?? true) === false && (int)($r['status'] ?? 0) === 403);
+
+$data = swFixtureBase();
+$unknownPwChange = swDeltaWire([
+    'collections' => ['users'],
+    'changedVehicleIds' => [],
+    'deletedVehicleIds' => [],
+    'deletedVehicleVersions' => [],
+], [
+    'users' => $data['users'],
+]);
+$unknownPwChange['_medisaUserPasswordChanges'] = ['missing-user' => 'UnknownPass1!'];
+$r = medisaSaveApplyIncomingData($unknownPwChange, $data, swAdminContext());
+swAssert('Unknown password target rejected 400', ($r['success'] ?? true) === false && (int)($r['status'] ?? 0) === 400);
+
+$data = swFixtureBase();
+$shortPwChange = swDeltaWire([
+    'collections' => ['users'],
+    'changedVehicleIds' => [],
+    'deletedVehicleIds' => [],
+    'deletedVehicleVersions' => [],
+], [
+    'users' => $data['users'],
+]);
+$shortPwChange['_medisaUserPasswordChanges'] = ['admin1' => '123'];
+$r = medisaSaveApplyIncomingData($shortPwChange, $data, swAdminContext());
+swAssert('Short password rejected 400', ($r['success'] ?? true) === false && (int)($r['status'] ?? 0) === 400);
+
+$data = swFixtureBase();
+$legacyPlainPw = swDeltaWire([
+    'collections' => ['users'],
+    'changedVehicleIds' => [],
+    'deletedVehicleIds' => [],
+    'deletedVehicleVersions' => [],
+], [
+    'users' => [
+        ['id' => 'admin1', 'isim' => 'Admin', 'role' => 'genel_yonetici', 'sifre' => 'LegacyPlainPass1!'],
+        ['id' => 'u-branch', 'isim' => 'Sube Yonetici', 'role' => 'sube_yonetici', 'branchIds' => ['b1']],
+        ['id' => 'u-user', 'isim' => 'Kullanici', 'role' => 'kullanici', 'branchIds' => ['b1']],
+    ],
+]);
+$r = medisaSaveApplyIncomingData($legacyPlainPw, $data, swAdminContext());
+swAssert('Legacy plaintext user field rejected 400', ($r['success'] ?? true) === false && (int)($r['status'] ?? 0) === 400);
 
 // Validation failure does not mutate
 $data = swFixtureBase();
