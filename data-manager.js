@@ -391,7 +391,9 @@ function replaceMedisaCollection(kind, nextList, options) {
         throw new Error('[Medisa] Bilinmeyen koleksiyon: ' + String(kind));
     }
     if (!window.appData) window.appData = getDefaultAppData();
-    var list = Array.isArray(nextList) ? nextList.slice() : [];
+    var list = kind === 'users'
+        ? normalizeUsers(nextList)
+        : (Array.isArray(nextList) ? nextList.slice() : []);
     window.appData[appKey] = list;
     bumpMedisaCollectionRevision(kind);
     if (kind === 'vehicles') {
@@ -422,7 +424,7 @@ function commitMedisaAppDataSnapshot(nextAppData, options) {
         tasitlar: Array.isArray(incoming.tasitlar) ? incoming.tasitlar.slice() : [],
         kayitlar: Array.isArray(incoming.kayitlar) ? incoming.kayitlar : (current.kayitlar || []),
         branches: Array.isArray(incoming.branches) ? incoming.branches.slice() : [],
-        users: Array.isArray(incoming.users) ? incoming.users.slice() : [],
+        users: normalizeUsers(incoming.users),
         ayarlar: incoming.ayarlar && typeof incoming.ayarlar === 'object' ? incoming.ayarlar : (current.ayarlar || defaults.ayarlar),
         sifreler: Array.isArray(incoming.sifreler) ? incoming.sifreler : (current.sifreler || []),
         arac_aylik_hareketler: Array.isArray(incoming.arac_aylik_hareketler) ? incoming.arac_aylik_hareketler : (current.arac_aylik_hareketler || []),
@@ -877,7 +879,7 @@ function normalizeOfflineAppDataSnapshot(data) {
         tasitlar: Array.isArray(data.tasitlar) ? data.tasitlar : (Array.isArray(data.vehicles) ? data.vehicles : []),
         kayitlar: Array.isArray(data.kayitlar) ? data.kayitlar : [],
         branches: Array.isArray(data.branches) ? data.branches : [],
-        users: Array.isArray(data.users) ? data.users : [],
+        users: normalizeUsers(data.users),
         ayarlar: data.ayarlar || {
             sirketAdi: 'Medisa',
             yetkiliKisi: '',
@@ -910,15 +912,21 @@ function normalizeOfflineAppDataSnapshot(data) {
 
 function readOfflineAppDataSnapshot() {
     var keys = ['medisa_data_v1', 'medisa_server_backup'];
+    var firstUsableSnapshot = null;
     for (var i = 0; i < keys.length; i++) {
         try {
             var savedData = localStorage.getItem(keys[i]);
             if (!savedData) continue;
             var normalized = normalizeOfflineAppDataSnapshot(JSON.parse(savedData));
-            if (hasUsableAppData(normalized)) return normalized;
+            if (hasUsableAppData(normalized)) {
+                if (!firstUsableSnapshot) firstUsableSnapshot = normalized;
+                try {
+                    localStorage.setItem(keys[i], JSON.stringify(normalized));
+                } catch (storageWriteError) {}
+            }
         } catch (e) {}
     }
-    return null;
+    return firstUsableSnapshot;
 }
 
 function persistOfflineAppDataSnapshot(data) {
@@ -1335,6 +1343,19 @@ function buildSaveWirePayload(options) {
     }
 
     var mutationIntent = buildSaveMutationIntent();
+    var passwordChanges = options.userPasswordChanges
+        && typeof options.userPasswordChanges === 'object'
+        && !Array.isArray(options.userPasswordChanges)
+        ? options.userPasswordChanges
+        : {};
+    var passwordChangeIds = Object.keys(passwordChanges).filter(function(userId) {
+        return String(userId || '').trim() !== ''
+            && typeof passwordChanges[userId] === 'string'
+            && passwordChanges[userId].trim() !== '';
+    });
+    if (passwordChangeIds.length && mutationIntent.collections.indexOf('users') === -1) {
+        mutationIntent.collections.push('users');
+    }
     var isNoOp = !(mutationIntent.collections || []).length
         && !(mutationIntent.changedVehicleIds || []).length
         && !(mutationIntent.deletedVehicleIds || []).length;
@@ -1356,6 +1377,12 @@ function buildSaveWirePayload(options) {
         },
         _medisaMutation: mutationIntent
     };
+    if (passwordChangeIds.length) {
+        wirePayload._medisaUserPasswordChanges = Object.create(null);
+        passwordChangeIds.forEach(function(userId) {
+            wirePayload._medisaUserPasswordChanges[userId] = passwordChanges[userId];
+        });
+    }
 
     var changedLookup = {};
     (mutationIntent.changedVehicleIds || []).forEach(function(id) {
@@ -1373,6 +1400,12 @@ function buildSaveWirePayload(options) {
             });
             wirePayload.tasitlar = changedVehicles;
             baselinePatchSnapshot.tasitlar = cloneServerDatasetValue(changedVehicles);
+            return;
+        }
+        if (key === 'users') {
+            var safeUsers = normalizeUsers(current.users);
+            wirePayload.users = safeUsers.map(serializeUserForServer);
+            baselinePatchSnapshot.users = cloneServerDatasetValue(safeUsers);
             return;
         }
         var cloned = cloneServerDatasetValue(current[key]);
@@ -1480,6 +1513,17 @@ async function saveDataToServer(options) {
         var mutationIntent = built.mutationIntent;
         delete payloadObj.kaskoDegerListesi;
         var requestBody = JSON.stringify(payloadObj);
+        if (payloadObj._medisaUserPasswordChanges) {
+            Object.keys(payloadObj._medisaUserPasswordChanges).forEach(function(userId) {
+                payloadObj._medisaUserPasswordChanges[userId] = '';
+            });
+            delete payloadObj._medisaUserPasswordChanges;
+        }
+        if (options && options.userPasswordChanges && typeof options.userPasswordChanges === 'object') {
+            Object.keys(options.userPasswordChanges).forEach(function(userId) {
+                options.userPasswordChanges[userId] = '';
+            });
+        }
         var requestSnapshot = built.baselinePatchSnapshot
             ? cloneServerDatasetValue(built.baselinePatchSnapshot)
             : null;
@@ -1660,20 +1704,72 @@ function normalizeUser(user) {
         kullaniciPaneli = false;
     }
 
-    return Object.assign({}, user, {
+    var hasPortalPassword = user.portal_sifresi_var === true
+        || (typeof user.sifre === 'string' && user.sifre.trim() !== '')
+        || (typeof user.sifre_hash === 'string' && user.sifre_hash.trim() !== '')
+        || (typeof user.password === 'string' && user.password.trim() !== '')
+        || (typeof user.password_hash === 'string' && user.password_hash.trim() !== '');
+    var email = user.email != null ? String(user.email) : '';
+    var username = user.kullanici_adi != null ? String(user.kullanici_adi) : '';
+    var createdAt = user.createdAt != null
+        ? String(user.createdAt)
+        : (user.kayit_tarihi != null ? String(user.kayit_tarihi) : '');
+    var assignedVehicles = Array.isArray(user.zimmetli_araclar)
+        ? user.zimmetli_araclar.slice()
+        : [];
+    var tip = role === 'genel_yonetici'
+        ? 'admin'
+        : (role === 'sube_yonetici' ? 'yonetici' : 'kullanici');
+
+    return {
         id: id,
+        isim: name,
         name: name,
+        kullanici_adi: username,
+        telefon: phone,
         phone: phone,
+        email: email,
+        sube_id: branchId,
+        sube_ids: branchIds.slice(),
         branchId: branchId,
         branchIds: branchIds,
+        rol: role,
         role: role,
+        tip: tip,
         kullanici_paneli: !!kullaniciPaneli,
-        surucu_paneli: !!kullaniciPaneli
-    });
+        surucu_paneli: !!kullaniciPaneli,
+        zimmetli_araclar: assignedVehicles,
+        aktif: user.aktif !== false,
+        kayit_tarihi: createdAt,
+        createdAt: createdAt,
+        son_giris: user.son_giris != null ? user.son_giris : null,
+        portal_sifresi_var: hasPortalPassword
+    };
 }
 
 function normalizeUsers(arr) {
     return Array.isArray(arr) ? arr.map(normalizeUser) : [];
+}
+
+function serializeUserForServer(user) {
+    var normalized = normalizeUser(user);
+    return {
+        id: normalized.id,
+        isim: normalized.name,
+        kullanici_adi: normalized.kullanici_adi,
+        telefon: normalized.phone,
+        email: normalized.email,
+        sube_id: normalized.branchId,
+        sube_ids: normalized.branchIds.slice(),
+        rol: normalized.role,
+        tip: normalized.tip,
+        kullanici_paneli: normalized.kullanici_paneli,
+        surucu_paneli: normalized.surucu_paneli,
+        zimmetli_araclar: normalized.zimmetli_araclar.slice(),
+        aktif: normalized.aktif,
+        kayit_tarihi: normalized.createdAt,
+        son_giris: normalized.son_giris
+    };
 }
 
 function getSessionScope() {

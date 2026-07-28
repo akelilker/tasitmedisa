@@ -1588,12 +1588,24 @@ function medisaSaveValidateDeltaWireContract(array $incomingData, $mutationColle
 
 /**
  * Kullanıcı kimlik bilgilerini sunucu sahibiyle uzlaştırır.
- * İstemci sifre_hash güvenilmez; düz metin sifre varsa sunucuda hashlenir.
+ * İstemci kullanıcı nesnesindeki kimlik doğrulama alanları güvenilmez.
+ * Yeni parola yalnız _medisaUserPasswordChanges üzerinden geçici olarak kabul edilir.
  * @return array{success:bool,users?:array,message?:string,status?:int}
  */
 function medisaReconcileUserCredentials($currentUsers, $incomingUsers, $passwordChanges = null, $context = null) {
-    if (is_array($passwordChanges) && count($passwordChanges) > 0) {
-        return medisaBuildErrorResult('Parola yönetimi yalnız güvenli başlangıç parolası yenileme işlemiyle yapılabilir.', 400);
+    $requestedPasswords = [];
+    if ($passwordChanges !== null && !is_array($passwordChanges)) {
+        return medisaBuildErrorResult('Parola değişikliği formatı geçersiz.', 400);
+    }
+    foreach (($passwordChanges ?? []) as $requestedUserId => $requestedPassword) {
+        $userId = trim((string)$requestedUserId);
+        if ($userId === '' || !is_string($requestedPassword) || trim($requestedPassword) === '') {
+            return medisaBuildErrorResult('Parola değişikliği formatı geçersiz.', 400);
+        }
+        if (mb_strlen($requestedPassword, 'UTF-8') < 6) {
+            return medisaBuildErrorResult('Yeni şifre en az 6 karakter olmalı.', 400);
+        }
+        $requestedPasswords[$userId] = $requestedPassword;
     }
 
     $currentById = [];
@@ -1609,7 +1621,16 @@ function medisaReconcileUserCredentials($currentUsers, $incomingUsers, $password
         $user = $incomingUser;
         $userId = isset($user['id']) ? (string)$user['id'] : '';
         $currentUser = ($userId !== '' && isset($currentById[$userId])) ? $currentById[$userId] : null;
-        $plainPassword = isset($user['sifre']) ? trim((string)$user['sifre']) : '';
+        $unexpectedPlainPassword = trim((string)(
+            $user['sifre']
+            ?? $user['yeni_sifre']
+            ?? $user['portal_sifresi']
+            ?? $user['password']
+            ?? ''
+        ));
+        if ($unexpectedPlainPassword !== '' && !array_key_exists($userId, $requestedPasswords)) {
+            return medisaBuildErrorResult('Eski parola gönderim biçimi kabul edilmiyor. Sayfayı yenileyip tekrar deneyin.', 400);
+        }
 
         unset(
             $user['sifre'],
@@ -1622,11 +1643,24 @@ function medisaReconcileUserCredentials($currentUsers, $incomingUsers, $password
             $user['portal_sifresi_var']
         );
 
-        if ($plainPassword !== '') {
-            if (is_array($context) && !medisaCanManageUserRecord($incomingUser, $context)) {
+        if ($userId !== '' && array_key_exists($userId, $requestedPasswords)) {
+            $canManagePassword = is_array($context) && medisaCanManageUserRecord($incomingUser, $context);
+            if (($context['role'] ?? '') === 'sube_yonetici') {
+                $canManagePassword = $canManagePassword
+                    && medisaResolveUserRole($incomingUser) === 'kullanici'
+                    && (
+                        !is_array($currentUser)
+                        || (
+                            medisaResolveUserRole($currentUser) === 'kullanici'
+                            && medisaCanManageUserRecord($currentUser, $context)
+                        )
+                    );
+            }
+            if (!$canManagePassword) {
                 return medisaBuildErrorResult('Bu kullanıcının parolasını değiştirme yetkiniz yok.', 403);
             }
-            medisaSetUserPasswordHash($user, $plainPassword);
+            medisaSetUserPasswordHash($user, $requestedPasswords[$userId]);
+            unset($requestedPasswords[$userId]);
         } elseif (is_array($currentUser)) {
             $currentHash = isset($currentUser['sifre_hash']) ? trim((string)$currentUser['sifre_hash']) : '';
             $currentPlain = isset($currentUser['sifre']) ? trim((string)$currentUser['sifre']) : '';
@@ -1641,6 +1675,10 @@ function medisaReconcileUserCredentials($currentUsers, $incomingUsers, $password
         }
 
         $reconciled[] = $user;
+    }
+
+    if (count($requestedPasswords) > 0) {
+        return medisaBuildErrorResult('Parola değişikliği hedef kullanıcısı bulunamadı.', 400);
     }
 
     return [
@@ -1662,13 +1700,15 @@ function medisaSaveApplyIncomingData(array $incomingData, array &$data, array $c
     $currentVehicles = medisaSaveNormalizeCollection($data['tasitlar'] ?? []);
     $currentUsers = medisaSaveNormalizeCollection($data['users'] ?? []);
     $currentVehiclesById = medisaSaveIndexVehiclesById($currentVehicles);
+    if (
+        array_key_exists('_medisaUserPasswordChanges', $incomingData)
+        && !is_array($incomingData['_medisaUserPasswordChanges'])
+    ) {
+        return medisaBuildErrorResult('Parola değişikliği formatı geçersiz.', 400);
+    }
     $passwordChanges = is_array($incomingData['_medisaUserPasswordChanges'] ?? null)
         ? $incomingData['_medisaUserPasswordChanges']
         : null;
-    if (is_array($passwordChanges) && count($passwordChanges) > 0) {
-        return medisaBuildErrorResult('Parola yönetimi yalnız güvenli başlangıç parolası yenileme işlemiyle yapılabilir.', 400);
-    }
-
     $mutation = is_array($incomingData['_medisaMutation'] ?? null) ? $incomingData['_medisaMutation'] : null;
     $mutationCollections = $mutation !== null && is_array($mutation['collections'] ?? null)
         ? array_values(array_unique(array_map('strval', $mutation['collections'])))
@@ -1703,6 +1743,9 @@ function medisaSaveApplyIncomingData(array $incomingData, array &$data, array $c
         return $mutationCollections === null || in_array($name, $mutationCollections, true);
     };
     $usersCollectionChanged = $collectionChanged('users');
+    if (is_array($passwordChanges) && count($passwordChanges) > 0 && !$usersCollectionChanged) {
+        return medisaBuildErrorResult('Parola değişikliği için kullanıcı koleksiyonu zorunludur.', 400);
+    }
 
     $versionCheck = medisaSaveValidateIncomingVehicleVersions($incomingVehicles, $currentVehiclesById, $context, $changedVehicleIds);
     if ($versionCheck !== true) {
@@ -1729,7 +1772,7 @@ function medisaSaveApplyIncomingData(array $incomingData, array &$data, array $c
         if ($collectionChanged('kayitlar')) $data['kayitlar'] = is_array($incomingData['kayitlar'] ?? null) ? $incomingData['kayitlar'] : ($data['kayitlar'] ?? []);
         if ($collectionChanged('branches')) $data['branches'] = medisaSaveNormalizeCollection($incomingData['branches'] ?? []);
         if ($usersCollectionChanged) {
-            $reconciledUsers = medisaReconcileUserCredentials($currentUsers, $incomingUsers, null, $context);
+            $reconciledUsers = medisaReconcileUserCredentials($currentUsers, $incomingUsers, $passwordChanges, $context);
             if (($reconciledUsers['success'] ?? false) !== true) {
                 return $reconciledUsers;
             }
@@ -1760,7 +1803,7 @@ function medisaSaveApplyIncomingData(array $incomingData, array &$data, array $c
         }
 
         if ($usersCollectionChanged) {
-            $reconciledUsers = medisaReconcileUserCredentials($currentUsers, $incomingUsers, null, $context);
+            $reconciledUsers = medisaReconcileUserCredentials($currentUsers, $incomingUsers, $passwordChanges, $context);
             if (($reconciledUsers['success'] ?? false) !== true) {
                 return $reconciledUsers;
             }
