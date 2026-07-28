@@ -2,24 +2,92 @@
 deployment:
   tasks:
     - export DEPLOYPATH=/home/karmotor/public_html/medisa
-    - /bin/mkdir -p $DEPLOYPATH
-    - /bin/mkdir -p $DEPLOYPATH/data
-    - /bin/mkdir -p $DEPLOYPATH/data/ruhsat
-    - /bin/mkdir -p $DEPLOYPATH/data/ruhsat_preview
-    - /bin/mkdir -p $DEPLOYPATH/data/kasko_police
-    - /bin/mkdir -p $DEPLOYPATH/data/kasko_police_preview
-    - /bin/mkdir -p $DEPLOYPATH/data/sigorta_police
-    - /bin/mkdir -p $DEPLOYPATH/data/sigorta_police_preview
-    - /bin/mkdir -p $DEPLOYPATH/data/k2_belgesi
-    - /bin/mkdir -p $DEPLOYPATH/data/k2_belgesi_preview
-    - /bin/mkdir -p $DEPLOYPATH/data/tasit_karti
-    - /bin/mkdir -p $DEPLOYPATH/data/tasit_karti_preview
-    - /bin/mkdir -p $DEPLOYPATH/data/takograf
-    - /bin/mkdir -p $DEPLOYPATH/data/takograf_preview
-    - /bin/mkdir -p $DEPLOYPATH/data/backups
-    - /bin/cp -R admin driver icon $DEPLOYPATH/
-    - /bin/cp -R t $DEPLOYPATH/
-    - /bin/cp index.html manifest.json sw.js .htaccess $DEPLOYPATH/
-    - /bin/cp portal-session.js $DEPLOYPATH/
-    - /bin/cp core.php load.php load_kasko.php save.php save_kasko.php kasko-index.php asset.php restore.php ruhsat.php ruhsat_preview.php upload_ruhsat.php document_token.php $DEPLOYPATH/
-    - /bin/cp script-core.js data-manager.js data-service.js vehicle-notification-domain.js notifications.js notifications.css tasitlar.js tasitlar-yazici.js tasitlar-base.css tasitlar-extra.css kayit.js kayit.css raporlar.js raporlar.css ayarlar.js ayarlar.css style-core.css $DEPLOYPATH/
+    - /bin/test "$DEPLOYPATH" = "/home/karmotor/public_html/medisa"
+    - /bin/test "$(/bin/pwd -P)" != "$DEPLOYPATH"
+    - /bin/test ! -e "$DEPLOYPATH/.git"
+    - /bin/test -d "$DEPLOYPATH"
+    - /bin/test -f "$DEPLOYPATH/index.html"
+    - /bin/test -f "$DEPLOYPATH/core.php"
+    - /bin/test -f "$DEPLOYPATH/data/data.json"
+    - /bin/test -d "$DEPLOYPATH/icon"
+    - /bin/test -f "$DEPLOYPATH/icon/logo-header2.svg"
+    - /bin/test -f "$DEPLOYPATH/icon/medisa-round-pwa-192.png"
+    - /bin/test -f "$DEPLOYPATH/icon/medisa-round-pwa-512.png"
+    - /bin/test "$(git branch --show-current)" = "main"
+    - /bin/test -z "$(git status --porcelain)"
+    - /bin/test -f index.html
+    - /bin/test -f manifest.json
+    - /bin/test -f favicon.ico
+    - /bin/test -f portal-session.js
+    - /bin/test -f core.php
+    - /bin/test -f load.php
+    - /bin/test -f load_kasko.php
+    - /bin/test -f save.php
+    - /bin/test -f save_kasko.php
+    - /bin/test -f kasko-index.php
+    - /bin/test -f asset.php
+    - /bin/test -f restore.php
+    - /bin/test -f ruhsat.php
+    - /bin/test -f ruhsat_preview.php
+    - /bin/test -f upload_ruhsat.php
+    - /bin/test -f document_token.php
+    - /bin/test -f script-core.js
+    - /bin/test -f data-manager.js
+    - /bin/test -f data-service.js
+    - /bin/test -f vehicle-notification-domain.js
+    - /bin/test -f notifications.js
+    - /bin/test -f notifications.css
+    - /bin/test -f tasitlar.js
+    - /bin/test -f tasitlar-yazici.js
+    - /bin/test -f tasitlar-base.css
+    - /bin/test -f tasitlar-extra.css
+    - /bin/test -f kayit.js
+    - /bin/test -f kayit.css
+    - /bin/test -f raporlar.js
+    - /bin/test -f raporlar.css
+    - /bin/test -f ayarlar.js
+    - /bin/test -f ayarlar.css
+    - /bin/test -f style-core.css
+    - /bin/test -f admin/admin-report.css
+    - /bin/test -f admin/admin-report.js
+    - /bin/test -f admin/admin_approve.php
+    - /bin/test -f admin/admin_export.php
+    - /bin/test -f admin/admin_report.php
+    - /bin/test -f admin/driver-report.html
+    - /bin/test -f admin/manifest.json
+    - /bin/test -f driver/dashboard.html
+    - /bin/test -f driver/driver-dashboard-core.js
+    - /bin/test -f driver/driver-feature-actions.js
+    - /bin/test -f driver/driver-feature-documents.js
+    - /bin/test -f driver/driver-feature-feedback.js
+    - /bin/test -f driver/driver-feature-history.js
+    - /bin/test -f driver/driver-feature-password.js
+    - /bin/test -f driver/driver-features.css
+    - /bin/test -f driver/driver-login.js
+    - /bin/test -f driver/driver-script.js
+    - /bin/test -f driver/driver-shell.css
+    - /bin/test -f driver/driver-style.css
+    - /bin/test -f driver/driver_change_password.php
+    - /bin/test -f driver/driver_common.php
+    - /bin/test -f driver/driver_data.php
+    - /bin/test -f driver/driver_event.php
+    - /bin/test -f driver/driver_feedback.php
+    - /bin/test -f driver/driver_history.php
+    - /bin/test -f driver/driver_login.php
+    - /bin/test -f driver/driver_request.php
+    - /bin/test -f driver/driver_save.php
+    - /bin/test -f driver/index.html
+    - /bin/test -f driver/manifest.json
+    - /bin/test -f t/.htaccess
+    - /bin/test -f t/index.php
+    - /bin/test -f sw.js
+    - /bin/mkdir -p "$DEPLOYPATH/admin"
+    - /bin/mkdir -p "$DEPLOYPATH/driver"
+    - /bin/mkdir -p "$DEPLOYPATH/t"
+    - /bin/cp -a index.html manifest.json favicon.ico portal-session.js "$DEPLOYPATH/"
+    - /bin/cp -a core.php load.php load_kasko.php save.php save_kasko.php kasko-index.php asset.php restore.php ruhsat.php ruhsat_preview.php upload_ruhsat.php document_token.php "$DEPLOYPATH/"
+    - /bin/cp -a script-core.js data-manager.js data-service.js vehicle-notification-domain.js notifications.js notifications.css tasitlar.js tasitlar-yazici.js tasitlar-base.css tasitlar-extra.css kayit.js kayit.css raporlar.js raporlar.css ayarlar.js ayarlar.css style-core.css "$DEPLOYPATH/"
+    - /bin/cp -a admin/admin-report.css admin/admin-report.js admin/admin_approve.php admin/admin_export.php admin/admin_report.php admin/driver-report.html admin/manifest.json "$DEPLOYPATH/admin/"
+    - /bin/cp -a driver/dashboard.html driver/driver-dashboard-core.js driver/driver-feature-actions.js driver/driver-feature-documents.js driver/driver-feature-feedback.js driver/driver-feature-history.js driver/driver-feature-password.js driver/driver-features.css driver/driver-login.js driver/driver-script.js driver/driver-shell.css driver/driver-style.css driver/driver_change_password.php driver/driver_common.php driver/driver_data.php driver/driver_event.php driver/driver_feedback.php driver/driver_history.php driver/driver_login.php driver/driver_request.php driver/driver_save.php driver/index.html driver/manifest.json "$DEPLOYPATH/driver/"
+    - /bin/cp -a t/.htaccess t/index.php "$DEPLOYPATH/t/"
+    - /bin/cp -a sw.js "$DEPLOYPATH/"
