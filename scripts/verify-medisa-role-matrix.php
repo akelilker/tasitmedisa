@@ -315,6 +315,7 @@ rmAssert('gm manage_users', !empty($permGm['manage_users']));
 rmAssert('gm manage_branches', !empty($permGm['manage_branches']));
 rmAssert('gm manage_data', !empty($permGm['manage_data']));
 rmAssert('gm manage_settings', !empty($permGm['manage_settings']));
+rmAssert('gm manage_backups', !empty($permGm['manage_backups']));
 
 // Permissions — şube
 $permBm = medisaBuildPermissions($ctxBmA);
@@ -324,6 +325,7 @@ rmAssert('bm manage_users true', !empty($permBm['manage_users']));
 rmAssert('bm manage_branches false', empty($permBm['manage_branches']));
 rmAssert('bm manage_data true', !empty($permBm['manage_data']));
 rmAssert('bm manage_settings true', !empty($permBm['manage_settings']));
+rmAssert('bm manage_backups false', empty($permBm['manage_backups']));
 
 // Permissions — kullanıcı
 $permUser = medisaBuildPermissions($ctxUserA);
@@ -333,6 +335,7 @@ rmAssert('user manage_users false', empty($permUser['manage_users']));
 rmAssert('user manage_branches false', empty($permUser['manage_branches']));
 rmAssert('user manage_data false', empty($permUser['manage_data']));
 rmAssert('user manage_settings false', empty($permUser['manage_settings']));
+rmAssert('user manage_backups false', empty($permUser['manage_backups']));
 
 // Access context
 rmAssert('ctx gm role', ($ctxGm['role'] ?? '') === 'genel_yonetici');
@@ -453,21 +456,43 @@ $sessionGm = medisaBuildSessionPayload($ctxGm);
 rmAssert('session no sifre', !array_key_exists('sifre', $sessionGm['user'] ?? []) && !isset($sessionGm['sifre']));
 rmAssert('session no sifre_hash', !array_key_exists('sifre_hash', $sessionGm['user'] ?? []) && !isset($sessionGm['sifre_hash']));
 
-// Filtered user rows: no plaintext sifre (hash may exist for manager UI owner; kullanici must not see others)
-$plainLeak = false;
+// Filtered user rows: every role and report projection uses the same safe allowlist.
+$sensitiveUserFields = [
+    'sifre',
+    'sifre_hash',
+    'sifre_guncellendi_at',
+    'password',
+    'password_hash',
+    'reset_token',
+    'auth_metadata',
+];
+$projectionSets = [
+    'gm' => $filtGm['users'] ?? [],
+    'bm' => $filtBm['users'] ?? [],
+    'user' => $filtUser['users'] ?? [],
+    'report_bm' => $filtReportBm['users'] ?? [],
+    'report_user' => $filtReportUser['users'] ?? [],
+];
+foreach ($projectionSets as $projectionName => $rows) {
+    $hasSensitiveField = false;
+    foreach ($rows as $row) {
+        foreach ($sensitiveUserFields as $field) {
+            if (array_key_exists($field, $row)) {
+                $hasSensitiveField = true;
+                break 2;
+            }
+        }
+    }
+    rmAssert($projectionName . ' user projection secretsiz', $hasSensitiveField === false);
+}
+$projectedUserA = null;
 foreach (($filtUser['users'] ?? []) as $row) {
-    if (isset($row['sifre']) && trim((string)$row['sifre']) !== '') {
-        $plainLeak = true;
+    if ((string)($row['id'] ?? '') === 'user-a') {
+        $projectedUserA = $row;
+        break;
     }
 }
-rmAssert('user projection no plaintext sifre', $plainLeak === false);
-$otherHashLeak = false;
-foreach (($filtUser['users'] ?? []) as $row) {
-    if ((string)($row['id'] ?? '') !== 'user-a' && isset($row['sifre_hash'])) {
-        $otherHashLeak = true;
-    }
-}
-rmAssert('user projection no other user hash', $otherHashLeak === false);
+rmAssert('user projection portal_sifresi_var true', ($projectedUserA['portal_sifresi_var'] ?? false) === true);
 
 // Save scoped ensure
 rmAssert('save own vehicle allowed', medisaSaveEnsureScopedVehiclesAreAllowed([rmVehicleById($data, 'veh-a1')], $ctxBmA) === true);

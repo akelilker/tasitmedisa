@@ -694,6 +694,7 @@ function medisaBuildPermissions($context) {
         'manage_branches' => $role === 'genel_yonetici',
         'manage_data' => $canManageGlobalData,
         'manage_settings' => $canManageGlobalData,
+        'manage_backups' => $role === 'genel_yonetici',
     ];
 }
 
@@ -1102,6 +1103,50 @@ function medisaProjectNotificationReadStateForContext(array $notificationReadSta
     ];
 }
 
+function medisaProjectUserForClient($user) {
+    if (!is_array($user)) {
+        return [];
+    }
+
+    $branchIds = medisaExtractUserBranchIds($user);
+    $primaryBranchId = $branchIds[0] ?? '';
+    $role = medisaResolveUserRole($user);
+    $name = trim((string)($user['isim'] ?? $user['name'] ?? ''));
+    $phone = trim((string)($user['telefon'] ?? $user['phone'] ?? ''));
+    $createdAt = $user['kayit_tarihi'] ?? $user['createdAt'] ?? '';
+    $tip = $role === 'genel_yonetici'
+        ? 'admin'
+        : ($role === 'sube_yonetici' ? 'yonetici' : 'kullanici');
+    $driverPanel = !empty($user['kullanici_paneli']) || !empty($user['surucu_paneli']);
+
+    return [
+        'id' => isset($user['id']) ? (string)$user['id'] : '',
+        'isim' => $name,
+        'name' => $name,
+        'kullanici_adi' => trim((string)($user['kullanici_adi'] ?? '')),
+        'telefon' => $phone,
+        'phone' => $phone,
+        'email' => trim((string)($user['email'] ?? '')),
+        'sube_id' => $primaryBranchId,
+        'sube_ids' => $branchIds,
+        'branchId' => $primaryBranchId,
+        'branchIds' => $branchIds,
+        'rol' => $role,
+        'role' => $role,
+        'tip' => $tip,
+        'kullanici_paneli' => $driverPanel,
+        'surucu_paneli' => $driverPanel,
+        'zimmetli_araclar' => is_array($user['zimmetli_araclar'] ?? null)
+            ? array_values($user['zimmetli_araclar'])
+            : [],
+        'aktif' => !array_key_exists('aktif', $user) || $user['aktif'] !== false,
+        'kayit_tarihi' => $createdAt,
+        'createdAt' => $createdAt,
+        'son_giris' => $user['son_giris'] ?? null,
+        'portal_sifresi_var' => medisaUserHasPortalPassword($user),
+    ];
+}
+
 function medisaFilterDataForContextWithUserPredicate($data, $context, $userPredicate) {
     $visibleVehicles = array_values(array_filter($data['tasitlar'] ?? [], function ($vehicle) use ($context) {
         return medisaCanViewVehicleRecord($vehicle, $context);
@@ -1110,6 +1155,7 @@ function medisaFilterDataForContextWithUserPredicate($data, $context, $userPredi
     $visibleUsers = array_values(array_filter($data['users'] ?? [], function ($user) use ($context, $userPredicate) {
         return is_callable($userPredicate) ? (bool)call_user_func($userPredicate, $user, $context) : false;
     }));
+    $visibleUsers = array_values(array_map('medisaProjectUserForClient', $visibleUsers));
 
     $visibleBranchIds = [];
     foreach (($context['branch_ids'] ?? []) as $branchId) {
