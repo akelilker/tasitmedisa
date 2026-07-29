@@ -133,6 +133,16 @@ assert(
     && /portal_sifresi_var/.test(core),
   'P0-A1 parola kanalı korunmalı'
 );
+
+assert(
+  'authz_403_does_not_logout',
+  /function handleMedisaHttpAuthStatus/.test(dm)
+    && /handleMedisaHttpAuthStatus\(401/.test(dm)
+    && /handleMedisaHttpAuthStatus\(403/.test(dm)
+    && /medisaAuthorizationDenied/.test(dm)
+    && !/if \(response\.status === 401 \|\| response\.status === 403\)/.test(dm),
+  '403 oturumu kapatmamalı; 401/403 merkezi handleMedisaHttpAuthStatus ile ayrılmalı'
+);
 assert(
   'report_user_projection_bm_normal_only',
   (function() {
@@ -146,6 +156,28 @@ assert(
       && !/\$targetRole === 'genel_yonetici'/.test(block);
   })(),
   'Report projection BM için yalnız kullanici + scope + self hariç olmalı'
+);
+assert(
+  'assignable_normal_user_candidate_helper',
+  /function isAssignableNormalUserCandidate/.test(dm)
+    && /window\.isAssignableNormalUserCandidate/.test(dm),
+  'Taşıt/ceza adayları merkezi normal-kullanıcı helper kullanmalı'
+);
+
+const tasitlar = read('tasitlar.js');
+assert(
+  'vehicle_assign_uses_assignable_helper',
+  /getAssignableUsersForVehicle/.test(tasitlar)
+    && /isAssignableNormalUserCandidate/.test(tasitlar),
+  'Tahsis ve ceza listeleri yönetici adaylarını elemiş olmalı'
+);
+
+assert(
+  'bm_user_form_role_locked_kullanici',
+  /effectiveScope\.isBranchManager\s*\?\s*USER_FORM_ROLE_OPTIONS\.filter/.test(settings)
+    && /scope\.isBranchManager \? 'kullanici' : selectedRole/.test(settings)
+    && /isUserManageableInUserManagement/.test(settings),
+  'BM formunda yönetici rol seçenekleri olmamalı; payload kullanici sabitlenmeli'
 );
 
 if (failed) {

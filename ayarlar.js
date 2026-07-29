@@ -2067,10 +2067,18 @@
       if (!user) return false;
       const effectiveScope = scope || getUserManagementSessionScope();
       if (!effectiveScope.isBranchManager) return true;
+      const sessionUserId = String(
+        (effectiveScope.session && effectiveScope.session.user && effectiveScope.session.user.id) || ''
+      );
+      if (sessionUserId && String(user.id || '') === sessionUserId) return false;
       if (getUiRoleFromUser(user) !== 'kullanici') return false;
       const branchIds = getUserBranchIdsForManagement(user);
       if (branchIds.length === 0) return false;
-      return branchIds.every(function(branchId) { return isWithinUserManagementBranch(branchId, effectiveScope); });
+      const allowed = Array.isArray(effectiveScope.branchIds) ? effectiveScope.branchIds : [];
+      if (!allowed.length) return false;
+      return branchIds.every(function(branchId) {
+        return allowed.some(function(allowedId) { return String(allowedId) === String(branchId); });
+      });
     }
 
     function getScopedUsersForUserManagement(users, scope) {
