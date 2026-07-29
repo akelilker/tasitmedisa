@@ -107,6 +107,47 @@ assert(
   'Eski tek tasitlar.css kaldırılmalı (base+extra kullanılır)'
 );
 
+assert(
+  'bm_view_not_coupled_to_manage',
+  (function() {
+    const start = core.indexOf('function medisaCanViewUserRecord');
+    const end = core.indexOf('function medisaCanViewReportUserRecord');
+    if (start < 0 || end < 0 || end <= start) return false;
+    const block = core.slice(start, end);
+    return /medisaIsBranchManagerRole\(\$role\)/.test(block)
+      && /medisaIsNormalUserRole\(\$targetRole\)/.test(block)
+      && !/medisaCanManageUserRecord\(/.test(block);
+  })(),
+  'BM view policy manage helperına dolaylı bağlanmamalı; yalnız normal kullanıcı + scope'
+);
+assert(
+  'bm_manage_requires_normal_user_role',
+  /function medisaCanManageUserRecord[\s\S]*?medisaIsNormalUserRole\(\$targetRole\)/.test(core)
+    && /function medisaSaveValidateUserCollectionMutations/.test(core),
+  'BM manage yalnız kullanici + current/incoming mutation validator'
+);
+assert(
+  'password_channel_p0a1_preserved',
+  /_medisaUserPasswordChanges/.test(core)
+    && /medisaReconcileUserCredentials/.test(core)
+    && /portal_sifresi_var/.test(core),
+  'P0-A1 parola kanalı korunmalı'
+);
+assert(
+  'report_user_projection_bm_normal_only',
+  (function() {
+    const start = core.indexOf('function medisaCanViewReportUserRecord');
+    const end = core.indexOf('function medisaBuildNotificationScopeDescriptor');
+    if (start < 0 || end < 0 || end <= start) return false;
+    const block = core.slice(start, end);
+    return /medisaIsNormalUserRole\(\$targetRole\)/.test(block)
+      && /medisaIsKnownUserRole\(\$targetRole\)/.test(block)
+      && /user_id/.test(block)
+      && !/\$targetRole === 'genel_yonetici'/.test(block);
+  })(),
+  'Report projection BM için yalnız kullanici + scope + self hariç olmalı'
+);
+
 if (failed) {
   console.error('\nDoğrulama başarısız.');
   process.exit(1);
