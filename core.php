@@ -876,6 +876,20 @@ function medisaCanManageVehicleRecord($vehicle, $context) {
     return false;
 }
 
+function medisaIsNormalUserRole($role) {
+    return $role === 'kullanici';
+}
+
+function medisaIsKnownUserRole($role) {
+    return $role === 'genel_yonetici'
+        || medisaIsBranchManagerRole($role)
+        || medisaIsNormalUserRole($role);
+}
+
+/**
+ * Tek kayıt manage helper — yalnız gelen/mevcut kaydın o anki haline bakar.
+ * BM için create/update/delete current+incoming birlikte medisaSaveValidateUserCollectionMutations ile doğrulanır.
+ */
 function medisaCanManageUserRecord($user, $context) {
     $role = $context['role'] ?? 'kullanici';
     if ($role === 'genel_yonetici') {
@@ -886,8 +900,7 @@ function medisaCanManageUserRecord($user, $context) {
         return false;
     }
 
-    $targetRole = medisaResolveUserRole($user);
-    if ($targetRole === 'genel_yonetici') {
+    if (!is_array($user)) {
         return false;
     }
 
@@ -895,9 +908,17 @@ function medisaCanManageUserRecord($user, $context) {
         return false;
     }
 
+    $targetRole = medisaResolveUserRole($user);
+    if (!medisaIsKnownUserRole($targetRole) || !medisaIsNormalUserRole($targetRole)) {
+        return false;
+    }
+
     return medisaUserBranchesWithinScope($user, $context['branch_ids'] ?? []);
 }
 
+/**
+ * View policy manage'den ayrıdır; BM yalnız scope içi normal kullanıcıları görür (self hariç).
+ */
 function medisaCanViewUserRecord($user, $context) {
     $role = $context['role'] ?? 'kullanici';
     if ($role === 'genel_yonetici') {
@@ -905,12 +926,26 @@ function medisaCanViewUserRecord($user, $context) {
     }
 
     if (medisaIsBranchManagerRole($role)) {
-        return medisaCanManageUserRecord($user, $context);
+        if (!is_array($user)) {
+            return false;
+        }
+        if ((string)($user['id'] ?? '') === (string)($context['user_id'] ?? '')) {
+            return false;
+        }
+        $targetRole = medisaResolveUserRole($user);
+        if (!medisaIsKnownUserRole($targetRole) || !medisaIsNormalUserRole($targetRole)) {
+            return false;
+        }
+        return medisaUserBranchesWithinScope($user, $context['branch_ids'] ?? []);
     }
 
     return (string)($user['id'] ?? '') === (string)($context['user_id'] ?? '');
 }
 
+/**
+ * Rapor kullanıcı projeksiyonu — BM için ana view ile aynı fail-closed politika:
+ * yalnız scope içi normal kullanıcı; self / yönetici / unknown / partial scope gizli.
+ */
 function medisaCanViewReportUserRecord($user, $context) {
     $role = $context['role'] ?? 'kullanici';
     if ($role === 'genel_yonetici') {
@@ -918,11 +953,16 @@ function medisaCanViewReportUserRecord($user, $context) {
     }
 
     if (medisaIsBranchManagerRole($role)) {
-        $targetRole = medisaResolveUserRole($user);
-        if ($targetRole === 'genel_yonetici') {
+        if (!is_array($user)) {
             return false;
         }
-
+        if ((string)($user['id'] ?? '') === (string)($context['user_id'] ?? '')) {
+            return false;
+        }
+        $targetRole = medisaResolveUserRole($user);
+        if (!medisaIsKnownUserRole($targetRole) || !medisaIsNormalUserRole($targetRole)) {
+            return false;
+        }
         return medisaUserBranchesWithinScope($user, $context['branch_ids'] ?? []);
     }
 
@@ -1284,6 +1324,59 @@ function medisaSaveEnsureScopedVehiclesAreAllowed($incomingVehicles, $context) {
 
 function medisaSaveEnsureScopedUsersAreAllowed($incomingUsers, $context) {
     return medisaSaveEnsureScopedRecordsAreAllowed($incomingUsers, $context, 'medisaCanManageUserRecord');
+}
+
+function medisaSaveIndexUsersById($users) {
+    $indexed = [];
+    foreach ((array)$users as $user) {
+        if (!is_array($user)) {
+            continue;
+        }
+        $id = isset($user['id']) ? (string)$user['id'] : '';
+        if ($id !== '') {
+            $indexed[$id] = $user;
+        }
+    }
+    return $indexed;
+}
+
+/**
+ * Kullanıcı create/update/delete için current+incoming birlikte fail-closed doğrulama.
+ * Genel yönetici davranışı daraltılmaz (P0-C dışı).
+ *
+ * BM istemci projeksiyonu yönetilemeyen kayıtları taşımaz; bunların incoming'de
+ * olmaması silme sayılmaz (merge korur). Silme yalnız yönetilebilir kaydın
+ * bilinçli olarak düşürülmesidir. Güncellemede hem current hem incoming manageable olmalı
+ * (rol downgrade / promote saldırısını keser).
+ */
+function medisaSaveValidateUserCollectionMutations($currentUsers, $incomingUsers, $context) {
+    $actorRole = $context['role'] ?? 'kullanici';
+    if ($actorRole === 'genel_yonetici') {
+        return true;
+    }
+
+    if (!medisaIsBranchManagerRole($actorRole)) {
+        return medisaBuildErrorResult('Kapsam dışı veri kaydı engellendi.', 403);
+    }
+
+    $currentById = medisaSaveIndexUsersById($currentUsers);
+    $incomingById = medisaSaveIndexUsersById($incomingUsers);
+
+    foreach ($incomingById as $id => $incomingUser) {
+        $currentUser = $currentById[$id] ?? null;
+        if ($currentUser === null) {
+            if (!medisaCanManageUserRecord($incomingUser, $context)) {
+                return medisaBuildErrorResult('Kapsam dışı veri kaydı engellendi.', 403);
+            }
+            continue;
+        }
+
+        if (!medisaCanManageUserRecord($currentUser, $context) || !medisaCanManageUserRecord($incomingUser, $context)) {
+            return medisaBuildErrorResult('Kapsam dışı veri kaydı engellendi.', 403);
+        }
+    }
+
+    return true;
 }
 
 function medisaSaveIndexVehiclesById($vehicles) {
@@ -1787,8 +1880,14 @@ function medisaSaveApplyIncomingData(array $incomingData, array &$data, array $c
             : array_values(array_filter($incomingVehicles, function ($vehicle) use ($changedVehicleLookup) {
                 return isset($changedVehicleLookup[(string)($vehicle['id'] ?? '')]);
             }));
-        if (($collectionChanged('tasitlar') && !medisaSaveEnsureScopedVehiclesAreAllowed($vehiclesToAuthorize, $context)) || ($usersCollectionChanged && !medisaSaveEnsureScopedUsersAreAllowed($incomingUsers, $context))) {
+        if ($collectionChanged('tasitlar') && !medisaSaveEnsureScopedVehiclesAreAllowed($vehiclesToAuthorize, $context)) {
             return medisaBuildErrorResult('Kapsam dışı veri kaydı engellendi.', 403);
+        }
+        if ($usersCollectionChanged) {
+            $userMutationCheck = medisaSaveValidateUserCollectionMutations($currentUsers, $incomingUsers, $context);
+            if ($userMutationCheck !== true) {
+                return $userMutationCheck;
+            }
         }
 
         if ($collectionChanged('tasitlar')) {
