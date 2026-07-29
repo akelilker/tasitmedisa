@@ -27,12 +27,15 @@ if (!$data) {
     exit;
 }
 
-$context = medisaDriverResolveContext($data, $tokenData);
-if (!$context) {
-    http_response_code(403);
-    echo json_encode(['success' => false, 'message' => 'Kullanıcı paneli erişiminiz yok!'], JSON_UNESCAPED_UNICODE);
+$contextResult = medisaDriverResolveContextResult($data, $tokenData);
+if (($contextResult['success'] ?? false) !== true) {
+    $status = (int)($contextResult['status'] ?? 403);
+    unset($contextResult['status'], $contextResult['context'], $contextResult['token']);
+    http_response_code($status);
+    echo json_encode($contextResult, JSON_UNESCAPED_UNICODE);
     exit;
 }
+$context = $contextResult['context'];
 
 // Taşıt objesini kullanıcı paneli response formatına dönüştür (sol panel + uyarılar için)
 function buildVehicleForDriver($tasit, $branches = [], $k2Belgesi = []) {

@@ -114,7 +114,7 @@ $result = medisaMutateData(function (&$data) use ($username, $password) {
     }
 
     if (!medisaVerifyUserPassword($user, $password)) {
-        return medisaBuildErrorResult('Şifre hatalı!', 200);
+        return medisaBuildErrorResult('Şifre hatalı!', 401);
     }
 
     $rolPrecheck = medisaResolveUserRole($user);
@@ -142,6 +142,10 @@ $result = medisaMutateData(function (&$data) use ($username, $password) {
     $kullaniciPaneli = $driverDashboard;
 
     $data['users'][$userIndex]['son_giris'] = date('c');
+    $context = medisaBuildAccessContext($data, ['user_id' => $user['id']]);
+    if (!$context) {
+        return medisaBuildErrorResult('Oturum başlatılamadı.', 500);
+    }
 
     return [
         'success' => true,
@@ -153,6 +157,8 @@ $result = medisaMutateData(function (&$data) use ($username, $password) {
         'sube_ids' => $subeIds,
         'kullanici_paneli' => $kullaniciPaneli,
         'driver_dashboard' => $driverDashboard,
+        'ilk_giris_parola_degistirme_zorunlu' => $context['ilk_giris_parola_degistirme_zorunlu'],
+        'token_claims' => medisaBuildSessionTokenClaims($context),
     ];
 });
 
@@ -170,15 +176,9 @@ if (($result['success'] ?? false) !== true) {
     exit;
 }
 
-$token = medisaCreateSignedToken([
-    'user_id' => $result['user_id'],
-    'rol' => $result['rol'],
-    'raw_rol' => $result['raw_rol'],
-    'yonetici_only' => $result['yonetici_only'],
-    'sube_ids' => array_values(array_map('strval', $result['sube_ids'] ?? [])),
-    'kullanici_paneli' => $result['kullanici_paneli'],
-    'driver_dashboard' => $result['driver_dashboard'],
-], 30 * 24 * 60 * 60);
+$tokenClaims = is_array($result['token_claims'] ?? null) ? $result['token_claims'] : [];
+unset($result['token_claims']);
+$token = medisaCreateSignedToken($tokenClaims, 30 * 24 * 60 * 60);
 
 echo json_encode([
     'success' => true,
@@ -190,6 +190,7 @@ echo json_encode([
     'sube_ids' => $result['sube_ids'],
     'kullanici_paneli' => $result['kullanici_paneli'],
     'surucu_paneli' => $result['kullanici_paneli'],
+    'ilk_giris_parola_degistirme_zorunlu' => $result['ilk_giris_parola_degistirme_zorunlu'],
     'user' => [
         'id' => $result['user_id'],
         'isim' => $result['user_isim'],

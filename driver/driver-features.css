@@ -1004,6 +1004,21 @@ body.driver-modal-open {
   pointer-events: auto !important;
   z-index: 10020 !important;
 }
+.dashboard-page.password-change-gate-active #pwa-install-wrapper,
+.dashboard-page.password-change-gate-active .driver-header-fixed,
+.dashboard-page.password-change-gate-active .driver-content-wrap,
+.dashboard-page.password-change-gate-active #app-footer {
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+.dashboard-page.password-change-gate-active #driver-password-modal {
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+#driver-password-modal #driver-password-modal-close[hidden],
+#driver-password-modal #driver-password-cancel[hidden] {
+  display: none !important;
+}
 #edit-request-modal.driver-modal.show {
   z-index: 10021 !important;
 }
@@ -1636,6 +1651,26 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
   align-items: stretch;
   margin-top: 18px;
   width: 100%;
+}
+
+.driver-password-required-notice,
+.driver-password-policy {
+  margin: 0 0 16px;
+  color: #a0aec0;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.driver-password-required-notice {
+  padding: 12px 14px;
+  border: 1px solid rgba(var(--theme-color-rgb), 0.35);
+  border-radius: 8px;
+  background: rgba(var(--theme-color-rgb), 0.08);
+}
+
+.driver-password-policy {
+  margin-top: -4px;
+  font-size: 12.5px;
 }
 
 

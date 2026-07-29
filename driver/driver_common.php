@@ -7,17 +7,43 @@ function medisaDriverJsonResponse($payload, $statusCode = 200) {
     exit;
 }
 
-function medisaDriverResolveContext($data, $tokenData) {
-    $context = medisaBuildAccessContext($data, $tokenData);
-    if (!$context) {
-        return null;
+function medisaDriverResolveContextResult($data, $tokenData) {
+    $sessionResolution = medisaResolveSessionContext($data, $tokenData);
+    if (($sessionResolution['success'] ?? false) !== true) {
+        return $sessionResolution;
     }
+    $context = $sessionResolution['context'];
 
     if (empty($context['driver_dashboard']) || !empty($context['yonetici_only'])) {
-        return null;
+        return medisaBuildErrorResult('Kullanıcı paneli erişiminiz yok!', 403);
     }
 
-    return $context;
+    return [
+        'success' => true,
+        'context' => $context,
+        'token' => $tokenData,
+    ];
+}
+
+function medisaDriverResolveContext($data, $tokenData) {
+    $result = medisaDriverResolveContextResult($data, $tokenData);
+    return ($result['success'] ?? false) === true ? $result['context'] : null;
+}
+
+function medisaDriverRequireUsableSession($tokenData) {
+    $data = loadData();
+    if (!is_array($data)) {
+        medisaDriverJsonResponse(['success' => false, 'message' => 'Veri okunamadı!'], 500);
+    }
+
+    $result = medisaDriverResolveContextResult($data, $tokenData);
+    if (($result['success'] ?? false) !== true) {
+        $status = (int)($result['status'] ?? 403);
+        unset($result['status'], $result['context'], $result['token']);
+        medisaDriverJsonResponse($result, $status);
+    }
+
+    return $result['context'];
 }
 
 function medisaDriverBuildAssignedVehicleIdSet($vehicles) {

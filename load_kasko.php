@@ -24,15 +24,15 @@ if (!$data) {
     $data = medisaDefaultData();
 }
 
-$context = medisaBuildAccessContext($data, $tokenData);
-if (!$context) {
-    http_response_code(403);
-    echo json_encode([
-        'success' => false,
-        'message' => 'Kullanıcı bulunamadı veya yetki çözümlenemedi.',
-    ], JSON_UNESCAPED_UNICODE);
+$sessionResolution = medisaResolveSessionContext($data, $tokenData);
+if (($sessionResolution['success'] ?? false) !== true) {
+    $status = (int)($sessionResolution['status'] ?? 403);
+    unset($sessionResolution['status']);
+    http_response_code($status);
+    echo json_encode($sessionResolution, JSON_UNESCAPED_UNICODE);
     exit;
 }
+$context = $sessionResolution['context'];
 
 $mode = isset($_GET['mode']) ? trim((string)$_GET['mode']) : 'legacy';
 if ($mode === '') {

@@ -136,6 +136,14 @@ return;
 console.error('Token kaydedilemedi.');
 }
 
+function isPortalSessionRemembered() {
+try {
+return !!(window.localStorage.getItem('medisa_portal_token') || window.localStorage.getItem('driver_token'));
+} catch (e) {
+return false;
+}
+}
+
 async function fetchCurrentPortalSession(token) {
 if (!token) return null;
 try {
@@ -191,7 +199,12 @@ driverDashboard: driverDashboard,
 yoneticiOnly: sessionData && typeof sessionData.yonetici_only === 'boolean'
 ? sessionData.yonetici_only === true
 : !!(payload && payload.yonetici_only === true),
-panelEnabled: driverDashboard
+panelEnabled: driverDashboard,
+passwordChangeRequired: sessionData && typeof sessionData.ilk_giris_parola_degistirme_zorunlu === 'boolean'
+? sessionData.ilk_giris_parola_degistirme_zorunlu === true
+: (payload && typeof payload.ilk_giris_parola_degistirme_zorunlu === 'boolean'
+? payload.ilk_giris_parola_degistirme_zorunlu === true
+: true)
 };
 }
 
@@ -220,6 +233,15 @@ return null;
 
 function routeByAccessContext(accessContext, options) {
 var routeOptions = options && typeof options === 'object' ? options : {};
+if (accessContext && accessContext.passwordChangeRequired === true) {
+var mandatoryUrl = DRIVER_PAGE_BASE + 'dashboard.html?password-change=required';
+if (window.location.pathname.indexOf('/driver/dashboard.html') === -1) {
+window.location.href = mandatoryUrl;
+} else if (window.history && typeof window.history.replaceState === 'function') {
+window.history.replaceState(null, '', mandatoryUrl);
+}
+return true;
+}
 var surface = resolvePortalDefaultSurface(accessContext);
 var requestedNextUrl = String(routeOptions.nextUrl || '').trim();
 
@@ -274,8 +296,12 @@ return false;
 }
 
 var currentSession = await fetchCurrentPortalSession(token);
+if (!currentSession) {
+clearStoredPortalTokens();
+return false;
+}
 return routeByToken(token, fallbackDashboard, Object.assign({}, routeOptions, {
-sessionData: currentSession || routeOptions.sessionData || null
+sessionData: currentSession
 }));
 }
 
@@ -314,7 +340,7 @@ let lastCompletedActionInSession = null;
 
 let driverFeedbackPrefillHandled = false;
 let driverKaportaSvgPromise = null;
-let driverPasswordSuggestionMode = false;
+let driverPasswordMandatoryMode = false;
 function bindState(key, get, set){ Object.defineProperty(runtime.state, key, {configurable:true,enumerable:true,get:get,set:set}); }
 bindState('currentToken',function(){return currentToken},function(v){currentToken=v});
 bindState('currentUser',function(){return currentUser},function(v){currentUser=v});
@@ -329,7 +355,7 @@ bindState('driverHistoryLoaded',function(){return driverHistoryLoaded},function(
 bindState('driverHistoryPromise',function(){return driverHistoryPromise},function(v){driverHistoryPromise=v});
 bindState('lastCompletedActionInSession',function(){return lastCompletedActionInSession},function(v){lastCompletedActionInSession=v});
 bindState('driverKaportaSvgPromise',function(){return driverKaportaSvgPromise},function(v){driverKaportaSvgPromise=v});
-bindState('driverPasswordSuggestionMode',function(){return driverPasswordSuggestionMode},function(v){driverPasswordSuggestionMode=v});
+bindState('driverPasswordMandatoryMode',function(){return driverPasswordMandatoryMode},function(v){driverPasswordMandatoryMode=v});
 
 function clearSessionGreenFeedback() { lastCompletedActionInSession = null; }
 window.addEventListener('pagehide', clearSessionGreenFeedback);
@@ -831,6 +857,45 @@ return;
 
 currentToken = token;
 
+var tokenAccessContext = buildPortalAccessContext(tokenPayload, false, null);
+if (tokenAccessContext.passwordChangeRequired === true && document.body) {
+document.body.classList.add('password-change-gate-active');
+}
+
+var currentSession = await fetchCurrentPortalSession(token);
+if (!currentSession) {
+clearStoredPortalTokens();
+window.location.href = DRIVER_PAGE_BASE + 'index.html';
+return;
+}
+
+var accessContext = buildPortalAccessContext(tokenPayload, false, currentSession);
+if (accessContext.passwordChangeRequired === true) {
+if (document.body) document.body.classList.add('password-change-gate-active');
+currentUser = currentSession.user || null;
+syncDriverHeaderUserName();
+const mandatorySpinner = document.getElementById('loading-spinner');
+if (mandatorySpinner) mandatorySpinner.style.display = 'none';
+try {
+const passwordFeature = await runtime.loadFeature('password');
+if (!passwordFeature || typeof passwordFeature.openMandatoryDriverPasswordChange !== 'function') {
+throw new Error('Zorunlu parola özelliği hazır değil.');
+}
+passwordFeature.openMandatoryDriverPasswordChange();
+} catch (featureError) {
+console.error('Zorunlu parola ekranı yükleme hatası:', featureError);
+alert('Zorunlu parola ekranı yüklenemedi. İnternet bağlantınızı kontrol edip sayfayı yenileyin.');
+}
+return;
+}
+
+if (document.body) document.body.classList.remove('password-change-gate-active');
+if (!canOpenDriverDashboard(accessContext)) {
+window.location.href = MAIN_APP_URL;
+return;
+}
+syncDashboardHomeLinkVisibility(accessContext);
+
 const response = await fetch(API_BASE + 'driver_data.php?_=' + Date.now(), {
 headers: { 'Authorization': 'Bearer ' + token },
 cache: 'no-store'
@@ -858,14 +923,6 @@ alert('Oturum süresi doldu! Lütfen tekrar giriş yapın.');
 logout();
 return;
 }
-
-var currentSession = data.session && typeof data.session === 'object' ? data.session : null;
-var accessContext = buildPortalAccessContext(tokenPayload, false, currentSession);
-if (!canOpenDriverDashboard(accessContext)) {
-window.location.href = MAIN_APP_URL;
-return;
-}
-syncDashboardHomeLinkVisibility(accessContext);
 
 currentUser = data.user;
 syncDriverHeaderUserName();
@@ -1901,6 +1958,8 @@ h.calculateNextMuayeneDate = calculateNextMuayeneDate;
 h.getVehicleTypeRuleProfileDriver = getVehicleTypeRuleProfileDriver;
 h.clearStoredPortalTokens = clearStoredPortalTokens;
 h.clearSavedDriverPassword = clearSavedDriverPassword;
+h.persistSessionToken = persistSessionToken;
+h.isPortalSessionRemembered = isPortalSessionRemembered;
 h.logout = logout;
 h.openDriverNotifications = window.openDriverNotifications;
 h.closeDriverNotifications = window.closeDriverNotifications;

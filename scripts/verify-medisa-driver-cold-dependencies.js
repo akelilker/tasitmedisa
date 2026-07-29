@@ -41,6 +41,7 @@ function hasBareCall(src, name) {
   const re = new RegExp('\\b' + name + '\\s*\\(', 'g');
   let m;
   while ((m = re.exec(src))) {
+    if (m.index > 0 && src[m.index - 1] === '.') continue;
     const lineStart = src.lastIndexOf('\n', m.index) + 1;
     const lineEnd = src.indexOf('\n', m.index);
     const line = src.slice(lineStart, lineEnd === -1 ? src.length : lineEnd);

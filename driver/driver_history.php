@@ -20,10 +20,13 @@ if (!$data) {
     medisaDriverJsonResponse(['success' => false, 'message' => 'Veri okunamadı!'], 500);
 }
 
-$context = medisaDriverResolveContext($data, $tokenData);
-if (!$context) {
-    medisaDriverJsonResponse(['success' => false, 'message' => 'Kullanıcı paneli erişiminiz yok!'], 403);
+$contextResult = medisaDriverResolveContextResult($data, $tokenData);
+if (($contextResult['success'] ?? false) !== true) {
+    $status = (int)($contextResult['status'] ?? 403);
+    unset($contextResult['status'], $contextResult['context'], $contextResult['token']);
+    medisaDriverJsonResponse($contextResult, $status);
 }
+$context = $contextResult['context'];
 
 $user = $context['user'];
 $assignedVehicleIdSet = [];

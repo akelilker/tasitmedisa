@@ -6,6 +6,9 @@ if (!runtime) throw new Error('MedisaDriverRuntime eksik');
 var s = runtime.state;
 var h = runtime.helpers;
 var p = runtime.paths;
+if (typeof h.persistSessionToken !== 'function') {
+throw new Error('MedisaDriverRuntime session helper eksik');
+}
 function setDriverPasswordMessage(message, isError) {
 const messageEl = document.getElementById('driver-password-message');
 if (!messageEl) return;
@@ -20,22 +23,21 @@ localStorage.removeItem('driver_saved_password');
 } catch (e) {}
 }
 
-function setDriverPasswordModalMode(isSuggestion, showForm) {
+function setDriverPasswordModalMode(isMandatory) {
 const title = document.getElementById('driver-password-modal-title');
 const closeBtn = document.getElementById('driver-password-modal-close');
 const cancelBtn = document.getElementById('driver-password-cancel');
-const suggestion = document.getElementById('driver-password-suggestion');
-const form = document.getElementById('driver-password-form');
-s.driverPasswordSuggestionMode = isSuggestion === true;
+const notice = document.getElementById('driver-password-required-notice');
+s.driverPasswordMandatoryMode = isMandatory === true;
 if (title) {
-title.textContent = isSuggestion
-? 'Parolanızı Değiştirmeniz Önerilir'
-: 'Şifre Değiştir';
+title.textContent = isMandatory ? 'Parola Değişikliği Zorunlu' : 'Şifre Değiştir';
 }
-if (closeBtn) closeBtn.hidden = isSuggestion;
-if (cancelBtn) cancelBtn.hidden = isSuggestion;
-if (suggestion) suggestion.hidden = !(isSuggestion && !showForm);
-if (form) form.hidden = isSuggestion && !showForm;
+if (closeBtn) closeBtn.hidden = isMandatory;
+if (cancelBtn) cancelBtn.hidden = isMandatory;
+if (notice) notice.hidden = !isMandatory;
+if (document.body) {
+document.body.classList.toggle('password-change-gate-active', isMandatory);
+}
 }
 
 function openDriverPasswordModal() {
@@ -44,7 +46,7 @@ const form = document.getElementById('driver-password-form');
 if (!modal) return;
 if (form) form.reset();
 setDriverPasswordMessage('', false);
-setDriverPasswordModalMode(false, true);
+setDriverPasswordModalMode(false);
 modal.classList.add('show');
 h.updateDriverModalBodyClass();
 setTimeout(function() {
@@ -54,7 +56,7 @@ if (currentInput) currentInput.focus();
 };
 
 function closeDriverPasswordModal() {
-if (s.driverPasswordSuggestionMode) return;
+if (s.driverPasswordMandatoryMode) return;
 const modal = document.getElementById('driver-password-modal');
 const form = document.getElementById('driver-password-form');
 if (modal) modal.classList.remove('show');
@@ -63,58 +65,19 @@ setDriverPasswordMessage('', false);
 h.updateDriverModalBodyClass();
 };
 
-function openDriverPasswordSuggestion() {
+function openMandatoryDriverPasswordChange() {
 const modal = document.getElementById('driver-password-modal');
 const form = document.getElementById('driver-password-form');
 if (!modal) return;
 if (form) form.reset();
 setDriverPasswordMessage('', false);
-const suggestionMessage = document.getElementById('driver-password-suggestion-message');
-if (suggestionMessage) suggestionMessage.textContent = '';
-setDriverPasswordModalMode(true, false);
+setDriverPasswordModalMode(true);
 modal.classList.add('show');
 h.updateDriverModalBodyClass();
-};
-
-function startSuggestedPasswordChange() {
-setDriverPasswordModalMode(true, true);
 setTimeout(function() {
 const currentInput = document.getElementById('driver-current-password');
 if (currentInput) currentInput.focus();
 }, 50);
-};
-
-async function continueWithCurrentPassword() {
-if (!h.ensureDriverOnlineForWrite() || !s.currentToken) return;
-const button = document.getElementById('driver-password-continue');
-const message = document.getElementById('driver-password-suggestion-message');
-if (button) button.disabled = true;
-if (message) message.textContent = '';
-try {
-const response = await fetch(p.API_BASE + 'driver_password_suggestion.php', {
-method: 'POST',
-headers: {
-'Content-Type': 'application/json',
-'Authorization': 'Bearer ' + s.currentToken
-},
-body: '{}'
-});
-const data = await response.json();
-if (!response.ok || !data.success) {
-if (message) message.textContent = (data && data.message) || 'Tercihiniz kaydedilemedi.';
-return;
-}
-if (s.currentUser) s.currentUser.ilk_giris_parola_onerisi_bekliyor = false;
-s.driverPasswordSuggestionMode = false;
-const modal = document.getElementById('driver-password-modal');
-if (modal) modal.classList.remove('show');
-setDriverPasswordModalMode(false, true);
-h.updateDriverModalBodyClass();
-} catch (error) {
-if (message) message.textContent = 'Bağlantı hatası. Lütfen tekrar deneyin.';
-} finally {
-if (button) button.disabled = false;
-}
 };
 
 async function submitDriverPasswordChange(event) {
@@ -137,16 +100,19 @@ if (!currentPassword || !newPassword || !confirmPassword) {
 setDriverPasswordMessage('Tüm şifre alanlarını doldurun.', true);
 return false;
 }
-if (newPassword.length < 6) {
-setDriverPasswordMessage('Yeni şifre en az 6 karakter olmalı.', true);
+if (newPassword.length < 10
+|| !/[A-ZÇĞİÖŞÜ]/.test(newPassword)
+|| !/[a-zçğıöşü]/.test(newPassword)
+|| !/[0-9]/.test(newPassword)) {
+setDriverPasswordMessage('Yeni parola güvenlik koşullarını karşılamıyor.', true);
 return false;
 }
 if (newPassword !== confirmPassword) {
-setDriverPasswordMessage('Yeni şifre tekrarı eşleşmiyor.', true);
+setDriverPasswordMessage('Yeni parolalar eşleşmiyor.', true);
 return false;
 }
 if (newPassword === currentPassword) {
-setDriverPasswordMessage('Yeni şifre mevcut şifreyle aynı olamaz.', true);
+setDriverPasswordMessage('Yeni parola mevcut paroladan farklı olmalıdır.', true);
 return false;
 }
 
@@ -170,14 +136,19 @@ newPassword: newPassword
 });
 const data = await response.json();
 
-if (!response.ok || !data.success) {
-setDriverPasswordMessage((data && data.message) || 'Şifre değiştirilemedi.', true);
+if (!response.ok || !data.success || !data.token) {
+setDriverPasswordMessage((data && data.message) || 'Parola değiştirilemedi. Tekrar deneyin.', true);
 return false;
 }
 
-setDriverPasswordMessage('Şifre değiştirildi. Yeniden giriş yapmanız gerekiyor.', false);
+const rememberSession = typeof h.isPortalSessionRemembered === 'function'
+? h.isPortalSessionRemembered()
+: false;
+h.persistSessionToken(data.token, rememberSession);
+if (s.currentUser) s.currentUser.ilk_giris_parola_onerisi_bekliyor = false;
+s.driverPasswordMandatoryMode = false;
+setDriverPasswordMessage('Parolanız değiştirildi. Oturumunuz güvenli şekilde yenilendi.', false);
 h.clearSavedDriverPassword();
-h.clearStoredPortalTokens();
 setTimeout(function() {
 window.location.href = p.DRIVER_PAGE_BASE + 'index.html';
 }, 900);
@@ -195,9 +166,7 @@ return false;
 runtime.registerFeature('password', {
 openDriverPasswordModal: openDriverPasswordModal,
 closeDriverPasswordModal: closeDriverPasswordModal,
-openDriverPasswordSuggestion: openDriverPasswordSuggestion,
-startSuggestedPasswordChange: startSuggestedPasswordChange,
-continueWithCurrentPassword: continueWithCurrentPassword,
+openMandatoryDriverPasswordChange: openMandatoryDriverPasswordChange,
 submitDriverPasswordChange: submitDriverPasswordChange
 });
 })();

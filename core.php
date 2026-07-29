@@ -606,6 +606,15 @@ function medisaFindUserById($data, $userId) {
     return null;
 }
 
+function medisaFindUserIndex($data, $userId) {
+    foreach (($data['users'] ?? []) as $index => $user) {
+        if ((string)($user['id'] ?? '') === (string)$userId) {
+            return $index;
+        }
+    }
+    return -1;
+}
+
 function medisaUserHasAssignedVehicle($data, $userId) {
     foreach (($data['tasitlar'] ?? []) as $vehicle) {
         if ((string)($vehicle['assignedUserId'] ?? '') === (string)$userId) {
@@ -659,6 +668,130 @@ function medisaSetUserPasswordHash(&$user, $password) {
     $user['sifre_hash'] = password_hash(trim((string)$password), PASSWORD_DEFAULT);
     $user['sifre_guncellendi_at'] = date('c');
     unset($user['sifre']);
+}
+
+function medisaNormalizeFirstLoginPasswordChangeRequired($value) {
+    if ($value === true || $value === 1 || $value === '1') {
+        return true;
+    }
+    if ($value === false || $value === 0 || $value === '0' || $value === null) {
+        return false;
+    }
+    return true;
+}
+
+function medisaUserRequiresFirstLoginPasswordChange($user) {
+    if (!is_array($user)) {
+        return true;
+    }
+
+    $rawValue = array_key_exists('ilk_giris_parola_onerisi_bekliyor', $user)
+        ? $user['ilk_giris_parola_onerisi_bekliyor']
+        : null;
+    return medisaNormalizeFirstLoginPasswordChangeRequired($rawValue);
+}
+
+function medisaBuildUserPasswordVersion($user) {
+    if (!is_array($user)) {
+        return '';
+    }
+
+    $passwordHash = trim((string)($user['sifre_hash'] ?? ''));
+    if ($passwordHash === '') {
+        return '';
+    }
+
+    return hash_hmac('sha256', $passwordHash, medisaGetTokenSecret());
+}
+
+function medisaTokenMatchesUserPasswordVersion($tokenData, $user) {
+    if (!is_array($tokenData) || !is_array($user)) {
+        return false;
+    }
+
+    $tokenVersion = trim((string)($tokenData['pwdv'] ?? ''));
+    $currentVersion = medisaBuildUserPasswordVersion($user);
+    return $tokenVersion !== ''
+        && $currentVersion !== ''
+        && hash_equals($currentVersion, $tokenVersion);
+}
+
+function medisaNormalizePasswordPolicyValue($value) {
+    $normalized = trim((string)$value);
+    if (function_exists('mb_strtolower')) {
+        return mb_strtolower($normalized, 'UTF-8');
+    }
+    return strtolower($normalized);
+}
+
+function medisaUserPasswordPolicyDeniedValues($user) {
+    $values = [
+        'password',
+        'password123',
+        'parola',
+        'parola123',
+        'medisa',
+        'medisa123',
+        '1234567890',
+        'qwerty1234',
+    ];
+
+    if (!is_array($user)) {
+        return $values;
+    }
+
+    foreach (['kullanici_adi', 'username', 'login', 'userName', 'user_name', 'soyisim', 'soyad', 'surname', 'last_name'] as $key) {
+        if (isset($user[$key]) && trim((string)$user[$key]) !== '') {
+            $values[] = $user[$key];
+        }
+    }
+
+    foreach (['isim', 'name', 'ad_soyad'] as $key) {
+        $fullName = trim((string)($user[$key] ?? ''));
+        if ($fullName === '') {
+            continue;
+        }
+        $parts = preg_split('/\s+/u', $fullName);
+        if (is_array($parts) && count($parts) > 1) {
+            $values[] = $parts[count($parts) - 1];
+        }
+    }
+
+    return array_values(array_unique(array_filter(array_map(
+        'medisaNormalizePasswordPolicyValue',
+        $values
+    ), static function ($value) {
+        return $value !== '';
+    })));
+}
+
+function medisaValidateNewUserPassword($user, $currentPassword, $newPassword) {
+    $currentPassword = trim((string)$currentPassword);
+    $newPassword = trim((string)$newPassword);
+
+    if ($currentPassword === '' || $newPassword === '') {
+        return medisaBuildErrorResult('Mevcut şifre ve yeni şifre gerekli.', 400);
+    }
+    if (hash_equals($currentPassword, $newPassword)) {
+        return medisaBuildErrorResult('Yeni parola mevcut paroladan farklı olmalıdır.', 400);
+    }
+
+    $meetsComplexity = mb_strlen($newPassword, 'UTF-8') >= 10
+        && preg_match('/[A-ZÇĞİÖŞÜ]/u', $newPassword) === 1
+        && preg_match('/[a-zçğıöşü]/u', $newPassword) === 1
+        && preg_match('/[0-9]/', $newPassword) === 1;
+    $normalizedPassword = medisaNormalizePasswordPolicyValue($newPassword);
+    $deniedValues = medisaUserPasswordPolicyDeniedValues($user);
+    if (!$meetsComplexity || in_array($normalizedPassword, $deniedValues, true)) {
+        return medisaBuildErrorResult('Yeni parola güvenlik koşullarını karşılamıyor.', 400);
+    }
+
+    return medisaBuildMutationResult(true, ['save' => false]);
+}
+
+function medisaApplyUserPasswordChange(&$user, $newPassword) {
+    medisaSetUserPasswordHash($user, $newPassword);
+    $user['ilk_giris_parola_onerisi_bekliyor'] = false;
 }
 
 function medisaComputeDriverDashboard($user, $data) {
@@ -732,6 +865,7 @@ function medisaBuildSessionPayload($context) {
         'kullanici_paneli' => $context['kullanici_paneli'] ?? false,
         'yonetici_only' => $context['yonetici_only'] ?? false,
         'driver_dashboard' => $context['driver_dashboard'] ?? false,
+        'ilk_giris_parola_degistirme_zorunlu' => $context['ilk_giris_parola_degistirme_zorunlu'] ?? true,
         'permissions' => medisaBuildPermissions($context),
     ];
 }
@@ -755,10 +889,69 @@ function medisaBuildAccessContext($data, $tokenData) {
         'kullanici_paneli' => $driverDashboard,
         'yonetici_only' => medisaIsYoneticiOnlyUser($user),
         'driver_dashboard' => $driverDashboard,
+        'ilk_giris_parola_degistirme_zorunlu' => medisaUserRequiresFirstLoginPasswordChange($user),
     ];
     $context['permissions'] = medisaBuildPermissions($context);
 
     return $context;
+}
+
+function medisaBuildAuthenticatedAccessContext($data, $tokenData) {
+    $context = medisaBuildAccessContext($data, $tokenData);
+    if (!$context || !medisaTokenMatchesUserPasswordVersion($tokenData, $context['user'] ?? null)) {
+        return null;
+    }
+    return $context;
+}
+
+function medisaContextRequiresFirstLoginPasswordChange($context) {
+    return !is_array($context)
+        || ($context['ilk_giris_parola_degistirme_zorunlu'] ?? true) === true;
+}
+
+function medisaResolveSessionContext($data, $tokenData, $allowPasswordChangeRequired = false) {
+    $context = medisaBuildAuthenticatedAccessContext($data, $tokenData);
+    if (!$context) {
+        return [
+            'success' => false,
+            'status' => 401,
+            'message' => 'Oturumunuz sona erdi.',
+            'auth_required' => true,
+        ];
+    }
+
+    if (!$allowPasswordChangeRequired && medisaContextRequiresFirstLoginPasswordChange($context)) {
+        return [
+            'success' => false,
+            'status' => 403,
+            'code' => 'PASSWORD_CHANGE_REQUIRED',
+            'password_change_required' => true,
+            'message' => 'Uygulamayı kullanmadan önce parolanızı değiştirmeniz gerekiyor.',
+        ];
+    }
+
+    return [
+        'success' => true,
+        'context' => $context,
+        'token' => $tokenData,
+    ];
+}
+
+function medisaBuildSessionTokenClaims($context) {
+    $user = $context['user'] ?? null;
+    $rawRole = medisaResolveRawUserRoleValue($user);
+
+    return [
+        'user_id' => (string)($context['user_id'] ?? ''),
+        'rol' => $context['role'] ?? 'kullanici',
+        'raw_rol' => $rawRole,
+        'yonetici_only' => $context['yonetici_only'] ?? false,
+        'sube_ids' => array_values(array_map('strval', $context['branch_ids'] ?? [])),
+        'kullanici_paneli' => $context['kullanici_paneli'] ?? false,
+        'driver_dashboard' => $context['driver_dashboard'] ?? false,
+        'ilk_giris_parola_degistirme_zorunlu' => $context['ilk_giris_parola_degistirme_zorunlu'] ?? true,
+        'pwdv' => medisaBuildUserPasswordVersion($user),
+    ];
 }
 
 function medisaResolveAuthorizedContext($data, $requiredPermission = '') {
@@ -771,14 +964,11 @@ function medisaResolveAuthorizedContext($data, $requiredPermission = '') {
         ];
     }
 
-    $context = medisaBuildAccessContext($data, $tokenData);
-    if (!$context) {
-        return [
-            'success' => false,
-            'status' => 403,
-            'message' => 'Bu işlem için yetkiniz yok.',
-        ];
+    $sessionResolution = medisaResolveSessionContext($data, $tokenData);
+    if (($sessionResolution['success'] ?? false) !== true) {
+        return $sessionResolution;
     }
+    $context = $sessionResolution['context'];
 
     if ($requiredPermission !== '' && !medisaContextHasPermission($context, $requiredPermission)) {
         return [
@@ -2597,14 +2787,11 @@ function medisaResolveDocumentAccessContext(array $data, string $vehicleId, stri
             ];
         }
 
-        $context = medisaBuildAccessContext($data, $sessionData);
-        if (!$context) {
-            return [
-                'success' => false,
-                'status' => 403,
-                'message' => 'Bu işlem için yetkiniz yok.',
-            ];
+        $sessionResolution = medisaResolveSessionContext($data, $sessionData);
+        if (($sessionResolution['success'] ?? false) !== true) {
+            return $sessionResolution;
         }
+        $context = $sessionResolution['context'];
 
         return [
             'success' => true,
@@ -2693,6 +2880,15 @@ function medisaResolveDocumentAccessContext(array $data, string $vehicleId, stri
             'success' => false,
             'status' => 403,
             'message' => 'Bu işlem için yetkiniz yok.',
+        ];
+    }
+    if (medisaContextRequiresFirstLoginPasswordChange($context)) {
+        return [
+            'success' => false,
+            'status' => 403,
+            'code' => 'PASSWORD_CHANGE_REQUIRED',
+            'password_change_required' => true,
+            'message' => 'Uygulamayı kullanmadan önce parolanızı değiştirmeniz gerekiyor.',
         ];
     }
 

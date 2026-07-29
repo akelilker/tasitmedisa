@@ -357,7 +357,7 @@ async function runBrowserMeasurements() {
         await command('Performance.enable');
         requests.length = 0;
         navigations.length = 0;
-        await evaluate(`localStorage.setItem('medisa_portal_token', btoa(JSON.stringify({exp:Math.floor(Date.now()/1000)+3600,rol:'genel_yonetici',user_id:'perf-fixture'})))`);
+        await evaluate(`localStorage.setItem('medisa_portal_token', btoa(JSON.stringify({exp:Math.floor(Date.now()/1000)+3600,rol:'genel_yonetici',user_id:'perf-fixture',ilk_giris_parola_degistirme_zorunlu:false})))`);
         const runUrl = targetUrl + '&run=' + Date.now() + '-' + run + '-' + attempt;
         await command('Page.navigate', { url: runUrl });
         await waitForRegistry(runUrl);

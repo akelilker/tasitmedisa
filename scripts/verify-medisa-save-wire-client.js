@@ -49,6 +49,7 @@ function createFakeJwt() {
     exp: Math.floor(Date.now() / 1000) + 3600,
     rol: 'genel_yonetici',
     user_id: 'u1',
+    ilk_giris_parola_degistirme_zorunlu: false,
   })).toString('base64');
   return 'hdr.' + payload + '.sig';
 }
