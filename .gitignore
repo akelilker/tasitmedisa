@@ -16,6 +16,8 @@ node_modules/
 
 # Generated archives and local export artifacts
 *.zip
+scripts/_local_*
+scripts/_tmp-*
 outputs/
 tmp/
 tmp_doc_review/
