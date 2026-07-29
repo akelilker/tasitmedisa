@@ -2094,22 +2094,61 @@
               : []
           );
       const isBranchManager = role === 'sube_yonetici';
+      const sessionUserId = String(
+        (sessionData.user && sessionData.user.id) || sessionData.user_id || ''
+      );
       return {
         session: sessionData,
         role: role,
         branchIds: branchIds,
         primaryBranchId: branchIds[0] || '',
-        isBranchManager: isBranchManager
+        isBranchManager: isBranchManager,
+        isGeneralManager: role === 'genel_yonetici',
+        sessionUserId: sessionUserId
       };
+    }
+
+    function isUserActiveForManagement(user) {
+      if (!user) return false;
+      if (user.aktif === false || user.aktif === 0 || user.aktif === '0') return false;
+      if (user.isActive === false || user.isActive === 0 || user.isActive === '0') return false;
+      const status = String(user.durum || user.status || '').trim().toLocaleLowerCase('tr-TR');
+      if (status === 'pasif' || status === 'inactive' || status === 'disabled') return false;
+      return true;
+    }
+
+    function isActiveGeneralManagerUser(user) {
+      return !!user && getUiRoleFromUser(user) === 'genel_yonetici' && isUserActiveForManagement(user);
+    }
+
+    function countActiveGeneralManagers(users) {
+      const list = Array.isArray(users) ? users : readAllUsers();
+      let count = 0;
+      for (let i = 0; i < list.length; i++) {
+        if (isActiveGeneralManagerUser(list[i])) count++;
+      }
+      return count;
+    }
+
+    function isSessionSelfUser(user, scope) {
+      const effectiveScope = scope || getUserManagementSessionScope();
+      const sessionUserId = String(effectiveScope.sessionUserId || '');
+      return !!(sessionUserId && user && String(user.id || '') === sessionUserId);
+    }
+
+    /** Self GM veya sistemdeki tek aktif GM — silme/rol düşürme/pasif UI kilitleri. */
+    function isProtectedGeneralManagerTarget(user, scope) {
+      if (!isActiveGeneralManagerUser(user)) return false;
+      const effectiveScope = scope || getUserManagementSessionScope();
+      if (isSessionSelfUser(user, effectiveScope)) return true;
+      return countActiveGeneralManagers() <= 1;
     }
 
     function isUserManageableInUserManagement(user, scope) {
       if (!user) return false;
       const effectiveScope = scope || getUserManagementSessionScope();
       if (!effectiveScope.isBranchManager) return true;
-      const sessionUserId = String(
-        (effectiveScope.session && effectiveScope.session.user && effectiveScope.session.user.id) || ''
-      );
+      const sessionUserId = String(effectiveScope.sessionUserId || '');
       if (sessionUserId && String(user.id || '') === sessionUserId) return false;
       if (getUiRoleFromUser(user) !== 'kullanici') return false;
       const branchIds = getUserBranchIdsForManagement(user);
@@ -2137,22 +2176,35 @@
       }) || null;
     }
 
-    function populateUserRoleOptions(scope, selectedValue) {
+    function populateUserRoleOptions(scope, selectedValue, options) {
       const roleSelect = document.getElementById('user-role');
       if (!roleSelect) return;
       const effectiveScope = scope || getUserManagementSessionScope();
-      const options = effectiveScope.isBranchManager
+      const opts = options && typeof options === 'object' ? options : {};
+      const lockToGeneralManager = opts.lockToGeneralManager === true;
+      let roleOptions = effectiveScope.isBranchManager
         ? USER_FORM_ROLE_OPTIONS.filter(function(option) { return option.value === 'kullanici'; })
         : USER_FORM_ROLE_OPTIONS.slice();
-      roleSelect.innerHTML = options.map(function(option) {
+      if (lockToGeneralManager) {
+        roleOptions = USER_FORM_ROLE_OPTIONS.filter(function(option) { return option.value === 'genel_yonetici'; });
+      }
+      roleSelect.innerHTML = roleOptions.map(function(option) {
         return `<option value="${option.value}">${option.label}</option>`;
       }).join('');
-      const safeValue = options.some(function(option) { return option.value === selectedValue; })
-        ? selectedValue
-        : options[0].value;
+      const preferred = lockToGeneralManager ? 'genel_yonetici' : selectedValue;
+      const safeValue = roleOptions.some(function(option) { return option.value === preferred; })
+        ? preferred
+        : roleOptions[0].value;
       roleSelect.value = safeValue;
-      roleSelect.removeAttribute('disabled');
-      roleSelect.removeAttribute('aria-disabled');
+      if (lockToGeneralManager) {
+        roleSelect.setAttribute('disabled', 'disabled');
+        roleSelect.setAttribute('aria-disabled', 'true');
+        roleSelect.title = 'Sistemde en az bir aktif genel yönetici bulunmalıdır.';
+      } else {
+        roleSelect.removeAttribute('disabled');
+        roleSelect.removeAttribute('aria-disabled');
+        roleSelect.removeAttribute('title');
+      }
       syncUserFormCustomSelects(document.getElementById('user-form-modal'));
     }
 
@@ -2866,10 +2918,17 @@
         if (nameInput) nameInput.value = user.name || '';
         const currentBranchSelect = $('#user-branch', modal);
         if (currentBranchSelect) currentBranchSelect.value = preferredBranchId;
-        populateUserRoleOptions(scope, scope.isBranchManager ? 'kullanici' : getUiRoleFromUser(user));
+        const protectGm = isProtectedGeneralManagerTarget(user, scope);
+        populateUserRoleOptions(
+          scope,
+          scope.isBranchManager ? 'kullanici' : getUiRoleFromUser(user),
+          { lockToGeneralManager: protectGm }
+        );
         if (phoneInput) phoneInput.value = formatTrGsmDisplay(user.phone || '');
         if (emailInput) emailInput.value = user.email || '';
-        if (roleSelect) roleSelect.value = scope.isBranchManager ? 'kullanici' : getUiRoleFromUser(user);
+        if (roleSelect) roleSelect.value = protectGm
+          ? 'genel_yonetici'
+          : (scope.isBranchManager ? 'kullanici' : getUiRoleFromUser(user));
         if (usernameInput) usernameInput.value = user.kullanici_adi || '';
         if (passwordInput) passwordInput.value = '';
         if (branchReadonly) {
@@ -2885,10 +2944,17 @@
         setUserFormSelectedVehicleIds(assignedIds);
         populateUserVehiclesMulti('');
         if (title) title.textContent = 'Kullanıcı Düzenle';
-        // Sil butonunu göster
+        // Sil butonunu göster — self/son aktif GM korumalıysa gizle
         if (deleteBtn) {
-          deleteBtn.classList.remove('u-hidden');
-          deleteBtn.style.display = 'flex';
+          if (protectGm) {
+            deleteBtn.classList.add('u-hidden');
+            deleteBtn.style.display = 'none';
+            deleteBtn.title = 'Sistemde en az bir aktif genel yönetici bulunmalıdır.';
+          } else {
+            deleteBtn.classList.remove('u-hidden');
+            deleteBtn.style.display = 'flex';
+            deleteBtn.removeAttribute('title');
+          }
         }
       } else {
         // Yeni EKLEME MODU
@@ -2897,6 +2963,7 @@
         if (deleteBtn) {
           deleteBtn.classList.add('u-hidden');
           deleteBtn.style.display = 'none';
+          deleteBtn.removeAttribute('title');
         }
       }
 
@@ -3108,11 +3175,17 @@
         const phone = phoneInput ? normalizePhoneDigits(phoneInput.value) : '';
         const email = emailInput ? emailInput.value.trim() : '';
         const selectedRole = roleSelect ? roleSelect.value : 'kullanici';
-        const effectiveSelectedRole = scope.isBranchManager ? 'kullanici' : selectedRole;
-        const requestedBranchId = branchSelect ? String(branchSelect.value || '').trim() : '';
         const existingUserPreview = id
           ? (readAllUsers().find(function(user) { return String(user.id) === String(id); }) || null)
           : null;
+        const protectGm = existingUserPreview ? isProtectedGeneralManagerTarget(existingUserPreview, scope) : false;
+        if (protectGm && roleSelect) {
+          roleSelect.value = 'genel_yonetici';
+        }
+        const effectiveSelectedRole = protectGm
+          ? 'genel_yonetici'
+          : (scope.isBranchManager ? 'kullanici' : selectedRole);
+        const requestedBranchId = branchSelect ? String(branchSelect.value || '').trim() : '';
         const branchId = resolveBranchIdForUserManagementSave(scope, requestedBranchId, existingUserPreview);
         const branchIds = resolveBranchIdsForUserManagementSave(scope, branchId, existingUserPreview);
         const roleConfig = getRoleConfigFromSelection(effectiveSelectedRole);
@@ -3122,6 +3195,10 @@
           : [];
         const hasAssignedVehicles = selectedVehicleIds.length > 0;
         const kullanici_paneli = hasAssignedVehicles;
+        if (protectGm && role !== 'genel_yonetici') {
+          alert('Sistemde en az bir aktif genel yönetici bulunmalıdır.');
+          return;
+        }
         if (scope.isBranchManager && requestedBranchId && !isWithinUserManagementBranch(requestedBranchId, scope)) {
           alert('Yalnızca yetkili şubelerinize kullanıcı kaydedebilirsiniz.');
           return;
@@ -3231,10 +3308,13 @@
             users[idx].branchIds = branchIds;
             users[idx].phone = phone;
             users[idx].email = email;
-            users[idx].role = role;
+            users[idx].role = protectGm ? 'genel_yonetici' : role;
             users[idx].kullanici_paneli = kullanici_paneli;
             users[idx].surucu_paneli = kullanici_paneli;
             users[idx].kullanici_adi = kullanici_adi;
+            if (protectGm) {
+              users[idx].aktif = true;
+            }
             if (sifre !== '') {
               users[idx].portal_sifresi_var = true;
             }
@@ -3330,6 +3410,10 @@
       if (!targetUser) return;
       if (scope.isBranchManager && !isUserManageableInUserManagement(targetUser, scope)) {
         alert('Bu kullanıcıyı silme yetkiniz yok.');
+        return;
+      }
+      if (isProtectedGeneralManagerTarget(targetUser, scope)) {
+        alert('Sistemde en az bir aktif genel yönetici bulunmalıdır.');
         return;
       }
 
