@@ -68,6 +68,62 @@ mandatoryAssert('normalize malformed fail closed', medisaNormalizeFirstLoginPass
 mandatoryAssert('normalize array fail closed', medisaNormalizeFirstLoginPasswordChangeRequired([]) === true);
 mandatoryAssert('missing flag is not pending', medisaUserRequiresFirstLoginPasswordChange(['id' => 'missing']) === false);
 
+$adminSaveContext = [
+    'role' => 'genel_yonetici',
+    'user_id' => 'gm-save',
+    'branch_ids' => [],
+    'user' => ['id' => 'gm-save', 'role' => 'genel_yonetici'],
+];
+$pendingUser = [
+    'id' => 'pending-user',
+    'isim' => 'Bekleyen Kullanıcı',
+    'role' => 'kullanici',
+    'aktif' => true,
+    'sifre_hash' => password_hash('PendingPass7X', PASSWORD_DEFAULT),
+    'ilk_giris_parola_onerisi_bekliyor' => true,
+];
+$pendingEdit = [
+    'id' => 'pending-user',
+    'isim' => 'Bekleyen Kullanıcı',
+    'role' => 'kullanici',
+    'aktif' => true,
+    'telefon' => '5551112233',
+    'ilk_giris_parola_onerisi_bekliyor' => false,
+];
+$pendingEditResult = medisaReconcileUserCredentials([$pendingUser], [$pendingEdit], [], $adminSaveContext);
+$pendingAfterEdit = $pendingEditResult['users'][0] ?? [];
+mandatoryAssert('normal edit succeeds', ($pendingEditResult['success'] ?? false) === true);
+mandatoryAssert('normal edit preserves pending flag', ($pendingAfterEdit['ilk_giris_parola_onerisi_bekliyor'] ?? false) === true);
+
+$settledUser = $pendingUser;
+$settledUser['id'] = 'settled-user';
+$settledUser['ilk_giris_parola_onerisi_bekliyor'] = false;
+$settledEdit = $pendingEdit;
+$settledEdit['id'] = 'settled-user';
+$settledEdit['ilk_giris_parola_onerisi_bekliyor'] = true;
+$settledEditResult = medisaReconcileUserCredentials([$settledUser], [$settledEdit], [], $adminSaveContext);
+$settledAfterEdit = $settledEditResult['users'][0] ?? [];
+mandatoryAssert('frontend cannot enable settled flag', ($settledAfterEdit['ilk_giris_parola_onerisi_bekliyor'] ?? true) === false);
+
+$newUser = [
+    'id' => 'new-user',
+    'isim' => 'Yeni Kullanıcı',
+    'role' => 'kullanici',
+    'aktif' => true,
+    'ilk_giris_parola_onerisi_bekliyor' => false,
+];
+$newUserResult = medisaReconcileUserCredentials([], [$newUser], ['new-user' => 'InitialPass8Y'], $adminSaveContext);
+$newUserAfterSave = $newUserResult['users'][0] ?? [];
+mandatoryAssert('new user password save succeeds', ($newUserResult['success'] ?? false) === true);
+mandatoryAssert('new user password sets pending flag', ($newUserAfterSave['ilk_giris_parola_onerisi_bekliyor'] ?? false) === true);
+
+$resetEdit = $settledEdit;
+$resetEdit['ilk_giris_parola_onerisi_bekliyor'] = false;
+$resetResult = medisaReconcileUserCredentials([$settledUser], [$resetEdit], ['settled-user' => 'ResetPass9Z'], $adminSaveContext);
+$resetAfterSave = $resetResult['users'][0] ?? [];
+mandatoryAssert('admin password reset succeeds', ($resetResult['success'] ?? false) === true);
+mandatoryAssert('admin password reset sets pending flag', ($resetAfterSave['ilk_giris_parola_onerisi_bekliyor'] ?? false) === true);
+
 $data = mandatoryFixture();
 $gmBefore = $data['users'][0];
 $gmContext = medisaBuildAccessContext($data, ['user_id' => 'gm-1']);
