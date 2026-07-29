@@ -9,7 +9,7 @@
 - Build step yok
 - Paket yöneticisi yok
 - Veritabanı yok
-- Runtime veri kaynağı: `data/data.json`
+- Runtime veri kaynağı: `data/data.json` (Git dışında; şablon: `data/data.example.json`)
 
 ## Kurulum
 
@@ -26,7 +26,7 @@ cd tasitmedisa
 
 4. `data/` klasörü PHP tarafından yazılabilir olmalıdır.
 
-`data/data.json` runtime veridir. Canlı veri deploy sırasında ezilmemelidir. Yerel geliştirme için `data/` klasörü ve yazılabilir izinler yeterlidir; ilk kayıt sırasında veri dosyası oluşturulabilir.
+`data/data.json` runtime veridir ve Git’te takip edilmez. Canlı veri deploy sırasında ezilmemelidir. Yerel geliştirme için `data/data.example.json` şablonunu `data/data.json` olarak kopyalayıp yazılabilir izinlerle kullan; ilk kayıt sırasında dosya da oluşturulabilir.
 
 ## Veri yedekleri
 

@@ -24,8 +24,10 @@ tmp_doc_review/
 
 # Runtime-only data and caches
 data/.medisa_*
-data/.migration-secure/
-data/backups/
+/data/.migration-secure/
+/data/backups/
+/data/data.json
+/data/data.json.backup
 data/*.backup
 data/*.bak*
 data/data-recovered*.json
@@ -42,9 +44,9 @@ data/tasit_karti_preview/
 data/takograf/
 data/takograf_preview/
 
-# Keep canonical seed/runtime files that are intentionally versioned
-!data/data.json
+# Keep intentionally versioned non-runtime data files
 !data/kasko-deger-listesi.json
+!data/data.example.json
 
 # Patch / merge leftovers
 *.tmp
@@ -59,4 +61,3 @@ data/takograf_preview/
 *.swo
 
 .tools/
-data/data.json

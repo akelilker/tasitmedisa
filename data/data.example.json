@@ -1,0 +1,46 @@
+{
+  "tasitlar": [],
+  "kayitlar": [],
+  "branches": [
+    {
+      "id": "branch-example-1",
+      "name": "Ornek Sube"
+    }
+  ],
+  "users": [
+    {
+      "id": "user-example-gm",
+      "isim": "Ornek Genel Yonetici",
+      "kullanici_adi": "ornek_gm",
+      "role": "genel_yonetici",
+      "aktif": true
+    },
+    {
+      "id": "user-example-bm",
+      "isim": "Ornek Sube Yoneticisi",
+      "kullanici_adi": "ornek_bm",
+      "role": "sube_yonetici",
+      "branchIds": ["branch-example-1"],
+      "aktif": true
+    },
+    {
+      "id": "user-example-user",
+      "isim": "Ornek Kullanici",
+      "kullanici_adi": "ornek_user",
+      "role": "kullanici",
+      "branchIds": ["branch-example-1"],
+      "aktif": true
+    }
+  ],
+  "ayarlar": {
+    "sirketAdi": "Ornek Medisa",
+    "yetkiliKisi": "",
+    "telefon": "",
+    "eposta": ""
+  },
+  "sifreler": [],
+  "arac_aylik_hareketler": [],
+  "duzeltme_talepleri": [],
+  "notificationReadState": {},
+  "monthlyTodoWhatsAppLogs": {}
+}
