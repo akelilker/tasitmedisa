@@ -22,6 +22,7 @@ tmp_doc_review/
 
 # Runtime-only data and caches
 data/.medisa_*
+data/.migration-secure/
 data/backups/
 data/*.backup
 data/*.bak*
