@@ -137,11 +137,13 @@ assert(
 assert(
   'authz_403_does_not_logout',
   /function handleMedisaHttpAuthStatus/.test(dm)
+    && /clearProtectedDataset/.test(dm)
+    && /exitUnauthorizedMainAppShell/.test(dm)
     && /handleMedisaHttpAuthStatus\(401/.test(dm)
     && /handleMedisaHttpAuthStatus\(403/.test(dm)
     && /medisaAuthorizationDenied/.test(dm)
     && !/if \(response\.status === 401 \|\| response\.status === 403\)/.test(dm),
-  '403 oturumu kapatmamalı; 401/403 merkezi handleMedisaHttpAuthStatus ile ayrılmalı'
+  '403 oturumu kapatmamalı; load 403 dataset temizler, save 403 trust korur'
 );
 assert(
   'report_user_projection_bm_normal_only',

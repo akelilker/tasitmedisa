@@ -2035,8 +2035,48 @@
     function isWithinUserManagementBranch(branchId, scope) {
       const effectiveScope = scope || getUserManagementSessionScope();
       if (!effectiveScope.isBranchManager) return true;
-      if (!effectiveScope.primaryBranchId) return false;
-      return String(branchId || '') === String(effectiveScope.primaryBranchId);
+      const allowed = Array.isArray(effectiveScope.branchIds) ? effectiveScope.branchIds : [];
+      if (!allowed.length) return false;
+      return allowed.some(function(allowedId) { return String(allowedId) === String(branchId || ''); });
+    }
+
+    function resolveBranchIdForUserManagementSave(scope, requestedBranchId, existingUser) {
+      const effectiveScope = scope || getUserManagementSessionScope();
+      if (!effectiveScope.isBranchManager) {
+        return String(requestedBranchId || '').trim();
+      }
+      const requested = String(requestedBranchId || '').trim();
+      if (requested && isWithinUserManagementBranch(requested, effectiveScope)) {
+        return requested;
+      }
+      if (existingUser) {
+        const existingPrimary = getUserPrimaryBranchId(existingUser);
+        if (existingPrimary && isWithinUserManagementBranch(existingPrimary, effectiveScope)) {
+          return existingPrimary;
+        }
+      }
+      return String(effectiveScope.primaryBranchId || '').trim();
+    }
+
+    function resolveBranchIdsForUserManagementSave(scope, branchId, existingUser) {
+      const effectiveScope = scope || getUserManagementSessionScope();
+      const nextPrimary = String(branchId || '').trim();
+      if (
+        existingUser
+        && nextPrimary
+        && String(getUserPrimaryBranchId(existingUser)) === nextPrimary
+      ) {
+        const existingIds = getUserBranchIdsForManagement(existingUser);
+        if (
+          existingIds.length > 1
+          && existingIds.every(function(id) {
+            return !effectiveScope.isBranchManager || isWithinUserManagementBranch(id, effectiveScope);
+          })
+        ) {
+          return existingIds.slice();
+        }
+      }
+      return nextPrimary ? [nextPrimary] : [];
     }
 
     function getUserManagementSessionScope() {
@@ -2786,7 +2826,7 @@
       const deleteBtn = $('#user-delete-btn', modal);
 
       // Şube dropdown'ını doldur
-      populateBranchDropdown();
+      populateBranchDropdown(scope);
       // Atanacak Taşıt dropdown'ını kapat, arama temizle ve listeyi doldur
       closeUserVehiclesDropdown();
       const searchInput = document.getElementById('user-vehicles-search');
@@ -2812,6 +2852,7 @@
         branchReadonly.value = managedBranch ? (managedBranch.name || '') : '';
       }
 
+      let preferredBranchId = scope.isBranchManager ? (scope.primaryBranchId || '') : '';
       if (editId) {
         // DÜZENLEME MODU
         const users = readAllUsers();
@@ -2820,10 +2861,11 @@
           alert('Bu kullanıcıyı düzenleme yetkiniz yok.');
           return;
         }
+        preferredBranchId = getUserPrimaryBranchId(user);
         if (idInput) idInput.value = user.id;
         if (nameInput) nameInput.value = user.name || '';
         const currentBranchSelect = $('#user-branch', modal);
-        if (currentBranchSelect) currentBranchSelect.value = getUserPrimaryBranchId(user);
+        if (currentBranchSelect) currentBranchSelect.value = preferredBranchId;
         populateUserRoleOptions(scope, scope.isBranchManager ? 'kullanici' : getUiRoleFromUser(user));
         if (phoneInput) phoneInput.value = formatTrGsmDisplay(user.phone || '');
         if (emailInput) emailInput.value = user.email || '';
@@ -2832,7 +2874,7 @@
         if (passwordInput) passwordInput.value = '';
         if (branchReadonly) {
           const userBranch = readAllBranches().find(function(branch) {
-            return String(branch && branch.id) === String(getUserPrimaryBranchId(user));
+            return String(branch && branch.id) === String(preferredBranchId);
           });
           branchReadonly.value = userBranch ? (userBranch.name || '') : (managedBranch ? (managedBranch.name || '') : '');
         }
@@ -2858,7 +2900,7 @@
         }
       }
 
-      syncUserRoleBranchUI({ scope: scope });
+      syncUserRoleBranchUI({ scope: scope, preferredBranchId: preferredBranchId });
       syncUserFormCustomSelects(modal);
 
       // Modalı aç
@@ -2901,11 +2943,17 @@
     };
 
     // Şube Dropdown Doldur
-    function populateBranchDropdown() {
+    function populateBranchDropdown(scope) {
       const select = document.getElementById('user-branch');
       if (!select) return;
+      const effectiveScope = scope || getUserManagementSessionScope();
 
-      const branches = readBranches();
+      let branches = readBranches();
+      if (effectiveScope.isBranchManager) {
+        branches = branches.filter(function(branch) {
+          return isWithinUserManagementBranch(branch && branch.id, effectiveScope);
+        });
+      }
 
       select.innerHTML = '<option value="">Şube Seçin</option>';
 
@@ -2927,18 +2975,49 @@
       const branchReadonly = document.getElementById('user-branch-readonly');
       const roleSelect = document.getElementById('user-role');
       const selectedRole = roleSelect ? roleSelect.value : 'kullanici';
+      const preferredBranchId = options.preferredBranchId != null
+        ? String(options.preferredBranchId || '').trim()
+        : '';
       const managedBranch = getManagedBranchForUserManagement(scope);
+      const allowedBranchCount = Array.isArray(scope.branchIds) ? scope.branchIds.length : 0;
 
       if (scope.isBranchManager) {
-        if (singleWrap) singleWrap.classList.add('u-hidden');
-        if (readonlyWrap) readonlyWrap.classList.add('u-hidden');
         if (roleWrap) roleWrap.classList.add('u-hidden');
-        if (branchSelect) {
-          branchSelect.required = false;
-          branchSelect.value = scope.primaryBranchId || '';
-        }
-        if (branchReadonly) {
-          branchReadonly.value = managedBranch ? (managedBranch.name || '') : '';
+        populateBranchDropdown(scope);
+        if (allowedBranchCount > 1) {
+          if (singleWrap) singleWrap.classList.remove('u-hidden');
+          if (readonlyWrap) readonlyWrap.classList.add('u-hidden');
+          if (branchSelect) {
+            branchSelect.required = true;
+            const current = String(branchSelect.value || '').trim();
+            const nextValue = preferredBranchId && isWithinUserManagementBranch(preferredBranchId, scope)
+              ? preferredBranchId
+              : (
+                  current && isWithinUserManagementBranch(current, scope)
+                    ? current
+                    : (scope.primaryBranchId || '')
+                );
+            branchSelect.value = nextValue;
+          }
+          if (branchReadonly) branchReadonly.value = '';
+        } else {
+          if (singleWrap) singleWrap.classList.add('u-hidden');
+          if (readonlyWrap) readonlyWrap.classList.remove('u-hidden');
+          if (branchSelect) {
+            branchSelect.required = false;
+            branchSelect.value = preferredBranchId && isWithinUserManagementBranch(preferredBranchId, scope)
+              ? preferredBranchId
+              : (scope.primaryBranchId || '');
+          }
+          if (branchReadonly) {
+            const selectedId = branchSelect ? String(branchSelect.value || '') : '';
+            const selectedBranch = readAllBranches().find(function(branch) {
+              return String(branch && branch.id) === selectedId;
+            });
+            branchReadonly.value = selectedBranch
+              ? (selectedBranch.name || '')
+              : (managedBranch ? (managedBranch.name || '') : '');
+          }
         }
         syncUserFormCustomSelects(document.getElementById('user-form-modal'));
         return;
@@ -3031,8 +3110,11 @@
         const selectedRole = roleSelect ? roleSelect.value : 'kullanici';
         const effectiveSelectedRole = scope.isBranchManager ? 'kullanici' : selectedRole;
         const requestedBranchId = branchSelect ? String(branchSelect.value || '').trim() : '';
-        const branchId = scope.isBranchManager ? String(scope.primaryBranchId || '') : requestedBranchId;
-        const branchIds = branchId ? [branchId] : [];
+        const existingUserPreview = id
+          ? (readAllUsers().find(function(user) { return String(user.id) === String(id); }) || null)
+          : null;
+        const branchId = resolveBranchIdForUserManagementSave(scope, requestedBranchId, existingUserPreview);
+        const branchIds = resolveBranchIdsForUserManagementSave(scope, branchId, existingUserPreview);
         const roleConfig = getRoleConfigFromSelection(effectiveSelectedRole);
         const role = roleConfig.role;
         const selectedVehicleIds = vehiclesContainer
@@ -3040,8 +3122,8 @@
           : [];
         const hasAssignedVehicles = selectedVehicleIds.length > 0;
         const kullanici_paneli = hasAssignedVehicles;
-        if (scope.isBranchManager && requestedBranchId && requestedBranchId !== branchId) {
-          alert('Yalnızca kendi şubenize kullanıcı kaydedebilirsiniz.');
+        if (scope.isBranchManager && requestedBranchId && !isWithinUserManagementBranch(requestedBranchId, scope)) {
+          alert('Yalnızca yetkili şubelerinize kullanıcı kaydedebilirsiniz.');
           return;
         }
         if (role === 'genel_yonetici' && scope.role !== 'genel_yonetici') {
