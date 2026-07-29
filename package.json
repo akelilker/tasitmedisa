@@ -19,6 +19,7 @@
     "tool:measure-driver-boot": "node scripts/measure-medisa-driver-boot.js",
     "tool:verify-main-shell": "node scripts/verify-medisa-main-shell-lazy-invariants.js",
     "tool:verify-deploy": "node scripts/verify-medisa-deploy-invariants.js",
+    "tool:verify-password-migration": "php scripts/verify-medisa-password-migration.php",
     "tool:measure-main-shell": "node scripts/measure-medisa-main-shell.js",
     "tool:import-gpt-xlsx": "node scripts/import_gpt_xlsx.mjs",
     "tool:build-deploy-zip": "powershell -ExecutionPolicy Bypass -File scripts/build-deploy-zip.ps1"
