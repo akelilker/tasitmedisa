@@ -67,8 +67,8 @@ test('Parola değişimi yeni token üretir', () => {
   assert.match(files.changePhp, /medisaCreateSignedToken/);
   assert.match(files.changePhp, /\$result\['token'\]/);
 });
-test('Server parola politikası minimum 10 ve karmaşıklık uygular', () => {
-  assert.match(files.core, /mb_strlen\(\$newPassword,\s*'UTF-8'\)\s*>=\s*10/);
+test('Server parola politikası minimum 6 ve karmaşıklık uygular', () => {
+  assert.match(files.core, /mb_strlen\(\$newPassword,\s*'UTF-8'\)\s*>=\s*6/);
   assert.match(files.core, /\[A-ZÇĞİÖŞÜ\]/u);
   assert.match(files.core, /\[a-zçğıöşü\]/u);
   assert.match(files.core, /\[0-9\]/);
@@ -107,11 +107,11 @@ test('Canonical parola endpointi driver base path üzerinden çağrılır', () =
   assert.match(files.passwordJs, /p\.API_BASE\s*\+\s*'driver_change_password\.php'/);
   assert.match(files.cpanel, /driver\/driver_change_password\.php/);
 });
-test('Zorunlu modal üç parola alanı ve minimum 10 kontratına sahiptir', () => {
+test('Zorunlu modal üç parola alanı ve minimum 6 kontratına sahiptir', () => {
   assert.match(files.dashboardHtml, /driver-current-password/);
   assert.match(files.dashboardHtml, /driver-new-password/);
   assert.match(files.dashboardHtml, /driver-new-password-confirm/);
-  assert.equal((files.dashboardHtml.match(/minlength="10"/g) || []).length, 2);
+  assert.equal((files.dashboardHtml.match(/minlength="6"/g) || []).length, 2);
 });
 test('Zorunlu ekran güvenlik mesajını eksiksiz gösterir', () => {
   assert.match(files.dashboardHtml, /Güvenliğiniz için geçici parolanızı değiştirmeniz gerekiyor\./);
@@ -127,7 +127,7 @@ test('Ana shell zorunlu durumda auth gatei açmaz', () => {
   assert.ok(requiredAt >= 0 && clearAt > requiredAt);
 });
 test('Cache sürümü tek adım artırılmıştır', () => {
-  assert.match(files.sw, /CACHE_VERSION\s*=\s*'medisa-v2\.264'/);
+  assert.match(files.sw, /CACHE_VERSION\s*=\s*'medisa-v2\.265'/);
 });
 
 console.log(`Mandatory password change invariants: ${passed} passed, ${failed} failed`);

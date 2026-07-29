@@ -233,7 +233,7 @@ if (implementationPresent) {
     assert.match(index, /script-core\.js\?v=20260729\.6/);
     assert.match(core, /ayarlarJs: '20260729\.6'/);
     assert.match(index, /style-core\.css\?v=20260724\.1/);
-    assert.match(sw, /medisa-v2\.264/);
+    assert.match(sw, /medisa-v2\.265/);
   });
   test('Raporlar modül ve SW cache sürüm paritesi', function() {
     var raporlarModuleVer = (core.match(/raporlar:\s*'([^']+)'/) || [])[1];

@@ -20,6 +20,7 @@
     "tool:verify-main-shell": "node scripts/verify-medisa-main-shell-lazy-invariants.js",
     "tool:verify-deploy": "node scripts/verify-medisa-deploy-invariants.js",
     "tool:verify-password-migration": "php scripts/verify-medisa-password-migration.php",
+    "tool:verify-default-credentials": "php scripts/verify-medisa-default-credentials.php",
     "tool:verify-mandatory-password-change": "php scripts/verify-medisa-mandatory-password-change.php && node scripts/verify-medisa-mandatory-password-change-invariants.js",
     "tool:verify-runtime-data-git": "node scripts/verify-medisa-runtime-data-git-invariants.js",
     "tool:measure-main-shell": "node scripts/measure-medisa-main-shell.js",

@@ -100,7 +100,7 @@ if (!currentPassword || !newPassword || !confirmPassword) {
 setDriverPasswordMessage('Tüm şifre alanlarını doldurun.', true);
 return false;
 }
-if (newPassword.length < 10
+if (newPassword.length < 6
 || !/[A-ZÇĞİÖŞÜ]/.test(newPassword)
 || !/[a-zçğıöşü]/.test(newPassword)
 || !/[0-9]/.test(newPassword)) {

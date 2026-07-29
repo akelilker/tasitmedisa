@@ -139,7 +139,7 @@ test('Password feature zorunlu modu lazy yükler ve bypass sunmaz', () => {
   assert.match(files.core, /passwordChangeRequired\s*===\s*true/);
   assert.doesNotMatch(files.password + files.bootstrap, /continueWithCurrentPassword|driver_password_suggestion\.php/);
   assert.match(files.dashboardHtml, /driver-password-modal-close/);
-  assert.match(files.dashboardHtml, /minlength="10"/);
+  assert.match(files.dashboardHtml, /minlength="6"/);
 });
 test('KM deep-link actions modülünü otomatik yükler', () => {
   assert.match(files.core, /action/);
@@ -329,11 +329,11 @@ test('Driver asset version matrisi dar bump kullanır', () => {
   assert.match(files.bootstrap, /documents:\s*'20260718\.3'/);
   assert.match(files.bootstrap, /login:\s*'20260729\.1'/);
   assert.match(files.bootstrap, /feedback:\s*'20260718\.1'/);
-  assert.match(files.bootstrap, /password:\s*'20260729\.1'/);
+  assert.match(files.bootstrap, /password:\s*'20260729\.2'/);
   assert.match(files.bootstrap, /actions:\s*'20260718\.1'/);
-  assert.match(files.bootstrap, /featureCss:\s*'20260729\.1'/);
-  assert.match(files.loginHtml, /driver-script\.js\?v=20260729\.1/);
-  assert.match(files.dashboardHtml, /driver-script\.js\?v=20260729\.1/);
+  assert.match(files.bootstrap, /featureCss:\s*'20260729\.2'/);
+  assert.match(files.loginHtml, /driver-script\.js\?v=20260729\.2/);
+  assert.match(files.dashboardHtml, /driver-script\.js\?v=20260729\.2/);
   assert.match(files.loginHtml, /driver-shell\.css\?v=20260724\.2/);
   assert.match(files.dashboardHtml, /driver-shell\.css\?v=20260724\.2/);
 });
