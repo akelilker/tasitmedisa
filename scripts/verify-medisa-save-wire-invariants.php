@@ -566,6 +566,66 @@ $spoofedPeerPwChange['_medisaUserPasswordChanges'] = ['u-branch' => 'SpoofedPeer
 $r = medisaSaveApplyIncomingData($spoofedPeerPwChange, $data, swBranchContext());
 swAssert('Spoofed peer-manager password target denied 403', ($r['success'] ?? true) === false && (int)($r['status'] ?? 0) === 403);
 
+// P0-B: true peer BM password + role promote/downgrade via save apply
+$data = swFixtureBase();
+$data['users'][] = [
+    'id' => 'u-branch-peer',
+    'isim' => 'Peer BM',
+    'role' => 'sube_yonetici',
+    'branchIds' => ['b1'],
+    'sifre_hash' => password_hash('FixturePeerPass1!', PASSWORD_DEFAULT),
+];
+$truePeerPw = swDeltaWire([
+    'collections' => ['users'],
+    'changedVehicleIds' => [],
+    'deletedVehicleIds' => [],
+    'deletedVehicleVersions' => [],
+], [
+    'users' => [
+        ['id' => 'u-user', 'isim' => 'Kullanici', 'role' => 'kullanici', 'branchIds' => ['b1']],
+        ['id' => 'u-branch-peer', 'isim' => 'Peer BM', 'role' => 'sube_yonetici', 'branchIds' => ['b1']],
+    ],
+]);
+$truePeerPw['_medisaUserPasswordChanges'] = ['u-branch-peer' => 'HackPeerPass1!'];
+$r = medisaSaveApplyIncomingData($truePeerPw, $data, swBranchContext());
+swAssert('True peer BM password denied 403', ($r['success'] ?? true) === false && (int)($r['status'] ?? 0) === 403);
+
+$data = swFixtureBase();
+$data['users'][] = [
+    'id' => 'u-branch-peer',
+    'isim' => 'Peer BM',
+    'role' => 'sube_yonetici',
+    'branchIds' => ['b1'],
+    'sifre_hash' => password_hash('FixturePeerPass1!', PASSWORD_DEFAULT),
+];
+$downgradePeerSave = swDeltaWire([
+    'collections' => ['users'],
+    'changedVehicleIds' => [],
+    'deletedVehicleIds' => [],
+    'deletedVehicleVersions' => [],
+], [
+    'users' => [
+        ['id' => 'u-branch-peer', 'isim' => 'Peer BM', 'role' => 'kullanici', 'branchIds' => ['b1']],
+        ['id' => 'u-user', 'isim' => 'Kullanici', 'role' => 'kullanici', 'branchIds' => ['b1']],
+    ],
+]);
+$r = medisaSaveApplyIncomingData($downgradePeerSave, $data, swBranchContext());
+swAssert('Peer BM role-downgrade save denied 403', ($r['success'] ?? true) === false && (int)($r['status'] ?? 0) === 403);
+
+$data = swFixtureBase();
+$promoteSave = swDeltaWire([
+    'collections' => ['users'],
+    'changedVehicleIds' => [],
+    'deletedVehicleIds' => [],
+    'deletedVehicleVersions' => [],
+], [
+    'users' => [
+        ['id' => 'u-user', 'isim' => 'Kullanici', 'role' => 'sube_yonetici', 'branchIds' => ['b1']],
+    ],
+]);
+$r = medisaSaveApplyIncomingData($promoteSave, $data, swBranchContext());
+swAssert('Normal user promote to BM denied 403', ($r['success'] ?? true) === false && (int)($r['status'] ?? 0) === 403);
+
 $data = swFixtureBase();
 $unknownPwChange = swDeltaWire([
     'collections' => ['users'],

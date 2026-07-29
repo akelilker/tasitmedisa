@@ -88,6 +88,13 @@ function rmFixture() {
                 'sifre_hash' => password_hash($pw, PASSWORD_DEFAULT),
             ],
             [
+                'id' => 'bm-a2',
+                'isim' => 'Synthetic BM A Peer',
+                'role' => 'sube_yonetici',
+                'branchIds' => ['branch-a'],
+                'sifre_hash' => password_hash($pw, PASSWORD_DEFAULT),
+            ],
+            [
                 'id' => 'bm-ab',
                 'isim' => 'Synthetic BM AB',
                 'role' => 'sube_yonetici',
@@ -249,6 +256,7 @@ $data = rmFixture();
 $gm = rmUserById($data, 'gm-1');
 $gm2 = rmUserById($data, 'gm-2');
 $bmA = rmUserById($data, 'bm-a');
+$bmA2 = rmUserById($data, 'bm-a2');
 $bmAb = rmUserById($data, 'bm-ab');
 $legacyY = rmUserById($data, 'legacy-yonetici');
 $yk = rmUserById($data, 'yonetici-kullanici-1');
@@ -404,9 +412,26 @@ rmAssert('bm denies manage other-branch user', medisaCanManageUserRecord($userB,
 rmAssert('bm denies view gm', medisaCanViewUserRecord($gm, $ctxBmA) === false);
 rmAssert('bm denies manage gm', medisaCanManageUserRecord($gm, $ctxBmA) === false);
 rmAssert('bm denies self manage', medisaCanManageUserRecord($bmA, $ctxBmA) === false);
+rmAssert('bm denies self view', medisaCanViewUserRecord($bmA, $ctxBmA) === false);
+rmAssert('bm denies peer bm view', medisaCanViewUserRecord($bmA2, $ctxBmA) === false);
+rmAssert('bm denies peer bm manage', medisaCanManageUserRecord($bmA2, $ctxBmA) === false);
+rmAssert('bm denies other-branch bm view', medisaCanViewUserRecord($legacyY, $ctxBmA) === false);
+rmAssert('bm denies other-branch bm manage', medisaCanManageUserRecord($legacyY, $ctxBmA) === false);
+rmAssert('bm denies unknown target role manage', medisaCanManageUserRecord(['id' => 'unk-1', 'role' => 'hacker', 'branchIds' => ['branch-a']], $ctxBmA) === false);
+rmAssert('bm denies unknown target role view', medisaCanViewUserRecord(['id' => 'unk-1', 'role' => 'hacker', 'branchIds' => ['branch-a']], $ctxBmA) === false);
+rmAssert('bm denies legacy yonetici_kullanici manage', medisaCanManageUserRecord($yk, $ctxBmA) === false);
 rmAssert('bm report own user', medisaCanViewReportUserRecord($userA, $ctxBmA) === true);
 rmAssert('bm report other user hidden', medisaCanViewReportUserRecord($userB, $ctxBmA) === false);
 rmAssert('bm report gm hidden', medisaCanViewReportUserRecord($gm, $ctxBmA) === false);
+rmAssert('bm report peer bm hidden', medisaCanViewReportUserRecord($bmA2, $ctxBmA) === false);
+rmAssert('bm report other-branch bm hidden', medisaCanViewReportUserRecord($legacyY, $ctxBmA) === false);
+rmAssert('bm report self hidden', medisaCanViewReportUserRecord($bmA, $ctxBmA) === false);
+rmAssert('bm report unknown role hidden', medisaCanViewReportUserRecord(['id' => 'unk-r1', 'role' => 'hacker', 'branchIds' => ['branch-a']], $ctxBmA) === false);
+rmAssert('bm report partial multi-branch hidden', medisaCanViewReportUserRecord(['id' => 'partial-1', 'role' => 'kullanici', 'branchIds' => ['branch-a', 'branch-c']], $ctxBmA) === false);
+rmAssert('gm report views bm', medisaCanViewReportUserRecord($bmA, $ctxGm) === true);
+rmAssert('gm report views peer bm', medisaCanViewReportUserRecord($bmA2, $ctxGm) === true);
+rmAssert('gm report views gm2', medisaCanViewReportUserRecord($gm2, $ctxGm) === true);
+rmAssert('gm report views normal user', medisaCanViewReportUserRecord($userA, $ctxGm) === true);
 
 // Empty / partial branch scope deny
 rmAssert('empty target branch deny manage', medisaCanManageUserRecord(['id' => 'x', 'role' => 'kullanici', 'branchIds' => []], $ctxBmA) === false);
@@ -440,6 +465,7 @@ rmAssert('bm no gm user', rmHasId($filtBm['users'] ?? [], 'gm-1') === false);
 rmAssert('bm has user-a', rmHasId($filtBm['users'] ?? [], 'user-a') === true);
 rmAssert('bm no user-b', rmHasId($filtBm['users'] ?? [], 'user-b') === false);
 rmAssert('bm self hidden from user list', rmHasId($filtBm['users'] ?? [], 'bm-a') === false);
+rmAssert('bm peer hidden from user list', rmHasId($filtBm['users'] ?? [], 'bm-a2') === false);
 rmAssert('bm no branch-c', rmHasId($filtBm['branches'] ?? [], 'branch-c') === false);
 rmAssert('user only own user row', rmIds($filtUser['users'] ?? []) === ['user-a']);
 rmAssert('user only assigned vehicle', rmIds($filtUser['tasitlar'] ?? []) === ['veh-a1']);
@@ -449,6 +475,8 @@ rmAssert('user sifreler empty', ($filtUser['sifreler'] ?? null) === []);
 rmAssert('user kasko rows empty', (($filtUser['kaskoDegerListesi']['rows'] ?? null) === []));
 rmAssert('report bm hides gm', rmHasId($filtReportBm['users'] ?? [], 'gm-1') === false);
 rmAssert('report bm shows user-a', rmHasId($filtReportBm['users'] ?? [], 'user-a') === true);
+rmAssert('report bm hides peer bm', rmHasId($filtReportBm['users'] ?? [], 'bm-a2') === false);
+rmAssert('report bm hides self', rmHasId($filtReportBm['users'] ?? [], 'bm-a') === false);
 rmAssert('report user only self', rmIds($filtReportUser['users'] ?? []) === ['user-a']);
 
 // Session payload must not carry password fields
@@ -501,7 +529,126 @@ rmAssert('save own user allowed', medisaSaveEnsureScopedUsersAreAllowed([$userA]
 rmAssert('save other user rejected', medisaSaveEnsureScopedUsersAreAllowed([$userB], $ctxBmA) === false);
 rmAssert('save gm user rejected for bm', medisaSaveEnsureScopedUsersAreAllowed([$gm], $ctxBmA) === false);
 rmAssert('save self user rejected for bm', medisaSaveEnsureScopedUsersAreAllowed([$bmA], $ctxBmA) === false);
+rmAssert('save peer bm rejected for bm', medisaSaveEnsureScopedUsersAreAllowed([$bmA2], $ctxBmA) === false);
 rmAssert('user cannot save vehicle', medisaSaveEnsureScopedVehiclesAreAllowed([rmVehicleById($data, 'veh-a1')], $ctxUserA) === false);
+
+// P0-B: current+incoming mutation validation
+$mutationOk = medisaSaveValidateUserCollectionMutations($data['users'], [$userA], $ctxBmA);
+rmAssert('mutation update own-scope user ok', $mutationOk === true);
+
+$downgradePeer = $bmA2;
+$downgradePeer['role'] = 'kullanici';
+$mutationDowngrade = medisaSaveValidateUserCollectionMutations($data['users'], [$downgradePeer], $ctxBmA);
+rmAssert('mutation role-downgrade peer denied', is_array($mutationDowngrade) && (int)($mutationDowngrade['status'] ?? 0) === 403);
+
+$promoteUser = $userA;
+$promoteUser['role'] = 'sube_yonetici';
+$mutationPromote = medisaSaveValidateUserCollectionMutations($data['users'], [$promoteUser], $ctxBmA);
+rmAssert('mutation promote to bm denied', is_array($mutationPromote) && (int)($mutationPromote['status'] ?? 0) === 403);
+
+$promoteGm = $userA;
+$promoteGm['role'] = 'genel_yonetici';
+$mutationPromoteGm = medisaSaveValidateUserCollectionMutations($data['users'], [$promoteGm], $ctxBmA);
+rmAssert('mutation promote to gm denied', is_array($mutationPromoteGm) && (int)($mutationPromoteGm['status'] ?? 0) === 403);
+
+$createBm = ['id' => 'new-bm', 'role' => 'sube_yonetici', 'branchIds' => ['branch-a'], 'isim' => 'New BM'];
+$mutationCreateBm = medisaSaveValidateUserCollectionMutations($data['users'], [$userA, $createBm], $ctxBmA);
+rmAssert('mutation create bm denied', is_array($mutationCreateBm) && (int)($mutationCreateBm['status'] ?? 0) === 403);
+
+$createUser = ['id' => 'new-user', 'role' => 'kullanici', 'branchIds' => ['branch-a'], 'isim' => 'New User'];
+$mutationCreateUser = medisaSaveValidateUserCollectionMutations($data['users'], [$userA, $createUser], $ctxBmA);
+rmAssert('mutation create normal user ok', $mutationCreateUser === true);
+
+$stealUser = $userB;
+$stealUser['branchIds'] = ['branch-a'];
+$mutationSteal = medisaSaveValidateUserCollectionMutations($data['users'], [$stealUser], $ctxBmA);
+rmAssert('mutation steal other-branch user denied', is_array($mutationSteal) && (int)($mutationSteal['status'] ?? 0) === 403);
+
+$moveOut = $userA;
+$moveOut['branchIds'] = ['branch-c'];
+$mutationMoveOut = medisaSaveValidateUserCollectionMutations($data['users'], [$moveOut], $ctxBmA);
+rmAssert('mutation move user out of scope denied', is_array($mutationMoveOut) && (int)($mutationMoveOut['status'] ?? 0) === 403);
+
+$partialUser = ['id' => 'partial-mut', 'role' => 'kullanici', 'branchIds' => ['branch-a', 'branch-c']];
+$mutationPartial = medisaSaveValidateUserCollectionMutations($data['users'], [$partialUser], $ctxBmA);
+rmAssert('mutation partial multi-branch create denied', is_array($mutationPartial) && (int)($mutationPartial['status'] ?? 0) === 403);
+
+// Save apply: role downgrade peer must 403 and preserve peer role
+$saveDowngradeData = rmFixture();
+$downgradePayload = [
+    '_medisaWire' => ['schemaVersion' => 1, 'mode' => 'delta-v1'],
+    '_medisaMutation' => [
+        'collections' => ['users'],
+        'changedVehicleIds' => [],
+        'deletedVehicleIds' => [],
+        'deletedVehicleVersions' => [],
+    ],
+    'users' => [
+        ['id' => 'bm-a2', 'isim' => 'Synthetic BM A Peer', 'role' => 'kullanici', 'branchIds' => ['branch-a']],
+        ['id' => 'user-a', 'isim' => 'Synthetic User A', 'role' => 'kullanici', 'branchIds' => ['branch-a']],
+    ],
+];
+$downgradeRes = medisaSaveApplyIncomingData($downgradePayload, $saveDowngradeData, $ctxBmA);
+rmAssert('save apply downgrade peer 403', ($downgradeRes['success'] ?? true) === false && (int)($downgradeRes['status'] ?? 0) === 403);
+$peerAfter = rmUserById($saveDowngradeData, 'bm-a2');
+rmAssert('save apply downgrade peer role preserved', medisaResolveUserRole($peerAfter) === 'sube_yonetici');
+
+$savePromoteData = rmFixture();
+$promotePayload = [
+    '_medisaWire' => ['schemaVersion' => 1, 'mode' => 'delta-v1'],
+    '_medisaMutation' => [
+        'collections' => ['users'],
+        'changedVehicleIds' => [],
+        'deletedVehicleIds' => [],
+        'deletedVehicleVersions' => [],
+    ],
+    'users' => [
+        ['id' => 'user-a', 'isim' => 'Synthetic User A', 'role' => 'sube_yonetici', 'branchIds' => ['branch-a']],
+    ],
+];
+$promoteRes = medisaSaveApplyIncomingData($promotePayload, $savePromoteData, $ctxBmA);
+rmAssert('save apply promote user 403', ($promoteRes['success'] ?? true) === false && (int)($promoteRes['status'] ?? 0) === 403);
+rmAssert('save apply promote user role preserved', medisaResolveUserRole(rmUserById($savePromoteData, 'user-a')) === 'kullanici');
+
+$saveOmitPeerData = rmFixture();
+$peerBeforeOmit = rmUserById($saveOmitPeerData, 'bm-a2');
+$omitPeerPayload = [
+    '_medisaWire' => ['schemaVersion' => 1, 'mode' => 'delta-v1'],
+    '_medisaMutation' => [
+        'collections' => ['users'],
+        'changedVehicleIds' => [],
+        'deletedVehicleIds' => [],
+        'deletedVehicleVersions' => [],
+    ],
+    'users' => [
+        ['id' => 'user-a', 'isim' => 'Synthetic User A', 'role' => 'kullanici', 'branchIds' => ['branch-a']],
+    ],
+];
+$omitPeerRes = medisaSaveApplyIncomingData($omitPeerPayload, $saveOmitPeerData, $ctxBmA);
+rmAssert('save apply omit peer keeps peer', ($omitPeerRes['success'] ?? false) === true);
+$peerAfterOmit = rmUserById($saveOmitPeerData, 'bm-a2');
+rmAssert('save apply omit peer still present', $peerAfterOmit !== null);
+rmAssert('save apply omit peer role intact', medisaResolveUserRole($peerAfterOmit) === 'sube_yonetici');
+rmAssert('save apply omit peer keeps gm', rmUserById($saveOmitPeerData, 'gm-1') !== null);
+rmAssert(
+    'save apply omit peer fields unchanged',
+    json_encode($peerBeforeOmit, JSON_UNESCAPED_UNICODE) === json_encode($peerAfterOmit, JSON_UNESCAPED_UNICODE)
+);
+
+// İkinci normal save de peer'ı kaybetmemeli
+$secondOmitPayload = $omitPeerPayload;
+$secondOmitPayload['users'] = [
+    ['id' => 'user-a', 'isim' => 'Synthetic User A Updated', 'role' => 'kullanici', 'branchIds' => ['branch-a']],
+];
+$secondOmitRes = medisaSaveApplyIncomingData($secondOmitPayload, $saveOmitPeerData, $ctxBmA);
+rmAssert('second omit save succeeds', ($secondOmitRes['success'] ?? false) === true);
+$peerAfterSecond = rmUserById($saveOmitPeerData, 'bm-a2');
+rmAssert('second omit peer still present', $peerAfterSecond !== null);
+rmAssert(
+    'second omit peer fields still unchanged',
+    json_encode($peerBeforeOmit, JSON_UNESCAPED_UNICODE) === json_encode($peerAfterSecond, JSON_UNESCAPED_UNICODE)
+);
+rmAssert('second omit user-a updated', (rmUserById($saveOmitPeerData, 'user-a')['isim'] ?? '') === 'Synthetic User A Updated');
 
 // Notification scope
 $nGm = medisaBuildNotificationScopeDescriptor($ctxGm);
