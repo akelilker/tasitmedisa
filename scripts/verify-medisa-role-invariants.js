@@ -146,6 +146,24 @@ assert(
   '403 oturumu kapatmamalı; load 403 dataset temizler, save 403 trust korur'
 );
 assert(
+  'p0c_gm_invariant_helpers',
+  /function medisaIsActiveGeneralManager/.test(core)
+    && /function medisaCountActiveGeneralManagers/.test(core)
+    && /function medisaValidateGeneralManagerInvariants/.test(core)
+    && /medisaValidateGeneralManagerInvariants\(/.test(core)
+    && /Kendi hesabınızı silemezsiniz/.test(core)
+    && /en az bir aktif genel yönetici/.test(core),
+  'P0-C GM self/last-active helper ve validator owner core.php içinde olmalı'
+);
+assert(
+  'p0c_frontend_gm_protection_ui',
+  /function isProtectedGeneralManagerTarget/.test(settings)
+    && /function countActiveGeneralManagers/.test(settings)
+    && /lockToGeneralManager/.test(settings)
+    && /Sistemde en az bir aktif genel yönetici bulunmalıdır/.test(settings),
+  'P0-C self/last GM UI kilitleri ayarlar.js owner içinde olmalı'
+);
+assert(
   'report_user_projection_bm_normal_only',
   (function() {
     const start = core.indexOf('function medisaCanViewReportUserRecord');
