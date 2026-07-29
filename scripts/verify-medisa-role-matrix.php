@@ -671,13 +671,13 @@ $authMalformed = rmWithAuthHeader('Bearer not-a-jwt', function () use ($data) {
 });
 rmAssert('auth malformed token 401', (int)($authMalformed['status'] ?? 0) === 401);
 
-$tokenUser = medisaCreateSignedToken(['user_id' => 'user-a']);
+$tokenUser = medisaCreateSignedToken(medisaBuildSessionTokenClaims($ctxUserA));
 $authUserMain = rmWithAuthHeader('Bearer ' . $tokenUser, function () use ($data) {
     return medisaResolveAuthorizedContext($data, 'view_main_app');
 });
 rmAssert('user main app 403', (int)($authUserMain['status'] ?? 0) === 403);
 
-$tokenBm = medisaCreateSignedToken(['user_id' => 'bm-a']);
+$tokenBm = medisaCreateSignedToken(medisaBuildSessionTokenClaims($ctxBmA));
 $authBmBranch = rmWithAuthHeader('Bearer ' . $tokenBm, function () use ($data) {
     return medisaResolveAuthorizedContext($data, 'manage_branches');
 });

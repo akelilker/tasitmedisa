@@ -148,7 +148,12 @@ driverDashboard: driverDashboard,
 yoneticiOnly: sessionData && typeof sessionData.yonetici_only === 'boolean'
 ? sessionData.yonetici_only === true
 : !!(payload && payload.yonetici_only === true),
-panelEnabled: driverDashboard
+panelEnabled: driverDashboard,
+passwordChangeRequired: sessionData && typeof sessionData.ilk_giris_parola_degistirme_zorunlu === 'boolean'
+? sessionData.ilk_giris_parola_degistirme_zorunlu === true
+: (payload && typeof payload.ilk_giris_parola_degistirme_zorunlu === 'boolean'
+? payload.ilk_giris_parola_degistirme_zorunlu === true
+: true)
 };
 }
 
@@ -177,6 +182,10 @@ return null;
 
 function routeByAccessContext(accessContext, options) {
 var routeOptions = options && typeof options === 'object' ? options : {};
+if (accessContext && accessContext.passwordChangeRequired === true) {
+window.location.href = DRIVER_PAGE_BASE + 'dashboard.html?password-change=required';
+return true;
+}
 var surface = resolvePortalDefaultSurface(accessContext);
 var requestedNextUrl = String(routeOptions.nextUrl || '').trim();
 
@@ -231,8 +240,12 @@ return false;
 }
 
 var currentSession = await fetchCurrentPortalSession(token);
+if (!currentSession) {
+clearStoredPortalTokens();
+return false;
+}
 return routeByToken(token, fallbackDashboard, Object.assign({}, routeOptions, {
-sessionData: currentSession || routeOptions.sessionData || null
+sessionData: currentSession
 }));
 }
 
@@ -385,6 +398,9 @@ role: data.rol || '',
 kullanici_paneli: data.driverDashboard === true,
 driver_dashboard: data.driverDashboard === true,
 yonetici_only: data.yonetici_only === true,
+ilk_giris_parola_degistirme_zorunlu: typeof data.ilk_giris_parola_degistirme_zorunlu === 'boolean'
+? data.ilk_giris_parola_degistirme_zorunlu === true
+: true,
 user: {
 role: data.rol || '',
 kullanici_paneli: data.driverDashboard === true

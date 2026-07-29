@@ -129,6 +129,7 @@ function getDefaultSession() {
         branch_ids: [],
         kullanici_paneli: false,
         driver_dashboard: false,
+        ilk_giris_parola_degistirme_zorunlu: false,
         permissions: {},
         user: {
             id: '',
@@ -584,6 +585,9 @@ function getSessionFromToken() {
     var rawRole = String(payload.raw_rol || payloadRole || '').trim();
     var branchIds = Array.isArray(payload.sube_ids) ? payload.sube_ids.map(String).filter(Boolean) : [];
     var driverDash = payload.driver_dashboard === true;
+    var passwordChangeRequired = typeof payload.ilk_giris_parola_degistirme_zorunlu === 'boolean'
+        ? payload.ilk_giris_parola_degistirme_zorunlu === true
+        : true;
     return {
         authenticated: true,
         role: role || '',
@@ -592,6 +596,7 @@ function getSessionFromToken() {
         branch_ids: branchIds,
         kullanici_paneli: driverDash,
         driver_dashboard: driverDash,
+        ilk_giris_parola_degistirme_zorunlu: passwordChangeRequired,
         permissions: {},
         user: {
             id: payload.user_id != null ? String(payload.user_id) : '',
@@ -758,6 +763,13 @@ function redirectToDriverDashboard() {
     window.location.href = DRIVER_DASHBOARD_URL;
 }
 
+function redirectToMandatoryPasswordChange() {
+    if (typeof window === 'undefined') return;
+    if (window.__medisaRedirecting === true) return;
+    window.__medisaRedirecting = true;
+    window.location.href = DRIVER_DASHBOARD_URL + '?password-change=required';
+}
+
 function resolveMainAppPortalLinkUrl(sessionData) {
     var session = sessionData && typeof sessionData === 'object' ? sessionData : (window.medisaSession || getDefaultSession());
     if (canUseDriverPanelTransition(session)) {
@@ -886,6 +898,10 @@ function applyMainAppSessionUiState() {
     if (clearCacheBtn) clearCacheBtn.style.display = 'none';
 
     if (!session.authenticated) return;
+    if (session.ilk_giris_parola_degistirme_zorunlu === true) {
+        redirectToMandatoryPasswordChange();
+        return;
+    }
 
     document.body.dataset.medisaRole = session.role || '';
 
@@ -916,6 +932,11 @@ function ensureMainAppSession() {
     var token = getStoredPortalToken();
     if (!token) {
         redirectToPortalLogin();
+        return false;
+    }
+    var tokenSession = getSessionFromToken();
+    if (tokenSession.ilk_giris_parola_degistirme_zorunlu === true) {
+        redirectToMandatoryPasswordChange();
         return false;
     }
     return true;
@@ -986,6 +1007,9 @@ function persistOfflineAppDataSnapshot(data) {
 }
 
 function loadDataFromLocalStorage() {
+    if (!ensureMainAppSession()) {
+        return getDefaultAppData();
+    }
     var offlineSnapshot = readOfflineAppDataSnapshot();
     commitMedisaAppDataSnapshot(offlineSnapshot || getDefaultAppData(), { reason: 'offline-local-load' });
     setMedisaSession(getSessionFromToken());
@@ -2084,6 +2108,7 @@ window.buildSaveMutationIntent = buildSaveMutationIntent;
 document.addEventListener('DOMContentLoaded', async function() {
     syncMainAppPortalLinks();
     setMedisaSession(getSessionFromToken());
+    if (!ensureMainAppSession()) return;
 
     if (sessionStorage.getItem('medisa_just_restored') === '1') {
         sessionStorage.removeItem('medisa_just_restored');

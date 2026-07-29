@@ -2,18 +2,18 @@
 (function() {
 'use strict';
 
-var VERSION = '20260719.1';
+var VERSION = '20260729.1';
 window.MEDISA_DRIVER_ASSET_VERSIONS = window.MEDISA_DRIVER_ASSET_VERSIONS || {
-bootstrap: '20260719.1',
-login: '20260718.1',
-dashboardCore: '20260718.4',
+bootstrap: '20260729.1',
+login: '20260729.1',
+dashboardCore: '20260729.1',
 history: '20260718.4',
 documents: '20260718.3',
 feedback: '20260718.1',
-password: '20260718.1',
+password: '20260729.1',
 actions: '20260718.1',
 shellCss: '20260723.2',
-featureCss: '20260718.1'
+featureCss: '20260729.1'
 };
 
 var APP_ROOT = (function() {
@@ -335,9 +335,7 @@ alert('Panel henüz hazır değil. Lütfen tekrar deneyin.');
 ['submitDriverFeedback', 'feedback', 'submitDriverFeedback'],
 ['openDriverPasswordModal', 'password', 'openDriverPasswordModal'],
 ['closeDriverPasswordModal', 'password', 'closeDriverPasswordModal'],
-['openDriverPasswordSuggestion', 'password', 'openDriverPasswordSuggestion'],
-['startSuggestedPasswordChange', 'password', 'startSuggestedPasswordChange'],
-['continueWithCurrentPassword', 'password', 'continueWithCurrentPassword'],
+['openMandatoryDriverPasswordChange', 'password', 'openMandatoryDriverPasswordChange'],
 ['submitDriverPasswordChange', 'password', 'submitDriverPasswordChange'],
 ['toggleDriverActionBlock', 'actions', 'toggleDriverActionBlock'],
 ['focusKmInput', 'actions', 'focusKmInput'],

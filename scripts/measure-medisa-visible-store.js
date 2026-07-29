@@ -42,6 +42,7 @@ function createFakeJwt(payloadOverrides) {
     exp: Math.floor(Date.now() / 1000) + 3600,
     rol: 'genel_yonetici',
     user_id: 'u1',
+    ilk_giris_parola_degistirme_zorunlu: false,
   }, payloadOverrides || {});
   const header = Buffer.from(JSON.stringify({ alg: 'none', typ: 'JWT' })).toString('base64');
   const body = Buffer.from(JSON.stringify(payload)).toString('base64');

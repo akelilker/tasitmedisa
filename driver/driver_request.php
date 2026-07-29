@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../core.php';
+require_once __DIR__ . '/driver_common.php';
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, OPTIONS');
@@ -16,6 +16,7 @@ if (!$tokenData) {
     echo json_encode(['success' => false, 'message' => 'Oturumunuz sona erdi!'], JSON_UNESCAPED_UNICODE);
     exit;
 }
+medisaDriverRequireUsableSession($tokenData);
 
 $input = json_decode(file_get_contents('php://input'), true);
 if (!is_array($input)) {
@@ -72,6 +73,11 @@ $result = medisaMutateData(function (&$data) use (
     $yeniKazaAciklama,
     $sebep
 ) {
+    $sessionGuard = medisaDriverResolveContextResult($data, $tokenData);
+    if (($sessionGuard['success'] ?? false) !== true) {
+        return $sessionGuard;
+    }
+
     $recordIndex = medisaFindMonthlyRecordIndex($data, $kayitId);
     if ($recordIndex < 0) {
         return medisaBuildErrorResult('Kayıt bulunamadı!', 404);

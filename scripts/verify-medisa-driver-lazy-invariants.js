@@ -103,8 +103,7 @@ test('Inline onclick global isimleri korunur', () => {
     'closeEditRequest', 'submitEditRequest', 'openDriverDocumentsModal',
     'closeDriverDocumentsModal', 'openDriverFeedbackModal', 'closeDriverFeedbackModal',
     'submitDriverFeedback', 'openDriverPasswordModal', 'closeDriverPasswordModal',
-    'openDriverPasswordSuggestion', 'startSuggestedPasswordChange',
-    'continueWithCurrentPassword', 'submitDriverPasswordChange',
+    'openMandatoryDriverPasswordChange', 'submitDriverPasswordChange',
     'toggleDriverActionBlock', 'focusKmInput', 'cancelKmForm',
     'cancelDriverActionForm', 'submitDriverAction', 'submitKmOnly',
     'syncDriverEgzozMuayeneFields', 'cancelMuayeneSubmit',
@@ -133,10 +132,14 @@ test('force=login parity korunur', () => {
 test('next yalnız same-origin kabul edilir', () => {
   assert.match(files.login, /resolvedUrl\.origin\s*!==\s*window\.location\.origin|origin\s*!==\s*window\.location\.origin/);
 });
-test('Password feature lazy proxy mevcut; current main auto-suggestion yok', () => {
+test('Password feature zorunlu modu lazy yükler ve bypass sunmaz', () => {
   assert.match(files.bootstrap, /openDriverPasswordModal/);
+  assert.match(files.bootstrap, /openMandatoryDriverPasswordChange/);
   assert.match(files.password, /submitDriverPasswordChange|driver_change_password\.php/);
-  assert.doesNotMatch(files.core, /ilk_giris_parola_onerisi_bekliyor\s*===\s*true/);
+  assert.match(files.core, /passwordChangeRequired\s*===\s*true/);
+  assert.doesNotMatch(files.password + files.bootstrap, /continueWithCurrentPassword|driver_password_suggestion\.php/);
+  assert.match(files.dashboardHtml, /driver-password-modal-close/);
+  assert.match(files.dashboardHtml, /minlength="10"/);
 });
 test('KM deep-link actions modülünü otomatik yükler', () => {
   assert.match(files.core, /action/);
@@ -320,16 +323,17 @@ test('Takograf tip matrisi aynıdır', () => {
   assert.match(files.bootstrap, /normalizedType === 'kamyon' \|\| normalizedType === 'buyuk_ticari'/);
 });
 test('Driver asset version matrisi dar bump kullanır', () => {
-  assert.match(files.bootstrap, /bootstrap:\s*'20260719\.1'/);
-  assert.match(files.bootstrap, /dashboardCore:\s*'20260718\.4'/);
+  assert.match(files.bootstrap, /bootstrap:\s*'20260729\.1'/);
+  assert.match(files.bootstrap, /dashboardCore:\s*'20260729\.1'/);
   assert.match(files.bootstrap, /history:\s*'20260718\.4'/);
   assert.match(files.bootstrap, /documents:\s*'20260718\.3'/);
-  assert.match(files.bootstrap, /login:\s*'20260718\.1'/);
+  assert.match(files.bootstrap, /login:\s*'20260729\.1'/);
   assert.match(files.bootstrap, /feedback:\s*'20260718\.1'/);
-  assert.match(files.bootstrap, /password:\s*'20260718\.1'/);
+  assert.match(files.bootstrap, /password:\s*'20260729\.1'/);
   assert.match(files.bootstrap, /actions:\s*'20260718\.1'/);
-  assert.match(files.loginHtml, /driver-script\.js\?v=20260719\.1/);
-  assert.match(files.dashboardHtml, /driver-script\.js\?v=20260719\.1/);
+  assert.match(files.bootstrap, /featureCss:\s*'20260729\.1'/);
+  assert.match(files.loginHtml, /driver-script\.js\?v=20260729\.1/);
+  assert.match(files.dashboardHtml, /driver-script\.js\?v=20260729\.1/);
   assert.match(files.loginHtml, /driver-shell\.css\?v=20260724\.2/);
   assert.match(files.dashboardHtml, /driver-shell\.css\?v=20260724\.2/);
 });

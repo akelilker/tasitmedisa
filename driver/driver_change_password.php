@@ -35,48 +35,43 @@ $currentPassword = trim((string)($input['currentPassword'] ?? ''));
 $newPassword = trim((string)($input['newPassword'] ?? ''));
 
 if ($currentPassword === '' || $newPassword === '') {
+    http_response_code(400);
     echo json_encode(['success' => false, 'message' => 'Mevcut şifre ve yeni şifre gerekli.'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
-if (mb_strlen($newPassword, 'UTF-8') < 6) {
-    echo json_encode(['success' => false, 'message' => 'Yeni şifre en az 6 karakter olmalı.'], JSON_UNESCAPED_UNICODE);
-    exit;
-}
-
-if (hash_equals($currentPassword, $newPassword)) {
-    echo json_encode(['success' => false, 'message' => 'Yeni şifre mevcut şifreyle aynı olamaz.'], JSON_UNESCAPED_UNICODE);
-    exit;
-}
-
 $result = medisaMutateData(function (&$data) use ($tokenData, $currentPassword, $newPassword) {
-    $userId = (string)($tokenData['user_id'] ?? '');
-    if ($userId === '') {
-        return medisaBuildErrorResult('Oturum bilgisi geçersiz.', 401);
+    $sessionResolution = medisaResolveSessionContext($data, $tokenData, true);
+    if (($sessionResolution['success'] ?? false) !== true) {
+        return $sessionResolution;
     }
-
-    $userIndex = -1;
-    foreach (($data['users'] ?? []) as $idx => $candidate) {
-        if ((string)($candidate['id'] ?? '') === $userId) {
-            $userIndex = $idx;
-            break;
-        }
-    }
-
+    $context = $sessionResolution['context'];
+    $userId = (string)($context['user_id'] ?? '');
+    $userIndex = medisaFindUserIndex($data, $userId);
     if ($userIndex < 0) {
-        return medisaBuildErrorResult('Kullanıcı bulunamadı!', 404);
+        return medisaBuildErrorResult('Kullanıcı bulunamadı.', 404);
     }
 
     if (!medisaVerifyUserPassword($data['users'][$userIndex], $currentPassword)) {
-        return medisaBuildErrorResult('Mevcut şifre hatalı.', 200);
+        return medisaBuildErrorResult('Mevcut parola hatalı.', 401);
     }
 
-    medisaSetUserPasswordHash($data['users'][$userIndex], $newPassword);
-    $data['users'][$userIndex]['updatedAt'] = date('c');
+    $policyResult = medisaValidateNewUserPassword($data['users'][$userIndex], $currentPassword, $newPassword);
+    if (($policyResult['success'] ?? false) !== true) {
+        return $policyResult;
+    }
+
+    medisaApplyUserPasswordChange($data['users'][$userIndex], $newPassword);
+    $updatedContext = medisaBuildAccessContext($data, ['user_id' => $userId]);
+    if (!$updatedContext) {
+        return medisaBuildErrorResult('Parola değiştirilemedi. Tekrar deneyin.', 500);
+    }
 
     return [
         'success' => true,
-        'message' => 'Şifre başarıyla değiştirildi.',
+        'message' => 'Parola başarıyla değiştirildi.',
+        'token_claims' => medisaBuildSessionTokenClaims($updatedContext),
+        'session' => medisaBuildSessionPayload($updatedContext),
     ];
 });
 
@@ -85,6 +80,12 @@ if ($status !== 200) {
     http_response_code($status);
 }
 unset($result['status']);
+
+if (($result['success'] ?? false) === true) {
+    $tokenClaims = is_array($result['token_claims'] ?? null) ? $result['token_claims'] : [];
+    unset($result['token_claims']);
+    $result['token'] = medisaCreateSignedToken($tokenClaims, 30 * 24 * 60 * 60);
+}
 
 echo json_encode($result, JSON_UNESCAPED_UNICODE);
 ?>

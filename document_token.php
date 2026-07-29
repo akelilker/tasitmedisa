@@ -33,12 +33,19 @@ if (!is_array($data)) {
     exit;
 }
 
-$context = medisaBuildAccessContext($data, $sessionData);
-if (!$context) {
-    http_response_code(403);
-    echo json_encode(['ok' => false, 'message' => 'Bu belge için yetkiniz yok.'], JSON_UNESCAPED_UNICODE);
+$sessionResolution = medisaResolveSessionContext($data, $sessionData);
+if (($sessionResolution['success'] ?? false) !== true) {
+    $status = (int)($sessionResolution['status'] ?? 403);
+    http_response_code($status);
+    echo json_encode([
+        'ok' => false,
+        'code' => $sessionResolution['code'] ?? null,
+        'password_change_required' => $sessionResolution['password_change_required'] ?? false,
+        'message' => $sessionResolution['message'] ?? 'Bu belge için yetkiniz yok.',
+    ], JSON_UNESCAPED_UNICODE);
     exit;
 }
+$context = $sessionResolution['context'];
 
 $input = json_decode((string)file_get_contents('php://input'), true);
 if (!is_array($input)) {
