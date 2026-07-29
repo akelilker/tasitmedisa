@@ -760,6 +760,206 @@ rmAssert('yk main access true', medisaHasMainAppAccessRole($ctxYk['role'] ?? '')
 rmAssert('malformed branch deny', medisaCanViewBranchRecord(['id' => 'branch-a'], ['role' => 'sube_yonetici', 'branch_ids' => []]) === false);
 rmAssert('unknown role deny manage user', medisaCanManageUserRecord($userA, ['role' => 'hacker', 'user_id' => 'bm-a', 'branch_ids' => ['branch-a']]) === false);
 
+// --- P0-C: self + last active GM invariants ---
+rmAssert('active helper missing aktif true', medisaIsUserActive(['id' => 'x']) === true);
+rmAssert('active helper aktif false', medisaIsUserActive(['id' => 'x', 'aktif' => false]) === false);
+rmAssert('active helper malformed fail-closed true', medisaIsUserActive(['id' => 'x', 'aktif' => 'weird']) === true);
+rmAssert('active gm true', medisaIsActiveGeneralManager($gm) === true);
+rmAssert('count active gm fixture', medisaCountActiveGeneralManagers($data['users']) === 2);
+
+$gmSelfDeleteIncoming = array_values(array_filter($data['users'], function ($u) {
+    return (string)($u['id'] ?? '') !== 'gm-1';
+}));
+$gmSelfDelete = medisaSaveValidateUserCollectionMutations($data['users'], $gmSelfDeleteIncoming, $ctxGm);
+rmAssert('p0c self delete deny', is_array($gmSelfDelete) && (int)($gmSelfDelete['status'] ?? 0) === 403);
+
+$gmSelfDowngradeIncoming = [];
+foreach ($data['users'] as $u) {
+    $copy = $u;
+    if ((string)($u['id'] ?? '') === 'gm-1') {
+        $copy['role'] = 'kullanici';
+        $copy['branchIds'] = ['branch-a'];
+    }
+    $gmSelfDowngradeIncoming[] = $copy;
+}
+$gmSelfDowngrade = medisaSaveValidateUserCollectionMutations($data['users'], $gmSelfDowngradeIncoming, $ctxGm);
+rmAssert('p0c self downgrade deny', is_array($gmSelfDowngrade) && (int)($gmSelfDowngrade['status'] ?? 0) === 403);
+
+$gmSelfBmDowngradeIncoming = [];
+foreach ($data['users'] as $u) {
+    $copy = $u;
+    if ((string)($u['id'] ?? '') === 'gm-1') {
+        $copy['role'] = 'sube_yonetici';
+        $copy['branchIds'] = ['branch-a'];
+    }
+    $gmSelfBmDowngradeIncoming[] = $copy;
+}
+$gmSelfBm = medisaSaveValidateUserCollectionMutations($data['users'], $gmSelfBmDowngradeIncoming, $ctxGm);
+rmAssert('p0c self bm downgrade deny', is_array($gmSelfBm) && (int)($gmSelfBm['status'] ?? 0) === 403);
+
+$gmSelfUnknownIncoming = [];
+foreach ($data['users'] as $u) {
+    $copy = $u;
+    if ((string)($u['id'] ?? '') === 'gm-1') {
+        $copy['role'] = 'unknown_role';
+    }
+    $gmSelfUnknownIncoming[] = $copy;
+}
+$gmSelfUnknown = medisaSaveValidateUserCollectionMutations($data['users'], $gmSelfUnknownIncoming, $ctxGm);
+rmAssert('p0c self unknown role deny', is_array($gmSelfUnknown) && (int)($gmSelfUnknown['status'] ?? 0) === 403);
+
+$gmSelfDeactivateIncoming = [];
+foreach ($data['users'] as $u) {
+    $copy = $u;
+    if ((string)($u['id'] ?? '') === 'gm-1') {
+        $copy['aktif'] = false;
+    }
+    $gmSelfDeactivateIncoming[] = $copy;
+}
+$gmSelfDeact = medisaSaveValidateUserCollectionMutations($data['users'], $gmSelfDeactivateIncoming, $ctxGm);
+rmAssert('p0c self deactivate deny', is_array($gmSelfDeact) && (int)($gmSelfDeact['status'] ?? 0) === 403);
+
+$gmSelfNameIncoming = [];
+foreach ($data['users'] as $u) {
+    $copy = $u;
+    if ((string)($u['id'] ?? '') === 'gm-1') {
+        $copy['isim'] = 'Synthetic GM Renamed';
+        $copy['telefon'] = '05551112233';
+    }
+    $gmSelfNameIncoming[] = $copy;
+}
+$gmSelfName = medisaSaveValidateUserCollectionMutations($data['users'], $gmSelfNameIncoming, $ctxGm);
+rmAssert('p0c self name/phone allow', $gmSelfName === true);
+
+$soloUsers = array_values(array_filter($data['users'], function ($u) {
+    return (string)($u['id'] ?? '') !== 'gm-2';
+}));
+$soloCtx = rmContextFromUser(['users' => $soloUsers] + $data, $gm);
+$soloDeleteIncoming = array_values(array_filter($soloUsers, function ($u) {
+    return (string)($u['id'] ?? '') !== 'gm-1';
+}));
+$soloDelete = medisaSaveValidateUserCollectionMutations($soloUsers, $soloDeleteIncoming, $soloCtx);
+rmAssert('p0c last gm delete deny', is_array($soloDelete) && (int)($soloDelete['status'] ?? 0) === 403);
+
+$soloDowngradeIncoming = [];
+foreach ($soloUsers as $u) {
+    $copy = $u;
+    if ((string)($u['id'] ?? '') === 'gm-1') {
+        $copy['role'] = 'kullanici';
+        $copy['branchIds'] = ['branch-a'];
+    }
+    $soloDowngradeIncoming[] = $copy;
+}
+$soloDowngrade = medisaSaveValidateUserCollectionMutations($soloUsers, $soloDowngradeIncoming, $soloCtx);
+rmAssert('p0c last gm downgrade deny', is_array($soloDowngrade) && (int)($soloDowngrade['status'] ?? 0) === 403);
+
+$soloDeactIncoming = [];
+foreach ($soloUsers as $u) {
+    $copy = $u;
+    if ((string)($u['id'] ?? '') === 'gm-1') {
+        $copy['aktif'] = false;
+    }
+    $soloDeactIncoming[] = $copy;
+}
+$soloDeact = medisaSaveValidateUserCollectionMutations($soloUsers, $soloDeactIncoming, $soloCtx);
+rmAssert('p0c last gm deactivate deny', is_array($soloDeact) && (int)($soloDeact['status'] ?? 0) === 403);
+
+$soloReplaceIncoming = $soloDeleteIncoming;
+$soloReplaceIncoming[] = [
+    'id' => 'gm-replaced',
+    'isim' => 'Replacement GM',
+    'role' => 'genel_yonetici',
+    'sifre_hash' => 'fixture-hash-replaced',
+];
+$soloReplace = medisaSaveValidateUserCollectionMutations($soloUsers, $soloReplaceIncoming, $soloCtx);
+rmAssert('p0c last gm id replacement deny', is_array($soloReplace) && (int)($soloReplace['status'] ?? 0) === 403);
+
+$passiveGmUsers = $soloUsers;
+$passiveGmUsers[] = [
+    'id' => 'gm-passive',
+    'isim' => 'Passive GM',
+    'role' => 'genel_yonetici',
+    'aktif' => false,
+    'sifre_hash' => 'fixture-hash-passive',
+];
+$passiveCtx = rmContextFromUser(['users' => $passiveGmUsers] + $data, $gm);
+$passiveDeleteActive = array_values(array_filter($passiveGmUsers, function ($u) {
+    return (string)($u['id'] ?? '') !== 'gm-1';
+}));
+$passiveDel = medisaSaveValidateUserCollectionMutations($passiveGmUsers, $passiveDeleteActive, $passiveCtx);
+rmAssert('p0c last active gm with passive peer delete deny', is_array($passiveDel) && (int)($passiveDel['status'] ?? 0) === 403);
+
+$peerDeleteIncoming = array_values(array_filter($data['users'], function ($u) {
+    return (string)($u['id'] ?? '') !== 'gm-2';
+}));
+$peerDelete = medisaSaveValidateUserCollectionMutations($data['users'], $peerDeleteIncoming, $ctxGm);
+rmAssert('p0c peer gm delete allow when 2+', $peerDelete === true);
+
+$peerDowngradeIncoming = [];
+foreach ($data['users'] as $u) {
+    $copy = $u;
+    if ((string)($u['id'] ?? '') === 'gm-2') {
+        $copy['role'] = 'kullanici';
+        $copy['branchIds'] = ['branch-a'];
+    }
+    $peerDowngradeIncoming[] = $copy;
+}
+$peerDowngrade = medisaSaveValidateUserCollectionMutations($data['users'], $peerDowngradeIncoming, $ctxGm);
+rmAssert('p0c peer gm downgrade allow when 2+', $peerDowngrade === true);
+
+$peerDeactIncoming = [];
+foreach ($data['users'] as $u) {
+    $copy = $u;
+    if ((string)($u['id'] ?? '') === 'gm-2') {
+        $copy['aktif'] = false;
+    }
+    $peerDeactIncoming[] = $copy;
+}
+$peerDeact = medisaSaveValidateUserCollectionMutations($data['users'], $peerDeactIncoming, $ctxGm);
+rmAssert('p0c peer gm deactivate allow when 2+', $peerDeact === true);
+
+$bothGoneIncoming = array_values(array_filter($data['users'], function ($u) {
+    $id = (string)($u['id'] ?? '');
+    return $id !== 'gm-1' && $id !== 'gm-2';
+}));
+$bothGone = medisaSaveValidateUserCollectionMutations($data['users'], $bothGoneIncoming, $ctxGm);
+rmAssert('p0c both gm removed deny', is_array($bothGone) && (int)($bothGone['status'] ?? 0) === 403);
+
+$dupIncoming = $data['users'];
+$dupIncoming[] = $gm;
+$dupCheck = medisaSaveValidateUserCollectionMutations($data['users'], $dupIncoming, $ctxGm);
+rmAssert('p0c duplicate id deny', is_array($dupCheck) && (int)($dupCheck['status'] ?? 0) === 403);
+
+$saveDataGm = rmFixture();
+$gmApplyDeny = [
+    '_medisaWire' => ['schemaVersion' => 1, 'mode' => 'delta-v1'],
+    '_medisaMutation' => [
+        'collections' => ['users'],
+        'changedVehicleIds' => [],
+        'deletedVehicleIds' => [],
+        'deletedVehicleVersions' => [],
+    ],
+    'users' => $gmSelfDeleteIncoming,
+];
+$gmApplyRes = medisaSaveApplyIncomingData($gmApplyDeny, $saveDataGm, $ctxGm);
+rmAssert('p0c apply self delete 403', ($gmApplyRes['success'] ?? true) === false && (int)($gmApplyRes['status'] ?? 0) === 403);
+rmAssert('p0c apply self delete no persist', medisaCountActiveGeneralManagers($saveDataGm['users'] ?? []) === 2);
+
+$saveDataGmAllow = rmFixture();
+$gmApplyPeer = [
+    '_medisaWire' => ['schemaVersion' => 1, 'mode' => 'delta-v1'],
+    '_medisaMutation' => [
+        'collections' => ['users'],
+        'changedVehicleIds' => [],
+        'deletedVehicleIds' => [],
+        'deletedVehicleVersions' => [],
+    ],
+    'users' => $peerDeleteIncoming,
+];
+$gmApplyPeerRes = medisaSaveApplyIncomingData($gmApplyPeer, $saveDataGmAllow, $ctxGm);
+rmAssert('p0c apply peer delete allow', ($gmApplyPeerRes['success'] ?? false) === true);
+rmAssert('p0c apply peer delete leaves one gm', medisaCountActiveGeneralManagers($saveDataGmAllow['users'] ?? []) === 1);
+
 echo "\nROLE_MATRIX_PASSED={$passed}\n";
 echo "ROLE_MATRIX_FAILED={$failed}\n";
 
