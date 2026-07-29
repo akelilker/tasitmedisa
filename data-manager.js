@@ -706,7 +706,8 @@ function redirectToPortalLogin() {
 /**
  * HTTP 401/403 owner ayrımı — authentication vs authorization.
  * 401: token+session temizlenir, login'e yönlendirilir, trusted düşer.
- * 403: oturum korunur, redirect yok, trusted düşer; caller fail/rollback uygular.
+ * 403 load (clearProtectedDataset): token korunur; korumalı dataset temizlenir; unauthorized shell'den çıkılır.
+ * 403 save: token/session/trust korunur; yalnız mutation başarısız; retry mümkün.
  * @returns {'auth'|'forbidden'|null}
  */
 function handleMedisaHttpAuthStatus(status, options) {
@@ -723,10 +724,31 @@ function handleMedisaHttpAuthStatus(status, options) {
         return 'auth';
     }
     if (code === 403) {
-        serverDatasetTrusted = false;
+        if (opts.clearProtectedDataset === true) {
+            serverDatasetTrusted = false;
+            commitMedisaAppDataSnapshot(getDefaultAppData(), { reason: 'authz-load-gate' });
+            setServerDatasetBaseline(getDefaultAppData());
+            if (opts.exitUnauthorizedShell === true) {
+                exitUnauthorizedMainAppShell();
+            }
+        }
         return 'forbidden';
     }
     return null;
+}
+
+/** Ana uygulama yetkisi yok: token korunur, korumalı shell'den portal yüzeye çıkılır. */
+function exitUnauthorizedMainAppShell() {
+    if (typeof window === 'undefined') return;
+    if (getCurrentPathname().indexOf('/driver/') !== -1) return;
+    if (window.__medisaRedirecting === true) return;
+    window.__medisaRedirecting = true;
+    var session = window.medisaSession || getDefaultSession();
+    if (session && session.driver_dashboard === true) {
+        window.location.href = DRIVER_DASHBOARD_URL;
+        return;
+    }
+    window.location.href = DRIVER_INDEX_URL;
 }
 
 function redirectToDriverDashboard() {
@@ -1108,7 +1130,10 @@ async function loadDataFromServer(forceRefresh) {
             }
 
             if (response.status === 403) {
-                handleMedisaHttpAuthStatus(403);
+                handleMedisaHttpAuthStatus(403, {
+                    clearProtectedDataset: true,
+                    exitUnauthorizedShell: true
+                });
                 var forbidErr = new Error('Forbidden');
                 forbidErr.medisaHttpStatus = 403;
                 forbidErr.medisaAuthorizationDenied = true;

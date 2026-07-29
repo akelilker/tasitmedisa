@@ -481,7 +481,7 @@ function setBaseline(ctx, data) {
     assert.equal(redirected, false);
     assert.equal(ctx.window.medisaPortalSession.getStoredToken(), token);
     assert.equal(JSON.stringify(ctx.window.medisaSession), sessionBefore);
-    assert.equal(vm.runInContext('serverDatasetTrusted', ctx), false);
+    assert.equal(vm.runInContext('serverDatasetTrusted', ctx), true);
   });
 
   await run('401 authentication failure clears session tokens', async function() {
@@ -528,7 +528,35 @@ function setBaseline(ctx, data) {
     assert.equal(ctx.window.appData.users[0].isim || ctx.window.appData.users[0].name, previousUsers[0].isim || previousUsers[0].name);
   });
 
-  await run('load 403 preserves session and does not commit offline as trusted', async function() {
+  await run('save 403 keeps trust and allows retry save', async function() {
+    const ctx = createCtx();
+    setBaseline(ctx, sampleAppData());
+    vm.runInContext('serverDatasetTrusted = true', ctx);
+    let posts = 0;
+    ctx.fetch = async function(url, options) {
+      posts += 1;
+      if (posts === 1) {
+        return { ok: false, status: 403, text: async () => 'forbidden', json: async () => ({ error: 'forbidden' }) };
+      }
+      return {
+        ok: true,
+        status: 200,
+        json: async () => ({ success: true, vehicleVersions: [] }),
+      };
+    };
+    ctx.window.fetch = ctx.fetch;
+    ctx.window.appData.users[0].isim = 'First Forbidden';
+    const first = await ctx.window.saveDataToServer();
+    assert.equal(first, false);
+    assert.equal(vm.runInContext('serverDatasetTrusted', ctx), true);
+    ctx.window.appData.users[0].isim = 'Retry Allowed';
+    const second = await ctx.window.saveDataToServer();
+    assert.equal(second, true);
+    assert.equal(posts, 2);
+    assert.equal(vm.runInContext('serverDatasetTrusted', ctx), true);
+  });
+
+  await run('load 403 clears protected dataset without offline commit', async function() {
     const ctx = createCtx();
     setBaseline(ctx, sampleAppData());
     vm.runInContext('serverDatasetTrusted = true', ctx);
@@ -536,13 +564,13 @@ function setBaseline(ctx, data) {
     ctx.window.medisaPortalSession.getStoredToken = function() { return token; };
     let cleared = false;
     let redirected = false;
+    let redirectHref = '';
     ctx.window.medisaPortalSession.clearStoredTokens = function() { cleared = true; };
     Object.defineProperty(ctx.window.location, 'href', {
       configurable: true,
-      get: function() { return 'http://localhost/'; },
-      set: function() { redirected = true; },
+      get: function() { return redirectHref || 'http://localhost/'; },
+      set: function(v) { redirected = true; redirectHref = String(v || ''); },
     });
-    // Poison offline snapshot with "unauthorized looking" payload marker
     ctx.localStorage.setItem('medisa_data_v1', JSON.stringify({
       tasitlar: [{ id: 'offline-leak', plate: 'LEAK' }],
       users: [{ id: 'hacker', role: 'genel_yonetici' }],
@@ -556,7 +584,6 @@ function setBaseline(ctx, data) {
       notificationReadState: {},
       monthlyTodoWhatsAppLogs: {},
     }));
-    const usersBefore = JSON.stringify(ctx.window.appData.users);
     const sessionBefore = JSON.stringify(ctx.window.medisaSession);
     ctx.fetch = async function() {
       return { ok: false, status: 403, text: async () => 'forbidden', json: async () => ({ error: 'forbidden' }) };
@@ -567,12 +594,14 @@ function setBaseline(ctx, data) {
       (err) => err && err.medisaHttpStatus === 403 && err.medisaAuthorizationDenied === true
     );
     assert.equal(cleared, false);
-    assert.equal(redirected, false);
+    assert.equal(redirected, true);
     assert.equal(ctx.window.medisaPortalSession.getStoredToken(), token);
     assert.equal(JSON.stringify(ctx.window.medisaSession), sessionBefore);
     assert.equal(vm.runInContext('serverDatasetTrusted', ctx), false);
-    assert.equal(JSON.stringify(ctx.window.appData.users), usersBefore);
+    assert.equal(Array.isArray(ctx.window.appData.users) && ctx.window.appData.users.length, 0);
+    assert.equal(Array.isArray(ctx.window.appData.tasitlar) && ctx.window.appData.tasitlar.length, 0);
     assert.equal(ctx.window.appData.tasitlar.some(function(v) { return v && v.id === 'offline-leak'; }), false);
+    assert.equal(ctx.window.appData.ayarlar && ctx.window.appData.ayarlar.sirketAdi === 'LEAK', false);
   });
 
   await run('load 401 logout redirect and clears session', async function() {
@@ -616,8 +645,19 @@ function setBaseline(ctx, data) {
   await run('central auth status helper exists', async function() {
     const src = read('data-manager.js');
     assert.match(src, /function handleMedisaHttpAuthStatus/);
+    assert.match(src, /clearProtectedDataset/);
+    assert.match(src, /exitUnauthorizedMainAppShell/);
     assert.match(src, /handleMedisaHttpAuthStatus\(401/);
     assert.match(src, /handleMedisaHttpAuthStatus\(403/);
+  });
+
+  await run('multi-branch BM unrelated edit preserves branch helpers', async function() {
+    const src = read('ayarlar.js');
+    assert.match(src, /function resolveBranchIdForUserManagementSave/);
+    assert.match(src, /function resolveBranchIdsForUserManagementSave/);
+    assert.match(src, /preferredBranchId/);
+    assert.match(src, /allowedBranchCount > 1/);
+    assert.match(src, /Yalnızca yetkili şubelerinize kullanıcı kaydedebilirsiniz/);
   });
 
   console.log('\nClient save wire: ' + passed + ' passed, ' + failed + ' failed');
