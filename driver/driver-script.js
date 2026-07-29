@@ -2,7 +2,7 @@
 (function() {
 'use strict';
 
-var VERSION = '20260729.1';
+var VERSION = '20260729.2';
 window.MEDISA_DRIVER_ASSET_VERSIONS = window.MEDISA_DRIVER_ASSET_VERSIONS || {
 bootstrap: '20260729.1',
 login: '20260729.1',
@@ -10,10 +10,10 @@ dashboardCore: '20260729.1',
 history: '20260718.4',
 documents: '20260718.3',
 feedback: '20260718.1',
-password: '20260729.1',
+password: '20260729.2',
 actions: '20260718.1',
 shellCss: '20260723.2',
-featureCss: '20260729.1'
+featureCss: '20260729.2'
 };
 
 var APP_ROOT = (function() {

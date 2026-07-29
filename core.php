@@ -776,7 +776,7 @@ function medisaValidateNewUserPassword($user, $currentPassword, $newPassword) {
         return medisaBuildErrorResult('Yeni parola mevcut paroladan farklı olmalıdır.', 400);
     }
 
-    $meetsComplexity = mb_strlen($newPassword, 'UTF-8') >= 10
+    $meetsComplexity = mb_strlen($newPassword, 'UTF-8') >= 6
         && preg_match('/[A-ZÇĞİÖŞÜ]/u', $newPassword) === 1
         && preg_match('/[a-zçğıöşü]/u', $newPassword) === 1
         && preg_match('/[0-9]/', $newPassword) === 1;

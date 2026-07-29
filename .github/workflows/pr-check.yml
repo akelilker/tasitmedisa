@@ -84,6 +84,7 @@ jobs:
           npm run tool:verify-login-title-fit
           npm run tool:verify-roles
           npm run tool:verify-password-migration
+          npm run tool:verify-default-credentials
           npm run tool:verify-mandatory-password-change
           npm run tool:verify-save-wire
           npm run tool:measure-save-wire
