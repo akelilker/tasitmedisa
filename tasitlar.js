@@ -164,7 +164,7 @@
 
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20260726.3';
+  const MEDISA_TASITLAR_MODULE_VERSION = '20260729.3';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
@@ -235,10 +235,22 @@
     const vehicleBranchId = vehicle && vehicle.branchId !== undefined && vehicle.branchId !== null
       ? String(vehicle.branchId).trim()
       : '';
-
-    if (!vehicleBranchId) return users;
+    const candidateFn = typeof window.isAssignableNormalUserCandidate === 'function'
+      ? window.isAssignableNormalUserCandidate
+      : null;
 
     return users.filter(function(user) {
+      if (candidateFn) {
+        return candidateFn(user, vehicleBranchId || null);
+      }
+      // Fallback: script-core rol map + aktif + şube
+      const roleRaw = user && (user.role || user.rol || user.tip);
+      const role = typeof window.medisaMapUiRoleToRol === 'function'
+        ? window.medisaMapUiRoleToRol(roleRaw)
+        : String(roleRaw || 'kullanici');
+      if (role !== 'kullanici') return false;
+      if (user && user.aktif === false) return false;
+      if (!vehicleBranchId) return true;
       return getUserBranchIdsForVehicleAssignment(user).indexOf(vehicleBranchId) !== -1;
     });
   }
@@ -5300,27 +5312,34 @@
         const selectEl = document.getElementById('kullanici-select');
         if (selectEl) {
           const vehicle = readVehicles().find(v => String(v.id) === String(vehicleId || window.currentDetailVehicleId));
-          selectEl.innerHTML = '<option value="">Kullanıcı Seçiniz</option>';
-          const noneOpt = document.createElement('option');
-          noneOpt.value = '__none__';
-          noneOpt.textContent = 'Henüz Tanımlanmadı';
-          selectEl.appendChild(noneOpt);
-          const users = readUsers();
-          users.forEach(u => {
-            const opt = document.createElement('option');
-            opt.value = u.id;
-            opt.textContent = u.name || u.isim || '-';
-            selectEl.appendChild(opt);
-          });
-          const addOpt = document.createElement('option');
-          addOpt.value = '__add_user__';
-          addOpt.textContent = '+ Yeni Kullanıcı Ekle';
-          selectEl.appendChild(addOpt);
-          if (vehicle?.assignedUserId) {
-            selectEl.value = vehicle.assignedUserId;
-          } else {
-            selectEl.value = '__none__';
-          }
+          const fillAssignableUserOptions = function(targetSelect, targetVehicle, selectedUserId) {
+            targetSelect.innerHTML = '<option value="">Kullanıcı Seçiniz</option>';
+            const noneOpt = document.createElement('option');
+            noneOpt.value = '__none__';
+            noneOpt.textContent = 'Henüz Tanımlanmadı';
+            targetSelect.appendChild(noneOpt);
+            const users = getAssignableUsersForVehicle(targetVehicle);
+            users.forEach(u => {
+              const opt = document.createElement('option');
+              opt.value = u.id;
+              opt.textContent = u.name || u.isim || '-';
+              targetSelect.appendChild(opt);
+            });
+            const addOpt = document.createElement('option');
+            addOpt.value = '__add_user__';
+            addOpt.textContent = '+ Yeni Kullanıcı Ekle';
+            targetSelect.appendChild(addOpt);
+            const selected = selectedUserId != null ? String(selectedUserId) : '';
+            if (selected && users.some(function(u) { return String(u.id) === selected; })) {
+              targetSelect.value = selected;
+            } else if (selected && selected !== '__none__') {
+              // Eski atama artık aday değilse listeye yönetici eklenmez; seçim sıfırlanır.
+              targetSelect.value = '__none__';
+            } else {
+              targetSelect.value = '__none__';
+            }
+          };
+          fillAssignableUserOptions(selectEl, vehicle, vehicle && vehicle.assignedUserId);
           ensureDynamicModalCustomSelect(selectEl, {
             placeholderText: 'Kullanıcı Seçiniz',
             secondaryValues: ['__add_user__'],
@@ -5346,23 +5365,8 @@
                   const newId = ev.detail && ev.detail.id;
                   dismissVehicleAssignUserSavedListener();
                   if (!newId || !selectEl.parentNode) return;
-                  const users = readUsers();
-                  selectEl.innerHTML = '<option value="">Kullanıcı Seçiniz</option>';
-                  const noneOpt2 = document.createElement('option');
-                  noneOpt2.value = '__none__';
-                  noneOpt2.textContent = 'Henüz Tanımlanmadı';
-                  selectEl.appendChild(noneOpt2);
-                  users.forEach(u => {
-                    const opt = document.createElement('option');
-                    opt.value = u.id;
-                    opt.textContent = u.name || u.isim || '-';
-                    selectEl.appendChild(opt);
-                  });
-                  const addOpt2 = document.createElement('option');
-                  addOpt2.value = '__add_user__';
-                  addOpt2.textContent = '+ Yeni Kullanıcı Ekle';
-                  selectEl.appendChild(addOpt2);
-                  selectEl.value = newId;
+                  const refreshedVehicle = readVehicles().find(v => String(v.id) === String(currentVehicleId));
+                  fillAssignableUserOptions(selectEl, refreshedVehicle, newId);
                   if (currentVehicleId) {
                     openEventModal('kullanici', currentVehicleId);
                   }

@@ -107,6 +107,8 @@ function createCtx() {
     isNaN,
     encodeURIComponent,
     decodeURIComponent,
+    atob: typeof atob === 'function' ? atob : function(s) { return Buffer.from(s, 'base64').toString('binary'); },
+    btoa: typeof btoa === 'function' ? btoa : function(s) { return Buffer.from(s, 'binary').toString('base64'); },
     CustomEvent: windowRef.CustomEvent,
   };
   ctx.globalThis = ctx;
@@ -451,6 +453,171 @@ function setBaseline(ctx, data) {
     const src = read('data-manager.js');
     assert.match(src, /replaceMedisaCollection\('vehicles'/);
     assert.match(src, /reason:\s*'version-patch'/);
+  });
+
+  await run('403 authorization failure preserves session tokens', async function() {
+    const ctx = createCtx();
+    setBaseline(ctx, sampleAppData());
+    vm.runInContext('serverDatasetTrusted = true', ctx);
+    const token = createFakeJwt();
+    ctx.window.medisaPortalSession.getStoredToken = function() { return token; };
+    let cleared = false;
+    let redirected = false;
+    ctx.window.medisaPortalSession.clearStoredTokens = function() { cleared = true; };
+    Object.defineProperty(ctx.window.location, 'href', {
+      configurable: true,
+      get: function() { return 'http://localhost/'; },
+      set: function() { redirected = true; },
+    });
+    const sessionBefore = JSON.stringify(ctx.window.medisaSession);
+    ctx.fetch = async function() {
+      return { ok: false, status: 403, text: async () => 'forbidden', json: async () => ({ error: 'forbidden' }) };
+    };
+    ctx.window.fetch = ctx.fetch;
+    ctx.window.appData.users[0].isim = 'Forbidden Edit';
+    const result = await ctx.window.saveDataToServer();
+    assert.equal(result, false);
+    assert.equal(cleared, false);
+    assert.equal(redirected, false);
+    assert.equal(ctx.window.medisaPortalSession.getStoredToken(), token);
+    assert.equal(JSON.stringify(ctx.window.medisaSession), sessionBefore);
+    assert.equal(vm.runInContext('serverDatasetTrusted', ctx), false);
+  });
+
+  await run('401 authentication failure clears session tokens', async function() {
+    const ctx = createCtx();
+    setBaseline(ctx, sampleAppData());
+    vm.runInContext('serverDatasetTrusted = true', ctx);
+    let cleared = false;
+    let redirected = false;
+    ctx.window.medisaPortalSession.clearStoredTokens = function() { cleared = true; };
+    Object.defineProperty(ctx.window.location, 'href', {
+      configurable: true,
+      get: function() { return 'http://localhost/'; },
+      set: function() { redirected = true; },
+    });
+    ctx.fetch = async function() {
+      return { ok: false, status: 401, text: async () => 'unauthorized', json: async () => ({ error: 'unauthorized' }) };
+    };
+    ctx.window.fetch = ctx.fetch;
+    ctx.window.appData.users[0].isim = 'Auth Fail Edit';
+    const result = await ctx.window.saveDataToServer();
+    assert.equal(result, false);
+    assert.equal(cleared, true);
+    assert.equal(redirected, true);
+    assert.equal(ctx.window.medisaSession.authenticated, false);
+  });
+
+  await run('save 403 allows caller rollback path', async function() {
+    const ctx = createCtx();
+    const original = sampleAppData();
+    setBaseline(ctx, original);
+    vm.runInContext('serverDatasetTrusted = true', ctx);
+    const previousUsers = JSON.parse(JSON.stringify(ctx.window.appData.users));
+    ctx.window.appData.users[0].isim = 'Should Rollback';
+    ctx.fetch = async function() {
+      return { ok: false, status: 403, text: async () => 'forbidden', json: async () => ({ error: 'forbidden' }) };
+    };
+    ctx.window.fetch = ctx.fetch;
+    const result = await ctx.window.saveDataToServer();
+    assert.equal(result, false);
+    // Caller rollback contract (ayarlar persistUserManagementState pattern)
+    if (result !== true) {
+      ctx.window.replaceMedisaUsers(previousUsers, { reason: 'authz-rollback-test' });
+    }
+    assert.equal(ctx.window.appData.users[0].isim || ctx.window.appData.users[0].name, previousUsers[0].isim || previousUsers[0].name);
+  });
+
+  await run('load 403 preserves session and does not commit offline as trusted', async function() {
+    const ctx = createCtx();
+    setBaseline(ctx, sampleAppData());
+    vm.runInContext('serverDatasetTrusted = true', ctx);
+    const token = createFakeJwt();
+    ctx.window.medisaPortalSession.getStoredToken = function() { return token; };
+    let cleared = false;
+    let redirected = false;
+    ctx.window.medisaPortalSession.clearStoredTokens = function() { cleared = true; };
+    Object.defineProperty(ctx.window.location, 'href', {
+      configurable: true,
+      get: function() { return 'http://localhost/'; },
+      set: function() { redirected = true; },
+    });
+    // Poison offline snapshot with "unauthorized looking" payload marker
+    ctx.localStorage.setItem('medisa_data_v1', JSON.stringify({
+      tasitlar: [{ id: 'offline-leak', plate: 'LEAK' }],
+      users: [{ id: 'hacker', role: 'genel_yonetici' }],
+      branches: [],
+      kayitlar: [],
+      ayarlar: { sirketAdi: 'LEAK' },
+      sifreler: [],
+      arac_aylik_hareketler: [],
+      duzeltme_talepleri: [],
+      kaskoDegerListesi: { rows: [] },
+      notificationReadState: {},
+      monthlyTodoWhatsAppLogs: {},
+    }));
+    const usersBefore = JSON.stringify(ctx.window.appData.users);
+    const sessionBefore = JSON.stringify(ctx.window.medisaSession);
+    ctx.fetch = async function() {
+      return { ok: false, status: 403, text: async () => 'forbidden', json: async () => ({ error: 'forbidden' }) };
+    };
+    ctx.window.fetch = ctx.fetch;
+    await assert.rejects(
+      () => ctx.window.loadDataFromServer(true),
+      (err) => err && err.medisaHttpStatus === 403 && err.medisaAuthorizationDenied === true
+    );
+    assert.equal(cleared, false);
+    assert.equal(redirected, false);
+    assert.equal(ctx.window.medisaPortalSession.getStoredToken(), token);
+    assert.equal(JSON.stringify(ctx.window.medisaSession), sessionBefore);
+    assert.equal(vm.runInContext('serverDatasetTrusted', ctx), false);
+    assert.equal(JSON.stringify(ctx.window.appData.users), usersBefore);
+    assert.equal(ctx.window.appData.tasitlar.some(function(v) { return v && v.id === 'offline-leak'; }), false);
+  });
+
+  await run('load 401 logout redirect and clears session', async function() {
+    const ctx = createCtx();
+    setBaseline(ctx, sampleAppData());
+    vm.runInContext('serverDatasetTrusted = true', ctx);
+    let cleared = false;
+    let redirected = false;
+    ctx.window.medisaPortalSession.clearStoredTokens = function() { cleared = true; };
+    Object.defineProperty(ctx.window.location, 'href', {
+      configurable: true,
+      get: function() { return 'http://localhost/'; },
+      set: function() { redirected = true; },
+    });
+    ctx.fetch = async function() {
+      return { ok: false, status: 401, text: async () => 'unauthorized', json: async () => ({ error: 'unauthorized' }) };
+    };
+    ctx.window.fetch = ctx.fetch;
+    await assert.rejects(
+      () => ctx.window.loadDataFromServer(true),
+      (err) => err && err.medisaHttpStatus === 401
+    );
+    assert.equal(cleared, true);
+    assert.equal(redirected, true);
+    assert.equal(ctx.window.medisaSession.authenticated, false);
+    assert.equal(vm.runInContext('serverDatasetTrusted', ctx), false);
+  });
+
+  await run('assignable normal user candidate filters managers', async function() {
+    const ctx = createCtx();
+    const fn = ctx.window.isAssignableNormalUserCandidate;
+    assert.equal(typeof fn, 'function');
+    assert.equal(fn({ id: 'u1', role: 'kullanici', branchIds: ['b1'], aktif: true }, 'b1'), true);
+    assert.equal(fn({ id: 'bm1', role: 'sube_yonetici', branchIds: ['b1'], aktif: true }, 'b1'), false);
+    assert.equal(fn({ id: 'gm1', role: 'genel_yonetici', branchIds: ['b1'], aktif: true }, 'b1'), false);
+    assert.equal(fn({ id: 'u2', role: 'yonetici_kullanici', branchIds: ['b1'], aktif: true }, 'b1'), false);
+    assert.equal(fn({ id: 'u3', role: 'kullanici', branchIds: ['b1'], aktif: false }, 'b1'), false);
+    assert.equal(fn({ id: 'u4', role: 'kullanici', branchIds: ['b2'], aktif: true }, 'b1'), false);
+  });
+
+  await run('central auth status helper exists', async function() {
+    const src = read('data-manager.js');
+    assert.match(src, /function handleMedisaHttpAuthStatus/);
+    assert.match(src, /handleMedisaHttpAuthStatus\(401/);
+    assert.match(src, /handleMedisaHttpAuthStatus\(403/);
   });
 
   console.log('\nClient save wire: ' + passed + ' passed, ' + failed + ' failed');
