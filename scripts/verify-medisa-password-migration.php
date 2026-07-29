@@ -214,6 +214,22 @@ try {
 }
 pmAssert('malformed apply blocked', $blocked);
 
+// no-password apply blocked
+$dir3 = pmTempDir();
+$dataPath3 = $dir3 . DIRECTORY_SEPARATOR . 'data.json';
+$emptyPw = pmFixtureBase();
+$emptyPw['users'] = [
+    ['id' => 'u-empty', 'role' => 'kullanici', 'isim' => 'Empty'],
+];
+pmWriteFixture($dataPath3, $emptyPw);
+$blockedEmpty = false;
+try {
+    medisaPwdMigRun(['mode' => 'apply', 'data' => $dataPath3, 'confirm' => 'MIGRATE_PASSWORDS']);
+} catch (Throwable $e) {
+    $blockedEmpty = $e->getMessage() === 'APPLY_BLOCKED_NO_PASSWORD_USERS';
+}
+pmAssert('no-password apply blocked', $blockedEmpty);
+
 // Backup URL deny contract (repo .htaccess)
 $htaccess = (string)file_get_contents(dirname(__DIR__) . DIRECTORY_SEPARATOR . '.htaccess');
 pmAssert('backup/data URL deny rule present', strpos($htaccess, 'RewriteRule ^data(/|$) - [F,L,NC]') !== false);

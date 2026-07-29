@@ -222,6 +222,64 @@ function medisaPwdMigLoadData(string $path): array
     return $data;
 }
 
+function medisaPwdMigFindDuplicateIds(array $users): array
+{
+    $seen = [];
+    $dupes = [];
+    foreach ($users as $user) {
+        if (!is_array($user)) {
+            continue;
+        }
+        $id = isset($user['id']) ? (string)$user['id'] : '';
+        if ($id === '') {
+            continue;
+        }
+        if (isset($seen[$id])) {
+            $dupes[$id] = true;
+        }
+        $seen[$id] = true;
+    }
+    return array_keys($dupes);
+}
+
+function medisaPwdMigAssertDiskSpace(string $dataPath, int $rawBytes): void
+{
+    $dir = dirname($dataPath);
+    $free = @disk_free_space($dir);
+    if ($free === false) {
+        throw new RuntimeException('DISK_SPACE_UNKNOWN');
+    }
+    // atomic temp + secure rollback backup + small margin
+    $needed = ($rawBytes * 3) + (5 * 1024 * 1024);
+    if ($free < $needed) {
+        throw new RuntimeException('DISK_SPACE_INSUFFICIENT');
+    }
+}
+
+function medisaPwdMigEvaluateGates(array $stats, array $duplicateIds, bool $dataUnchanged): array
+{
+    $reasons = [];
+    if ($stats['total'] < 1 || $stats['total'] > 5000) {
+        $reasons[] = 'USER_COUNT_UNREASONABLE';
+    }
+    if (count($duplicateIds) > 0) {
+        $reasons[] = 'DUPLICATE_USER_IDS';
+    }
+    if ($stats['malformed_hash'] > 0) {
+        $reasons[] = 'MALFORMED_HASH';
+    }
+    if ($stats['no_password'] > 0) {
+        $reasons[] = 'NO_PASSWORD_USERS';
+    }
+    if (!$dataUnchanged) {
+        $reasons[] = 'DRY_RUN_MUTATED_DATA';
+    }
+    return [
+        'ok' => $reasons === [],
+        'block_reasons' => $reasons,
+    ];
+}
+
 function medisaPwdMigRun(array $opts): array
 {
     $mode = $opts['mode'];
@@ -300,43 +358,56 @@ function medisaPwdMigRun(array $opts): array
     }
 
     $backupScan = medisaPwdMigScanBackups($dataPath);
+    $duplicateIds = medisaPwdMigFindDuplicateIds($usersBefore);
     $report = [
         'mode' => $mode,
         'data_path' => str_replace('\\', '/', $dataPath),
         'before_sha256' => $beforeSha256,
+        'before_bytes' => strlen($beforeRaw),
         'user_count_before' => count($usersBefore),
         'user_count_after' => count($usersAfter),
         'users_changed' => $changedCount,
+        'duplicate_user_ids' => $duplicateIds,
         'stats' => $stats,
         'user_rows' => $rows,
         'backups' => $backupScan['stats'],
         'backup_files' => $backupScan['files'],
         'hash_algorithm' => 'PASSWORD_DEFAULT (bcrypt via password_hash)',
+        'password_verify_compatible' => true,
         'applied' => false,
         'rollback_backup' => null,
+        'rollback_backup_sha256' => null,
+        'rollback_backup_bytes' => null,
         'notes' => [
             'Projection continues to strip sifre/sifre_hash; portal_sifresi_var remains boolean.',
             'P0-A1 transient password_changes channel is preserved (save reconcile path).',
             'Backup quarantine/delete is NOT applied by this command; inventory only.',
             'Production write requires explicit operator approval before --mode=apply.',
+            'Secrets (plaintext/hash) are never printed by this tool.',
         ],
     ];
 
+    // Ensure dry-run does not mutate data.json (also verified before apply).
+    clearstatcache(true, $dataPath);
+    $afterProbeRaw = (string)file_get_contents($dataPath);
+    $dataUnchanged = hash('sha256', $afterProbeRaw) === $beforeSha256;
+    $gates = medisaPwdMigEvaluateGates($stats, $duplicateIds, $dataUnchanged);
+    $report['gates'] = $gates;
+    $report['dry_run_data_unchanged'] = $dataUnchanged;
+
     if ($mode === 'dry-run') {
-        // Ensure dry-run does not mutate data.json.
-        clearstatcache(true, $dataPath);
-        $afterRaw = (string)file_get_contents($dataPath);
-        if (hash('sha256', $afterRaw) !== $beforeSha256) {
+        if (!$dataUnchanged) {
             throw new RuntimeException('DRY_RUN_MUTATED_DATA');
         }
-        $report['dry_run_data_unchanged'] = true;
         return $report;
     }
 
     // APPLY
-    if ($stats['malformed_hash'] > 0) {
-        throw new RuntimeException('APPLY_BLOCKED_MALFORMED_HASH');
+    if (!$gates['ok']) {
+        throw new RuntimeException('APPLY_BLOCKED_' . ($gates['block_reasons'][0] ?? 'GATE'));
     }
+
+    medisaPwdMigAssertDiskSpace($dataPath, strlen($beforeRaw));
 
     $secureDir = medisaPwdMigSecureBackupDir($dataPath);
     if (!medisaPwdMigEnsureSecureDir($secureDir)) {
@@ -348,6 +419,21 @@ function medisaPwdMigRun(array $opts): array
         throw new RuntimeException('ROLLBACK_BACKUP_WRITE_FAILED');
     }
     $report['rollback_backup'] = str_replace('\\', '/', $rollbackPath);
+    $report['rollback_backup_sha256'] = hash_file('sha256', $rollbackPath);
+    $report['rollback_backup_bytes'] = filesize($rollbackPath);
+
+    // Idempotent no-op: do not rewrite production JSON when nothing changes.
+    if ($changedCount === 0) {
+        $report['applied'] = true;
+        $report['noop'] = true;
+        $report['after_sha256'] = $beforeSha256;
+        $report['post_checks'] = [
+            'plaintext_remaining' => 0,
+            'valid_hash_count' => $stats['hash_only'],
+            'user_count_match' => true,
+        ];
+        return $report;
+    }
 
     $data['users'] = $usersAfter;
     $jsonFlags = JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES;
