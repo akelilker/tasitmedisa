@@ -63,6 +63,20 @@ test('Parola değişimi hash ve bayrağı tek owner mutationda günceller', () =
   assert.match(files.core, /function medisaApplyUserPasswordChange[\s\S]{0,220}medisaSetUserPasswordHash[\s\S]{0,220}ilk_giris_parola_onerisi_bekliyor'\]\s*=\s*false/);
   assert.match(files.changePhp, /medisaMutateData[\s\S]{0,2200}medisaApplyUserPasswordChange/);
 });
+test('Kullanıcı yönetimi first-login bayrağını yalnız sunucu owner üzerinden yönetir', () => {
+  const reconcileStart = files.core.indexOf('function medisaReconcileUserCredentials');
+  const reconcileEnd = files.core.indexOf('function medisaSaveApplyIncomingData', reconcileStart);
+  const reconcile = files.core.slice(reconcileStart, reconcileEnd);
+  const serializeStart = files.dataManager.indexOf('function serializeUserForServer');
+  const serializeEnd = files.dataManager.indexOf('function getSessionScope', serializeStart);
+  const serialize = files.dataManager.slice(serializeStart, serializeEnd);
+
+  assert.match(reconcile, /medisaUserRequiresFirstLoginPasswordChange\(\$currentUser\)/);
+  assert.match(reconcile, /unset\([\s\S]{0,500}\$user\['ilk_giris_parola_onerisi_bekliyor'\]/);
+  assert.match(reconcile, /medisaSetUserPasswordHash\(\$user,\s*\$requestedPasswords\[\$userId\]\);[\s\S]{0,160}ilk_giris_parola_onerisi_bekliyor'\]\s*=\s*true/);
+  assert.match(reconcile, /ilk_giris_parola_onerisi_bekliyor'\]\s*=\s*\$currentPasswordChangeRequired/);
+  assert.doesNotMatch(serialize, /ilk_giris_parola_onerisi_bekliyor/);
+});
 test('Parola değişimi yeni token üretir', () => {
   assert.match(files.changePhp, /medisaCreateSignedToken/);
   assert.match(files.changePhp, /\$result\['token'\]/);

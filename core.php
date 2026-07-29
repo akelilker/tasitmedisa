@@ -2085,6 +2085,9 @@ function medisaReconcileUserCredentials($currentUsers, $incomingUsers, $password
         $user = $incomingUser;
         $userId = isset($user['id']) ? (string)$user['id'] : '';
         $currentUser = ($userId !== '' && isset($currentById[$userId])) ? $currentById[$userId] : null;
+        $currentPasswordChangeRequired = is_array($currentUser)
+            ? medisaUserRequiresFirstLoginPasswordChange($currentUser)
+            : false;
         $unexpectedPlainPassword = trim((string)(
             $user['sifre']
             ?? $user['yeni_sifre']
@@ -2104,7 +2107,8 @@ function medisaReconcileUserCredentials($currentUsers, $incomingUsers, $password
             $user['portal_sifresi'],
             $user['password'],
             $user['password_hash'],
-            $user['portal_sifresi_var']
+            $user['portal_sifresi_var'],
+            $user['ilk_giris_parola_onerisi_bekliyor']
         );
 
         if ($userId !== '' && array_key_exists($userId, $requestedPasswords)) {
@@ -2124,6 +2128,7 @@ function medisaReconcileUserCredentials($currentUsers, $incomingUsers, $password
                 return medisaBuildErrorResult('Bu kullanıcının parolasını değiştirme yetkiniz yok.', 403);
             }
             medisaSetUserPasswordHash($user, $requestedPasswords[$userId]);
+            $user['ilk_giris_parola_onerisi_bekliyor'] = true;
             unset($requestedPasswords[$userId]);
         } elseif (is_array($currentUser)) {
             $currentHash = isset($currentUser['sifre_hash']) ? trim((string)$currentUser['sifre_hash']) : '';
@@ -2136,6 +2141,9 @@ function medisaReconcileUserCredentials($currentUsers, $incomingUsers, $password
             } elseif ($currentPlain !== '') {
                 medisaSetUserPasswordHash($user, $currentPlain);
             }
+            $user['ilk_giris_parola_onerisi_bekliyor'] = $currentPasswordChangeRequired;
+        } else {
+            $user['ilk_giris_parola_onerisi_bekliyor'] = false;
         }
 
         $reconciled[] = $user;
