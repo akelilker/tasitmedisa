@@ -703,6 +703,54 @@ function redirectToPortalLogin() {
     window.location.href = DRIVER_INDEX_URL;
 }
 
+/**
+ * HTTP 401/403 owner ayrımı — authentication vs authorization.
+ * 401: token+session temizlenir, login'e yönlendirilir, trusted düşer.
+ * 403 load (clearProtectedDataset): token korunur; korumalı dataset temizlenir; unauthorized shell'den çıkılır.
+ * 403 save: token/session/trust korunur; yalnız mutation başarısız; retry mümkün.
+ * @returns {'auth'|'forbidden'|null}
+ */
+function handleMedisaHttpAuthStatus(status, options) {
+    var opts = options && typeof options === 'object' ? options : {};
+    var code = Number(status) || 0;
+    if (code === 401) {
+        clearStoredPortalTokens();
+        setMedisaSession(getDefaultSession());
+        serverDatasetTrusted = false;
+        if (opts.commitEmptyDataset === true) {
+            commitMedisaAppDataSnapshot(getDefaultAppData(), { reason: 'auth-gate' });
+        }
+        redirectToPortalLogin();
+        return 'auth';
+    }
+    if (code === 403) {
+        if (opts.clearProtectedDataset === true) {
+            serverDatasetTrusted = false;
+            commitMedisaAppDataSnapshot(getDefaultAppData(), { reason: 'authz-load-gate' });
+            setServerDatasetBaseline(getDefaultAppData());
+            if (opts.exitUnauthorizedShell === true) {
+                exitUnauthorizedMainAppShell();
+            }
+        }
+        return 'forbidden';
+    }
+    return null;
+}
+
+/** Ana uygulama yetkisi yok: token korunur, korumalı shell'den portal yüzeye çıkılır. */
+function exitUnauthorizedMainAppShell() {
+    if (typeof window === 'undefined') return;
+    if (getCurrentPathname().indexOf('/driver/') !== -1) return;
+    if (window.__medisaRedirecting === true) return;
+    window.__medisaRedirecting = true;
+    var session = window.medisaSession || getDefaultSession();
+    if (session && session.driver_dashboard === true) {
+        window.location.href = DRIVER_DASHBOARD_URL;
+        return;
+    }
+    window.location.href = DRIVER_INDEX_URL;
+}
+
 function redirectToDriverDashboard() {
     if (typeof window === 'undefined') return;
     if (window.__medisaRedirecting === true) return;
@@ -1074,14 +1122,22 @@ async function loadDataFromServer(forceRefresh) {
                 return await loadDataFromServer(forceRefresh);
             }
 
-            if (response.status === 401 || response.status === 403) {
-                clearStoredPortalTokens();
-                redirectToPortalLogin();
-                serverDatasetTrusted = false;
-                commitMedisaAppDataSnapshot(getDefaultAppData(), { reason: 'auth-gate' });
+            if (response.status === 401) {
+                handleMedisaHttpAuthStatus(401, { commitEmptyDataset: true });
                 var authErr = new Error('Unauthorized');
-                authErr.medisaHttpStatus = response.status;
+                authErr.medisaHttpStatus = 401;
                 throw authErr;
+            }
+
+            if (response.status === 403) {
+                handleMedisaHttpAuthStatus(403, {
+                    clearProtectedDataset: true,
+                    exitUnauthorizedShell: true
+                });
+                var forbidErr = new Error('Forbidden');
+                forbidErr.medisaHttpStatus = 403;
+                forbidErr.medisaAuthorizationDenied = true;
+                throw forbidErr;
             }
 
             if (!response.ok) {
@@ -1548,9 +1604,12 @@ async function saveDataToServer(options) {
         });
 
         if (!response.ok) {
-            if (response.status === 401 || response.status === 403) {
-                clearStoredPortalTokens();
-                redirectToPortalLogin();
+            if (response.status === 401) {
+                handleMedisaHttpAuthStatus(401);
+                return false;
+            }
+            if (response.status === 403) {
+                handleMedisaHttpAuthStatus(403);
                 return false;
             }
             if (response.status === 409) {
@@ -1790,6 +1849,24 @@ function isUserWithinManagedBranches(user, allowedBranchIds) {
     return targetBranchIds.every(function(branchId) { return arrayHasId(allowedBranchIds, branchId); });
 }
 
+function isNormalUserSessionRole(role) {
+    return normalizeSessionRole(role) === 'kullanici';
+}
+
+/**
+ * Taşıt tahsis / ceza adayları: yalnız aktif normal kullanıcı.
+ * Yönetici paneli bayrağı veya taşıt ilişkisi aday yapmaz.
+ */
+function isAssignableNormalUserCandidate(user, branchId) {
+    var normalized = normalizeUser(user);
+    if (!normalized || !normalized.id) return false;
+    if (!isNormalUserSessionRole(normalized.role)) return false;
+    if (normalized.aktif === false) return false;
+    var scopeBranchId = branchId != null ? String(branchId).trim() : '';
+    if (!scopeBranchId) return true;
+    return arrayHasId(getUserBranchIds(normalized), scopeBranchId);
+}
+
 function getVisibleVehicles(vehicles) {
     var list = Array.isArray(vehicles) ? vehicles.slice() : [];
     var session = getSessionScope();
@@ -1821,7 +1898,7 @@ function getVisibleUsers(users) {
 
     if (isBranchManagerSessionRole(sessionRole)) {
         return normalized.filter(function(user) {
-            if (user.role === 'genel_yonetici') return false;
+            if (!isNormalUserSessionRole(user && user.role)) return false;
             if (String(user && user.id) === String(session.user && session.user.id)) return false;
             return isUserWithinManagedBranches(user, session.branch_ids || []);
         });
@@ -1995,6 +2072,7 @@ window.getMedisaCollectionSnapshot = function(kind) {
     return getRawMedisaCollection(kind).slice();
 };
 window.normalizeUsers = normalizeUsers;
+window.isAssignableNormalUserCandidate = isAssignableNormalUserCandidate;
 window.getMedisaSession = function() { return window.medisaSession || getDefaultSession(); };
 window.loadDataFromServer = loadDataFromServer;
 window.saveDataToServer = saveDataToServer;

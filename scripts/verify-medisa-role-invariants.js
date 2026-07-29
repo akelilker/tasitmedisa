@@ -107,6 +107,81 @@ assert(
   'Eski tek tasitlar.css kaldırılmalı (base+extra kullanılır)'
 );
 
+assert(
+  'bm_view_not_coupled_to_manage',
+  (function() {
+    const start = core.indexOf('function medisaCanViewUserRecord');
+    const end = core.indexOf('function medisaCanViewReportUserRecord');
+    if (start < 0 || end < 0 || end <= start) return false;
+    const block = core.slice(start, end);
+    return /medisaIsBranchManagerRole\(\$role\)/.test(block)
+      && /medisaIsNormalUserRole\(\$targetRole\)/.test(block)
+      && !/medisaCanManageUserRecord\(/.test(block);
+  })(),
+  'BM view policy manage helperına dolaylı bağlanmamalı; yalnız normal kullanıcı + scope'
+);
+assert(
+  'bm_manage_requires_normal_user_role',
+  /function medisaCanManageUserRecord[\s\S]*?medisaIsNormalUserRole\(\$targetRole\)/.test(core)
+    && /function medisaSaveValidateUserCollectionMutations/.test(core),
+  'BM manage yalnız kullanici + current/incoming mutation validator'
+);
+assert(
+  'password_channel_p0a1_preserved',
+  /_medisaUserPasswordChanges/.test(core)
+    && /medisaReconcileUserCredentials/.test(core)
+    && /portal_sifresi_var/.test(core),
+  'P0-A1 parola kanalı korunmalı'
+);
+
+assert(
+  'authz_403_does_not_logout',
+  /function handleMedisaHttpAuthStatus/.test(dm)
+    && /clearProtectedDataset/.test(dm)
+    && /exitUnauthorizedMainAppShell/.test(dm)
+    && /handleMedisaHttpAuthStatus\(401/.test(dm)
+    && /handleMedisaHttpAuthStatus\(403/.test(dm)
+    && /medisaAuthorizationDenied/.test(dm)
+    && !/if \(response\.status === 401 \|\| response\.status === 403\)/.test(dm),
+  '403 oturumu kapatmamalı; load 403 dataset temizler, save 403 trust korur'
+);
+assert(
+  'report_user_projection_bm_normal_only',
+  (function() {
+    const start = core.indexOf('function medisaCanViewReportUserRecord');
+    const end = core.indexOf('function medisaBuildNotificationScopeDescriptor');
+    if (start < 0 || end < 0 || end <= start) return false;
+    const block = core.slice(start, end);
+    return /medisaIsNormalUserRole\(\$targetRole\)/.test(block)
+      && /medisaIsKnownUserRole\(\$targetRole\)/.test(block)
+      && /user_id/.test(block)
+      && !/\$targetRole === 'genel_yonetici'/.test(block);
+  })(),
+  'Report projection BM için yalnız kullanici + scope + self hariç olmalı'
+);
+assert(
+  'assignable_normal_user_candidate_helper',
+  /function isAssignableNormalUserCandidate/.test(dm)
+    && /window\.isAssignableNormalUserCandidate/.test(dm),
+  'Taşıt/ceza adayları merkezi normal-kullanıcı helper kullanmalı'
+);
+
+const tasitlar = read('tasitlar.js');
+assert(
+  'vehicle_assign_uses_assignable_helper',
+  /getAssignableUsersForVehicle/.test(tasitlar)
+    && /isAssignableNormalUserCandidate/.test(tasitlar),
+  'Tahsis ve ceza listeleri yönetici adaylarını elemiş olmalı'
+);
+
+assert(
+  'bm_user_form_role_locked_kullanici',
+  /effectiveScope\.isBranchManager\s*\?\s*USER_FORM_ROLE_OPTIONS\.filter/.test(settings)
+    && /scope\.isBranchManager \? 'kullanici' : selectedRole/.test(settings)
+    && /isUserManageableInUserManagement/.test(settings),
+  'BM formunda yönetici rol seçenekleri olmamalı; payload kullanici sabitlenmeli'
+);
+
 if (failed) {
   console.error('\nDoğrulama başarısız.');
   process.exit(1);
