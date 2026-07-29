@@ -886,6 +886,182 @@ function medisaIsKnownUserRole($role) {
         || medisaIsNormalUserRole($role);
 }
 
+function medisaIsGeneralManagerRole($role) {
+    return $role === 'genel_yonetici';
+}
+
+/**
+ * Kullanıcı aktiflik canonical helper.
+ * Eksik aktif alanı → aktif (mevcut projection ile uyumlu).
+ * Malformed değer → fail-closed aktif (son GM korumasını zayıflatmaz).
+ */
+function medisaIsUserActive($user) {
+    if (!is_array($user)) {
+        return false;
+    }
+
+    if (array_key_exists('aktif', $user)) {
+        $aktif = $user['aktif'];
+        if ($aktif === false || $aktif === 0 || $aktif === '0') {
+            return false;
+        }
+        if ($aktif === true || $aktif === 1 || $aktif === '1') {
+            return true;
+        }
+        if (is_string($aktif)) {
+            $normalized = strtolower(trim($aktif));
+            if ($normalized === 'false' || $normalized === 'pasif' || $normalized === 'inactive' || $normalized === 'no') {
+                return false;
+            }
+            if ($normalized === 'true' || $normalized === 'aktif' || $normalized === 'active' || $normalized === 'yes') {
+                return true;
+            }
+        }
+        return true;
+    }
+
+    if (array_key_exists('isActive', $user)) {
+        $isActive = $user['isActive'];
+        if ($isActive === false || $isActive === 0 || $isActive === '0') {
+            return false;
+        }
+        if ($isActive === true || $isActive === 1 || $isActive === '1') {
+            return true;
+        }
+        return true;
+    }
+
+    if (array_key_exists('durum', $user) || array_key_exists('status', $user)) {
+        $status = strtolower(trim((string)($user['durum'] ?? $user['status'] ?? '')));
+        if ($status === 'pasif' || $status === 'inactive' || $status === 'disabled' || $status === 'false') {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+function medisaIsActiveGeneralManager($user) {
+    return is_array($user)
+        && medisaIsGeneralManagerRole(medisaResolveUserRole($user))
+        && medisaIsUserActive($user);
+}
+
+function medisaCountActiveGeneralManagers($users) {
+    $count = 0;
+    foreach ((array)$users as $user) {
+        if (medisaIsActiveGeneralManager($user)) {
+            $count++;
+        }
+    }
+    return $count;
+}
+
+function medisaSaveHasDuplicateUserIds($users) {
+    $seen = [];
+    foreach ((array)$users as $user) {
+        if (!is_array($user)) {
+            continue;
+        }
+        $id = isset($user['id']) ? trim((string)$user['id']) : '';
+        if ($id === '') {
+            continue;
+        }
+        if (isset($seen[$id])) {
+            return true;
+        }
+        $seen[$id] = true;
+    }
+    return false;
+}
+
+/**
+ * Mutation sonrası oluşacak kullanıcı koleksiyonu (GM full-replace / BM scoped-merge).
+ */
+function medisaSaveProjectFinalUserCollection($currentUsers, $incomingUsers, $context) {
+    $actorRole = $context['role'] ?? 'kullanici';
+    if (medisaIsGeneralManagerRole($actorRole)) {
+        return medisaSaveNormalizeCollection($incomingUsers);
+    }
+
+    return medisaSaveMergeScopedCollection(
+        medisaSaveNormalizeCollection($currentUsers),
+        medisaSaveNormalizeCollection($incomingUsers),
+        function ($user) use ($context) { return medisaCanManageUserRecord($user, $context); },
+        function ($user) use ($context) { return medisaCanManageUserRecord($user, $context); }
+    );
+}
+
+/**
+ * P0-C: self GM + son aktif GM + final aktif GM sayısı invariantları.
+ * @return true|array error result
+ */
+function medisaValidateGeneralManagerInvariants($currentUsers, $incomingUsers, $context) {
+    if (!is_array($context)) {
+        return medisaBuildErrorResult('Oturum bağlamı geçersiz.', 403);
+    }
+
+    if (medisaSaveHasDuplicateUserIds($incomingUsers)) {
+        return medisaBuildErrorResult('Kullanıcı kaydı yinelenen kimlik içeriyor.', 403);
+    }
+
+    $currentById = medisaSaveIndexUsersById($currentUsers);
+    $incomingById = medisaSaveIndexUsersById($incomingUsers);
+    $finalUsers = medisaSaveProjectFinalUserCollection($currentUsers, $incomingUsers, $context);
+    $finalById = medisaSaveIndexUsersById($finalUsers);
+    $finalActiveGmCount = medisaCountActiveGeneralManagers($finalUsers);
+
+    $actorId = trim((string)($context['user_id'] ?? ''));
+    $actorRole = $context['role'] ?? 'kullanici';
+    $actorIsGm = medisaIsGeneralManagerRole($actorRole);
+
+    if ($actorIsGm && $actorId !== '') {
+        $currentActor = $currentById[$actorId] ?? ($context['user'] ?? null);
+        $incomingActor = $incomingById[$actorId] ?? null;
+        $finalActor = $finalById[$actorId] ?? null;
+
+        if ($incomingActor === null || $finalActor === null) {
+            return medisaBuildErrorResult('Kendi hesabınızı silemezsiniz.', 403);
+        }
+
+        $incomingActorRole = medisaResolveUserRole($incomingActor);
+        $rawIncomingRole = medisaResolveRawUserRoleValue($incomingActor);
+        if ($rawIncomingRole === '' || !medisaIsKnownUserRole($incomingActorRole) || !medisaIsGeneralManagerRole($incomingActorRole)) {
+            return medisaBuildErrorResult('Kendi genel yönetici rolünüzü düşüremezsiniz.', 403);
+        }
+
+        if (!medisaIsUserActive($incomingActor) || !medisaIsUserActive($finalActor)) {
+            return medisaBuildErrorResult('Kendi hesabınızı pasif hale getiremezsiniz.', 403);
+        }
+
+        if (is_array($currentActor) && medisaIsActiveGeneralManager($currentActor) && !medisaIsActiveGeneralManager($finalActor)) {
+            return medisaBuildErrorResult('Kendi genel yönetici yetkinizi kaldıramazsınız.', 403);
+        }
+    }
+
+    $currentActiveGmIds = [];
+    foreach ($currentById as $id => $user) {
+        if (medisaIsActiveGeneralManager($user)) {
+            $currentActiveGmIds[] = (string)$id;
+        }
+    }
+    $currentActiveGmCount = count($currentActiveGmIds);
+
+    if ($currentActiveGmCount === 1) {
+        $soleId = $currentActiveGmIds[0];
+        $finalSole = $finalById[$soleId] ?? null;
+        if ($finalSole === null || !medisaIsActiveGeneralManager($finalSole)) {
+            return medisaBuildErrorResult('Sistemde en az bir aktif genel yönetici bulunmalıdır.', 403);
+        }
+    }
+
+    if ($finalActiveGmCount < 1) {
+        return medisaBuildErrorResult('Sistemde en az bir aktif genel yönetici bulunmalıdır.', 403);
+    }
+
+    return true;
+}
+
 /**
  * Tek kayıt manage helper — yalnız gelen/mevcut kaydın o anki haline bakar.
  * BM için create/update/delete current+incoming birlikte medisaSaveValidateUserCollectionMutations ile doğrulanır.
@@ -1342,7 +1518,7 @@ function medisaSaveIndexUsersById($users) {
 
 /**
  * Kullanıcı create/update/delete için current+incoming birlikte fail-closed doğrulama.
- * Genel yönetici davranışı daraltılmaz (P0-C dışı).
+ * P0-C: genel yönetici self + son aktif GM invariantları her user mutation'da çalışır.
  *
  * BM istemci projeksiyonu yönetilemeyen kayıtları taşımaz; bunların incoming'de
  * olmaması silme sayılmaz (merge korur). Silme yalnız yönetilebilir kaydın
@@ -1350,8 +1526,13 @@ function medisaSaveIndexUsersById($users) {
  * (rol downgrade / promote saldırısını keser).
  */
 function medisaSaveValidateUserCollectionMutations($currentUsers, $incomingUsers, $context) {
+    $gmInvariant = medisaValidateGeneralManagerInvariants($currentUsers, $incomingUsers, $context);
+    if ($gmInvariant !== true) {
+        return $gmInvariant;
+    }
+
     $actorRole = $context['role'] ?? 'kullanici';
-    if ($actorRole === 'genel_yonetici') {
+    if (medisaIsGeneralManagerRole($actorRole)) {
         return true;
     }
 
@@ -1865,6 +2046,10 @@ function medisaSaveApplyIncomingData(array $incomingData, array &$data, array $c
         if ($collectionChanged('kayitlar')) $data['kayitlar'] = is_array($incomingData['kayitlar'] ?? null) ? $incomingData['kayitlar'] : ($data['kayitlar'] ?? []);
         if ($collectionChanged('branches')) $data['branches'] = medisaSaveNormalizeCollection($incomingData['branches'] ?? []);
         if ($usersCollectionChanged) {
+            $userMutationCheck = medisaSaveValidateUserCollectionMutations($currentUsers, $incomingUsers, $context);
+            if ($userMutationCheck !== true) {
+                return $userMutationCheck;
+            }
             $reconciledUsers = medisaReconcileUserCredentials($currentUsers, $incomingUsers, $passwordChanges, $context);
             if (($reconciledUsers['success'] ?? false) !== true) {
                 return $reconciledUsers;
