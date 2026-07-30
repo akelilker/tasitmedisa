@@ -1886,6 +1886,13 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         filter: brightness(1.10);
     }
 
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicle-modal .modal-container,
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicles-modal .modal-container,
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #reports-modal .modal-container {
+        border-top-width: 1px !important;
+        border-top-color: rgba(200, 208, 216, 0.72) !important;
+    }
+
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay .modal-container {
         background: #0b111b !important;
         background-color: #0b111b !important;
