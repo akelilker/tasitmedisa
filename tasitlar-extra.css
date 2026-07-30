@@ -2757,7 +2757,7 @@
   }
 
   #vehicles-modal .modal-header h2.premium-title {
-    filter: none;
+    filter: brightness(1.10);
   }
 
   #vehicles-modal .vehicles-toolbar {
