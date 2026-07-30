@@ -281,6 +281,12 @@ if (implementationPresent) {
   test('modal açıkken yan çerçeve gap bandına inmez', function() {
     assert.match(style, /body:not\(\.dashboard-page\):not\(\.login-page\):not\(\.admin-report-page\)\.modal-open \.app-container::before\s*\{[\s\S]*?var\(--app-footer-real-height\)\s*\+\s*var\(--app-footer-gap\)/);
   });
+  test('masaüstü ana modal üst çerçevesi header kırmızısından ayrılır', function() {
+    assert.match(
+      style,
+      /@media \(min-width:\s*641px\)[\s\S]*?\.modal-open #vehicle-modal \.modal-container,[\s\S]*?\.modal-open #vehicles-modal \.modal-container,[\s\S]*?\.modal-open #reports-modal \.modal-container\s*\{[\s\S]*?border-top-width:\s*1px\s*!important;[\s\S]*?border-top-color:\s*rgba\(200,\s*208,\s*216,\s*0\.72\)\s*!important;/
+    );
+  });
   test('detail-underlay boyama yapmaz (footer gap bloom ezilmesin)', function() {
     assert.match(tasitlarBase, /#vehicles-modal\.detail-underlay[\s\S]*?visibility:\s*hidden\s*!important/);
     assert.match(tasitlarBase, /#vehicles-modal\.detail-underlay[\s\S]*?isolation:\s*auto\s*!important/);
