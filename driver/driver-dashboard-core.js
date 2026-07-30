@@ -1959,7 +1959,7 @@ forgetThisDevice();
 
 function logout() {
 clearStoredPortalTokens();
-window.location.href = DRIVER_PAGE_BASE + 'index.html';
+window.location.href = DRIVER_PAGE_BASE + 'index.html?force=login';
 }
 window.logout = logout;
 window.forgetThisDevice = forgetThisDevice;

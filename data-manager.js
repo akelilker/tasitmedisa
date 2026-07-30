@@ -558,7 +558,7 @@ function medisaMainAppLogout() {
     } catch (e) {}
     if (typeof window === 'undefined') return;
     window.__medisaRedirecting = true;
-    window.location.href = DRIVER_INDEX_URL;
+    window.location.href = DRIVER_INDEX_URL + 'index.html?force=login';
 }
 window.medisaMainAppLogout = medisaMainAppLogout;
 

@@ -25,17 +25,17 @@ if (document.readyState === 'loading') {
 document.addEventListener('DOMContentLoaded', applyMedisaIosPwaClass);
 }
 
-var VERSION = '20260731.2';
+var VERSION = '20260731.3';
 window.MEDISA_DRIVER_ASSET_VERSIONS = window.MEDISA_DRIVER_ASSET_VERSIONS || {
-bootstrap: '20260731.2',
-login: '20260731.1',
-dashboardCore: '20260731.1',
+bootstrap: '20260731.3',
+login: '20260731.3',
+dashboardCore: '20260731.3',
 history: '20260718.4',
 documents: '20260718.3',
 feedback: '20260718.1',
 password: '20260731.1',
 actions: '20260718.1',
-shellCss: '20260731.2',
+shellCss: '20260731.3',
 featureCss: '20260731.1'
 };
 
@@ -337,7 +337,7 @@ if (window.medisaPortalSession && typeof window.medisaPortalSession.clearStoredT
 window.medisaPortalSession.clearStoredTokens();
 }
 } catch (e) {}
-window.location.href = DRIVER_PAGE_BASE + 'index.html';
+window.location.href = DRIVER_PAGE_BASE + 'index.html?force=login';
 return;
 }
 if (fnName === 'forgetThisDevice' || fnName === 'confirmForgetThisDevice') {

@@ -88,6 +88,14 @@
       var primaryStorage = remember ? window.localStorage : window.sessionStorage;
       for (var i = 0; i < LOCAL_KEYS.length; i++) {
         if (!writeTo(primaryStorage, LOCAL_KEYS[i], token)) {
+          // remember=true iken localStorage yazılamazsa session fallback PWA kill'de kaybolur;
+          // mümkün olduğunca localStorage'a tek anahtarla bile yazmayı tekrar dene.
+          if (remember) {
+            for (var k = 0; k < LOCAL_KEYS.length; k++) {
+              writeTo(window.localStorage, LOCAL_KEYS[k], token);
+            }
+            if (readFrom(window.localStorage, LOCAL_KEYS[0])) return true;
+          }
           for (var j = 0; j < LOCAL_KEYS.length; j++) {
             writeTo(window.sessionStorage, LOCAL_KEYS[j], token);
           }
@@ -95,6 +103,10 @@
         }
       }
       return true;
+    },
+
+    isRememberEnabled: function isRememberEnabled() {
+      return readFrom(window.localStorage, REMEMBER_FLAG_KEY) === "1";
     },
 
     clearRememberCredentials: function clearRememberCredentials() {

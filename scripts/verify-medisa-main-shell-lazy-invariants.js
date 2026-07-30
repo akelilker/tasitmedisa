@@ -229,7 +229,7 @@ if (implementationPresent) {
     assert.ok(loaderVer && moduleVer, 'tasitlar sürüm sabitleri bulunmalı');
     assert.strictEqual(loaderVer, moduleVer, 'MEDISA_MODULE_VERSIONS.tasitlar === MEDISA_TASITLAR_MODULE_VERSION');
     assert.match(core, /raporlar: '20260726\.2'/);
-    assert.match(index, /data-manager\.js\?v=20260731\.2/);
+    assert.match(index, /data-manager\.js\?v=20260731\.3/);
     assert.match(index, /script-core\.js\?v=20260730\.1/);
     assert.match(core, /ayarlarJs: '20260729\.6'/);
     assert.match(index, /style-core\.css\?v=20260724\.1/);

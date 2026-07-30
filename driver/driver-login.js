@@ -281,6 +281,45 @@ if (passwordInput) passwordInput.value = creds.password;
 return true;
 }
 
+function refreshLoginInputHasValueState(usernameInput, passwordInput) {
+[usernameInput, passwordInput].forEach(function(el) {
+if (!el) return;
+if (el.value && String(el.value).length > 0) el.classList.add('has-value');
+else el.classList.remove('has-value');
+});
+}
+
+function restoreRememberedLoginForm() {
+var usernameInput = document.getElementById('username');
+var passwordInput = document.getElementById('password');
+var rememberCheckbox = document.getElementById('remember');
+var applied = applyRememberedCredentialsToLoginForm(usernameInput, passwordInput, rememberCheckbox);
+refreshLoginInputHasValueState(usernameInput, passwordInput);
+return applied;
+}
+
+function verifyRememberPersistence(expectToken) {
+try {
+if (!window.medisaPortalSession) return false;
+if (typeof window.medisaPortalSession.isRememberEnabled === 'function'
+&& !window.medisaPortalSession.isRememberEnabled()) {
+return false;
+}
+var creds = getValidRememberCredentials();
+if (!creds) return false;
+if (!expectToken) return true;
+var token = getStoredPortalToken();
+if (!token) return false;
+try {
+return !!(window.localStorage && window.localStorage.getItem('medisa_portal_token'));
+} catch (e) {
+return !!token;
+}
+} catch (e2) {
+return false;
+}
+}
+
 
 (function initLoginFooterDim() {
 const footer = document.getElementById('app-footer');
@@ -315,7 +354,14 @@ var usernameInput = document.getElementById('username');
 var passwordInput = document.getElementById('password');
 var rememberCheckbox = document.getElementById('remember');
 
-applyRememberedCredentialsToLoginForm(usernameInput, passwordInput, rememberCheckbox);
+restoreRememberedLoginForm();
+// iOS autofill / pageshow bfcache: ilk restore silinirse tekrar uygula
+[0, 50, 300].forEach(function(delayMs) {
+setTimeout(function() { restoreRememberedLoginForm(); }, delayMs);
+});
+window.addEventListener('pageshow', function() {
+restoreRememberedLoginForm();
+});
 
 function toggleLoginInputHasValue(el) {
 if (!el) return;
@@ -328,6 +374,13 @@ toggleLoginInputHasValue(inp);
 inp.addEventListener('input', function() { toggleLoginInputHasValue(inp); });
 inp.addEventListener('change', function() { toggleLoginInputHasValue(inp); });
 });
+if (rememberCheckbox) {
+rememberCheckbox.addEventListener('change', function() {
+try {
+window.__medisaRememberIntent = !!rememberCheckbox.checked;
+} catch (e) {}
+});
+}
 
 
 function scrollInputIntoView(el) {
@@ -374,7 +427,11 @@ e.preventDefault();
 
 const username = document.getElementById('username').value.trim();
 const password = document.getElementById('password').value;
-const remember = document.getElementById('remember').checked;
+var rememberBox = document.getElementById('remember');
+var remember = !!(rememberBox && rememberBox.checked);
+try {
+if (!remember && window.__medisaRememberIntent === true) remember = true;
+} catch (intentErr) {}
 
 const errorDiv = document.getElementById('error-message');
 const loginBtn = document.getElementById('login-btn');
@@ -403,7 +460,14 @@ saveRememberCredentials(username, password);
 clearRememberCredentials();
 }
 var tokenToStore = data.token && typeof data.token === 'string' ? data.token : null;
-if (tokenToStore) persistSessionToken(tokenToStore, remember);
+if (tokenToStore) {
+persistSessionToken(tokenToStore, remember);
+if (remember && !verifyRememberPersistence(true)) {
+// localStorage yazımı yarım kaldıysa bir kez daha dene
+saveRememberCredentials(username, password);
+persistSessionToken(tokenToStore, true);
+}
+}
 var routedOk = routeByToken(tokenToStore, data.driverDashboard === true, {
 nextUrl: getRequestedNextUrl(),
 sessionData: {
