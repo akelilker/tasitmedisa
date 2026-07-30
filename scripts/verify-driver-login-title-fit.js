@@ -36,8 +36,8 @@ assert(
 
 assert(
   'login_loads_driver_shell',
-  /href="driver-shell\.css\?v=20260724\.2"/.test(indexHtml),
-  'Login driver-shell.css?v=20260724.2 yüklemeli'
+  /href="driver-shell\.css\?v=20260731\.2"/.test(indexHtml),
+  'Login driver-shell.css?v=20260731.2 yüklemeli'
 );
 
 assert(
@@ -102,7 +102,7 @@ assert(
 
 assert(
   'dashboard_shell_version_aligned',
-  /href="driver-shell\.css\?v=20260724\.2"/.test(dashHtml),
+  /href="driver-shell\.css\?v=20260731\.2"/.test(dashHtml),
   'Dashboard driver-shell version login ile aynı olmalı'
 );
 

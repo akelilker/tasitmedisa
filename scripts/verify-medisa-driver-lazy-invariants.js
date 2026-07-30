@@ -47,11 +47,11 @@ function count(text, pattern) {
 
 test('Login HTML compatibility aggregator yüklemiyor', () => {
   assert.doesNotMatch(files.loginHtml, /driver-style\.css/);
-  assert.match(files.loginHtml, /driver-shell\.css\?v=20260724\.2/);
+  assert.match(files.loginHtml, /driver-shell\.css\?v=20260731\.2/);
 });
 test('Dashboard HTML compatibility aggregator yüklemiyor', () => {
   assert.doesNotMatch(files.dashboardHtml, /driver-style\.css/);
-  assert.match(files.dashboardHtml, /driver-shell\.css\?v=20260724\.2/);
+  assert.match(files.dashboardHtml, /driver-shell\.css\?v=20260731\.2/);
 });
 test('Login vehicle notification domain yüklemiyor', () => {
   assert.doesNotMatch(files.loginHtml, /vehicle-notification-domain\.js/);
@@ -107,9 +107,19 @@ test('Inline onclick global isimleri korunur', () => {
     'toggleDriverActionBlock', 'focusKmInput', 'cancelKmForm',
     'cancelDriverActionForm', 'submitDriverAction', 'submitKmOnly',
     'syncDriverEgzozMuayeneFields', 'cancelMuayeneSubmit',
-    'confirmMuayeneSubmit', 'saveDriverEventFromBlock', 'logout'
+    'confirmMuayeneSubmit', 'saveDriverEventFromBlock', 'logout',
+    'forgetThisDevice', 'openForgetThisDeviceConfirm', 'closeForgetThisDeviceConfirm',
+    'confirmForgetThisDevice'
   ];
   globals.forEach((name) => assert.match(files.bootstrap + files.core, new RegExp('(?:window\\.)?' + name)));
+});
+test('Bu Cihazı Unut UI ownerı dashboard HTML + core proxy', () => {
+  assert.match(files.dashboardHtml, /Bu Cihazı Unut/);
+  assert.match(files.dashboardHtml, /openForgetThisDeviceConfirm/);
+  assert.match(files.dashboardHtml, /driver-forget-device-confirm/);
+  assert.match(files.bootstrap, /installCoreProxy\('forgetThisDevice'\)/);
+  assert.match(files.core, /index\.html\?force=login/);
+  assert.doesNotMatch(files.core, /function logout\s*\(\)\s*\{[\s\S]*driver_saved_password/);
 });
 test('Login token routing parity ownerı login modülünde', () => {
   assert.match(files.login, /routeByToken/);
@@ -247,7 +257,9 @@ test('Dashboard core helperları runtime.helpers üzerinden çözer', () => {
   assert.match(files.core, /var bindDriverDashboardTitleCase = h && h\.bindDriverDashboardTitleCase/);
   assert.match(files.core, /MedisaDriverRuntime vehicle document helpers eksik/);
   assert.match(files.core, /MedisaDriverRuntime dashboard titlecase helper eksik/);
-  assert.match(files.core, /function clearSavedDriverPassword\s*\(/);
+  assert.match(files.core, /function clearRememberCredentials\s*\(/);
+  assert.match(files.core, /function forgetThisDevice\s*\(/);
+  assert.doesNotMatch(files.core, /function clearSavedDriverPassword\s*\(/);
 });
 test('Documents feature helperları runtime.helpers üzerinden çözer', () => {
   assert.match(files.documents, /var h = runtime\.helpers/);
@@ -323,19 +335,31 @@ test('Takograf tip matrisi aynıdır', () => {
   assert.match(files.bootstrap, /normalizedType === 'kamyon' \|\| normalizedType === 'buyuk_ticari'/);
 });
 test('Driver asset version matrisi dar bump kullanır', () => {
-  assert.match(files.bootstrap, /bootstrap:\s*'20260729\.1'/);
-  assert.match(files.bootstrap, /dashboardCore:\s*'20260729\.1'/);
+  assert.match(files.bootstrap, /bootstrap:\s*'20260731\.2'/);
+  assert.match(files.bootstrap, /dashboardCore:\s*'20260731\.1'/);
   assert.match(files.bootstrap, /history:\s*'20260718\.4'/);
   assert.match(files.bootstrap, /documents:\s*'20260718\.3'/);
-  assert.match(files.bootstrap, /login:\s*'20260729\.1'/);
+  assert.match(files.bootstrap, /login:\s*'20260731\.1'/);
   assert.match(files.bootstrap, /feedback:\s*'20260718\.1'/);
-  assert.match(files.bootstrap, /password:\s*'20260729\.2'/);
+  assert.match(files.bootstrap, /password:\s*'20260731\.1'/);
   assert.match(files.bootstrap, /actions:\s*'20260718\.1'/);
-  assert.match(files.bootstrap, /featureCss:\s*'20260729\.2'/);
-  assert.match(files.loginHtml, /driver-script\.js\?v=20260729\.2/);
-  assert.match(files.dashboardHtml, /driver-script\.js\?v=20260729\.2/);
-  assert.match(files.loginHtml, /driver-shell\.css\?v=20260724\.2/);
-  assert.match(files.dashboardHtml, /driver-shell\.css\?v=20260724\.2/);
+  assert.match(files.bootstrap, /shellCss:\s*'20260731\.2'/);
+  assert.match(files.bootstrap, /featureCss:\s*'20260731\.1'/);
+  assert.match(files.loginHtml, /driver-script\.js\?v=20260731\.2/);
+  assert.match(files.dashboardHtml, /driver-script\.js\?v=20260731\.2/);
+  assert.match(files.loginHtml, /driver-shell\.css\?v=20260731\.2/);
+  assert.match(files.dashboardHtml, /driver-shell\.css\?v=20260731\.2/);
+});
+test('iOS PWA sınıfı bootstrap ownerında uygulanır', () => {
+  assert.match(files.bootstrap, /function applyMedisaIosPwaClass\s*\(/);
+  assert.match(files.bootstrap, /classList\.add\('is-ios-pwa'\)/);
+  assert.match(files.bootstrap, /navigator\.standalone === true/);
+  assert.match(files.bootstrap, /display-mode:\s*standalone/);
+  assert.match(files.shellCss, /body\.is-ios-pwa\.login-page/);
+  assert.match(files.shellCss, /padding-top:\s*11px/);
+  assert.match(files.shellCss, /padding-bottom:\s*15px/);
+  assert.match(files.shellCss, /body:not\(\.is-ios-pwa\)\.login-page/);
+  assert.doesNotMatch(files.shellCss.slice(-800), /is-ios-pwa/);
 });
 test('Vehicle document helper behavioral matrix', () => {
   function getDriverVehicleTypeKey(vehicle) {

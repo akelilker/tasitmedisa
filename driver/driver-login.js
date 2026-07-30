@@ -9,7 +9,7 @@ var API_BASE = P.API_BASE;
 var DRIVER_PAGE_BASE = P.DRIVER_PAGE_BASE;
 var MAIN_APP_URL = P.MAIN_APP_URL;
 var MAIN_SESSION_URL = P.MAIN_SESSION_URL;
-var APP_VERSION = 'v78.1';
+var APP_VERSION = 'v78.2';
 
 (function setDriverVersion() {
 function apply() {
@@ -249,8 +249,36 @@ sessionData: currentSession
 }));
 }
 
-function clearSavedDriverPassword() {
-try { localStorage.removeItem('driver_saved_password'); } catch (e) {}
+function clearRememberCredentials() {
+if (window.medisaPortalSession && typeof window.medisaPortalSession.clearRememberCredentials === 'function') {
+window.medisaPortalSession.clearRememberCredentials();
+}
+}
+
+function saveRememberCredentials(username, password) {
+if (window.medisaPortalSession && typeof window.medisaPortalSession.saveRememberCredentials === 'function') {
+return window.medisaPortalSession.saveRememberCredentials(username, password);
+}
+return false;
+}
+
+function getValidRememberCredentials() {
+if (window.medisaPortalSession && typeof window.medisaPortalSession.getValidRememberCredentials === 'function') {
+return window.medisaPortalSession.getValidRememberCredentials();
+}
+return null;
+}
+
+function applyRememberedCredentialsToLoginForm(usernameInput, passwordInput, rememberCheckbox) {
+var creds = getValidRememberCredentials();
+if (!creds) {
+if (rememberCheckbox) rememberCheckbox.checked = false;
+return false;
+}
+if (rememberCheckbox) rememberCheckbox.checked = true;
+if (usernameInput) usernameInput.value = creds.username;
+if (passwordInput) passwordInput.value = creds.password;
+return true;
 }
 
 
@@ -285,16 +313,9 @@ revealDriverLoginView();
 
 var usernameInput = document.getElementById('username');
 var passwordInput = document.getElementById('password');
-
-clearSavedDriverPassword();
-
-
 var rememberCheckbox = document.getElementById('remember');
-if (rememberCheckbox && localStorage.getItem('driver_remember_me') === '1') {
-rememberCheckbox.checked = true;
-var savedUser = localStorage.getItem('driver_saved_username');
-if (usernameInput && savedUser) usernameInput.value = savedUser;
-}
+
+applyRememberedCredentialsToLoginForm(usernameInput, passwordInput, rememberCheckbox);
 
 function toggleLoginInputHasValue(el) {
 if (!el) return;
@@ -377,17 +398,9 @@ const data = await response.json();
 
 if (data.success) {
 if (remember) {
-try {
-localStorage.setItem('driver_remember_me', '1');
-localStorage.setItem('driver_saved_username', username);
-localStorage.removeItem('driver_saved_password');
-} catch (e) {}
+saveRememberCredentials(username, password);
 } else {
-try {
-localStorage.removeItem('driver_remember_me');
-localStorage.removeItem('driver_saved_username');
-localStorage.removeItem('driver_saved_password');
-} catch (e) {}
+clearRememberCredentials();
 }
 var tokenToStore = data.token && typeof data.token === 'string' ? data.token : null;
 if (tokenToStore) persistSessionToken(tokenToStore, remember);

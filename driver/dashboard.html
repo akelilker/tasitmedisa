@@ -37,8 +37,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../style-core.css?v=20260724.1">
-<link rel="stylesheet" href="driver-shell.css?v=20260724.2">
-<script defer src="../portal-session.js?v=20260513.2"></script>
+<link rel="stylesheet" href="driver-shell.css?v=20260731.2">
+<script defer src="../portal-session.js?v=20260731.1"></script>
 <script defer src="../script-core.js?v=20260718.4"></script>
 </head>
 <body class="dashboard-page driver-splash-active">
@@ -118,6 +118,15 @@
                                             <path d="M19 15v2"></path>
                                         </svg>
                                         <span class="driver-vehicle-shortcuts-item-label">Şifre</span>
+                                    </button>
+                                    <button type="button" role="menuitem" class="driver-vehicle-shortcuts-item driver-vehicle-shortcuts-item-forget-device" onclick="openForgetThisDeviceConfirm()" title="Bu Cihazı Unut" aria-label="Bu Cihazı Unut">
+                                        <svg class="driver-vehicle-shortcuts-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                            <rect x="5" y="2" width="14" height="20" rx="2"></rect>
+                                            <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                                            <path d="M9 9l6 6"></path>
+                                            <path d="M15 9l-6 6"></path>
+                                        </svg>
+                                        <span class="driver-vehicle-shortcuts-item-label">Bu Cihazı Unut</span>
                                     </button>
                                 </div>
                             </div>
@@ -438,6 +447,13 @@
             <button type="button" class="btn-confirm-yes" onclick="confirmMuayeneSubmit()">Evet</button>
         </div>
     </div>
-<script defer src="driver-script.js?v=20260729.2"></script>
+    <div id="driver-forget-device-confirm" class="muayene-confirm-popover driver-forget-device-confirm" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="driver-forget-device-confirm-title" aria-hidden="true">
+        <p id="driver-forget-device-confirm-title">Bu cihazda kayıtlı giriş bilgileri silinecek ve oturum kapanacak. Devam edilsin mi?</p>
+        <div class="muayene-confirm-actions">
+            <button type="button" class="btn-confirm-no" onclick="closeForgetThisDeviceConfirm()">Hayır</button>
+            <button type="button" class="btn-confirm-yes" onclick="confirmForgetThisDevice()">Evet</button>
+        </div>
+    </div>
+<script defer src="driver-script.js?v=20260731.2"></script>
 </body>
 </html>

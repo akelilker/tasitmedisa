@@ -1919,15 +1919,53 @@ resize();
 
 
 
-function clearSavedDriverPassword() {
-try { localStorage.removeItem('driver_saved_password'); } catch (e) {}
+function clearRememberCredentials() {
+if (window.medisaPortalSession && typeof window.medisaPortalSession.clearRememberCredentials === 'function') {
+window.medisaPortalSession.clearRememberCredentials();
 }
+}
+
+function forgetThisDevice() {
+if (window.medisaPortalSession && typeof window.medisaPortalSession.forgetThisDevice === 'function') {
+window.medisaPortalSession.forgetThisDevice();
+} else {
+clearStoredPortalTokens();
+clearRememberCredentials();
+}
+window.location.href = DRIVER_PAGE_BASE + 'index.html?force=login';
+}
+
+function openForgetThisDeviceConfirm() {
+var popover = document.getElementById('driver-forget-device-confirm');
+if (!popover) {
+forgetThisDevice();
+return;
+}
+popover.style.display = 'block';
+popover.setAttribute('aria-hidden', 'false');
+}
+
+function closeForgetThisDeviceConfirm() {
+var popover = document.getElementById('driver-forget-device-confirm');
+if (!popover) return;
+popover.style.display = 'none';
+popover.setAttribute('aria-hidden', 'true');
+}
+
+function confirmForgetThisDevice() {
+closeForgetThisDeviceConfirm();
+forgetThisDevice();
+}
+
 function logout() {
-clearSavedDriverPassword();
 clearStoredPortalTokens();
 window.location.href = DRIVER_PAGE_BASE + 'index.html';
 }
 window.logout = logout;
+window.forgetThisDevice = forgetThisDevice;
+window.openForgetThisDeviceConfirm = openForgetThisDeviceConfirm;
+window.closeForgetThisDeviceConfirm = closeForgetThisDeviceConfirm;
+window.confirmForgetThisDevice = confirmForgetThisDevice;
 function publishDriverRuntimeHelpers() {
 var h = runtime.helpers;
 h.driverVehicleNeedsK2 = driverVehicleNeedsK2;
@@ -1957,10 +1995,14 @@ h.renderRightPanel = renderRightPanel;
 h.calculateNextMuayeneDate = calculateNextMuayeneDate;
 h.getVehicleTypeRuleProfileDriver = getVehicleTypeRuleProfileDriver;
 h.clearStoredPortalTokens = clearStoredPortalTokens;
-h.clearSavedDriverPassword = clearSavedDriverPassword;
+h.clearRememberCredentials = clearRememberCredentials;
 h.persistSessionToken = persistSessionToken;
 h.isPortalSessionRemembered = isPortalSessionRemembered;
 h.logout = logout;
+h.forgetThisDevice = forgetThisDevice;
+h.openForgetThisDeviceConfirm = openForgetThisDeviceConfirm;
+h.closeForgetThisDeviceConfirm = closeForgetThisDeviceConfirm;
+h.confirmForgetThisDevice = confirmForgetThisDevice;
 h.openDriverNotifications = window.openDriverNotifications;
 h.closeDriverNotifications = window.closeDriverNotifications;
 if (window.__medisaDriverBootMetrics) window.__medisaDriverBootMetrics.dashboardContentReady = Date.now();
