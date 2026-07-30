@@ -6,7 +6,7 @@ Bu projede **Docker / GitHub Container Registry / SSH ile container** akışı k
 
 Desteklenen iki ana deploy yolu vardır:
 
-- **cPanel Git Version Control + `.cpanel.yml`**: Uygulama dosyalarını hedef dizine kopyalar ve runtime upload/preview/backup klasörlerini `mkdir -p` ile hazırlar.
+- **cPanel Git Version Control + `.cpanel.yml`**: Mevcut canlı `data/` ve `icon/` varlığını preflight ile doğrular; yalnız uygulama dosyalarını hedef dizine kopyalar.
 - **GitHub Actions FTP deploy** (`.github/workflows/deploy-cpanel.yml`): Uygulama dosyalarını FTP ile senkronlar; **`data/**` exclude** ile tüm `data/` ağacı gönderilmez.
 
 ## Runtime `data/` klasörü ve deploy politikası
@@ -16,20 +16,8 @@ Desteklenen iki ana deploy yolu vardır:
 - Sunucuda **`data/`** uygulama kökü altında bulunmalı ve PHP tarafından **yazılabilir** olmalıdır.
 - Upload, preview, backup ve ilk `save` işlemleri `data/` yazma iznine bağlıdır.
 - Belge upload (`upload_ruhsat.php`), PDF preview (`ruhsat_preview.php`) ve snapshot (`core.php` → `data/backups/`) alt klasörlerini ilk kullanımda oluşturabilir.
-- `.cpanel.yml` ayrıca şu runtime klasörlerini önceden hazırlar:
-  - `data/ruhsat/`
-  - `data/ruhsat_preview/`
-  - `data/kasko_police/`
-  - `data/kasko_police_preview/`
-  - `data/sigorta_police/`
-  - `data/sigorta_police_preview/`
-  - `data/k2_belgesi/`
-  - `data/k2_belgesi_preview/`
-  - `data/tasit_karti/`
-  - `data/tasit_karti_preview/`
-  - `data/takograf/`
-  - `data/takograf_preview/`
-  - `data/backups/`
+- `.cpanel.yml` runtime `data/` veya `icon/` içeriğini kopyalamaz, silmez ve yeniden oluşturmaz.
+- Gerekli upload/preview/backup alt klasörleri ilgili PHP owner akışı tarafından ilk kullanımda oluşturulur.
 - **İlk kurulum / temiz sunucu kontrolü:** `medisa/data/` yazılabilir mi; PHP `mkdir` ve dosya yazma izni var mı?
 - **cPanel Git deploy** ile **GitHub Actions FTP deploy** farklı yollardır. `data/` ve `data.json` davranışı deploy türüne göre doğrulanmalıdır.
 

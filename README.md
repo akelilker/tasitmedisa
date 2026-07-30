@@ -6,8 +6,8 @@
 
 - PHP 8.x + Apache `mod_rewrite`
 - Vanilla HTML / CSS / JavaScript
-- Build step yok
-- Paket yöneticisi yok
+- Üretim uygulamasında build step veya runtime paket bağımlılığı yok
+- Repo doğrulama ve operasyon araçları Node.js + npm scriptleri kullanır
 - Veritabanı yok
 - Runtime veri kaynağı: `data/data.json` (Git dışında; şablon: `data/data.example.json`)
 
@@ -63,11 +63,14 @@ Deploy ve runtime data politikası için `DEPLOYMENT.md` dosyasına bak.
 - Apache `mod_rewrite`
 - PHP JSON desteği
 - Modern ES6+ tarayıcı
+- Repo doğrulama araçları için Node.js 20+
 
 ## Hızlı doğrulama
 
 ```bash
 php -l core.php
+npm run tool:verify-deploy
+npm run tool:verify-runtime-data-git
 ```
 
 Kod değişikliklerinde proje kural dosyalarındaki owner, CSS, UTF-8, data ve deploy kurallarına uyulmalıdır.

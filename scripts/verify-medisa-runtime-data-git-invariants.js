@@ -39,6 +39,8 @@ assert.deepEqual(
   [],
   'data/.migration-secure/** tracked olamaz'
 );
+assert.deepEqual(tracked('data/.medisa_token_secret'), [], 'data/.medisa_token_secret tracked olamaz');
+assert.deepEqual(tracked('data/.medisa_data.lock'), [], 'data/.medisa_data.lock tracked olamaz');
 
 const ignoreDataJson = git(['check-ignore', '-v', '--', 'data/data.json']);
 assert.match(ignoreDataJson, /data\/data\.json/, 'data/data.json ignore edilmeli');
@@ -56,6 +58,7 @@ assert.match(
   /(^|\n)\/?data\/\.migration-secure\/?(\n|$)/,
   '.gitignore data/.migration-secure/ kurali eksik'
 );
+assert.match(gitignore, /(^|\n)\/?data\/\.medisa_\*(\n|$)/, '.gitignore data/.medisa_* kurali eksik');
 assert.doesNotMatch(
   gitignore,
   /(^|\n)!data\/data\.json(\n|$)/,

@@ -52,5 +52,9 @@ for(const n of sizes){
 }
 report.sourceHasRevisionSignature=tj.includes('getVehicleCollectionRevisions');
 report.sourceListFitRemoved=!/fitVehicleTextBoxes[\s\S]{0,800}list-cell\.list-brand/.test(tj);
-fs.writeFileSync(path.join(process.env.VEHICLE_ARTIFACT || path.join(root,'../tasitmedisa-recovery-r3-r4-20260718-053526/vehicle-render'), 'measure-report.json'), JSON.stringify(report,null,2));
+const artifactDir=process.env.VEHICLE_ARTIFACT
+  ? path.resolve(process.env.VEHICLE_ARTIFACT)
+  : path.join(root,'outputs','vehicle-render');
+fs.mkdirSync(artifactDir,{recursive:true});
+fs.writeFileSync(path.join(artifactDir,'measure-report.json'), JSON.stringify(report,null,2));
 console.log(JSON.stringify(report,null,2));

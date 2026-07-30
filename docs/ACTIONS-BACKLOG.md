@@ -5,7 +5,7 @@
 | Workflow | Dosya | Tetikleyici | Ne zaman koşar? |
 |----------|--------|-------------|------------------|
 | **PR Check** | `.github/workflows/pr-check.yml` | `pull_request` → hedef dal **`main`** | `main`’e açılan veya güncellenen PR’larda (push/ready/reopen vb. PR olayları). **`main`’e doğrudan push bu workflow’u tetiklemez.** İki job: **Static checks** (`php -l`, `node --check`), **HTTP smoke** (`php -S` + `curl`, `.github/scripts/ci-http-smoke.sh`). |
-| **Deploy cPanel** | `.github/workflows/deploy-cpanel.yml` | `push` → **`main`** ve `workflow_dispatch` | `main`’e merge/push sonrası FTP; istenirse Actions’tan elle çalıştırma. |
+| **Deploy cPanel** | `.github/workflows/deploy-cpanel.yml` | `push` → **`main`** ve `workflow_dispatch` | `main`’e merge/push sonrası önce canonical kalite kapıları, ardından FTP ve canlı asset/API/güvenlik doğrulaması; istenirse Actions’tan elle çalıştırma. |
 
 Deploy ekranında gördüğün koşular **FTP deploy** workflow’una aittir; **PR Check** ayrı isimdir ve yalnızca PR akışında görünür.
 
@@ -17,9 +17,9 @@ Deploy ekranında gördüğün koşular **FTP deploy** workflow’una aittir; **
 
 ---
 
-## Backlog: FTP-Deploy-Action ve Node 20 uyarısı
+## FTP-Deploy-Action güncel durum
 
-- **Durum:** `Deploy cPanel` içinde `SamKirkland/FTP-Deploy-Action@v4.3.6` kullanılıyor. Eylem veya runner tarafında **Node 20 deprecation** uyarısı çıkabilir (GitHub’ın eski Node varsayılanları / eylem içi runtime).
-- **Mevcut mitigasyon (deploy dosyasında):** `FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true` ile uyarı azaltılmaya çalışılmış; tamamen kaybolmayabilir.
-- **Şimdilik:** Deploy mantığına ve eylem sürümüne **dokunulmuyor**; üretim FTP akışı riske atılmıyor.
-- **İleride (düşük öncelik):** SamKirkland eyleminin Node 24 uyumlu yeni sürümünü izle; çıkınca `v4.3.6` → güncel patch/minor ile deneme + staging veya elle `workflow_dispatch` ile doğrulama.
+- **Durum:** `Deploy cPanel` üç denemede de `SamKirkland/FTP-Deploy-Action@v4.4.0` kullanıyor.
+- Deploy preflight PHP/JavaScript syntax ve `.github/scripts/quality-gate.sh` kapılarını çalıştırıyor.
+- Başarılı FTP sonucu tek başına yeterli sayılmıyor; seçili statik asset SHA’ları, yetkisiz API cevabı, runtime veri koruması ve güvenlik başlıkları ayrıca doğrulanıyor.
+- **İleride (düşük öncelik):** Eylemin güncel patch/minor sürümlerini staging veya kontrollü `workflow_dispatch` ile doğruladıktan sonra yükselt.
