@@ -1204,18 +1204,6 @@ body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-
     #history-tabs .history-tab {
         font-size: 13px !important;
     }
-    #vehicle-detail-modal .vehicle-detail-columns,
-    #vehicle-detail-content .vehicle-detail-columns {
-        border-left: 1px solid rgba(var(--theme-color-rgb), 0.5) !important;
-        border-right: 1px solid rgba(var(--theme-color-rgb), 0.5) !important;
-        box-shadow: 0 0 8px rgba(var(--theme-color-rgb), 0.14) !important;
-    }
-    #vehicle-detail-modal .vehicle-detail-left,
-    #vehicle-detail-modal .vehicle-detail-right,
-    #vehicle-detail-content .vehicle-detail-left,
-    #vehicle-detail-content .vehicle-detail-right {
-        border-color: rgba(var(--theme-color-rgb), 0.5) !important;
-    }
     /* Açıkken: menü butonlarına metin sızmasın; panel opak kutu (masaüstü @769 ile aynı his) */
     #notifications-dropdown.settings-dropdown.open {
         background: linear-gradient(180deg, rgba(8, 13, 22, 0.98) 0%, rgba(8, 13, 22, 0.95) 100%) !important;

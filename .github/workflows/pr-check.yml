@@ -37,61 +37,15 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for f in \
-            script-core.js \
-            data-manager.js \
-            data-service.js \
-            vehicle-notification-domain.js \
-            notifications.js \
-            tasitlar.js \
-            tasitlar-yazici.js \
-            kayit.js \
-            raporlar.js \
-            ayarlar.js \
-            sw.js \
-            driver/driver-script.js \
-            driver/driver-login.js \
-            driver/driver-dashboard-core.js \
-            driver/driver-feature-history.js \
-            driver/driver-feature-documents.js \
-            driver/driver-feature-feedback.js \
-            driver/driver-feature-password.js \
-            driver/driver-feature-actions.js \
-            admin/admin-report.js \
-            scripts/verify-medisa-role-invariants.js \
-            scripts/run-medisa-role-matrix-verify.js \
-            scripts/verify-driver-login-title-fit.js \
-            scripts/verify-medisa-visible-store-invariants.js \
-            scripts/measure-medisa-visible-store.js \
-            scripts/verify-medisa-save-wire-client.js \
-            scripts/run-medisa-save-wire-verify.js \
-            scripts/measure-medisa-save-wire.js \
-            scripts/verify-medisa-driver-lazy-invariants.js \
-            scripts/measure-medisa-driver-boot.js \
-            scripts/verify-medisa-main-shell-lazy-invariants.js \
-            scripts/verify-medisa-mandatory-password-change-invariants.js \
-            scripts/measure-medisa-main-shell.js \
-            scripts/hydrate-demo-data-branches.js
-          do
+          while IFS= read -r -d '' f; do
             node --check "$f"
-          done
+          done < <(git ls-files -z '*.js' '*.mjs')
 
-      - name: Visible store + login fit + save wire + lazy invariants
+      - name: Canonical quality gate
         shell: bash
         run: |
           set -euo pipefail
-          npm run tool:verify-visible-store
-          npm run tool:verify-login-title-fit
-          npm run tool:verify-roles
-          npm run tool:verify-password-migration
-          npm run tool:verify-default-credentials
-          npm run tool:verify-mandatory-password-change
-          npm run tool:verify-save-wire
-          npm run tool:measure-save-wire
-          npm run tool:verify-driver-lazy
-          npm run tool:measure-driver-boot
-          npm run tool:verify-main-shell
-          npm run tool:measure-main-shell
+          bash .github/scripts/quality-gate.sh
 
   http-smoke:
     name: HTTP smoke (php -S + curl)

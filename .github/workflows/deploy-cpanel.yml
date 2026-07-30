@@ -51,6 +51,28 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+
+      - name: Deploy quality gates
+        shell: bash
+        run: |
+          set -euo pipefail
+          while IFS= read -r -d '' f; do
+            php -l "$f"
+          done < <(git ls-files -z '*.php')
+          while IFS= read -r -d '' f; do
+            node --check "$f"
+          done < <(git ls-files -z '*.js' '*.mjs')
+          bash .github/scripts/quality-gate.sh
+
       - name: Secrets kontrolü (boşsa FTP sunucu köküne yazar; canlıda değişiklik görünmez)
         shell: bash
         env:
@@ -406,6 +428,8 @@ jobs:
     if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v6
+
       - name: Evaluate FTP deploy result
         id: evaluate
         shell: bash
@@ -457,5 +481,66 @@ jobs:
             https://karmotors.com.tr/medisa/; then
             echo "HTTP verification succeeded."
           else
-            echo "::warning::FTP deploy succeeded, but post-deploy HTTPS verification could not reach the live site from the GitHub-hosted runner."
+            echo "::error::FTP deploy succeeded, but post-deploy HTTPS verification could not reach the live site from the GitHub-hosted runner."
+            exit 1
           fi
+
+      - name: Exact assets, API boundary and security headers
+        if: steps.evaluate.outputs.succeeded == 'true'
+        shell: bash
+        env:
+          LIVE_BASE_URL: https://karmotors.com.tr/medisa
+        run: |
+          set -euo pipefail
+          tmp_dir="$(mktemp -d)"
+          trap 'rm -rf "$tmp_dir"' EXIT
+
+          for file in \
+            index.html \
+            script-core.js \
+            driver/driver-login.js \
+            driver/driver-feature-password.js \
+            sw.js
+          do
+            remote_file="$tmp_dir/$file"
+            mkdir -p "$(dirname "$remote_file")"
+            curl --fail --silent --show-error --location \
+              --connect-timeout 15 \
+              --max-time 45 \
+              --retry 3 \
+              --retry-delay 3 \
+              "${LIVE_BASE_URL}/${file}?deploy_sha=${GITHUB_SHA}" \
+              --output "$remote_file"
+            local_sha="$(sha256sum "$file" | awk '{print $1}')"
+            remote_sha="$(sha256sum "$remote_file" | awk '{print $1}')"
+            if [ "$local_sha" != "$remote_sha" ]; then
+              echo "::error::Live asset SHA mismatch: $file"
+              exit 1
+            fi
+            echo "OK exact asset: $file"
+          done
+
+          load_status="$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' "${LIVE_BASE_URL}/load.php")"
+          if [ "$load_status" != "401" ]; then
+            echo "::error::Expected unauthenticated load.php to return 401, got $load_status"
+            exit 1
+          fi
+
+          for protected_path in data/data.json .ftp-deploy-sync-state.json; do
+            protected_status="$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' "${LIVE_BASE_URL}/${protected_path}")"
+            if [ "$protected_status" != "403" ] && [ "$protected_status" != "404" ]; then
+              echo "::error::Protected path exposed: $protected_path returned $protected_status"
+              exit 1
+            fi
+            echo "OK protected path: $protected_path ($protected_status)"
+          done
+
+          curl --fail --silent --show-error --location \
+            --dump-header "$tmp_dir/headers.txt" \
+            --output /dev/null \
+            "${LIVE_BASE_URL}/"
+          grep -Eiq '^x-frame-options:[[:space:]]*SAMEORIGIN' "$tmp_dir/headers.txt"
+          grep -Eiq '^x-content-type-options:[[:space:]]*nosniff' "$tmp_dir/headers.txt"
+          grep -Eiq '^referrer-policy:[[:space:]]*strict-origin-when-cross-origin' "$tmp_dir/headers.txt"
+          grep -Eiq "^content-security-policy:.*frame-ancestors 'self'" "$tmp_dir/headers.txt"
+          echo "OK live security headers"
