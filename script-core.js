@@ -498,9 +498,25 @@ window.medisaFitTextWithinBox = function(root, selector, options) {
   var opts = options || {};
   var minFontSize = Number(opts.minFontSize);
   var maxReduction = Number(opts.maxReduction);
-  var step = Number(opts.step) || 0.5;
+  var step = Number(opts.step);
+  if (!Number.isFinite(step) || step <= 0) step = 0.5;
   var tolerance = Number(opts.tolerance);
   if (!Number.isFinite(tolerance)) tolerance = 1;
+
+  function roundDownToStep(value) {
+    return Math.round((Math.floor((value + 0.0001) / step) * step) * 1000) / 1000;
+  }
+
+  function calculateTargetSize(job, width, height, scrollWidth, scrollHeight) {
+    var widthRatio = scrollWidth > width + tolerance && scrollWidth > 0 ? width / scrollWidth : 1;
+    var heightRatio = scrollHeight > height + tolerance && scrollHeight > 0 ? height / scrollHeight : 1;
+    var ratio = Math.min(widthRatio, heightRatio);
+    if (ratio >= 1) return job.currentSize;
+
+    var targetSize = roundDownToStep(job.currentSize * ratio);
+    if (targetSize >= job.currentSize) targetSize = job.currentSize - step;
+    return Math.max(job.floorSize, targetSize);
+  }
 
   requestAnimationFrame(function() {
     var elements = scope.querySelectorAll(selector);
@@ -518,17 +534,52 @@ window.medisaFitTextWithinBox = function(root, selector, options) {
       if (!Number.isFinite(baseSize) || baseSize <= 0) return null;
       var reduction = Number.isFinite(maxReduction) && maxReduction > 0 ? maxReduction : 4;
       var floorSize = Number.isFinite(minFontSize) && minFontSize > 0 ? minFontSize : Math.max(9.5, baseSize - reduction);
-      return { el: el, floorSize: floorSize, currentSize: baseSize };
+      floorSize = Math.min(baseSize, floorSize);
+      var job = { el: el, floorSize: floorSize, baseSize: baseSize, currentSize: baseSize };
+      job.currentSize = calculateTargetSize(
+        job,
+        el.clientWidth,
+        el.clientHeight,
+        el.scrollWidth,
+        el.scrollHeight
+      );
+      return job;
     }).filter(Boolean);
 
     measurements.forEach(function(job) {
-      while (
-        job.currentSize > job.floorSize &&
-        (job.el.scrollWidth > job.el.clientWidth + tolerance || job.el.scrollHeight > job.el.clientHeight + tolerance)
-      ) {
-        job.currentSize = Math.max(job.floorSize, job.currentSize - step);
+      if (job.currentSize < job.baseSize) {
         job.el.style.setProperty('font-size', job.currentSize + 'px', 'important');
       }
+    });
+
+    requestAnimationFrame(function() {
+      var corrections = measurements.map(function(job) {
+        var width = job.el.clientWidth;
+        var height = job.el.clientHeight;
+        var scrollWidth = job.el.scrollWidth;
+        var scrollHeight = job.el.scrollHeight;
+        if (
+          job.currentSize <= job.floorSize ||
+          (scrollWidth <= width + tolerance && scrollHeight <= height + tolerance)
+        ) {
+          return null;
+        }
+        var correctedSize = calculateTargetSize(
+          job,
+          width,
+          height,
+          scrollWidth,
+          scrollHeight
+        );
+        if (correctedSize >= job.currentSize) {
+          correctedSize = Math.max(job.floorSize, job.currentSize - step);
+        }
+        return { el: job.el, size: correctedSize };
+      }).filter(Boolean);
+
+      corrections.forEach(function(correction) {
+        correction.el.style.setProperty('font-size', correction.size + 'px', 'important');
+      });
     });
   });
 };
