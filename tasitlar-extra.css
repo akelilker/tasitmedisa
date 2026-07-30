@@ -2745,7 +2745,7 @@
     border-radius: 10px !important;
     box-sizing: border-box !important;
     pointer-events: none !important;
-    z-index: 45 !important;
+    z-index: 4 !important;
   }
 
   #vehicles-modal.tasitlar-modal-overlay .modal-header {
@@ -2757,7 +2757,7 @@
   }
 
   #vehicles-modal .modal-header h2.premium-title {
-    filter: brightness(1.10);
+    filter: none;
   }
 
   #vehicles-modal .vehicles-toolbar {

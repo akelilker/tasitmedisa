@@ -2497,13 +2497,19 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
             0 0 9px rgba(214, 188, 132, 0.12);
     }
 
-    /* Ana modal başlıkları mobilde menü .ttl ile aynı glow */
+    /* Ana modal başlıkları mobilde: glow yok, metalik gradient net kalsın */
     :is(#vehicle-modal, #vehicles-modal, #vehicle-detail-modal, #reports-modal) .modal-header h2.premium-title {
         letter-spacing: 1.5px !important;
-        text-shadow:
-            0 1px 2px rgba(0, 0, 0, 0.22),
-            0 0 7px rgba(214, 224, 232, 0.24),
-            0 0 9px rgba(214, 188, 132, 0.12) !important;
+        text-shadow: none !important;
+        filter: none !important;
+    }
+
+    /* Ana modal header ikonları: gri yerine başlık gümüşü, gölge yok */
+    :is(#vehicle-modal, #vehicles-modal, #vehicle-detail-modal, #reports-modal) .modal-header .modal-home,
+    :is(#vehicle-modal, #vehicles-modal, #vehicle-detail-modal, #reports-modal) .modal-header .modal-close {
+        color: #d1dbe4 !important;
+        filter: none !important;
+        text-shadow: none !important;
     }
     
     /* Mobil: Kullanıcı paneli giriş butonu 2px aşağı */
