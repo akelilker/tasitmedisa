@@ -17,10 +17,11 @@ messageEl.classList.toggle('is-error', !!isError);
 messageEl.classList.toggle('is-success', !!message && !isError);
 }
 
-function clearSavedDriverPassword() {
-try {
-localStorage.removeItem('driver_saved_password');
-} catch (e) {}
+function syncRememberPasswordAfterChange(newPassword) {
+if (window.medisaPortalSession && typeof window.medisaPortalSession.syncRememberPasswordAfterChange === 'function') {
+return window.medisaPortalSession.syncRememberPasswordAfterChange(newPassword);
+}
+return false;
 }
 
 function setDriverPasswordModalMode(isMandatory) {
@@ -148,7 +149,7 @@ h.persistSessionToken(data.token, rememberSession);
 if (s.currentUser) s.currentUser.ilk_giris_parola_onerisi_bekliyor = false;
 s.driverPasswordMandatoryMode = false;
 setDriverPasswordMessage('Parolanız değiştirildi. Oturumunuz güvenli şekilde yenilendi.', false);
-h.clearSavedDriverPassword();
+syncRememberPasswordAfterChange(newPassword);
 setTimeout(function() {
 window.location.href = p.DRIVER_PAGE_BASE + 'index.html';
 }, 900);

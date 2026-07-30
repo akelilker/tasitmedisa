@@ -2014,6 +2014,12 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
   line-height: 1.4;
 }
 
+.muayene-confirm-popover.driver-forget-device-confirm {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
 /* Mobil + masaüstü: çerçeve ikiye bölünmüş, her buton kendi alanında yatay ortalı */
 .muayene-confirm-actions {
   display: grid;

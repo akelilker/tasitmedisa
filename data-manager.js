@@ -536,6 +536,16 @@ function clearStoredPortalTokens() {
     }
 }
 
+function closeMainAppSettingsMenus() {
+    var menu = document.getElementById('settings-menu');
+    if (menu) menu.classList.remove('open');
+    var sub = document.getElementById('data-submenu');
+    if (sub) sub.classList.remove('open');
+    if (typeof document !== 'undefined' && document.body) {
+        document.body.classList.remove('settings-open');
+    }
+}
+
 /** Ana uygulama ayarlar menüsü: oturumu kapat, portal girişine yönlendir */
 function medisaMainAppLogout() {
     try {
@@ -544,16 +554,95 @@ function medisaMainAppLogout() {
         if (typeof document !== 'undefined' && document.body) {
             document.body.removeAttribute('data-medisa-role');
         }
-        var menu = document.getElementById('settings-menu');
-        if (menu) menu.classList.remove('open');
-        var sub = document.getElementById('data-submenu');
-        if (sub) sub.classList.remove('open');
+        closeMainAppSettingsMenus();
     } catch (e) {}
     if (typeof window === 'undefined') return;
     window.__medisaRedirecting = true;
     window.location.href = DRIVER_INDEX_URL;
 }
 window.medisaMainAppLogout = medisaMainAppLogout;
+
+function medisaMainAppForgetThisDevice() {
+    try {
+        if (window.medisaPortalSession && typeof window.medisaPortalSession.forgetThisDevice === 'function') {
+            window.medisaPortalSession.forgetThisDevice();
+        } else {
+            clearStoredPortalTokens();
+            if (window.medisaPortalSession && typeof window.medisaPortalSession.clearRememberCredentials === 'function') {
+                window.medisaPortalSession.clearRememberCredentials();
+            }
+        }
+        setMedisaSession(getDefaultSession());
+        if (typeof document !== 'undefined' && document.body) {
+            document.body.removeAttribute('data-medisa-role');
+        }
+        closeMainAppSettingsMenus();
+    } catch (e) {}
+    if (typeof window === 'undefined') return;
+    window.__medisaRedirecting = true;
+    window.location.href = DRIVER_INDEX_URL + 'index.html?force=login';
+}
+window.medisaMainAppForgetThisDevice = medisaMainAppForgetThisDevice;
+
+var __medisaForgetConfirmPrevFocus = null;
+var __medisaForgetConfirmEscapeBound = false;
+
+function onMedisaForgetConfirmEscape(ev) {
+    if (!ev || ev.key !== 'Escape') return;
+    var modal = document.getElementById('forget-device-confirm-modal');
+    if (!modal || !modal.classList.contains('active')) return;
+    ev.preventDefault();
+    closeMedisaMainAppForgetThisDeviceConfirm();
+}
+
+function openMedisaMainAppForgetThisDeviceConfirm() {
+    var modal = document.getElementById('forget-device-confirm-modal');
+    if (!modal) {
+        medisaMainAppForgetThisDevice();
+        return;
+    }
+    closeMainAppSettingsMenus();
+    __medisaForgetConfirmPrevFocus = document.activeElement || null;
+    if (typeof document !== 'undefined' && document.body) {
+        document.body.classList.add('modal-open');
+    }
+    modal.style.display = 'flex';
+    requestAnimationFrame(function() {
+        modal.classList.add('active');
+        var cancelBtn = document.getElementById('forget-device-confirm-cancel');
+        if (cancelBtn && typeof cancelBtn.focus === 'function') cancelBtn.focus();
+    });
+    if (!__medisaForgetConfirmEscapeBound) {
+        document.addEventListener('keydown', onMedisaForgetConfirmEscape);
+        __medisaForgetConfirmEscapeBound = true;
+    }
+}
+window.openMedisaMainAppForgetThisDeviceConfirm = openMedisaMainAppForgetThisDeviceConfirm;
+
+function closeMedisaMainAppForgetThisDeviceConfirm() {
+    var modal = document.getElementById('forget-device-confirm-modal');
+    if (!modal) return;
+    modal.classList.remove('active');
+    setTimeout(function() {
+        modal.style.display = 'none';
+        if (typeof window.updateFooterDim === 'function') {
+            window.updateFooterDim();
+        } else if (document.body) {
+            document.body.classList.remove('modal-open');
+        }
+        if (__medisaForgetConfirmPrevFocus && typeof __medisaForgetConfirmPrevFocus.focus === 'function') {
+            try { __medisaForgetConfirmPrevFocus.focus(); } catch (e) {}
+        }
+        __medisaForgetConfirmPrevFocus = null;
+    }, 300);
+}
+window.closeMedisaMainAppForgetThisDeviceConfirm = closeMedisaMainAppForgetThisDeviceConfirm;
+
+function confirmMedisaMainAppForgetThisDevice() {
+    closeMedisaMainAppForgetThisDeviceConfirm();
+    medisaMainAppForgetThisDevice();
+}
+window.confirmMedisaMainAppForgetThisDevice = confirmMedisaMainAppForgetThisDevice;
 
 function decodeTokenPayload(token) {
     if (!token || typeof token !== 'string') return null;
@@ -875,9 +964,14 @@ function applyMainAppSessionUiState() {
 
     var session = window.medisaSession || getDefaultSession();
     syncMainAppHeaderUserName(session);
+    var showLogoutActions = !!getStoredPortalToken();
     var logoutBtn = document.getElementById('settings-logout-btn');
     if (logoutBtn) {
-        logoutBtn.style.display = getStoredPortalToken() ? '' : 'none';
+        logoutBtn.style.display = showLogoutActions ? '' : 'none';
+    }
+    var forgetBtn = document.getElementById('settings-forget-device-btn');
+    if (forgetBtn) {
+        forgetBtn.style.display = showLogoutActions ? '' : 'none';
     }
 
     var mainUserPanelLink = document.getElementById('main-user-panel-link');

@@ -2,18 +2,41 @@
 (function() {
 'use strict';
 
-var VERSION = '20260729.2';
+function applyMedisaIosPwaClass() {
+try {
+var ua = navigator.userAgent || '';
+var isIOS = (/iPad|iPhone|iPod/.test(ua) && !window.MSStream)
+|| (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+var isStandalone = (window.navigator.standalone === true)
+|| (typeof window.matchMedia === 'function' && window.matchMedia('(display-mode: standalone)').matches);
+var root = document.documentElement;
+var body = document.body;
+if (isIOS && isStandalone) {
+if (root) root.classList.add('is-ios-pwa');
+if (body) body.classList.add('is-ios-pwa');
+} else {
+if (root) root.classList.remove('is-ios-pwa');
+if (body) body.classList.remove('is-ios-pwa');
+}
+} catch (e) {}
+}
+applyMedisaIosPwaClass();
+if (document.readyState === 'loading') {
+document.addEventListener('DOMContentLoaded', applyMedisaIosPwaClass);
+}
+
+var VERSION = '20260731.2';
 window.MEDISA_DRIVER_ASSET_VERSIONS = window.MEDISA_DRIVER_ASSET_VERSIONS || {
-bootstrap: '20260729.1',
-login: '20260729.1',
-dashboardCore: '20260729.1',
+bootstrap: '20260731.2',
+login: '20260731.1',
+dashboardCore: '20260731.1',
 history: '20260718.4',
 documents: '20260718.3',
 feedback: '20260718.1',
-password: '20260729.2',
+password: '20260731.1',
 actions: '20260718.1',
-shellCss: '20260723.2',
-featureCss: '20260729.2'
+shellCss: '20260731.2',
+featureCss: '20260731.1'
 };
 
 var APP_ROOT = (function() {
@@ -317,6 +340,23 @@ window.medisaPortalSession.clearStoredTokens();
 window.location.href = DRIVER_PAGE_BASE + 'index.html';
 return;
 }
+if (fnName === 'forgetThisDevice' || fnName === 'confirmForgetThisDevice') {
+try {
+if (window.medisaPortalSession && typeof window.medisaPortalSession.forgetThisDevice === 'function') {
+window.medisaPortalSession.forgetThisDevice();
+} else if (window.medisaPortalSession && typeof window.medisaPortalSession.clearStoredTokens === 'function') {
+window.medisaPortalSession.clearStoredTokens();
+if (typeof window.medisaPortalSession.clearRememberCredentials === 'function') {
+window.medisaPortalSession.clearRememberCredentials();
+}
+}
+} catch (e) {}
+window.location.href = DRIVER_PAGE_BASE + 'index.html?force=login';
+return;
+}
+if (fnName === 'openForgetThisDeviceConfirm' || fnName === 'closeForgetThisDeviceConfirm') {
+return;
+}
 alert('Panel henüz hazır değil. Lütfen tekrar deneyin.');
 };
 }
@@ -350,6 +390,10 @@ alert('Panel henüz hazır değil. Lütfen tekrar deneyin.');
 ].forEach(function(item) { installProxy(item[0], item[1], item[2]); });
 
 installCoreProxy('logout');
+installCoreProxy('forgetThisDevice');
+installCoreProxy('openForgetThisDeviceConfirm');
+installCoreProxy('closeForgetThisDeviceConfirm');
+installCoreProxy('confirmForgetThisDevice');
 installCoreProxy('openDriverNotifications');
 installCoreProxy('closeDriverNotifications');
 

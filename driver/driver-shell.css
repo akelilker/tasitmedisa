@@ -2457,21 +2457,41 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
   /* Tarih uyarı çerçevesi kalsın; sola itmeyi kaldırdık, hiza için negatif margin */
 }
 
-/* iOS ana ekran uygulamasında tam dikey merkez, geniş üst boşluk üretip klavye
-   açıldığında formu aşağıda bırakıyor. Formu üst üçte tut; içerik alanı kaydırılabilir kalır. */
+/* Android/masaüstü PWA mobil: mevcut üst offset davranışı korunur.
+   iOS PWA (body.is-ios-pwa) bu kuralların dışında tutulur; gerçek flex merkez kullanır. */
 @media (max-width: 768px) and (display-mode: standalone) {
-  .login-page .content-wrap.driver-content-wrap.driver-scroll-area {
+  body:not(.is-ios-pwa).login-page .content-wrap.driver-content-wrap.driver-scroll-area {
     justify-content: flex-start !important;
   }
-  .login-page .login-container {
+  body:not(.is-ios-pwa).login-page .login-container {
     margin-top: clamp(48px, 12dvh, 104px) !important;
   }
 }
 
 @media (max-width: 768px) and (max-height: 700px) and (display-mode: standalone) {
-  .login-page .login-container {
+  body:not(.is-ios-pwa).login-page .login-container {
     margin-top: 24px !important;
   }
+}
+
+/* iOS ana ekran PWA login: content alanında gerçek dikey merkez + input/buton padding */
+body.is-ios-pwa.login-page .content-wrap.driver-content-wrap.driver-scroll-area {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+body.is-ios-pwa.login-page .login-container {
+  margin-top: 0 !important;
+}
+body.is-ios-pwa.login-page .login-form .form-group input {
+  padding-top: 11px;
+  padding-bottom: 11px;
+}
+body.is-ios-pwa.login-page .btn-login,
+body.is-ios-pwa.login-page #login-form #login-btn.btn-login {
+  padding-top: 15px;
+  padding-bottom: 15px;
 }
 
 .login-container {

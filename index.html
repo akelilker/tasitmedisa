@@ -291,6 +291,7 @@
                             </div>
                         </div>
                         <button id="settings-clear-cache-btn" onclick="clearCache()" class="cache-clear-btn">🗑️ Önbellek Temizle</button>
+                        <button type="button" id="settings-forget-device-btn" class="settings-logout-btn" onclick="if(typeof openMedisaMainAppForgetThisDeviceConfirm==='function')openMedisaMainAppForgetThisDeviceConfirm();" style="display:none;">Bu Cihazı Unut</button>
                         <button type="button" id="settings-logout-btn" class="settings-logout-btn" onclick="if(typeof medisaMainAppLogout==='function')medisaMainAppLogout();" style="display:none;">Çıkış</button>
                     </div>
                 </div>
@@ -422,6 +423,27 @@
             </div>
         </div>
 
+        <div id="forget-device-confirm-modal" class="modal-overlay ayarlar-modal-overlay" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="forget-device-confirm-title" aria-describedby="forget-device-confirm-message">
+            <div class="modal-container" onclick="event.stopPropagation();">
+                <div class="modal-header">
+                    <h2 id="forget-device-confirm-title">Bu Cihazı Unut</h2>
+                    <button type="button" class="modal-close" onclick="if(typeof closeMedisaMainAppForgetThisDeviceConfirm==='function')closeMedisaMainAppForgetThisDeviceConfirm();" aria-label="Kapat">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p id="forget-device-confirm-message">Bu cihazda saklanan kullanıcı adı, parola ve oturum bilgileri silinecek.</p>
+                    <div class="universal-btn-group">
+                        <button type="button" class="universal-btn-cancel" id="forget-device-confirm-cancel" onclick="if(typeof closeMedisaMainAppForgetThisDeviceConfirm==='function')closeMedisaMainAppForgetThisDeviceConfirm();">Vazgeç</button>
+                        <button type="button" class="universal-btn-save" id="forget-device-confirm-submit" onclick="if(typeof confirmMedisaMainAppForgetThisDevice==='function')confirmMedisaMainAppForgetThisDevice();">Bu Cihazı Unut</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Tescil Tarihi Onay Modalı -->
 
         <!-- Tescil Tarihi Giriş Modalı -->
@@ -518,8 +540,8 @@
     })();
     </script>
 
-    <script defer src="portal-session.js?v=20260513.2"></script>
-    <script defer src="data-manager.js?v=20260729.6"></script>
+    <script defer src="portal-session.js?v=20260731.1"></script>
+    <script defer src="data-manager.js?v=20260731.2"></script>
     <script defer src="data-service.js?v=20260718.2"></script>
     <script defer src="script-core.js?v=20260730.1"></script>
 </body>
