@@ -141,7 +141,7 @@ test('Ana shell zorunlu durumda auth gatei açmaz', () => {
   assert.ok(requiredAt >= 0 && clearAt > requiredAt);
 });
 test('Cache sürümü tek adım artırılmıştır', () => {
-  assert.match(files.sw, /CACHE_VERSION\s*=\s*'medisa-v2\.265'/);
+  assert.match(files.sw, /CACHE_VERSION\s*=\s*'medisa-v2\.266'/);
 });
 
 console.log(`Mandatory password change invariants: ${passed} passed, ${failed} failed`);
