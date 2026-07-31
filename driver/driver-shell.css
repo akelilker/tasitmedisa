@@ -2069,14 +2069,15 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
   overflow: hidden !important;
 }
 
-/* Login content-wrap: anasayfa ile aynı hizalama (padding, safe-area) */
+/* Login content-wrap: header zaten safe-area taşıyor; burada tekrar inset ekleme
+   (özellikle iOS PWA'da justify-content:center formunu görsel olarak aşağı iter). */
 .login-page .content-wrap {
   flex: 1 1 auto !important;
   min-height: 0 !important;
   min-width: 0 !important;
   padding: 4px !important;
-  padding-top: max(12px, env(safe-area-inset-top)) !important;
-  padding-bottom: 16px !important;
+  padding-top: 4px !important;
+  padding-bottom: 4px !important;
   overflow-x: hidden !important;
   overflow-y: auto !important;
   scrollbar-width: none !important;
@@ -2474,15 +2475,18 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
   }
 }
 
-/* iOS ana ekran PWA login: content alanında gerçek dikey merkez + input/buton padding */
+/* iOS ana ekran PWA login: header–footer arası gerçek dikey merkez + input/buton padding */
 body.is-ios-pwa.login-page .content-wrap.driver-content-wrap.driver-scroll-area {
   display: flex !important;
   flex-direction: column !important;
   align-items: center !important;
   justify-content: center !important;
+  padding-top: 4px !important;
+  padding-bottom: 4px !important;
 }
 body.is-ios-pwa.login-page .login-container {
   margin-top: 0 !important;
+  margin-bottom: 0 !important;
 }
 body.is-ios-pwa.login-page .login-form .form-group input {
   padding-top: 11px;
@@ -2492,6 +2496,21 @@ body.is-ios-pwa.login-page .btn-login,
 body.is-ios-pwa.login-page #login-form #login-btn.btn-login {
   padding-top: 15px;
   padding-bottom: 15px;
+}
+
+/* Beni Hatırla: iOS dokunma alanı */
+body.is-ios-pwa.login-page .form-group-checkbox {
+  min-height: 44px;
+  align-items: center;
+}
+body.is-ios-pwa.login-page .form-group-checkbox input[type="checkbox"] {
+  width: 22px;
+  height: 22px;
+  min-width: 22px;
+  min-height: 22px;
+}
+body.is-ios-pwa.login-page .form-group-checkbox label {
+  padding: 10px 0;
 }
 
 .login-container {

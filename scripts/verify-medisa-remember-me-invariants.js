@@ -185,7 +185,7 @@ test('7) Normal çıkış token siler, hatırlamayı korur', () => {
   assert.ok(logoutIdx >= 0);
   const logoutBlock = files.coreJs.slice(logoutIdx, files.coreJs.indexOf('window.logout = logout'));
   assert.match(logoutBlock, /clearStoredPortalTokens\(\)/);
-  assert.match(logoutBlock, /index\.html'/);
+  assert.match(logoutBlock, /index\.html\?force=login/);
   assert.doesNotMatch(logoutBlock, /clearRememberCredentials|driver_saved_password|forgetThisDevice/);
 });
 
@@ -254,7 +254,7 @@ test('12) Kaynakta parola sızıntısı / sahte şifreleme yok', () => {
   assert.match(files.loginJs, /JSON\.stringify\(\{\s*username,\s*password\s*\}\)/);
   assert.doesNotMatch(files.loginJs, /clearSavedDriverPassword/);
   assert.match(files.loginJs, /saveRememberCredentials\(username,\s*password\)/);
-  assert.match(files.loginJs, /applyRememberedCredentialsToLoginForm/);
+  assert.match(files.loginJs, /restoreRememberedLoginForm|applyRememberedCredentialsToLoginForm/);
 });
 
 test('Login açılışında kayıtlı parola otomatik silinmez', () => {
@@ -265,7 +265,8 @@ test('Login açılışında kayıtlı parola otomatik silinmez', () => {
   );
   assert.doesNotMatch(initSlice, /removeItem\(['"]driver_saved_password['"]\)/);
   assert.doesNotMatch(initSlice, /clearRememberCredentials\(/);
-  assert.match(initSlice, /applyRememberedCredentialsToLoginForm/);
+  assert.match(initSlice, /restoreRememberedLoginForm/);
+  assert.match(initSlice, /pageshow/);
 });
 
 test('Ana uygulama Bu Cihazı Unut UI ve auth kuralı', () => {
@@ -301,6 +302,7 @@ test('Ana uygulama normal çıkış hatırlamayı korur', () => {
     files.dataManager.indexOf('window.medisaMainAppLogout')
   );
   assert.match(logoutFn, /clearStoredPortalTokens\(\)/);
+  assert.match(logoutFn, /index\.html\?force=login/);
   assert.doesNotMatch(logoutFn, /forgetThisDevice|clearRememberCredentials|driver_saved_/);
 });
 
@@ -318,8 +320,9 @@ test('iOS PWA login class ve CSS owner kuralları', () => {
   assert.match(files.bootstrap, /classList\.add\('is-ios-pwa'\)/);
   assert.match(files.shellCss, /body\.is-ios-pwa\.login-page[\s\S]{0,220}justify-content:\s*center/);
   assert.match(files.shellCss, /body\.is-ios-pwa\.login-page[\s\S]{0,120}margin-top:\s*0/);
-  assert.match(files.shellCss, /body\.is-ios-pwa\.login-page[\s\S]{0,180}padding-top:\s*11px/);
-  assert.match(files.shellCss, /body\.is-ios-pwa\.login-page[\s\S]{0,220}padding-top:\s*15px/);
+  assert.match(files.shellCss, /body\.is-ios-pwa\.login-page[\s\S]{0,260}padding-top:\s*4px/);
+  assert.match(files.shellCss, /body\.is-ios-pwa\.login-page[\s\S]{0,280}padding-top:\s*11px/);
+  assert.match(files.shellCss, /body\.is-ios-pwa\.login-page[\s\S]{0,320}padding-top:\s*15px/);
   assert.match(files.shellCss, /body:not\(\.is-ios-pwa\)\.login-page[\s\S]{0,180}clamp\(48px,\s*12dvh,\s*104px\)/);
   assert.match(files.shellCss, /\.login-form \.form-group input \{[\s\S]{0,80}padding:\s*8px 16px/);
   assert.match(files.shellCss, /\.btn-login \{[\s\S]{0,60}padding:\s*12px/);
@@ -327,12 +330,12 @@ test('iOS PWA login class ve CSS owner kuralları', () => {
 });
 
 test('Bu görev style-core.css ownerına dokunmaz ve asset pinleri tutarlıdır', () => {
-  assert.match(files.bootstrap, /shellCss:\s*'20260731\.2'/);
-  assert.match(files.bootstrap, /bootstrap:\s*'20260731\.2'/);
-  assert.match(files.loginHtml, /driver-shell\.css\?v=20260731\.2/);
-  assert.match(files.dashboardHtml, /driver-shell\.css\?v=20260731\.2/);
-  assert.match(files.loginHtml, /driver-script\.js\?v=20260731\.2/);
-  assert.match(files.indexHtml, /data-manager\.js\?v=20260731\.2/);
+  assert.match(files.bootstrap, /shellCss:\s*'20260731\.3'/);
+  assert.match(files.bootstrap, /bootstrap:\s*'20260731\.3'/);
+  assert.match(files.loginHtml, /driver-shell\.css\?v=20260731\.3/);
+  assert.match(files.dashboardHtml, /driver-shell\.css\?v=20260731\.3/);
+  assert.match(files.loginHtml, /driver-script\.js\?v=20260731\.3/);
+  assert.match(files.indexHtml, /data-manager\.js\?v=20260731\.3/);
   // style-core dirty olabilir ama görev iOS/login kurallarını oraya taşımamalı
   assert.doesNotMatch(files.styleCore, /is-ios-pwa/);
   assert.doesNotMatch(files.styleCore, /settings-forget-device-btn/);
