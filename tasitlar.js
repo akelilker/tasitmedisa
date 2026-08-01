@@ -2164,13 +2164,14 @@
     window.addEventListener('resize', onResize);
   }
 
-  // Toolbar Container Oluştur — modal-body içinde, #vehicles-modal-content önünde
+  // Toolbar: header ile modal-body arasında (scroll dışı). modal-body içinde sticky olunca
+  // iOS PWA'da şube kartı üst çerçevesi overflow ile kesiliyordu.
   function ensureToolbar() {
     const modal = DOM.vehiclesModal;
+    const header = DOM.vehiclesModalHeader;
     const modalBody = modal ? modal.querySelector('.modal-body') : null;
-    const contentEl = DOM.vehiclesModalContent;
 
-    if (!modal || !modalBody || !contentEl) return { toolbar: null };
+    if (!modal || !header || !modalBody) return { toolbar: null };
 
     let toolbar = modal.querySelector('.vehicles-toolbar');
     if (!toolbar) {
@@ -2178,8 +2179,8 @@
       toolbar.className = 'vehicles-toolbar';
     }
 
-    if (toolbar.parentElement !== modalBody || toolbar.nextElementSibling !== contentEl) {
-      modalBody.insertBefore(toolbar, contentEl);
+    if (toolbar.parentElement !== modal || toolbar.previousElementSibling !== header || toolbar.nextElementSibling !== modalBody) {
+      header.after(toolbar);
     }
 
     return { toolbar };

@@ -2582,8 +2582,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     justify-content: space-between;
     align-items: center;
     padding: 0 16px;
-    position: sticky !important;
-    top: 0;
+    position: relative;
     z-index: 10;
     flex-shrink: 0;
     overflow: visible !important; /* dropdown kesilmesin */
@@ -2965,7 +2964,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: 0 3px 12px 3px !important; /* üst 0: toolbar içeride sticky; içerik boşluğu #vehicles-modal-content'te */
+    padding: 0 3px 12px 3px !important; /* üst 0: toolbar header-body arasında; içerik boşluğu #vehicles-modal-content'te */
     box-sizing: border-box !important;
     scrollbar-width: none;
     -ms-overflow-style: none;
