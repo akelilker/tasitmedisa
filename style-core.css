@@ -2311,10 +2311,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         overscroll-behavior-x: none !important;
     }
 
-    /* Kayıt / Raporlar / tüm taşıt modalları / Ayarlar (şube-kullanıcı-veri): mobilde yan+üst+alt krom çerçeve görünür */
-    #vehicle-modal.modal-overlay .modal-container,
-    #reports-modal.modal-overlay .modal-container,
-    .tasitlar-modal-overlay.modal-overlay .modal-container,
+    /* Taşıt detay zinciri + Ayarlar: mevcut yardımcı modal kromu korunur. */
+    :is(#vehicle-detail-modal, #dinamik-olay-modal, #event-menu-modal, #vehicle-history-modal).tasitlar-modal-overlay.modal-overlay .modal-container,
     #branch-modal.modal-overlay .modal-container,
     #branch-form-modal.modal-overlay .modal-container,
     #user-modal.modal-overlay .modal-container,
@@ -2322,21 +2320,30 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     #data-management-modal.modal-overlay .modal-container,
     #dis-veri-panel.modal-overlay .modal-container {
         border-top-width: 1px !important;
-        border-top-color: rgba(255, 255, 255, 0.38) !important;
+        border-top-color: rgba(255, 255, 255, 0.24) !important;
         border-left-width: 1px !important;
         border-right-width: 1px !important;
         border-left-color: rgba(255, 255, 255, 0.35) !important;
         border-right-color: rgba(255, 255, 255, 0.35) !important;
         border-bottom-width: 1px !important;
         border-bottom-color: rgba(255, 255, 255, 0.32) !important;
-    }
-    #vehicle-modal.modal-overlay .modal-container,
-    #reports-modal.modal-overlay .modal-container,
-    .tasitlar-modal-overlay.modal-overlay .modal-container {
-        border-top-color: rgba(255, 255, 255, 0.24) !important;
         box-shadow:
             0 0 40px var(--shadow-modal),
             inset 0 0.5px 0 0 rgba(255, 255, 255, 0.06) !important;
+    }
+
+    /* Ana yüzey modalları: Kayıt / Taşıtlar / Raporlar için tek dış-krom ownerı.
+       Native border çocuk header katmanının altında kaybolmaz; pseudo-element telafisi gerekmez. */
+    :is(#vehicle-modal, #vehicles-modal, #reports-modal).modal-overlay .modal-container {
+        border-width: 1px !important;
+        border-style: solid !important;
+        border-color: rgba(184, 192, 201, 0.42) !important;
+        border-top-color: rgba(200, 208, 216, 0.48) !important;
+        border-bottom-color: rgba(168, 176, 186, 0.40) !important;
+        outline: 1px solid rgba(214, 222, 232, 0.34) !important;
+        outline-offset: -1px !important;
+        background-clip: padding-box !important;
+        box-shadow: none !important;
     }
     /* Modal header: üstten nefes alması için 12px, üst köşeler 10px (container ile uyumlu) */
     .modal-overlay .modal-header {
@@ -2784,11 +2791,9 @@ body.modal-open .app-container {
   gap: 8px;
 }
 
-/* === NOKTA ATIŞI: Ana + taşıt modalları alt çerçeve (768px) === */
+/* === Yardımcı modallar alt çerçeve güvenliği (768px) === */
 @media (max-width: 768px) {
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicle-modal.modal-overlay .modal-container,
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #reports-modal.modal-overlay .modal-container,
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .tasitlar-modal-overlay.modal-overlay .modal-container,
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) :is(#vehicle-detail-modal, #dinamik-olay-modal, #event-menu-modal, #vehicle-history-modal).tasitlar-modal-overlay.modal-overlay .modal-container,
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #branch-modal.modal-overlay .modal-container,
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #branch-form-modal.modal-overlay .modal-container,
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #user-modal.modal-overlay .modal-container,

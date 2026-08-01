@@ -8,10 +8,6 @@
 
 /* Overlay alt sınırı: style-core .modal-overlay (--app-footer-real-height + --app-footer-gap); ezme yok */
 .tasitlar-modal-overlay {
-    --modal-mobile-border-color: rgba(184, 192, 201, 0.42);
-    --modal-mobile-top-border-color: rgba(200, 208, 216, 0.48);
-    --modal-mobile-header-top-border: rgba(255, 255, 255, 0.18);
-    --modal-mobile-inner-top-highlight: rgba(255, 255, 255, 0.12);
     display: none !important;
     background: var(--bg) !important;
     flex-direction: column !important;
@@ -2582,8 +2578,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     justify-content: space-between;
     align-items: center;
     padding: 0 16px;
-    position: sticky !important;
-    top: 0;
+    position: relative;
     z-index: 10;
     flex-shrink: 0;
     overflow: visible !important; /* dropdown kesilmesin */
@@ -2965,7 +2960,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: 0 3px 12px 3px !important; /* üst 0: toolbar içeride sticky; içerik boşluğu #vehicles-modal-content'te */
+    padding: 0 3px 12px 3px !important; /* üst 0: toolbar header-body arasında; içerik boşluğu #vehicles-modal-content'te */
     box-sizing: border-box !important;
     scrollbar-width: none;
     -ms-overflow-style: none;
@@ -3859,7 +3854,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     backdrop-filter: blur(10px);
 }
 
-/* Taşıtlar listesi: şube kartı hover overflow düzeltmesi; çerçeve/header style-core opt-in ile (Kayıt/Raporlar ile aynı). */
+/* Taşıtlar listesi: şube kartı hover overflow düzeltmesi; dış krom style-core.css tarafından yönetilir. */
 #vehicles-modal.tasitlar-modal-overlay .modal-container {
     overflow: hidden !important;
     background: var(--modal-bg) !important;

@@ -28,10 +28,6 @@
 #vehicle-modal {
     --save-green: #28a745;
     --save-green-rgb: 40, 167, 69;
-    --modal-mobile-border-color: rgba(184, 192, 201, 0.42);
-    --modal-mobile-top-border-color: rgba(200, 208, 216, 0.48);
-    --modal-mobile-header-top-border: rgba(255, 255, 255, 0.18);
-    --modal-mobile-inner-top-highlight: rgba(255, 255, 255, 0.12);
 }
 
 /* Çift katman / üst kırım: style-core tam opak overlay kullanır; ::before kapatıldı */
@@ -40,21 +36,7 @@
     content: none !important;
 }
 
-/* #vehicle-modal container: ortak kurallar style-core.css'te; sadece sayfa özel override'lar burada */
-
-#vehicle-modal .modal-container::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: rgba(200, 208, 216, 0.48);
-    border-top-left-radius: var(--modal-radius, 10px);
-    border-top-right-radius: var(--modal-radius, 10px);
-    pointer-events: none;
-    z-index: 3;
-}
+/* #vehicle-modal dış kromu style-core.css tarafından yönetilir; bu dosya yalnız kayıt içeriğine özeldir. */
 
 /* Kayıt modalı: container ölçüleri style-core.css'te; burada sadece içerik düzeni */
 #vehicle-modal .modal-body {
