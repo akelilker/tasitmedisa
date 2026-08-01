@@ -335,10 +335,30 @@ test('Bu görev style-core.css ownerına dokunmaz ve asset pinleri tutarlıdır'
   assert.match(files.loginHtml, /driver-shell\.css\?v=20260731\.3/);
   assert.match(files.dashboardHtml, /driver-shell\.css\?v=20260731\.3/);
   assert.match(files.loginHtml, /driver-script\.js\?v=20260731\.3/);
-  assert.match(files.indexHtml, /data-manager\.js\?v=20260731\.3/);
   // style-core dirty olabilir ama görev iOS/login kurallarını oraya taşımamalı
   assert.doesNotMatch(files.styleCore, /is-ios-pwa/);
   assert.doesNotMatch(files.styleCore, /settings-forget-device-btn/);
+});
+
+test('Ana uygulama data-manager asset referansı tekil ve versioned', () => {
+  const dataManagerRefs = [...files.indexHtml.matchAll(
+    /<script\b[^>]*\bsrc=["']data-manager\.js\?v=([^"'&\s]+)["'][^>]*>/g
+  )];
+  assert.equal(
+    dataManagerRefs.length,
+    1,
+    'index.html data-manager.js script referansı tam bir kez ve versioned olmalı (bulunan=' + dataManagerRefs.length + ')'
+  );
+  assert.match(
+    dataManagerRefs[0][1],
+    /^\d{8}\.\d+$/,
+    'data-manager pin tarih.surum (YYYYMMDD.N) formatında olmalı (pin=' + dataManagerRefs[0][1] + ')'
+  );
+  assert.equal(
+    [...files.indexHtml.matchAll(/data-manager\.js(?!\?v=)/g)].length,
+    0,
+    'pinsiz data-manager.js referansı bulunmamalı'
+  );
 });
 
 console.log(`Remember-me invariants: ${passed} passed, ${failed} failed`);
