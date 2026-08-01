@@ -3865,6 +3865,21 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     background-color: var(--modal-bg) !important;
 }
 
+/* Üst highlight: Kayıt modalı ile aynı (container native border + 1px çizgi; ::before tam çerçeve header altında kalıyordu) */
+#vehicles-modal .modal-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: rgba(200, 208, 216, 0.48);
+    border-top-left-radius: var(--modal-radius, 10px);
+    border-top-right-radius: var(--modal-radius, 10px);
+    pointer-events: none;
+    z-index: 3;
+}
+
 @media (min-width: 641px) {
     #vehicles-modal.tasitlar-modal-overlay .modal-container,
     :is(#vehicle-detail-modal, #event-menu-modal, #dinamik-olay-modal, #vehicle-history-modal).tasitlar-modal-overlay .modal-container {
