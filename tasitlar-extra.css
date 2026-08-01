@@ -1965,12 +1965,17 @@
     font-size: 19px !important; /* +1pt (base 15→16 civarı mobil) */
   }
   
-  /* Mobil: yan çerçeve 3px, alt boşluk 8px; üst padding yok (toolbar header-body arasında) */
+  /* Mobil: yan çerçeve 3px; üst nefes şube dashboard'da modal-body'de (raporlar ile aynı) */
   #vehicles-modal .modal-body {
     padding: 0 3px 8px 3px !important;
-    overflow-x: hidden !important; /* Yatay kaymayı engelle */
-    touch-action: pan-y !important; /* Sadece dikey kaydırma */
-    overscroll-behavior-x: none !important; /* Yatay overscroll'u engelle */
+    overflow-x: hidden !important;
+    touch-action: pan-y !important;
+    overscroll-behavior-x: none !important;
+  }
+  #vehicles-modal:not(.has-vehicles-list-scroll) .modal-body {
+    padding: 16px 3px 8px 3px !important;
+  }
+  #vehicles-modal.has-vehicles-list-scroll .modal-body {
     isolation: isolate !important;
   }
   #vehicles-modal .modal-body .view-list {
@@ -1990,9 +1995,9 @@
     align-items: flex-start;
   }
 
-  /* Şube dashboard: Raporlar modal-body üst nefesi (16px) ile hizalı */
+  /* Şube dashboard: üst boşluk modal-body'de; content padding'i sıfırla (iOS scroll karartı bandı) */
   #vehicles-modal:not(.has-vehicles-list-scroll) #vehicles-modal-content {
-    padding-top: 12px !important;
+    padding-top: 0 !important;
   }
 
   #vehicles-modal .branch-card {
@@ -2737,6 +2742,7 @@
     max-width: 100% !important;
     box-sizing: border-box !important;
     overflow: visible !important;
+    z-index: auto !important;
   }
 
   #vehicles-modal .vt-left,
