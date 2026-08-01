@@ -2728,39 +2728,6 @@
   /* Ortak mobil container + iOS PWA: style-core.css (.modal-overlay .modal-container) */
   .tasitlar-modal-overlay .modal-close { font-size: 21px; }
 
-  /* Tasitlar liste modalı: Kayit/Raporlar ile ayni mobil krom.
-     Toolbar ikonlari yatay alani zorladiginda header kirmizisi ust/yan cerceveyi soluklastirmasin. */
-  #vehicles-modal.tasitlar-modal-overlay.modal-overlay .modal-container {
-    border-color: rgba(255, 255, 255, 0.35) !important;
-    border-top-color: rgba(255, 255, 255, 0.38) !important;
-    border-bottom-color: rgba(255, 255, 255, 0.32) !important;
-    background-clip: padding-box !important;
-    box-shadow:
-      0 0 40px var(--shadow-modal),
-      inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
-  }
-
-  #vehicles-modal.tasitlar-modal-overlay.modal-overlay:not(.detail-underlay) .modal-container::before {
-    content: '' !important;
-    position: absolute !important;
-    inset: 0 !important;
-    border: 1px solid rgba(255, 255, 255, 0.35) !important;
-    border-top-color: rgba(200, 208, 216, 0.48) !important;
-    border-bottom-color: rgba(255, 255, 255, 0.32) !important;
-    border-radius: 10px !important;
-    box-sizing: border-box !important;
-    pointer-events: none !important;
-    z-index: 4 !important;
-  }
-
-  #vehicles-modal.tasitlar-modal-overlay .modal-header {
-    background: var(--modal-header-red-gradient) !important;
-    background-size: 100% 100% !important;
-    background-clip: padding-box !important;
-    border-top-left-radius: 9px !important;
-    border-top-right-radius: 9px !important;
-  }
-
   #vehicles-modal .modal-header h2.premium-title {
     filter: brightness(1.10);
   }
