@@ -63,21 +63,17 @@ Deferred durum kod eksikliği değildir. Gerçek import canlı server verisini d
 - Kayıt / Taşıtlar / Raporlar authenticated ilk lazy click: **PASS** (masaüstü / agent doğrulaması)
 - Fiziksel iPhone PWA kabulü masaüstü testlerinden ayrı tutulur: **PENDING_USER_ACCEPTANCE**
 
-### Restore durumu (`restore.php`)
+### Restore durumu (`restore.php` + server restore)
 
-- `restore.php` gerçek restore apply yapmaz.
-- Metadata-only davranış bilinçli güvenlik kararıdır.
-- Endpoint yalnız izin verilen read metodlarıyla (GET/OPTIONS) metadata döndürür.
-- Raw backup istemciye verilmez.
-- UI / response açıkça güvenli server restore’un aktif olmadığını söyler (`restore_enabled: false`).
-- Bu nedenle mevcut durum aktif P0 bug değildir.
-- Gerçek server-side restore ayrı ürün onayı, güvenlik tasarımı, transaction, snapshot, audit, rollback ve staging gerektirir.
-- Açık ürün onayı olmadan uygulanmamalıdır.
-
-```
-RESTORE_APPLY_DECISION:
-DO_NOT_IMPLEMENT_WITHOUT_EXPLICIT_PRODUCT_APPROVAL
-```
+- `restore.php` gerçek restore apply yapmaz; metadata-only GET kontratı korunur.
+- Server restore altyapısı **IMPLEMENTED** (registry / dry-run / commit / status).
+- Production restore **DISABLED** (`MEDISA_SERVER_RESTORE_ENABLED` default false; maintenance default false; HMAC secret repo’da yok).
+- P0/P1 güvenlik kapanışı: full canonical content hash, user/actor/credential invariantları, unknown collection reject, verified emergency rollback, ledger fail-closed, dry-run exact no-write.
+- Geçmiş karar notu: `DO_NOT_IMPLEMENT_WITHOUT_EXPLICIT_PRODUCT_APPROVAL` — implementation artık vardır; **activation** staging acceptance + açık yetkilendirme olmadan yasaktır.
+- Staging acceptance: **PENDING**
+- Production write acceptance: **PENDING**
+- Live restore performed: **NO**
+- Runtime data changed: **NO**
 
 ### FTP Deploy Action
 
@@ -268,7 +264,7 @@ Kalan işler **düşük öncelikli UX, hijyen ve backlog** kalemleridir.
 6. **Windows atomic write** iyileştirmesi (yalnızca Windows dev sorun çıkarırsa)
 7. **Fiziksel iPhone PWA kabulü** (PENDING_USER_ACCEPTANCE; masaüstü emülasyonu yeterli değildir)
 8. **Controlled import round-trip** (DEFERRED VALIDATION; ayrı write yetkisi + backup + rollback)
-9. **Server-side restore apply** (DO_NOT_IMPLEMENT_WITHOUT_EXPLICIT_PRODUCT_APPROVAL)
+9. **Server-side restore activation** (IMPLEMENTED; activation prohibited until staging acceptance + explicit authorization)
 
 ---
 

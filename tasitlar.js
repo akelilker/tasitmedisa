@@ -176,7 +176,7 @@
 
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20260801.6';
+  const MEDISA_TASITLAR_MODULE_VERSION = '20260801.7';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
@@ -9207,10 +9207,41 @@
     return { bakim: bakim, kaza: kaza, km: km, diger: diger };
   }
 
-  function updateHistoryTabCounts(events) {
+  /**
+   * History sekme sayaçları — KM sentetik onaylı düzeltme kartı ile aynı predicate.
+   * Gerçek km-revize varsa onun sayısı; yoksa gösterilebilir approved correction → 1.
+   */
+  function hasDisplayableApprovedKmCorrectionCard(vehicle, kmEvents) {
+    const list = Array.isArray(kmEvents) ? kmEvents : [];
+    if (list.length > 0) return false;
+    if (!vehicle || vehicle.id == null) return false;
+    const talep = getLatestApprovedKmCorrection(vehicle.id, list);
+    if (!talep) return false;
+    return !!buildKmCorrectionNoteHtml(talep);
+  }
+
+  function getEffectiveHistoryTabCounts(vehicle, events) {
+    const base = countHistoryEventsByTab(events);
+    const list = Array.isArray(events) ? events : [];
+    const kmEvents = list.filter(function(e) { return e && e.type === 'km-revize'; });
+    let km = kmEvents.length;
+    if (km === 0 && hasDisplayableApprovedKmCorrectionCard(vehicle, kmEvents)) {
+      km = 1;
+    }
+    return {
+      bakim: base.bakim,
+      kaza: base.kaza,
+      km: km,
+      diger: base.diger
+    };
+  }
+
+  function updateHistoryTabCounts(events, vehicle) {
     const modal = DOM.vehicleHistoryModal;
-    if (!modal) return countHistoryEventsByTab(events);
-    const counts = countHistoryEventsByTab(events);
+    const counts = vehicle
+      ? getEffectiveHistoryTabCounts(vehicle, events)
+      : countHistoryEventsByTab(events);
+    if (!modal) return counts;
     const ariaBase = {
       bakim: 'Bakım geçmişi',
       kaza: 'Kaza geçmişi',
@@ -9622,7 +9653,7 @@
     renderVehicleContextRow(DOM.vehicleHistoryModal, vehicle);
 
     const events = vehicle.events || [];
-    const tabCounts = updateHistoryTabCounts(events);
+    const tabCounts = updateHistoryTabCounts(events, vehicle);
     let html = '';
 
     if (tabType === 'bakim') {

@@ -297,8 +297,11 @@ test('owner fonksiyonları mevcut', function() {
   assert.match(tasitlar, /window\.closeVehicleHistoryModal\s*=\s*function/);
   assert.match(tasitlar, /window\.backFromHistoryToVehicleDetail\s*=\s*function/);
   assert.match(tasitlar, /function updateHistoryTabCounts\s*\(/);
+  assert.match(tasitlar, /function getEffectiveHistoryTabCounts\s*\(/);
+  assert.match(tasitlar, /function hasDisplayableApprovedKmCorrectionCard\s*\(/);
   assert.match(tasitlar, /function buildHistoryEmptyHtml\s*\(/);
   assert.match(tasitlar, /function historyEventDatetimeAttr\s*\(/);
+  assert.match(historyFns.switchTab, /updateHistoryTabCounts\(events,\s*vehicle\)/);
 });
 
 test('close/back handler owner değişmedi', function() {
@@ -400,7 +403,9 @@ test('fixture: tab count update idempotent, duplicate yok', function() {
       { type: 'kaza' },
       { type: 'km-revize' },
       { type: 'muayene-guncelle' }
-    ]
+    ],
+    getLatestApprovedKmCorrection: function() { return null; },
+    buildKmCorrectionNoteHtml: function() { return ''; }
   };
   sandbox.DOM.vehicleHistoryModal = sandbox.modal;
   vm.createContext(sandbox);
@@ -415,6 +420,45 @@ test('fixture: tab count update idempotent, duplicate yok', function() {
   assert.equal(counts[2].textContent, '1');
   assert.equal(counts[3].textContent, '1');
   assert.equal(tabs.querySelectorAll('.history-tab-label').length, 4);
+});
+
+test('KM effective count: synthetic approved card edge-cases', function() {
+  const src = extractBetween(
+    tasitlar,
+    'function countHistoryEventsByTab',
+    'function buildHistoryEmptyHtml'
+  );
+  function runCounts(events, approved) {
+    const sandbox = {
+      getLatestApprovedKmCorrection: function() {
+        return approved ? { talep_tarihi: '2026-01-01', yeni_km: 12000 } : null;
+      },
+      buildKmCorrectionNoteHtml: function(talep) {
+        return talep ? '<div class="note">x</div>' : '';
+      }
+    };
+    vm.createContext(sandbox);
+    return vm.runInContext(
+      src + '\ngetEffectiveHistoryTabCounts({ id: "v1" }, ' + JSON.stringify(events) + ');',
+      sandbox
+    );
+  }
+  assert.equal(runCounts([], false).km, 0);
+  assert.equal(runCounts([], true).km, 1);
+  assert.equal(runCounts([{ type: 'km-revize' }], false).km, 1);
+  assert.equal(runCounts([{ type: 'km-revize' }], true).km, 1);
+  assert.equal(runCounts([{ type: 'km-revize' }, { type: 'km-revize' }], true).km, 2);
+  const pendingSandbox = {
+    getLatestApprovedKmCorrection: function() { return null; },
+    buildKmCorrectionNoteHtml: function() { return ''; }
+  };
+  vm.createContext(pendingSandbox);
+  const pending = vm.runInContext(
+    src + '\ngetEffectiveHistoryTabCounts({ id: "v1" }, []);',
+    pendingSandbox
+  );
+  assert.equal(pending.km, 0);
+  assert.equal(pending.bakim, 0);
 });
 
 test('fixture: empty html write CTA içermez', function() {

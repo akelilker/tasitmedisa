@@ -4667,6 +4667,10 @@
           })
         });
         var payload = await res.json().catch(function() { return null; });
+        if (payload && payload.error_code === 'RESTORE_STATE_UNCERTAIN') {
+          setServerRestoreError('İşlem durumu belirsiz, teknik kontrol gerekli. Tekrar restore başlatmayın.');
+          return;
+        }
         if (!res.ok || !payload || payload.success !== true) {
           throw new Error((payload && (payload.error_code || payload.message)) || ('HTTP ' + res.status));
         }
@@ -4675,7 +4679,12 @@
           manualRefreshMessage: 'Restore tamamlandı ancak sayfa yenilenemedi. Lütfen sayfayı manuel yenileyin.'
         });
       } catch (err) {
-        setServerRestoreError(err && err.message ? err.message : 'Commit hatası');
+        var msg = err && err.message ? String(err.message) : 'Commit hatası';
+        if (msg.indexOf('RESTORE_STATE_UNCERTAIN') !== -1) {
+          setServerRestoreError('İşlem durumu belirsiz, teknik kontrol gerekli. Tekrar restore başlatmayın.');
+        } else {
+          setServerRestoreError(msg);
+        }
       } finally {
         serverRestoreUi.inFlight = false;
         if (commitBtn) commitBtn.setAttribute('aria-busy', 'false');

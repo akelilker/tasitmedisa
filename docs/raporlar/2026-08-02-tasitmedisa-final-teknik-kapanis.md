@@ -31,14 +31,27 @@
 
 ## SERVER RESTORE — ÜRETİM DURUMU
 
+| Sınıf | Durum |
+|-------|-------|
+| Restore infrastructure | **IMPLEMENTED** |
+| Safety findings P0/P1 | **CLOSED** |
+| Production restore activation | **DISABLED** |
+| Staging acceptance | **PENDING** |
+| Production write acceptance | **PENDING** |
+| Live restore performed | **NO** |
+| Runtime data changed | **NO** |
+
 - Kod hazır olması production restore’un aktif olduğu anlamına **gelmez**.
 - `MEDISA_SERVER_RESTORE_ENABLED` default: **false**
 - `MEDISA_RESTORE_MAINTENANCE_MODE` default: **false**
 - `MEDISA_RESTORE_HMAC_SECRET` repository’de yok; yoksa commit fail-closed
+- Güvenlik kapanışı: full canonical content hash, user/actor/credential invariantları, unknown collection reject, verified emergency rollback, ledger fail-closed, dry-run exact SHA no-write
+- History KM edge-case (sentetik approved correction kartı ↔ badge): **CLOSED**
 - Bu turda canlı restore **yapılmadı**
 - Bu turda canlı import **yapılmadı**
 - `data/**` değiştirilmedi / açılmadı
 - `restore.php` metadata-only GET olarak kaldı (`restore_enabled: false`)
+- Geçmiş `DO_NOT_IMPLEMENT_WITHOUT_EXPLICIT_PRODUCT_APPROVAL` notu: implementation vardır; activation staging + açık yetki olmadan yasaktır
 
 ## ENDPOINTLER
 

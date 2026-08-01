@@ -56,6 +56,28 @@ test('commit is POST-only and confirmation gated', function() {
   assert.match(read('server_restore.php'), /medisaAcquireDataLock/);
 });
 
+test('full content hash and user/rollback owners', function() {
+  const src = read('server_restore.php');
+  assert.match(src, /function medisaRestoreCanonicalContentHash/);
+  assert.match(src, /function medisaRestoreCanonicalizeForHash/);
+  assert.match(src, /function medisaRestoreValidateUserSecurityInvariants/);
+  assert.match(src, /function medisaRestoreRollbackFromEmergencyBackup/);
+  assert.match(src, /RESTORE_STATE_UNCERTAIN/);
+  assert.match(src, /RESTORE_UNKNOWN_COLLECTIONS/);
+  assert.match(src, /NORMALIZATION_DATA_LOSS/);
+  assert.match(src, /TRANSACTION_LEDGER_WRITE_FAILED/);
+  assert.match(src, /IDEMPOTENCY_FINALIZE_FAILED/);
+  assert.match(src, /current_content_sha256/);
+  assert.match(src, /SCRIPT_FILENAME/);
+});
+
+test('dry-run exact sha assertion present in PHP verifier', function() {
+  const php = read('scripts/verify-medisa-server-restore-invariants.php');
+  assert.match(php, /dry-run preserves exact data file sha256/);
+  assert.equal(/exact_match\s*\|\|\s*file_non_empty/.test(php), false);
+  assert.equal(/md5_file\(\$dataFile\)\s*===\s*md5\(/.test(php), false);
+});
+
 test('dry-run POST-only and no saveData call in dry-run handler', function() {
   assert.match(read('backup-restore-dry-run.php'), /POST/);
   const src = read('server_restore.php');

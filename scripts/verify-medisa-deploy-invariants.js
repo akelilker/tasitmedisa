@@ -65,4 +65,9 @@ assert.match(cpanel, /server_restore\.php/, 'cPanel deploy server_restore.php ko
 assert.equal(/MEDISA_RESTORE_HMAC_SECRET\s*=/.test(cpanel), false, 'cPanel secret env yazmamalı.');
 assert.equal(/config\.local/.test(cpanel), false, 'cPanel config.local deploy etmemeli.');
 
+const serverRestore = fs.readFileSync(path.join(root, 'server_restore.php'), 'utf8');
+assert.match(serverRestore, /SCRIPT_FILENAME/, 'server_restore direct-hit hardening bulunmalı.');
+assert.match(serverRestore, /http_response_code\(404\)/, 'server_restore direct hit 404 dönmeli.');
+assert.match(serverRestore, /Not Found/, 'server_restore direct hit gövdesi sızıntısız olmalı.');
+
 console.log('verify-medisa-deploy-invariants: OK');

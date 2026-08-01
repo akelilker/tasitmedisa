@@ -5,6 +5,18 @@
  * Test: MEDISA_RESTORE_TEST_MODE + $MEDISA_RESTORE_ENV_OVERRIDE (path injection).
  */
 
+// Direct HTTP hit: kütüphane include davranışını bozmadan kaynak/sızıntı yok.
+if (PHP_SAPI !== 'cli'
+    && isset($_SERVER['SCRIPT_FILENAME'])
+    && @realpath((string)$_SERVER['SCRIPT_FILENAME']) === @realpath(__FILE__)
+) {
+    http_response_code(404);
+    header('Content-Type: text/plain; charset=utf-8');
+    header('Cache-Control: no-store');
+    echo 'Not Found';
+    exit;
+}
+
 if (!defined('MEDISA_SERVER_RESTORE_LIB')) {
     define('MEDISA_SERVER_RESTORE_LIB', true);
 }
@@ -272,6 +284,9 @@ function medisaRestoreCountRole(array $data, $role) {
     return $n;
 }
 
+/**
+ * Legacy count/top-key özet hash — yalnız geriye dönük teşhis; güvenlik kararı vermez.
+ */
 function medisaRestoreStructuralHash(array $data) {
     $payload = [
         'schema_version' => medisaRestoreDetectSchemaVersion($data),
@@ -281,6 +296,259 @@ function medisaRestoreStructuralHash(array $data) {
     sort($payload['top_keys']);
     $json = json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     return hash('sha256', $json === false ? '' : $json);
+}
+
+/**
+ * Associative map anahtarlarını recursively alfabetik sıralar; list sırasını korur.
+ * Scalar tipler korunur ("1" !== 1).
+ */
+function medisaRestoreCanonicalizeForHash($value) {
+    if (!is_array($value)) {
+        return $value;
+    }
+    if ($value === []) {
+        return [];
+    }
+    $isList = array_keys($value) === range(0, count($value) - 1);
+    if ($isList) {
+        $out = [];
+        foreach ($value as $item) {
+            $out[] = medisaRestoreCanonicalizeForHash($item);
+        }
+        return $out;
+    }
+    $keys = array_map('strval', array_keys($value));
+    sort($keys, SORT_STRING);
+    $out = [];
+    foreach ($keys as $key) {
+        $out[$key] = medisaRestoreCanonicalizeForHash($value[$key]);
+    }
+    return $out;
+}
+
+/**
+ * Full canonical content SHA-256. Encode fail → fail-closed (boş string hash yok).
+ * @return array{success:bool,hash?:string,error_code?:string,message?:string,status?:int}
+ */
+function medisaRestoreCanonicalContentHash(array $data) {
+    if (medisaRestoreTestShouldFail('content_hash_encode')) {
+        return medisaRestoreError('RESTORE_CONTENT_HASH_FAILED', 'İçerik hash encode başarısız.', 500);
+    }
+    $canonical = medisaRestoreCanonicalizeForHash($data);
+    $json = json_encode($canonical, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    if ($json === false) {
+        return medisaRestoreError('RESTORE_CONTENT_HASH_FAILED', 'İçerik hash encode başarısız.', 500);
+    }
+    return [
+        'success' => true,
+        'hash' => hash('sha256', $json),
+    ];
+}
+
+function medisaRestoreRequireContentHash(array $data) {
+    $res = medisaRestoreCanonicalContentHash($data);
+    if (($res['success'] ?? false) !== true || !isset($res['hash']) || !is_string($res['hash']) || $res['hash'] === '') {
+        return null;
+    }
+    return $res['hash'];
+}
+
+function medisaRestoreTestShouldFail($stage) {
+    if (!(defined('MEDISA_RESTORE_TEST_MODE') && MEDISA_RESTORE_TEST_MODE === true)) {
+        return false;
+    }
+    $inj = $GLOBALS['MEDISA_RESTORE_FAIL_INJECT'] ?? null;
+    if (is_string($inj) && $inj === (string)$stage) {
+        return true;
+    }
+    // Primary inject sonrası rollback zinciri (yalnız test).
+    if (strpos((string)$stage, 'rollback_') === 0 && !empty($GLOBALS['MEDISA_RESTORE_FAIL_INJECT_ROLLBACK'])) {
+        return true;
+    }
+    return false;
+}
+
+function medisaRestoreIsValidPasswordHashValue($hash) {
+    if (!is_string($hash)) {
+        return false;
+    }
+    $hash = trim($hash);
+    if ($hash === '' || strlen($hash) < 50) {
+        return false;
+    }
+    if (function_exists('password_get_info')) {
+        $info = password_get_info($hash);
+        if (is_array($info) && isset($info['algo']) && $info['algo'] !== null && (int)$info['algo'] !== 0) {
+            return true;
+        }
+    }
+    return (bool)preg_match('/^\$2[aby]\$\d{2}\$[.\/A-Za-z0-9]{53}$/', $hash);
+}
+
+/**
+ * Restore candidate users — fail-closed güvenlik invariantları.
+ * $actorId null/empty → registry genel doğrulama (actor self-account atlanır).
+ * @return true|array error
+ */
+function medisaRestoreValidateUserSecurityInvariants(array $users, $actorId = null) {
+    if (!isset($users) || !is_array($users)) {
+        return medisaRestoreError('RESTORE_USER_COLLECTION_INVALID', 'Kullanıcı koleksiyonu geçersiz.', 422);
+    }
+    // PHP'de array her zaman array; boş liste ayrı: aktif GM yok
+    $ids = [];
+    $loginKeys = [];
+    $activeGm = 0;
+    $actorFound = null;
+    $plaintextKeys = ['sifre', 'password', 'portal_sifresi', 'yeni_sifre'];
+
+    foreach ($users as $user) {
+        if (!is_array($user)) {
+            return medisaRestoreError('RESTORE_USER_COLLECTION_INVALID', 'Kullanıcı kaydı geçersiz.', 422);
+        }
+        $id = isset($user['id']) ? trim((string)$user['id']) : '';
+        if ($id === '') {
+            return medisaRestoreError('RESTORE_USER_COLLECTION_INVALID', 'Kullanıcı kimliği eksik.', 422);
+        }
+        if (isset($ids[$id])) {
+            return medisaRestoreError('RESTORE_DUPLICATE_USER_ID', 'Yinelenen kullanıcı kimliği.', 422);
+        }
+        $ids[$id] = true;
+
+        foreach ($plaintextKeys as $pk) {
+            if (array_key_exists($pk, $user) && trim((string)$user[$pk]) !== '') {
+                return medisaRestoreError('RESTORE_PLAINTEXT_CREDENTIAL_REJECTED', 'Düz metin kimlik bilgisi reddedildi.', 422);
+            }
+        }
+
+        $hash = isset($user['sifre_hash']) ? trim((string)$user['sifre_hash']) : '';
+        if ($hash === '' || !medisaRestoreIsValidPasswordHashValue($hash)) {
+            return medisaRestoreError('RESTORE_PASSWORD_HASH_INVALID', 'Parola hash geçersiz.', 422);
+        }
+
+        $rawRole = medisaResolveRawUserRoleValue($user);
+        $role = medisaResolveUserRole($user);
+        if ($rawRole === '' || !medisaIsKnownUserRole($role)) {
+            return medisaRestoreError('RESTORE_UNKNOWN_ROLE', 'Desteklenmeyen kullanıcı rolü.', 422);
+        }
+
+        $status = strtolower(trim((string)($user['durum'] ?? $user['status'] ?? '')));
+        if (in_array($status, ['deleted', 'disabled', 'locked', 'silindi', 'kilitli'], true)) {
+            // actor kontrolünde ayrıca fail; genel kullanıcıda aktif GM sayımına girmez
+            if (medisaIsUserActive($user) && medisaIsGeneralManagerRole($role)) {
+                // durum disabled ama aktif flag çelişkisi → fail closed
+                return medisaRestoreError('RESTORE_USER_COLLECTION_INVALID', 'Kullanıcı durum alanları tutarsız.', 422);
+            }
+        }
+
+        $login = '';
+        foreach (['kullanici_adi', 'username', 'login', 'userName', 'user_name'] as $lk) {
+            if (isset($user[$lk]) && trim((string)$user[$lk]) !== '') {
+                $login = strtolower(trim((string)$user[$lk]));
+                break;
+            }
+        }
+        if ($login !== '') {
+            if (isset($loginKeys[$login])) {
+                return medisaRestoreError('RESTORE_USER_COLLECTION_INVALID', 'Yinelenen giriş kimliği.', 422);
+            }
+            $loginKeys[$login] = true;
+        }
+
+        if (medisaIsActiveGeneralManager($user)) {
+            $activeGm++;
+        }
+
+        if ($actorId !== null && $actorId !== '' && $id === (string)$actorId) {
+            $actorFound = $user;
+        }
+    }
+
+    if (function_exists('medisaSaveHasDuplicateUserIds') && medisaSaveHasDuplicateUserIds($users)) {
+        return medisaRestoreError('RESTORE_DUPLICATE_USER_ID', 'Yinelenen kullanıcı kimliği.', 422);
+    }
+
+    if ($activeGm < 1) {
+        return medisaRestoreError('RESTORE_NO_ACTIVE_GENERAL_MANAGER', 'Aktif genel yönetici yok.', 422);
+    }
+
+    if ($actorId !== null && trim((string)$actorId) !== '') {
+        $aid = trim((string)$actorId);
+        if ($actorFound === null) {
+            return medisaRestoreError('RESTORE_ACTOR_ACCOUNT_MISSING', 'İşlemi yapan hesap yedekte yok.', 422);
+        }
+        if (!medisaIsUserActive($actorFound)) {
+            return medisaRestoreError('RESTORE_ACTOR_ACCOUNT_INACTIVE', 'İşlemi yapan hesap pasif olamaz.', 422);
+        }
+        $actorStatus = strtolower(trim((string)($actorFound['durum'] ?? $actorFound['status'] ?? '')));
+        if (in_array($actorStatus, ['deleted', 'disabled', 'locked', 'silindi', 'kilitli'], true)) {
+            return medisaRestoreError('RESTORE_ACTOR_ACCOUNT_INACTIVE', 'İşlemi yapan hesap kilitli/silinmiş olamaz.', 422);
+        }
+        $actorRole = medisaResolveUserRole($actorFound);
+        if (!medisaIsGeneralManagerRole($actorRole)) {
+            return medisaRestoreError('RESTORE_ACTOR_ROLE_INVALID', 'İşlemi yapan hesap genel yönetici olmalı.', 422);
+        }
+    }
+
+    return true;
+}
+
+function medisaRestoreEvaluateEligibility(array $parseResult, $actorId = null) {
+    if (($parseResult['success'] ?? false) !== true) {
+        return [
+            'eligible' => false,
+            'error_code' => $parseResult['error_code'] ?? 'BACKUP_NOT_ELIGIBLE',
+            'unknown_collections' => $parseResult['unknown_collections'] ?? [],
+            'warnings' => $parseResult['warnings'] ?? [],
+        ];
+    }
+    $unknown = $parseResult['unknown_collections'] ?? [];
+    if (is_array($unknown) && count($unknown) > 0) {
+        return [
+            'eligible' => false,
+            'error_code' => 'RESTORE_UNKNOWN_COLLECTIONS',
+            'unknown_collections' => array_values(array_map('strval', $unknown)),
+            'warnings' => $parseResult['warnings'] ?? [],
+        ];
+    }
+    if (!empty($parseResult['normalization_data_loss'])) {
+        return [
+            'eligible' => false,
+            'error_code' => 'NORMALIZATION_DATA_LOSS',
+            'lost_collections' => $parseResult['lost_collections'] ?? [],
+            'warnings' => $parseResult['warnings'] ?? [],
+        ];
+    }
+    $users = $parseResult['normalized']['users'] ?? null;
+    if (!is_array($users)) {
+        return [
+            'eligible' => false,
+            'error_code' => 'RESTORE_USER_COLLECTION_INVALID',
+            'warnings' => $parseResult['warnings'] ?? [],
+        ];
+    }
+    $inv = medisaRestoreValidateUserSecurityInvariants($users, $actorId);
+    if ($inv !== true) {
+        return [
+            'eligible' => false,
+            'error_code' => $inv['error_code'] ?? 'BACKUP_NOT_ELIGIBLE',
+            'warnings' => $parseResult['warnings'] ?? [],
+        ];
+    }
+    $hash = medisaRestoreCanonicalContentHash($parseResult['normalized']);
+    if (($hash['success'] ?? false) !== true) {
+        return [
+            'eligible' => false,
+            'error_code' => 'RESTORE_CONTENT_HASH_FAILED',
+            'warnings' => $parseResult['warnings'] ?? [],
+        ];
+    }
+    return [
+        'eligible' => true,
+        'error_code' => null,
+        'content_sha256' => $hash['hash'],
+        'unknown_collections' => [],
+        'warnings' => $parseResult['warnings'] ?? [],
+    ];
 }
 
 function medisaRestoreCanonicalNormalize(array $raw) {
@@ -313,15 +581,19 @@ function medisaRestoreCanonicalNormalize(array $raw) {
         ];
     }
 
+    $metadataKeys = [
+        'schema_version', '_schema_version', 'app_schema_version',
+        'upload_date', 'backup_date', 'source',
+    ];
     $known = [
         'vehicles', 'tasitlar', 'branches', 'users', 'kayitlar', 'ayarlar', 'sifreler',
         'arac_aylik_hareketler', 'duzeltme_talepleri', 'notificationReadState',
-        'monthlyTodoWhatsAppLogs', 'schema_version', '_schema_version', 'app_schema_version',
-        'upload_date', 'backup_date', 'source',
+        'monthlyTodoWhatsAppLogs',
     ];
+    $knownAll = array_merge($known, $metadataKeys);
     $unknown = [];
     foreach (array_keys($raw) as $k) {
-        if (!in_array($k, $known, true)) {
+        if (!in_array($k, $knownAll, true)) {
             $unknown[] = (string)$k;
         }
     }
@@ -351,6 +623,34 @@ function medisaRestoreCanonicalNormalize(array $raw) {
     }
     unset($out['kaskoDegerListesi']);
 
+    // Normalization data-loss: known non-metadata collections in raw must survive in out.
+    $lost = [];
+    $aliasTarget = [
+        'vehicles' => 'tasitlar',
+        'tasitlar' => 'tasitlar',
+        'branches' => 'branches',
+        'users' => 'users',
+        'kayitlar' => 'kayitlar',
+        'ayarlar' => 'ayarlar',
+        'sifreler' => 'sifreler',
+        'arac_aylik_hareketler' => 'arac_aylik_hareketler',
+        'duzeltme_talepleri' => 'duzeltme_talepleri',
+        'notificationReadState' => 'notificationReadState',
+        'monthlyTodoWhatsAppLogs' => 'monthlyTodoWhatsAppLogs',
+    ];
+    foreach (array_keys($raw) as $k) {
+        $ks = (string)$k;
+        if (in_array($ks, $metadataKeys, true)) {
+            continue;
+        }
+        if (isset($aliasTarget[$ks])) {
+            $target = $aliasTarget[$ks];
+            if (!array_key_exists($target, $out)) {
+                $lost[] = $ks;
+            }
+        }
+    }
+
     $schema = medisaRestoreDetectSchemaVersion($raw);
     if ($schema !== MEDISA_RESTORE_SCHEMA_SUPPORTED && $schema !== 'legacy-v1') {
         // Accept unknown only if required collections normalize; mark unsupported for safety.
@@ -370,6 +670,8 @@ function medisaRestoreCanonicalNormalize(array $raw) {
         'schema_version' => $schema,
         'missing_required_collections' => [],
         'unknown_collections' => $unknown,
+        'normalization_data_loss' => count($lost) > 0,
+        'lost_collections' => $lost,
         'warnings' => $warnings,
     ];
 }
@@ -404,6 +706,8 @@ function medisaRestoreParseBackupFile($path, $env = null) {
             ]
         );
     }
+    $contentHash = medisaRestoreCanonicalContentHash($norm['data']);
+    $contentSha = (($contentHash['success'] ?? false) === true) ? $contentHash['hash'] : null;
     return [
         'success' => true,
         'path' => $safe['path'],
@@ -414,10 +718,14 @@ function medisaRestoreParseBackupFile($path, $env = null) {
         'normalized' => $norm['data'],
         'schema_version' => $norm['schema_version'],
         'missing_required_collections' => [],
-        'unknown_collections' => $norm['unknown_collections'],
+        'unknown_collections' => $norm['unknown_collections'] ?? [],
+        'normalization_data_loss' => !empty($norm['normalization_data_loss']),
+        'lost_collections' => $norm['lost_collections'] ?? [],
         'warnings' => $norm['warnings'],
         'record_counts' => medisaRestoreRecordCounts($norm['data']),
         'structural_hash' => medisaRestoreStructuralHash($norm['data']),
+        'content_sha256' => $contentSha,
+        'content_hash_ok' => $contentSha !== null,
     ];
 }
 
@@ -441,16 +749,23 @@ function medisaRestoreBuildRegistryEntry(array $candidate, $env = null) {
     $eligible = false;
     $schema = null;
     $counts = null;
+    $eligibilityCode = null;
+    $unknownCollections = [];
     $parse = medisaRestoreParseBackupFile($safe['path'], $env);
     if (($parse['success'] ?? false) === true) {
-        $validation = 'valid';
-        $eligible = true;
         $schema = $parse['schema_version'];
         $counts = $parse['record_counts'];
         $sha = $parse['sha256'];
+        $unknownCollections = $parse['unknown_collections'] ?? [];
+        // Registry: genel backup validation (actor self-account dry-run/commit'te).
+        $elig = medisaRestoreEvaluateEligibility($parse, null);
+        $eligible = !empty($elig['eligible']);
+        $eligibilityCode = $elig['error_code'] ?? null;
+        $validation = $eligible ? 'valid' : 'invalid';
     } else {
         $validation = 'invalid';
         $eligible = false;
+        $eligibilityCode = $parse['error_code'] ?? 'INVALID_JSON';
     }
     $backupId = medisaRestoreMakeBackupId($candidate['source'], $safe['basename'], $sha);
     return [
@@ -467,6 +782,8 @@ function medisaRestoreBuildRegistryEntry(array $candidate, $env = null) {
         'immutable' => true,
         'validation_status' => $validation,
         'restore_eligible' => $eligible,
+        'eligibility_error_code' => $eligibilityCode,
+        'unknown_collections' => array_values(array_map('strval', (array)$unknownCollections)),
         'retention' => $candidate['source'] === 'pre_restore_emergency' ? 'protected_emergency' : 'snapshot_policy',
         '_internal_path' => $safe['path'],
     ];
@@ -681,15 +998,6 @@ function medisaRestoreHandleDryRun(array $input) {
         return ['status' => (int)($found['status'] ?? 400), 'body' => $found];
     }
     $entry = $found['entry'];
-    if (empty($entry['restore_eligible'])) {
-        return [
-            'status' => 422,
-            'body' => medisaRestoreError('BACKUP_NOT_ELIGIBLE', 'Yedek geri yüklemeye uygun değil.', 422, [
-                'backup_id' => $backupId,
-                'validation_status' => $entry['validation_status'] ?? 'invalid',
-            ]),
-        ];
-    }
     $parse = medisaRestoreParseBackupFile($entry['_internal_path']);
     if (($parse['success'] ?? false) !== true) {
         return ['status' => (int)($parse['status'] ?? 422), 'body' => $parse];
@@ -700,11 +1008,60 @@ function medisaRestoreHandleDryRun(array $input) {
             'body' => medisaRestoreError('BACKUP_HASH_MISMATCH', 'Yedek hash uyuşmazlığı.', 409),
         ];
     }
-    $beforeCounts = medisaRestoreRecordCounts($currentData);
-    $beforeHash = medisaRestoreStructuralHash($currentData);
-    $candidateCounts = $parse['record_counts'];
-    $candidateHash = $parse['structural_hash'];
     $actorId = (string)($context['user_id'] ?? $context['id'] ?? '');
+    $elig = medisaRestoreEvaluateEligibility($parse, $actorId);
+    $eligible = !empty($elig['eligible']);
+
+    $beforeCounts = medisaRestoreRecordCounts($currentData);
+    $beforeHashRes = medisaRestoreCanonicalContentHash($currentData);
+    if (($beforeHashRes['success'] ?? false) !== true) {
+        return [
+            'status' => 500,
+            'body' => medisaRestoreError('RESTORE_CONTENT_HASH_FAILED', 'Mevcut veri hash hesaplanamadı.', 500),
+        ];
+    }
+    $beforeHash = $beforeHashRes['hash'];
+    $candidateCounts = $parse['record_counts'];
+    $candidateHash = $elig['content_sha256'] ?? ($parse['content_sha256'] ?? null);
+    if (!$eligible || !is_string($candidateHash) || $candidateHash === '') {
+        return [
+            'status' => 200,
+            'body' => [
+                'success' => true,
+                'backup_id' => $backupId,
+                'eligible' => false,
+                'restore_eligible' => false,
+                'validation_status' => 'invalid',
+                'error_code' => $elig['error_code'] ?? 'BACKUP_NOT_ELIGIBLE',
+                'schema_version' => $parse['schema_version'],
+                'backup_created_at' => $entry['created_at'],
+                'current_structural_hash' => $beforeHash,
+                'candidate_structural_hash' => $candidateHash,
+                'current_content_sha256' => $beforeHash,
+                'candidate_content_sha256' => $candidateHash,
+                'before_counts' => $beforeCounts,
+                'candidate_counts' => $candidateCounts,
+                'count_deltas' => medisaRestoreCountDeltas($beforeCounts, $candidateCounts ?: []),
+                'unknown_collections' => $elig['unknown_collections'] ?? ($parse['unknown_collections'] ?? []),
+                'lost_collections' => $elig['lost_collections'] ?? ($parse['lost_collections'] ?? []),
+                'canonical_normalization_warnings' => $parse['warnings'],
+                'intent_token' => null,
+                'intent_expiry' => null,
+                'restore_enabled' => medisaRestoreIsEnabled(),
+                'maintenance_required' => true,
+                'maintenance_mode' => medisaRestoreIsMaintenanceMode(),
+                'secret_configured' => medisaRestoreHasSecret(),
+                'confirmation_text' => MEDISA_RESTORE_CONFIRMATION_TEXT,
+                'warning_codes' => array_values(array_filter([
+                    $elig['error_code'] ?? 'BACKUP_NOT_ELIGIBLE',
+                    medisaRestoreIsEnabled() ? null : 'RESTORE_DISABLED',
+                    medisaRestoreIsMaintenanceMode() ? null : 'MAINTENANCE_REQUIRED',
+                    medisaRestoreHasSecret() ? null : 'RESTORE_SECRET_MISSING',
+                ])),
+            ],
+        ];
+    }
+
     $exp = time() + MEDISA_RESTORE_INTENT_TTL_SECONDS;
     $intent = medisaRestoreSignIntent([
         'actor_id' => $actorId,
@@ -722,16 +1079,19 @@ function medisaRestoreHandleDryRun(array $input) {
             'success' => true,
             'backup_id' => $backupId,
             'eligible' => true,
+            'restore_eligible' => true,
             'validation_status' => 'valid',
             'schema_version' => $parse['schema_version'],
             'backup_created_at' => $entry['created_at'],
             'current_structural_hash' => $beforeHash,
             'candidate_structural_hash' => $candidateHash,
+            'current_content_sha256' => $beforeHash,
+            'candidate_content_sha256' => $candidateHash,
             'before_counts' => $beforeCounts,
             'candidate_counts' => $candidateCounts,
             'count_deltas' => medisaRestoreCountDeltas($beforeCounts, $candidateCounts),
             'missing_required_collections' => [],
-            'unknown_collections' => $parse['unknown_collections'],
+            'unknown_collections' => [],
             'canonical_normalization_warnings' => $parse['warnings'],
             'role_user_count_delta' => [
                 'users' => ($candidateCounts['users'] ?? 0) - ($beforeCounts['users'] ?? 0),
@@ -793,8 +1153,12 @@ function medisaRestoreLoadIdempotency($idempotencyKey, $actorId, $backupId, $bef
     }
     if (($rec['actor_id'] ?? '') !== $actorId
         || ($rec['backup_id'] ?? '') !== $backupId
-        || ($rec['before_hash'] ?? '') !== $beforeHash) {
+        || (($rec['before_hash'] ?? $rec['before_content_sha256'] ?? '') !== $beforeHash)) {
         return medisaRestoreError('IDEMPOTENCY_CONFLICT', 'Idempotency anahtarı farklı istek ile çakışıyor.', 409);
+    }
+    $stale = medisaRestoreHandleStalePendingIdempotency($rec);
+    if ($stale !== null) {
+        return $stale;
     }
     return [
         'success' => true,
@@ -825,6 +1189,115 @@ function medisaRestoreAppendAudit(array $row, $env = null) {
     }
     $ok = @file_put_contents($path, $line . "\n", FILE_APPEND | LOCK_EX);
     return $ok !== false;
+}
+
+/**
+ * Verified emergency rollback → canonical data file.
+ * @return array{success:bool,error_code?:string,message?:string,status?:int,raw_sha256?:string,content_sha256?:string}
+ */
+function medisaRestoreRollbackFromEmergencyBackup(array $emergencyMeta, $env = null) {
+    $env = $env ?: medisaRestoreEnv();
+    if (medisaRestoreTestShouldFail('rollback_atomic_write')) {
+        return medisaRestoreError('RESTORE_ROLLBACK_FAILED', 'Emergency geri alma yazımı başarısız.', 500);
+    }
+    $path = $emergencyMeta['path'] ?? null;
+    $expectedRaw = $emergencyMeta['raw_sha256'] ?? null;
+    $expectedContent = $emergencyMeta['content_sha256'] ?? null;
+    if (!is_string($path) || $path === '' || !is_string($expectedRaw) || !is_string($expectedContent)) {
+        return medisaRestoreError('RESTORE_ROLLBACK_FAILED', 'Emergency metadata eksik.', 500);
+    }
+    $safe = medisaRestoreResolveSafeFile($path, $env);
+    if (($safe['success'] ?? false) !== true) {
+        return medisaRestoreError('RESTORE_ROLLBACK_FAILED', 'Emergency yolu geçersiz.', 500);
+    }
+    if (medisaRestoreTestShouldFail('rollback_after_decode')) {
+        return medisaRestoreError('RESTORE_ROLLBACK_FAILED', 'Emergency geri alma doğrulaması başarısız.', 500);
+    }
+    $raw = @file_get_contents($safe['path']);
+    if ($raw === false || $raw === '') {
+        return medisaRestoreError('RESTORE_ROLLBACK_FAILED', 'Emergency içeriği okunamadı.', 500);
+    }
+    $rawSha = hash('sha256', $raw);
+    if (!hash_equals((string)$expectedRaw, $rawSha)) {
+        return medisaRestoreError('RESTORE_ROLLBACK_FAILED', 'Emergency raw hash uyuşmazlığı.', 500);
+    }
+    $decoded = json_decode($raw, true);
+    if (json_last_error() !== JSON_ERROR_NONE || !is_array($decoded)) {
+        return medisaRestoreError('RESTORE_ROLLBACK_FAILED', 'Emergency JSON geçersiz.', 500);
+    }
+    $contentRes = medisaRestoreCanonicalContentHash($decoded);
+    if (($contentRes['success'] ?? false) !== true) {
+        return medisaRestoreError('RESTORE_ROLLBACK_FAILED', 'Emergency içerik hash hesaplanamadı.', 500);
+    }
+    if (!hash_equals((string)$expectedContent, (string)$contentRes['hash'])) {
+        return medisaRestoreError('RESTORE_ROLLBACK_FAILED', 'Emergency içerik hash uyuşmazlığı.', 500);
+    }
+    if (!medisaAtomicWriteFile($env['data_file'], $raw)) {
+        return medisaRestoreError('RESTORE_ROLLBACK_FAILED', 'Emergency geri alma yazımı başarısız.', 500);
+    }
+    $afterRaw = @file_get_contents($env['data_file']);
+    if ($afterRaw === false) {
+        return medisaRestoreError('RESTORE_ROLLBACK_FAILED', 'Geri alma sonrası okuma başarısız.', 500);
+    }
+    $afterDecoded = json_decode($afterRaw, true);
+    if (json_last_error() !== JSON_ERROR_NONE || !is_array($afterDecoded)) {
+        return medisaRestoreError('RESTORE_ROLLBACK_FAILED', 'Geri alma sonrası JSON geçersiz.', 500);
+    }
+    if (medisaRestoreTestShouldFail('rollback_hash_mismatch')) {
+        return medisaRestoreError('RESTORE_ROLLBACK_FAILED', 'Geri alma hash uyuşmazlığı.', 500);
+    }
+    $afterHash = medisaRestoreCanonicalContentHash($afterDecoded);
+    if (($afterHash['success'] ?? false) !== true
+        || !hash_equals((string)$expectedContent, (string)$afterHash['hash'])
+    ) {
+        return medisaRestoreError('RESTORE_ROLLBACK_FAILED', 'Geri alma hash uyuşmazlığı.', 500);
+    }
+    $afterRawSha = hash('sha256', $afterRaw);
+    if (!hash_equals((string)$expectedRaw, $afterRawSha)) {
+        return medisaRestoreError('RESTORE_ROLLBACK_FAILED', 'Geri alma raw hash uyuşmazlığı.', 500);
+    }
+    return [
+        'success' => true,
+        'raw_sha256' => $afterRawSha,
+        'content_sha256' => $afterHash['hash'],
+    ];
+}
+
+function medisaRestoreUncertainResponse($txnId, $message = null) {
+    return [
+        'status' => 500,
+        'body' => medisaRestoreError(
+            'RESTORE_STATE_UNCERTAIN',
+            $message ?: 'İşlem durumu belirsiz; teknik kontrol gerekli. Otomatik yeniden deneme yapmayın.',
+            500,
+            [
+                'maintenance_required' => true,
+                'manual_recovery_required' => true,
+                'transaction_id' => $txnId,
+                'retry_forbidden' => true,
+            ]
+        ),
+    ];
+}
+
+/**
+ * Pending stale idempotency: otomatik yeni restore'a dönüşmez; conflict/uncertain.
+ */
+function medisaRestoreHandleStalePendingIdempotency(array $rec) {
+    $state = (string)($rec['state'] ?? '');
+    if ($state === 'pending') {
+        return medisaRestoreError(
+            'IDEMPOTENCY_CONFLICT',
+            'Bekleyen idempotency kaydı var; otomatik yeniden restore yok.',
+            409,
+            [
+                'pending' => true,
+                'manual_recovery_required' => true,
+                'transaction_id' => $rec['transaction_id'] ?? null,
+            ]
+        );
+    }
+    return null;
 }
 
 function medisaRestoreHandleCommit(array $input) {
@@ -874,11 +1347,7 @@ function medisaRestoreHandleCommit(array $input) {
         return ['status' => (int)($found['status'] ?? 400), 'body' => $found];
     }
     $entry = $found['entry'];
-    if (empty($entry['restore_eligible'])) {
-        return ['status' => 422, 'body' => medisaRestoreError('BACKUP_NOT_ELIGIBLE', 'Yedek uygun değil.', 422)];
-    }
 
-    // Idempotent replay: key + actor + backup + intent before_hash (current data değişmiş olabilir).
     $decodedIntent = medisaRestoreDecodeIntent($intentToken, $env);
     if (($decodedIntent['success'] ?? false) !== true) {
         return ['status' => (int)($decodedIntent['status'] ?? 400), 'body' => $decodedIntent];
@@ -898,7 +1367,11 @@ function medisaRestoreHandleCommit(array $input) {
         return ['status' => 200, 'body' => $replay];
     }
 
-    $beforeHash = medisaRestoreStructuralHash($currentData);
+    $beforeHashRes = medisaRestoreCanonicalContentHash($currentData);
+    if (($beforeHashRes['success'] ?? false) !== true) {
+        return ['status' => 500, 'body' => medisaRestoreError('RESTORE_CONTENT_HASH_FAILED', 'Mevcut veri hash hesaplanamadı.', 500)];
+    }
+    $beforeHash = $beforeHashRes['hash'];
     $intent = medisaRestoreVerifyIntent($intentToken, [
         'actor_id' => $actorId,
         'backup_id' => $backupId,
@@ -920,9 +1393,12 @@ function medisaRestoreHandleCommit(array $input) {
 
     $txnId = bin2hex(random_bytes(16));
     $failureStage = null;
+    $failureCode = 'RESTORE_FAILED';
     $emergencyId = null;
+    $emergencyMeta = null;
     $afterHash = null;
-    $auditWarning = false;
+    $dataWritten = false;
+    $uncertain = false;
 
     try {
         medisaRestoreSetCommitBypass(true);
@@ -932,9 +1408,16 @@ function medisaRestoreHandleCommit(array $input) {
             $failureStage = 'current_read';
             return ['status' => 500, 'body' => medisaRestoreError('INVALID_JSON', 'Mevcut veri okunamadı.', 500)];
         }
-        $lockedBefore = medisaRestoreStructuralHash($lockedCurrent);
+        $lockedBeforeRes = medisaRestoreCanonicalContentHash($lockedCurrent);
+        if (($lockedBeforeRes['success'] ?? false) !== true) {
+            $failureStage = 'before_hash_recheck';
+            $failureCode = 'RESTORE_CONTENT_HASH_FAILED';
+            return ['status' => 500, 'body' => medisaRestoreError('RESTORE_CONTENT_HASH_FAILED', 'Kilit altı hash başarısız.', 500)];
+        }
+        $lockedBefore = $lockedBeforeRes['hash'];
         if ($lockedBefore !== $beforeHash) {
             $failureStage = 'before_hash_recheck';
+            $failureCode = 'BEFORE_HASH_CHANGED';
             return ['status' => 409, 'body' => medisaRestoreError('BEFORE_HASH_CHANGED', 'Veri dry-run sonrası değişti.', 409)];
         }
 
@@ -945,13 +1428,37 @@ function medisaRestoreHandleCommit(array $input) {
         }
         if (($parse['sha256'] ?? '') !== ($entry['sha256'] ?? '')) {
             $failureStage = 'backup_hash';
+            $failureCode = 'BACKUP_HASH_MISMATCH';
             return ['status' => 409, 'body' => medisaRestoreError('BACKUP_HASH_MISMATCH', 'Yedek hash uyuşmazlığı.', 409)];
+        }
+        $elig = medisaRestoreEvaluateEligibility($parse, $actorId);
+        if (empty($elig['eligible'])) {
+            $failureStage = 'candidate_security';
+            $failureCode = $elig['error_code'] ?? 'BACKUP_NOT_ELIGIBLE';
+            return [
+                'status' => 422,
+                'body' => medisaRestoreError($failureCode, 'Yedek güvenlik doğrulamasından geçmedi.', 422, [
+                    'unknown_collections' => $elig['unknown_collections'] ?? [],
+                ]),
+            ];
+        }
+        $expectedAfter = $elig['content_sha256'] ?? null;
+        if (!is_string($expectedAfter) || $expectedAfter === '') {
+            $failureStage = 'candidate_hash';
+            $failureCode = 'RESTORE_CONTENT_HASH_FAILED';
+            return ['status' => 500, 'body' => medisaRestoreError('RESTORE_CONTENT_HASH_FAILED', 'Aday içerik hash yok.', 500)];
         }
 
         $snapDir = $env['snapshots_dir'];
         if (!is_dir($snapDir) && !@mkdir($snapDir, 0755, true)) {
             $failureStage = 'emergency_dir';
+            $failureCode = 'EMERGENCY_BACKUP_FAILED';
             return ['status' => 500, 'body' => medisaRestoreError('EMERGENCY_BACKUP_FAILED', 'Emergency dizin oluşturulamadı.', 500)];
+        }
+        if (medisaRestoreTestShouldFail('emergency_backup_write')) {
+            $failureStage = 'emergency_write';
+            $failureCode = 'EMERGENCY_BACKUP_FAILED';
+            return ['status' => 500, 'body' => medisaRestoreError('EMERGENCY_BACKUP_FAILED', 'Emergency yedek yazılamadı.', 500)];
         }
         $emergencyName = 'emergency-prerestore-' . $txnId . '-' . date('YmdHis') . '-' . bin2hex(random_bytes(3)) . '.json';
         $emergencyPath = rtrim($snapDir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $emergencyName;
@@ -961,15 +1468,79 @@ function medisaRestoreHandleCommit(array $input) {
         }
         if ($currentJson === false || !medisaAtomicWriteFile($emergencyPath, $currentJson)) {
             $failureStage = 'emergency_write';
+            $failureCode = 'EMERGENCY_BACKUP_FAILED';
             return ['status' => 500, 'body' => medisaRestoreError('EMERGENCY_BACKUP_FAILED', 'Emergency yedek yazılamadı.', 500)];
         }
-        $emergencySha = medisaRestoreFileSha256($emergencyPath);
-        if ($emergencySha === null) {
+        $emergencyRawSha = hash('sha256', $currentJson);
+        $fileSha = medisaRestoreFileSha256($emergencyPath);
+        if ($fileSha === null || !hash_equals($emergencyRawSha, $fileSha)) {
             @unlink($emergencyPath);
             $failureStage = 'emergency_hash';
+            $failureCode = 'EMERGENCY_BACKUP_FAILED';
             return ['status' => 500, 'body' => medisaRestoreError('EMERGENCY_BACKUP_FAILED', 'Emergency hash doğrulanamadı.', 500)];
         }
-        $emergencyId = medisaRestoreMakeBackupId('pre_restore_emergency', $emergencyName, $emergencySha);
+        $emergDecoded = json_decode($currentJson, true);
+        if (!is_array($emergDecoded)) {
+            @unlink($emergencyPath);
+            $failureStage = 'emergency_decode';
+            $failureCode = 'EMERGENCY_BACKUP_FAILED';
+            return ['status' => 500, 'body' => medisaRestoreError('EMERGENCY_BACKUP_FAILED', 'Emergency JSON doğrulanamadı.', 500)];
+        }
+        $emergContent = medisaRestoreCanonicalContentHash($emergDecoded);
+        if (($emergContent['success'] ?? false) !== true
+            || !hash_equals((string)$beforeHash, (string)$emergContent['hash'])
+        ) {
+            @unlink($emergencyPath);
+            $failureStage = 'emergency_content_hash';
+            $failureCode = 'EMERGENCY_BACKUP_FAILED';
+            return ['status' => 500, 'body' => medisaRestoreError('EMERGENCY_BACKUP_FAILED', 'Emergency içerik hash doğrulanamadı.', 500)];
+        }
+        $emergencyId = medisaRestoreMakeBackupId('pre_restore_emergency', $emergencyName, $fileSha);
+        $emergencyMeta = [
+            'path' => $emergencyPath,
+            'raw_sha256' => $emergencyRawSha,
+            'content_sha256' => $emergContent['hash'],
+            'source_data_path' => $env['data_file'],
+            'transaction_id' => $txnId,
+            'created_at' => date('c'),
+        ];
+
+        $pendingTxn = [
+            'transaction_id' => $txnId,
+            'actor_id' => $actorId,
+            'backup_id' => $backupId,
+            'backup_sha256' => $parse['sha256'],
+            'before_content_sha256' => $beforeHash,
+            'idempotency_key_hash' => $idempo['key_hash'],
+            'state' => 'pending',
+            'started_at' => $startedIso,
+            'emergency_backup_id' => $emergencyId,
+        ];
+        if (medisaRestoreTestShouldFail('transaction_pending_write')
+            || !medisaRestoreWriteJsonFile(medisaRestoreTxnPath($txnId, $env), $pendingTxn)
+        ) {
+            $failureStage = 'txn_pending';
+            $failureCode = 'TRANSACTION_LEDGER_WRITE_FAILED';
+            return ['status' => 500, 'body' => medisaRestoreError('TRANSACTION_LEDGER_WRITE_FAILED', 'Transaction kaydı yazılamadı.', 500)];
+        }
+        $pendingIdempo = [
+            'actor_id' => $actorId,
+            'backup_id' => $backupId,
+            'before_hash' => $beforeHash,
+            'before_content_sha256' => $beforeHash,
+            'backup_sha256' => $parse['sha256'],
+            'idempotency_key_hash' => $idempo['key_hash'],
+            'transaction_id' => $txnId,
+            'state' => 'pending',
+            'started_at' => $startedIso,
+        ];
+        if (medisaRestoreTestShouldFail('idempotency_pending_write')
+            || !medisaRestoreWriteJsonFile($idempo['path'], $pendingIdempo)
+        ) {
+            $failureStage = 'idempo_pending';
+            $failureCode = 'IDEMPOTENCY_LEDGER_WRITE_FAILED';
+            return ['status' => 500, 'body' => medisaRestoreError('IDEMPOTENCY_LEDGER_WRITE_FAILED', 'Idempotency kaydı yazılamadı.', 500)];
+        }
 
         $normalized = $parse['normalized'];
         $outJson = json_encode($normalized, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
@@ -983,22 +1554,70 @@ function medisaRestoreHandleCommit(array $input) {
             return ['status' => 500, 'body' => medisaRestoreError('ATOMIC_WRITE_FAILED', 'Yazılacak JSON doğrulanamadı.', 500)];
         }
 
-        if (!medisaAtomicWriteFile($env['data_file'], $outJson)) {
+        if (medisaRestoreTestShouldFail('canonical_atomic_write')
+            || !medisaAtomicWriteFile($env['data_file'], $outJson)
+        ) {
             $failureStage = 'atomic_write';
+            $failureCode = 'ATOMIC_WRITE_FAILED';
             return ['status' => 500, 'body' => medisaRestoreError('ATOMIC_WRITE_FAILED', 'Atomik yazım başarısız; orijinal korundu.', 500)];
+        }
+        $dataWritten = true;
+
+        if (medisaRestoreTestShouldFail('after_read')) {
+            $failureStage = 'after_read';
+            $failureCode = 'AFTER_HASH_MISMATCH';
+            $rb = medisaRestoreRollbackFromEmergencyBackup($emergencyMeta, $env);
+            if (($rb['success'] ?? false) !== true) {
+                $uncertain = true;
+                $failureCode = 'RESTORE_STATE_UNCERTAIN';
+                return medisaRestoreUncertainResponse($txnId);
+            }
+            $dataWritten = false;
+            return ['status' => 500, 'body' => medisaRestoreError('AFTER_HASH_MISMATCH', 'Yazım sonrası okuma başarısız; geri alındı.', 500)];
         }
 
         $written = @file_get_contents($env['data_file']);
-        $writtenData = json_decode((string)$written, true);
-        if (!is_array($writtenData)) {
-            $failureStage = 'after_decode';
-            return ['status' => 500, 'body' => medisaRestoreError('AFTER_HASH_MISMATCH', 'Yazım sonrası JSON okunamadı.', 500)];
+        if ($written === false) {
+            $failureStage = 'after_read';
+            $failureCode = 'AFTER_HASH_MISMATCH';
+            $rb = medisaRestoreRollbackFromEmergencyBackup($emergencyMeta, $env);
+            if (($rb['success'] ?? false) !== true) {
+                $uncertain = true;
+                $failureCode = 'RESTORE_STATE_UNCERTAIN';
+                return medisaRestoreUncertainResponse($txnId);
+            }
+            $dataWritten = false;
+            return ['status' => 500, 'body' => medisaRestoreError('AFTER_HASH_MISMATCH', 'Yazım sonrası okuma başarısız; geri alındı.', 500)];
         }
-        $afterHash = medisaRestoreStructuralHash($writtenData);
-        $expectedAfter = medisaRestoreStructuralHash($normalized);
-        if ($afterHash !== $expectedAfter) {
+        $writtenData = json_decode((string)$written, true);
+        if (!is_array($writtenData) || medisaRestoreTestShouldFail('after_decode')) {
+            $failureStage = 'after_decode';
+            $failureCode = 'AFTER_HASH_MISMATCH';
+            $rb = medisaRestoreRollbackFromEmergencyBackup($emergencyMeta, $env);
+            if (($rb['success'] ?? false) !== true) {
+                $uncertain = true;
+                $failureCode = 'RESTORE_STATE_UNCERTAIN';
+                return medisaRestoreUncertainResponse($txnId);
+            }
+            $dataWritten = false;
+            return ['status' => 500, 'body' => medisaRestoreError('AFTER_HASH_MISMATCH', 'Yazım sonrası JSON okunamadı; geri alındı.', 500)];
+        }
+        $afterHashRes = medisaRestoreCanonicalContentHash($writtenData);
+        $afterHash = (($afterHashRes['success'] ?? false) === true) ? $afterHashRes['hash'] : null;
+        if ($afterHash === null
+            || !hash_equals((string)$expectedAfter, (string)$afterHash)
+            || medisaRestoreTestShouldFail('after_hash_mismatch')
+        ) {
             $failureStage = 'after_hash';
-            return ['status' => 500, 'body' => medisaRestoreError('AFTER_HASH_MISMATCH', 'Yazım sonrası hash uyuşmazlığı.', 500)];
+            $failureCode = 'AFTER_HASH_MISMATCH';
+            $rb = medisaRestoreRollbackFromEmergencyBackup($emergencyMeta, $env);
+            if (($rb['success'] ?? false) !== true) {
+                $uncertain = true;
+                $failureCode = 'RESTORE_STATE_UNCERTAIN';
+                return medisaRestoreUncertainResponse($txnId);
+            }
+            $dataWritten = false;
+            return ['status' => 500, 'body' => medisaRestoreError('AFTER_HASH_MISMATCH', 'Yazım sonrası hash uyuşmazlığı; geri alındı.', 500)];
         }
 
         $committedAt = date('c');
@@ -1010,6 +1629,8 @@ function medisaRestoreHandleCommit(array $input) {
             'emergency_backup_id' => $emergencyId,
             'before_sha256' => $beforeHash,
             'after_sha256' => $afterHash,
+            'before_content_sha256' => $beforeHash,
+            'after_content_sha256' => $afterHash,
             'backup_sha256' => $parse['sha256'],
             'started_at' => $startedIso,
             'committed_at' => $committedAt,
@@ -1027,45 +1648,80 @@ function medisaRestoreHandleCommit(array $input) {
             'backup_sha256' => $parse['sha256'],
             'before_sha256' => $beforeHash,
             'after_sha256' => $afterHash,
+            'before_content_sha256' => $beforeHash,
+            'after_content_sha256' => $afterHash,
             'emergency_backup_id' => $emergencyId,
             'started_at' => $startedIso,
             'committed_at' => $committedAt,
             'duration_ms' => $durationMs,
+            'state' => 'success',
             'result' => 'success',
             'maintenance_state' => true,
             'schema_version' => $parse['schema_version'],
         ];
-        medisaRestoreWriteJsonFile(medisaRestoreTxnPath($txnId, $env), $txnRec);
-        medisaRestoreWriteJsonFile($idempo['path'], [
-            'actor_id' => $actorId,
-            'backup_id' => $backupId,
-            'before_hash' => $beforeHash,
-            'transaction_id' => $txnId,
-            'result' => $resultBody,
-            'committed_at' => $committedAt,
-        ]);
+        if (medisaRestoreTestShouldFail('transaction_finalize')
+            || !medisaRestoreWriteJsonFile(medisaRestoreTxnPath($txnId, $env), $txnRec)
+        ) {
+            $failureStage = 'txn_finalize';
+            $failureCode = 'TRANSACTION_FINALIZE_FAILED';
+            $rb = medisaRestoreRollbackFromEmergencyBackup($emergencyMeta, $env);
+            if (($rb['success'] ?? false) !== true) {
+                $uncertain = true;
+                $failureCode = 'RESTORE_STATE_UNCERTAIN';
+                return medisaRestoreUncertainResponse($txnId);
+            }
+            $dataWritten = false;
+            return ['status' => 500, 'body' => medisaRestoreError('TRANSACTION_FINALIZE_FAILED', 'Transaction finalize başarısız; geri alındı.', 500)];
+        }
+        if (medisaRestoreTestShouldFail('idempotency_finalize')
+            || !medisaRestoreWriteJsonFile($idempo['path'], [
+                'actor_id' => $actorId,
+                'backup_id' => $backupId,
+                'before_hash' => $beforeHash,
+                'before_content_sha256' => $beforeHash,
+                'transaction_id' => $txnId,
+                'state' => 'success',
+                'result' => $resultBody,
+                'committed_at' => $committedAt,
+            ])
+        ) {
+            $failureStage = 'idempo_finalize';
+            $failureCode = 'IDEMPOTENCY_FINALIZE_FAILED';
+            $rb = medisaRestoreRollbackFromEmergencyBackup($emergencyMeta, $env);
+            if (($rb['success'] ?? false) !== true) {
+                $uncertain = true;
+                $failureCode = 'RESTORE_STATE_UNCERTAIN';
+                return medisaRestoreUncertainResponse($txnId);
+            }
+            $dataWritten = false;
+            return ['status' => 500, 'body' => medisaRestoreError('IDEMPOTENCY_FINALIZE_FAILED', 'Idempotency finalize başarısız; geri alındı.', 500)];
+        }
 
-        $auditOk = medisaRestoreAppendAudit([
-            'transaction_id' => $txnId,
-            'idempotency_key_hash' => $idempo['key_hash'],
-            'actor_id' => $actorId,
-            'actor_role' => $actorRole,
-            'backup_id' => $backupId,
-            'backup_sha256' => $parse['sha256'],
-            'before_sha256' => $beforeHash,
-            'after_sha256' => $afterHash,
-            'emergency_backup_id' => $emergencyId,
-            'started_at' => $startedIso,
-            'committed_at' => $committedAt,
-            'duration_ms' => $durationMs,
-            'result' => 'success',
-            'failure_stage' => null,
-            'error_code' => null,
-            'maintenance_state' => true,
-            'schema_version' => $parse['schema_version'],
-        ], $env);
+        $auditOk = true;
+        if (medisaRestoreTestShouldFail('audit_fail')) {
+            $auditOk = false;
+        } else {
+            $auditOk = medisaRestoreAppendAudit([
+                'transaction_id' => $txnId,
+                'idempotency_key_hash' => $idempo['key_hash'],
+                'actor_id' => $actorId,
+                'actor_role' => $actorRole,
+                'backup_id' => $backupId,
+                'backup_sha256' => $parse['sha256'],
+                'before_sha256' => $beforeHash,
+                'after_sha256' => $afterHash,
+                'emergency_backup_id' => $emergencyId,
+                'started_at' => $startedIso,
+                'committed_at' => $committedAt,
+                'duration_ms' => $durationMs,
+                'result' => 'success',
+                'failure_stage' => null,
+                'error_code' => null,
+                'maintenance_state' => true,
+                'schema_version' => $parse['schema_version'],
+            ], $env);
+        }
         if (!$auditOk) {
-            $auditWarning = true;
             $resultBody['success'] = true;
             $resultBody['audit_warning'] = true;
             $resultBody['error_code'] = 'AUDIT_WRITE_FAILED';
@@ -1076,7 +1732,7 @@ function medisaRestoreHandleCommit(array $input) {
     } finally {
         medisaRestoreSetCommitBypass(false);
         medisaReleaseDataLock($lockHandle);
-        if ($failureStage !== null) {
+        if ($failureStage !== null && !$uncertain) {
             medisaRestoreAppendAudit([
                 'transaction_id' => $txnId,
                 'idempotency_key_hash' => isset($idempo['key_hash']) ? $idempo['key_hash'] : null,
@@ -1092,9 +1748,24 @@ function medisaRestoreHandleCommit(array $input) {
                 'duration_ms' => (int)round((microtime(true) - $startedAt) * 1000),
                 'result' => 'failure',
                 'failure_stage' => $failureStage,
-                'error_code' => 'RESTORE_FAILED',
+                'error_code' => $failureCode,
                 'maintenance_state' => medisaRestoreIsMaintenanceMode(),
                 'schema_version' => null,
+                'data_written' => $dataWritten,
+            ], $env);
+        } elseif ($uncertain) {
+            medisaRestoreAppendAudit([
+                'transaction_id' => $txnId,
+                'idempotency_key_hash' => isset($idempo['key_hash']) ? $idempo['key_hash'] : null,
+                'actor_id' => $actorId,
+                'actor_role' => $actorRole,
+                'backup_id' => $backupId,
+                'result' => 'uncertain',
+                'failure_stage' => $failureStage,
+                'error_code' => 'RESTORE_STATE_UNCERTAIN',
+                'manual_recovery_required' => true,
+                'started_at' => $startedIso,
+                'duration_ms' => (int)round((microtime(true) - $startedAt) * 1000),
             ], $env);
         }
     }
