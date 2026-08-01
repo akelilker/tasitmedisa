@@ -212,6 +212,8 @@ test('fixture: ilk detay render sonrası add-event sayısı 1', function() {
   assert.equal(buttons.length, 1);
   assert.match(String(buttons[0].className), /history-add-event-btn/);
   assert.match(String(buttons[0].innerHTML || buttons[0].textContent), /Olay Ekle/);
+  assert.equal(buttons[0].type, 'button');
+  assert.equal(buttons[0].getAttribute('aria-label'), 'Olay Ekle');
   assert.equal(typeof buttons[0].onclick, 'function');
   buttons[0].onclick();
   assert.deepEqual(calls, [['menu', 'v1']]);
@@ -223,12 +225,26 @@ test('fixture: tekrar detay render sonrası add-event sayısı 1 (birikim yok)',
   const calls = [];
   const open = function(type, id) { calls.push([type, id]); };
   runAddEventBlock(addEventBlock, plateRow, { id: 'v1' }, open, document);
+  const firstBtn = plateRow.querySelector('.history-add-event-btn');
   runAddEventBlock(addEventBlock, plateRow, { id: 'v2' }, open, document);
   runAddEventBlock(addEventBlock, plateRow, { id: 'v2' }, open, document);
   const buttons = plateRow.querySelectorAll('.history-add-event-btn');
   assert.equal(buttons.length, 1);
+  assert.equal(buttons[0]._uid, firstBtn._uid, 'idempotent ensure aynı button node’unu korumalı');
+  assert.equal(buttons[0].type, 'button');
+  assert.equal(buttons[0].getAttribute('aria-label'), 'Olay Ekle');
   buttons[0].onclick();
   assert.deepEqual(calls[calls.length - 1], ['menu', 'v2']);
+});
+
+test('ensure modeli: remove/recreate add-event yok; querySelectorAll + reuse var', function() {
+  assert.match(addEventBlock, /querySelectorAll\('\.history-add-event-btn'\)/);
+  assert.match(addEventBlock, /\.type\s*=\s*['"]button['"]/);
+  assert.doesNotMatch(addEventBlock, /existingPlateAddEventBtn\.remove\(\)/);
+  assert.doesNotMatch(
+    addEventBlock,
+    /if \(existingPlateAddEventBtn\) existingPlateAddEventBtn\.remove\(\);\s*[\s\S]{0,120}createElement\(\s*['"]button['"]\s*\)/
+  );
 });
 
 test('marka satırı migration cleanup source mevcut; current path buton üretmez', function() {

@@ -164,7 +164,7 @@
 
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20260801.4';
+  const MEDISA_TASITLAR_MODULE_VERSION = '20260801.5';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
@@ -3020,26 +3020,31 @@
       }
     }
 
-    // Plaka satırı: Olay Ekle solda, plaka ortada
+    // Plaka satırı: Olay Ekle solda, plaka ortada (idempotent ensure; F2 history cleanup korunur)
     if (plateRow) {
       const existingPlateHistoryBtn = plateRow.querySelector('.history-btn-minimal');
-      const existingPlateAddEventBtn = plateRow.querySelector('.history-add-event-btn');
       if (existingPlateHistoryBtn) existingPlateHistoryBtn.remove();
-      if (existingPlateAddEventBtn) existingPlateAddEventBtn.remove();
 
       const plateElForBtns = plateRow.querySelector('.detail-plate');
-
-      const addEventBtn = document.createElement('button');
-      addEventBtn.className = 'history-add-event-btn';
-      addEventBtn.innerHTML = `
-        <span>! Olay Ekle</span>
-      `;
-      addEventBtn.onclick = () => openEventModal('menu', vehicle.id);
-      if (plateElForBtns) {
+      const addEventButtons = plateRow.querySelectorAll('.history-add-event-btn');
+      let addEventBtn = addEventButtons[0] || null;
+      for (let addEventExtraIndex = 1; addEventExtraIndex < addEventButtons.length; addEventExtraIndex++) {
+        addEventButtons[addEventExtraIndex].remove();
+      }
+      if (!addEventBtn) {
+        addEventBtn = document.createElement('button');
+        plateRow.insertBefore(addEventBtn, plateElForBtns || null);
+      } else if (plateElForBtns && addEventBtn.nextSibling !== plateElForBtns) {
         plateRow.insertBefore(addEventBtn, plateElForBtns);
-      } else {
+      } else if (!plateElForBtns && addEventBtn.parentNode !== plateRow) {
         plateRow.appendChild(addEventBtn);
       }
+
+      addEventBtn.type = 'button';
+      addEventBtn.className = 'history-add-event-btn';
+      addEventBtn.innerHTML = '<span>! Olay Ekle</span>';
+      addEventBtn.setAttribute('aria-label', 'Olay Ekle');
+      addEventBtn.onclick = () => openEventModal('menu', vehicle.id);
     }
 
     // Marka/model satırı (yalnızca metin)
