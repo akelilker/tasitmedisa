@@ -49,9 +49,13 @@ Belgeler modalında:
 - Küçük ticari, büyük ticari ve römorkta K2 Belgesi ve Taşıt Kartı eklenir.
 - Sadece büyük ticaride Takograf Belgesi eklenir.
 
-Olay Ekle menüsünde:
+### Güncel durum / düzeltme notu (2026-08-01)
 
-- K2 kapsamındaki taşıtlarda `K2 Belgesi Bilgisi Güncelle` görünür.
+K2 şirket seviyesinde merkezi zorunlu evraktır. Canonical veri `ayarlar.k2Belgesi`; yazma UI owner'ı Ayarlar → Zorunlu Evraklar; güncel tarih alanı `required-k2-expiry-date`. Olay Ekle araç bazlı event akışıdır; K2 bilerek Olay Ekle menüsünde bulunmaz (`K2_EVENT_DECISION: DO_NOT_ADD`). Taşıt Kartı bitiş bilgisini merkezi ayarlar verisinden okur; araç bazlı ikinci K2 kaydı oluşturulmaz. Eski plan maddesi “Olay Ekle menüsünde K2 Belgesi Bilgisi Güncelle” uygulanmadı (superseded). Ölü DOM ID `k2-belgesi-tarih` aktif değildir.
+
+Olay Ekle menüsünde (güncel):
+
+- K2 event seçeneği yoktur.
 - Sadece büyük ticaride `Takograf Kalibrasyon Güncelle` görünür.
 
 Kullanıcı paneli belgeler modalı da aynı taşıt tipi kurallarına göre ek belgeleri görüntüler.

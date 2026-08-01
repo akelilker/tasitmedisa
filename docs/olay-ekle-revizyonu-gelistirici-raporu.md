@@ -159,20 +159,24 @@ Belge/Ruhsat bloğu (belge yükleme, değiştirme, görüntüleme, önizleme, ya
 
 **Veri güvenliği:** Bu fazda `data/data.json` okunmadı/yazılmadı; kayıt, yükleme, silme ve içe/dışa aktarma testi çalıştırılmadı.
 
-### 8.2 Kayıtsız browser smoke — MANUEL BEKLİYOR
+### 8.2 Kayıtsız browser smoke — KAPANDI (2026-08-01, Faz 3G)
 
-Ortamda güvenilir browser otomasyonu yok; aşağıdaki senaryolar manuel doğrulanmalıdır (Kaydet'e basılmadan, yalnızca aç/kapa):
+Authenticated salt-okunur smoke ile kapatıldı (`WRITE_REQUESTS: 0`):
 
-- Masaüstü ve 390px görünüm
-- Olay Ekle açılışı, beş kategori, kategoriye giriş ve geri dönüş
-- Sigorta/Kasko olay kartlarında S/K harfli kalkan ikonları
-- Formların yalnızca açılıp kapatılması
-- Aynı taşıt detayının art arda açılmasında Olay Ekle butonunun çoğalmaması
-- Konsol hatası kontrolü
+- Olay Ekle açılışı, beş kategori, kategoriye giriş ve geri dönüş — PASS
+- Formların yalnızca açılıp kapatılması (Kaydet yok) — PASS
+- Konsol hatası — 0
 
-### 8.3 K2 ve metadata senaryoları (Bölüm 7) — MANUEL BEKLİYOR
+Ayrıntı: `docs/raporlar/2026-08-01-tasitmedisa-faz-3g-authenticated-smoke-kapanis-raporu.md`
 
-K2 kapsamı, form düzeni ve Kaydet handler bağlantısı runtime'da henüz smoke edilmedi.
+### 8.3 K2 ve metadata senaryoları (Bölüm 7) — KAPANDI (2026-08-01, Faz 3G)
+
+Authenticated salt-okunur smoke — PASS (`WRITE_REQUESTS: 0`):
+
+- K2 kapsamındaki mevcut küçük ticari taşıt: Yasal Zorunluluklar’da Muayene + Taşıt Kartı; K2 event yok; Takograf yok
+- Taşıt Kartı formu aç/kapa; bitiş merkezi `ayarlar.k2Belgesi` ile tutarlı
+- K2 yazma owner: Ayarlar → Zorunlu Evraklar (`required-k2-expiry-date`); veri değiştirilmedi
+- `K2_EVENT_DECISION: DO_NOT_ADD`
 
 ## 9. Faz 4 — Analiz / Modülerleştirme Backlog'u
 

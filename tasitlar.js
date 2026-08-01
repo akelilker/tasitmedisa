@@ -164,7 +164,7 @@
 
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20260801.3';
+  const MEDISA_TASITLAR_MODULE_VERSION = '20260801.4';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
@@ -4529,7 +4529,7 @@
   /** sigorta/kasko/muayene gg/aa/yyyy metin alanlarını kayıttan önce normalize et */
   function bindGgAaYyyyTextInputs(modal) {
     if (!modal) return;
-    ['sigorta-tarih', 'kasko-tarih', 'k2-belgesi-tarih', 'takograf-kalibrasyon-tarih', 'tasit-karti-yapilma-tarih', 'muayene-tarih', 'muayene-egzoz-yapilma-tarih'].forEach(function(id) {
+    ['sigorta-tarih', 'kasko-tarih', 'takograf-kalibrasyon-tarih', 'tasit-karti-yapilma-tarih', 'muayene-tarih', 'muayene-egzoz-yapilma-tarih'].forEach(function(id) {
       const input = modal.querySelector('#' + id);
       if (!input || input.dataset.ggaaNormalizeBound) return;
       input.dataset.ggaaNormalizeBound = '1';
@@ -4542,7 +4542,7 @@
   /** Sigorta/kasko/muayene gg/aa/yyyy metin alanına yerel tarih seçici + simge */
   function setupOlayGgAaYyyyPickers(modal) {
     if (!modal) return;
-    const ids = ['sigorta-tarih', 'kasko-tarih', 'k2-belgesi-tarih', 'takograf-kalibrasyon-tarih', 'tasit-karti-yapilma-tarih', 'muayene-tarih', 'muayene-egzoz-yapilma-tarih'];
+    const ids = ['sigorta-tarih', 'kasko-tarih', 'takograf-kalibrasyon-tarih', 'tasit-karti-yapilma-tarih', 'muayene-tarih', 'muayene-egzoz-yapilma-tarih'];
     const calendarSvg = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>';
     ids.forEach(function(id) {
       const textEl = modal.querySelector('#' + id);
