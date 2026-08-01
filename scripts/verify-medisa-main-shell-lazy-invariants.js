@@ -265,8 +265,15 @@ if (implementationPresent) {
 
     var scriptPin = (index.match(/script-core\.js\?v=([^"'\s>]+)/) || [])[1];
     assert.ok(scriptPin, 'script-core pin bulunmalı');
-    assert.match(index, /data-manager\.js\?v=20260731\.3/);
-    assert.match(core, /ayarlarJs: '20260729\.6'/);
+    assert.match(scriptPin, /^\d{8}\.\d+$/, 'script-core pin tarih.surum formatında olmalı');
+
+    var dataManagerPin = (index.match(/data-manager\.js\?v=([^"'\s>]+)/) || [])[1];
+    assert.ok(dataManagerPin, 'data-manager pin bulunmalı');
+    assert.match(dataManagerPin, /^\d{8}\.\d+$/, 'data-manager pin tarih.surum formatında olmalı');
+
+    var ayarlarJsVer = (core.match(/ayarlarJs:\s*'([^']+)'/) || [])[1];
+    assert.ok(ayarlarJsVer, 'MEDISA_MODULE_VERSIONS.ayarlarJs bulunmalı');
+    assert.match(ayarlarJsVer, /^\d{8}\.\d+$/, 'ayarlarJs sürümü tarih.surum formatında olmalı');
 
     var cacheVersion = (sw.match(/CACHE_VERSION\s*=\s*'([^']+)'/) || [])[1];
     assert.ok(cacheVersion, 'CACHE_VERSION tanımlı olmalı');

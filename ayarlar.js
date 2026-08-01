@@ -4106,6 +4106,55 @@
       }
     }
 
+    /* medisa-import-sot:begin */
+    function captureImportRollbackSnapshot() {
+      var appDataClone = null;
+      try {
+        appDataClone = window.appData ? JSON.parse(JSON.stringify(window.appData)) : null;
+      } catch (_cloneErr) {
+        appDataClone = null;
+      }
+      var medisaDataV1 = null;
+      var medisaServerBackup = null;
+      try { medisaDataV1 = localStorage.getItem('medisa_data_v1'); } catch (_e1) {}
+      try { medisaServerBackup = localStorage.getItem('medisa_server_backup'); } catch (_e2) {}
+      return {
+        appData: appDataClone,
+        medisaDataV1: medisaDataV1,
+        medisaServerBackup: medisaServerBackup
+      };
+    }
+
+    function restoreImportRollbackSnapshot(snapshot) {
+      if (!snapshot) return;
+      if (snapshot.appData != null) {
+        if (typeof window.commitMedisaAppDataSnapshot === 'function') {
+          window.commitMedisaAppDataSnapshot(snapshot.appData, { reason: 'import-rollback' });
+        } else {
+          window.appData = snapshot.appData;
+        }
+      }
+      try {
+        if (snapshot.medisaDataV1 == null) localStorage.removeItem('medisa_data_v1');
+        else localStorage.setItem('medisa_data_v1', snapshot.medisaDataV1);
+      } catch (_rollDataErr) {}
+      try {
+        if (snapshot.medisaServerBackup == null) localStorage.removeItem('medisa_server_backup');
+        else localStorage.setItem('medisa_server_backup', snapshot.medisaServerBackup);
+      } catch (_rollBackupErr) {}
+    }
+
+    function writeImportSuccessMetadataBestEffort(backup, restoredBlob) {
+      try {
+        localStorage.setItem('medisa_data_v1', JSON.stringify(restoredBlob));
+      } catch (_metaDataErr) {}
+      try {
+        localStorage.setItem('medisa_server_backup', JSON.stringify(Object.assign({}, backup, {
+          upload_date: new Date().toISOString()
+        })));
+      } catch (_metaBackupErr) {}
+    }
+
     function applyRestoredBackup(backup) {
       const existingApp = window.appData || {};
       const restoredBlob = {
@@ -4147,13 +4196,59 @@
         window.appData = restoredBlob;
       }
 
-      localStorage.setItem("medisa_data_v1", JSON.stringify(restoredBlob));
-      localStorage.setItem("medisa_server_backup", JSON.stringify({
-        ...backup,
-        upload_date: new Date().toISOString()
-      }));
-      sessionStorage.setItem("medisa_just_restored", "1");
+      return restoredBlob;
     }
+
+    async function finishImportedBackupSync(preSnapshot, backup, restoredBlob) {
+      var failMsg = 'Yedek sunucuya kaydedilemedi. Mevcut verileriniz korundu.\n\nSayfa Yenilenecek.';
+      var successMsg = 'Yedek başarıyla Geri Yüklendi ve Sunucuya Kaydedildi!\n\nSayfa Yenilenecek.';
+
+      function closeInfoBoxSafe() {
+        if (typeof window.closeCenteredInfoBox === 'function') {
+          try { window.closeCenteredInfoBox(); } catch (_closeErr) {}
+        }
+      }
+
+      function failAndReload(err) {
+        if (err) {
+          if (typeof window.__medisaLogError === 'function') window.__medisaLogError('Yedek sunucuya yazılamadı', err);
+          else console.error('Yedek sunucuya yazılamadı:', err);
+        }
+        try { restoreImportRollbackSnapshot(preSnapshot); } catch (_rollErr) {}
+        closeInfoBoxSafe();
+        alert(failMsg);
+        setTimeout(function() { window.location.reload(); }, 500);
+      }
+
+      if (typeof window.saveDataToServer !== 'function') {
+        failAndReload(new Error('saveDataToServer missing'));
+        return false;
+      }
+
+      if (typeof window.showCenteredInfoBox === 'function') {
+        window.showCenteredInfoBox('Yedek sunucuya yükleniyor, lütfen bekleyin...');
+      }
+
+      var ok;
+      try {
+        ok = await window.saveDataToServer();
+      } catch (err) {
+        failAndReload(err);
+        return false;
+      }
+
+      if (ok !== true) {
+        failAndReload(new Error('saveDataToServer returned non-true'));
+        return false;
+      }
+
+      writeImportSuccessMetadataBestEffort(backup, restoredBlob);
+      closeInfoBoxSafe();
+      alert(successMsg);
+      setTimeout(function() { window.location.reload(); }, 500);
+      return true;
+    }
+    /* medisa-import-sot:end */
 
     window.showLastBackupMetadata = async function showLastBackupMetadata() {
       if (!requireBackupPermission()) return;
@@ -4176,25 +4271,6 @@
         alert("Yedek bilgisi okunamadı.");
       }
     };
-
-    function finishImportedBackupSync() {
-      if (typeof window.saveDataToServer === 'function') {
-        window.showCenteredInfoBox('Yedek sunucuya yükleniyor, lütfen bekleyin...');
-        window.saveDataToServer().then(function() {
-          window.closeCenteredInfoBox();
-          alert('Yedek başarıyla Geri Yüklendi ve Sunucuya Kaydedildi!\n\nSayfa Yenilenecek.');
-          setTimeout(function() { window.location.reload(); }, 500);
-        }).catch(function(err) {
-          window.closeCenteredInfoBox();
-          console.error("Yedek sunucuya yazılamadı:", err);
-          alert('Uyarı: Yedek cihazınıza yüklendi ancak sunucuya gönderilirken bir hata oluştu. İnternet bağlantınızı kontrol edin.\n\nSayfa Yenilenecek.');
-          setTimeout(function() { window.location.reload(); }, 500);
-        });
-      } else {
-        alert('Yedek başarıyla Geri Yüklendi!\n\nSayfa Yenilenecek.');
-        setTimeout(function() { window.location.reload(); }, 500);
-      }
-    }
 
     // Dosyadan içe aktar (JSON seç)
     window.importData = function importData() {
@@ -4236,8 +4312,9 @@
 
               if (!confirm(message)) return;
 
-              applyRestoredBackup(backup);
-              finishImportedBackupSync();
+              const preSnapshot = captureImportRollbackSnapshot();
+              const restoredBlob = applyRestoredBackup(backup);
+              finishImportedBackupSync(preSnapshot, backup, restoredBlob);
             } catch (error) {
               alert('Yedek Dosyası Okunamadı!');
             }

@@ -2204,14 +2204,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     setMedisaSession(getSessionFromToken());
     if (!ensureMainAppSession()) return;
 
-    if (sessionStorage.getItem('medisa_just_restored') === '1') {
-        sessionStorage.removeItem('medisa_just_restored');
-        loadDataFromLocalStorage();
-        window.dispatchEvent(new CustomEvent('dataLoaded', { detail: window.appData }));
-        if (typeof window.medisaNotifyAppReady === 'function') window.medisaNotifyAppReady();
-        return;
-    }
-
     try {
         await loadDataFromServer(true);
     } catch (loadErr) {
