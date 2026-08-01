@@ -267,6 +267,51 @@ if (implementationPresent) {
       assert.strictEqual(pins[name], canonical, name + ' style-core pin ana shell ile eşit olmalı');
     });
   });
+  test('paylaşılan shell script-core pin parity', function() {
+    var shells = {
+      'index.html': index,
+      'driver/index.html': read('driver/index.html'),
+      'driver/dashboard.html': read('driver/dashboard.html'),
+      'admin/driver-report.html': read('admin/driver-report.html')
+    };
+    var canonicalMatch = index.match(/script-core\.js\?v=([^"'\s>]+)/);
+    assert.ok(canonicalMatch && canonicalMatch[1], 'index.html içinde versioned script-core.js?v=<pin> bulunmalı');
+    var canonical = canonicalMatch[1];
+    assert.match(canonical, /^\d{8}\.\d+$/, 'kanonik script-core pin tarih.surum formatında olmalı');
+
+    Object.keys(shells).forEach(function(name) {
+      var html = shells[name];
+      var expectedPath = name === 'index.html' ? 'script-core.js' : '../script-core.js';
+      var refs = [];
+      var refRe = /(?:\.\.\/)?script-core\.js(?:\?[^"'\s>]*)?/g;
+      var m;
+      while ((m = refRe.exec(html)) !== null) {
+        refs.push(m[0]);
+      }
+      assert.strictEqual(
+        refs.length,
+        1,
+        name + ' script-core referansı tam bir kez bulunmalı (bulunan=' + refs.length + ', refs=' + JSON.stringify(refs) + ')'
+      );
+      var ref = refs[0];
+      var pathOnly = ref.split('?')[0];
+      assert.strictEqual(
+        pathOnly,
+        expectedPath,
+        name + ' script-core path yanlış (beklenen=' + expectedPath + ', bulunan=' + pathOnly + ')'
+      );
+      var pinMatch = ref.match(/\?v=([^&"'\s>]+)/);
+      assert.ok(
+        pinMatch && pinMatch[1],
+        name + ' script-core referansı versioned olmalı; pinsiz kabul edilmez (ref=' + ref + ')'
+      );
+      assert.strictEqual(
+        pinMatch[1],
+        canonical,
+        name + ' script-core pin (' + pinMatch[1] + ') kanonik index.html pini (' + canonical + ') ile ayrışıyor'
+      );
+    });
+  });
   test('version ve SW cache owner parity', function() {
     var loaderVer = (core.match(/tasitlar:\s*'([^']+)'/) || [])[1];
     var moduleVer = (owners.vehicles.match(/MEDISA_TASITLAR_MODULE_VERSION\s*=\s*'([^']+)'/) || [])[1];

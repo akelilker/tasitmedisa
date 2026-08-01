@@ -7,6 +7,95 @@
 
 ---
 
+## 1 Ağustos 2026 Doğrulanmış Durum Güncellemesi
+
+Bu belgenin ilk değerlendirme tarihi **22 Haziran 2026**’dır. Belge tarihsel değerlendirme niteliği taşır; aşağıdaki satırlar 22 Haziran incelemesinin anlık görüntüsüdür.
+
+**1 Ağustos 2026** itibarıyla doğrulanmış release güncellemeleri bu bölüme eklenmiştir. Güncel repository ref’i commit anındaki current `main` SHA’sıdır. Ayrıntılı tarihli kapanış kanıtları `docs/raporlar` veya repository içindeki ilgili raporlarda tutulur.
+
+Eski satır numaraları, dil bileşimi yüzdeleri ve “production ready” puan ifadeleri güncel ref üzerinde otomatik olarak geçerli sayılmamalıdır. Aşağıdaki tarihsel bulgular ile bu 1 Ağustos güncellemesi açıkça ayrı tutulmalıdır.
+
+### Doğrulanmış release özeti (1 Ağustos 2026)
+
+#### P0 — Ana shell asset pin / Service Worker
+- Ana shell asset pin ve SW cache kontratı hizalandı.
+- İlgili commit: `8c0cf06eca6b6d98c396eab334d7a1d72eae4f41`
+- Durum: **CLOSED**
+
+#### P1-A — K2 merkezi owner + authenticated smoke
+- K2 canonical owner: `ayarlar.k2Belgesi`
+- UI owner: Ayarlar → Zorunlu Evraklar
+- Ölü ID referansları kaldırıldı.
+- İlgili commit: `860045a9649ba7dfd54a90e008c22eb2fb7c318f`
+- Durum: **CLOSED**
+
+#### P1-B — Import source-of-truth
+- `saveDataToServer()` yalnız exact `true` ise başarı.
+- `false` / reject / missing save durumunda rollback.
+- `medisa_just_restored` kaldırıldı.
+- İlgili commit: `7f9aedc358b6f5e70aea48411c5aa600a0957df1`
+- Kod / test / deploy / authenticated read-only smoke: **CLOSED**
+- Controlled gerçek import: **DEFERRED VALIDATION**
+- Gerçek canlı import yapılmadı.
+
+**Import ayrımı:**
+1. Import source-of-truth kod kontratı: **CLOSED**
+2. Gerçek backup dosyasıyla controlled round-trip: **DEFERRED VALIDATION**
+
+Deferred durum kod eksikliği değildir. Gerçek import canlı server verisini değiştirebilir; ayrı write yetkisi, backup, rollback ve staging/bakım penceresi gerekir. Bu senkron görevinde dosya seçilmedi ve import yapılmadı.
+
+#### P1-C — WhatsApp Audit
+- Genel yönetici audit UI
+- Aggregate log owner
+- True-only save + rollback
+- Gönderim / teslim / okunma iddiası yok
+- İlgili commit: `825295eddedf453eb55f69b29ade8dd496e0d190`
+- Kullanıcı UI kabulü: **PASS**
+- Durum: **CLOSED**
+
+#### P1-D — Thin shell erken tık
+- Direct-open erken fallback kaldırıldı.
+- `MedisaShellIntentBridge`
+- latest-intent-wins
+- duplicate click coalesce
+- lazy target strict validation
+- İlgili commit: `d775ba3b58ddfd61f4b9eacc12172b42a9508fb1`
+- Kayıt / Taşıtlar / Raporlar authenticated ilk lazy click: **PASS** (masaüstü / agent doğrulaması)
+- Fiziksel iPhone PWA kabulü masaüstü testlerinden ayrı tutulur: **PENDING_USER_ACCEPTANCE**
+
+### Restore durumu (`restore.php`)
+
+- `restore.php` gerçek restore apply yapmaz.
+- Metadata-only davranış bilinçli güvenlik kararıdır.
+- Endpoint yalnız izin verilen read metodlarıyla (GET/OPTIONS) metadata döndürür.
+- Raw backup istemciye verilmez.
+- UI / response açıkça güvenli server restore’un aktif olmadığını söyler (`restore_enabled: false`).
+- Bu nedenle mevcut durum aktif P0 bug değildir.
+- Gerçek server-side restore ayrı ürün onayı, güvenlik tasarımı, transaction, snapshot, audit, rollback ve staging gerektirir.
+- Açık ürün onayı olmadan uygulanmamalıdır.
+
+```
+RESTORE_APPLY_DECISION:
+DO_NOT_IMPLEMENT_WITHOUT_EXPLICIT_PRODUCT_APPROVAL
+```
+
+### FTP Deploy Action
+
+Current main workflow (`.github/workflows/deploy-cpanel.yml`) zaten `SamKirkland/FTP-Deploy-Action@v4.4.0` kullanır. “FTP Action version bump” aktif backlog / P2 hata olarak gösterilmez. Sürüm bilgisi zamana bağlıdır; gelecekte resmi kaynaktan yeniden doğrulanmalıdır. Supply-chain amacıyla immutable commit SHA pinleme istenirse bu ayrı bir DevOps kararıdır. Bu senkron görevinde workflow / action sürümü / secrets / retry yapısı değiştirilmemiştir.
+
+### Fiziksel iPhone kabul ayrımı
+
+- Chrome responsive emülasyonu fiziksel iPhone kabulü değildir.
+- Fiziksel PWA cold-start ve early-tap kabulü kullanıcı veya gerçek cihazı gören testçi tarafından yapılmalıdır.
+- Agent masaüstü testini fiziksel cihaz **PASS** olarak raporlamamalıdır.
+- Fiziksel kullanıcı kabulü bu belge kapsamında kayda geçmemiştir → **PENDING_USER_ACCEPTANCE**
+
+### Notification scope kontratı (current main özeti)
+
+Ayrıntı §7’de güncellenmiştir. Özet: client kanonik key üretir; server save yalnız kanonik + gerekli `user:<id>` legacy key kabul eder; generic `scope:*` runtime write allowlist’inde değildir ve load projection kaynağı değildir.
+
+---
+
 ## 📋 YÖNETİCİ ÖZETİ
 
 Güncel `main` branch kod incelemesi sonucu **doğrulanmış aktif ORTA güvenlik riski bulunmamaktadır.**
@@ -128,15 +217,17 @@ Kalan işler **düşük öncelikli UX, hijyen ve backlog** kalemleridir.
 ### 7. Notification Scope Migration
 
 **Dosya:** `core.php` — `medisaBuildNotificationScopeDescriptor`, `medisaProjectNotificationReadStateForContext`; `save.php` merge
-**Durum:** **BACKLOG / HİJYEN** — güvenlik açığı değil
+**Durum:** **BACKLOG / HİJYEN** — güvenlik açığı değil; runtime write/load kontratı current main’de kapalı
 
-**Güncel doğrulama:**
-- Canonical key: `user:<id>|role:<role>|branches:<scope>`
-- Aktif client (`notifications.js`) canonical key kullanıyor; `scope:*` üretmiyor.
-- Load projection: `scope:*` anahtarları **okunmaz, merge edilmez, response'a konmaz**.
-- `save.php` geriye dönük uyumluluk için legacy `scope:*` yazımına izin verebilir; bu bildirim okundu/gizlendi state'i içindir, iş verisi veya yetki bypass değildir.
-
-**Kalan iş:** Eski `data.json` içindeki generic `scope:role` kayıtlarının temizlenmesi / deprecate edilmesi (migration hijyeni).
+**Güncel doğrulama (current main owner):**
+- Client kanonik scope key üretir: `user:<id>|role:<role>|branches:<scope>` (`notifications.js`).
+- Server save yalnız current code’un izin verdiği kanonik key ile gerekli `user:<id>` legacy key davranışını kabul eder (`saveAllowedKeys`).
+- Generic `scope:*` runtime write allowlist’inde **değildir**; `save.php` / merge owner’ı `scope:*` yazımına izin vermez.
+- Load projection generic `scope:*` key’lerini **okumaz, birleştirmez veya response’a koymaz**.
+- Generic `scope:*` mevcut eski veriler runtime authorization veya görünürlük owner’ı **değildir**.
+- Eski kayıtlar varsa yalnız etkisiz tarihsel veri / hijyen borcudur.
+- Canlı `data/data.json` temizliği ayrı production-data mutation izni gerektirir.
+- Bu senkron görevinde notification verisi migrate veya temizlenmez.
 
 ---
 
@@ -163,7 +254,7 @@ Kalan işler **düşük öncelikli UX, hijyen ve backlog** kalemleridir.
 | 4 | Driver ARIA | driver/index.html | DÜŞÜK | **BACKLOG (A11Y)** | Mini UX fix |
 | 5 | Button type | index.html 495-496 | DÜŞÜK | **KISMEN STALE** | Semantik mini fix |
 | 6 | Windows atomic write | core.php 198-203 | DÜŞÜK | **BACKLOG** | Windows dev only |
-| 7 | Notification scope | core.php 941-991 | DÜŞÜK | **BACKLOG / HİJYEN** | Legacy cleanup |
+| 7 | Notification scope | core.php owner | DÜŞÜK | **BACKLOG / HİJYEN** | Eski `scope:*` veri hijyeni (ayrı write izni); runtime write/load kapalı |
 
 ---
 
@@ -172,9 +263,12 @@ Kalan işler **düşük öncelikli UX, hijyen ve backlog** kalemleridir.
 1. **Driver ARIA** mini UX fix (`driver/index.html` + `driver-script.js`)
 2. **Vehicle modal** `type="button"` semantik mini fix (`index.html` ~495-496)
 3. **`allowQueryToken` dead code cleanup** tasarımı (`core.php` hijyen)
-4. **Notification scope** legacy cleanup (`data.json` + save merge hijyeni)
+4. **Notification scope** eski veri hijyeni (yalnız ayrı production-data mutation izniyle; runtime kontrat kapalı)
 5. **`saveData` post-write verify** tasarımı (maliyet/fayda değerlendirmesi sonrası)
 6. **Windows atomic write** iyileştirmesi (yalnızca Windows dev sorun çıkarırsa)
+7. **Fiziksel iPhone PWA kabulü** (PENDING_USER_ACCEPTANCE; masaüstü emülasyonu yeterli değildir)
+8. **Controlled import round-trip** (DEFERRED VALIDATION; ayrı write yetkisi + backup + rollback)
+9. **Server-side restore apply** (DO_NOT_IMPLEMENT_WITHOUT_EXPLICIT_PRODUCT_APPROVAL)
 
 ---
 
@@ -202,17 +296,20 @@ Durum: PRODUCTION READY ✅
 
 ### Orta Vadeli (hijyen)
 - `allowQueryToken` ölü kodunu kaldır
-- Notification `scope:*` legacy kayıtlarını temizle
+- Notification eski `scope:*` kayıtlarını yalnız ayrı production-data mutation izniyle temizle (runtime write allowlist’te değil)
 
 ### Uzun Vadeli (opsiyonel)
 - `saveData` post-write verify (maliyet analizi sonrası)
 - Windows geliştirme ortamı için atomic write iyileştirmesi
 - Veritabanı migration (JSON → SQLite/MySQL) değerlendirmesi
+- Controlled import round-trip doğrulaması (DEFERRED; canlı write riski)
+- Server-side restore apply (ürün onayı olmadan uygulanmaz)
 
 ### DevOps
 - Production error logging
 - Backup rotasyonu
 - Security headers (CSP, X-Frame-Options, vb.)
+- FTP Action sürümü zamana bağlı yeniden doğrulama; immutable SHA pinleme ayrı DevOps kararı (current: `SamKirkland/FTP-Deploy-Action@v4.4.0`)
 
 ---
 
@@ -220,10 +317,11 @@ Durum: PRODUCTION READY ✅
 
 **İlk Rapor:** GitHub Copilot (22 Haziran 2026)
 **Doğrulama & Revizyon:** Kod incelemesi (22 Haziran 2026, `main` branch)
+**1 Ağustos 2026 güncellemesi:** Doğrulanmış release / kontrat senkronu (tarihsel gövde korunur; üst bölüm güncel)
 **Sistem:** Medisa Taşıt Yönetim Sistemi V3
 
 Herhangi bir sorun veya açıklama için repository'de issue açabilirsiniz.
 
 ---
 
-**Son Güncelleme:** 2026-06-22 (doğrulama revizyonu)
+**Son Güncelleme:** 2026-08-01 (doğrulanmış durum güncellemesi; 22 Haziran tarihsel gövde korunur)
