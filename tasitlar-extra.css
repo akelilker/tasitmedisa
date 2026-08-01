@@ -1965,7 +1965,7 @@
     font-size: 19px !important; /* +1pt (base 15→16 civarı mobil) */
   }
   
-  /* Mobil: yan çerçeve 3px, alt boşluk 8px; üst padding yok (toolbar içeride sticky) */
+  /* Mobil: yan çerçeve 3px, alt boşluk 8px; üst padding yok (toolbar header-body arasında) */
   #vehicles-modal .modal-body {
     padding: 0 3px 8px 3px !important;
     overflow-x: hidden !important; /* Yatay kaymayı engelle */
@@ -1988,6 +1988,11 @@
     box-sizing: border-box;
     align-content: flex-start;
     align-items: flex-start;
+  }
+
+  /* Şube dashboard: Raporlar modal-body üst nefesi (16px) ile hizalı */
+  #vehicles-modal:not(.has-vehicles-list-scroll) #vehicles-modal-content {
+    padding-top: 12px !important;
   }
 
   #vehicles-modal .branch-card {
