@@ -4053,6 +4053,74 @@
       }
     };
 
+    async function fetchServerLastBackupMetadata() {
+      try {
+        const requestOptions = { cache: "no-store" };
+        if (typeof buildAuthHeaders === "function") {
+          requestOptions.headers = buildAuthHeaders();
+        }
+        const res = await fetch("restore.php?source=backup", requestOptions);
+        if (!res.ok) return null;
+        const payload = await res.json();
+        if (!payload || payload.success !== true || payload.available !== true) return null;
+        return {
+          available: true,
+          modified_at: payload.modified_at || null,
+          size_bytes: Number(payload.size_bytes) || 0,
+          restore_enabled: payload.restore_enabled === true,
+          message: payload.message || ''
+        };
+      } catch (_e) {
+        return null;
+      }
+    }
+
+    /* medisa-import-sot:begin */
+    // Aynı sayfa/browser context — ikinci tab / diğer kullanıcı korunmaz.
+    var importInFlight = false;
+
+    function isImportTransactionInFlight() {
+      return importInFlight === true;
+    }
+
+    function tryBeginImportTransaction() {
+      if (importInFlight) return false;
+      importInFlight = true;
+      return true;
+    }
+
+    function notifyImportInFlightBlocked() {
+      var msg = 'Başka bir geri yükleme işlemi devam ediyor. İşlem tamamlanana kadar bekleyin.';
+      if (typeof window.showCenteredInfoBox === 'function') {
+        try {
+          window.showCenteredInfoBox(msg, { variant: 'bare-text', autoCloseMs: 3500 });
+          return;
+        } catch (_infoErr) {}
+      }
+      alert(msg);
+    }
+
+    function scheduleImportTerminalReload(options) {
+      var opts = options && typeof options === 'object' ? options : {};
+      var manualMsg = opts.manualRefreshMessage
+        || 'İşlem tamamlandı ancak sayfa yenilenemedi. Lütfen sayfayı manuel yenileyin.';
+      try {
+        if (!window.location || typeof window.location.reload !== 'function') {
+          alert(manualMsg);
+          return;
+        }
+        setTimeout(function() {
+          try {
+            window.location.reload();
+          } catch (_reloadErr) {
+            alert(manualMsg);
+          }
+        }, 500);
+      } catch (_schedErr) {
+        alert(manualMsg);
+      }
+    }
+
     // Dosya yedeği normalize edilir; sunucu endpoint'i yalnız güvenli metadata sağlar.
     function normalizeBackupPayload(raw, source) {
       if (!raw || typeof raw !== "object") return null;
@@ -4084,29 +4152,6 @@
       };
     }
 
-    async function fetchServerLastBackupMetadata() {
-      try {
-        const requestOptions = { cache: "no-store" };
-        if (typeof buildAuthHeaders === "function") {
-          requestOptions.headers = buildAuthHeaders();
-        }
-        const res = await fetch("restore.php?source=backup", requestOptions);
-        if (!res.ok) return null;
-        const payload = await res.json();
-        if (!payload || payload.success !== true || payload.available !== true) return null;
-        return {
-          available: true,
-          modified_at: payload.modified_at || null,
-          size_bytes: Number(payload.size_bytes) || 0,
-          restore_enabled: payload.restore_enabled === true,
-          message: payload.message || ''
-        };
-      } catch (_e) {
-        return null;
-      }
-    }
-
-    /* medisa-import-sot:begin */
     function captureImportRollbackSnapshot() {
       var appDataClone = null;
       try {
@@ -4217,7 +4262,7 @@
         try { restoreImportRollbackSnapshot(preSnapshot); } catch (_rollErr) {}
         closeInfoBoxSafe();
         alert(failMsg);
-        setTimeout(function() { window.location.reload(); }, 500);
+        scheduleImportTerminalReload();
       }
 
       if (typeof window.saveDataToServer !== 'function') {
@@ -4245,8 +4290,93 @@
       writeImportSuccessMetadataBestEffort(backup, restoredBlob);
       closeInfoBoxSafe();
       alert(successMsg);
-      setTimeout(function() { window.location.reload(); }, 500);
+      scheduleImportTerminalReload();
       return true;
+    }
+
+    /**
+     * Confirm sonrası tek transaction: lock → snapshot → apply → save.
+     * Lock reload’a kadar açık kalır; ikinci confirmed import reddedilir.
+     */
+    async function runConfirmedImportTransaction(backup) {
+      if (!tryBeginImportTransaction()) {
+        notifyImportInFlightBlocked();
+        return { started: false, blocked: true, ok: false };
+      }
+
+      var preSnapshot = null;
+      try {
+        preSnapshot = captureImportRollbackSnapshot();
+      } catch (snapErr) {
+        if (typeof window.__medisaLogError === 'function') window.__medisaLogError('Yedek snapshot', snapErr);
+        else console.error('Yedek snapshot hatası:', snapErr);
+        alert('Yedek Dosyası Okunamadı!');
+        return { started: true, blocked: false, ok: false, reason: 'snapshot' };
+      }
+
+      var restoredBlob;
+      try {
+        restoredBlob = applyRestoredBackup(backup);
+      } catch (applyErr) {
+        if (typeof window.__medisaLogError === 'function') window.__medisaLogError('Yedek apply', applyErr);
+        else console.error('Yedek apply hatası:', applyErr);
+        try {
+          if (preSnapshot) restoreImportRollbackSnapshot(preSnapshot);
+        } catch (_rollErr) {}
+        alert('Yedek sunucuya kaydedilemedi. Mevcut verileriniz korundu.\n\nSayfa Yenilenecek.');
+        scheduleImportTerminalReload();
+        return { started: true, blocked: false, ok: false, reason: 'apply' };
+      }
+
+      var ok = await finishImportedBackupSync(preSnapshot, backup, restoredBlob);
+      return { started: true, blocked: false, ok: ok === true };
+    }
+
+    function processImportedBackupText(fileText, ui) {
+      var hooks = ui && typeof ui === 'object' ? ui : {};
+      var confirmFn = typeof hooks.confirm === 'function'
+        ? hooks.confirm
+        : function(msg) { return window.confirm(msg); };
+
+      var parsed;
+      try {
+        parsed = JSON.parse(fileText);
+      } catch (_parseErr) {
+        alert('Yedek Dosyası Okunamadı!');
+        return Promise.resolve({ outcome: 'parse_error', ok: false });
+      }
+
+      var backup = normalizeBackupPayload(parsed, 'file');
+      if (!backup) {
+        alert('Geçersiz Yedek Dosyası!');
+        return Promise.resolve({ outcome: 'validation_error', ok: false });
+      }
+
+      var dateRaw = backup.upload_date || parsed.backup_date;
+      var dateStr = dateRaw ? new Date(dateRaw).toLocaleString('tr-TR') : 'Bilinmiyor';
+      var kayitCount = backup.kayitlar != null ? backup.kayitlar.length : null;
+      var kayitLine = kayitCount != null ? ('\nKayıtlar: ' + kayitCount) : '';
+      var message = 'Yedek Tarih: ' + dateStr + '\n\n' +
+        'Şubeler: ' + backup.branches.length + '\n' +
+        'Kullanıcılar: ' + backup.users.length + '\n' +
+        'Taşıtlar: ' + backup.vehicles.length +
+        kayitLine +
+        '\n\nMevcut veriler silinecek! Emin misiniz?';
+
+      if (!confirmFn(message)) {
+        return Promise.resolve({ outcome: 'cancelled', ok: false });
+      }
+
+      return runConfirmedImportTransaction(backup).then(function(result) {
+        if (result && result.blocked) {
+          return { outcome: 'blocked', ok: false, result: result };
+        }
+        return {
+          outcome: result && result.ok ? 'success' : 'failed',
+          ok: !!(result && result.ok),
+          result: result
+        };
+      });
     }
     /* medisa-import-sot:end */
 
@@ -4290,34 +4420,7 @@
 
           const reader = new FileReader();
           reader.onload = function(event) {
-            try {
-              const parsed = JSON.parse(event.target.result);
-              const backup = normalizeBackupPayload(parsed, 'file');
-
-              if (!backup) {
-                alert('Geçersiz Yedek Dosyası!');
-                return;
-              }
-
-              const dateRaw = backup.upload_date || parsed.backup_date;
-              const dateStr = dateRaw ? new Date(dateRaw).toLocaleString('tr-TR') : 'Bilinmiyor';
-              const kayitCount = backup.kayitlar != null ? backup.kayitlar.length : null;
-              const kayitLine = kayitCount != null ? `\nKayıtlar: ${kayitCount}` : '';
-              const message = `Yedek Tarih: ${dateStr}\n\n` +
-                            `Şubeler: ${backup.branches.length}\n` +
-                            `Kullanıcılar: ${backup.users.length}\n` +
-                            `Taşıtlar: ${backup.vehicles.length}` +
-                            kayitLine +
-                            `\n\nMevcut veriler silinecek! Emin misiniz?`;
-
-              if (!confirm(message)) return;
-
-              const preSnapshot = captureImportRollbackSnapshot();
-              const restoredBlob = applyRestoredBackup(backup);
-              finishImportedBackupSync(preSnapshot, backup, restoredBlob);
-            } catch (error) {
-              alert('Yedek Dosyası Okunamadı!');
-            }
+            processImportedBackupText(event.target.result);
           };
 
           reader.readAsText(file);

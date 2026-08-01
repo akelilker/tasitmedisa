@@ -24,6 +24,9 @@ echo "[quality-gate] Save wire"
 npm run tool:verify-save-wire
 npm run tool:measure-save-wire
 
+echo "[quality-gate] Import source-of-truth invariants"
+npm run tool:verify-import-source-of-truth
+
 echo "[quality-gate] Kasko lookup"
 npm run tool:verify-kasko-lookup
 
