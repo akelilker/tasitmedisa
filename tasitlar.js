@@ -118,14 +118,14 @@
         </div>
 
 <div id="vehicle-history-modal" class="modal-overlay tasitlar-modal-overlay ayarlar-modal-overlay" onclick="if(event.target === this) { event.stopPropagation(); }">
-            <div class="modal-container" onclick="event.stopPropagation();">
+            <div class="modal-container" role="dialog" aria-modal="true" aria-labelledby="vehicle-history-title" onclick="event.stopPropagation();">
                 <div class="modal-header">
                     <button type="button" class="modal-home" onclick="closeAllModals()" aria-label="Ana sayfaya dön" title="Ana sayfa">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 10v10h14V10"/></svg>
                     </button>
-                    <h2>TAŞIT TARİHÇESİ</h2>
-                    <button class="modal-close" onclick="closeVehicleHistoryModal();">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <h2 id="vehicle-history-title">TAŞIT TARİHÇESİ</h2>
+                    <button type="button" class="modal-close" onclick="closeVehicleHistoryModal();" aria-label="Tarihçeyi Kapat">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                             <line x1="18" y1="6" x2="6" y2="18"></line>
                             <line x1="6" y1="6" x2="18" y2="18"></line>
                         </svg>
@@ -144,10 +144,22 @@
                 </div>
                 <div class="modal-body">
                     <div id="history-tabs">
-                        <button type="button" class="history-tab active" data-tab="bakim" onclick="switchHistoryTab('bakim')" aria-label="Bakım geçmişi">Bakım</button>
-                        <button type="button" class="history-tab" data-tab="kaza" onclick="switchHistoryTab('kaza')" aria-label="Kaza geçmişi">Kaza</button>
-                        <button type="button" class="history-tab" data-tab="km" onclick="switchHistoryTab('km')" aria-label="Km güncelleme geçmişi">KM</button>
-                        <button type="button" class="history-tab" data-tab="diger" onclick="switchHistoryTab('diger')" aria-label="Diğer geçmiş kayıtları">Diğer</button>
+                        <button type="button" class="history-tab active" data-tab="bakim" onclick="switchHistoryTab('bakim')" aria-label="Bakım geçmişi">
+                            <span class="history-tab-label">Bakım</span>
+                            <span class="history-tab-count" aria-hidden="true">0</span>
+                        </button>
+                        <button type="button" class="history-tab" data-tab="kaza" onclick="switchHistoryTab('kaza')" aria-label="Kaza geçmişi">
+                            <span class="history-tab-label">Kaza</span>
+                            <span class="history-tab-count" aria-hidden="true">0</span>
+                        </button>
+                        <button type="button" class="history-tab" data-tab="km" onclick="switchHistoryTab('km')" aria-label="Km güncelleme geçmişi">
+                            <span class="history-tab-label">KM</span>
+                            <span class="history-tab-count" aria-hidden="true">0</span>
+                        </button>
+                        <button type="button" class="history-tab" data-tab="diger" onclick="switchHistoryTab('diger')" aria-label="Diğer geçmiş kayıtları">
+                            <span class="history-tab-label">Diğer</span>
+                            <span class="history-tab-count" aria-hidden="true">0</span>
+                        </button>
                     </div>
                     <div id="history-content"></div>
                 </div>
@@ -164,7 +176,7 @@
 
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20260801.5';
+  const MEDISA_TASITLAR_MODULE_VERSION = '20260801.6';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
@@ -9179,6 +9191,117 @@
     });
   };
 
+  function countHistoryEventsByTab(events) {
+    const list = Array.isArray(events) ? events : [];
+    let bakim = 0;
+    let kaza = 0;
+    let km = 0;
+    let diger = 0;
+    for (let i = 0; i < list.length; i++) {
+      const type = list[i] && list[i].type;
+      if (type === 'bakim') bakim += 1;
+      else if (type === 'kaza') kaza += 1;
+      else if (type === 'km-revize') km += 1;
+      else diger += 1;
+    }
+    return { bakim: bakim, kaza: kaza, km: km, diger: diger };
+  }
+
+  function updateHistoryTabCounts(events) {
+    const modal = DOM.vehicleHistoryModal;
+    if (!modal) return countHistoryEventsByTab(events);
+    const counts = countHistoryEventsByTab(events);
+    const ariaBase = {
+      bakim: 'Bakım geçmişi',
+      kaza: 'Kaza geçmişi',
+      km: 'Km güncelleme geçmişi',
+      diger: 'Diğer geçmiş kayıtları'
+    };
+    const tabs = modal.querySelectorAll('.history-tab');
+    for (let i = 0; i < tabs.length; i++) {
+      const tab = tabs[i];
+      const key = tab
+        ? (typeof tab.getAttribute === 'function' ? tab.getAttribute('data-tab') : '') || (tab.dataset && tab.dataset.tab) || ''
+        : '';
+      if (!key || counts[key] == null) continue;
+      const countEl = tab.querySelector('.history-tab-count');
+      if (!countEl) continue;
+      countEl.textContent = String(counts[key]);
+      const base = ariaBase[key] || key;
+      tab.setAttribute('aria-label', base + ', ' + counts[key] + ' kayıt');
+    }
+    return counts;
+  }
+
+  function buildHistoryEmptyHtml(tabType, counts) {
+    const labels = { bakim: 'Bakım', kaza: 'Kaza', km: 'KM', diger: 'Diğer' };
+    const safeCounts = counts || { bakim: 0, kaza: 0, km: 0, diger: 0 };
+    const allEmpty = !safeCounts.bakim && !safeCounts.kaza && !safeCounts.km && !safeCounts.diger;
+    if (allEmpty) {
+      return '<div class="history-empty-msg">' + escapeHtml('Bu taşıt için henüz tarihçe kaydı bulunmuyor.') + '</div>';
+    }
+    const cat = labels[tabType] || 'Bu';
+    return '<div class="history-empty-msg">' + escapeHtml(
+      'Bu taşıt için ' + cat + ' kategorisinde kayıt bulunmuyor. Diğer tarihçe sekmelerini kontrol edebilirsiniz.'
+    ) + '</div>';
+  }
+
+  function historyEventDatetimeAttr(event) {
+    const stamp = event && event.timestamp ? String(event.timestamp).trim() : '';
+    if (stamp) {
+      const parsed = new Date(stamp);
+      if (!isNaN(parsed.getTime())) {
+        return ' datetime="' + escapeHtml(parsed.toISOString()) + '"';
+      }
+    }
+    const date = event && event.date ? String(event.date).trim() : '';
+    if (/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+      return ' datetime="' + escapeHtml(date) + '"';
+    }
+    if (/^\d{4}-\d{2}-\d{2}[T ]/.test(date)) {
+      const parsed = new Date(date);
+      if (!isNaN(parsed.getTime())) {
+        return ' datetime="' + escapeHtml(parsed.toISOString()) + '"';
+      }
+    }
+    return '';
+  }
+
+  function getHistoryEventTypeLabel(eventType) {
+    const map = {
+      bakim: 'Bakım',
+      kaza: 'Kaza',
+      'km-revize': 'KM',
+      'anahtar-guncelle': 'Yedek Anahtar',
+      'lastik-guncelle': 'Lastik',
+      'kasko-guncelle': 'Kasko',
+      'sigorta-guncelle': 'Sigorta',
+      'takograf-kalibrasyon-guncelle': 'Takograf',
+      'tasit-karti-guncelle': 'Taşıt Kartı',
+      'muayene-guncelle': 'Muayene',
+      muayene: 'Muayene',
+      'muayene-yenileme': 'Muayene',
+      'kullanici-atama': 'Kullanıcı Atama',
+      'sube-degisiklik': 'Şube',
+      'kredi-guncelle': 'Hak Mahrumiyeti',
+      'utts-guncelle': 'UTTS',
+      'takip-cihaz-guncelle': 'Arvento',
+      ceza: 'Trafik Cezası',
+      'driver-feedback': 'Kullanıcı Talebi',
+      'not-guncelle': 'Not',
+      satis: 'Satış',
+      'kasko-kodu-guncelle': 'Kasko Kodu',
+      'ruhsat-yukle': 'Ruhsat Belgesi',
+      'sigorta-policesi-yukle': 'Sigorta Poliçesi',
+      'kasko-policesi-yukle': 'Kasko Poliçesi',
+      'takograf-belgesi-yukle': 'Takograf Belgesi',
+      'tasit-karti-yukle': 'Taşıt Kartı'
+    };
+    const key = String(eventType || '').trim();
+    if (map[key]) return map[key];
+    return toTitleCase(key || 'Diğer');
+  }
+
   /**
    * Tarihçe modal'ını aç (initialTab: bakim | kaza | km | diger; yoksa bakım)
    */
@@ -9437,12 +9560,17 @@
     }
 
     const detailsHtml = details.length
-      ? '<div class="history-item-body history-item-details" style="font-size: 12px; margin-top: 4px;">' + historyDetailPartsHtml(details) + '</div>'
+      ? '<div class="history-item-meta history-item-details">' + historyDetailPartsHtml(details) + '</div>'
       : '';
+    const typeLabel = escapeHtml(getHistoryEventTypeLabel(eventType));
+    const datetimeAttr = historyEventDatetimeAttr(event);
 
     return '<div class="history-item history-item-diger">' +
-      '<div class="history-item-date" style="font-weight: 600; font-size: 12px; margin-bottom: 4px;">' + dateText + '</div>' +
-      '<div class="history-item-body history-item-summary" style="font-size: 12px; margin-top: 2px;">' + summaryInner + '</div>' +
+      '<div class="history-item-header">' +
+        '<span class="history-item-type">' + typeLabel + '</span>' +
+        '<time class="history-item-date"' + datetimeAttr + '>' + dateText + '</time>' +
+      '</div>' +
+      '<div class="history-item-body history-item-summary">' + summaryInner + '</div>' +
       detailsHtml +
       '</div>';
   }
@@ -9494,12 +9622,13 @@
     renderVehicleContextRow(DOM.vehicleHistoryModal, vehicle);
 
     const events = vehicle.events || [];
+    const tabCounts = updateHistoryTabCounts(events);
     let html = '';
 
     if (tabType === 'bakim') {
       const bakimEvents = events.filter(e => e.type === 'bakim');
       if (bakimEvents.length === 0) {
-        html = '<div class="history-empty-msg" style="text-align: center; padding: 20px;">' + escapeHtml(toTitleCase('Bakım kaydı bulunmamaktadır.')) + '</div>';
+        html = buildHistoryEmptyHtml('bakim', tabCounts);
       } else {
         bakimEvents.forEach(event => {
           const kmStr = event.data?.km ? `<span class="history-label">Km:</span> ${escapeHtml(formatNumber(event.data.km))}` : '';
@@ -9508,10 +9637,14 @@
           const islemler = toTitleCase(event.data?.islemler || '');
           const servis = toTitleCase(event.data?.servis || '-');
           const kisi = formatAdSoyad(event.data?.kisi || '-');
+          const datetimeAttr = historyEventDatetimeAttr(event);
           html += `<div class="history-item">
-            <div class="history-item-date" style="font-weight: 600; font-size: 12px; margin-bottom: 4px;">${escapeHtml(formatDateForDisplay(event.date) || '-')}</div>
-            <div class="history-item-body" style="font-size: 12px;"><span class="history-label">\u0130\u015flem:</span> ${escapeHtml(islemler)}</div>
-            <div class="history-item-body" style="font-size: 12px; margin-top: 4px;"><span class="history-label">Servis:</span> ${escapeHtml(servis)} <span class="history-detail-sep">|</span> <span class="history-label">Ki\u015Fi:</span> ${escapeHtml(kisi)}${ekStr ? ' <span class="history-detail-sep">|</span> ' + ekStr : ''}</div>
+            <div class="history-item-header">
+              <span class="history-item-type">Bakım</span>
+              <time class="history-item-date"${datetimeAttr}>${escapeHtml(formatDateForDisplay(event.date) || '-')}</time>
+            </div>
+            <div class="history-item-body"><span class="history-label">\u0130\u015flem:</span> ${escapeHtml(islemler)}</div>
+            <div class="history-item-meta"><span class="history-label">Servis:</span> ${escapeHtml(servis)} <span class="history-detail-sep">|</span> <span class="history-label">Ki\u015Fi:</span> ${escapeHtml(kisi)}${ekStr ? ' <span class="history-detail-sep">|</span> ' + ekStr : ''}</div>
           </div>`;
         });
       }
@@ -9519,13 +9652,13 @@
       const kazaEvents = events.filter(e => e.type === 'kaza');
       const partNames = getKaportaPartNames();
       if (kazaEvents.length === 0) {
-        html = '<div class="history-empty-msg" style="text-align: center; padding: 20px;">' + escapeHtml(toTitleCase('Kaza kaydı bulunmamaktadır.')) + '</div>';
+        html = buildHistoryEmptyHtml('kaza', tabCounts);
       } else {
         kazaEvents.forEach(event => {
-          const hasarStr = event.data?.hasarTutari ? ` | <span class="history-label">Hasar Tutarı:</span> ${escapeHtml(event.data.hasarTutari)}` : '';
+          const hasarStr = event.data?.hasarTutari ? ` <span class="history-detail-sep">|</span> <span class="history-label">Hasar Tutarı:</span> ${escapeHtml(event.data.hasarTutari)}` : '';
           const aciklamaVal = event.data?.aciklama ? toTitleCase(event.data.aciklama) : '';
-          const aciklamaHtml = aciklamaVal ? `<div class="history-item-body" style="font-size: 12px; margin-top: 4px;"><span class="history-label">A\u00e7\u0131klama:</span> ${escapeHtml(aciklamaVal)}</div>` : '';
-          let parcalarHtml = '';
+          const aciklamaHtml = aciklamaVal ? `<div class="history-item-body"><span class="history-label">A\u00e7\u0131klama:</span> ${escapeHtml(aciklamaVal)}</div>` : '';
+          const metaParts = [];
           const hasarParcalari = event.data?.hasarParcalari;
           if (hasarParcalari && typeof hasarParcalari === 'object' && Object.keys(hasarParcalari).length > 0) {
             const boyaliList = [];
@@ -9535,27 +9668,30 @@
               if (hasarParcalari[partId] === 'boyali') boyaliList.push(toTitleCase(partName));
               else if (hasarParcalari[partId] === 'degisen') degisenList.push(toTitleCase(partName));
             });
-            const partParts = [];
-            if (boyaliList.length) partParts.push(`<span class="history-label">Boyalı:</span> ${escapeHtml(boyaliList.join(', '))}`);
-            if (degisenList.length) partParts.push(`<span class="history-label">Değişen:</span> ${escapeHtml(degisenList.join(', '))}`);
-            if (partParts.length) parcalarHtml = `<div class="history-item-body" style="font-size: 12px; margin-top: 4px;">${partParts.join(' <span class="history-detail-sep">|</span> ')}</div>`;
+            if (boyaliList.length) metaParts.push(`<span class="history-label">Boyalı:</span> ${escapeHtml(boyaliList.join(', '))}`);
+            if (degisenList.length) metaParts.push(`<span class="history-label">Değişen:</span> ${escapeHtml(degisenList.join(', '))}`);
           }
           const kullanici = formatAdSoyad(event.data?.surucu || '-');
-          let tramerHtml = '';
           if (event.data?.tramerKaydi === 'evet') {
             const tramerTarihStr = event.data.tramerTarih ? formatDateForDisplay(event.data.tramerTarih) : '';
             const tramerTutarStr = event.data.tramerTutar ? escapeHtml(event.data.tramerTutar) : '';
             const tramerParts = ['<span class="history-label">Tramer:</span> Evet'];
             if (tramerTarihStr) tramerParts.push(`<span class="history-label">Tarih:</span> ${escapeHtml(tramerTarihStr)}`);
             if (tramerTutarStr) tramerParts.push(`<span class="history-label">Tutar:</span> ${tramerTutarStr}`);
-            tramerHtml = `<div class="history-item-body" style="font-size: 12px; margin-top: 4px;">${tramerParts.join(' <span class="history-detail-sep">|</span> ')}</div>`;
+            metaParts.push(tramerParts.join(' <span class="history-detail-sep">|</span> '));
           }
+          const metaHtml = metaParts.length
+            ? `<div class="history-item-meta">${metaParts.join(' <span class="history-detail-sep">|</span> ')}</div>`
+            : '';
+          const datetimeAttr = historyEventDatetimeAttr(event);
           html += `<div class="history-item">
-            <div class="history-item-date" style="font-weight: 600; font-size: 12px; margin-bottom: 4px;">${escapeHtml(formatDateForDisplay(event.date) || '-')}</div>
-            <div class="history-item-body" style="font-size: 12px;"><span class="history-label">Kullanıcı:</span> ${escapeHtml(kullanici)}${hasarStr}</div>
-            ${parcalarHtml}
-            ${tramerHtml}
+            <div class="history-item-header">
+              <span class="history-item-type">Kaza</span>
+              <time class="history-item-date"${datetimeAttr}>${escapeHtml(formatDateForDisplay(event.date) || '-')}</time>
+            </div>
+            <div class="history-item-body"><span class="history-label">Kullanıcı:</span> ${escapeHtml(kullanici)}${hasarStr}</div>
             ${aciklamaHtml}
+            ${metaHtml}
           </div>`;
         });
       }
@@ -9567,9 +9703,17 @@
       if (kmEvents.length === 0) {
         if (duzeltmeNotHtml) {
           const sentetikTarih = formatDateForDisplay(oncelikliTalep.talep_tarihi || '') || '-';
-          html = `<div class="history-item"><div class="history-item-date" style="font-weight: 600; font-size: 12px; margin-bottom: 4px;">${escapeHtml(sentetikTarih)}</div>${duzeltmeNotHtml}</div>`;
+          const syntheticEvent = { date: oncelikliTalep.talep_tarihi || '', timestamp: oncelikliTalep.talep_tarihi || '' };
+          const datetimeAttr = historyEventDatetimeAttr(syntheticEvent);
+          html = `<div class="history-item">
+            <div class="history-item-header">
+              <span class="history-item-type">KM</span>
+              <time class="history-item-date"${datetimeAttr}>${escapeHtml(sentetikTarih)}</time>
+            </div>
+            <div class="history-item-body history-item-summary">${duzeltmeNotHtml}</div>
+          </div>`;
         } else {
-          html = '<div class="history-empty-msg" style="text-align: center; padding: 20px;">' + escapeHtml(toTitleCase('Km g\u00fcncelleme kayd\u0131 bulunmamaktad\u0131r.')) + '</div>';
+          html = buildHistoryEmptyHtml('km', tabCounts);
         }
       } else {
         kmEvents.forEach((event, index) => {
@@ -9592,10 +9736,17 @@
           const kmSummary = isInitialKmEntry
             ? '<span class="history-user-name">Yeni Taşıt</span><span class="history-action-text"> • </span><span class="history-detail-inline">' + yeniKmFormatli + '</span>'
             : '<span class="history-user-name">' + escapeHtml(kullanici) + '</span><span class="history-action-text">, G\u00fcncel Km bilgisini </span><span class="history-detail-inline">' + escapeHtml(formatNumber(yeniKm)) + '</span><span class="history-action-text"> olarak g\u00FCncelledi.</span> <span class="history-label">\u00d6nceki Km:</span> ' + escapeHtml(formatNumber(eskiKm));
+          const datetimeAttr = historyEventDatetimeAttr(event);
+          const metaHtml = index === 0 && duzeltmeNotHtml
+            ? `<div class="history-item-meta">${duzeltmeNotHtml}</div>`
+            : '';
           html += `<div class="history-item">
-            <div class="history-item-date" style="font-weight: 600; font-size: 12px; margin-bottom: 4px;">${escapeHtml(formatDateForDisplay(event.date) || '-')}</div>
-            <div class="history-item-body history-item-summary" style="font-size: 12px; margin-top: 4px;">${kmSummary}</div>
-            ${index === 0 ? duzeltmeNotHtml : ''}
+            <div class="history-item-header">
+              <span class="history-item-type">KM</span>
+              <time class="history-item-date"${datetimeAttr}>${escapeHtml(formatDateForDisplay(event.date) || '-')}</time>
+            </div>
+            <div class="history-item-body history-item-summary">${kmSummary}</div>
+            ${metaHtml}
           </div>`;
         });
       }
@@ -9603,7 +9754,7 @@
       const branches = readBranches();
       const digerEvents = events.filter(e => e.type !== 'bakim' && e.type !== 'kaza' && e.type !== 'km-revize');
       if (digerEvents.length === 0) {
-        html = '<div class="history-empty-msg" style="text-align: center; padding: 20px;">' + escapeHtml(toTitleCase('Diğer kayıt bulunmamaktadır.')) + '</div>';
+        html = buildHistoryEmptyHtml('diger', tabCounts);
       } else {
         digerEvents.forEach(event => {
           html += renderHistoryDigerEventHtml(event, vehicle, branches);

@@ -34,6 +34,9 @@ npm run tool:measure-vehicle-render
 echo "[quality-gate] Vehicle detail / Olay Ekle DOM invariants"
 npm run tool:verify-vehicle-detail-olay
 
+echo "[quality-gate] Vehicle history UI invariants"
+npm run tool:verify-vehicle-history-ui
+
 echo "[quality-gate] Driver lazy module invariants"
 npm run tool:verify-driver-lazy
 

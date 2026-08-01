@@ -2297,23 +2297,38 @@
   #vehicle-history-modal #history-tabs .history-tab {
     text-align: center !important;
     justify-content: center !important;
+    min-height: 44px;
     font-size: 14px !important; /* +2px */
   }
+  #vehicle-history-modal #history-tabs .history-tab-count {
+    font-size: 12px;
+  }
   #vehicle-history-modal #history-content {
-    font-size: 16px !important; /* +2px */
+    font-size: 15px !important;
   }
   
-  /* Mobil Tarihçe Metinleri Büyütme (Fix for inline JS styles); etiket beyaz açıklama gri */
-  #vehicle-history-modal .history-item div {
-    font-size: 15px !important; /* 13px -> 15px (+1.5pt approx) */
-    line-height: 1.5 !important;
+  /* Mobil Tarihçe Metinleri; etiket beyaz açıklama gri */
+  #vehicle-history-modal .history-item-header {
+    margin-bottom: 6px !important;
+  }
+  #vehicle-history-modal .history-item .history-item-type {
+    font-size: 15px !important;
+    color: #ffffff !important;
+    font-weight: 600 !important;
   }
   #vehicle-history-modal .history-item .history-item-date {
+    font-size: 14px !important;
     color: #ffffff !important;
     font-weight: 600 !important;
   }
   #vehicle-history-modal .history-item .history-item-body {
+    font-size: 15px !important;
+    line-height: 1.5 !important;
     color: #a0aec0 !important;
+  }
+  #vehicle-history-modal .history-item .history-item-meta {
+    font-size: 13px !important;
+    line-height: 1.45 !important;
   }
   #vehicle-history-modal .history-item-summary .history-user-name,
   #vehicle-history-modal .history-item-summary .history-user-name-secondary {
@@ -2328,10 +2343,9 @@
     color: #a0aec0 !important;
     font-weight: 600 !important;
   }
-  /* Tarih/Başlık kısmını bir tık daha belirgin yap */
-  #vehicle-history-modal .history-item div:first-child {
-    font-size: 16px !important;
-    margin-bottom: 6px !important;
+  #vehicle-history-modal .history-empty-msg {
+    font-size: 15px !important;
+    padding: 28px 14px !important;
   }
   /* Tarihçe bölümler arası dikey boşluk 4px toplam (1.5+1+1.5, mobil) */
   #vehicle-history-modal .history-item {
