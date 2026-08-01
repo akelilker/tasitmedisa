@@ -14,6 +14,7 @@
     "tool:measure-save-wire": "node scripts/measure-medisa-save-wire.js",
     "tool:verify-kasko-lookup": "node scripts/run-medisa-kasko-lookup-verify.js",
     "tool:verify-vehicle-render": "node scripts/verify-medisa-vehicle-render-invariants.js",
+    "tool:verify-vehicle-detail-olay": "node scripts/verify-medisa-vehicle-detail-olay-invariants.js",
     "tool:measure-vehicle-render": "node scripts/measure-medisa-vehicle-render.js",
     "tool:verify-driver-lazy": "node scripts/verify-medisa-driver-lazy-invariants.js && node scripts/verify-medisa-driver-cold-dependencies.js",
     "tool:measure-driver-boot": "node scripts/measure-medisa-driver-boot.js",
