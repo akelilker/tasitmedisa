@@ -61,3 +61,4 @@ data/takograf_preview/
 *.swo
 
 .tools/
+.cursor/rules/ironbee-devtools-use.mdc
