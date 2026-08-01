@@ -140,8 +140,10 @@ test('Ana shell zorunlu durumda auth gatei açmaz', () => {
   const clearAt = files.dataManager.indexOf('clearMainAppAuthGate();', requiredAt);
   assert.ok(requiredAt >= 0 && clearAt > requiredAt);
 });
-test('Cache sürümü tek adım artırılmıştır', () => {
-  assert.match(files.sw, /CACHE_VERSION\s*=\s*'medisa-v2\.266'/);
+test('CACHE_VERSION tanımlı ve medisa-v2 sayısal formatında', () => {
+  const cacheVersion = (files.sw.match(/CACHE_VERSION\s*=\s*'([^']+)'/) || [])[1];
+  assert.ok(cacheVersion, 'CACHE_VERSION tanımlı olmalı');
+  assert.match(cacheVersion, /^medisa-v2\.\d+$/);
 });
 
 console.log(`Mandatory password change invariants: ${passed} passed, ${failed} failed`);

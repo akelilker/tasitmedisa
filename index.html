@@ -43,7 +43,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Taşıt Yönetim Sistemi">
 
-    <!-- Critical CSS: FOUC/CLS için minimal kurallar; tam footer/modal token ve kurallar style-core.css (sürüm script-core MEDISA_MODULE_VERSIONS.tasitlar ile uyumlu) -->
+    <!-- Critical CSS: FOUC/CLS için minimal kurallar; tam footer/modal token ve kurallar style-core.css (pin bu shell HTML owner'ında; tasitlar lazy sürümünden bağımsız) -->
     <!-- Critical CSS - Splash (JS controlled dismiss: app-ready + min süre, en geç MAX fallback) -->
     <style>
         #loading-screen {
@@ -157,9 +157,9 @@
     </style>
 
     <!-- CSS Preload + Async Load -->
-    <link rel="preload" href="style-core.css?v=20260724.1" as="style">
-    <link rel="stylesheet" href="style-core.css?v=20260724.1">
-    <noscript><link rel="stylesheet" href="style-core.css?v=20260724.1"></noscript>
+    <link rel="preload" href="style-core.css?v=20260801.3" as="style">
+    <link rel="stylesheet" href="style-core.css?v=20260801.3">
+    <noscript><link rel="stylesheet" href="style-core.css?v=20260801.3"></noscript>
     <script>
         (function() {
             function getMainAppBasePath() {
@@ -543,7 +543,7 @@
     <script defer src="portal-session.js?v=20260731.3"></script>
     <script defer src="data-manager.js?v=20260731.3"></script>
     <script defer src="data-service.js?v=20260718.2"></script>
-    <script defer src="script-core.js?v=20260801.1"></script>
+    <script defer src="script-core.js?v=20260801.3"></script>
 </body>
 </html>
 

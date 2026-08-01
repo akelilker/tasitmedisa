@@ -220,28 +220,64 @@ if (implementationPresent) {
     assert.match(index, /__medisaMainShellMetrics\.appReadyAt/);
     assert.match(index, /__medisaMainShellMetrics\.splashHiddenAt/);
   });
-  test('version ve SW cache beklenen değerde', function() {
-    assert.match(core, /tasitlar: '20260801\.1'/);
-    assert.match(owners.vehicles, /MEDISA_TASITLAR_MODULE_VERSION = '20260801\.1'/);
-    // Loader ile modül içi sürüm birebir eşleşmeli; aksi halde "hazır duruma gelemedi" düşer.
+  test('style-core HTML pinleri ve SW precache parity', function() {
+    var stylePins = [];
+    var stylePinRe = /style-core\.css\?v=([^"'\s>]+)/g;
+    var m;
+    while ((m = stylePinRe.exec(index)) !== null) stylePins.push(m[1]);
+    assert.ok(stylePins.length >= 3, 'index.html style-core pin referansları bulunmalı');
+    var stylePin = stylePins[0];
+    assert.ok(stylePin, 'style-core pin boş olmamalı');
+    stylePins.forEach(function(pin) {
+      assert.strictEqual(pin, stylePin, 'index.html preload/stylesheet/noscript style-core pinleri eşit olmalı');
+    });
+    assert.notStrictEqual(stylePin, '20260724.1', 'style-core pin eski merge regresyon değeri olmamalı');
+
+    var cacheFiles = sw.match(/const CACHE_FILES\s*=\s*\[([\s\S]*?)\];/);
+    assert.ok(cacheFiles, 'CACHE_FILES bulunmalı');
+    var cacheBlock = cacheFiles[1];
+    assert.match(cacheBlock, new RegExp("'/style-core\\.css\\?v=" + stylePin.replace(/\./g, '\\.') + "'"));
+    assert.doesNotMatch(cacheBlock, /'\/style-core\.css'/);
+  });
+  test('paylaşılan shell style-core pin parity', function() {
+    var shells = {
+      'index.html': index,
+      'driver/index.html': read('driver/index.html'),
+      'driver/dashboard.html': read('driver/dashboard.html'),
+      'admin/driver-report.html': read('admin/driver-report.html')
+    };
+    var pins = {};
+    Object.keys(shells).forEach(function(name) {
+      var match = shells[name].match(/style-core\.css\?v=([^"'\s>]+)/);
+      assert.ok(match && match[1], name + ' style-core pin bulunmalı');
+      pins[name] = match[1];
+    });
+    var canonical = pins['index.html'];
+    Object.keys(pins).forEach(function(name) {
+      assert.strictEqual(pins[name], canonical, name + ' style-core pin ana shell ile eşit olmalı');
+    });
+  });
+  test('version ve SW cache owner parity', function() {
     var loaderVer = (core.match(/tasitlar:\s*'([^']+)'/) || [])[1];
     var moduleVer = (owners.vehicles.match(/MEDISA_TASITLAR_MODULE_VERSION\s*=\s*'([^']+)'/) || [])[1];
     assert.ok(loaderVer && moduleVer, 'tasitlar sürüm sabitleri bulunmalı');
     assert.strictEqual(loaderVer, moduleVer, 'MEDISA_MODULE_VERSIONS.tasitlar === MEDISA_TASITLAR_MODULE_VERSION');
-    assert.match(core, /raporlar: '20260726\.2'/);
+
+    var scriptPin = (index.match(/script-core\.js\?v=([^"'\s>]+)/) || [])[1];
+    assert.ok(scriptPin, 'script-core pin bulunmalı');
     assert.match(index, /data-manager\.js\?v=20260731\.3/);
-    assert.match(index, /script-core\.js\?v=20260801\.1/);
     assert.match(core, /ayarlarJs: '20260729\.6'/);
-    assert.match(index, /style-core\.css\?v=20260724\.1/);
-    assert.match(sw, /medisa-v2\.266/);
+
+    var cacheVersion = (sw.match(/CACHE_VERSION\s*=\s*'([^']+)'/) || [])[1];
+    assert.ok(cacheVersion, 'CACHE_VERSION tanımlı olmalı');
+    assert.match(cacheVersion, /^medisa-v2\.\d+$/);
+    assert.notStrictEqual(cacheVersion, 'medisa-v2.266', 'CACHE_VERSION bilinen merge regressyon değeri olmamalı');
   });
   test('Raporlar modül ve SW cache sürüm paritesi', function() {
     var raporlarModuleVer = (core.match(/raporlar:\s*'([^']+)'/) || [])[1];
     var raporlarCacheVer = (sw.match(/CACHE_RAPORLAR_VERSION\s*=\s*'medisa-raporlar-([^']+)'/) || [])[1];
     assert.ok(raporlarModuleVer, 'MEDISA_MODULE_VERSIONS.raporlar bulunmalı');
     assert.ok(raporlarCacheVer, 'CACHE_RAPORLAR_VERSION bulunmalı');
-    assert.strictEqual(raporlarModuleVer, '20260726.2', 'MEDISA_MODULE_VERSIONS.raporlar canonical sürüm');
-    assert.strictEqual(raporlarCacheVer, '20260726.2', 'CACHE_RAPORLAR_VERSION canonical sürüm');
     assert.strictEqual(raporlarModuleVer, raporlarCacheVer, 'Raporlar modül ve SW cache aynı tarih sürümünü taşımalı');
   });
   test('KAYIT home closeVehicleModal owner kullanır', function() {
