@@ -49,6 +49,18 @@ if (($auth['success'] ?? false) !== true) {
     exit;
 }
 
+if (function_exists('medisaRestoreIsWriteFrozen') && medisaRestoreIsWriteFrozen()
+    && !(function_exists('medisaRestoreCommitBypassActive') && medisaRestoreCommitBypassActive())) {
+    http_response_code(423);
+    echo json_encode([
+        'success' => false,
+        'error_code' => 'MAINTENANCE_REQUIRED',
+        'maintenance_mode' => true,
+        'message' => 'Sunucu bakım/write-freeze aktif. Kayıtlar geçici olarak durduruldu.',
+    ], JSON_UNESCAPED_UNICODE);
+    exit;
+}
+
 if (!isset($incoming['rows']) || !is_array($incoming['rows'])) {
     http_response_code(400);
     echo json_encode(['success' => false, 'message' => 'rows alanı dizi olmalıdır.'], JSON_UNESCAPED_UNICODE);

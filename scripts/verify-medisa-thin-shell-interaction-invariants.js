@@ -115,8 +115,8 @@ async function sourceInvariants() {
 
   await run('source: SW/style-core/backend/data dokunulmamış varsayımı (diff gate ayrı)', function() {
     assert.match(index, /style-core\.css\?v=20260801\.3/);
-    assert.match(core, /data-manager\.js\?v=20260801\.5|/); // pin index'te
-    assert.match(index, /data-manager\.js\?v=20260801\.5/);
+    assert.match(core, /data-manager\.js\?v=20260801\.6|/); // pin index'te
+    assert.match(index, /data-manager\.js\?v=20260801\.6/);
   });
 
   await run('source: quality gate / package thin-shell bağlandı', function() {

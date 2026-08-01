@@ -765,7 +765,8 @@ function buildFallbackPermissions(role) {
         manage_branches: normalizedRole === 'genel_yonetici',
         manage_data: canManageGlobalData,
         manage_settings: canManageGlobalData,
-        manage_backups: false
+        manage_backups: false,
+        execute_server_restore: false
     };
 }
 
@@ -784,7 +785,8 @@ function normalizeSessionPermissions(role, permissions) {
         manage_branches: normalizedRole === 'genel_yonetici',
         manage_data: canManageGlobalData,
         manage_settings: canManageGlobalData,
-        manage_backups: supplied.manage_backups === true
+        manage_backups: supplied.manage_backups === true,
+        execute_server_restore: supplied.execute_server_restore === true
     };
 }
 

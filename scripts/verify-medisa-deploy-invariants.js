@@ -57,5 +57,12 @@ assert.match(deployWorkflow, /data\/data\.json/, 'Canlı runtime data erişim ka
 assert.match(deployWorkflow, /\.ftp-deploy-sync-state\.json/, 'Deploy state erişim kapısı doğrulanmalı.');
 assert.match(qualityGate, /tool:verify-deploy/, 'Canonical gate deploy invariantini çalıştırmalı.');
 assert.match(qualityGate, /tool:verify-runtime-data-git/, 'Canonical gate runtime data invariantini çalıştırmalı.');
+assert.match(qualityGate, /tool:verify-server-restore/, 'Canonical gate server restore invariantini çalıştırmalı.');
+
+assert.match(cpanel, /backup-registry\.php/, 'cPanel deploy backup-registry.php kopyalamalı.');
+assert.match(cpanel, /backup-restore-commit\.php/, 'cPanel deploy backup-restore-commit.php kopyalamalı.');
+assert.match(cpanel, /server_restore\.php/, 'cPanel deploy server_restore.php kopyalamalı.');
+assert.equal(/MEDISA_RESTORE_HMAC_SECRET\s*=/.test(cpanel), false, 'cPanel secret env yazmamalı.');
+assert.equal(/config\.local/.test(cpanel), false, 'cPanel config.local deploy etmemeli.');
 
 console.log('verify-medisa-deploy-invariants: OK');

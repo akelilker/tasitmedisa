@@ -71,5 +71,5 @@ echo json_encode([
     'source' => $sourceTag,
     'modified_at' => $modifiedAt !== false ? date('c', $modifiedAt) : null,
     'size_bytes' => $sizeBytes !== false ? (int)$sizeBytes : null,
-    'message' => 'Güvenli geri yükleme özelliği henüz aktif değil.',
+    'message' => 'Bu endpoint yalnız son yedek bilgisini gösterir; veri geri yüklemez. Güvenli sunucu geri yükleme varsayılan olarak kapalıdır.',
 ], JSON_UNESCAPED_UNICODE);

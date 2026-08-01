@@ -286,7 +286,8 @@ test('duplicate id: hydrate vehicle detail zorunlu id’ler tekil', function() {
     });
 });
 
-test('F1/F2/F4 legacy fallback source korunur (bu turda silinmez)', function() {
+test('F1/F2/F4 KEEP_DEFENSIVE legacy fallback source korunur (bu turda silinmez)', function() {
+  // KEEP_DEFENSIVE: physical iOS / mixed-cache hit count kanıtı olmadan kaldırılmaz.
   assert.match(detailSrc, /let plateRow = contentEl\.querySelector\('\.detail-plate-row'\)/);
   assert.match(detailSrc, /if \(!plateRow\)/);
   assert.match(addEventBlock, /existingPlateHistoryBtn/);

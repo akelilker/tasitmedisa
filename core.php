@@ -9,6 +9,12 @@ define('MEDISA_SNAPSHOT_MAX_FILES', 25);
 
 /** Veri dosyasının tam yolu */
 function getDataFilePath() {
+    if (defined('MEDISA_RESTORE_TEST_MODE') && MEDISA_RESTORE_TEST_MODE === true
+        && isset($GLOBALS['MEDISA_RESTORE_ENV_OVERRIDE'])
+        && is_array($GLOBALS['MEDISA_RESTORE_ENV_OVERRIDE'])
+        && !empty($GLOBALS['MEDISA_RESTORE_ENV_OVERRIDE']['data_file'])) {
+        return (string)$GLOBALS['MEDISA_RESTORE_ENV_OVERRIDE']['data_file'];
+    }
     return __DIR__ . '/data/data.json';
 }
 
@@ -312,6 +318,14 @@ function medisaBuildErrorResult($message, $status = 400, $extra = []) {
 }
 
 function medisaMutateData(callable $mutator) {
+    if (function_exists('medisaRestoreIsWriteFrozen') && medisaRestoreIsWriteFrozen()
+        && !(function_exists('medisaRestoreCommitBypassActive') && medisaRestoreCommitBypassActive())) {
+        return medisaBuildErrorResult('Sunucu bakım/write-freeze aktif. Kayıtlar geçici olarak durduruldu.', 423, [
+            'error_code' => 'MAINTENANCE_REQUIRED',
+            'maintenance_mode' => true,
+        ]);
+    }
+
     $lockHandle = medisaAcquireDataLock();
     if (!$lockHandle) {
         return medisaBuildErrorResult('Veri kilidi alınamadı.', 500);
@@ -828,6 +842,7 @@ function medisaBuildPermissions($context) {
         'manage_data' => $canManageGlobalData,
         'manage_settings' => $canManageGlobalData,
         'manage_backups' => $role === 'genel_yonetici',
+        'execute_server_restore' => $role === 'genel_yonetici',
     ];
 }
 
@@ -2986,3 +3001,6 @@ function validateToken() {
 
     return $decoded;
 }
+
+// Restore write-freeze / registry helpers (default disabled; safe to load always).
+require_once __DIR__ . '/server_restore.php';

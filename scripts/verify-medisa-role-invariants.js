@@ -63,6 +63,20 @@ assert(
   'restore.php yalnız genel yönetici metadata cevabı vermeli; backup gövdesini okumamalı'
 );
 
+const corePerms = read('core.php');
+assert(
+  'execute_server_restore_genel_yonetici_only',
+  /'execute_server_restore'\s*=>\s*\$role === 'genel_yonetici'/.test(corePerms) &&
+    /'manage_backups'\s*=>\s*\$role === 'genel_yonetici'/.test(corePerms),
+  'execute_server_restore yalnız genel_yonetici olmalı'
+);
+assert(
+  'client_execute_server_restore_server_authoritative',
+  /execute_server_restore:\s*supplied\.execute_server_restore === true/.test(dm) &&
+    /execute_server_restore:\s*false/.test(dm),
+  'execute_server_restore client tarafında token rolünden türetilmemeli'
+);
+
 const settings = read('ayarlar.js');
 assert(
   'backup_ui_has_no_silent_local_fallback',
