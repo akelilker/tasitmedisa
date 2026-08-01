@@ -30,7 +30,7 @@
   var monthlyTodoCloseTimer = null;
   var monthlyTodoBranchFilterId = 'all';
   var MONTHLY_TODO_INTERACTION_REV = 5;
-  var MONTHLY_TODO_HEADER_REV = 2;
+  var MONTHLY_TODO_HEADER_REV = 3;
 
   DOM.notificationsDropdown = document.getElementById('notifications-dropdown');
   DOM.notificationsToggleBtn = document.getElementById('notifications-toggle-btn');
@@ -2412,11 +2412,10 @@
     var btn = document.getElementById('monthly-todo-header-btn');
     if (!btn || btn._medisaMonthlyTodoHeaderRev === MONTHLY_TODO_HEADER_REV) return;
     btn._medisaMonthlyTodoHeaderRev = MONTHLY_TODO_HEADER_REV;
-    btn.addEventListener('click', function(ev) {
-      ev.preventDefault();
-      ev.stopPropagation();
-      openMonthlyTodoModal();
-    });
+    if (!btn.getAttribute('data-medisa-shell-intent')) {
+      btn.setAttribute('data-medisa-shell-intent', 'open-monthly-todo');
+    }
+    // Click owner: MedisaShellIntentBridge → openMonthlyTodoFromShell (duplicate listener yok)
   }
 
   initMonthlyTodoHeaderButtonOnce();
@@ -2495,6 +2494,10 @@
       if (typeof window.updateFooterDim === 'function') window.updateFooterDim();
     });
   }
+
+  window.openMonthlyTodoFromShell = function openMonthlyTodoFromShell() {
+    openMonthlyTodoModal();
+  };
 
   window.addEventListener('dataLoaded', function() {
     invalidateVehicleDateTasksCache();

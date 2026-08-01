@@ -18,6 +18,7 @@
     "tool:verify-driver-lazy": "node scripts/verify-medisa-driver-lazy-invariants.js && node scripts/verify-medisa-driver-cold-dependencies.js",
     "tool:measure-driver-boot": "node scripts/measure-medisa-driver-boot.js",
     "tool:verify-main-shell": "node scripts/verify-medisa-main-shell-lazy-invariants.js",
+    "tool:verify-thin-shell": "node scripts/verify-medisa-thin-shell-interaction-invariants.js",
     "tool:verify-deploy": "node scripts/verify-medisa-deploy-invariants.js",
     "tool:verify-password-migration": "php scripts/verify-medisa-password-migration.php",
     "tool:verify-default-credentials": "php scripts/verify-medisa-default-credentials.php",

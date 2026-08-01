@@ -1159,7 +1159,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // tasitlar loader (bu nesne) ile MEDISA_TASITLAR_MODULE_VERSION kendi aralarında eşit kalmalıdır.
 var MEDISA_MODULE_VERSIONS = {
   tasitlar: '20260801.4',
-  notifications: '20260801.6',
+  notifications: '20260801.7',
   raporlar: '20260801.3',
   kayitJs: '20260725.1',
   kayitCss: '20260801.3',
@@ -1457,7 +1457,8 @@ window.ensureMedisaVehicleNotificationDomainReady = function() {
       && typeof window.updateNotifications === 'function'
       && typeof window.invalidateVehicleDateTasksCache === 'function'
       && typeof window.syncMobileNotificationsDropdownHeight === 'function'
-      && typeof window.resetNotificationsDropdownLayoutState === 'function';
+      && typeof window.resetNotificationsDropdownLayoutState === 'function'
+      && typeof window.openMonthlyTodoFromShell === 'function';
   }
 
   window.ensureMedisaNotificationsModuleReady = function() {
@@ -1644,10 +1645,26 @@ window.ensureMedisaVehicleNotificationDomainReady = function() {
     return promise;
   };
 
+  function showSurfaceOpenError(message) {
+    var text = String(message || 'Bölüm yüklenemedi. Lütfen tekrar deneyin.');
+    if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+      text = 'Bu bölüm ilk kullanım için internet bağlantısı gerektiriyor.';
+    }
+    if (typeof window.showCenteredInfoBox === 'function') {
+      window.showCenteredInfoBox(text);
+      return;
+    }
+    if (typeof window.showInfoModal === 'function') {
+      window.showInfoModal(text);
+      return;
+    }
+    if (typeof alert === 'function') alert(text);
+  }
+
   function lazyOpenVehiclesView() {
     var openVehiclesArgs = arguments;
     showModuleSpinner();
-    Promise.resolve()
+    return Promise.resolve()
       .then(function() {
         if (typeof window.ensureMedisaTasitlarModuleReady !== 'function') {
           throw new Error('Tasitlar module ready loader hazir degil');
@@ -1664,6 +1681,7 @@ window.ensureMedisaVehicleNotificationDomainReady = function() {
       .catch(function(err) {
         console.error('[Medisa] Taşıtlar modülü yüklenemedi:', err);
         showTasitlarModuleLoadError();
+        throw err;
       })
       .finally(function() {
         hideModuleSpinner();
@@ -1675,12 +1693,15 @@ window.ensureMedisaVehicleNotificationDomainReady = function() {
   function lazyOpenReportsView() {
     var args = arguments;
     showModuleSpinner();
-    window.MedisaMainSurfaceRegistry.ensure('reports').then(function() {
-      if (typeof window.openReportsView === 'function' && window.openReportsView !== lazyOpenReportsView) {
-        return window.openReportsView.apply(window, args);
+    return window.MedisaMainSurfaceRegistry.ensure('reports').then(function() {
+      if (typeof window.openReportsView !== 'function' || window.openReportsView === lazyOpenReportsView) {
+        throw new Error('Raporlar ekrani acma fonksiyonu hazir degil');
       }
+      return window.openReportsView.apply(window, args);
     }).catch(function(err) {
       console.error('[Medisa] Raporlar modülü yüklenemedi:', err);
+      showSurfaceOpenError('Raporlar ekranı yüklenemedi. Lütfen tekrar deneyin.');
+      throw err;
     }).finally(function() {
       hideModuleSpinner();
     });
@@ -1690,12 +1711,15 @@ window.ensureMedisaVehicleNotificationDomainReady = function() {
   function lazyOpenVehicleModal() {
     var args = arguments;
     showModuleSpinner();
-    window.MedisaMainSurfaceRegistry.ensure('kayit').then(function() {
-      if (typeof window.openVehicleModal === 'function' && window.openVehicleModal !== lazyOpenVehicleModal) {
-        return window.openVehicleModal.apply(window, args);
+    return window.MedisaMainSurfaceRegistry.ensure('kayit').then(function() {
+      if (typeof window.openVehicleModal !== 'function' || window.openVehicleModal === lazyOpenVehicleModal) {
+        throw new Error('Kayit ekrani acma fonksiyonu hazir degil');
       }
+      return window.openVehicleModal.apply(window, args);
     }).catch(function(err) {
       console.error('[Medisa] Kayıt modülü yüklenemedi:', err);
+      showSurfaceOpenError('Kayıt ekranı yüklenemedi. Lütfen tekrar deneyin.');
+      throw err;
     }).finally(function() {
       hideModuleSpinner();
     });
@@ -1706,15 +1730,16 @@ window.ensureMedisaVehicleNotificationDomainReady = function() {
     return function() {
       var args = arguments;
       showModuleSpinner();
-      window.MedisaMainSurfaceRegistry.ensure('settings').then(function() {
+      return window.MedisaMainSurfaceRegistry.ensure('settings').then(function() {
         window._ayarlarLoaded = true;
-        try {
-          if (typeof window[fnName] === 'function') window[fnName].apply(window, args);
-        } catch (e) {
-          window.__medisaLogError('Ayarlar ekranı açılırken', e || new Error(String(e)));
+        if (typeof window[fnName] !== 'function') {
+          throw new Error('Ayarlar hedef API hazir degil: ' + fnName);
         }
+        return window[fnName].apply(window, args);
       }).catch(function(err) {
         console.error('[Medisa] Ayarlar modülü yüklenemedi:', err);
+        showSurfaceOpenError('Ayarlar açılamadı. Lütfen tekrar deneyin.');
+        throw err;
       }).finally(function() {
         hideModuleSpinner();
       });
@@ -1731,6 +1756,75 @@ window.ensureMedisaVehicleNotificationDomainReady = function() {
   window.importData = wrapAyarlar('importData');
   window.tsbKaskoListesiIndir = wrapAyarlar('tsbKaskoListesiIndir');
   window.kaskoExcelYukle = wrapAyarlar('kaskoExcelYukle');
+
+  /* medisa-shell-intent-handlers:begin */
+  (function registerMedisaShellIntentHandlers() {
+    var bridge = window.MedisaShellIntentBridge;
+    if (!bridge || typeof bridge.register !== 'function') return;
+
+    function callLazyOpen(fn) {
+      if (typeof fn !== 'function') {
+        return Promise.reject(new Error('Shell open handler hazir degil'));
+      }
+      return Promise.resolve().then(function() { return fn(); });
+    }
+
+    bridge.register('open-kayit', function() {
+      return callLazyOpen(lazyOpenVehicleModal);
+    });
+    bridge.register('open-tasitlar', function() {
+      return callLazyOpen(lazyOpenVehiclesView);
+    });
+    bridge.register('open-raporlar', function() {
+      return callLazyOpen(lazyOpenReportsView);
+    });
+    bridge.register('toggle-settings', function() {
+      if (typeof window.toggleSettingsMenu !== 'function') {
+        return Promise.reject(new Error('Ayarlar toggle hazir degil'));
+      }
+      window.toggleSettingsMenu();
+      return Promise.resolve();
+    });
+    bridge.register('toggle-notifications', function() {
+      return Promise.resolve()
+        .then(function() {
+          if (typeof window.ensureMedisaNotificationsModuleReady !== 'function') {
+            throw new Error('Notifications module ready loader hazir degil');
+          }
+          return window.ensureMedisaNotificationsModuleReady();
+        })
+        .then(function() {
+          if (typeof window.toggleNotifications !== 'function') {
+            throw new Error('Bildirimler toggle hazir degil');
+          }
+          window.toggleNotifications();
+        });
+    });
+    bridge.register('open-monthly-todo', function() {
+      return Promise.resolve()
+        .then(function() {
+          if (typeof window.ensureMedisaNotificationsModuleReady !== 'function') {
+            throw new Error('Notifications module ready loader hazir degil');
+          }
+          return window.ensureMedisaNotificationsModuleReady();
+        })
+        .then(function() {
+          if (typeof window.openMonthlyTodoFromShell !== 'function') {
+            throw new Error('Monthly todo shell API hazir degil');
+          }
+          return window.openMonthlyTodoFromShell();
+        });
+    });
+
+    if (window.__medisaAppReadyAt || window.__medisaAppReady) {
+      if (typeof bridge.markAppReady === 'function') bridge.markAppReady();
+    }
+
+    window.addEventListener('medisa:session-failed', function() {
+      if (typeof bridge.cancelSession === 'function') bridge.cancelSession();
+    });
+  })();
+  /* medisa-shell-intent-handlers:end */
 
   window.closeVehiclesModal = function() {
     const modal = document.getElementById('vehicles-modal');

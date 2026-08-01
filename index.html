@@ -249,16 +249,263 @@
                 <div class="animated-line"></div>
             </div>
 
+            <!-- P1-D: erken shell intent bridge — butonlardan önce kurulur -->
+            <style id="medisa-shell-intent-bridge-style">
+                #medisa-shell-intent-status {
+                    position: absolute;
+                    width: 1px;
+                    height: 1px;
+                    padding: 0;
+                    margin: -1px;
+                    overflow: hidden;
+                    clip: rect(0, 0, 0, 0);
+                    white-space: nowrap;
+                    border: 0;
+                }
+                [data-medisa-shell-intent][aria-busy="true"] { opacity: 0.72; }
+            </style>
+            <span id="medisa-shell-intent-status" aria-live="polite"></span>
+            <script>
+            /* medisa-shell-intent-bridge:begin */
+            (function(global) {
+              'use strict';
+              if (global.MedisaShellIntentBridge && global.MedisaShellIntentBridge.__medisaBridgeReady) return;
+
+              var PENDING_TIMEOUT_MS = 15000;
+              var FAIL_MESSAGES = {
+                'open-kayit': 'Kayıt ekranı yüklenemedi. Lütfen tekrar deneyin.',
+                'open-tasitlar': 'Taşıtlar ekranı yüklenemedi. Lütfen tekrar deneyin.',
+                'open-raporlar': 'Raporlar ekranı yüklenemedi. Lütfen tekrar deneyin.',
+                'open-monthly-todo': 'Bu Ay Yapılacaklar hazırlanamadı. Lütfen tekrar deneyin.',
+                'toggle-notifications': 'Bildirimler hazırlanamadı. Lütfen tekrar deneyin.',
+                'toggle-settings': 'Ayarlar açılamadı. Lütfen tekrar deneyin.'
+              };
+              var TIMEOUT_MESSAGE = 'Bölüm hazırlanamadı. Lütfen tekrar deneyin.';
+              var OFFLINE_MESSAGE = 'Bu bölüm ilk kullanım için internet bağlantısı gerektiriyor.';
+              var handlers = Object.create(null);
+              var pending = null;
+              var executing = Object.create(null);
+              var appReady = !!(global.__medisaAppReadyAt || global.__medisaAppReady);
+              var sessionAllowed = true;
+              var lastIntentKey = '';
+              var lastIntentAt = 0;
+              var errorShownAt = 0;
+              var errorShownMessage = '';
+
+              function doc() { return global.document || null; }
+
+              function setStatus(text) {
+                var el = doc() && doc().getElementById('medisa-shell-intent-status');
+                if (el) el.textContent = text || '';
+              }
+
+              function clearBusy(el) {
+                if (el && el.removeAttribute) el.removeAttribute('aria-busy');
+              }
+
+              function setBusy(el) {
+                if (el && el.setAttribute) el.setAttribute('aria-busy', 'true');
+              }
+
+              function showError(message) {
+                var msg = String(message || TIMEOUT_MESSAGE);
+                var now = Date.now();
+                if (now - errorShownAt < 900 && errorShownMessage === msg) return;
+                errorShownAt = now;
+                errorShownMessage = msg;
+                if (typeof global.showCenteredInfoBox === 'function') {
+                  global.showCenteredInfoBox(msg);
+                  return;
+                }
+                if (typeof global.alert === 'function') global.alert(msg);
+              }
+
+              function isAuthGateActive() {
+                try {
+                  return !!(doc() && doc().body && doc().body.classList.contains('main-auth-gate-active'));
+                } catch (e0) {
+                  return false;
+                }
+              }
+
+              function isSessionOk() {
+                if (sessionAllowed === false) return false;
+                if (global.__medisaShellIntentSessionFailed === true) return false;
+                if (isAuthGateActive()) return false;
+                try {
+                  var s = global.medisaSession;
+                  if (s && s.authenticated === false) return false;
+                  if (s && (s.mustChangePassword === true || s.forcePasswordChange === true)) return false;
+                } catch (e1) {}
+                return true;
+              }
+
+              function clearPending() {
+                if (!pending) return;
+                if (pending.timer) {
+                  clearTimeout(pending.timer);
+                  pending.timer = null;
+                }
+                clearBusy(pending.sourceEl);
+                pending = null;
+                setStatus('');
+              }
+
+              function scheduleTimeout(entry) {
+                if (entry.timer) clearTimeout(entry.timer);
+                entry.timer = setTimeout(function() {
+                  if (pending !== entry) return;
+                  clearPending();
+                  showError(TIMEOUT_MESSAGE);
+                }, PENDING_TIMEOUT_MS);
+              }
+
+              function resolveFailureMessage(name) {
+                try {
+                  if (global.navigator && global.navigator.onLine === false) return OFFLINE_MESSAGE;
+                } catch (e2) {}
+                return FAIL_MESSAGES[name] || TIMEOUT_MESSAGE;
+              }
+
+              function tryDrain() {
+                if (!pending) return;
+                if (!appReady) return;
+                if (!isSessionOk()) {
+                  clearPending();
+                  return;
+                }
+                var name = pending.name;
+                var handler = handlers[name];
+                if (typeof handler !== 'function') return;
+                if (executing[name]) return;
+
+                var entry = pending;
+                pending = null;
+                if (entry.timer) {
+                  clearTimeout(entry.timer);
+                  entry.timer = null;
+                }
+                executing[name] = true;
+                setStatus('');
+
+                Promise.resolve()
+                  .then(function() { return handler(entry.context || {}); })
+                  .then(function() { clearBusy(entry.sourceEl); })
+                  .catch(function() {
+                    clearBusy(entry.sourceEl);
+                    // Ana surface lazy wrapper kendi hata UI'sını gösterir; çift alert yok.
+                    if (name === 'open-kayit' || name === 'open-tasitlar' || name === 'open-raporlar') return;
+                    showError(resolveFailureMessage(name));
+                  })
+                  .then(function() { delete executing[name]; }, function() { delete executing[name]; });
+              }
+
+              function request(intentName, context) {
+                var name = String(intentName || '');
+                if (!name) return;
+                if (!isSessionOk()) {
+                  clearPending();
+                  return;
+                }
+                context = context || {};
+                var sourceEl = context.sourceEl || null;
+                if (executing[name]) return;
+                if (pending && pending.name === name) return;
+
+                if (pending) {
+                  clearBusy(pending.sourceEl);
+                  if (pending.timer) clearTimeout(pending.timer);
+                  pending = null;
+                }
+
+                setBusy(sourceEl);
+                setStatus('Bölüm hazırlanıyor…');
+                pending = {
+                  name: name,
+                  context: context,
+                  sourceEl: sourceEl,
+                  timer: null,
+                  requestedAt: Date.now()
+                };
+                scheduleTimeout(pending);
+                tryDrain();
+              }
+
+              function register(intentName, handler) {
+                var name = String(intentName || '');
+                if (!name || typeof handler !== 'function') {
+                  throw new Error('Geçersiz shell intent handler');
+                }
+                handlers[name] = handler;
+                tryDrain();
+              }
+
+              function markAppReady() {
+                appReady = true;
+                global.__medisaAppReady = true;
+                tryDrain();
+              }
+
+              function cancelSession() {
+                sessionAllowed = false;
+                global.__medisaShellIntentSessionFailed = true;
+                clearPending();
+              }
+
+              function onDocumentClick(ev) {
+                var t = ev && ev.target;
+                if (!t || typeof t.closest !== 'function') return;
+                var el = t.closest('[data-medisa-shell-intent]');
+                if (!el) return;
+                var intent = el.getAttribute('data-medisa-shell-intent');
+                if (!intent) return;
+                if (ev && typeof ev.preventDefault === 'function') ev.preventDefault();
+                if (ev && typeof ev.stopPropagation === 'function') ev.stopPropagation();
+                var key = intent + '|' + (el.id || el.className || '');
+                var now = Date.now();
+                if (key === lastIntentKey && (now - lastIntentAt) < 350) return;
+                lastIntentKey = key;
+                lastIntentAt = now;
+                request(intent, { sourceEl: el, event: ev });
+              }
+
+              if (doc() && typeof doc().addEventListener === 'function') {
+                doc().addEventListener('click', onDocumentClick, true);
+              }
+
+              global.MedisaShellIntentBridge = {
+                request: request,
+                register: register,
+                markAppReady: markAppReady,
+                isAppReady: function() { return !!appReady; },
+                hasPending: function(intentName) {
+                  if (!pending) return false;
+                  if (!intentName) return true;
+                  return pending.name === String(intentName);
+                },
+                clear: function(intentName) {
+                  if (!pending) return;
+                  if (intentName && pending.name !== String(intentName)) return;
+                  clearPending();
+                },
+                cancelSession: cancelSession,
+                PENDING_TIMEOUT_MS: PENDING_TIMEOUT_MS,
+                __medisaBridgeReady: true
+              };
+            })(typeof window !== 'undefined' ? window : this);
+            /* medisa-shell-intent-bridge:end */
+            </script>
+
             <div class="icons-row">
                 <div class="icons-row-left">
-                    <button type="button" id="monthly-todo-header-btn" class="icon-btn" aria-label="Bu Ay Yapılacaklar">
+                    <button type="button" id="monthly-todo-header-btn" class="icon-btn" data-medisa-shell-intent="open-monthly-todo" aria-label="Bu Ay Yapılacaklar">
                         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01"/></svg>
                         <span class="monthly-todo-header-badge" hidden aria-hidden="true"></span>
                     </button>
                 </div>
                 <div id="pwa-install-wrapper" class="pwa-install-center"></div>
                 <div class="icons-row-right">
-                    <button id="notifications-toggle-btn" class="icon-btn" onclick="toggleNotifications(event)">
+                    <button id="notifications-toggle-btn" class="icon-btn" data-medisa-shell-intent="toggle-notifications" type="button" aria-label="Bildirimler">
                          <svg class="notifications-bell-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/>
                             <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
@@ -269,7 +516,7 @@
                          <button disabled>Bildirim Yok</button>
                     </div>
 
-                    <button class="icon-btn" onclick="toggleSettingsMenu(event)">
+                    <button id="settings-toggle-btn" class="icon-btn" data-medisa-shell-intent="toggle-settings" type="button" aria-label="Ayarlar">
                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
                             <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
@@ -298,33 +545,19 @@
             </div>
 
             <div id="main-menu" class="menu-container">
-                <button class="menu-btn" onclick="openVehicleModal()">
+                <button type="button" class="menu-btn" data-medisa-shell-intent="open-kayit" aria-label="Kayıt">
                     <div class="ttl">KAYIT</div>
                 </button>
-                <button class="menu-btn" onclick="openVehiclesView()">
+                <button type="button" class="menu-btn" data-medisa-shell-intent="open-tasitlar" aria-label="Taşıtlar">
                     <div class="ttl">TAŞITLAR</div>
                 </button>
-                <button class="menu-btn" onclick="openReportsView()">
+                <button type="button" class="menu-btn" data-medisa-shell-intent="open-raporlar" aria-label="Raporlar">
                     <div class="ttl">RAPORLAR</div>
                 </button>
             </div>
-            <!-- Erken fallback: script-core/tasitlar/kayit yüklenmeden tıklanırsa ReferenceError önlenir -->
+            <!-- Erken close/egzoz stub: hydrate öncesi inline close ReferenceError önlenir (direct-open yok) -->
             <script>
             (function() {
-                function openModal(id) {
-                    var m = document.getElementById(id);
-                    if (!m) return;
-                    m.style.display = 'flex';
-                    requestAnimationFrame(function() {
-                        m.classList.add('active');
-                        if (typeof window.updateFooterDim === 'function') window.updateFooterDim();
-                    });
-                }
-
-                if (!window.openVehiclesView) window.openVehiclesView = function() { openModal('vehicles-modal'); };
-                if (!window.openReportsView) window.openReportsView = function() { openModal('reports-modal'); };
-                if (!window.openVehicleModal) window.openVehicleModal = function() { openModal('vehicle-modal'); };
-
                 if (!window.closeVehicleModal) {
                     window.closeVehicleModal = function() {
                         var m = document.getElementById('vehicle-modal');
@@ -506,11 +739,17 @@
       window.medisaNotifyAppReady = function medisaNotifyAppReady() {
         appReady = true;
         try {
+          window.__medisaAppReady = true;
           window.__medisaAppReadyAt = Date.now();
           if (window.__medisaMainShellMetrics) {
             window.__medisaMainShellMetrics.appReadyAt = window.__medisaAppReadyAt;
           }
         } catch (eReady) {}
+        try {
+          if (window.MedisaShellIntentBridge && typeof window.MedisaShellIntentBridge.markAppReady === 'function') {
+            window.MedisaShellIntentBridge.markAppReady();
+          }
+        } catch (eBridgeReady) {}
         tryDismissSplash();
       };
       // Geriye uyumluluk: eski (cache'li) script-core doğrudan çağırırsa güvenli kapatma
@@ -543,7 +782,7 @@
     <script defer src="portal-session.js?v=20260731.3"></script>
     <script defer src="data-manager.js?v=20260801.5"></script>
     <script defer src="data-service.js?v=20260718.2"></script>
-    <script defer src="script-core.js?v=20260801.6"></script>
+    <script defer src="script-core.js?v=20260801.7"></script>
 </body>
 </html>
 

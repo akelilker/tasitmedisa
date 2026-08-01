@@ -279,10 +279,13 @@ function createRecordHarness(opts) {
 
   await run('source: notifications JS/CSS pin parity + index script-core', function() {
     const ver = (core.match(/notifications:\s*'([^']+)'/) || [])[1];
-    assert.equal(ver, '20260801.6');
+    const scriptPin = (index.match(/script-core\.js\?v=([0-9.]+)/) || [])[1];
+    assert.ok(ver, 'notifications version bulunmalı');
+    assert.ok(scriptPin, 'script-core pin bulunmalı');
+    assert.equal(ver, scriptPin, 'notifications ile script-core pin parity');
     assert.match(core, /notifications\.js\?v=' \+ V\.notifications/);
     assert.match(core, /notifications\.css\?v=' \+ V\.notifications/);
-    assert.match(index, /script-core\.js\?v=20260801\.6/);
+    assert.match(index, new RegExp('script-core\\.js\\?v=' + scriptPin.replace(/\./g, '\\.')));
     assert.match(index, /data-manager\.js\?v=20260801\.5/);
     assert.match(css, /monthly-todo-wa-audit/);
   });

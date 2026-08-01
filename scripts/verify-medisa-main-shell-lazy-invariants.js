@@ -53,10 +53,20 @@ test('baseline ölçümü node ve duplicate ID alanlarını içerir', function()
   assert.match(measure, /duplicateIdCount/);
 });
 
-test('core shell ana menü triggerlarını korur', function() {
-  ['openVehicleModal()', 'openVehiclesView()', 'openReportsView()'].forEach(function(needle) {
-    assert.ok(index.includes(needle), needle + ' yok');
+test('core shell ana menü intent attribute korur', function() {
+  ['open-kayit', 'open-tasitlar', 'open-raporlar'].forEach(function(intent) {
+    assert.ok(index.includes('data-medisa-shell-intent="' + intent + '"'), intent + ' yok');
   });
+  assert.match(index, /MedisaShellIntentBridge/);
+  assert.doesNotMatch(index, /onclick="openVehicleModal\(\)"/);
+  assert.doesNotMatch(index, /onclick="openVehiclesView\(\)"/);
+  assert.doesNotMatch(index, /onclick="openReportsView\(\)"/);
+});
+
+test('thin-shell direct-open early fallback yok', function() {
+  assert.doesNotMatch(index, /openModal\('vehicles-modal'\)/);
+  assert.doesNotMatch(index, /openModal\('reports-modal'\)/);
+  assert.doesNotMatch(index, /openModal\('vehicle-modal'\)/);
 });
 
 test('splash minimum süresi 2000 ms kalır', function() {
@@ -360,10 +370,12 @@ if (implementationPresent) {
   test('package main shell araçlarını içerir', function() {
     assert.match(packageJson, /tool:verify-main-shell/);
     assert.match(packageJson, /tool:measure-main-shell/);
+    assert.match(packageJson, /tool:verify-thin-shell/);
   });
   test('canonical quality gate main shell araçlarını çalıştırır', function() {
     assert.match(qualityGate, /npm run tool:verify-main-shell/);
     assert.match(qualityGate, /npm run tool:measure-main-shell/);
+    assert.match(qualityGate, /npm run tool:verify-thin-shell/);
   });
   test('ölçüm hard gate alanlarını içerir', function() {
     ['htmlReduction30PctOr50KiB', 'initialDomNodeReduction40Pct', 'initialFeatureModalNodesZero', 'htmlPlusTemplatesWithin110Pct'].forEach(function(name) {

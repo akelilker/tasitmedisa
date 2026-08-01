@@ -40,6 +40,9 @@ npm run tool:measure-driver-boot
 echo "[quality-gate] Main shell lazy invariants"
 npm run tool:verify-main-shell
 
+echo "[quality-gate] Thin shell early-intent invariants"
+npm run tool:verify-thin-shell
+
 echo "[quality-gate] Main shell measurement"
 npm run tool:measure-main-shell
 
