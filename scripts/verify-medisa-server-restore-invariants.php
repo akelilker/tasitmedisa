@@ -93,8 +93,10 @@ $GLOBALS['MEDISA_RESTORE_ENV_OVERRIDE'] = [
     'snapshots_dir' => $snapDir,
     'runtime_dir' => $runtimeDir,
     'max_bytes' => 33554432,
+    'environment' => 'production',
     'enabled' => false,
     'maintenance' => false,
+    'production_approval' => false,
     'secret' => $secret,
 ];
 $GLOBALS['MEDISA_RESTORE_FAIL_INJECT'] = null;
@@ -349,6 +351,21 @@ srAssert('commit requires maintenance', ($commit['body']['error_code'] ?? '') ==
 
 $GLOBALS['MEDISA_RESTORE_ENV_OVERRIDE']['maintenance'] = true;
 putenv('MEDISA_RESTORE_MAINTENANCE_MODE=true');
+$commit = medisaRestoreHandleCommit([
+    'backup_id' => $backupId,
+    'intent_token' => $intent,
+    'idempotency_key' => 'idem-production-gate',
+    'confirmation' => MEDISA_RESTORE_CONFIRMATION_TEXT,
+]);
+srAssert(
+    'production commit requires second activation approval',
+    ($commit['body']['error_code'] ?? '') === 'PRODUCTION_RESTORE_APPROVAL_REQUIRED'
+);
+
+$GLOBALS['MEDISA_RESTORE_ENV_OVERRIDE']['environment'] = 'staging';
+$reg = medisaRestoreHandleRegistry();
+srAssert('staging capability bypasses production approval only', ($reg['body']['production_activation_approved'] ?? false) === true);
+
 $fixture['users'][] = ['id' => 'bm1', 'isim' => 'BM', 'role' => 'sube_yonetici', 'branchIds' => ['b1'], 'aktif' => true, 'sifre_hash' => $VALID_HASH];
 srWriteData($fixture);
 srAuthRole('bm1', 'sube_yonetici');

@@ -109,7 +109,9 @@ function createHarness(opts) {
   let pendingSaveResolve = null;
   let pendingSaveReject = null;
 
-  const originalApp = {
+  const originalApp = opts.initialApp
+    ? JSON.parse(JSON.stringify(opts.initialApp))
+    : {
     tasitlar: [{ id: 1, plate: 'OLD' }],
     kayitlar: [],
     branches: [{ id: 'b1', name: 'Eski' }],
@@ -120,7 +122,7 @@ function createHarness(opts) {
     duzeltme_talepleri: [],
     notificationReadState: {},
     monthlyTodoWhatsAppLogs: {}
-  };
+    };
 
   localStorage.setItem('medisa_data_v1', JSON.stringify(originalApp));
   localStorage.setItem('medisa_server_backup', JSON.stringify({ source: 'pre-import', vehicles: originalApp.tasitlar }));
@@ -151,7 +153,12 @@ function createHarness(opts) {
     };
   }
 
-  if (opts.saveMode === 'missing') {
+  if (typeof opts.saveDataToServer === 'function') {
+    windowRef.saveDataToServer = async function() {
+      saveCalls += 1;
+      return opts.saveDataToServer(windowRef.appData);
+    };
+  } else if (opts.saveMode === 'missing') {
     // leave saveDataToServer undefined
   } else if (opts.saveMode === 'false') {
     windowRef.saveDataToServer = async function() { saveCalls += 1; return false; };
@@ -342,7 +349,7 @@ async function runImportScenario(opts) {
   return { h, result };
 }
 
-(async function main() {
+async function main() {
   await run('source: package tool:verify-import-source-of-truth tanımlı', function() {
     const pkg = JSON.parse(read('package.json'));
     assert.equal(
@@ -694,4 +701,14 @@ async function runImportScenario(opts) {
 
   console.log('\nImport SoT invariants: ' + passed + ' passed, ' + failed + ' failed');
   if (failed) process.exitCode = 1;
-})();
+}
+
+module.exports = {
+  createHarness,
+  sampleBackup,
+  syntheticExportFixture
+};
+
+if (require.main === module) {
+  main();
+}

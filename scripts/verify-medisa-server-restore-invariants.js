@@ -41,6 +41,9 @@ test('restore.php remains metadata-only', function() {
 test('feature flags default false via env helpers', function() {
   const src = read('server_restore.php');
   assert.match(src, /MEDISA_SERVER_RESTORE_ENABLED/);
+  assert.match(src, /MEDISA_PRODUCTION_RESTORE_APPROVED/);
+  assert.match(src, /PRODUCTION_RESTORE_APPROVAL_REQUIRED/);
+  assert.match(src, /medisaRestoreProductionActivationApproved/);
   assert.match(src, /MEDISA_RESTORE_MAINTENANCE_MODE/);
   assert.match(src, /MEDISA_RESTORE_HMAC_SECRET/);
   assert.match(src, /function medisaEnvFlagTrue/);

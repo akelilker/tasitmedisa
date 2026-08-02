@@ -53,8 +53,10 @@ function medisaRestoreEnv() {
         'snapshots_dir' => getSnapshotsDirPath(),
         'runtime_dir' => $dataDir . DIRECTORY_SEPARATOR . '.medisa_restore',
         'max_bytes' => MEDISA_RESTORE_MAX_BYTES,
+        'environment' => strtolower(trim((string)(getenv('MEDISA_ENVIRONMENT') ?: 'production'))),
         'enabled' => medisaEnvFlagTrue('MEDISA_SERVER_RESTORE_ENABLED'),
         'maintenance' => medisaEnvFlagTrue('MEDISA_RESTORE_MAINTENANCE_MODE'),
+        'production_approval' => medisaEnvFlagTrue('MEDISA_PRODUCTION_RESTORE_APPROVED'),
         'secret' => (string)(getenv('MEDISA_RESTORE_HMAC_SECRET') ?: ''),
     ];
     return $cached;
@@ -70,6 +72,22 @@ function medisaRestoreIsMaintenanceMode() {
 
 function medisaRestoreHasSecret() {
     return strlen((string)(medisaRestoreEnv()['secret'] ?? '')) >= 16;
+}
+
+/** Bilinmeyen/boş ortam adını production kabul ederek fail-closed kalır. */
+function medisaRestoreEnvironmentName($env = null) {
+    $env = $env ?: medisaRestoreEnv();
+    $name = strtolower(trim((string)($env['environment'] ?? 'production')));
+    return $name === 'staging' ? 'staging' : 'production';
+}
+
+/** Staging sentetik kabulü serbest; production commit ikinci açık kapı ister. */
+function medisaRestoreProductionActivationApproved($env = null) {
+    $env = $env ?: medisaRestoreEnv();
+    if (medisaRestoreEnvironmentName($env) === 'staging') {
+        return true;
+    }
+    return !empty($env['production_approval']);
 }
 
 function medisaRestoreIsWriteFrozen() {
@@ -935,9 +953,11 @@ function medisaRestoreVerifyIntent($token, array $expected, $env = null) {
 }
 
 function medisaRestoreCapabilityPayload() {
+    $env = medisaRestoreEnv();
     return [
         'restore_enabled' => medisaRestoreIsEnabled(),
         'maintenance_mode' => medisaRestoreIsMaintenanceMode(),
+        'production_activation_approved' => medisaRestoreProductionActivationApproved($env),
         'secret_configured' => medisaRestoreHasSecret(),
         'confirmation_text' => MEDISA_RESTORE_CONFIRMATION_TEXT,
         'intent_ttl_seconds' => MEDISA_RESTORE_INTENT_TTL_SECONDS,
@@ -1313,6 +1333,13 @@ function medisaRestoreHandleCommit(array $input) {
     }
     if (!medisaRestoreHasSecret()) {
         return ['status' => 503, 'body' => medisaRestoreError('RESTORE_SECRET_MISSING', 'Restore imza anahtarı yok.', 503)];
+    }
+    if (!medisaRestoreProductionActivationApproved($env)) {
+        return ['status' => 403, 'body' => medisaRestoreError(
+            'PRODUCTION_RESTORE_APPROVAL_REQUIRED',
+            'Production restore için ikinci aktivasyon onayı gerekli.',
+            403
+        )];
     }
 
     $currentData = loadData();
