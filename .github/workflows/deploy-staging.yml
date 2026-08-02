@@ -234,12 +234,12 @@ jobs:
           if [ "$INCLUDE" != "true" ]; then
             EXCLUDE_ARGS+=(--exclude-glob 'data/**' --exclude 'data')
           fi
-          export LFTP_PASSWORD="$STAGING_FTP_PASSWORD"
           attempt=1
           while [ "$attempt" -le 3 ]; do
             echo "FTPS staging deploy attempt $attempt"
             set +e
-            lftp -u "$STAGING_FTP_USERNAME" "ftp://${STAGING_FTP_SERVER}:${STAGING_FTP_PORT}" -e "
+            # Password -u user,pass formunda; LFTP_PASSWORD bu runner'da GetPass fail verdi.
+            lftp -u "${STAGING_FTP_USERNAME},${STAGING_FTP_PASSWORD}" "ftp://${STAGING_FTP_SERVER}:${STAGING_FTP_PORT}" -e "
               set ssl:verify-certificate no;
               set ftp:ssl-force true;
               set ftp:ssl-protect-data true;
