@@ -4,6 +4,11 @@
  * Veri yolu, yükleme/kaydetme, yedekleme ve token doğrulama
  */
 
+// Staging/local overlay: yalnız dosya varsa yükle. Production'da bu dosya yoktur.
+if (is_readable(__DIR__ . '/config.local.php')) {
+    require_once __DIR__ . '/config.local.php';
+}
+
 /** data/ altında tutulacak zaman damgalı anlık görüntü sayısı üst sınırı */
 define('MEDISA_SNAPSHOT_MAX_FILES', 25);
 
@@ -479,18 +484,45 @@ function medisaReadAuthorizationHeader() {
         $headers = [];
     }
 
+    // Staging Directory Privacy Basic Auth Authorization başlığını doldurur.
+    // Uygulama Bearer token'ı X-Medisa-Authorization ile taşınabilir (Basic ile çakışmaz).
+    foreach ($headers as $key => $value) {
+        if (strcasecmp((string)$key, 'X-Medisa-Authorization') === 0) {
+            $v = trim((string)$value);
+            if ($v !== '') {
+                return $v;
+            }
+        }
+    }
+    if (!empty($_SERVER['HTTP_X_MEDISA_AUTHORIZATION'])) {
+        $v = trim((string)$_SERVER['HTTP_X_MEDISA_AUTHORIZATION']);
+        if ($v !== '') {
+            return $v;
+        }
+    }
+
     foreach ($headers as $key => $value) {
         if (strcasecmp((string)$key, 'Authorization') === 0) {
-            return trim((string)$value);
+            $v = trim((string)$value);
+            // Apache Basic Auth varken Bearer uygulama token'ı olmayabilir.
+            if ($v !== '' && !preg_match('/^Basic\s+/i', $v)) {
+                return $v;
+            }
         }
     }
 
     if (!empty($_SERVER['HTTP_AUTHORIZATION'])) {
-        return trim((string)$_SERVER['HTTP_AUTHORIZATION']);
+        $v = trim((string)$_SERVER['HTTP_AUTHORIZATION']);
+        if ($v !== '' && !preg_match('/^Basic\s+/i', $v)) {
+            return $v;
+        }
     }
 
     if (!empty($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
-        return trim((string)$_SERVER['REDIRECT_HTTP_AUTHORIZATION']);
+        $v = trim((string)$_SERVER['REDIRECT_HTTP_AUTHORIZATION']);
+        if ($v !== '' && !preg_match('/^Basic\s+/i', $v)) {
+            return $v;
+        }
     }
 
     return '';

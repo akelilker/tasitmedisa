@@ -1,0 +1,133 @@
+# Manual-only live staging restore acceptance. Production secrets/URL kullanılmaz.
+name: Staging Restore Acceptance
+
+concurrency:
+  group: medisa-staging-restore-acceptance
+  cancel-in-progress: false
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Git ref (branch/tag/SHA)'
+        required: true
+        default: 'main'
+        type: string
+      confirmation:
+        description: 'Exact: RUN STAGING RESTORE ACCEPTANCE'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  restore_acceptance:
+    name: Live staging restore acceptance
+    runs-on: ubuntu-latest
+    environment:
+      name: staging
+      url: https://medisa-staging.karmotors.com.tr
+    env:
+      STAGING_BASE_URL: ${{ vars.STAGING_BASE_URL }}
+      STAGING_FTP_SERVER: ${{ vars.STAGING_FTP_SERVER }}
+      STAGING_FTP_PORT: ${{ vars.STAGING_FTP_PORT }}
+      STAGING_FTP_SERVER_DIR: ${{ vars.STAGING_FTP_SERVER_DIR }}
+      STAGING_FTP_USERNAME: ${{ vars.STAGING_FTP_USERNAME }}
+      STAGING_APP_ADMIN_USERNAME: ${{ vars.STAGING_APP_ADMIN_USERNAME }}
+      MEDISA_ENVIRONMENT: ${{ vars.MEDISA_ENVIRONMENT }}
+    steps:
+      - name: Typed confirmation gate
+        shell: bash
+        env:
+          CONFIRMATION: ${{ inputs.confirmation }}
+        run: |
+          set -euo pipefail
+          if [ "$CONFIRMATION" != "RUN STAGING RESTORE ACCEPTANCE" ]; then
+            echo "::error::confirmation must be exactly: RUN STAGING RESTORE ACCEPTANCE"
+            exit 1
+          fi
+
+      - name: Checkout exact ref
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.ref }}
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+
+      - name: Hard gate — staging only
+        shell: bash
+        env:
+          STAGING_FTP_PASSWORD: ${{ secrets.STAGING_FTP_PASSWORD }}
+          STAGING_BASIC_AUTH_USERNAME: ${{ secrets.STAGING_BASIC_AUTH_USERNAME }}
+          STAGING_BASIC_AUTH_PASSWORD: ${{ secrets.STAGING_BASIC_AUTH_PASSWORD }}
+          STAGING_APP_ADMIN_PASSWORD: ${{ secrets.STAGING_APP_ADMIN_PASSWORD }}
+          STAGING_TOKEN_SECRET: ${{ secrets.STAGING_TOKEN_SECRET }}
+          STAGING_RESTORE_HMAC_SECRET: ${{ secrets.STAGING_RESTORE_HMAC_SECRET }}
+        run: |
+          set -euo pipefail
+          test "${STAGING_BASE_URL}" = "https://medisa-staging.karmotors.com.tr"
+          test "${STAGING_FTP_USERNAME}" = "medisa_staging@karmotors.com.tr"
+          test "${STAGING_FTP_SERVER_DIR}" = "/"
+          test "${MEDISA_ENVIRONMENT}" = "staging"
+          case "${STAGING_BASE_URL}" in
+            *karmotors.com.tr/medisa*) echo "::error::production URL denied"; exit 1 ;;
+          esac
+          UNAUTH=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 30 "$STAGING_BASE_URL/" || true)
+          test "$UNAUTH" = "401"
+          CODE=$(curl -sS -o /tmp/stg.html -w '%{http_code}' --max-time 30 \
+            -u "${STAGING_BASIC_AUTH_USERNAME}:${STAGING_BASIC_AUTH_PASSWORD}" \
+            "$STAGING_BASE_URL/")
+          test "$CODE" = "200"
+          grep -q 'medisa-staging-banner\|STAGING — SENTETİK VERİ' /tmp/stg.html
+          echo "SOURCE_SHA=${GITHUB_SHA}"
+          npm run tool:verify-staging-isolation
+
+      - name: Runner failure-injection (temp filesystem)
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run tool:verify-server-restore
+
+      - name: Live black-box acceptance
+        shell: bash
+        env:
+          STAGING_FTP_PASSWORD: ${{ secrets.STAGING_FTP_PASSWORD }}
+          STAGING_BASIC_AUTH_USERNAME: ${{ secrets.STAGING_BASIC_AUTH_USERNAME }}
+          STAGING_BASIC_AUTH_PASSWORD: ${{ secrets.STAGING_BASIC_AUTH_PASSWORD }}
+          STAGING_APP_ADMIN_PASSWORD: ${{ secrets.STAGING_APP_ADMIN_PASSWORD }}
+          STAGING_TOKEN_SECRET: ${{ secrets.STAGING_TOKEN_SECRET }}
+          STAGING_RESTORE_HMAC_SECRET: ${{ secrets.STAGING_RESTORE_HMAC_SECRET }}
+          MEDISA_STAGING_ACCEPTANCE_PHASE: full
+        run: |
+          set -euo pipefail
+          node scripts/run-medisa-staging-restore-acceptance.js
+
+      - name: Always cleanup (safe config + baseline + auth)
+        if: always()
+        shell: bash
+        env:
+          STAGING_FTP_PASSWORD: ${{ secrets.STAGING_FTP_PASSWORD }}
+          STAGING_BASIC_AUTH_USERNAME: ${{ secrets.STAGING_BASIC_AUTH_USERNAME }}
+          STAGING_BASIC_AUTH_PASSWORD: ${{ secrets.STAGING_BASIC_AUTH_PASSWORD }}
+          STAGING_APP_ADMIN_PASSWORD: ${{ secrets.STAGING_APP_ADMIN_PASSWORD }}
+          STAGING_TOKEN_SECRET: ${{ secrets.STAGING_TOKEN_SECRET }}
+          STAGING_RESTORE_HMAC_SECRET: ${{ secrets.STAGING_RESTORE_HMAC_SECRET }}
+          MEDISA_STAGING_ACCEPTANCE_PHASE: cleanup-only
+        run: |
+          set -euo pipefail
+          node scripts/run-medisa-staging-restore-acceptance.js
+          UNAUTH=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 30 "$STAGING_BASE_URL/" || true)
+          if [ "$UNAUTH" != "401" ]; then
+            echo "::error::STAGING_CLEANUP_FAILED basic auth unauth=$UNAUTH"
+            exit 1
+          fi
+          echo "STAGING_CLEANUP=PASS"

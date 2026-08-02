@@ -10,6 +10,10 @@ Thumbs.db
 .env
 .env.*
 !.env.example
+config.local.php
+**/config.local.php
+.staging-deploy/
+.staging-build/
 
 # Tooling dependencies
 node_modules/

@@ -28,6 +28,6 @@
 </FilesMatch>
 
 # Deploy state ve geliştirme dosyaları web üzerinden servis edilmesin
-<FilesMatch "^(?:\.cpanel\.yml|\.editorconfig|\.ftp-deploy-sync-state\.json|package\.json)$">
+<FilesMatch "^(?:\.cpanel\.yml|\.editorconfig|\.ftp-deploy-sync-state\.json|package\.json|config\.local\.php)$">
     Require all denied
 </FilesMatch>

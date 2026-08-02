@@ -24,6 +24,7 @@
     "tool:verify-main-shell": "node scripts/verify-medisa-main-shell-lazy-invariants.js",
     "tool:verify-thin-shell": "node scripts/verify-medisa-thin-shell-interaction-invariants.js",
     "tool:verify-deploy": "node scripts/verify-medisa-deploy-invariants.js",
+    "tool:verify-staging-isolation": "node scripts/verify-medisa-staging-isolation.js",
     "tool:verify-password-migration": "php scripts/verify-medisa-password-migration.php",
     "tool:verify-default-credentials": "php scripts/verify-medisa-default-credentials.php",
     "tool:verify-mandatory-password-change": "php scripts/verify-medisa-mandatory-password-change.php && node scripts/verify-medisa-mandatory-password-change-invariants.js",

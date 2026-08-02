@@ -1,0 +1,301 @@
+# Manual-only staging deploy. Production FTP/secrets/URL kullanılmaz.
+name: Deploy Staging
+
+concurrency:
+  group: medisa-staging-deploy
+  cancel-in-progress: false
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Git ref (branch/tag/SHA)'
+        required: true
+        default: 'main'
+        type: string
+      initialize_synthetic_data:
+        description: 'Sentetik data seed yükle'
+        required: true
+        default: false
+        type: boolean
+      reset_synthetic_data:
+        description: 'Sentetik data sıfırla (seed yeniden yaz)'
+        required: true
+        default: false
+        type: boolean
+      confirmation:
+        description: 'Exact: DEPLOY MEDISA STAGING'
+        required: true
+        type: string
+      reset_confirmation:
+        description: 'Data init/reset için exact: RESET MEDISA STAGING DATA'
+        required: false
+        default: ''
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  deploy_staging:
+    name: Deploy staging
+    runs-on: ubuntu-latest
+    environment:
+      name: staging
+      url: https://medisa-staging.karmotors.com.tr
+    env:
+      STAGING_BASE_URL: ${{ vars.STAGING_BASE_URL }}
+      STAGING_FTP_SERVER: ${{ vars.STAGING_FTP_SERVER }}
+      STAGING_FTP_PORT: ${{ vars.STAGING_FTP_PORT }}
+      STAGING_FTP_SERVER_DIR: ${{ vars.STAGING_FTP_SERVER_DIR }}
+      STAGING_FTP_USERNAME: ${{ vars.STAGING_FTP_USERNAME }}
+      STAGING_APP_ADMIN_USERNAME: ${{ vars.STAGING_APP_ADMIN_USERNAME }}
+      MEDISA_ENVIRONMENT: ${{ vars.MEDISA_ENVIRONMENT }}
+    steps:
+      - name: Typed confirmation gate
+        shell: bash
+        env:
+          CONFIRMATION: ${{ inputs.confirmation }}
+          RESET_CONFIRMATION: ${{ inputs.reset_confirmation }}
+          INIT_DATA: ${{ inputs.initialize_synthetic_data }}
+          RESET_DATA: ${{ inputs.reset_synthetic_data }}
+        run: |
+          set -euo pipefail
+          if [ "$CONFIRMATION" != "DEPLOY MEDISA STAGING" ]; then
+            echo "::error::confirmation must be exactly: DEPLOY MEDISA STAGING"
+            exit 1
+          fi
+          if [ "$INIT_DATA" = "true" ] || [ "$RESET_DATA" = "true" ]; then
+            if [ "$RESET_CONFIRMATION" != "RESET MEDISA STAGING DATA" ]; then
+              echo "::error::initialize/reset requires reset_confirmation exactly: RESET MEDISA STAGING DATA"
+              exit 1
+            fi
+          fi
+
+      - name: Checkout exact ref
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.ref }}
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+
+      - name: Production target deny + staging secret presence
+        shell: bash
+        env:
+          STAGING_FTP_PASSWORD: ${{ secrets.STAGING_FTP_PASSWORD }}
+          STAGING_BASIC_AUTH_USERNAME: ${{ secrets.STAGING_BASIC_AUTH_USERNAME }}
+          STAGING_BASIC_AUTH_PASSWORD: ${{ secrets.STAGING_BASIC_AUTH_PASSWORD }}
+          STAGING_APP_ADMIN_PASSWORD: ${{ secrets.STAGING_APP_ADMIN_PASSWORD }}
+          STAGING_TOKEN_SECRET: ${{ secrets.STAGING_TOKEN_SECRET }}
+          STAGING_RESTORE_HMAC_SECRET: ${{ secrets.STAGING_RESTORE_HMAC_SECRET }}
+        run: |
+          set -euo pipefail
+          ok=1
+          if [ "${STAGING_BASE_URL}" != "https://medisa-staging.karmotors.com.tr" ]; then
+            echo "::error::STAGING_BASE_URL mismatch"
+            ok=0
+          fi
+          if [ "${STAGING_FTP_USERNAME}" != "medisa_staging@karmotors.com.tr" ]; then
+            echo "::error::STAGING_FTP_USERNAME mismatch"
+            ok=0
+          fi
+          if [ "${STAGING_FTP_SERVER_DIR}" != "/" ]; then
+            echo "::error::STAGING_FTP_SERVER_DIR must be /"
+            ok=0
+          fi
+          if [ "${STAGING_FTP_SERVER}" != "ftp.karmotors.com.tr" ]; then
+            echo "::error::STAGING_FTP_SERVER mismatch"
+            ok=0
+          fi
+          if [ "${MEDISA_ENVIRONMENT}" != "staging" ]; then
+            echo "::error::MEDISA_ENVIRONMENT must be staging"
+            ok=0
+          fi
+          case "${STAGING_BASE_URL}" in
+            *karmotors.com.tr/medisa*) echo "::error::production URL denied"; ok=0 ;;
+          esac
+          for n in STAGING_FTP_PASSWORD STAGING_BASIC_AUTH_USERNAME STAGING_BASIC_AUTH_PASSWORD STAGING_APP_ADMIN_PASSWORD STAGING_TOKEN_SECRET STAGING_RESTORE_HMAC_SECRET; do
+            if [ -z "${!n:-}" ]; then
+              echo "::error::$n empty"
+              ok=0
+            fi
+          done
+          [ "$ok" -eq 1 ] || exit 1
+          echo "staging_target_ok=true"
+
+      - name: Quality gate + staging isolation
+        shell: bash
+        run: |
+          set -euo pipefail
+          while IFS= read -r -d '' f; do
+            php -l "$f"
+          done < <(git ls-files -z '*.php')
+          while IFS= read -r -d '' f; do
+            node --check "$f"
+          done < <(git ls-files -z '*.js' '*.mjs')
+          npm run tool:verify-staging-isolation
+          bash .github/scripts/quality-gate.sh
+
+      - name: Download existing staging .htaccess (Auth preserve)
+        id: htaccess
+        shell: bash
+        env:
+          STAGING_FTP_PASSWORD: ${{ secrets.STAGING_FTP_PASSWORD }}
+        run: |
+          set -euo pipefail
+          mkdir -p .staging-build
+          set +e
+          curl -sS --ssl-reqd --ftp-ssl -k --connect-timeout 30 --max-time 60 \
+            -u "${STAGING_FTP_USERNAME}:${STAGING_FTP_PASSWORD}" \
+            "ftp://${STAGING_FTP_SERVER}:${STAGING_FTP_PORT}/.htaccess" \
+            -o .staging-build/existing.htaccess
+          rc=$?
+          set -e
+          if [ "$rc" -eq 0 ] && [ -s .staging-build/existing.htaccess ]; then
+            if grep -qiE 'AuthType|AuthUserFile|Require[[:space:]]+valid-user' .staging-build/existing.htaccess; then
+              echo "has_auth=true" >> "$GITHUB_OUTPUT"
+              echo "existing_htaccess downloaded"
+            else
+              echo "has_auth=false" >> "$GITHUB_OUTPUT"
+              echo "::warning::existing .htaccess has no Directory Privacy Auth block"
+            fi
+          else
+            echo "has_auth=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::could not download existing .htaccess"
+            : > .staging-build/existing.htaccess
+          fi
+
+      - name: Build staging temp deploy tree
+        shell: bash
+        env:
+          STAGING_FTP_PASSWORD: ${{ secrets.STAGING_FTP_PASSWORD }}
+          STAGING_APP_ADMIN_PASSWORD: ${{ secrets.STAGING_APP_ADMIN_PASSWORD }}
+          STAGING_TOKEN_SECRET: ${{ secrets.STAGING_TOKEN_SECRET }}
+          STAGING_RESTORE_HMAC_SECRET: ${{ secrets.STAGING_RESTORE_HMAC_SECRET }}
+          INIT_DATA: ${{ inputs.initialize_synthetic_data }}
+          RESET_DATA: ${{ inputs.reset_synthetic_data }}
+        run: |
+          set -euo pipefail
+          OUT="$GITHUB_WORKSPACE/.staging-deploy"
+          INCLUDE=false
+          if [ "$INIT_DATA" = "true" ] || [ "$RESET_DATA" = "true" ]; then
+            INCLUDE=true
+          fi
+          export MEDISA_STAGING_OUTPUT_DIR="$OUT"
+          export MEDISA_STAGING_INCLUDE_DATA="$INCLUDE"
+          export MEDISA_STAGING_CONFIG_MODE=safe
+          export MEDISA_STAGING_TOKEN_SECRET="$STAGING_TOKEN_SECRET"
+          export MEDISA_STAGING_RESTORE_HMAC_SECRET="$STAGING_RESTORE_HMAC_SECRET"
+          export MEDISA_STAGING_ADMIN_USER="${STAGING_APP_ADMIN_USERNAME}"
+          export MEDISA_STAGING_ADMIN_PASSWORD="$STAGING_APP_ADMIN_PASSWORD"
+          export MEDISA_STAGING_EXISTING_HTACCESS="$GITHUB_WORKSPACE/.staging-build/existing.htaccess"
+          node scripts/build-medisa-staging-deploy.js
+          test -f "$OUT/config.local.php"
+          test -f "$OUT/.htaccess"
+          if grep -RIn --exclude-dir=data 'karmotors.com.tr/medisa' "$OUT" >/dev/null 2>&1; then
+            echo "::error::temp tree contains production URL"
+            exit 1
+          fi
+          if [ "$INCLUDE" = "true" ]; then
+            test -f "$OUT/data/data.json"
+            grep -q 'stagingSynthetic' "$OUT/data/data.json"
+            grep -q 'TEST 001' "$OUT/data/data.json"
+          else
+            if [ -e "$OUT/data" ]; then
+              echo "::error::data must be excluded on normal deploy"
+              exit 1
+            fi
+          fi
+
+      - name: FTPS deploy temp tree (preserve remote data)
+        if: ${{ inputs.initialize_synthetic_data != true && inputs.reset_synthetic_data != true }}
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.6
+        with:
+          server: ${{ vars.STAGING_FTP_SERVER }}
+          username: ${{ vars.STAGING_FTP_USERNAME }}
+          password: ${{ secrets.STAGING_FTP_PASSWORD }}
+          server-dir: /
+          local-dir: .staging-deploy/
+          protocol: ftps
+          port: ${{ vars.STAGING_FTP_PORT }}
+          security: loose
+          timeout: 600000
+          exclude: |
+            **/.git*
+            **/.git*/**
+            data/**
+            **/data/**
+
+      - name: FTPS deploy temp tree (with synthetic data)
+        if: ${{ inputs.initialize_synthetic_data == true || inputs.reset_synthetic_data == true }}
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.6
+        with:
+          server: ${{ vars.STAGING_FTP_SERVER }}
+          username: ${{ vars.STAGING_FTP_USERNAME }}
+          password: ${{ secrets.STAGING_FTP_PASSWORD }}
+          server-dir: /
+          local-dir: .staging-deploy/
+          protocol: ftps
+          port: ${{ vars.STAGING_FTP_PORT }}
+          security: loose
+          timeout: 600000
+          exclude: |
+            **/.git*
+            **/.git*/**
+
+      - name: Post-deploy Basic Auth + staging marker health
+        shell: bash
+        env:
+          STAGING_BASIC_AUTH_USERNAME: ${{ secrets.STAGING_BASIC_AUTH_USERNAME }}
+          STAGING_BASIC_AUTH_PASSWORD: ${{ secrets.STAGING_BASIC_AUTH_PASSWORD }}
+        run: |
+          set -euo pipefail
+          UNAUTH=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 30 "$STAGING_BASE_URL/" || true)
+          if [ "$UNAUTH" != "401" ]; then
+            echo "::error::Basic Auth lost after deploy (unauth=$UNAUTH). Aborting without restore enable."
+            exit 1
+          fi
+          CODE=$(curl -sS -o /tmp/staging-home.html -w '%{http_code}' --max-time 30 \
+            -u "${STAGING_BASIC_AUTH_USERNAME}:${STAGING_BASIC_AUTH_PASSWORD}" \
+            "$STAGING_BASE_URL/")
+          if [ "$CODE" != "200" ]; then
+            echo "::error::authenticated staging home failed status=$CODE"
+            exit 1
+          fi
+          grep -q 'medisa-staging-banner\|STAGING — SENTETİK VERİ' /tmp/staging-home.html
+          grep -qi '\[STAGING\]' /tmp/staging-home.html
+          echo "post_deploy_health=ok"
+
+      - name: Always upload safe cleanup config
+        if: always()
+        shell: bash
+        env:
+          STAGING_FTP_PASSWORD: ${{ secrets.STAGING_FTP_PASSWORD }}
+          STAGING_TOKEN_SECRET: ${{ secrets.STAGING_TOKEN_SECRET }}
+          STAGING_RESTORE_HMAC_SECRET: ${{ secrets.STAGING_RESTORE_HMAC_SECRET }}
+          STAGING_APP_ADMIN_PASSWORD: ${{ secrets.STAGING_APP_ADMIN_PASSWORD }}
+        run: |
+          set -euo pipefail
+          OUT="$GITHUB_WORKSPACE/.staging-deploy-cleanup"
+          export MEDISA_STAGING_OUTPUT_DIR="$OUT"
+          export MEDISA_STAGING_INCLUDE_DATA=false
+          export MEDISA_STAGING_CONFIG_MODE=cleanup
+          export MEDISA_STAGING_TOKEN_SECRET="$STAGING_TOKEN_SECRET"
+          export MEDISA_STAGING_RESTORE_HMAC_SECRET="$STAGING_RESTORE_HMAC_SECRET"
+          export MEDISA_STAGING_ADMIN_USER="${STAGING_APP_ADMIN_USERNAME}"
+          export MEDISA_STAGING_ADMIN_PASSWORD="${STAGING_APP_ADMIN_PASSWORD}"
+          export MEDISA_STAGING_EXISTING_HTACCESS="$GITHUB_WORKSPACE/.staging-build/existing.htaccess"
+          node scripts/build-medisa-staging-deploy.js
+          curl -sS --ssl-reqd --ftp-ssl -k --ftp-create-dirs --connect-timeout 30 --max-time 60 \
+            -u "${STAGING_FTP_USERNAME}:${STAGING_FTP_PASSWORD}" \
+            -T "$OUT/config.local.php" \
+            "ftp://${STAGING_FTP_SERVER}:${STAGING_FTP_PORT}/config.local.php"
+          echo "cleanup_config_uploaded=true"

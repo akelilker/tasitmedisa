@@ -58,6 +58,20 @@ assert.match(deployWorkflow, /\.ftp-deploy-sync-state\.json/, 'Deploy state eri�
 assert.match(qualityGate, /tool:verify-deploy/, 'Canonical gate deploy invariantini çalıştırmalı.');
 assert.match(qualityGate, /tool:verify-runtime-data-git/, 'Canonical gate runtime data invariantini çalıştırmalı.');
 assert.match(qualityGate, /tool:verify-server-restore/, 'Canonical gate server restore invariantini çalıştırmalı.');
+assert.match(qualityGate, /tool:verify-staging-isolation/, 'Canonical gate staging isolation invariantini çalıştırmalı.');
+
+assert.match(deployWorkflow, /\*\*\/\.github\/\*\*/, 'FTP deploy .github exclude etmeli.');
+assert.match(deployWorkflow, /scripts\/\*\*/, 'FTP deploy scripts exclude etmeli.');
+assert.match(deployWorkflow, /docs\/\*\*/, 'FTP deploy docs exclude etmeli.');
+assert.equal(/STAGING_FTP_PASSWORD/.test(deployWorkflow), false, 'Production deploy staging FTP secret kullanmamalı.');
+
+const stagingDeployPath = path.join(root, '.github', 'workflows', 'deploy-staging.yml');
+assert.equal(fs.existsSync(stagingDeployPath), true, 'Staging deploy workflow kaynakta bulunmalı.');
+const stagingDeploy = fs.readFileSync(stagingDeployPath, 'utf8');
+assert.match(stagingDeploy, /workflow_dispatch/, 'Staging deploy manual-only olmalı.');
+assert.equal(/^\s*push\s*:/m.test(stagingDeploy), false, 'Staging deploy push ile tetiklenmemeli.');
+assert.match(stagingDeploy, /secrets\.STAGING_FTP_PASSWORD/, 'Staging deploy staging FTP secret kullanmalı.');
+assert.equal(/secrets\.FTP_PASSWORD/.test(stagingDeploy), false, 'Staging deploy production FTP_PASSWORD kullanmamalı.');
 
 assert.match(cpanel, /backup-registry\.php/, 'cPanel deploy backup-registry.php kopyalamalı.');
 assert.match(cpanel, /backup-restore-commit\.php/, 'cPanel deploy backup-restore-commit.php kopyalamalı.');
