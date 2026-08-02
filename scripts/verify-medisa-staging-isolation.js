@@ -39,6 +39,8 @@ assert.equal(exists('.github/workflows/staging-restore-acceptance.yml'), true, '
 assert.equal(exists('scripts/build-medisa-staging-deploy.js'), true, 'build script eksik');
 assert.equal(exists('scripts/generate-medisa-staging-seed.php'), true, 'seed generator eksik');
 assert.equal(exists('scripts/run-medisa-staging-restore-acceptance.js'), true, 'acceptance runner eksik');
+assert.equal(exists('scripts/medisa-staging-ftps.js'), true, 'ftps helper eksik');
+assert.equal(exists('scripts/verify-medisa-staging-ftps.js'), true, 'ftps verifier eksik');
 assert.equal(exists('docs/runbooks/medisa-staging.md'), true, 'staging runbook eksik');
 
 const deployWf = read('.github/workflows/deploy-staging.yml');
@@ -98,6 +100,16 @@ assert.match(deployWf, /if:\s*always\(\)/, 'deploy cleanup always');
 assert.match(acceptWf, /if:\s*always\(\)/, 'acceptance cleanup always');
 assert.match(acceptWf, /MEDISA_SERVER_RESTORE_ENABLED|restore enabled|cleanup/i, 'cleanup restores safe flags');
 assert.match(acceptWf, /run-medisa-staging-restore-acceptance\.js/, 'acceptance runner wired');
+assert.match(acceptWf, /FTPS auth preflight|preflight-only/, 'acceptance FTPS preflight before live');
+assert.match(acceptWf, /MEDISA_STAGING_SKIP_PREFLIGHT/, 'live skips duplicate preflight');
+assert.match(acceptWf, /STAGING_CLEANUP_UNCERTAIN/, 'cleanup uncertain fails workflow');
+assert.match(acceptWf, /tool:verify-staging-ftps/, 'acceptance runs ftps verifier');
+
+const ftps = read('scripts/medisa-staging-ftps.js');
+assert.match(ftps, /NON_TRANSIENT_AUTH_FAILURE/, '530 non-transient');
+assert.match(ftps, /PersistentFtpsSession/, 'persistent FTPS session');
+assert.match(accept, /PersistentFtpsSession/, 'runner persistent session');
+assert.match(accept, /STAGING_CLEANUP_UNCERTAIN/, 'runner cleanup uncertain');
 
 assert.match(build, /\[STAGING\]/, 'title staging prefix');
 assert.match(build, /STAGING — SENTETİK VERİ — PRODUCTION DEĞİL/, 'staging banner');
@@ -133,7 +145,9 @@ assert.match(accept, /cleanup|always/i, 'acceptance mentions cleanup');
 assertNoMatch(accept, /secrets\.FTP_PASSWORD/, 'runner no prod FTP secret names');
 
 assert.match(pkg, /tool:verify-staging-isolation/, 'package script');
+assert.match(pkg, /tool:verify-staging-ftps/, 'ftps package script');
 assert.match(gate, /tool:verify-staging-isolation/, 'quality gate includes isolation');
+assert.match(gate, /tool:verify-staging-ftps/, 'quality gate includes ftps verifier');
 
 assert.match(gitignore, /config\.local\.php/, 'gitignore config.local');
 assert.match(gitignore, /\.staging-deploy\//, 'gitignore staging deploy tree');

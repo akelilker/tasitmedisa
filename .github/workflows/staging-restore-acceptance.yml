@@ -96,6 +96,30 @@ jobs:
         run: |
           set -euo pipefail
           npm run tool:verify-server-restore
+          npm run tool:verify-staging-ftps
+
+      - name: Install lftp (explicit FTPS)
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq lftp
+
+      - name: FTPS auth preflight (before restore enable)
+        id: ftp_preflight
+        shell: bash
+        env:
+          STAGING_FTP_PASSWORD: ${{ secrets.STAGING_FTP_PASSWORD }}
+          STAGING_BASIC_AUTH_USERNAME: ${{ secrets.STAGING_BASIC_AUTH_USERNAME }}
+          STAGING_BASIC_AUTH_PASSWORD: ${{ secrets.STAGING_BASIC_AUTH_PASSWORD }}
+          STAGING_APP_ADMIN_PASSWORD: ${{ secrets.STAGING_APP_ADMIN_PASSWORD }}
+          STAGING_TOKEN_SECRET: ${{ secrets.STAGING_TOKEN_SECRET }}
+          STAGING_RESTORE_HMAC_SECRET: ${{ secrets.STAGING_RESTORE_HMAC_SECRET }}
+          MEDISA_STAGING_ACCEPTANCE_PHASE: preflight-only
+        run: |
+          set -euo pipefail
+          node scripts/run-medisa-staging-restore-acceptance.js
+          echo "FTP_PREFLIGHT=PASS"
 
       - name: Live black-box acceptance
         shell: bash
@@ -107,6 +131,7 @@ jobs:
           STAGING_TOKEN_SECRET: ${{ secrets.STAGING_TOKEN_SECRET }}
           STAGING_RESTORE_HMAC_SECRET: ${{ secrets.STAGING_RESTORE_HMAC_SECRET }}
           MEDISA_STAGING_ACCEPTANCE_PHASE: full
+          MEDISA_STAGING_SKIP_PREFLIGHT: '1'
         run: |
           set -euo pipefail
           node scripts/run-medisa-staging-restore-acceptance.js
@@ -122,12 +147,29 @@ jobs:
           STAGING_TOKEN_SECRET: ${{ secrets.STAGING_TOKEN_SECRET }}
           STAGING_RESTORE_HMAC_SECRET: ${{ secrets.STAGING_RESTORE_HMAC_SECRET }}
           MEDISA_STAGING_ACCEPTANCE_PHASE: cleanup-only
+          FTP_PREFLIGHT_OUTCOME: ${{ steps.ftp_preflight.outcome }}
         run: |
           set -euo pipefail
-          node scripts/run-medisa-staging-restore-acceptance.js
+          set +e
+          OUT=$(node scripts/run-medisa-staging-restore-acceptance.js 2>&1)
+          RC=$?
+          set -e
+          echo "$OUT"
+          if echo "$OUT" | grep -q 'STAGING_CLEANUP_UNCERTAIN'; then
+            echo "::error::STAGING_CLEANUP_UNCERTAIN"
+            exit 1
+          fi
+          if echo "$OUT" | grep -q 'NON_TRANSIENT_AUTH_FAILURE\|FTP_AUTH=FAIL_530\|FTPS_AUTH_530'; then
+            echo "::error::STAGING_CLEANUP_UNCERTAIN (FTP auth)"
+            exit 1
+          fi
+          if [ "$RC" -ne 0 ]; then
+            echo "::error::STAGING_CLEANUP_FAILED runner_rc=$RC"
+            exit 1
+          fi
           UNAUTH=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 30 "$STAGING_BASE_URL/" || true)
           if [ "$UNAUTH" != "401" ]; then
-            echo "::error::STAGING_CLEANUP_FAILED basic auth unauth=$UNAUTH"
+            echo "::error::STAGING_CLEANUP_UNCERTAIN basic auth unauth=$UNAUTH"
             exit 1
           fi
           echo "STAGING_CLEANUP=PASS"

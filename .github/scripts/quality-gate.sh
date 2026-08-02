@@ -20,6 +20,7 @@ echo "[quality-gate] Deploy and runtime data safety"
 npm run tool:verify-deploy
 npm run tool:verify-runtime-data-git
 npm run tool:verify-staging-isolation
+npm run tool:verify-staging-ftps
 
 echo "[quality-gate] Save wire"
 npm run tool:verify-save-wire

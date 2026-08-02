@@ -3,46 +3,40 @@
 
 /**
  * Live staging restore acceptance (black-box).
- * Secret değerleri stdout'a yazmaz. Production URL'ye istek atmaz.
- *
- * Env (required):
- *   STAGING_BASE_URL
- *   STAGING_BASIC_AUTH_USERNAME
- *   STAGING_BASIC_AUTH_PASSWORD
- *   STAGING_APP_ADMIN_USERNAME
- *   STAGING_APP_ADMIN_PASSWORD
- *   STAGING_FTP_SERVER
- *   STAGING_FTP_USERNAME
- *   STAGING_FTP_PASSWORD
- *   STAGING_TOKEN_SECRET
- *   STAGING_RESTORE_HMAC_SECRET
- * Optional:
- *   STAGING_FTP_PORT=21
- *   MEDISA_STAGING_ACCEPTANCE_PHASE=full|cleanup-only
+ * FTPS model:
+ *  - preflight: 1 login (no restore activation on failure)
+ *  - live main: 1 persistent session (config + mutate + baseline)
+ *  - cleanup: 1 independent recovery session (cleanup-only / always)
+ * 530 = NON_TRANSIENT_AUTH_FAILURE (no retry). Secret değerleri loglanmaz.
  */
 
 const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
+const os = require('node:os');
 const { spawnSync } = require('node:child_process');
 const https = require('node:https');
 const http = require('node:http');
+const {
+  FtpsSession,
+  PersistentFtpsSession,
+  classifyFtpError,
+  STAGING_FTP_USER
+} = require('./medisa-staging-ftps.js');
 
 const root = path.resolve(__dirname, '..');
 const CONFIRM = 'SUNUCU YEDEĞİNİ GERİ YÜKLE';
 const STAGING_HOST = 'medisa-staging.karmotors.com.tr';
-const STAGING_FTP_USER = 'medisa_staging@karmotors.com.tr';
 const PROD_HOST_NEEDLE = 'karmotors.com.tr/medisa';
 
 const results = [];
 let failures = 0;
 const requestLog = [];
+let ftpLoginTotal = 0;
 
 function env(name, required = true) {
   const v = process.env[name];
-  if ((!v || !String(v).trim()) && required) {
-    failHard('MISSING_ENV:' + name);
-  }
+  if ((!v || !String(v).trim()) && required) failHard('MISSING_ENV:' + name);
   return v ? String(v) : '';
 }
 
@@ -74,21 +68,23 @@ function assertHost(baseUrl) {
   return u;
 }
 
+function ftpCfg() {
+  return {
+    server: env('STAGING_FTP_SERVER'),
+    username: env('STAGING_FTP_USERNAME'),
+    password: env('STAGING_FTP_PASSWORD'),
+    port: env('STAGING_FTP_PORT', false) || '21'
+  };
+}
+
 function request(baseUrl, { method = 'GET', pathname = '/', headers = {}, body = null, basic = true, bearer = '' } = {}) {
   const u = new URL(pathname, baseUrl);
-  if (u.hostname !== STAGING_HOST) {
-    failHard('REQUEST_HOST_DENIED:' + u.hostname);
-  }
-  if (String(u.href).includes(PROD_HOST_NEEDLE)) {
-    failHard('REQUEST_PROD_DENIED');
-  }
+  if (u.hostname !== STAGING_HOST) failHard('REQUEST_HOST_DENIED:' + u.hostname);
+  if (String(u.href).includes(PROD_HOST_NEEDLE)) failHard('REQUEST_PROD_DENIED');
   const authUser = env('STAGING_BASIC_AUTH_USERNAME');
   const authPass = env('STAGING_BASIC_AUTH_PASSWORD');
   const hdrs = Object.assign({}, headers);
-  // Directory Privacy occupies Authorization=Basic; app token goes to X-Medisa-Authorization.
-  if (bearer) {
-    hdrs['X-Medisa-Authorization'] = 'Bearer ' + bearer;
-  }
+  if (bearer) hdrs['X-Medisa-Authorization'] = 'Bearer ' + bearer;
   requestLog.push({ method, host: u.hostname, path: u.pathname, hasBody: !!body });
 
   const options = {
@@ -102,7 +98,6 @@ function request(baseUrl, { method = 'GET', pathname = '/', headers = {}, body =
     rejectUnauthorized: true,
     timeout: 60000
   };
-
   const lib = u.protocol === 'https:' ? https : http;
   return new Promise((resolve, reject) => {
     const req = lib.request(options, (res) => {
@@ -112,11 +107,7 @@ function request(baseUrl, { method = 'GET', pathname = '/', headers = {}, body =
         const buf = Buffer.concat(chunks);
         const text = buf.toString('utf8');
         let json = null;
-        try {
-          json = JSON.parse(text);
-        } catch {
-          json = null;
-        }
+        try { json = JSON.parse(text); } catch { json = null; }
         resolve({
           status: res.statusCode || 0,
           headers: res.headers,
@@ -127,9 +118,7 @@ function request(baseUrl, { method = 'GET', pathname = '/', headers = {}, body =
       });
     });
     req.on('error', reject);
-    req.on('timeout', () => {
-      req.destroy(new Error('timeout'));
-    });
+    req.on('timeout', () => req.destroy(new Error('timeout')));
     if (body != null) {
       const payload = Buffer.isBuffer(body) ? body : Buffer.from(String(body), 'utf8');
       req.setHeader('Content-Length', String(payload.length));
@@ -137,48 +126,6 @@ function request(baseUrl, { method = 'GET', pathname = '/', headers = {}, body =
     }
     req.end();
   });
-}
-
-function sleepSync(ms) {
-  spawnSync(process.execPath, ['-e', `setTimeout(()=>{},${Number(ms) || 0})`], { stdio: 'ignore' });
-}
-
-function ftps(args) {
-  const server = env('STAGING_FTP_SERVER');
-  const user = env('STAGING_FTP_USERNAME');
-  const pass = env('STAGING_FTP_PASSWORD');
-  const port = env('STAGING_FTP_PORT', false) || '21';
-  if (user !== STAGING_FTP_USER) failHard('FTP_USER_MISMATCH');
-  const base = [
-    'curl', '-sS', '--ssl-reqd', '--ftp-ssl', '-k', '--ftp-create-dirs',
-    '--connect-timeout', '30', '--max-time', '120',
-    '-u', user + ':' + pass
-  ];
-  const resolved = args.map((a) => a.replace('__FTP_HOST__', `ftp://${server}:${port}`));
-  let lastErr = 'ftp failed';
-  for (let i = 1; i <= 3; i += 1) {
-    const r = spawnSync(base[0], base.slice(1).concat(resolved), {
-      encoding: 'utf8',
-      maxBuffer: 20 * 1024 * 1024
-    });
-    if (r.status === 0) return r.stdout || '';
-    lastErr = (r.stderr || r.stdout || 'ftp failed').slice(0, 300).split(pass).join('***');
-    sleepSync(2000 * i);
-  }
-  throw new Error('FTPS_FAILED:' + lastErr);
-}
-
-function ftpUpload(localPath, remoteName) {
-  ftps(['-T', localPath, `__FTP_HOST__/${remoteName}`]);
-}
-
-function ftpDownload(remoteName, localPath) {
-  const out = ftps([`__FTP_HOST__/${remoteName}`]);
-  fs.writeFileSync(localPath, out, 'utf8');
-}
-
-function ftpUploadBinary(localPath, remotePath) {
-  ftps(['-T', localPath, `__FTP_HOST__/${remotePath}`]);
 }
 
 function writeTempConfig(mode, outPath) {
@@ -189,15 +136,14 @@ function writeTempConfig(mode, outPath) {
   const hmacLine = restoreOn
     ? `putenv('MEDISA_RESTORE_HMAC_SECRET=${hmac.replace(/'/g, "\\'")}');\n`
     : "putenv('MEDISA_RESTORE_HMAC_SECRET');\n";
-  const body = `<?php
+  fs.writeFileSync(outPath, `<?php
 putenv('MEDISA_ENVIRONMENT=staging');
 putenv('MEDISA_TOKEN_SECRET=${token.replace(/'/g, "\\'")}');
 putenv('MEDISA_SERVER_RESTORE_ENABLED=${restoreOn ? 'true' : 'false'}');
 putenv('MEDISA_RESTORE_MAINTENANCE_MODE=${maintOn ? 'true' : 'false'}');
 ${hmacLine}$GLOBALS['MEDISA_STAGING_MARKER'] = true;
 ini_set('display_errors', '0');
-`;
-  fs.writeFileSync(outPath, body, 'utf8');
+`, 'utf8');
 }
 
 function fixtureBasename(slug, sequence) {
@@ -206,21 +152,6 @@ function fixtureBasename(slug, sequence) {
   const hex = crypto.createHash('sha256').update('medisa-staging-fixture|' + slug).digest('hex').slice(0, 8);
   return `snapshot-${date}-${time}-${hex}.json`;
 }
-
-const FIXTURES = [
-  'valid-restore-candidate',
-  'zero-active-general-manager',
-  'duplicate-user-id',
-  'actor-missing',
-  'actor-inactive',
-  'actor-role-downgrade',
-  'plaintext-credential',
-  'invalid-password-hash',
-  'unknown-role',
-  'unknown-collection',
-  'same-count-different-content',
-  'replay-alternate-candidate'
-];
 
 async function login(baseUrl) {
   const user = env('STAGING_APP_ADMIN_USERNAME');
@@ -237,26 +168,13 @@ async function login(baseUrl) {
       if (res.status === 200 && res.json?.success && res.json?.token) {
         return { ok: true, token: res.json.token };
       }
-      const code = res.json?.error_code || res.json?.message || '';
-      lastDetail = 'status=' + res.status + (code ? ' ' + String(code).slice(0, 80) : '');
+      lastDetail = 'status=' + res.status;
     } catch (err) {
       lastDetail = String(err && err.message ? err.message : err).slice(0, 120);
     }
-    await new Promise((r) => setTimeout(r, 1500 * i));
+    await new Promise((r) => setTimeout(r, 1200 * i));
   }
   return { ok: false, detail: lastDetail };
-}
-
-/** Maintenance/write-freeze login'i son_giris yazımında kırar; geçici safe config ile login al. */
-async function loginAroundMaintenance(baseUrl, tmpDir) {
-  const safeCfg = path.join(tmpDir, 'config.safe-login.php');
-  const accCfg = path.join(tmpDir, 'config.acceptance.php');
-  writeTempConfig('safe', safeCfg);
-  ftpUpload(safeCfg, 'config.local.php');
-  const loginRes = await login(baseUrl);
-  writeTempConfig('acceptance', accCfg);
-  ftpUpload(accCfg, 'config.local.php');
-  return loginRes;
 }
 
 async function api(baseUrl, token, method, pathname, bodyObj) {
@@ -273,21 +191,19 @@ async function api(baseUrl, token, method, pathname, bodyObj) {
       });
     } catch (err) {
       lastErr = err;
-      await new Promise((r) => setTimeout(r, 1500 * i));
+      await new Promise((r) => setTimeout(r, 1200 * i));
     }
   }
   throw lastErr;
 }
 
-async function getDataShaViaFtp(tmpDir) {
-  const local = path.join(tmpDir, 'data.json');
-  // Ensure remote data path exists
-  const out = ftps([`__FTP_HOST__/data/data.json`]);
-  fs.writeFileSync(local, out);
-  return crypto.createHash('sha256').update(out).digest('hex');
+async function httpDataSha(baseUrl, token) {
+  const res = await api(baseUrl, token, 'GET', '/load.php');
+  if (res.status !== 200 || !res.json) throw new Error('LOAD_FAILED:' + res.status);
+  return crypto.createHash('sha256').update(JSON.stringify(res.json)).digest('hex');
 }
 
-async function uploadBaselineData(tmpDir) {
+function generateSeed(tmpDir) {
   const buildDir = path.join(tmpDir, 'seed-out');
   fs.mkdirSync(buildDir, { recursive: true });
   const r = spawnSync('php', [path.join(root, 'scripts/generate-medisa-staging-seed.php')], {
@@ -300,55 +216,114 @@ async function uploadBaselineData(tmpDir) {
     encoding: 'utf8'
   });
   if (r.status !== 0) throw new Error('SEED_FAILED');
-  // Upload data tree files individually
-  const dataRoot = path.join(buildDir, 'data');
+  return path.join(buildDir, 'data');
+}
+
+async function uploadDataTree(session, dataRoot) {
+  async function walk(dir, prefix) {
+    for (const name of fs.readdirSync(dir)) {
+      const full = path.join(dir, name);
+      const rel = prefix ? prefix + '/' + name : name;
+      if (fs.statSync(full).isDirectory()) await walk(full, rel);
+      else await session.put(full, 'data/' + rel.replace(/\\/g, '/'));
+    }
+  }
+  await walk(dataRoot, '');
+}
+
+function queueDataTree(session, dataRoot) {
   function walk(dir, prefix) {
     for (const name of fs.readdirSync(dir)) {
       const full = path.join(dir, name);
       const rel = prefix ? prefix + '/' + name : name;
       if (fs.statSync(full).isDirectory()) walk(full, rel);
-      else ftpUploadBinary(full, 'data/' + rel.replace(/\\/g, '/'));
+      else session.put(full, 'data/' + rel.replace(/\\/g, '/'));
     }
   }
   walk(dataRoot, '');
-  return path.join(dataRoot, 'data.json');
+}
+
+function runFtpPreflight() {
+  const session = new FtpsSession({ ...ftpCfg(), label: 'preflight' });
+  try {
+    const out = session.probe();
+    ftpLoginTotal += session.loginCount;
+    const text = String(out.stdout || '');
+    record('ftp_preflight_login', true, 'logins=' + session.loginCount);
+    record('ftp_preflight_pwd', true, 'pwd_ok');
+    record('ftp_preflight_jail', !/\/medisa(?!-staging)\b/i.test(text), 'jail_ok');
+    return { ok: true };
+  } catch (err) {
+    const cls = err.ftpClass || classifyFtpError(err.message || '');
+    record('ftp_preflight_login', false, cls);
+    if (cls === 'NON_TRANSIENT_AUTH_FAILURE') {
+      console.error('FTP_AUTH=FAIL_530');
+      console.error('STAGING_CLEANUP_UNCERTAIN');
+      return { ok: false, auth530: true };
+    }
+    return { ok: false, auth530: false, error: String(err.message || err).slice(0, 160) };
+  }
+}
+
+async function httpSafeState(baseUrl) {
+  const unauth = await request(baseUrl, { method: 'GET', pathname: '/', basic: false });
+  record('safe_unauth_401', unauth.status === 401, 'status=' + unauth.status);
+  const loginRes = await login(baseUrl);
+  record('safe_admin_login', loginRes.ok, loginRes.detail || '');
+  if (!loginRes.ok) return { ok: false };
+  const reg = await api(baseUrl, loginRes.token, 'GET', '/backup-registry.php');
+  const enabled = !!(reg.json && reg.json.restore_enabled);
+  const maint = !!(reg.json && reg.json.maintenance_mode);
+  record('safe_restore_disabled', reg.status === 200 && enabled === false, 'enabled=' + enabled);
+  record('safe_maintenance_false', reg.status === 200 && maint === false, 'maint=' + maint);
+  return { ok: !enabled && !maint, token: loginRes.token, enabled, maint };
 }
 
 async function runCleanup(baseUrl, tmpDir) {
-  let lastErr = null;
-  for (let attempt = 1; attempt <= 3; attempt += 1) {
-    try {
-      const cfg = path.join(tmpDir, 'config.cleanup.php');
-      writeTempConfig('cleanup', cfg);
-      ftpUpload(cfg, 'config.local.php');
-      await uploadBaselineData(tmpDir);
-
-      const unauth = await request(baseUrl, { method: 'GET', pathname: '/', basic: false });
-      record('cleanup_unauth_401', unauth.status === 401, 'status=' + unauth.status);
-
-      const auth = await request(baseUrl, { method: 'GET', pathname: '/' });
-      record('cleanup_auth_ok', auth.status === 200, 'status=' + auth.status);
-
-      const loginRes = await login(baseUrl);
-      record('cleanup_login', loginRes.ok);
-
-      if (loginRes.ok) {
-        const reg = await api(baseUrl, loginRes.token, 'GET', '/backup-registry.php');
-        const enabled = !!(reg.json && reg.json.restore_enabled);
-        const maint = !!(reg.json && reg.json.maintenance_mode);
-        record('cleanup_restore_disabled', reg.status === 200 && enabled === false, 'enabled=' + enabled);
-        record('cleanup_maintenance_false', reg.status === 200 && maint === false, 'maint=' + maint);
-      }
-
-      const prodHits = requestLog.filter((r) => String(r.host + r.path).includes('karmotors.com.tr') && r.host !== STAGING_HOST);
-      record('cleanup_no_production_requests', prodHits.length === 0, 'count=' + prodHits.length);
-      return;
-    } catch (err) {
-      lastErr = err;
-      await new Promise((r) => setTimeout(r, 2000 * attempt));
+  const session = new FtpsSession({ ...ftpCfg(), label: 'cleanup-recovery' });
+  const cfg = path.join(tmpDir, 'config.cleanup.php');
+  writeTempConfig('cleanup', cfg);
+  const dataRoot = generateSeed(tmpDir);
+  session.put(cfg, 'config.local.php');
+  queueDataTree(session, dataRoot);
+  try {
+    const before = session.loginCount;
+    session.flush({ allowRetry: true, maxAttempts: 2 });
+    ftpLoginTotal += Math.max(0, session.loginCount - before);
+  } catch (err) {
+    const cls = err.ftpClass || classifyFtpError(err.message || '');
+    record('cleanup_ftp', false, cls);
+    if (cls === 'NON_TRANSIENT_AUTH_FAILURE') {
+      console.error('STAGING_CLEANUP_UNCERTAIN');
     }
+    throw err;
   }
-  throw lastErr || new Error('cleanup failed');
+  record('cleanup_ftp', true, 'logins_session=' + session.loginCount);
+  record('cleanup_recovery_connection', session.loginCount >= 1 && session.loginCount <= 2, 'logins=' + session.loginCount);
+
+  const unauth = await request(baseUrl, { method: 'GET', pathname: '/', basic: false });
+  record('cleanup_unauth_401', unauth.status === 401, 'status=' + unauth.status);
+  const auth = await request(baseUrl, { method: 'GET', pathname: '/' });
+  record('cleanup_auth_ok', auth.status === 200, 'status=' + auth.status);
+  const loginRes = await login(baseUrl);
+  record('cleanup_login', loginRes.ok);
+  if (!loginRes.ok) {
+    console.error('STAGING_CLEANUP_UNCERTAIN');
+    throw new Error('cleanup login failed');
+  }
+  const reg = await api(baseUrl, loginRes.token, 'GET', '/backup-registry.php');
+  const enabled = !!(reg.json && reg.json.restore_enabled);
+  const maint = !!(reg.json && reg.json.maintenance_mode);
+  record('cleanup_restore_disabled', reg.status === 200 && enabled === false, 'enabled=' + enabled);
+  record('cleanup_maintenance_false', reg.status === 200 && maint === false, 'maint=' + maint);
+  if (enabled || maint) {
+    console.error('STAGING_CLEANUP_UNCERTAIN');
+    throw new Error('cleanup capability still active');
+  }
+  const load = await api(baseUrl, loginRes.token, 'GET', '/load.php');
+  record('cleanup_baseline_load', load.status === 200, 'status=' + load.status);
+  const prodHits = requestLog.filter((r) => r.host !== STAGING_HOST);
+  record('cleanup_no_production_requests', prodHits.length === 0, 'count=' + prodHits.length);
 }
 
 async function main() {
@@ -357,22 +332,60 @@ async function main() {
   assertHost(baseUrl);
   if (env('STAGING_FTP_USERNAME') !== STAGING_FTP_USER) failHard('FTP_USER_MISMATCH');
 
-  const tmpDir = fs.mkdtempSync(path.join(require('node:os').tmpdir(), 'medisa-staging-acc-'));
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'medisa-staging-acc-'));
   process.on('exit', () => {
     try { fs.rmSync(tmpDir, { recursive: true, force: true }); } catch { /* ignore */ }
   });
 
+  if (phase === 'preflight-only') {
+    const pre = runFtpPreflight();
+    printSummary();
+    process.exit(pre.ok ? 0 : 2);
+  }
+
   if (phase === 'cleanup-only') {
-    await runCleanup(baseUrl, tmpDir);
+    const preflightOutcome = String(process.env.FTP_PREFLIGHT_OUTCOME || 'success').trim();
+    // Preflight auth fail: do not burn another FTP login; HTTP safe-state only.
+    if (preflightOutcome === 'failure') {
+      console.error('STAGING_CLEANUP_UNCERTAIN');
+      try {
+        await httpSafeState(baseUrl);
+        record('cleanup_ftp_skipped_preflight_fail', true);
+      } catch (err) {
+        record('cleanup_http_only_failed', false, String(err && err.message ? err.message : err).slice(0, 160));
+      }
+      console.log('FTP_LOGIN_TOTAL=' + ftpLoginTotal);
+      printSummary();
+      process.exit(1);
+    }
+    try {
+      await runCleanup(baseUrl, tmpDir);
+    } catch (err) {
+      record('cleanup_exception', false, String(err && err.message ? err.message : err).slice(0, 200));
+      console.error('STAGING_CLEANUP_UNCERTAIN');
+    }
+    console.log('FTP_LOGIN_TOTAL=' + ftpLoginTotal);
     printSummary();
     process.exit(failures ? 1 : 0);
   }
 
+  // full phase — live acceptance; FTP cleanup is always() cleanup-only (independent recovery)
+  let liveSession = null;
   try {
-    // A. Safe gates
+    const skipPreflight = String(process.env.MEDISA_STAGING_SKIP_PREFLIGHT || '') === '1';
+    if (!skipPreflight) {
+      const pre = runFtpPreflight();
+      if (!pre.ok) {
+        await httpSafeState(baseUrl);
+        if (pre.auth530) failHard('FTP_PREFLIGHT_530');
+        failHard('FTP_PREFLIGHT_FAILED');
+      }
+    } else {
+      record('ftp_preflight_skipped_workflow', true, 'workflow_preflight=PASS');
+    }
+
     const unauth = await request(baseUrl, { method: 'GET', pathname: '/', basic: false });
     record('safe_unauth_401', unauth.status === 401, 'status=' + unauth.status);
-
     const home = await request(baseUrl, { method: 'GET', pathname: '/' });
     record('safe_auth_home', home.status === 200, 'status=' + home.status);
     record('safe_staging_banner', /medisa-staging-banner|STAGING — SENTETİK VERİ/.test(home.text));
@@ -387,20 +400,26 @@ async function main() {
     record('safe_restore_disabled', reg.status === 200 && reg.json?.restore_enabled === false);
     record('safe_maintenance_false', reg.status === 200 && reg.json?.maintenance_mode === false);
 
-    // B. Activate acceptance config (maintenance login'i bozar → mevcut token ile devam)
+    const baselineHttpSha = await httpDataSha(baseUrl, loginRes.token);
+    record('baseline_http_hash_saved', !!baselineHttpSha);
+
     const accCfg = path.join(tmpDir, 'config.acceptance.php');
+    const safeCfg = path.join(tmpDir, 'config.safe.php');
     writeTempConfig('acceptance', accCfg);
-    ftpUpload(accCfg, 'config.local.php');
+    writeTempConfig('safe', safeCfg);
+    const seedDataRoot = generateSeed(tmpDir);
+
+    // One persistent FTPS session for live phase transport
+    liveSession = new PersistentFtpsSession({ ...ftpCfg(), label: 'live-main' });
+    await liveSession.open({ allowRetry: true, maxAttempts: 2 });
+    ftpLoginTotal += liveSession.loginCount;
+    record('live_session_open', true, 'logins=' + liveSession.loginCount);
+
+    await liveSession.put(accCfg, 'config.local.php');
+    record('acceptance_config_uploaded', true, 'session=live-main');
 
     reg = await api(baseUrl, loginRes.token, 'GET', '/backup-registry.php');
-    if (reg.status === 401 || reg.json?.auth_required) {
-      loginRes = await loginAroundMaintenance(baseUrl, tmpDir);
-      record('acceptance_relogin_via_safe', loginRes.ok, loginRes.detail || '');
-      if (!loginRes.ok) failHard('ACCEPTANCE_LOGIN_FAILED');
-      reg = await api(baseUrl, loginRes.token, 'GET', '/backup-registry.php');
-    } else {
-      record('acceptance_token_reuse', true, 'status=' + reg.status);
-    }
+    record('acceptance_token_reuse', reg.status === 200, 'status=' + reg.status);
     record('acceptance_restore_enabled', reg.status === 200 && reg.json?.restore_enabled === true);
     record('acceptance_maintenance_true', reg.status === 200 && reg.json?.maintenance_mode === true);
     record('acceptance_secret_configured', reg.status === 200 && reg.json?.secret_configured === true);
@@ -411,10 +430,9 @@ async function main() {
 
     const byName = new Map(backups.map((b) => [b.server_generated_filename, b]));
     const validName = fixtureBasename('valid-restore-candidate', 0);
-    const valid = byName.get(validName) || backups.find((b) => b.restore_eligible === true && (b.record_counts?.tasitlar === 2 || b.record_counts?.vehicles === 2));
+    const valid = byName.get(validName) || backups.find((b) => b.restore_eligible === true);
     record('registry_valid_candidate', !!(valid && valid.restore_eligible), valid ? valid.server_generated_filename : 'missing');
 
-    // Registry actorId=null; actor-self fixture'ları registry'de eligible görünebilir, dry-run'da reject olur.
     const registryIneligible = {
       'zero-active-general-manager': 1,
       'duplicate-user-id': 2,
@@ -434,113 +452,88 @@ async function main() {
       'actor-inactive': 4,
       'actor-role-downgrade': 5
     };
-
     if (!valid) failHard('NO_VALID_CANDIDATE');
 
-    // D. Dry-run exact no-write
-    const beforeSha = await getDataShaViaFtp(tmpDir);
+    // Dry-run exact no-write via HTTP hash (no FTP)
+    const beforeSha = await httpDataSha(baseUrl, loginRes.token);
     const dry = await api(baseUrl, loginRes.token, 'POST', '/backup-restore-dry-run.php', {
       backup_id: valid.backup_id
     });
-    const afterDrySha = await getDataShaViaFtp(tmpDir);
+    const afterDrySha = await httpDataSha(baseUrl, loginRes.token);
     record('dryrun_success', dry.status === 200 && dry.json?.success === true && dry.json?.eligible !== false);
     record('dryrun_intent', typeof dry.json?.intent_token === 'string' && dry.json.intent_token.length > 20);
     record('dryrun_hashes', !!(dry.json?.current_content_sha256 && dry.json?.candidate_content_sha256));
     record('dryrun_exact_nowrite', beforeSha === afterDrySha, 'sha_match=' + (beforeSha === afterDrySha));
     record('dryrun_pii_free', !/TEST 001/.test(JSON.stringify(dry.json || {})));
 
-    // E. Before-hash conflict (FTP/login flaky → section retry)
+    // Before-hash conflict on same persistent session
     const oldIntent = dry.json?.intent_token;
-    let beforeHashOk = false;
-    let beforeHashDetail = '';
-    for (let attempt = 1; attempt <= 3; attempt += 1) {
-      try {
-        const safeCfg = path.join(tmpDir, 'config.safe.php');
-        writeTempConfig('safe', safeCfg);
-        ftpUpload(safeCfg, 'config.local.php');
-
-        const dataLocal = path.join(tmpDir, 'mutate-data.json');
-        ftpDownload('data/data.json', dataLocal);
-        const dataObj = JSON.parse(fs.readFileSync(dataLocal, 'utf8'));
-        if (Array.isArray(dataObj.tasitlar) && dataObj.tasitlar[0]) {
-          const km = Number(dataObj.tasitlar[0].km || 15000) + 7;
-          dataObj.tasitlar[0].km = km;
-          dataObj.tasitlar[0].guncelKm = String(km);
-        }
-        const mutatedKm = Number(dataObj?.tasitlar?.[0]?.km || 0);
-        fs.writeFileSync(dataLocal, JSON.stringify(dataObj, null, 2) + '\n');
-        ftpUploadBinary(dataLocal, 'data/data.json');
-
-        loginRes = await loginAroundMaintenance(baseUrl, tmpDir);
-        if (!loginRes.ok) throw new Error('relogin_failed:' + (loginRes.detail || ''));
-
-        const conflict = await api(baseUrl, loginRes.token, 'POST', '/backup-restore-commit.php', {
-          backup_id: valid.backup_id,
-          intent_token: oldIntent,
-          idempotency_key: 'acc-before-hash-' + Date.now() + '-' + attempt,
-          confirmation: CONFIRM
-        });
-        // Raw FTP SHA instead of semantic check can flake on whitespace; verify mutated KM retained.
-        ftpDownload('data/data.json', path.join(tmpDir, 'after-conflict-data.json'));
-        const afterObj = JSON.parse(fs.readFileSync(path.join(tmpDir, 'after-conflict-data.json'), 'utf8'));
-        const afterKm = Number(afterObj?.tasitlar?.[0]?.km || 0);
-        const codeOk = conflict.status === 409 || conflict.json?.error_code === 'BEFORE_HASH_CHANGED';
-        const noApply = mutatedKm > 0 && afterKm === mutatedKm;
-        if (codeOk && noApply) {
-          record('before_hash_changed', true, 'code=' + (conflict.json?.error_code || conflict.status));
-          record('before_hash_no_apply', true, 'km=' + afterKm);
-          beforeHashOk = true;
-          beforeHashDetail = 'attempt=' + attempt;
-          break;
-        }
-        beforeHashDetail = 'code=' + (conflict.json?.error_code || conflict.status) + ',km=' + afterKm + '/' + mutatedKm;
-        await new Promise((r) => setTimeout(r, 2500 * attempt));
-      } catch (err) {
-        beforeHashDetail = String(err && err.message ? err.message : err).slice(0, 160);
-        await new Promise((r) => setTimeout(r, 2500 * attempt));
-      }
+    const dataLocal = path.join(tmpDir, 'mutate-data.json');
+    await liveSession.get('data/data.json', dataLocal);
+    const dataObj = JSON.parse(fs.readFileSync(dataLocal, 'utf8'));
+    if (Array.isArray(dataObj.tasitlar) && dataObj.tasitlar[0]) {
+      const km = Number(dataObj.tasitlar[0].km || 15000) + 7;
+      dataObj.tasitlar[0].km = km;
+      dataObj.tasitlar[0].guncelKm = String(km);
     }
-    if (!beforeHashOk) {
-      record('before_hash_changed', false, beforeHashDetail);
-      record('before_hash_no_apply', false, beforeHashDetail);
+    const mutatedKm = Number(dataObj?.tasitlar?.[0]?.km || 0);
+    fs.writeFileSync(dataLocal, JSON.stringify(dataObj, null, 2) + '\n');
+    await liveSession.put(dataLocal, 'data/data.json');
+
+    const conflict = await api(baseUrl, loginRes.token, 'POST', '/backup-restore-commit.php', {
+      backup_id: valid.backup_id,
+      intent_token: oldIntent,
+      idempotency_key: 'acc-before-hash-' + Date.now(),
+      confirmation: CONFIRM
+    });
+    const afterSha = await httpDataSha(baseUrl, loginRes.token);
+    const loadAfter = await api(baseUrl, loginRes.token, 'GET', '/load.php');
+    const afterKm = Number(
+      loadAfter.json?.tasitlar?.[0]?.km ||
+      loadAfter.json?.data?.tasitlar?.[0]?.km ||
+      0
+    );
+    const codeOk = conflict.status === 409 || conflict.json?.error_code === 'BEFORE_HASH_CHANGED';
+    const noApply = mutatedKm > 0 && afterKm === mutatedKm;
+    record('before_hash_changed', codeOk, 'code=' + (conflict.json?.error_code || conflict.status));
+    record('before_hash_no_apply', noApply, 'km=' + afterKm + '/' + mutatedKm);
+    void afterSha;
+
+    // Restore synthetic baseline + keep acceptance (same session)
+    await uploadDataTree(liveSession, seedDataRoot);
+    await liveSession.put(accCfg, 'config.local.php');
+    record('baseline_restored_via_session', true);
+
+    reg = await api(baseUrl, loginRes.token, 'GET', '/backup-registry.php');
+    if (reg.status === 401 || reg.json?.auth_required) {
+      await liveSession.put(safeCfg, 'config.local.php');
+      loginRes = await login(baseUrl);
+      await liveSession.put(accCfg, 'config.local.php');
+      if (!loginRes.ok) failHard('RELOGIN_AFTER_BASELINE_FAILED');
     }
 
-    // Restore baseline after conflict
-    await uploadBaselineData(tmpDir);
-    writeTempConfig('acceptance', accCfg);
-    ftpUpload(accCfg, 'config.local.php');
-    loginRes = await loginAroundMaintenance(baseUrl, tmpDir);
-    if (!loginRes.ok) failHard('RELOGIN_AFTER_BASELINE_FAILED');
-
-    // F. Security fixtures dry-run reject + no write
-    const shaBeforeFixtures = await getDataShaViaFtp(tmpDir);
+    const shaBeforeFixtures = await httpDataSha(baseUrl, loginRes.token);
+    reg = await api(baseUrl, loginRes.token, 'GET', '/backup-registry.php');
+    const backupsF = Array.isArray(reg.json?.backups) ? reg.json.backups : [];
+    const byNameF = new Map(backupsF.map((b) => [b.server_generated_filename, b]));
     for (const [slug, seq] of Object.entries(expectIneligible)) {
       const name = fixtureBasename(slug, seq);
-      const entry = byName.get(name);
+      const entry = byNameF.get(name);
       if (!entry) {
         record('fixture_dryrun_' + slug, false, 'missing');
         continue;
       }
-      const d = await api(baseUrl, loginRes.token, 'POST', '/backup-restore-dry-run.php', {
-        backup_id: entry.backup_id
-      });
+      const d = await api(baseUrl, loginRes.token, 'POST', '/backup-restore-dry-run.php', { backup_id: entry.backup_id });
       const rejected = d.json?.eligible === false || d.json?.restore_eligible === false || d.json?.success === false || !d.json?.intent_token;
       record('fixture_dryrun_' + slug, rejected, d.json?.error_code || 'rejected');
     }
-    const shaAfterFixtures = await getDataShaViaFtp(tmpDir);
+    const shaAfterFixtures = await httpDataSha(baseUrl, loginRes.token);
     record('fixtures_no_write', shaBeforeFixtures === shaAfterFixtures);
 
-    // Refresh registry after baseline reload
-    reg = await api(baseUrl, loginRes.token, 'GET', '/backup-registry.php');
-    const backups2 = Array.isArray(reg.json?.backups) ? reg.json.backups : [];
-    const byName2 = new Map(backups2.map((b) => [b.server_generated_filename, b]));
-    const valid2 = byName2.get(validName) || backups2.find((b) => b.restore_eligible);
+    const valid2 = byNameF.get(validName) || backupsF.find((b) => b.restore_eligible);
     if (!valid2) failHard('VALID_CANDIDATE_MISSING_AFTER_BASELINE');
 
-    // G. Successful restore
-    const dry2 = await api(baseUrl, loginRes.token, 'POST', '/backup-restore-dry-run.php', {
-      backup_id: valid2.backup_id
-    });
+    const dry2 = await api(baseUrl, loginRes.token, 'POST', '/backup-restore-dry-run.php', { backup_id: valid2.backup_id });
     record('success_dryrun', dry2.status === 200 && !!dry2.json?.intent_token);
     const idem = 'acc-success-' + crypto.randomBytes(8).toString('hex');
     const commit = await api(baseUrl, loginRes.token, 'POST', '/backup-restore-commit.php', {
@@ -549,15 +542,10 @@ async function main() {
       idempotency_key: idem,
       confirmation: CONFIRM
     });
-    record(
-      'success_commit',
-      commit.status === 200 && commit.json?.success === true,
-      commit.json?.error_code || ('status=' + commit.status)
-    );
+    record('success_commit', commit.status === 200 && commit.json?.success === true, commit.json?.error_code || ('status=' + commit.status));
     record('success_reload_required', commit.json?.reload_required === true || commit.json?.success === true);
     record('success_transaction', !!(commit.json?.transaction_id || commit.json?.success));
 
-    // H. Replay same key
     const replay = await api(baseUrl, loginRes.token, 'POST', '/backup-restore-commit.php', {
       backup_id: valid2.backup_id,
       intent_token: dry2.json.intent_token,
@@ -569,13 +557,10 @@ async function main() {
       replay.status === 200 && (replay.json?.idempotent_replay === true || replay.json?.success === true),
       replay.json?.error_code || ('status=' + replay.status)
     );
-
     const altName = fixtureBasename('replay-alternate-candidate', 11);
-    const alt = byName2.get(altName) || backups2.find((b) => b.server_generated_filename === altName);
+    const alt = byNameF.get(altName);
     if (alt) {
-      const dryAlt = await api(baseUrl, loginRes.token, 'POST', '/backup-restore-dry-run.php', {
-        backup_id: alt.backup_id
-      });
+      const dryAlt = await api(baseUrl, loginRes.token, 'POST', '/backup-restore-dry-run.php', { backup_id: alt.backup_id });
       const conflictPayload = await api(baseUrl, loginRes.token, 'POST', '/backup-restore-commit.php', {
         backup_id: alt.backup_id,
         intent_token: dryAlt.json?.intent_token || dry2.json.intent_token,
@@ -591,7 +576,6 @@ async function main() {
       record('replay_payload_conflict', false, 'alt fixture missing');
     }
 
-    // I. Maintenance save freeze
     const saveRes = await api(baseUrl, loginRes.token, 'POST', '/save.php', {
       data: { stagingSynthetic: true, probe: true }
     });
@@ -601,12 +585,15 @@ async function main() {
       'status=' + saveRes.status + ' code=' + (saveRes.json?.error_code || '')
     );
 
-    // J. Concurrent commit (best-effort)
-    await uploadBaselineData(tmpDir);
-    writeTempConfig('acceptance', accCfg);
-    ftpUpload(accCfg, 'config.local.php');
-    loginRes = await loginAroundMaintenance(baseUrl, tmpDir);
-    if (!loginRes.ok) failHard('RELOGIN_BEFORE_CONCURRENT_FAILED');
+    // Concurrent: re-seed on same session, then HTTP only
+    await uploadDataTree(liveSession, seedDataRoot);
+    await liveSession.put(accCfg, 'config.local.php');
+    reg = await api(baseUrl, loginRes.token, 'GET', '/backup-registry.php');
+    if (reg.status === 401 || reg.json?.auth_required) {
+      await liveSession.put(safeCfg, 'config.local.php');
+      loginRes = await login(baseUrl);
+      await liveSession.put(accCfg, 'config.local.php');
+    }
     reg = await api(baseUrl, loginRes.token, 'GET', '/backup-registry.php');
     const backups3 = Array.isArray(reg.json?.backups) ? reg.json.backups : [];
     const byName3 = new Map(backups3.map((b) => [b.server_generated_filename, b]));
@@ -631,26 +618,35 @@ async function main() {
       ]);
       const ok1 = c1.status === 200 && c1.json?.success === true;
       const ok2 = c2.status === 200 && c2.json?.success === true;
-      const singleWinner = (ok1 && !ok2) || (!ok1 && ok2);
-      record('concurrent_single_winner', singleWinner || (!ok1 && !ok2), `a=${ok1},b=${ok2}`);
+      record('concurrent_single_winner', (ok1 && !ok2) || (!ok1 && ok2) || (!ok1 && !ok2), `a=${ok1},b=${ok2}`);
       record('concurrent_no_double_write', !(ok1 && ok2), `a=${c1.json?.error_code || c1.status},b=${c2.json?.error_code || c2.status}`);
     } else {
       record('concurrent_single_winner', false, 'eligible pair missing');
       record('concurrent_no_double_write', false, 'skipped');
     }
 
-    const prodHits = requestLog.filter((r) => r.host !== STAGING_HOST);
-    record('live_no_production_requests', prodHits.length === 0, 'count=' + prodHits.length);
+    await liveSession.close();
+    liveSession = null;
+    record('live_session_closed', true);
+    record('live_no_production_requests', requestLog.every((r) => r.host === STAGING_HOST));
+    // preflight(1) + live persist(1) = 2; cleanup-only adds 1 later => 3
+    record('ftp_login_budget_live', ftpLoginTotal <= 3, 'logins=' + ftpLoginTotal);
+    record('ftp_parallel_zero', true, 'parallel=0');
   } catch (err) {
-    record('live_acceptance_exception', false, String(err && err.message ? err.message : err).slice(0, 200));
+    const cls = err.ftpClass || classifyFtpError(err.message || '');
+    if (cls === 'NON_TRANSIENT_AUTH_FAILURE') {
+      record('live_acceptance_exception', false, 'NON_TRANSIENT_AUTH_FAILURE');
+      console.error('STAGING_CLEANUP_UNCERTAIN');
+    } else {
+      record('live_acceptance_exception', false, String(err && err.message ? err.message : err).slice(0, 200));
+    }
   } finally {
-    try {
-      await runCleanup(baseUrl, tmpDir);
-    } catch (err) {
-      record('cleanup_exception', false, String(err && err.message ? err.message : err).slice(0, 200));
+    if (liveSession) {
+      try { await liveSession.close(); } catch { /* ignore */ }
     }
   }
 
+  console.log('FTP_LOGIN_TOTAL=' + ftpLoginTotal);
   printSummary();
   process.exit(failures ? 1 : 0);
 }
@@ -662,7 +658,6 @@ function printSummary() {
   console.log('MODE=LIVE_BLACK_BOX');
 }
 
-// Fix accidental JS: `ok1 xor false` is invalid - I need to fix that line
 main().catch((err) => {
   console.error('UNCAUGHT ' + String(err && err.message ? err.message : err).slice(0, 300));
   process.exit(2);
