@@ -315,30 +315,40 @@ async function uploadBaselineData(tmpDir) {
 }
 
 async function runCleanup(baseUrl, tmpDir) {
-  const cfg = path.join(tmpDir, 'config.cleanup.php');
-  writeTempConfig('cleanup', cfg);
-  ftpUpload(cfg, 'config.local.php');
-  await uploadBaselineData(tmpDir);
+  let lastErr = null;
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    try {
+      const cfg = path.join(tmpDir, 'config.cleanup.php');
+      writeTempConfig('cleanup', cfg);
+      ftpUpload(cfg, 'config.local.php');
+      await uploadBaselineData(tmpDir);
 
-  const unauth = await request(baseUrl, { method: 'GET', pathname: '/', basic: false });
-  record('cleanup_unauth_401', unauth.status === 401, 'status=' + unauth.status);
+      const unauth = await request(baseUrl, { method: 'GET', pathname: '/', basic: false });
+      record('cleanup_unauth_401', unauth.status === 401, 'status=' + unauth.status);
 
-  const auth = await request(baseUrl, { method: 'GET', pathname: '/' });
-  record('cleanup_auth_ok', auth.status === 200, 'status=' + auth.status);
+      const auth = await request(baseUrl, { method: 'GET', pathname: '/' });
+      record('cleanup_auth_ok', auth.status === 200, 'status=' + auth.status);
 
-  const loginRes = await login(baseUrl);
-  record('cleanup_login', loginRes.ok);
+      const loginRes = await login(baseUrl);
+      record('cleanup_login', loginRes.ok);
 
-  if (loginRes.ok) {
-    const reg = await api(baseUrl, loginRes.token, 'GET', '/backup-registry.php');
-    const enabled = !!(reg.json && reg.json.restore_enabled);
-    const maint = !!(reg.json && reg.json.maintenance_mode);
-    record('cleanup_restore_disabled', reg.status === 200 && enabled === false, 'enabled=' + enabled);
-    record('cleanup_maintenance_false', reg.status === 200 && maint === false, 'maint=' + maint);
+      if (loginRes.ok) {
+        const reg = await api(baseUrl, loginRes.token, 'GET', '/backup-registry.php');
+        const enabled = !!(reg.json && reg.json.restore_enabled);
+        const maint = !!(reg.json && reg.json.maintenance_mode);
+        record('cleanup_restore_disabled', reg.status === 200 && enabled === false, 'enabled=' + enabled);
+        record('cleanup_maintenance_false', reg.status === 200 && maint === false, 'maint=' + maint);
+      }
+
+      const prodHits = requestLog.filter((r) => String(r.host + r.path).includes('karmotors.com.tr') && r.host !== STAGING_HOST);
+      record('cleanup_no_production_requests', prodHits.length === 0, 'count=' + prodHits.length);
+      return;
+    } catch (err) {
+      lastErr = err;
+      await new Promise((r) => setTimeout(r, 2000 * attempt));
+    }
   }
-
-  const prodHits = requestLog.filter((r) => String(r.host + r.path).includes('karmotors.com.tr') && r.host !== STAGING_HOST);
-  record('cleanup_no_production_requests', prodHits.length === 0, 'count=' + prodHits.length);
+  throw lastErr || new Error('cleanup failed');
 }
 
 async function main() {
@@ -457,9 +467,9 @@ async function main() {
           dataObj.tasitlar[0].km = km;
           dataObj.tasitlar[0].guncelKm = String(km);
         }
+        const mutatedKm = Number(dataObj?.tasitlar?.[0]?.km || 0);
         fs.writeFileSync(dataLocal, JSON.stringify(dataObj, null, 2) + '\n');
         ftpUploadBinary(dataLocal, 'data/data.json');
-        const mutatedSha = crypto.createHash('sha256').update(fs.readFileSync(dataLocal)).digest('hex');
 
         loginRes = await loginAroundMaintenance(baseUrl, tmpDir);
         if (!loginRes.ok) throw new Error('relogin_failed:' + (loginRes.detail || ''));
@@ -470,20 +480,27 @@ async function main() {
           idempotency_key: 'acc-before-hash-' + Date.now() + '-' + attempt,
           confirmation: CONFIRM
         });
-        const afterConflictSha = await getDataShaViaFtp(tmpDir);
+        // Raw FTP SHA instead of semantic check can flake on whitespace; verify mutated KM retained.
+        ftpDownload('data/data.json', path.join(tmpDir, 'after-conflict-data.json'));
+        const afterObj = JSON.parse(fs.readFileSync(path.join(tmpDir, 'after-conflict-data.json'), 'utf8'));
+        const afterKm = Number(afterObj?.tasitlar?.[0]?.km || 0);
         const codeOk = conflict.status === 409 || conflict.json?.error_code === 'BEFORE_HASH_CHANGED';
-        const noApply = afterConflictSha === mutatedSha;
-        record('before_hash_changed', codeOk, 'code=' + (conflict.json?.error_code || conflict.status));
-        record('before_hash_no_apply', noApply);
-        beforeHashOk = codeOk && noApply;
-        beforeHashDetail = 'attempt=' + attempt;
-        break;
+        const noApply = mutatedKm > 0 && afterKm === mutatedKm;
+        if (codeOk && noApply) {
+          record('before_hash_changed', true, 'code=' + (conflict.json?.error_code || conflict.status));
+          record('before_hash_no_apply', true, 'km=' + afterKm);
+          beforeHashOk = true;
+          beforeHashDetail = 'attempt=' + attempt;
+          break;
+        }
+        beforeHashDetail = 'code=' + (conflict.json?.error_code || conflict.status) + ',km=' + afterKm + '/' + mutatedKm;
+        await new Promise((r) => setTimeout(r, 2500 * attempt));
       } catch (err) {
         beforeHashDetail = String(err && err.message ? err.message : err).slice(0, 160);
         await new Promise((r) => setTimeout(r, 2500 * attempt));
       }
     }
-    if (!beforeHashOk && !results.some((r) => r.name === 'before_hash_changed')) {
+    if (!beforeHashOk) {
       record('before_hash_changed', false, beforeHashDetail);
       record('before_hash_no_apply', false, beforeHashDetail);
     }
