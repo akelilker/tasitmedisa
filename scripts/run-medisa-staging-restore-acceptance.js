@@ -259,6 +259,22 @@ function buildImportFilePayload(data, companyName) {
   };
 }
 
+function buildSettingsDeltaPayload(settings) {
+  return {
+    _medisaWire: {
+      schemaVersion: 1,
+      mode: 'delta-v1'
+    },
+    _medisaMutation: {
+      collections: ['ayarlar'],
+      changedVehicleIds: [],
+      deletedVehicleIds: [],
+      deletedVehicleVersions: {}
+    },
+    ayarlar: JSON.parse(JSON.stringify(settings || {}))
+  };
+}
+
 async function runControlledImportAcceptance(baseUrl, token) {
   const before = await api(baseUrl, token, 'GET', '/load.php');
   if (before.status !== 200 || !before.json || Array.isArray(before.json)) {
@@ -276,8 +292,7 @@ async function runControlledImportAcceptance(baseUrl, token) {
     const harness = createImportHarness({
       initialApp: baseline,
       saveDataToServer: async function(nextData) {
-        const payload = JSON.parse(JSON.stringify(nextData || {}));
-        delete payload.kaskoDegerListesi;
+        const payload = buildSettingsDeltaPayload(nextData?.ayarlar);
         const save = await api(baseUrl, token, 'POST', '/save.php', payload);
         return save.status === 200 && save.json?.success === true;
       }
@@ -292,7 +307,7 @@ async function runControlledImportAcceptance(baseUrl, token) {
     const storedName = String(after.json?.ayarlar?.sirketAdi || '');
     record('controlled_import_reload_verified', after.status === 200 && storedName === marker, 'status=' + after.status);
   } finally {
-    const rollback = await api(baseUrl, token, 'POST', '/save.php', baseline);
+    const rollback = await api(baseUrl, token, 'POST', '/save.php', buildSettingsDeltaPayload(baseline.ayarlar));
     const reloaded = await api(baseUrl, token, 'GET', '/load.php');
     rollbackOk = rollback.status === 200
       && rollback.json?.success === true

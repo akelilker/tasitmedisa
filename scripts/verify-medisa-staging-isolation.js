@@ -146,6 +146,8 @@ assert.match(accept, /IDEMPOTENCY_CONFLICT|409/, 'idempotency conflict');
 assert.match(accept, /runControlledImportAcceptance/, 'controlled import staging acceptance owner');
 assert.match(accept, /controlled_import_rollback_exact/, 'controlled import exact rollback gate');
 assert.match(accept, /createImportHarness/, 'controlled import gerçek owner harness kullanır');
+assert.match(accept, /mode:\s*['"]delta-v1['"]/, 'controlled import gerçek delta-v1 wire ownerını kullanır');
+assert.match(accept, /collections:\s*\[\s*['"]ayarlar['"]\s*\]/, 'controlled import yalnız ayarlar koleksiyonunu kaydeder');
 assert.match(accept, /MAINTENANCE_REQUIRED|423/, 'maintenance freeze');
 assert.match(accept, /cleanup|always/i, 'acceptance mentions cleanup');
 assertNoMatch(accept, /secrets\.FTP_PASSWORD/, 'runner no prod FTP secret names');
