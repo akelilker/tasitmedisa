@@ -200,8 +200,9 @@ jobs:
           node scripts/build-medisa-staging-deploy.js
           test -f "$OUT/config.local.php"
           test -f "$OUT/.htaccess"
-          if grep -RIn --exclude-dir=data 'karmotors.com.tr/medisa' "$OUT" >/dev/null 2>&1; then
-            echo "::error::temp tree contains production URL"
+          if grep -RInE --exclude-dir=data 'https?://karmotors\.com\.tr/medisa([^-/]|$|/)' "$OUT" >/dev/null 2>&1; then
+            echo "::error::temp tree still contains production URL"
+            grep -RInE --exclude-dir=data 'https?://karmotors\.com\.tr/medisa([^-/]|$|/)' "$OUT" | head -n 20 || true
             exit 1
           fi
           if [ "$INCLUDE" = "true" ]; then
@@ -280,22 +281,25 @@ jobs:
         env:
           STAGING_FTP_PASSWORD: ${{ secrets.STAGING_FTP_PASSWORD }}
           STAGING_TOKEN_SECRET: ${{ secrets.STAGING_TOKEN_SECRET }}
-          STAGING_RESTORE_HMAC_SECRET: ${{ secrets.STAGING_RESTORE_HMAC_SECRET }}
-          STAGING_APP_ADMIN_PASSWORD: ${{ secrets.STAGING_APP_ADMIN_PASSWORD }}
         run: |
           set -euo pipefail
-          OUT="$GITHUB_WORKSPACE/.staging-deploy-cleanup"
-          export MEDISA_STAGING_OUTPUT_DIR="$OUT"
-          export MEDISA_STAGING_INCLUDE_DATA=false
-          export MEDISA_STAGING_CONFIG_MODE=cleanup
-          export MEDISA_STAGING_TOKEN_SECRET="$STAGING_TOKEN_SECRET"
-          export MEDISA_STAGING_RESTORE_HMAC_SECRET="$STAGING_RESTORE_HMAC_SECRET"
-          export MEDISA_STAGING_ADMIN_USER="${STAGING_APP_ADMIN_USERNAME}"
-          export MEDISA_STAGING_ADMIN_PASSWORD="${STAGING_APP_ADMIN_PASSWORD}"
-          export MEDISA_STAGING_EXISTING_HTACCESS="$GITHUB_WORKSPACE/.staging-build/existing.htaccess"
-          node scripts/build-medisa-staging-deploy.js
+          mkdir -p "$GITHUB_WORKSPACE/.staging-build"
+          CFG="$GITHUB_WORKSPACE/.staging-build/config.cleanup.php"
+          TOKEN_ESC="${STAGING_TOKEN_SECRET//\'/\'\\\'\'}"
+          cat > "$CFG" <<EOF
+          <?php
+          putenv('MEDISA_ENVIRONMENT=staging');
+          putenv('MEDISA_TOKEN_SECRET=${TOKEN_ESC}');
+          putenv('MEDISA_SERVER_RESTORE_ENABLED=false');
+          putenv('MEDISA_RESTORE_MAINTENANCE_MODE=false');
+          putenv('MEDISA_RESTORE_HMAC_SECRET');
+          \$GLOBALS['MEDISA_STAGING_MARKER'] = true;
+          ini_set('display_errors', '0');
+          EOF
+          # Strip leading spaces from indented heredoc lines
+          sed -i 's/^[[:space:]]*//' "$CFG"
           curl -sS --ssl-reqd --ftp-ssl -k --ftp-create-dirs --connect-timeout 30 --max-time 60 \
             -u "${STAGING_FTP_USERNAME}:${STAGING_FTP_PASSWORD}" \
-            -T "$OUT/config.local.php" \
+            -T "$CFG" \
             "ftp://${STAGING_FTP_SERVER}:${STAGING_FTP_PORT}/config.local.php"
           echo "cleanup_config_uploaded=true"

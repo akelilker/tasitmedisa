@@ -100,6 +100,8 @@ assert.match(acceptWf, /run-medisa-staging-restore-acceptance\.js/, 'acceptance 
 
 assert.match(build, /\[STAGING\]/, 'title staging prefix');
 assert.match(build, /STAGING — SENTETİK VERİ — PRODUCTION DEĞİL/, 'staging banner');
+assert.match(build, /rewriteProductionUrls|medisa-staging\.karmotors\.com\.tr/, 'production URL rewrite in overlay');
+assert.match(build, /isExcludedDirName|\.staging-/, 'staging temp dirs excluded from copy');
 assert.match(build, /TaşıtMedisa Staging|Medisa Staging/, 'manifest names');
 assert.match(build, /medisa-staging-v/, 'SW cache namespace');
 assert.match(build, /Disallow: \//, 'robots disallow');

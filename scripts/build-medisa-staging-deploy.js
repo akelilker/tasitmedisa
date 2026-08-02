@@ -43,9 +43,14 @@ if (!['safe', 'acceptance', 'cleanup'].includes(configMode)) {
 
 const EXCLUDE_DIR_NAMES = new Set([
   '.git', '.github', '.cursor', '.agents', '.vscode', 'node_modules',
-  'docs', 'scripts', 'outputs', 'tmp', '_ux-test-output', 'assets',
-  '.staging-deploy', '.staging-build'
+  'docs', 'scripts', 'outputs', 'tmp', '_ux-test-output', 'assets'
 ]);
+function isExcludedDirName(name) {
+  if (EXCLUDE_DIR_NAMES.has(name)) return true;
+  // Avoid recursive copy of prior local/CI staging trees into themselves.
+  if (name.startsWith('.staging-')) return true;
+  return false;
+}
 const EXCLUDE_FILE_NAMES = new Set([
   '.cpanel.yml', '.cursorignore', '.editorconfig', 'AGENTS.md',
   'DEPLOYMENT.md', 'DEVELOPER_REPORT.md', 'README.md', 'package.json',
@@ -82,7 +87,8 @@ function walkCopy(srcRoot, destRoot) {
       if (rel && !shouldCopy(relPosix + '/x')) continue;
       if (rel) ensureDir(path.join(destRoot, rel));
       for (const name of fs.readdirSync(src)) {
-        if (!rel && EXCLUDE_DIR_NAMES.has(name)) continue;
+        if (!rel && isExcludedDirName(name)) continue;
+        if (isExcludedDirName(name)) continue;
         stack.push(path.join(rel, name));
       }
       continue;
@@ -157,8 +163,12 @@ function buildHtaccess(baseHtaccess, authBlock) {
   ].join('\n');
 }
 
+function rewriteProductionUrls(html) {
+  return String(html).split('https://karmotors.com.tr/medisa').join('https://medisa-staging.karmotors.com.tr');
+}
+
 function injectBanner(html) {
-  let out = html;
+  let out = rewriteProductionUrls(html);
   out = out.replace(/<title>([\s\S]*?)<\/title>/i, (m, t) => {
     const text = String(t).trim();
     if (text.startsWith('[STAGING]')) return `<title>${text}</title>`;
