@@ -304,6 +304,7 @@ jobs:
           putenv('MEDISA_TOKEN_SECRET=${TOKEN_ESC}');
           putenv('MEDISA_SERVER_RESTORE_ENABLED=false');
           putenv('MEDISA_RESTORE_MAINTENANCE_MODE=false');
+          putenv('MEDISA_PRODUCTION_RESTORE_APPROVED=false');
           putenv('MEDISA_RESTORE_HMAC_SECRET');
           \$GLOBALS['MEDISA_STAGING_MARKER'] = true;
           ini_set('display_errors', '0');

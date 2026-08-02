@@ -35,14 +35,15 @@ Eski satır numaraları, dil bileşimi yüzdeleri ve “production ready” puan
 - `medisa_just_restored` kaldırıldı.
 - İlgili commit: `7f9aedc358b6f5e70aea48411c5aa600a0957df1`
 - Kod / test / deploy / authenticated read-only smoke: **CLOSED**
-- Controlled gerçek import: **DEFERRED VALIDATION**
-- Gerçek canlı import yapılmadı.
+- Controlled staging import owner/server round-trip: **IMPLEMENTED** (workflow kabulü yeni ref üzerinde çalıştırılacak)
+- Production canlı import yapılmadı.
 
 **Import ayrımı:**
 1. Import source-of-truth kod kontratı: **CLOSED**
-2. Gerçek backup dosyasıyla controlled round-trip: **DEFERRED VALIDATION**
+2. Sentetik staging dosyasıyla controlled owner/server round-trip: **IMPLEMENTED; WORKFLOW ACCEPTANCE PENDING NEW REF**
+3. Production gerçek backup importu: **NOT PERFORMED**
 
-Deferred durum kod eksikliği değildir. Gerçek import canlı server verisini değiştirebilir; ayrı write yetkisi, backup, rollback ve staging/bakım penceresi gerekir. Bu senkron görevinde dosya seçilmedi ve import yapılmadı.
+Production import yapılmaması kod eksikliği değildir. Gerçek import canlı server verisini değiştirebilir; ayrı write yetkisi, backup, rollback ve bakım penceresi gerekir. Staging kabulü kişisel veri içermeyen sentetik payload ile exact baseline rollback uygular.
 
 #### P1-C — WhatsApp Audit
 - Genel yönetici audit UI
@@ -68,9 +69,10 @@ Deferred durum kod eksikliği değildir. Gerçek import canlı server verisini d
 - `restore.php` gerçek restore apply yapmaz; metadata-only GET kontratı korunur.
 - Server restore altyapısı **IMPLEMENTED** (registry / dry-run / commit / status).
 - Production restore **DISABLED** (`MEDISA_SERVER_RESTORE_ENABLED` default false; maintenance default false; HMAC secret repo’da yok).
+- Production commit ayrıca `MEDISA_PRODUCTION_RESTORE_APPROVED=true` ikinci aktivasyon kapısını ister; bilinmeyen ortam production kabul edilir.
 - P0/P1 güvenlik kapanışı: full canonical content hash, user/actor/credential invariantları, unknown collection reject, verified emergency rollback, ledger fail-closed, dry-run exact no-write.
-- Geçmiş karar notu: `DO_NOT_IMPLEMENT_WITHOUT_EXPLICIT_PRODUCT_APPROVAL` — implementation artık vardır; **activation** staging acceptance + açık yetkilendirme olmadan yasaktır.
-- Staging acceptance: **PENDING**
+- Geçmiş karar notu: `DO_NOT_IMPLEMENT_WITHOUT_EXPLICIT_PRODUCT_APPROVAL` — implementation ve staging acceptance tamamlanmıştır; production **activation** açık yetkilendirme olmadan yasaktır.
+- Staging acceptance: **PASS** (`8039e340`; live black-box 58/58 + cleanup 9/9)
 - Production write acceptance: **PENDING**
 - Live restore performed: **NO**
 - Runtime data changed: **NO**
@@ -212,7 +214,7 @@ Kalan işler **düşük öncelikli UX, hijyen ve backlog** kalemleridir.
 
 ### 7. Notification Scope Migration
 
-**Dosya:** `core.php` — `medisaBuildNotificationScopeDescriptor`, `medisaProjectNotificationReadStateForContext`; `save.php` merge
+**Dosya:** `core.php` — `medisaBuildNotificationScopeDescriptor`, `medisaProjectNotificationReadStateForContext`; `save.php` merge; `scripts/migrate-medisa-notification-scope-legacy.php`
 **Durum:** **BACKLOG / HİJYEN** — güvenlik açığı değil; runtime write/load kontratı current main’de kapalı
 
 **Güncel doğrulama (current main owner):**
@@ -222,8 +224,8 @@ Kalan işler **düşük öncelikli UX, hijyen ve backlog** kalemleridir.
 - Load projection generic `scope:*` key’lerini **okumaz, birleştirmez veya response’a koymaz**.
 - Generic `scope:*` mevcut eski veriler runtime authorization veya görünürlük owner’ı **değildir**.
 - Eski kayıtlar varsa yalnız etkisiz tarihsel veri / hijyen borcudur.
-- Canlı `data/data.json` temizliği ayrı production-data mutation izni gerektirir.
-- Bu senkron görevinde notification verisi migrate veya temizlenmez.
+- Dry-run/apply migration owner'ı hazırdır; exact SHA + exact count + rollback backup olmadan apply çalışmaz.
+- Production `data/data.json` temizliği bakım penceresi ve indirilen backup kanıtıyla ayrıca çalıştırılır.
 
 ---
 
@@ -259,12 +261,13 @@ Kalan işler **düşük öncelikli UX, hijyen ve backlog** kalemleridir.
 1. **Driver ARIA** mini UX fix (`driver/index.html` + `driver-script.js`)
 2. **Vehicle modal** `type="button"` semantik mini fix (`index.html` ~495-496)
 3. **`allowQueryToken` dead code cleanup** tasarımı (`core.php` hijyen)
-4. **Notification scope** eski veri hijyeni (yalnız ayrı production-data mutation izniyle; runtime kontrat kapalı)
-5. **`saveData` post-write verify** tasarımı (maliyet/fayda değerlendirmesi sonrası)
-6. **Windows atomic write** iyileştirmesi (yalnızca Windows dev sorun çıkarırsa)
-7. **Fiziksel iPhone PWA kabulü** (PENDING_USER_ACCEPTANCE; masaüstü emülasyonu yeterli değildir)
-8. **Controlled import round-trip** (DEFERRED VALIDATION; ayrı write yetkisi + backup + rollback)
-9. **Server-side restore activation** (IMPLEMENTED; activation prohibited until staging acceptance + explicit authorization)
+4. **Notification scope** production dry-run/apply operasyonu (migration owner hazır; runtime kontrat kapalı)
+5. **Runtime data health** PII-free boyut/count çıktısını periyodik izle (`tool:inspect-runtime-data-health`)
+6. **`saveData` post-write verify** tasarımı (maliyet/fayda değerlendirmesi sonrası)
+7. **Windows atomic write** iyileştirmesi (yalnızca Windows dev sorun çıkarırsa)
+8. **Fiziksel iPhone PWA kabulü** (PENDING_USER_ACCEPTANCE; masaüstü emülasyonu yeterli değildir)
+9. **Controlled staging import workflow acceptance** (owner/server/rollback implementasyonu hazır; yeni ref kanıtı bekleniyor)
+10. **Server-side restore production activation** (IMPLEMENTED; staging PASS; second activation flag + explicit authorization + production write acceptance pending)
 
 ---
 

@@ -19,6 +19,8 @@ npm run tool:verify-mandatory-password-change
 echo "[quality-gate] Deploy and runtime data safety"
 npm run tool:verify-deploy
 npm run tool:verify-runtime-data-git
+npm run tool:verify-runtime-data-health
+npm run tool:verify-notification-scope-cleanup
 npm run tool:verify-staging-isolation
 npm run tool:verify-staging-ftps
 

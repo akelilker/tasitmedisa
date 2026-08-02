@@ -220,6 +220,7 @@ putenv('MEDISA_ENVIRONMENT=staging');
 putenv('MEDISA_TOKEN_SECRET=${tokenSecret.replace(/'/g, "\\'")}');
 putenv('MEDISA_SERVER_RESTORE_ENABLED=${restoreOn ? 'true' : 'false'}');
 putenv('MEDISA_RESTORE_MAINTENANCE_MODE=${maintOn ? 'true' : 'false'}');
+putenv('MEDISA_PRODUCTION_RESTORE_APPROVED=false');
 ${hmacLine}$GLOBALS['MEDISA_STAGING_MARKER'] = true;
 `;
 }

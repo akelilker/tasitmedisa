@@ -23,6 +23,7 @@ const {
   classifyFtpError,
   STAGING_FTP_USER
 } = require('./medisa-staging-ftps.js');
+const { createHarness: createImportHarness } = require('./verify-medisa-import-source-of-truth-invariants.js');
 
 const root = path.resolve(__dirname, '..');
 const CONFIRM = 'SUNUCU YEDEĞİNİ GERİ YÜKLE';
@@ -141,6 +142,7 @@ putenv('MEDISA_ENVIRONMENT=staging');
 putenv('MEDISA_TOKEN_SECRET=${token.replace(/'/g, "\\'")}');
 putenv('MEDISA_SERVER_RESTORE_ENABLED=${restoreOn ? 'true' : 'false'}');
 putenv('MEDISA_RESTORE_MAINTENANCE_MODE=${maintOn ? 'true' : 'false'}');
+putenv('MEDISA_PRODUCTION_RESTORE_APPROVED=false');
 ${hmacLine}$GLOBALS['MEDISA_STAGING_MARKER'] = true;
 ini_set('display_errors', '0');
 `, 'utf8');
@@ -225,6 +227,84 @@ async function httpDataSha(baseUrl, token) {
   const res = await api(baseUrl, token, 'GET', '/load.php');
   if (res.status !== 200 || !res.json) throw new Error('LOAD_FAILED:' + res.status);
   return crypto.createHash('sha256').update(JSON.stringify(res.json)).digest('hex');
+}
+
+function canonicalJson(value) {
+  if (Array.isArray(value)) return value.map(canonicalJson);
+  if (!value || typeof value !== 'object') return value;
+  const out = {};
+  for (const key of Object.keys(value).sort()) out[key] = canonicalJson(value[key]);
+  return out;
+}
+
+function projectedDataSha(value) {
+  return crypto.createHash('sha256').update(JSON.stringify(canonicalJson(value))).digest('hex');
+}
+
+function buildImportFilePayload(data, companyName) {
+  return {
+    vehicles: Array.isArray(data.tasitlar) ? data.tasitlar : [],
+    branches: Array.isArray(data.branches) ? data.branches : [],
+    users: Array.isArray(data.users) ? data.users : [],
+    kayitlar: Array.isArray(data.kayitlar) ? data.kayitlar : [],
+    ayarlar: Object.assign({}, data.ayarlar || {}, { sirketAdi: companyName }),
+    sifreler: Array.isArray(data.sifreler) ? data.sifreler : [],
+    arac_aylik_hareketler: Array.isArray(data.arac_aylik_hareketler) ? data.arac_aylik_hareketler : [],
+    duzeltme_talepleri: Array.isArray(data.duzeltme_talepleri) ? data.duzeltme_talepleri : [],
+    notificationReadState: data.notificationReadState || {},
+    monthlyTodoWhatsAppLogs: data.monthlyTodoWhatsAppLogs || {},
+    backup_date: new Date().toISOString(),
+    version: '2.0',
+    source: 'staging-controlled-import-acceptance'
+  };
+}
+
+async function runControlledImportAcceptance(baseUrl, token) {
+  const before = await api(baseUrl, token, 'GET', '/load.php');
+  if (before.status !== 200 || !before.json || Array.isArray(before.json)) {
+    record('controlled_import_preload', false, 'status=' + before.status);
+    return;
+  }
+
+  const baseline = JSON.parse(JSON.stringify(before.json));
+  const baselineSha = projectedDataSha(baseline);
+  const marker = 'Medisa Staging Import Acceptance';
+  const importFile = buildImportFilePayload(baseline, marker);
+  let rollbackOk = false;
+
+  try {
+    const harness = createImportHarness({
+      initialApp: baseline,
+      saveDataToServer: async function(nextData) {
+        const payload = JSON.parse(JSON.stringify(nextData || {}));
+        delete payload.kaskoDegerListesi;
+        const save = await api(baseUrl, token, 'POST', '/save.php', payload);
+        return save.status === 200 && save.json?.success === true;
+      }
+    });
+    const imported = await harness.helpers.processImportedBackupText(JSON.stringify(importFile), {
+      confirm: function() { return true; }
+    });
+    record('controlled_import_owner_success', imported?.outcome === 'success' && imported?.ok === true);
+    record('controlled_import_single_save', harness.getSaveCalls() === 1, 'calls=' + harness.getSaveCalls());
+
+    const after = await api(baseUrl, token, 'GET', '/load.php');
+    const storedName = String(after.json?.ayarlar?.sirketAdi || '');
+    record('controlled_import_reload_verified', after.status === 200 && storedName === marker, 'status=' + after.status);
+  } finally {
+    const rollback = await api(baseUrl, token, 'POST', '/save.php', baseline);
+    const reloaded = await api(baseUrl, token, 'GET', '/load.php');
+    rollbackOk = rollback.status === 200
+      && rollback.json?.success === true
+      && reloaded.status === 200
+      && projectedDataSha(reloaded.json) === baselineSha;
+    record('controlled_import_rollback_exact', rollbackOk, 'save=' + rollback.status + ' load=' + reloaded.status);
+  }
+
+  if (!rollbackOk) {
+    console.error('STAGING_CLEANUP_UNCERTAIN');
+    throw new Error('CONTROLLED_IMPORT_ROLLBACK_FAILED');
+  }
 }
 
 function generateSeed(tmpDir) {
@@ -426,6 +506,8 @@ async function main() {
 
     const baselineHttpSha = await httpDataSha(baseUrl, loginRes.token);
     record('baseline_http_hash_saved', !!baselineHttpSha);
+
+    await runControlledImportAcceptance(baseUrl, loginRes.token);
 
     const accCfg = path.join(tmpDir, 'config.acceptance.php');
     const safeCfg = path.join(tmpDir, 'config.safe.php');

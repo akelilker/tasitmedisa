@@ -11,20 +11,24 @@
 - History H1/H2 (UI + verifier)
 - import transaction SoT
 - import same-page lock
+- controlled staging import owner/server round-trip altyapısı (new-ref workflow acceptance pending)
 - **server restore code contract (R1/R2/R3)**
 - backup registry (server-owned, path-safe)
 - restore dry-run (no-write)
 - restore commit infrastructure (disabled-by-default)
 - maintenance / write-freeze (`medisaMutateData` + `save_kasko`)
 - restore quality gate (`tool:verify-server-restore`)
+- server restore staging acceptance (`8039e340`; live black-box 58/58 + cleanup 9/9)
+- production restore ikinci aktivasyon kapısı (`MEDISA_PRODUCTION_RESTORE_APPROVED`, default false)
+- runtime data health PII-free ölçüm owner'ı
+- notification legacy scope dry-run/apply + exact rollback owner'ı
 - F1/F2/F4 **KEEP_DEFENSIVE** kararı (invariant koruması)
 
 ## OPERASYONEL BEKLEYENLER
 
 - Physical iPhone PWA acceptance
 - History authenticated visual smoke
-- Controlled live import acceptance
-- Server restore **staging** acceptance
+- Production live import acceptance (yalnız ayrıca istenirse)
 - Server restore **production activation** (flags + secret + maintenance)
 - Production restore write acceptance
 - Notification data cleanup (gerekiyorsa explicit data-write auth)
@@ -36,7 +40,7 @@
 | Restore infrastructure | **IMPLEMENTED** |
 | Safety findings P0/P1 | **CLOSED** |
 | Production restore activation | **DISABLED** |
-| Staging acceptance | **PENDING** |
+| Staging acceptance | **PASS** (`8039e340`; 58/58 + cleanup 9/9) |
 | Production write acceptance | **PENDING** |
 | Live restore performed | **NO** |
 | Runtime data changed | **NO** |
@@ -45,13 +49,14 @@
 - `MEDISA_SERVER_RESTORE_ENABLED` default: **false**
 - `MEDISA_RESTORE_MAINTENANCE_MODE` default: **false**
 - `MEDISA_RESTORE_HMAC_SECRET` repository’de yok; yoksa commit fail-closed
+- Production commit `MEDISA_PRODUCTION_RESTORE_APPROVED=true` olmadan fail-closed
 - Güvenlik kapanışı: full canonical content hash, user/actor/credential invariantları, unknown collection reject, verified emergency rollback, ledger fail-closed, dry-run exact SHA no-write
 - History KM edge-case (sentetik approved correction kartı ↔ badge): **CLOSED**
 - Bu turda canlı restore **yapılmadı**
 - Bu turda canlı import **yapılmadı**
 - `data/**` değiştirilmedi / açılmadı
 - `restore.php` metadata-only GET olarak kaldı (`restore_enabled: false`)
-- Geçmiş `DO_NOT_IMPLEMENT_WITHOUT_EXPLICIT_PRODUCT_APPROVAL` notu: implementation vardır; activation staging + açık yetki olmadan yasaktır
+- Geçmiş `DO_NOT_IMPLEMENT_WITHOUT_EXPLICIT_PRODUCT_APPROVAL` notu: implementation ve staging kabulü vardır; production activation ikinci flag + açık yetki olmadan yasaktır
 
 ## ENDPOINTLER
 

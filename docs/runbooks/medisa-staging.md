@@ -47,8 +47,11 @@ Phases:
 
 1. Hard gate (host, HTTPS, Basic Auth, staging marker)
 2. Runner failure-injection via existing PHP restore tests (temp FS)
-3. Live black-box acceptance against staging only
-4. `always()` cleanup: restore false, maintenance false, HMAC inactive, baseline seed reload, Basic Auth recheck
+3. Safe-config controlled import owner round-trip + exact baseline rollback
+4. Live restore black-box acceptance against staging only
+5. `always()` cleanup: restore false, maintenance false, HMAC inactive, baseline seed reload, Basic Auth recheck
+
+Accepted ref `8039e340` baseline sonucu 58/58 + cleanup 9/9 idi. Controlled import eklenen akış bu sayılara dört owner/save/reload/rollback kapısı ekler; yeni ref kendi workflow kanıtıyla raporlanır.
 
 ## Local verifier
 
