@@ -51,7 +51,7 @@ Phases:
 4. Live restore black-box acceptance against staging only
 5. `always()` cleanup: restore false, maintenance false, HMAC inactive, baseline seed reload, Basic Auth recheck
 
-Accepted ref `8039e340` baseline sonucu 58/58 + cleanup 9/9 idi. Controlled import eklenen akış bu sayılara dört owner/save/reload/rollback kapısı ekler; yeni ref kendi workflow kanıtıyla raporlanır.
+Accepted ref `e2da2937` sonucu 62/62 + cleanup 9/9'dur. Controlled import owner/save/reload/exact rollback kapılarının tamamı PASS, production isteği 0'dır. Kanıt: [workflow 30742050836](https://github.com/akelilker/tasitmedisa/actions/runs/30742050836).
 
 ## Local verifier
 

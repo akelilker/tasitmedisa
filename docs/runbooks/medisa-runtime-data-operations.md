@@ -66,6 +66,6 @@ Production apply; backup dosyasının indirildiği ve rollback yolunun doğrulan
 2. Kişisel veri içermeyen kontrollü JSON import payload'ı üretilir.
 3. `ayarlar.js` import owner bloğu çalıştırılır ve `/save.php` exact true sonucu doğrulanır.
 4. Reload sonrası kontrollü işaret doğrulanır.
-5. Baseline aynı API owner üzerinden geri yazılır ve canonical projected hash eşitliği aranır.
+5. Baseline `ayarlar` aynı `delta-v1` API owner üzerinden geri yazılır ve canonical projected hash eşitliği aranır.
 
 Production URL istekleri bu kabul scriptinde fail-closed reddedilir.

@@ -35,12 +35,12 @@ Eski satır numaraları, dil bileşimi yüzdeleri ve “production ready” puan
 - `medisa_just_restored` kaldırıldı.
 - İlgili commit: `7f9aedc358b6f5e70aea48411c5aa600a0957df1`
 - Kod / test / deploy / authenticated read-only smoke: **CLOSED**
-- Controlled staging import owner/server round-trip: **IMPLEMENTED** (workflow kabulü yeni ref üzerinde çalıştırılacak)
+- Controlled staging import owner/server round-trip: **PASS** (`e2da2937`; 62/62 + cleanup 9/9)
 - Production canlı import yapılmadı.
 
 **Import ayrımı:**
 1. Import source-of-truth kod kontratı: **CLOSED**
-2. Sentetik staging dosyasıyla controlled owner/server round-trip: **IMPLEMENTED; WORKFLOW ACCEPTANCE PENDING NEW REF**
+2. Sentetik staging dosyasıyla controlled owner/server round-trip: **PASS** ([workflow 30742050836](https://github.com/akelilker/tasitmedisa/actions/runs/30742050836))
 3. Production gerçek backup importu: **NOT PERFORMED**
 
 Production import yapılmaması kod eksikliği değildir. Gerçek import canlı server verisini değiştirebilir; ayrı write yetkisi, backup, rollback ve bakım penceresi gerekir. Staging kabulü kişisel veri içermeyen sentetik payload ile exact baseline rollback uygular.
@@ -72,7 +72,7 @@ Production import yapılmaması kod eksikliği değildir. Gerçek import canlı 
 - Production commit ayrıca `MEDISA_PRODUCTION_RESTORE_APPROVED=true` ikinci aktivasyon kapısını ister; bilinmeyen ortam production kabul edilir.
 - P0/P1 güvenlik kapanışı: full canonical content hash, user/actor/credential invariantları, unknown collection reject, verified emergency rollback, ledger fail-closed, dry-run exact no-write.
 - Geçmiş karar notu: `DO_NOT_IMPLEMENT_WITHOUT_EXPLICIT_PRODUCT_APPROVAL` — implementation ve staging acceptance tamamlanmıştır; production **activation** açık yetkilendirme olmadan yasaktır.
-- Staging acceptance: **PASS** (`8039e340`; live black-box 58/58 + cleanup 9/9)
+- Staging acceptance: **PASS** (`e2da2937`; live black-box 62/62 + cleanup 9/9; production isteği 0)
 - Production write acceptance: **PENDING**
 - Live restore performed: **NO**
 - Runtime data changed: **NO**
@@ -266,8 +266,7 @@ Kalan işler **düşük öncelikli UX, hijyen ve backlog** kalemleridir.
 6. **`saveData` post-write verify** tasarımı (maliyet/fayda değerlendirmesi sonrası)
 7. **Windows atomic write** iyileştirmesi (yalnızca Windows dev sorun çıkarırsa)
 8. **Fiziksel iPhone PWA kabulü** (PENDING_USER_ACCEPTANCE; masaüstü emülasyonu yeterli değildir)
-9. **Controlled staging import workflow acceptance** (owner/server/rollback implementasyonu hazır; yeni ref kanıtı bekleniyor)
-10. **Server-side restore production activation** (IMPLEMENTED; staging PASS; second activation flag + explicit authorization + production write acceptance pending)
+9. **Server-side restore production activation** (IMPLEMENTED; staging PASS; second activation flag + explicit authorization + production write acceptance pending)
 
 ---
 
@@ -301,8 +300,8 @@ Durum: PRODUCTION READY ✅
 - `saveData` post-write verify (maliyet analizi sonrası)
 - Windows geliştirme ortamı için atomic write iyileştirmesi
 - Veritabanı migration (JSON → SQLite/MySQL) değerlendirmesi
-- Controlled import round-trip doğrulaması (DEFERRED; canlı write riski)
-- Server-side restore apply (ürün onayı olmadan uygulanmaz)
+- Production gerçek backup importu (ayrı write yetkisi, backup, rollback ve bakım penceresi olmadan uygulanmaz)
+- Production server-side restore activation/kabulü (ürün onayı olmadan uygulanmaz)
 
 ### DevOps
 - Production error logging

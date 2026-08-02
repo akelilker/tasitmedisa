@@ -11,14 +11,14 @@
 - History H1/H2 (UI + verifier)
 - import transaction SoT
 - import same-page lock
-- controlled staging import owner/server round-trip altyapısı (new-ref workflow acceptance pending)
+- controlled staging import owner/server round-trip (`e2da2937`; PASS)
 - **server restore code contract (R1/R2/R3)**
 - backup registry (server-owned, path-safe)
 - restore dry-run (no-write)
 - restore commit infrastructure (disabled-by-default)
 - maintenance / write-freeze (`medisaMutateData` + `save_kasko`)
 - restore quality gate (`tool:verify-server-restore`)
-- server restore staging acceptance (`8039e340`; live black-box 58/58 + cleanup 9/9)
+- server restore + controlled import staging acceptance (`e2da2937`; live black-box 62/62 + cleanup 9/9)
 - production restore ikinci aktivasyon kapısı (`MEDISA_PRODUCTION_RESTORE_APPROVED`, default false)
 - runtime data health PII-free ölçüm owner'ı
 - notification legacy scope dry-run/apply + exact rollback owner'ı
@@ -40,7 +40,7 @@
 | Restore infrastructure | **IMPLEMENTED** |
 | Safety findings P0/P1 | **CLOSED** |
 | Production restore activation | **DISABLED** |
-| Staging acceptance | **PASS** (`8039e340`; 58/58 + cleanup 9/9) |
+| Staging acceptance | **PASS** (`e2da2937`; 62/62 + cleanup 9/9; production isteği 0) |
 | Production write acceptance | **PENDING** |
 | Live restore performed | **NO** |
 | Runtime data changed | **NO** |
@@ -72,7 +72,7 @@
 
 - `medisa_just_restored`: kaynakta yok (korundu)
 - `medisa_server_backup`: offline shadow backup — **korundu** (caller var)
-- Kanıtsız legacy silme yapılmadı → gerekirse `DEFERRED_REQUIRES_DATA_WRITE_AUTH`
+- Notification `scope:*` temizliği için dry-run/apply + exact SHA/count/rollback owner'ı hazır; production apply yapılmadı → `DEFERRED_REQUIRES_DATA_WRITE_AUTH`
 
 ## F1/F2/F4
 
