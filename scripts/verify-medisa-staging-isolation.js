@@ -9,6 +9,7 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+const { spawnSync } = require('node:child_process');
 
 const root = path.resolve(__dirname, '..');
 const read = (rel) => fs.readFileSync(path.join(root, rel), 'utf8');
@@ -153,8 +154,15 @@ for (const shell of ['index.html', 'driver/index.html', 'driver/dashboard.html',
   assertNoMatch(read(shell), /STAGING — SENTETİK VERİ/, `${shell}: committed staging banner text yasak`);
 }
 
-assert.equal(exists(PROTECTED_RULE), true, 'protected cursor rule exists (gitignored ok)');
+// Rule yerel gitignore altında olabilir; CI checkout'ta dosya bulunmayabilir.
+assert.match(gitignore, /ironbee-devtools-use\.mdc/, 'protected cursor rule remains gitignored');
 assertNoMatch(deployWf, /ironbee-devtools-use/, 'workflows must not touch protected rule');
+assertNoMatch(acceptWf, /ironbee-devtools-use/, 'acceptance must not touch protected rule');
+assert.equal(
+  spawnSync('git', ['ls-files', '--error-unmatch', PROTECTED_RULE], { cwd: root }).status === 0,
+  false,
+  'protected cursor rule must not be tracked'
+);
 
 assert.equal(STAGING_URL.includes(STAGING_HOST), true);
 assert.notEqual(STAGING_HOST, 'karmotors.com.tr');
