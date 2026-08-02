@@ -139,6 +139,10 @@ function request(baseUrl, { method = 'GET', pathname = '/', headers = {}, body =
   });
 }
 
+function sleepSync(ms) {
+  spawnSync(process.execPath, ['-e', `setTimeout(()=>{},${Number(ms) || 0})`], { stdio: 'ignore' });
+}
+
 function ftps(args) {
   const server = env('STAGING_FTP_SERVER');
   const user = env('STAGING_FTP_USERNAME');
@@ -151,15 +155,17 @@ function ftps(args) {
     '-u', user + ':' + pass
   ];
   const resolved = args.map((a) => a.replace('__FTP_HOST__', `ftp://${server}:${port}`));
-  const r = spawnSync(base[0], base.slice(1).concat(resolved), {
-    encoding: 'utf8',
-    maxBuffer: 20 * 1024 * 1024
-  });
-  if (r.status !== 0) {
-    const err = (r.stderr || r.stdout || 'ftp failed').slice(0, 300).replaceAll(pass, '***');
-    throw new Error('FTPS_FAILED:' + err);
+  let lastErr = 'ftp failed';
+  for (let i = 1; i <= 3; i += 1) {
+    const r = spawnSync(base[0], base.slice(1).concat(resolved), {
+      encoding: 'utf8',
+      maxBuffer: 20 * 1024 * 1024
+    });
+    if (r.status === 0) return r.stdout || '';
+    lastErr = (r.stderr || r.stdout || 'ftp failed').slice(0, 300).split(pass).join('***');
+    sleepSync(2000 * i);
   }
-  return r.stdout || '';
+  throw new Error('FTPS_FAILED:' + lastErr);
 }
 
 function ftpUpload(localPath, remoteName) {
@@ -245,14 +251,23 @@ async function loginAroundMaintenance(baseUrl, tmpDir) {
 }
 
 async function api(baseUrl, token, method, pathname, bodyObj) {
-  return request(baseUrl, {
-    method,
-    pathname,
-    headers: { 'Content-Type': 'application/json' },
-    body: bodyObj == null ? null : JSON.stringify(bodyObj),
-    basic: true,
-    bearer: token
-  });
+  let lastErr;
+  for (let i = 1; i <= 3; i += 1) {
+    try {
+      return await request(baseUrl, {
+        method,
+        pathname,
+        headers: { 'Content-Type': 'application/json' },
+        body: bodyObj == null ? null : JSON.stringify(bodyObj),
+        basic: true,
+        bearer: token
+      });
+    } catch (err) {
+      lastErr = err;
+      await new Promise((r) => setTimeout(r, 1500 * i));
+    }
+  }
+  throw lastErr;
 }
 
 async function getDataShaViaFtp(tmpDir) {
@@ -434,8 +449,6 @@ async function main() {
     ftpUploadBinary(dataLocal, 'data/data.json');
     const mutatedSha = crypto.createHash('sha256').update(fs.readFileSync(dataLocal)).digest('hex');
 
-    writeTempConfig('acceptance', accCfg);
-    ftpUpload(accCfg, 'config.local.php');
     loginRes = await loginAroundMaintenance(baseUrl, tmpDir);
     if (!loginRes.ok) failHard('RELOGIN_AFTER_MUTATE_FAILED');
 
