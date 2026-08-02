@@ -226,9 +226,22 @@ async function login(baseUrl) {
     body: JSON.stringify({ username: user, password: pass })
   });
   if (res.status !== 200 || !res.json?.success || !res.json?.token) {
-    return { ok: false, detail: 'status=' + res.status };
+    const code = res.json?.error_code || res.json?.message || '';
+    return { ok: false, detail: 'status=' + res.status + (code ? ' ' + String(code).slice(0, 80) : '') };
   }
   return { ok: true, token: res.json.token };
+}
+
+/** Maintenance/write-freeze login'i son_giris yazımında kırar; geçici safe config ile login al. */
+async function loginAroundMaintenance(baseUrl, tmpDir) {
+  const safeCfg = path.join(tmpDir, 'config.safe-login.php');
+  const accCfg = path.join(tmpDir, 'config.acceptance.php');
+  writeTempConfig('safe', safeCfg);
+  ftpUpload(safeCfg, 'config.local.php');
+  const loginRes = await login(baseUrl);
+  writeTempConfig('acceptance', accCfg);
+  ftpUpload(accCfg, 'config.local.php');
+  return loginRes;
 }
 
 async function api(baseUrl, token, method, pathname, bodyObj) {
@@ -340,16 +353,20 @@ async function main() {
     record('safe_restore_disabled', reg.status === 200 && reg.json?.restore_enabled === false);
     record('safe_maintenance_false', reg.status === 200 && reg.json?.maintenance_mode === false);
 
-    // B. Activate acceptance config
+    // B. Activate acceptance config (maintenance login'i bozar → mevcut token ile devam)
     const accCfg = path.join(tmpDir, 'config.acceptance.php');
     writeTempConfig('acceptance', accCfg);
     ftpUpload(accCfg, 'config.local.php');
 
-    loginRes = await login(baseUrl);
-    record('acceptance_login', loginRes.ok);
-    if (!loginRes.ok) failHard('ACCEPTANCE_LOGIN_FAILED');
-
     reg = await api(baseUrl, loginRes.token, 'GET', '/backup-registry.php');
+    if (reg.status === 401 || reg.json?.auth_required) {
+      loginRes = await loginAroundMaintenance(baseUrl, tmpDir);
+      record('acceptance_relogin_via_safe', loginRes.ok, loginRes.detail || '');
+      if (!loginRes.ok) failHard('ACCEPTANCE_LOGIN_FAILED');
+      reg = await api(baseUrl, loginRes.token, 'GET', '/backup-registry.php');
+    } else {
+      record('acceptance_token_reuse', true, 'status=' + reg.status);
+    }
     record('acceptance_restore_enabled', reg.status === 200 && reg.json?.restore_enabled === true);
     record('acceptance_maintenance_true', reg.status === 200 && reg.json?.maintenance_mode === true);
     record('acceptance_secret_configured', reg.status === 200 && reg.json?.secret_configured === true);
@@ -419,7 +436,8 @@ async function main() {
 
     writeTempConfig('acceptance', accCfg);
     ftpUpload(accCfg, 'config.local.php');
-    loginRes = await login(baseUrl);
+    loginRes = await loginAroundMaintenance(baseUrl, tmpDir);
+    if (!loginRes.ok) failHard('RELOGIN_AFTER_MUTATE_FAILED');
 
     const conflict = await api(baseUrl, loginRes.token, 'POST', '/backup-restore-commit.php', {
       backup_id: valid.backup_id,
@@ -439,7 +457,8 @@ async function main() {
     await uploadBaselineData(tmpDir);
     writeTempConfig('acceptance', accCfg);
     ftpUpload(accCfg, 'config.local.php');
-    loginRes = await login(baseUrl);
+    loginRes = await loginAroundMaintenance(baseUrl, tmpDir);
+    if (!loginRes.ok) failHard('RELOGIN_AFTER_BASELINE_FAILED');
 
     // F. Security fixtures dry-run reject + no write
     const shaBeforeFixtures = await getDataShaViaFtp(tmpDir);
@@ -534,7 +553,8 @@ async function main() {
     await uploadBaselineData(tmpDir);
     writeTempConfig('acceptance', accCfg);
     ftpUpload(accCfg, 'config.local.php');
-    loginRes = await login(baseUrl);
+    loginRes = await loginAroundMaintenance(baseUrl, tmpDir);
+    if (!loginRes.ok) failHard('RELOGIN_BEFORE_CONCURRENT_FAILED');
     reg = await api(baseUrl, loginRes.token, 'GET', '/backup-registry.php');
     const backups3 = Array.isArray(reg.json?.backups) ? reg.json.backups : [];
     const byName3 = new Map(backups3.map((b) => [b.server_generated_filename, b]));
