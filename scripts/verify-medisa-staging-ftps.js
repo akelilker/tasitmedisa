@@ -37,8 +37,10 @@ const wf = read('.github/workflows/staging-restore-acceptance.yml');
 
 assert.match(helper, /NON_TRANSIENT_AUTH_FAILURE/, '530 class present');
 assert.match(helper, /PersistentFtpsSession/, 'persistent session present');
+assert.match(helper, /__MEDISA_FTPS_DONE__|DONE_MARKER/, 'persistent marker sync');
 assert.match(helper, /ops\.push\(\{ type: 'probe' \}\)/, 'probe op');
 assert.match(helper, /allowRetry:\s*false,\s*maxAttempts:\s*1/, 'probe no retry');
+assert.equal(classifyFtpError('FTPS_CMD_TIMEOUT:'), 'TRANSIENT');
 
 assert.match(accept, /PersistentFtpsSession/, 'runner uses persistent session');
 assert.match(accept, /preflight-only/, 'preflight phase');

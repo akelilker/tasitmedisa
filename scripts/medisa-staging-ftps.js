@@ -3,7 +3,8 @@
 
 /**
  * Staging FTPS session helper (explicit FTPS, passive).
- * - Persistent session: one login, many ops
+ * - Persistent session: one login, many ops (marker sync, no TTY prompt dependency)
+ * - Batch session: one login per flush()
  * - 530 = NON_TRANSIENT_AUTH_FAILURE (no retry)
  * - Transient network: bounded retry on reconnect only
  * Secret values never logged.
@@ -15,9 +16,10 @@ const os = require('node:os');
 const { spawn, spawnSync } = require('node:child_process');
 
 const STAGING_FTP_USER = 'medisa_staging@karmotors.com.tr';
+const DONE_MARKER = '__MEDISA_FTPS_DONE__';
 
 const TRANSIENT_RE =
-  /ECONNRESET|socket hang up|ETIMEDOUT|ESOCKETTIMEDOUT|EPIPE|ECONNABORTED|\b421\b|\b425\b|\b426\b|timeout|Temporary failure/i;
+  /ECONNRESET|socket hang up|ETIMEDOUT|ESOCKETTIMEDOUT|EPIPE|ECONNABORTED|\b421\b|\b425\b|\b426\b|FTPS_CMD_TIMEOUT|FTPS_PROMPT_TIMEOUT|timeout|Temporary failure/i;
 const AUTH_530_RE = /\b530\b|Access denied:\s*530|Login incorrect|GetPass\(\) failed/i;
 
 function classifyFtpError(message) {
@@ -41,8 +43,17 @@ function quoteLftp(value) {
   return JSON.stringify(String(value));
 }
 
+function authError(message, password) {
+  const text = redact(message, password);
+  const kind = classifyFtpError(text);
+  const err = new Error((kind === 'NON_TRANSIENT_AUTH_FAILURE' ? 'FTPS_AUTH_530:' : 'FTPS_FAILED:') + text);
+  err.code = kind;
+  err.ftpClass = kind;
+  return err;
+}
+
 /**
- * Batch session: one login per flush() (fallback / probe / cleanup).
+ * Batch session: one login per flush() (probe / cleanup / fallback).
  */
 class FtpsSession {
   /**
@@ -101,23 +112,14 @@ class FtpsSession {
       lastErr = result.error;
       const kind = classifyFtpError(lastErr);
       if (kind === 'NON_TRANSIENT_AUTH_FAILURE') {
-        const err = new Error('FTPS_AUTH_530:' + redact(lastErr, this.password));
-        err.code = 'NON_TRANSIENT_AUTH_FAILURE';
-        err.ftpClass = kind;
-        throw err;
+        throw authError(lastErr, this.password);
       }
       if (!allowRetry || kind !== 'TRANSIENT' || attempt >= maxAttempts) {
-        const err = new Error('FTPS_FAILED:' + redact(lastErr, this.password));
-        err.code = kind;
-        err.ftpClass = kind;
-        throw err;
+        throw authError(lastErr, this.password);
       }
       sleepSync(2000 * attempt);
     }
-    const err = new Error('FTPS_FAILED:' + redact(lastErr, this.password));
-    err.code = classifyFtpError(lastErr);
-    err.ftpClass = err.code;
-    throw err;
+    throw authError(lastErr, this.password);
   }
 }
 
@@ -186,8 +188,8 @@ function runLftpBatch(cfg, ops) {
 }
 
 /**
- * Persistent interactive FTPS: one login, serial ops until close().
- * Parallel connections: 0 (single child process).
+ * Persistent FTPS: one login, serial ops until close().
+ * Completion sync via lftp `echo` marker (works without TTY prompts).
  */
 class PersistentFtpsSession {
   /**
@@ -203,6 +205,7 @@ class PersistentFtpsSession {
     this.child = null;
     this.buf = '';
     this.closed = false;
+    this.chain = Promise.resolve();
     if (this.username !== STAGING_FTP_USER) {
       throw new Error('FTP_USER_MISMATCH');
     }
@@ -218,29 +221,23 @@ class PersistentFtpsSession {
     for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
       try {
         await this.#openOnce();
+        // Prove session ready with pwd + marker (no prompt dependency).
+        await this.#cmd('pwd');
         return { ok: true, attempt };
       } catch (err) {
         lastErr = String(err && err.message ? err.message : err);
-        const kind = classifyFtpError(lastErr);
         this.#killQuiet();
+        const kind = classifyFtpError(lastErr);
         if (kind === 'NON_TRANSIENT_AUTH_FAILURE') {
-          const e = new Error('FTPS_AUTH_530:' + redact(lastErr, this.password));
-          e.code = 'NON_TRANSIENT_AUTH_FAILURE';
-          e.ftpClass = kind;
-          throw e;
+          throw authError(lastErr, this.password);
         }
         if (!allowRetry || kind !== 'TRANSIENT' || attempt >= maxAttempts) {
-          const e = new Error('FTPS_FAILED:' + redact(lastErr, this.password));
-          e.code = kind;
-          e.ftpClass = kind;
-          throw e;
+          throw authError(lastErr, this.password);
         }
         await new Promise((r) => setTimeout(r, 2000 * attempt));
       }
     }
-    const e = new Error('FTPS_FAILED:' + redact(lastErr, this.password));
-    e.ftpClass = classifyFtpError(lastErr);
-    throw e;
+    throw authError(lastErr, this.password);
   }
 
   async put(localPath, remotePath) {
@@ -268,7 +265,11 @@ class PersistentFtpsSession {
   async close() {
     if (!this.child || this.closed) return;
     try {
-      await this.#cmd('bye', { expectPrompt: false, timeoutMs: 15000 });
+      this.buf = '';
+      await new Promise((resolve, reject) => {
+        this.child.stdin.write('bye\n', (err) => (err ? reject(err) : resolve()));
+      });
+      await new Promise((r) => setTimeout(r, 400));
     } catch {
       /* ignore */
     }
@@ -291,7 +292,7 @@ class PersistentFtpsSession {
     return new Promise((resolve, reject) => {
       this.buf = '';
       this.closed = false;
-      const child = spawn('lftp', [], {
+      const child = spawn('lftp', ['-e', 'set cmd:fail-exit true'], {
         stdio: ['pipe', 'pipe', 'pipe'],
         env: process.env
       });
@@ -304,83 +305,54 @@ class PersistentFtpsSession {
       child.stdout.on('data', onData);
       child.stderr.on('data', onData);
       child.on('error', (err) => reject(err));
-      child.on('exit', (code) => {
-        if (!this.closed && code && code !== 0) {
-          /* handled by cmd timeout/error */
-        }
-      });
 
       const openScript = buildOpenLines(this).join('\n') + '\n';
       child.stdin.write(openScript, (err) => {
         if (err) return reject(err);
-        waitForPrompt(this, 60000)
-          .then(() => resolve())
-          .catch((e) => reject(e));
+        // Small settle; readiness is confirmed by first marked cmd in open().
+        setTimeout(() => resolve(), 300);
       });
     });
   }
 
-  async #cmd(command, opts = {}) {
-    if (!this.child || !this.child.stdin) {
-      const err = new Error('FTPS_NOT_OPEN');
-      err.ftpClass = 'OTHER';
-      throw err;
-    }
-    const expectPrompt = opts.expectPrompt !== false;
-    const timeoutMs = opts.timeoutMs || 90000;
-    this.buf = '';
-    await new Promise((resolve, reject) => {
-      this.child.stdin.write(command + '\n', (err) => (err ? reject(err) : resolve()));
-    });
-    if (!expectPrompt) {
-      await new Promise((r) => setTimeout(r, 300));
-      return this.buf;
-    }
-    try {
-      await waitForPrompt(this, timeoutMs);
-    } catch (err) {
-      const text = redact(this.buf || String(err.message || err), this.password);
-      const kind = classifyFtpError(text);
-      const e = new Error((kind === 'NON_TRANSIENT_AUTH_FAILURE' ? 'FTPS_AUTH_530:' : 'FTPS_FAILED:') + text);
-      e.ftpClass = kind;
-      e.code = kind;
-      throw e;
-    }
-    const out = this.buf;
-    if (AUTH_530_RE.test(out)) {
-      const e = new Error('FTPS_AUTH_530:' + redact(out, this.password));
-      e.ftpClass = 'NON_TRANSIENT_AUTH_FAILURE';
-      e.code = 'NON_TRANSIENT_AUTH_FAILURE';
-      throw e;
-    }
-    return out;
+  #cmd(command) {
+    // Serialize commands on one connection.
+    this.chain = this.chain.then(() => this.#cmdOnce(command));
+    return this.chain;
   }
-}
 
-function waitForPrompt(session, timeoutMs) {
-  const started = Date.now();
-  return new Promise((resolve, reject) => {
-    const tick = () => {
-      const text = session.buf;
+  async #cmdOnce(command) {
+    if (!this.child || !this.child.stdin) {
+      throw authError('FTPS_NOT_OPEN', this.password);
+    }
+    const token = DONE_MARKER + '_' + Date.now() + '_' + Math.random().toString(16).slice(2);
+    this.buf = '';
+    const script = `${command}\necho ${quoteLftp(token)}\n`;
+    await new Promise((resolve, reject) => {
+      this.child.stdin.write(script, (err) => (err ? reject(err) : resolve()));
+    });
+    const started = Date.now();
+    const timeoutMs = 90000;
+    while (Date.now() - started < timeoutMs) {
+      const text = this.buf;
       if (AUTH_530_RE.test(text)) {
-        return reject(new Error(redact(text, session.password)));
+        throw authError(text, this.password);
       }
-      // lftp prompt forms: "lftp ...> " or "lftp user@host:/> "
-      if (/(^|\n)lftp [^>]*>\s*$/.test(text) || /(^|\n)lftp>\s*$/.test(text)) {
-        return resolve(text);
+      if (text.includes(token)) {
+        return text;
       }
-      if (Date.now() - started > timeoutMs) {
-        return reject(new Error('FTPS_PROMPT_TIMEOUT:' + redact(text, session.password)));
+      // Fail-fast on hard lftp errors without marker
+      if (/^(ftp|mirror|get|put|open):\s/i.test(text) && /failed|denied|error/i.test(text)) {
+        throw authError(text, this.password);
       }
-      setTimeout(tick, 50);
-    };
-    tick();
-  });
+      await new Promise((r) => setTimeout(r, 40));
+    }
+    throw authError('FTPS_CMD_TIMEOUT:' + this.buf, this.password);
+  }
 }
 
 /**
  * Curl-based one-shot probe (no lftp required). Still one login.
- * Used for local auth probe when lftp is unavailable.
  */
 function probeWithCurl(cfg) {
   if (cfg.username !== STAGING_FTP_USER) throw new Error('FTP_USER_MISMATCH');
@@ -400,14 +372,7 @@ function probeWithCurl(cfg) {
   if (r.status === 0) {
     return { ok: true, stdout: r.stdout || '', loginCount: 1 };
   }
-  const kind = classifyFtpError(combined);
-  const err = new Error(
-    (kind === 'NON_TRANSIENT_AUTH_FAILURE' ? 'FTPS_AUTH_530:' : 'FTPS_FAILED:') +
-      redact(combined, cfg.password)
-  );
-  err.ftpClass = kind;
-  err.code = kind;
-  throw err;
+  throw authError(combined, cfg.password);
 }
 
 module.exports = {
@@ -417,5 +382,6 @@ module.exports = {
   probeWithCurl,
   STAGING_FTP_USER,
   TRANSIENT_RE,
-  AUTH_530_RE
+  AUTH_530_RE,
+  DONE_MARKER
 };

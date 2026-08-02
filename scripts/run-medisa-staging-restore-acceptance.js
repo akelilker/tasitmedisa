@@ -411,9 +411,12 @@ async function main() {
 
     // One persistent FTPS session for live phase transport
     liveSession = new PersistentFtpsSession({ ...ftpCfg(), label: 'live-main' });
-    await liveSession.open({ allowRetry: true, maxAttempts: 2 });
-    ftpLoginTotal += liveSession.loginCount;
-    record('live_session_open', true, 'logins=' + liveSession.loginCount);
+    try {
+      await liveSession.open({ allowRetry: true, maxAttempts: 2 });
+      record('live_session_open', true, 'logins=' + liveSession.loginCount);
+    } finally {
+      ftpLoginTotal += liveSession.loginCount;
+    }
 
     await liveSession.put(accCfg, 'config.local.php');
     record('acceptance_config_uploaded', true, 'session=live-main');
