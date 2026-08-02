@@ -225,17 +225,26 @@ const FIXTURES = [
 async function login(baseUrl) {
   const user = env('STAGING_APP_ADMIN_USERNAME');
   const pass = env('STAGING_APP_ADMIN_PASSWORD');
-  const res = await request(baseUrl, {
-    method: 'POST',
-    pathname: '/driver/driver_login.php',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username: user, password: pass })
-  });
-  if (res.status !== 200 || !res.json?.success || !res.json?.token) {
-    const code = res.json?.error_code || res.json?.message || '';
-    return { ok: false, detail: 'status=' + res.status + (code ? ' ' + String(code).slice(0, 80) : '') };
+  let lastDetail = 'login failed';
+  for (let i = 1; i <= 3; i += 1) {
+    try {
+      const res = await request(baseUrl, {
+        method: 'POST',
+        pathname: '/driver/driver_login.php',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: user, password: pass })
+      });
+      if (res.status === 200 && res.json?.success && res.json?.token) {
+        return { ok: true, token: res.json.token };
+      }
+      const code = res.json?.error_code || res.json?.message || '';
+      lastDetail = 'status=' + res.status + (code ? ' ' + String(code).slice(0, 80) : '');
+    } catch (err) {
+      lastDetail = String(err && err.message ? err.message : err).slice(0, 120);
+    }
+    await new Promise((r) => setTimeout(r, 1500 * i));
   }
-  return { ok: true, token: res.json.token };
+  return { ok: false, detail: lastDetail };
 }
 
 /** Maintenance/write-freeze login'i son_giris yazımında kırar; geçici safe config ile login al. */
@@ -430,41 +439,54 @@ async function main() {
     record('dryrun_exact_nowrite', beforeSha === afterDrySha, 'sha_match=' + (beforeSha === afterDrySha));
     record('dryrun_pii_free', !/TEST 001/.test(JSON.stringify(dry.json || {})));
 
-    // E. Before-hash conflict
+    // E. Before-hash conflict (FTP/login flaky → section retry)
     const oldIntent = dry.json?.intent_token;
-    // Temporarily leave maintenance for controlled FTP mutate
-    const safeCfg = path.join(tmpDir, 'config.safe.php');
-    writeTempConfig('safe', safeCfg);
-    ftpUpload(safeCfg, 'config.local.php');
+    let beforeHashOk = false;
+    let beforeHashDetail = '';
+    for (let attempt = 1; attempt <= 3; attempt += 1) {
+      try {
+        const safeCfg = path.join(tmpDir, 'config.safe.php');
+        writeTempConfig('safe', safeCfg);
+        ftpUpload(safeCfg, 'config.local.php');
 
-    const dataLocal = path.join(tmpDir, 'mutate-data.json');
-    ftpDownload('data/data.json', dataLocal);
-    const dataObj = JSON.parse(fs.readFileSync(dataLocal, 'utf8'));
-    if (Array.isArray(dataObj.tasitlar) && dataObj.tasitlar[0]) {
-      const km = Number(dataObj.tasitlar[0].km || 15000) + 7;
-      dataObj.tasitlar[0].km = km;
-      dataObj.tasitlar[0].guncelKm = String(km);
+        const dataLocal = path.join(tmpDir, 'mutate-data.json');
+        ftpDownload('data/data.json', dataLocal);
+        const dataObj = JSON.parse(fs.readFileSync(dataLocal, 'utf8'));
+        if (Array.isArray(dataObj.tasitlar) && dataObj.tasitlar[0]) {
+          const km = Number(dataObj.tasitlar[0].km || 15000) + 7;
+          dataObj.tasitlar[0].km = km;
+          dataObj.tasitlar[0].guncelKm = String(km);
+        }
+        fs.writeFileSync(dataLocal, JSON.stringify(dataObj, null, 2) + '\n');
+        ftpUploadBinary(dataLocal, 'data/data.json');
+        const mutatedSha = crypto.createHash('sha256').update(fs.readFileSync(dataLocal)).digest('hex');
+
+        loginRes = await loginAroundMaintenance(baseUrl, tmpDir);
+        if (!loginRes.ok) throw new Error('relogin_failed:' + (loginRes.detail || ''));
+
+        const conflict = await api(baseUrl, loginRes.token, 'POST', '/backup-restore-commit.php', {
+          backup_id: valid.backup_id,
+          intent_token: oldIntent,
+          idempotency_key: 'acc-before-hash-' + Date.now() + '-' + attempt,
+          confirmation: CONFIRM
+        });
+        const afterConflictSha = await getDataShaViaFtp(tmpDir);
+        const codeOk = conflict.status === 409 || conflict.json?.error_code === 'BEFORE_HASH_CHANGED';
+        const noApply = afterConflictSha === mutatedSha;
+        record('before_hash_changed', codeOk, 'code=' + (conflict.json?.error_code || conflict.status));
+        record('before_hash_no_apply', noApply);
+        beforeHashOk = codeOk && noApply;
+        beforeHashDetail = 'attempt=' + attempt;
+        break;
+      } catch (err) {
+        beforeHashDetail = String(err && err.message ? err.message : err).slice(0, 160);
+        await new Promise((r) => setTimeout(r, 2500 * attempt));
+      }
     }
-    fs.writeFileSync(dataLocal, JSON.stringify(dataObj, null, 2) + '\n');
-    ftpUploadBinary(dataLocal, 'data/data.json');
-    const mutatedSha = crypto.createHash('sha256').update(fs.readFileSync(dataLocal)).digest('hex');
-
-    loginRes = await loginAroundMaintenance(baseUrl, tmpDir);
-    if (!loginRes.ok) failHard('RELOGIN_AFTER_MUTATE_FAILED');
-
-    const conflict = await api(baseUrl, loginRes.token, 'POST', '/backup-restore-commit.php', {
-      backup_id: valid.backup_id,
-      intent_token: oldIntent,
-      idempotency_key: 'acc-before-hash-' + Date.now(),
-      confirmation: CONFIRM
-    });
-    const afterConflictSha = await getDataShaViaFtp(tmpDir);
-    record(
-      'before_hash_changed',
-      conflict.status === 409 || conflict.json?.error_code === 'BEFORE_HASH_CHANGED',
-      'code=' + (conflict.json?.error_code || conflict.status)
-    );
-    record('before_hash_no_apply', afterConflictSha === mutatedSha);
+    if (!beforeHashOk && !results.some((r) => r.name === 'before_hash_changed')) {
+      record('before_hash_changed', false, beforeHashDetail);
+      record('before_hash_no_apply', false, beforeHashDetail);
+    }
 
     // Restore baseline after conflict
     await uploadBaselineData(tmpDir);
