@@ -72,6 +72,7 @@ assert.match(stagingDeploy, /workflow_dispatch/, 'Staging deploy manual-only olm
 assert.equal(/^\s*push\s*:/m.test(stagingDeploy), false, 'Staging deploy push ile tetiklenmemeli.');
 assert.match(stagingDeploy, /secrets\.STAGING_FTP_PASSWORD/, 'Staging deploy staging FTP secret kullanmalı.');
 assert.equal(/secrets\.FTP_PASSWORD/.test(stagingDeploy), false, 'Staging deploy production FTP_PASSWORD kullanmamalı.');
+assert.match(stagingDeploy, /ftp:ssl-force true|protocol:\s*ftps/, 'Staging deploy explicit FTPS kullanmalı.');
 
 assert.match(cpanel, /backup-registry\.php/, 'cPanel deploy backup-registry.php kopyalamalı.');
 assert.match(cpanel, /backup-restore-commit\.php/, 'cPanel deploy backup-restore-commit.php kopyalamalı.');

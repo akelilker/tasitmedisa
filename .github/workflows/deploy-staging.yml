@@ -216,41 +216,53 @@ jobs:
             fi
           fi
 
-      - name: FTPS deploy temp tree (preserve remote data)
-        if: ${{ inputs.initialize_synthetic_data != true && inputs.reset_synthetic_data != true }}
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.6
-        with:
-          server: ${{ vars.STAGING_FTP_SERVER }}
-          username: ${{ vars.STAGING_FTP_USERNAME }}
-          password: ${{ secrets.STAGING_FTP_PASSWORD }}
-          server-dir: /
-          local-dir: .staging-deploy/
-          protocol: ftps
-          port: ${{ vars.STAGING_FTP_PORT }}
-          security: loose
-          timeout: 600000
-          exclude: |
-            **/.git*
-            **/.git*/**
-            data/**
-            **/data/**
-
-      - name: FTPS deploy temp tree (with synthetic data)
-        if: ${{ inputs.initialize_synthetic_data == true || inputs.reset_synthetic_data == true }}
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.6
-        with:
-          server: ${{ vars.STAGING_FTP_SERVER }}
-          username: ${{ vars.STAGING_FTP_USERNAME }}
-          password: ${{ secrets.STAGING_FTP_PASSWORD }}
-          server-dir: /
-          local-dir: .staging-deploy/
-          protocol: ftps
-          port: ${{ vars.STAGING_FTP_PORT }}
-          security: loose
-          timeout: 600000
-          exclude: |
-            **/.git*
-            **/.git*/**
+      - name: FTPS deploy temp tree (lftp explicit + retries)
+        shell: bash
+        env:
+          STAGING_FTP_PASSWORD: ${{ secrets.STAGING_FTP_PASSWORD }}
+          INIT_DATA: ${{ inputs.initialize_synthetic_data }}
+          RESET_DATA: ${{ inputs.reset_synthetic_data }}
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq lftp
+          INCLUDE=false
+          if [ "$INIT_DATA" = "true" ] || [ "$RESET_DATA" = "true" ]; then
+            INCLUDE=true
+          fi
+          EXCLUDE_ARGS=(--exclude-glob '.git*' --exclude-glob '.ftp-deploy-sync-state.json')
+          if [ "$INCLUDE" != "true" ]; then
+            EXCLUDE_ARGS+=(--exclude-glob 'data/**' --exclude 'data')
+          fi
+          export LFTP_PASSWORD="$STAGING_FTP_PASSWORD"
+          attempt=1
+          while [ "$attempt" -le 3 ]; do
+            echo "FTPS staging deploy attempt $attempt"
+            set +e
+            lftp -u "$STAGING_FTP_USERNAME" "ftp://${STAGING_FTP_SERVER}:${STAGING_FTP_PORT}" -e "
+              set ssl:verify-certificate no;
+              set ftp:ssl-force true;
+              set ftp:ssl-protect-data true;
+              set ftp:passive-mode true;
+              set net:max-retries 2;
+              set net:reconnect-interval-base 15;
+              set net:timeout 60;
+              lcd .staging-deploy;
+              mirror -R --no-perms --parallel=1 ${EXCLUDE_ARGS[*]} ./ ./;
+              bye
+            "
+            rc=$?
+            set -e
+            if [ "$rc" -eq 0 ]; then
+              echo "FTPS staging deploy succeeded on attempt $attempt"
+              exit 0
+            fi
+            echo "FTPS attempt $attempt failed rc=$rc"
+            attempt=$((attempt + 1))
+            sleep 45
+          done
+          echo "::error::FTPS staging deploy failed after 3 attempts"
+          exit 1
 
       - name: Post-deploy Basic Auth + staging marker health
         shell: bash

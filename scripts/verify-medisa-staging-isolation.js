@@ -70,9 +70,10 @@ assert.match(acceptWf, /RUN STAGING RESTORE ACCEPTANCE/, 'typed acceptance confi
 assert.match(deployWf, new RegExp(STAGING_HOST.replace(/\./g, '\\.')), 'staging hostname in deploy');
 assert.match(deployWf, /STAGING_FTP_USERNAME/, 'staging FTP username var');
 assert.match(deployWf, /medisa_staging@karmotors\.com\.tr/, 'exact staging FTP user');
-assert.match(deployWf, /server-dir:\s*\/\s*$/m, 'FTP server-dir exact /');
-assert.match(deployWf, /protocol:\s*ftps/, 'explicit FTPS');
-assert.match(deployWf, /security:\s*loose/, 'FTPS security loose');
+assert.match(deployWf, /server-dir:\s*\/|lcd \.staging-deploy|mirror -R/, 'FTP server-dir / via jail root deploy');
+assert.match(deployWf, /ftp:ssl-force true|protocol:\s*ftps/, 'explicit FTPS');
+assert.match(deployWf, /ssl:verify-certificate no|security:\s*loose/, 'FTPS loose/verify off for cPanel cert');
+assert.match(deployWf, /attempt|retries|sleep 45/, 'FTP retry present');
 
 assertNoMatch(deployWf, /secrets\.FTP_PASSWORD/, 'deploy must not use production FTP_PASSWORD');
 assertNoMatch(deployWf, /secrets\.FTP_SERVER\b/, 'deploy must not use production FTP_SERVER');
