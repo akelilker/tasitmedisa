@@ -178,21 +178,11 @@ async function login(baseUrl, attempts = 3) {
   return { ok: false, detail: lastDetail };
 }
 
-/** config.local.php swap — batch FTPS (login medisaMutateData kullanır; maintenance altında 423). */
-function putConfigBatch(localCfgPath, label) {
-  const session = new FtpsSession({ ...ftpCfg(), label: label || 'cfg' });
-  session.put(localCfgPath, 'config.local.php');
-  const before = session.loginCount;
-  session.flush({ allowRetry: true, maxAttempts: 2 });
-  ftpLoginTotal += Math.max(0, session.loginCount - before);
-  return session.loginCount;
-}
-
 /**
- * Seed/FTP sonrası token düşerse:
- * Login maintenance altında çalışmaz → safe config (batch) → login → acceptance config.
+ * Seed/FTP sonrası token düşerse: maintenance altında login artık mümkün
+ * (driver_login write-freeze bypass). FTP config toggle yok.
  */
-async function ensureAcceptanceAuth(baseUrl, _liveSession, safeCfg, accCfg, prevToken) {
+async function ensureAcceptanceAuth(baseUrl, _liveSession, _safeCfg, _accCfg, prevToken) {
   if (prevToken) {
     try {
       const reg = await api(baseUrl, prevToken, 'GET', '/backup-registry.php');
@@ -204,19 +194,11 @@ async function ensureAcceptanceAuth(baseUrl, _liveSession, safeCfg, accCfg, prev
     }
   }
 
-  putConfigBatch(safeCfg, 'auth-safe');
-  await new Promise((r) => setTimeout(r, 2500));
-  let loginRes = await login(baseUrl, 5);
+  const loginRes = await login(baseUrl, 5);
   if (!loginRes.ok) {
-    await new Promise((r) => setTimeout(r, 3000));
-    loginRes = await login(baseUrl, 3);
+    return { ok: false, detail: loginRes.detail || 'login failed', mode: 'login_under_acceptance' };
   }
-  putConfigBatch(accCfg, 'auth-acceptance');
-  await new Promise((r) => setTimeout(r, 1500));
-  if (!loginRes.ok) {
-    return { ok: false, detail: loginRes.detail || 'login failed', mode: 'safe_toggle_batch' };
-  }
-  return { ok: true, token: loginRes.token, mode: 'safe_toggle_batch' };
+  return { ok: true, token: loginRes.token, mode: 'login_under_acceptance' };
 }
 
 async function api(baseUrl, token, method, pathname, bodyObj) {
@@ -674,8 +656,8 @@ async function main() {
     record('live_session_closed', true);
     record('live_no_production_requests', requestLog.every((r) => r.host === STAGING_HOST));
     // preflight(1) + live persist(1) = 2; cleanup-only adds 1 later => 3
-    // live persist(1) + auth config toggles (batch, bounded) — cleanup ayrı
-    record('ftp_login_budget_live', ftpLoginTotal <= 8, 'logins=' + ftpLoginTotal);
+    // preflight skip + live persist(1); cleanup ayrı — auth için ekstra FTP yok
+    record('ftp_login_budget_live', ftpLoginTotal <= 3, 'logins=' + ftpLoginTotal);
     record('ftp_parallel_zero', true, 'parallel=0');
   } catch (err) {
     const cls = err.ftpClass || classifyFtpError(err.message || '');

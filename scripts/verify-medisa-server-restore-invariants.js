@@ -100,6 +100,13 @@ test('maintenance write freeze in medisaMutateData and save_kasko', function() {
   assert.match(read('save_kasko.php'), /MAINTENANCE_REQUIRED/);
 });
 
+test('driver login bypasses restore write-freeze', function() {
+  const loginPhp = read('driver/driver_login.php');
+  assert.match(loginPhp, /medisaRestoreSetCommitBypass\(true\)/);
+  assert.match(loginPhp, /medisaRestoreSetCommitBypass\(false\)/);
+  assert.match(loginPhp, /medisaMutateData/);
+});
+
 test('UI wording metadata-only and disabled commit gates', function() {
   const settings = read('ayarlar.js');
   assert.match(settings, /Son Sunucu Yedeği Bilgisi/);

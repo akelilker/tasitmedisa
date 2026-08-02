@@ -72,7 +72,15 @@ if ($username === '' || $password === '') {
     exit;
 }
 
-$result = medisaMutateData(function (&$data) use ($username, $password) {
+// Login yalnız son_giris touch eder; restore write-freeze auth'u kilitlememeli.
+$restoreBypassSet = false;
+if (function_exists('medisaRestoreSetCommitBypass')) {
+    medisaRestoreSetCommitBypass(true);
+    $restoreBypassSet = true;
+}
+try {
+    $result = medisaMutateData(function (&$data) use ($username, $password) {
+
     if (!is_array($data) || !isset($data['users']) || !is_array($data['users'])) {
         return medisaBuildErrorResult('Veri okunamadı!', 500);
     }
@@ -160,7 +168,12 @@ $result = medisaMutateData(function (&$data) use ($username, $password) {
         'ilk_giris_parola_degistirme_zorunlu' => $context['ilk_giris_parola_degistirme_zorunlu'],
         'token_claims' => medisaBuildSessionTokenClaims($context),
     ];
-});
+    });
+} finally {
+    if ($restoreBypassSet && function_exists('medisaRestoreSetCommitBypass')) {
+        medisaRestoreSetCommitBypass(false);
+    }
+}
 
 $status = (int)($result['status'] ?? 200);
 if ($status !== 200) {
