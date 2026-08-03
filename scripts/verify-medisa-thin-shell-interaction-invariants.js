@@ -36,6 +36,18 @@ function extractScriptCorePin(indexHtml) {
   return m[1];
 }
 
+function extractStyleCorePin(indexHtml) {
+  const pins = [];
+  const re = /style-core\.css\?v=([^"'\s>]+)/g;
+  let m;
+  while ((m = re.exec(indexHtml)) !== null) pins.push(m[1]);
+  assert.ok(pins.length >= 1, 'index.html style-core pin bulunmalı');
+  pins.forEach(function(pin) {
+    assert.strictEqual(pin, pins[0], 'index.html style-core pinleri kendi içinde eşit olmalı');
+  });
+  return pins[0];
+}
+
 function extractNotificationsVersion(core) {
   const m = core.match(/notifications:\s*'([0-9.]+)'/);
   assert.ok(m, 'notifications version bulunmalı');
@@ -44,6 +56,7 @@ function extractNotificationsVersion(core) {
 
 const index = read('index.html');
 const core = read('script-core.js');
+const sw = read('sw.js');
 const notifications = read('notifications.js');
 const packageJson = read('package.json');
 const qualityGate = read('.github/scripts/quality-gate.sh');
@@ -113,9 +126,27 @@ async function sourceInvariants() {
     assert.match(index, new RegExp('script-core\\.js\\?v=' + pin.replace(/\./g, '\\.')));
   });
 
-  await run('source: SW/style-core/backend/data dokunulmamış varsayımı (diff gate ayrı)', function() {
-    assert.match(index, /style-core\.css\?v=20260801\.3/);
-    assert.match(core, /data-manager\.js\?v=20260801\.6|/); // pin index'te
+  await run('source: style-core pin parity + backend/data owner gate', function() {
+    // Canonical pin index.html'den çıkarılır; sabit eski sürüm beklenmez.
+    const stylePin = extractStyleCorePin(index);
+    assert.match(stylePin, /^\d{8}\.\d+$/, 'kanonik style-core pin tarih.surum formatında olmalı');
+    assert.notStrictEqual(stylePin, '20260801.3', 'style-core pin eski thin-shell hard-code değerinde kalmamalı');
+    assert.notStrictEqual(stylePin, '20260724.1', 'style-core pin bilinen merge regresyon değeri olmamalı');
+
+    // Shell arası + SW precache parity owner: main-shell verifier (kopyalama yok).
+    assert.match(mainShellVerifier, /style-core HTML pinleri ve SW precache parity/);
+    assert.match(mainShellVerifier, /paylaşılan shell style-core pin parity/);
+
+    // Bu verifier yalnızca index ↔ SW precache eşleşmesini doğrular (main-shell ile aynı pin kaynağı).
+    const cacheFiles = sw.match(/const CACHE_FILES\s*=\s*\[([\s\S]*?)\];/);
+    assert.ok(cacheFiles, 'CACHE_FILES bulunmalı');
+    assert.match(
+      cacheFiles[1],
+      new RegExp("'/style-core\\.css\\?v=" + stylePin.replace(/\./g, '\\.') + "'")
+    );
+    assert.doesNotMatch(cacheFiles[1], /'\/style-core\.css'/);
+
+    // Backend/runtime data manager pin — thin-shell scope dışı drift yok.
     assert.match(index, /data-manager\.js\?v=20260801\.6/);
   });
 
