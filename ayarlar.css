@@ -80,16 +80,20 @@
     }
 }
 
-#cache-confirm-modal .modal-container {
-    background: var(--bg); 
+/* === KOMPAKT ONAY / BİLGİ MODALI — ortak owner (.compact-confirm-modal)
+   style-core .modal-overlay .modal-container height:100% !important ezilir.
+   #cache-confirm-modal, #info-modal, #satis-sozlesmesi-confirm-modal bu sınıfı kullanır. === */
+.compact-confirm-modal.modal-overlay .modal-container {
+    background: var(--bg);
     width: 100%;
     max-width: 400px;
-    height: 210px !important;
-    max-height: 210px !important;
+    height: auto !important;
+    max-height: calc(100vh - 80px - 52px) !important;
+    max-height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 80px) !important;
     margin: 80px auto 52px auto;
     border-radius: 10px;
     border: 0.5px solid var(--border-light);
-    box-shadow: none; 
+    box-shadow: none;
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -98,32 +102,62 @@
     pointer-events: auto;
 }
 
-/* Cache Confirm Modal - Başlık ile içerik arası boşluk; altta 20px fazla (butonlar kesilmesin) */
-#cache-confirm-modal .modal-body {
+.compact-confirm-modal .modal-body {
+    flex: 0 0 auto !important;
+    min-height: 0 !important;
     padding-top: 2px !important;
     padding-bottom: 32px !important;
 }
 
-/* Cache Confirm Modal - Mesaj ile butonlar arası boşluk */
-#cache-confirm-modal #cache-confirm-message {
-    margin-bottom: 18px !important;
+.compact-confirm-modal .compact-confirm-message {
+    color: var(--form-label-color);
+    font-size: 14px;
+    line-height: 1.6;
+    margin: 0 0 18px 0 !important;
+    text-align: center;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
-/* Önbellek / Bilgi modalları: arka plan sayfa ile görünsün (opak --bg yerine hafif karartma) */
-body.modal-open #cache-confirm-modal.active,
-body.modal-open #cache-confirm-modal.open,
-body.modal-open #info-modal.active,
-body.modal-open #info-modal.open {
+.compact-confirm-modal .modal-header {
+    height: 48px !important;
+    min-height: 48px !important;
+    max-height: 48px !important;
+    padding: 0 16px !important;
+    flex-shrink: 0;
+}
+
+/* Kompakt onay: taşıt detay (10030) / olay (10050) üstünde; arka plan hafif karartma */
+body.modal-open .compact-confirm-modal.modal-overlay.active,
+body.modal-open .compact-confirm-modal.modal-overlay.open {
     align-items: center !important;
     justify-content: center !important;
     background: rgba(8, 13, 22, 0.55) !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
+    z-index: 10060 !important;
 }
 
-body.modal-open #cache-confirm-modal .modal-container,
-body.modal-open #info-modal .modal-container {
+body.modal-open .compact-confirm-modal .modal-container {
     margin: auto !important;
+}
+
+body.modal-open:has(.compact-confirm-modal.active) .content-wrap {
+    filter: blur(2px);
+    opacity: 0.92;
+    transition: filter 0.18s ease, opacity 0.18s ease;
+}
+
+body.modal-open:has(.compact-confirm-modal.active) .app-container::before,
+body.modal-open:has(.compact-confirm-modal.active) .app-container::after {
+    filter: none !important;
+    opacity: 1 !important;
+}
+
+/* Cache: sabit kompakt yükseklik (önceki görünüm korunur) */
+#cache-confirm-modal.compact-confirm-modal .modal-container {
+    height: 210px !important;
+    max-height: 210px !important;
 }
 
 /* Önbellek modalı butonları: Evet=kırmızı, Hayır=yeşil */
@@ -446,7 +480,7 @@ body.modal-open #info-modal .modal-container {
 
 /* Header action buttons: form altında */
 
-.ayarlar-modal-overlay:not(#cache-confirm-modal):not(#info-modal):not(#tescil-tarih-confirm-modal):not(#tescil-tarih-input-modal) .modal-header h2 {
+.ayarlar-modal-overlay:not(.compact-confirm-modal):not(#tescil-tarih-confirm-modal):not(#tescil-tarih-input-modal) .modal-header h2 {
     color: var(--modal-title-color) !important;
     background: none !important;
     -webkit-background-clip: border-box !important;
@@ -2666,7 +2700,7 @@ body.modal-open #info-modal .modal-container {
         border-color: var(--theme-color) !important;
         color: var(--theme-color) !important;
     }
-    #cache-confirm-modal .modal-container {
+    #cache-confirm-modal.compact-confirm-modal .modal-container {
         background: var(--bg) !important;
         border-top: 0.8px solid rgba(200, 200, 200, 0.62) !important;
         border-left: 0.8px solid rgba(255, 255, 255, 0.28) !important;
@@ -2725,7 +2759,7 @@ body.modal-open #info-modal .modal-container {
     .form-label {
         color: var(--form-label-color) !important;
     }
-    .ayarlar-modal-overlay:not(#cache-confirm-modal):not(#info-modal):not(#tescil-tarih-confirm-modal):not(#tescil-tarih-input-modal) .modal-header h2 {
+    .ayarlar-modal-overlay:not(.compact-confirm-modal):not(#tescil-tarih-confirm-modal):not(#tescil-tarih-input-modal) .modal-header h2 {
         color: var(--modal-title-color) !important;
         background: none !important;
         -webkit-background-clip: border-box !important;
@@ -3245,11 +3279,9 @@ body.modal-open #info-modal .modal-container {
         padding-left: 0 !important;
     }
 
-    /* Önbellek / bilgi onayı: ekranda ortala + arka plan blur (masaüstü davranışı) */
-    body.modal-open #cache-confirm-modal.modal-overlay.active,
-    body.modal-open #cache-confirm-modal.modal-overlay.open,
-    body.modal-open #info-modal.modal-overlay.active,
-    body.modal-open #info-modal.modal-overlay.open {
+    /* Önbellek / bilgi / kompakt onay: ekranda ortala + arka plan karartma (masaüstü davranışı) */
+    body.modal-open .compact-confirm-modal.modal-overlay.active,
+    body.modal-open .compact-confirm-modal.modal-overlay.open {
         align-items: center !important;
         justify-content: center !important;
         padding: env(safe-area-inset-top) 12px env(safe-area-inset-bottom) !important;
@@ -3258,9 +3290,13 @@ body.modal-open #info-modal .modal-container {
         -webkit-backdrop-filter: none !important;
     }
 
-    body.modal-open #cache-confirm-modal .modal-container,
-    body.modal-open #info-modal .modal-container {
+    body.modal-open .compact-confirm-modal .modal-container {
         margin: auto !important;
+        height: auto !important;
+        max-height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 80px) !important;
+    }
+
+    body.modal-open #cache-confirm-modal.compact-confirm-modal .modal-container {
         height: auto !important;
         max-height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 80px) !important;
     }

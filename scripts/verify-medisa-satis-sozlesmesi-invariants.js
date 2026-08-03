@@ -24,9 +24,22 @@ const qualityGate = read('.github/scripts/quality-gate.sh');
 
 let passed = 0;
 let failed = 0;
+const pendingAsync = [];
 function test(name, fn) {
   try {
-    fn();
+    const result = fn();
+    if (result && typeof result.then === 'function') {
+      pendingAsync.push(
+        result.then(function() {
+          passed += 1;
+          console.log('PASS ' + name);
+        }).catch(function(error) {
+          failed += 1;
+          console.error('FAIL ' + name + ': ' + (error && error.message ? error.message : error));
+        })
+      );
+      return;
+    }
     passed += 1;
     console.log('PASS ' + name);
   } catch (error) {
@@ -217,15 +230,129 @@ test('gitignore runtime klasörleri', function() {
   assert.match(gitignore, /(^|\n)data\/satis_sozlesmesi_preview\/(\n|$)/);
 });
 
+test('source: kompakt onay modalı ortak owner sınıfı', function() {
+  const ayarlarCss = read('ayarlar.css');
+  const ayarlarJs = read('ayarlar.js');
+  const indexHtml = read('index.html');
+  assert.match(
+    tasitlar,
+    /id="satis-sozlesmesi-confirm-modal"[^>]*compact-confirm-modal/
+  );
+  assert.match(ayarlarJs, /id="cache-confirm-modal"[^>]*compact-confirm-modal/);
+  assert.match(indexHtml, /id="info-modal"[^>]*compact-confirm-modal/);
+  assert.match(ayarlarCss, /\.compact-confirm-modal\.modal-overlay\s+\.modal-container/);
+  assert.match(
+    ayarlarCss,
+    /\.compact-confirm-modal\.modal-overlay\s+\.modal-container[\s\S]*?height:\s*auto\s*!important/
+  );
+  assert.match(ayarlarCss, /\.compact-confirm-modal\s+\.compact-confirm-message/);
+  assert.match(tasitlar, /id="satis-sozlesmesi-confirm-message"[^>]*compact-confirm-message/);
+  assert.doesNotMatch(
+    tasitlar,
+    /#satis-sozlesmesi-confirm-modal\s*\{[^}]*height:\s*100%/
+  );
+  // Geçici ID-only CSS patch yok: ortak sınıf owner ayarlar.css içinde
+  assert.doesNotMatch(tasitlar, /#satis-sozlesmesi-confirm-modal\s+\.modal-container/);
+});
+
+test('source: openSatisSozlesmesiUploadForVehicle setTimeout yarışı yok', function() {
+  const openFn = extractBetween(
+    tasitlar,
+    'function openSatisSozlesmesiUploadForVehicle(vehicleId)',
+    'function runSatisSozlesmesiPromptFlow'
+  );
+  assert.doesNotMatch(openFn, /setTimeout\s*\(/);
+  assert.doesNotMatch(openFn, /showVehicleDetail\s*\(/);
+  assert.match(openFn, /openVehicleDocumentModal\s*\(\s*vid\s*,\s*'satis_sozlesmesi'\s*\)/);
+  assert.doesNotMatch(tasitlar, /setTimeout\s*\(\s*function\s*\(\)\s*\{[\s\S]*?openVehicleDocumentModal[\s\S]*?\}\s*,\s*120\s*\)/);
+});
+
+test('behavior: satış soru akışı dalları', async function() {
+  const flowSrc = extractBetween(
+    tasitlar,
+    'function runSatisSozlesmesiPromptFlow(vehicleId, deps)',
+    'window.openSatisSozlesmesiUploadForVehicle'
+  );
+  function makeSandbox(opts) {
+    const uploadCalls = [];
+    const askLog = [];
+    const answers = Array.isArray(opts.answers) ? opts.answers.slice() : [];
+    const vehicles = opts.vehicles || [{ id: 'v1', satildiMi: true, arsivNedeni: 'satis', satisSozlesmesiPath: opts.docPath || '' }];
+    const sandbox = {
+      Promise: Promise,
+      readVehicles: function() { return vehicles; },
+      getVehicleDocumentPath: function(vehicle, key) {
+        if (key !== 'satis_sozlesmesi') return '';
+        return String((vehicle && vehicle.satisSozlesmesiPath) || '');
+      },
+      askSatisSozlesmesiConfirm: function(msg) {
+        askLog.push(String(msg || ''));
+        return Promise.resolve(answers.length ? answers.shift() : null);
+      },
+      openSatisSozlesmesiUploadForVehicle: function(vid) {
+        uploadCalls.push(String(vid));
+      },
+      refreshUiAfterSatisArchive: function() {},
+      uploadCalls: uploadCalls,
+      askLog: askLog
+    };
+    vm.createContext(sandbox);
+    vm.runInContext(
+      flowSrc + '\n;this.runSatisSozlesmesiPromptFlow = runSatisSozlesmesiPromptFlow;',
+      sandbox
+    );
+    return sandbox;
+  }
+
+  const yesNoDoc = makeSandbox({ answers: [true], docPath: '' });
+  await yesNoDoc.runSatisSozlesmesiPromptFlow('v1', {
+    askConfirm: yesNoDoc.askSatisSozlesmesiConfirm,
+    openUpload: yesNoDoc.openSatisSozlesmesiUploadForVehicle,
+    refreshUi: yesNoDoc.refreshUiAfterSatisArchive
+  });
+  assert.equal(yesNoDoc.uploadCalls.length, 1, 'Evet + belge yok → upload bir kez');
+  assert.equal(yesNoDoc.askLog.length, 1);
+
+  const noThenYes = makeSandbox({ answers: [false, true], docPath: '' });
+  await noThenYes.runSatisSozlesmesiPromptFlow('v1', {
+    askConfirm: noThenYes.askSatisSozlesmesiConfirm,
+    openUpload: noThenYes.openSatisSozlesmesiUploadForVehicle,
+    refreshUi: noThenYes.refreshUiAfterSatisArchive
+  });
+  assert.equal(noThenYes.askLog.length, 2, 'Hayır → ikinci soru');
+  assert.equal(noThenYes.uploadCalls.length, 1, 'ikinci Evet → upload bir kez');
+
+  const noThenNo = makeSandbox({ answers: [false, false], docPath: '' });
+  await noThenNo.runSatisSozlesmesiPromptFlow('v1', {
+    askConfirm: noThenNo.askSatisSozlesmesiConfirm,
+    openUpload: noThenNo.openSatisSozlesmesiUploadForVehicle,
+    refreshUi: noThenNo.refreshUiAfterSatisArchive
+  });
+  assert.equal(noThenNo.uploadCalls.length, 0, 'ikinci Hayır → upload yok');
+  assert.equal(noThenNo.askLog.length, 2);
+
+  const saveBlock = extractBetween(tasitlar, 'window.saveSatisPert = function()', 'function countHistoryEventsByTab');
+  assert.match(saveBlock, /islemTuru\s*===\s*'pert'/);
+  assert.ok(
+    saveBlock.indexOf("islemTuru === 'pert'") < saveBlock.indexOf('runSatisSozlesmesiPromptFlow'),
+    'pert → soru akışı çağrılmaz'
+  );
+  assert.doesNotMatch(saveBlock, /setTimeout\s*\(\s*[^,]*,\s*120\s*\)/);
+});
+
 test('cache / modül pin parity', function() {
   const moduleVer = (tasitlar.match(/MEDISA_TASITLAR_MODULE_VERSION\s*=\s*'([^']+)'/) || [])[1];
   const loaderVer = (scriptCore.match(/tasitlar:\s*'([^']+)'/) || [])[1];
   const notifVer = (scriptCore.match(/notifications:\s*'([^']+)'/) || [])[1];
-  assert.equal(moduleVer, '20260804.1');
+  const ayarlarCssVer = (scriptCore.match(/ayarlarCss:\s*'([^']+)'/) || [])[1];
+  const ayarlarJsVer = (scriptCore.match(/ayarlarJs:\s*'([^']+)'/) || [])[1];
+  assert.equal(moduleVer, '20260804.2');
   assert.equal(loaderVer, moduleVer);
   assert.equal(notifVer, '20260804.1');
-  assert.match(sw, /CACHE_VERSION\s*=\s*'medisa-v2\.269'/);
-  assert.match(read('index.html'), /script-core\.js\?v=20260804\.1/);
+  assert.equal(ayarlarCssVer, '20260804.2');
+  assert.equal(ayarlarJsVer, '20260804.2');
+  assert.match(sw, /CACHE_VERSION\s*=\s*'medisa-v2\.270'/);
+  assert.match(read('index.html'), /script-core\.js\?v=20260804\.2/);
 });
 
 test('quality gate / package bağlandı', function() {
@@ -233,6 +360,11 @@ test('quality gate / package bağlandı', function() {
   assert.match(qualityGate, /tool:verify-satis-sozlesmesi/);
 });
 
-console.log('');
-console.log(passed + ' passed, ' + failed + ' failed');
-if (failed > 0) process.exit(1);
+Promise.all(pendingAsync).then(function() {
+  console.log('');
+  console.log(passed + ' passed, ' + failed + ' failed');
+  if (failed > 0) process.exit(1);
+}).catch(function(err) {
+  console.error(err);
+  process.exit(1);
+});

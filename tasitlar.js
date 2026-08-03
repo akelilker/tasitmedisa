@@ -166,7 +166,7 @@
             </div>
         </div>
 
-<div id="satis-sozlesmesi-confirm-modal" class="modal-overlay ayarlar-modal-overlay" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="satis-sozlesmesi-confirm-title" aria-describedby="satis-sozlesmesi-confirm-message">
+<div id="satis-sozlesmesi-confirm-modal" class="modal-overlay ayarlar-modal-overlay compact-confirm-modal" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="satis-sozlesmesi-confirm-title" aria-describedby="satis-sozlesmesi-confirm-message">
             <div class="modal-container" onclick="event.stopPropagation();">
                 <div class="modal-header">
                     <h2 id="satis-sozlesmesi-confirm-title">SATIŞ SÖZLEŞMESİ</h2>
@@ -178,7 +178,7 @@
                     </button>
                 </div>
                 <div class="modal-body" onclick="event.stopPropagation();">
-                    <p id="satis-sozlesmesi-confirm-message" style="color: var(--form-label-color); font-size: 14px; line-height: 1.6; margin-bottom: 18px; text-align: center;"></p>
+                    <p id="satis-sozlesmesi-confirm-message" class="compact-confirm-message"></p>
                     <div class="universal-btn-group">
                         <button type="button" class="universal-btn-save" id="satis-sozlesmesi-confirm-yes">Evet</button>
                         <button type="button" class="universal-btn-cancel" id="satis-sozlesmesi-confirm-no">Hayır</button>
@@ -197,7 +197,7 @@
 
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20260804.1';
+  const MEDISA_TASITLAR_MODULE_VERSION = '20260804.2';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
@@ -9243,7 +9243,7 @@
   };
 
   /**
-   * Satış sözleşmesi Evet/Hayır sorusu — universal modal (window.confirm yok).
+   * Satış sözleşmesi Evet/Hayır sorusu — kompakt universal modal (window.confirm yok).
    * @returns {Promise<boolean|null>} true=Evet, false=Hayır, null=kapatıldı
    */
   function askSatisSozlesmesiConfirm(message) {
@@ -9266,6 +9266,9 @@
         if (closeBtn) closeBtn.onclick = null;
         modal.classList.remove('active');
         modal.style.display = 'none';
+        if (typeof window.updateFooterDim === 'function') {
+          window.updateFooterDim();
+        }
         resolve(result);
       }
       msgEl.textContent = String(message || '');
@@ -9286,6 +9289,7 @@
           finish(null);
         };
       }
+      document.body.classList.add('modal-open');
       modal.style.display = 'flex';
       requestAnimationFrame(function() { modal.classList.add('active'); });
     });
@@ -9299,49 +9303,64 @@
     }
   }
 
+  /** Doğrudan belge modalı — showVehicleDetail + setTimeout yarışı yok. */
   function openSatisSozlesmesiUploadForVehicle(vehicleId) {
     const vid = String(vehicleId || '').trim();
     if (!vid) return;
-    if (typeof window.showVehicleDetail === 'function') {
-      window.showVehicleDetail(vid);
+    const vehicle = readVehicles().find(function(v) { return String(v.id) === vid; });
+    if (!vehicle || !isVehicleSold(vehicle)) return;
+    window.currentDetailVehicleId = vid;
+    if (typeof window.openVehicleDocumentModal === 'function') {
+      window.openVehicleDocumentModal(vid, 'satis_sozlesmesi');
     }
-    setTimeout(function() {
-      if (typeof window.openVehicleDocumentModal === 'function') {
-        window.openVehicleDocumentModal(vid, 'satis_sozlesmesi');
-      }
-    }, 120);
   }
 
-  function runSatisSozlesmesiPromptFlow(vehicleId) {
+  /**
+   * @param {string} vehicleId
+   * @param {{ askConfirm?: Function, openUpload?: Function, refreshUi?: Function }=} deps test enjeksiyonu
+   */
+  function runSatisSozlesmesiPromptFlow(vehicleId, deps) {
     const vid = String(vehicleId || '').trim();
+    const askConfirm = (deps && typeof deps.askConfirm === 'function')
+      ? deps.askConfirm
+      : askSatisSozlesmesiConfirm;
+    const openUpload = (deps && typeof deps.openUpload === 'function')
+      ? deps.openUpload
+      : openSatisSozlesmesiUploadForVehicle;
+    const refreshUi = (deps && typeof deps.refreshUi === 'function')
+      ? deps.refreshUi
+      : refreshUiAfterSatisArchive;
     if (!vid) {
-      refreshUiAfterSatisArchive(false);
+      refreshUi(false);
       return Promise.resolve();
     }
-    refreshUiAfterSatisArchive(true);
-    return askSatisSozlesmesiConfirm('Satış Sözleşmesini Yüklediniz mi?').then(function(first) {
+    refreshUi(true);
+    return askConfirm('Satış Sözleşmesini Yüklediniz mi?').then(function(first) {
       if (first === true) {
         const vehicle = readVehicles().find(function(v) { return String(v.id) === vid; });
         const hasDoc = !!(vehicle && getVehicleDocumentPath(vehicle, 'satis_sozlesmesi'));
         if (hasDoc) {
-          refreshUiAfterSatisArchive(false);
+          refreshUi(false);
           return;
         }
-        openSatisSozlesmesiUploadForVehicle(vid);
+        openUpload(vid);
         return;
       }
       if (first === false) {
-        return askSatisSozlesmesiConfirm('Satış Sözleşmesini Şimdi Yüklemek İster misiniz?').then(function(second) {
+        return askConfirm('Satış Sözleşmesini Şimdi Yüklemek İster misiniz?').then(function(second) {
           if (second === true) {
-            openSatisSozlesmesiUploadForVehicle(vid);
+            openUpload(vid);
             return;
           }
-          refreshUiAfterSatisArchive(false);
+          refreshUi(false);
         });
       }
-      refreshUiAfterSatisArchive(false);
+      refreshUi(false);
     });
   }
+
+  window.openSatisSozlesmesiUploadForVehicle = openSatisSozlesmesiUploadForVehicle;
+  window.runSatisSozlesmesiPromptFlow = runSatisSozlesmesiPromptFlow;
 
   /**
    * Satış/Pert kaydet ve arşive taşı
