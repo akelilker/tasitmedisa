@@ -231,6 +231,7 @@ test('gitignore runtime klasörleri', function() {
 });
 
 test('source: kompakt onay modalı ortak owner sınıfı', function() {
+  const styleCore = read('style-core.css');
   const ayarlarCss = read('ayarlar.css');
   const ayarlarJs = read('ayarlar.js');
   const indexHtml = read('index.html');
@@ -240,18 +241,24 @@ test('source: kompakt onay modalı ortak owner sınıfı', function() {
   );
   assert.match(ayarlarJs, /id="cache-confirm-modal"[^>]*compact-confirm-modal/);
   assert.match(indexHtml, /id="info-modal"[^>]*compact-confirm-modal/);
-  assert.match(ayarlarCss, /\.compact-confirm-modal\.modal-overlay\s+\.modal-container/);
+  // Ortak owner: style-core (Taşıtlar yolunda ayarlar.css yokken de kompakt kalsın)
+  assert.match(styleCore, /\.compact-confirm-modal\.modal-overlay\s+\.modal-container/);
   assert.match(
+    styleCore,
+    /\.compact-confirm-modal\.modal-overlay\s+\.modal-container[\s\S]*?height:\s*auto\s*!important/
+  );
+  assert.match(styleCore, /\.compact-confirm-modal\s+\.compact-confirm-message/);
+  assert.match(tasitlar, /id="satis-sozlesmesi-confirm-message"[^>]*compact-confirm-message/);
+  // Cache sabit yükseklik override ayarlar.css'te kalır; ortak height:auto owner style-core'da
+  assert.match(ayarlarCss, /#cache-confirm-modal\.compact-confirm-modal\s+\.modal-container/);
+  assert.doesNotMatch(
     ayarlarCss,
     /\.compact-confirm-modal\.modal-overlay\s+\.modal-container[\s\S]*?height:\s*auto\s*!important/
   );
-  assert.match(ayarlarCss, /\.compact-confirm-modal\s+\.compact-confirm-message/);
-  assert.match(tasitlar, /id="satis-sozlesmesi-confirm-message"[^>]*compact-confirm-message/);
   assert.doesNotMatch(
     tasitlar,
     /#satis-sozlesmesi-confirm-modal\s*\{[^}]*height:\s*100%/
   );
-  // Geçici ID-only CSS patch yok: ortak sınıf owner ayarlar.css içinde
   assert.doesNotMatch(tasitlar, /#satis-sozlesmesi-confirm-modal\s+\.modal-container/);
 });
 
@@ -349,10 +356,11 @@ test('cache / modül pin parity', function() {
   assert.equal(moduleVer, '20260804.2');
   assert.equal(loaderVer, moduleVer);
   assert.equal(notifVer, '20260804.1');
-  assert.equal(ayarlarCssVer, '20260804.2');
+  assert.equal(ayarlarCssVer, '20260804.3');
   assert.equal(ayarlarJsVer, '20260804.2');
-  assert.match(sw, /CACHE_VERSION\s*=\s*'medisa-v2\.270'/);
-  assert.match(read('index.html'), /script-core\.js\?v=20260804\.2/);
+  assert.match(sw, /CACHE_VERSION\s*=\s*'medisa-v2\.271'/);
+  assert.match(read('index.html'), /script-core\.js\?v=20260804\.3/);
+  assert.match(read('index.html'), /style-core\.css\?v=20260804\.3/);
 });
 
 test('quality gate / package bağlandı', function() {

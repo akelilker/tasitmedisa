@@ -1443,6 +1443,82 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu .m
   overscroll-behavior: none;
   overscroll-behavior-x: none;
 }
+
+/* === KOMPAKT ONAY / BİLGİ MODALI — shell owner (.compact-confirm-modal)
+   Yukarıdaki .modal-overlay .modal-container height:100% !important ezilir.
+   #info-modal, #satis-sozlesmesi-confirm-modal, #cache-confirm-modal bu sınıfı kullanır.
+   #cache-confirm-modal sabit yükseklik override'ı ayarlar.css'te kalır. === */
+.compact-confirm-modal.modal-overlay .modal-container {
+    background: var(--bg);
+    width: 100%;
+    max-width: 400px;
+    height: auto !important;
+    max-height: calc(100vh - 80px - 52px) !important;
+    max-height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 80px) !important;
+    margin: 80px auto 52px auto;
+    border-radius: 10px;
+    border: 0.5px solid var(--border-light);
+    box-shadow: none;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+    z-index: 10002;
+    pointer-events: auto;
+}
+
+.compact-confirm-modal .modal-body {
+    flex: 0 0 auto !important;
+    min-height: 0 !important;
+    padding-top: 2px !important;
+    padding-bottom: 32px !important;
+}
+
+.compact-confirm-modal .compact-confirm-message {
+    color: var(--form-label-color);
+    font-size: 14px;
+    line-height: 1.6;
+    margin: 0 0 18px 0 !important;
+    text-align: center;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.compact-confirm-modal .modal-header {
+    height: 48px !important;
+    min-height: 48px !important;
+    max-height: 48px !important;
+    padding: 0 16px !important;
+    flex-shrink: 0;
+}
+
+/* Kompakt onay: taşıt detay (10030) / olay (10050) üstünde; arka plan hafif karartma */
+body.modal-open .compact-confirm-modal.modal-overlay.active,
+body.modal-open .compact-confirm-modal.modal-overlay.open {
+    align-items: center !important;
+    justify-content: center !important;
+    background: rgba(8, 13, 22, 0.55) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    z-index: 10060 !important;
+}
+
+body.modal-open .compact-confirm-modal .modal-container {
+    margin: auto !important;
+}
+
+body.modal-open:has(.compact-confirm-modal.active) .content-wrap {
+    filter: blur(2px);
+    opacity: 0.92;
+    transition: filter 0.18s ease, opacity 0.18s ease;
+}
+
+body.modal-open:has(.compact-confirm-modal.active) .app-container::before,
+body.modal-open:has(.compact-confirm-modal.active) .app-container::after {
+    filter: none !important;
+    opacity: 1 !important;
+}
+
 /* Header, geri çubuğu ve footer sabit kalır, kaydırmadan etkilenmez (Strict Flex-Scroll) */
 .modal-overlay .modal-header {
   flex-shrink: 0 !important;
@@ -2582,6 +2658,12 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     .modal-overlay .modal-body {
         padding-bottom: calc(var(--app-footer-height) + env(safe-area-inset-bottom, 0)) !important;
     }
+    /* Kompakt onay: PWA full-height modal kuralını ez */
+    .compact-confirm-modal.modal-overlay .modal-container {
+        height: auto !important;
+        max-height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 80px) !important;
+        margin: auto !important;
+    }
 }
 
 /* --- iOS PWA: Kırmızı çerçeve ekran üstü + kıvrımlar paralel --- */
@@ -2629,6 +2711,23 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     }
     .content-wrap::before {
         display: none !important;
+    }
+
+    /* Önbellek / bilgi / kompakt onay: ekranda ortala + arka plan karartma */
+    body.modal-open .compact-confirm-modal.modal-overlay.active,
+    body.modal-open .compact-confirm-modal.modal-overlay.open {
+        align-items: center !important;
+        justify-content: center !important;
+        padding: env(safe-area-inset-top) 12px env(safe-area-inset-bottom) !important;
+        background: rgba(8, 13, 22, 0.55) !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+    }
+
+    body.modal-open .compact-confirm-modal .modal-container {
+        margin: auto !important;
+        height: auto !important;
+        max-height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 80px) !important;
     }
 }
 
