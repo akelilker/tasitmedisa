@@ -2587,7 +2587,8 @@
       'sigorta-policesi-yukle': 'Sigorta Poli\u00E7esi Y\u00FCkledi',
       'kasko-policesi-yukle': 'Kasko Poli\u00E7esi Y\u00FCkledi',
       'takograf-belgesi-yukle': 'Takograf Belgesi Y\u00FCkledi',
-      'tasit-karti-yukle': 'Ta\u015F\u0131t Kart\u0131 Y\u00FCkledi'
+      'tasit-karti-yukle': 'Ta\u015F\u0131t Kart\u0131 Y\u00FCkledi',
+      'satis-sozlesmesi-yukle': 'Sat\u0131\u015F S\u00F6zle\u015Fmesi Y\u00FCkledi'
     };
     const mesaj = typeMessages[type] || 'Bilgi G\u00FCncelledi';
     return isimStr + ', ' + plateStr + ' Plakalı Taşıt İçin ' + mesaj + '.';

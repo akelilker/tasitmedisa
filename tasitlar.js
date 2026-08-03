@@ -164,6 +164,27 @@
                     <div id="history-content"></div>
                 </div>
             </div>
+        </div>
+
+<div id="satis-sozlesmesi-confirm-modal" class="modal-overlay ayarlar-modal-overlay" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="satis-sozlesmesi-confirm-title" aria-describedby="satis-sozlesmesi-confirm-message">
+            <div class="modal-container" onclick="event.stopPropagation();">
+                <div class="modal-header">
+                    <h2 id="satis-sozlesmesi-confirm-title">SATIŞ SÖZLEŞMESİ</h2>
+                    <button type="button" class="modal-close" id="satis-sozlesmesi-confirm-close" aria-label="Kapat">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="modal-body" onclick="event.stopPropagation();">
+                    <p id="satis-sozlesmesi-confirm-message" style="color: var(--form-label-color); font-size: 14px; line-height: 1.6; margin-bottom: 18px; text-align: center;"></p>
+                    <div class="universal-btn-group">
+                        <button type="button" class="universal-btn-save" id="satis-sozlesmesi-confirm-yes">Evet</button>
+                        <button type="button" class="universal-btn-cancel" id="satis-sozlesmesi-confirm-no">Hayır</button>
+                    </div>
+                </div>
+            </div>
         </div>`;
     var fragment = document.createDocumentFragment();
     while (host.firstChild) fragment.appendChild(host.firstChild);
@@ -176,7 +197,7 @@
 
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20260801.7';
+  const MEDISA_TASITLAR_MODULE_VERSION = '20260804.1';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
@@ -3303,6 +3324,7 @@
       'vehicle-history-modal',
       'event-menu-modal',
       DINAMIK_OLAY_MODAL_ID,
+      'satis-sozlesmesi-confirm-modal',
       'monthly-todo-modal'
     ];
 
@@ -3671,6 +3693,44 @@
   function isArchivedVehicleAssignmentLocked(vehicle) {
     return !!(vehicle && (vehicle.satildiMi === true || vehicle.arsiv === true));
   }
+
+  function getLatestSatisEvent(vehicle) {
+    const events = Array.isArray(vehicle && vehicle.events) ? vehicle.events : [];
+    for (let i = 0; i < events.length; i++) {
+      const ev = events[i];
+      if (ev && String(ev.type || '').trim() === 'satis') return ev;
+    }
+    return null;
+  }
+
+  /**
+   * Arşiv nedeni: 'satis' | 'pert' | null
+   * Legacy: arsivNedeni yoksa satis event data.pertIsaret; aksi halde satildiMi → satis.
+   */
+  function getVehicleArchiveReason(vehicle) {
+    if (!vehicle || vehicle.satildiMi !== true) return null;
+    const neden = String(vehicle.arsivNedeni || '').trim().toLowerCase();
+    if (neden === 'pert') return 'pert';
+    if (neden === 'satis') return 'satis';
+    const ev = getLatestSatisEvent(vehicle);
+    const data = (ev && ev.data && typeof ev.data === 'object') ? ev.data : {};
+    const eventNeden = String(data.arsivNedeni || '').trim().toLowerCase();
+    if (eventNeden === 'pert' || data.pertIsaret === true) return 'pert';
+    if (eventNeden === 'satis') return 'satis';
+    return 'satis';
+  }
+
+  function isVehicleSold(vehicle) {
+    return getVehicleArchiveReason(vehicle) === 'satis';
+  }
+
+  function isVehiclePert(vehicle) {
+    return getVehicleArchiveReason(vehicle) === 'pert';
+  }
+
+  window.isVehicleSold = isVehicleSold;
+  window.isVehiclePert = isVehiclePert;
+  window.getVehicleArchiveReason = getVehicleArchiveReason;
 
   /**
    * Taşıtlar modalı liste/kart — kalıcı tarih uyarısı (bildirim okundu ile ilgisiz).
@@ -4987,6 +5047,7 @@
           section('Kullanıcı', 'kullanici-select', 'select', [], '<option value="">Kullanıcı Seçiniz</option>') + '</div>';
       case 'satis':
         return '<div class="event-form-stack">' +
+          radioRow('İşlem Türü', 'satis', 'pert', 'Satış', 'Pert') +
           section('Satış/Pert Tarihi', 'satis-tarih', 'input', [['type', 'date'], ['class', 'olay-tarih-input']]) +
           section('Tutar', 'satis-tutar', 'input', [['type', 'text'], ['placeholder', 'Tutar']]) +
           section('Açıklama', 'satis-aciklama', 'textarea', [['rows', '2'], ['placeholder', 'Açıklama']]) + '</div>';
@@ -5541,6 +5602,26 @@
           const currentKm = vehicle?.guncelKm || '';
           kmInput.value = currentKm ? formatNumber(currentKm) : '';
         }
+      } else if (type === 'satis') {
+        const radioBtns = refreshModalRadioButtons(modal);
+        radioBtns.forEach(function(b) { b.classList.remove('active', 'green'); });
+        radioBtns.forEach(function(btn) {
+          btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            radioBtns.forEach(function(b) { b.classList.remove('active', 'green'); });
+            this.classList.add('active');
+            if (this.dataset.value === 'satis') this.classList.add('green');
+          });
+        });
+        const tutarInput = document.getElementById('satis-tutar');
+        if (tutarInput && !tutarInput.dataset.formatBound) {
+          tutarInput.dataset.formatBound = '1';
+          tutarInput.addEventListener('blur', function() {
+            const value = this.value.replace(/[^\d]/g, '');
+            if (value) this.value = formatNumber(value);
+          });
+        }
       }
 
       /* Ruhsat ekranından dönünce buton metni "Ruhsat Yükle" kalıyor; olay formlarında her zaman "Kaydet" olsun */
@@ -5780,6 +5861,17 @@
       missingAlert: 'Lütfen takograf belgesi dosyası seçin.',
       successMessage: 'Takograf Belgesi Başarıyla Yüklendi',
       icon: 'document'
+    },
+    satis_sozlesmesi: {
+      key: 'satis_sozlesmesi',
+      label: 'Satış Sözleşmesi',
+      title: 'SATIŞ SÖZLEŞMESİ',
+      pathField: 'satisSozlesmesiPath',
+      uploadButton: 'Satış Sözleşmesi Yükle',
+      changeLabel: 'Satış Sözleşmesini Değiştir',
+      missingAlert: 'Lütfen satış sözleşmesi dosyası seçin.',
+      successMessage: 'Satış Sözleşmesi Başarıyla Yüklendi',
+      icon: 'document'
     }
   };
 
@@ -5825,6 +5917,9 @@
 
   function getVehicleDocumentKeysForVehicle(vehicle) {
     var keys = ['ruhsat', 'sigorta', 'kasko'];
+    if (isVehicleSold(vehicle)) {
+      keys.splice(1, 0, 'satis_sozlesmesi');
+    }
     if (window.MedisaVehicleNotificationDomain.vehicleNeedsK2Belgesi(vehicle)) {
       keys.push('tasit_karti');
     }
@@ -5893,8 +5988,11 @@
     if (!container || !vehicle) return;
     const vid = String(vehicle.id != null ? vehicle.id : '');
     const allowedKeys = new Set(getVehicleDocumentKeysForVehicle(vehicle));
+    const firstRow = allowedKeys.has('satis_sozlesmesi')
+      ? { rowClass: 'vehicle-documents-row vehicle-documents-row-pair', keys: ['ruhsat', 'satis_sozlesmesi'] }
+      : { rowClass: 'vehicle-documents-row vehicle-documents-row-single', keys: ['ruhsat'] };
     const documentRows = [
-      { rowClass: 'vehicle-documents-row vehicle-documents-row-single', keys: ['ruhsat'] },
+      firstRow,
       { rowClass: 'vehicle-documents-row vehicle-documents-row-pair', keys: ['sigorta', 'kasko'] },
       { rowClass: 'vehicle-documents-row vehicle-documents-row-pair vehicle-documents-row-optional', keys: ['tasit_karti', 'takograf'] }
     ];
@@ -7318,6 +7416,14 @@
     if (!vid) return;
     pinRuhsatUploadVehicleContext(vid);
     var vehicle = findVehicleForDocumentUpload(vid);
+    if (dt === 'satis_sozlesmesi' && !isVehicleSold(vehicle)) {
+      if (typeof showToast === 'function') {
+        showToast('Satış Sözleşmesi yalnızca satılmış taşıtlarda kullanılabilir.', 'error');
+      } else {
+        alert('Satış Sözleşmesi yalnızca satılmış taşıtlarda kullanılabilir.');
+      }
+      return;
+    }
     const modal = DOM.dinamikOlayModal;
     const content = DOM.dinamikOlayFormIcerik;
     const saveBtn = DOM.dinamikOlayKaydetBtn;
@@ -9137,12 +9243,121 @@
   };
 
   /**
+   * Satış sözleşmesi Evet/Hayır sorusu — universal modal (window.confirm yok).
+   * @returns {Promise<boolean|null>} true=Evet, false=Hayır, null=kapatıldı
+   */
+  function askSatisSozlesmesiConfirm(message) {
+    return new Promise(function(resolve) {
+      const modal = document.getElementById('satis-sozlesmesi-confirm-modal');
+      const msgEl = document.getElementById('satis-sozlesmesi-confirm-message');
+      const yesBtn = document.getElementById('satis-sozlesmesi-confirm-yes');
+      const noBtn = document.getElementById('satis-sozlesmesi-confirm-no');
+      const closeBtn = document.getElementById('satis-sozlesmesi-confirm-close');
+      if (!modal || !msgEl || !yesBtn || !noBtn) {
+        resolve(null);
+        return;
+      }
+      let settled = false;
+      function finish(result) {
+        if (settled) return;
+        settled = true;
+        yesBtn.onclick = null;
+        noBtn.onclick = null;
+        if (closeBtn) closeBtn.onclick = null;
+        modal.classList.remove('active');
+        modal.style.display = 'none';
+        resolve(result);
+      }
+      msgEl.textContent = String(message || '');
+      yesBtn.onclick = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        finish(true);
+      };
+      noBtn.onclick = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        finish(false);
+      };
+      if (closeBtn) {
+        closeBtn.onclick = function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          finish(null);
+        };
+      }
+      modal.style.display = 'flex';
+      requestAnimationFrame(function() { modal.classList.add('active'); });
+    });
+  }
+
+  function refreshUiAfterSatisArchive(keepDetailOpen) {
+    if (typeof window.renderBranchDashboard === 'function') window.renderBranchDashboard();
+    if (typeof window.renderVehicles === 'function') window.renderVehicles();
+    if (!keepDetailOpen && typeof window.closeVehicleDetailModal === 'function') {
+      closeVehicleDetailModal();
+    }
+  }
+
+  function openSatisSozlesmesiUploadForVehicle(vehicleId) {
+    const vid = String(vehicleId || '').trim();
+    if (!vid) return;
+    if (typeof window.showVehicleDetail === 'function') {
+      window.showVehicleDetail(vid);
+    }
+    setTimeout(function() {
+      if (typeof window.openVehicleDocumentModal === 'function') {
+        window.openVehicleDocumentModal(vid, 'satis_sozlesmesi');
+      }
+    }, 120);
+  }
+
+  function runSatisSozlesmesiPromptFlow(vehicleId) {
+    const vid = String(vehicleId || '').trim();
+    if (!vid) {
+      refreshUiAfterSatisArchive(false);
+      return Promise.resolve();
+    }
+    refreshUiAfterSatisArchive(true);
+    return askSatisSozlesmesiConfirm('Satış Sözleşmesini Yüklediniz mi?').then(function(first) {
+      if (first === true) {
+        const vehicle = readVehicles().find(function(v) { return String(v.id) === vid; });
+        const hasDoc = !!(vehicle && getVehicleDocumentPath(vehicle, 'satis_sozlesmesi'));
+        if (hasDoc) {
+          refreshUiAfterSatisArchive(false);
+          return;
+        }
+        openSatisSozlesmesiUploadForVehicle(vid);
+        return;
+      }
+      if (first === false) {
+        return askSatisSozlesmesiConfirm('Satış Sözleşmesini Şimdi Yüklemek İster misiniz?').then(function(second) {
+          if (second === true) {
+            openSatisSozlesmesiUploadForVehicle(vid);
+            return;
+          }
+          refreshUiAfterSatisArchive(false);
+        });
+      }
+      refreshUiAfterSatisArchive(false);
+    });
+  }
+
+  /**
    * Satış/Pert kaydet ve arşive taşı
    */
   window.saveSatisPert = function() {
     const tarih = document.getElementById('satis-tarih')?.value.trim() || '';
     const tutar = document.getElementById('satis-tutar')?.value.trim() || '';
     const aciklama = document.getElementById('satis-aciklama')?.value.trim() || '';
+    const radioBtns = document.querySelectorAll('#dinamik-olay-modal .radio-btn');
+    const activeBtn = Array.from(radioBtns).find(function(btn) { return btn.classList.contains('active'); });
+    const islemTuru = activeBtn && activeBtn.dataset ? String(activeBtn.dataset.value || '').trim() : '';
+
+    if (islemTuru !== 'satis' && islemTuru !== 'pert') {
+      alert('Lütfen işlem türünü seçin (Satış veya Pert)!');
+      return;
+    }
 
     if (!tarih) {
       alert('Satış/Pert tarihi zorunludur!');
@@ -9158,6 +9373,7 @@
     if (!vehicle.events) vehicle.events = [];
 
     vehicle.satildiMi = true;
+    vehicle.arsivNedeni = islemTuru;
     vehicle.satisTarihi = tarih;
     vehicle.satisTutari = tutar;
 
@@ -9172,20 +9388,29 @@
         surucu: getEventPerformerName(vehicle),
         kaydeden: getRecorderDisplayName(),
         plakaSnapshot: String(vehicle.plate || '').trim(),
-        pertIsaret: /\bpert\b/i.test(aciklama)
+        arsivNedeni: islemTuru,
+        pertIsaret: islemTuru === 'pert'
       }
     };
 
     vehicle.events.unshift(event);
     return writeVehicles(vehicles).then(function() {
+      if (islemTuru === 'pert') {
+        return completeDynamicEventSave({
+          modalType: 'satis',
+          vehicleId: vehicleId,
+          message: 'Taşıt pert işlemi kaydedildi. Taşıt arşive taşındı.',
+          afterSuccess: function() {
+            refreshUiAfterSatisArchive(false);
+          }
+        });
+      }
       return completeDynamicEventSave({
         modalType: 'satis',
         vehicleId: vehicleId,
-        message: 'Taşıt satış/pert işlemi kaydedildi. Taşıt arşive taşındı.',
+        message: 'Taşıt satış işlemi kaydedildi.',
         afterSuccess: function() {
-          closeVehicleDetailModal();
-          if (typeof window.renderBranchDashboard === 'function') window.renderBranchDashboard();
-          if (typeof window.renderVehicles === 'function') window.renderVehicles();
+          runSatisSozlesmesiPromptFlow(vehicleId);
         }
       });
     });
@@ -9326,7 +9551,8 @@
       'sigorta-policesi-yukle': 'Sigorta Poliçesi',
       'kasko-policesi-yukle': 'Kasko Poliçesi',
       'takograf-belgesi-yukle': 'Takograf Belgesi',
-      'tasit-karti-yukle': 'Taşıt Kartı'
+      'tasit-karti-yukle': 'Taşıt Kartı',
+      'satis-sozlesmesi-yukle': 'Satış Sözleşmesi'
     };
     const key = String(eventType || '').trim();
     if (map[key]) return map[key];
@@ -9409,7 +9635,8 @@
         'sigorta-policesi-yukle': 'Sigorta Poliçesi',
         'kasko-policesi-yukle': 'Kasko Poliçesi',
         'takograf-belgesi-yukle': 'Takograf Belgesi',
-        'tasit-karti-yukle': 'Taşıt Kartı'
+        'tasit-karti-yukle': 'Taşıt Kartı',
+        'satis-sozlesmesi-yukle': 'Satış Sözleşmesi'
       };
       return String((data && data.belgeTipi) || labels[type] || '').trim();
     }
@@ -9557,7 +9784,9 @@
       const rec = formatHistoryPerformerUpper(eventData.kaydeden || eventData.surucu || getRecorderDisplayName());
       const plate = window.formatPlaka(eventData.plakaSnapshot || vehicle.plate || '-');
       const plateEsc = escapeHtml(plate);
-      const pert = eventData.pertIsaret === true || (eventData.aciklama && /\bpert\b/i.test(String(eventData.aciklama)));
+      const eventNeden = String(eventData.arsivNedeni || '').trim().toLowerCase();
+      const pert = eventNeden === 'pert'
+        || (eventNeden !== 'satis' && (eventData.pertIsaret === true || (eventData.aciklama && /\bpert\b/i.test(String(eventData.aciklama)))));
       const tail = pert
         ? ' Plakal\u0131 Ta\u015F\u0131t\u0131n Pert Oldu\u011funu Sisteme Kaydetti.'
         : ' Plakal\u0131 Ta\u015F\u0131t\u0131n Sat\u0131ld\u0131\u011f\u0131n\u0131 Bildirdi.';

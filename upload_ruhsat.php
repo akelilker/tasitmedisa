@@ -154,6 +154,7 @@ function medisaUploadDocumentHistoryMeta($documentType) {
         'kasko' => ['eventType' => 'kasko-policesi-yukle', 'label' => 'Kasko Poliçesi'],
         'tasit_karti' => ['eventType' => 'tasit-karti-yukle', 'label' => 'Taşıt Kartı'],
         'takograf' => ['eventType' => 'takograf-belgesi-yukle', 'label' => 'Takograf Belgesi'],
+        'satis_sozlesmesi' => ['eventType' => 'satis-sozlesmesi-yukle', 'label' => 'Satış Sözleşmesi'],
     ];
     return $map[$type] ?? null;
 }
@@ -324,6 +325,19 @@ if (!$isSettingsDocument) {
         echo json_encode(['error' => 'Bu taşıt tipi için Takograf Belgesi yüklenemez.'], JSON_UNESCAPED_UNICODE);
         exit;
     }
+    if ($documentType === 'satis_sozlesmesi') {
+        if (!medisaIsVehicleSold($preVehicle)) {
+            $reason = medisaGetVehicleArchiveReason($preVehicle);
+            if ($reason === 'pert') {
+                http_response_code(403);
+                echo json_encode(['error' => 'Pert nedeniyle arşivlenen taşıtlara Satış Sözleşmesi yüklenemez.'], JSON_UNESCAPED_UNICODE);
+                exit;
+            }
+            http_response_code(403);
+            echo json_encode(['error' => 'Satış Sözleşmesi yalnızca satılmış taşıtlara yüklenebilir.'], JSON_UNESCAPED_UNICODE);
+            exit;
+        }
+    }
 } elseif (($context['role'] ?? '') !== 'genel_yonetici') {
     http_response_code(403);
     echo json_encode(['error' => 'Bu belgeyi güncelleme yetkiniz yok.'], JSON_UNESCAPED_UNICODE);
@@ -464,6 +478,14 @@ $result = medisaMutateData(function (&$data) use ($vehicleId, $vehicleVersion, $
     }
     if ($documentType === 'takograf' && !medisaUploadVehicleNeedsTakograf($vehicle)) {
         return medisaBuildErrorResult('Bu taşıt tipi için Takograf Belgesi yüklenemez.', 400);
+    }
+    if ($documentType === 'satis_sozlesmesi') {
+        if (!medisaIsVehicleSold($vehicle)) {
+            if (medisaGetVehicleArchiveReason($vehicle) === 'pert') {
+                return medisaBuildErrorResult('Pert nedeniyle arşivlenen taşıtlara Satış Sözleşmesi yüklenemez.', 403);
+            }
+            return medisaBuildErrorResult('Satış Sözleşmesi yalnızca satılmış taşıtlara yüklenebilir.', 403);
+        }
     }
 
     $versionCheck = medisaEnsureVehicleVersion($vehicle, $vehicleVersion, 'Bu taşıt başka biri tarafından güncellendi. Güncel veriler yüklendi.');

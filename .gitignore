@@ -47,6 +47,8 @@ data/tasit_karti/
 data/tasit_karti_preview/
 data/takograf/
 data/takograf_preview/
+data/satis_sozlesmesi/
+data/satis_sozlesmesi_preview/
 
 # Keep intentionally versioned non-runtime data files
 !data/kasko-deger-listesi.json

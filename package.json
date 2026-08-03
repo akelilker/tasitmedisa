@@ -16,6 +16,7 @@
     "tool:verify-vehicle-render": "node scripts/verify-medisa-vehicle-render-invariants.js",
     "tool:verify-vehicle-detail-olay": "node scripts/verify-medisa-vehicle-detail-olay-invariants.js",
     "tool:verify-vehicle-history-ui": "node scripts/verify-medisa-vehicle-history-ui-invariants.js",
+    "tool:verify-satis-sozlesmesi": "node scripts/verify-medisa-satis-sozlesmesi-invariants.js",
     "tool:verify-import-source-of-truth": "node scripts/verify-medisa-import-source-of-truth-invariants.js",
     "tool:verify-server-restore": "node scripts/verify-medisa-server-restore-invariants.js",
     "tool:measure-vehicle-render": "node scripts/measure-medisa-vehicle-render.js",
