@@ -212,13 +212,18 @@
 #tescil-tarih-input-modal .tescil-input-wrapper {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: stretch;
+    width: 100%;
+    position: relative;
 }
 
-/* Tescil Tarihi Input */
+/* Tescil Tarihi — native type=date; modal gövdesine yayılan rahat yükseklik */
 #tescil-tarih-input-modal #tescil-tarih-input {
-    width: 140px;
-    text-align: center;
+    width: 100%;
+    min-width: 0;
+    min-height: 42px;
+    height: 42px;
+    text-align: left;
     padding: 8px 12px;
     background: var(--bg-content);
     border: 0.3px solid var(--border-faint);
@@ -227,6 +232,12 @@
     font-size: 14px;
     font-family: inherit;
     box-sizing: border-box;
+    color-scheme: dark;
+}
+
+#tescil-tarih-input-modal #tescil-tarih-input.has-value,
+#tescil-tarih-input-modal #tescil-tarih-input:focus {
+    color: var(--txt-muted);
 }
 
 #tescil-tarih-input-modal #tescil-tarih-input:focus {
@@ -239,55 +250,10 @@
     border-color: var(--theme-color);
 }
 
-/* Tescil Tarihi Input Overlay (gg kısmını kırmızı göstermek için) */
-.tescil-input-wrapper {
-    position: relative;
-}
-
-.tescil-tarih-overlay {
-    position: absolute;
-    pointer-events: none;
-    white-space: nowrap;
-    color: var(--txt-muted);
-    background: transparent;
-    overflow: visible;
-    user-select: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-sizing: border-box;
-}
-
-.tescil-tarih-overlay .tescil-day {
-    color: var(--theme-color) !important;
-}
-
-/* Input'un metnini overlay ile uyumlu yapmak için input'u görünür bırak, overlay üstte */
-#tescil-tarih-input-modal #tescil-tarih-input {
-    position: relative;
-    z-index: 1;
-    color: transparent !important; /* Metin görünmez, overlay gösterir */
-    /* background ve border korunur (mevcut stil) */
-    caret-color: var(--txt-muted);
-}
-
-#tescil-tarih-input-modal #tescil-tarih-input:focus {
-    color: transparent !important; /* Focus'ta da transparent kal */
-    /* background ve border stilleri korunur */
-    caret-color: var(--txt-muted);
-}
-
-#tescil-tarih-input-modal #tescil-tarih-input::placeholder {
-    color: transparent !important; /* Placeholder da görünmez */
-}
-
-#tescil-tarih-input-modal #tescil-tarih-overlay {
-    z-index: 2; /* Input'un üzerinde */
-    pointer-events: none; /* Tıklamalar input'a geçsin */
-    font-size: 14px;
-    font-family: inherit;
-    line-height: 1;
-    color: var(--txt-muted);
+#tescil-tarih-input-modal #tescil-tarih-input::-webkit-calendar-picker-indicator {
+    opacity: 1;
+    cursor: pointer;
+    filter: invert(0.72) brightness(1.08);
 }
 
 /* Taşıt tarihçesi (#vehicle-history-modal): olay formları tek #dinamik-olay-modal altında; eski çoklu olay modal id'leri kaldırıldı */

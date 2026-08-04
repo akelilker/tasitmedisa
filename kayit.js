@@ -229,8 +229,7 @@
                     <div class="tescil-tarih-input-stack">
                         <label for="tescil-tarih-input" class="form-label tescil-tarih-field-label">Tescil Tarihi:</label>
                         <div class="tescil-input-wrapper">
-                            <input type="text" id="tescil-tarih-input" class="form-input" placeholder="gg/aa/yyyy" maxlength="10" inputmode="numeric">
-                            <span id="tescil-tarih-overlay" class="tescil-tarih-overlay"></span>
+                            <input type="date" id="tescil-tarih-input" class="form-input" required>
                         </div>
                     </div>
                     <div class="universal-btn-group">
@@ -1019,18 +1018,23 @@
     }
   }
 
-  /** Tescil tarih input: 6/8 rakamı gg/aa/yyyy yap + overlay */
+  /** Tescil tarih input: native date (yyyy-mm-dd) — overlay yok */
   function finalizeTescilDateInput(el) {
     if (!el) return;
-    const raw = el.value.replace(/[^\d]/g, '');
-    if (raw.length === 6 || raw.length === 8) {
-      const formatted = formatTramerDate(el.value);
-      if (formatted) el.value = formatted;
-    } else if (el.value && el.value.length < 10 && !el.value.includes('/')) {
-      const formatted = formatTramerDate(el.value);
-      if (formatted) el.value = formatted;
-    }
-    if (typeof updateTescilTarihDisplay === 'function') updateTescilTarihDisplay();
+    el.classList.toggle('has-value', !!(el.value && String(el.value).trim()));
+    if (el.value) el.classList.remove('field-error');
+  }
+
+  function tescilDisplayToIso(displayOrIso) {
+    return parseVehicleDateRawToIso(displayOrIso) || '';
+  }
+
+  function tescilIsoToDisplay(iso) {
+    const normalized = parseVehicleDateRawToIso(iso);
+    if (!normalized) return '';
+    const parts = normalized.split('-');
+    if (parts.length !== 3) return '';
+    return parts[2] + '/' + parts[1] + '/' + parts[0];
   }
 
   /**
@@ -2432,76 +2436,10 @@
   };
 
   /**
-   * Tescil tarihi input overlay'ini günceller (gg kısmını kırmızı gösterir)
-   */
-  function updateTescilTarihDisplay() {
-    const inputEl = document.getElementById('tescil-tarih-input');
-    const overlayEl = document.getElementById('tescil-tarih-overlay');
-
-    if (!inputEl || !overlayEl) return;
-
-    const value = inputEl.value || '';
-
-    if (!value) {
-      overlayEl.innerHTML = '';
-      overlayEl.style.display = 'none';
-      return;
-    }
-
-    // Input'un stilini al
-    const inputStyle = window.getComputedStyle(inputEl);
-    const inputRect = inputEl.getBoundingClientRect();
-
-    // Overlay'i input'un tam üzerine yerleştir (input'un kendisinin üzerine, padding dahil)
-    overlayEl.style.position = 'absolute';
-    overlayEl.style.left = '0';
-    overlayEl.style.top = '0';
-    overlayEl.style.width = '100%';
-    overlayEl.style.height = '100%';
-    overlayEl.style.fontSize = inputStyle.fontSize || '14px';
-    overlayEl.style.fontFamily = inputStyle.fontFamily || 'inherit';
-    overlayEl.style.lineHeight = inputStyle.lineHeight || '1.4';
-    overlayEl.style.textAlign = inputStyle.textAlign || 'center';
-    overlayEl.style.display = 'flex';
-    overlayEl.style.alignItems = 'center';
-    overlayEl.style.justifyContent = 'center';
-    overlayEl.style.paddingLeft = inputStyle.paddingLeft || '8px';
-    overlayEl.style.paddingRight = inputStyle.paddingRight || '8px';
-    overlayEl.style.paddingTop = inputStyle.paddingTop || '4px';
-    overlayEl.style.paddingBottom = inputStyle.paddingBottom || '4px';
-    overlayEl.style.boxSizing = 'border-box';
-
-    // Overlay'in background'unu transparent yap (input'un kendi background'u görünsün)
-    overlayEl.style.background = 'transparent';
-
-    // gg/aa/yyyy formatını parse et
-    const datePattern = /^(\d{2})\/(\d{2})\/(\d{4})$/;
-    const match = value.match(datePattern);
-
-    if (match) {
-      const day = match[1];
-      const month = match[2];
-      const year = match[3];
-
-      // Overlay içeriği: gg kısmı kırmızı, geri kalanı normal renk
-      overlayEl.innerHTML = `<span class="tescil-day" style="color: #d40000;">${day}</span>/${month}/${year}`;
-    } else if (value) {
-      // Format henüz tamamlanmamışsa, başlangıçtaki rakamları kırmızı yap
-      const digitsOnly = value.replace(/[^\d]/g, '');
-      const remaining = value.substring(digitsOnly.length);
-      if (digitsOnly.length >= 1 && digitsOnly.length <= 2) {
-        overlayEl.innerHTML = `<span class="tescil-day" style="color: #d40000;">${digitsOnly}</span>${remaining}`;
-      } else {
-        overlayEl.innerHTML = value;
-      }
-    }
-  }
-
-  /**
-   * Tescil tarihi giriş modalını açar
+   * Tescil tarihi giriş modalını açar (native type=date)
    *
    * @param {Object} recordData - Hazırlanmış record object'i
-   * @param {string} defaultDate - Varsayılan tarih (gg/aa/yyyy formatında)
+   * @param {string} defaultDate - Varsayılan tarih (gg/aa/yyyy veya yyyy-mm-dd)
    */
   function showTescilTarihInputModal(recordData, defaultDate) {
     const modal = document.getElementById('tescil-tarih-input-modal');
@@ -2509,56 +2447,29 @@
 
     const inputEl = document.getElementById('tescil-tarih-input');
     if (inputEl) {
-      // Bugünün tarihini varsayılan olarak set et
-      const today = new Date();
-      const todayFormatted = formatDateForDisplay(today);
-      inputEl.value = defaultDate || todayFormatted;
+      const isoDefault = tescilDisplayToIso(defaultDate) || tescilDisplayToIso(formatDateForDisplay(new Date()));
+      inputEl.value = isoDefault || '';
+      inputEl.classList.toggle('has-value', !!inputEl.value);
       inputEl.classList.remove('field-error');
 
-      // Overlay'i başlangıçta güncelle
-      updateTescilTarihDisplay();
-
-      // Event listener zaten varsa ekleme (sadece focus ver)
       if (!inputEl.hasAttribute('data-tescil-listener')) {
         inputEl.setAttribute('data-tescil-listener', 'true');
-
-        // 8 rakamda anında gg/aa/yyyy; 6 rakam blur/Enter'da; overlay güncelle
         inputEl.addEventListener('input', function() {
-          const inputValue = this.value.replace(/[^\d]/g, '');
-          if (inputValue.length === 8) {
-            const formatted = formatTramerDate(inputValue);
-            this.value = formatted;
-            this.setSelectionRange(this.value.length, this.value.length);
-          }
-          updateTescilTarihDisplay();
-        });
-        inputEl.addEventListener('blur', function() {
           finalizeTescilDateInput(this);
         });
-        inputEl.addEventListener('keydown', function(e) {
-          if (e.key === 'Enter') {
-            e.preventDefault();
-            finalizeTescilDateInput(this);
-            this.blur();
-          }
+        inputEl.addEventListener('change', function() {
+          finalizeTescilDateInput(this);
         });
       }
 
-      // Focus ve cursor'u gg (gün) başına yerleştir
-      setTimeout(() => {
-        inputEl.focus();
-        // Cursor'u başa (gg başına) yerleştir
-        inputEl.setSelectionRange(0, 0);
+      setTimeout(function() {
+        try { inputEl.focus(); } catch (e) {}
       }, 350);
     }
 
     modal.style.display = 'flex';
     requestAnimationFrame(function() {
       modal.classList.add('active');
-      requestAnimationFrame(function() {
-        updateTescilTarihDisplay();
-        requestAnimationFrame(updateTescilTarihDisplay);
-      });
     });
   }
 
@@ -2569,9 +2480,9 @@
     const inputEl = document.getElementById('tescil-tarih-input');
     if (!inputEl || !pendingRecordData) return;
 
-    const dateStr = inputEl.value.trim();
+    const iso = String(inputEl.value || '').trim();
+    const dateStr = tescilIsoToDisplay(iso);
 
-    // Validasyon
     const validation = validateDateInput(dateStr);
     if (!validation.valid) {
       alert(validation.message);
@@ -2580,14 +2491,12 @@
       return;
     }
 
-    // Modal kapat
     const inputModal = document.getElementById('tescil-tarih-input-modal');
     if (inputModal) {
       inputModal.classList.remove('active');
       setTimeout(() => inputModal.style.display = 'none', 300);
     }
 
-    // Kaydet
     performSave(pendingRecordData, dateStr);
   };
 
@@ -2601,11 +2510,10 @@
       setTimeout(() => inputModal.style.display = 'none', 300);
     }
 
-    // Temizle
     const inputEl = document.getElementById('tescil-tarih-input');
     if (inputEl) {
       inputEl.value = '';
-      inputEl.classList.remove('field-error');
+      inputEl.classList.remove('field-error', 'has-value');
     }
 
     pendingRecordData = null;
@@ -2682,12 +2590,16 @@
    */
   function performSave(recordData, tescilTarihi) {
     try {
-      // Tescil tarihini record'a ekle; düzenlemede versiyon bilgisini ekle (çakışma kontrolü)
+      // Tescil tarihini record'a ekle; düzenlemede mevcut version, yeni kayıtta başlangıç 1
       const record = {
         ...recordData,
         tescilTarihi: tescilTarihi || ''
       };
-      if (isEditMode) record.version = editingVehicleVersion;
+      if (isEditMode) {
+        record.version = editingVehicleVersion;
+      } else if (record.version == null || record.version === '') {
+        record.version = 1;
+      }
 
       let vehicles = readVehicles();
 
@@ -2743,13 +2655,27 @@
         window.closeVehicleModal();
         pendingRecordData = null;
       }).catch(function(err) {
+        var serverMsg = '';
+        if (err && typeof err.medisaServerMessage === 'string' && err.medisaServerMessage.trim()) {
+          serverMsg = err.medisaServerMessage.trim();
+        } else if (err && typeof err.message === 'string' && err.message.trim()) {
+          serverMsg = err.message.trim();
+        }
+        if (serverMsg) {
+          console.error('[Medisa] Taşıt kayıt hatası:', serverMsg, err);
+        } else {
+          console.error('[Medisa] Taşıt kayıt hatası:', err);
+        }
         if (err && err.conflict) {
           alert('Dikkat! Bu taşıt siz ekranı açtıktan sonra başka biri tarafından güncellenmiş. Veri ezilmesini önlemek için lütfen sayfayı yenileyip güncel durumu kontrol edin.');
           return;
         }
-        alert('Sunucuya kayıt yapılamadı. Lütfen tekrar deneyin.');
+        alert(serverMsg && serverMsg.indexOf('HTTP error') === -1
+          ? ('Kayıt başarısız: ' + serverMsg)
+          : 'Sunucuya kayıt yapılamadı. Lütfen tekrar deneyin.');
       });
     } catch (error) {
+      console.error('[Medisa] Taşıt kayıt istisnası:', error);
       alert('Kayıt sırasında bir hata oluştu! Lütfen tekrar deneyin.');
     }
   }

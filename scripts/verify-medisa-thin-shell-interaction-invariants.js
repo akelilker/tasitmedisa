@@ -147,7 +147,7 @@ async function sourceInvariants() {
     assert.doesNotMatch(cacheFiles[1], /'\/style-core\.css'/);
 
     // Backend/runtime data manager pin — thin-shell scope dışı drift yok.
-    assert.match(index, /data-manager\.js\?v=20260801\.6/);
+    assert.match(index, /data-manager\.js\?v=20260804\.8/);
   });
 
   await run('source: quality gate / package thin-shell bağlandı', function() {

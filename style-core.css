@@ -1492,12 +1492,15 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu .m
     flex-shrink: 0;
 }
 
-/* Kompakt onay: taşıt detay (10030) / olay (10050) üstünde; arka plan hafif karartma */
-body.modal-open .compact-confirm-modal.modal-overlay.active,
-body.modal-open .compact-confirm-modal.modal-overlay.open {
+/* Kompakt onay: taşıt detay (10030) / olay (10050) üstünde; arka plan hafif karartma.
+   Specificity, aşağıdaki modal-open opak .modal-overlay kuralını ezmeli — aksi halde
+   şeffaf overlay yerine var(--bg) boyanır ve arkadaki detay “kaybolur”. */
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .compact-confirm-modal.modal-overlay.active,
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .compact-confirm-modal.modal-overlay.open {
     align-items: center !important;
     justify-content: center !important;
     background: rgba(8, 13, 22, 0.55) !important;
+    background-color: rgba(8, 13, 22, 0.55) !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
     z-index: 10060 !important;
@@ -1505,9 +1508,22 @@ body.modal-open .compact-confirm-modal.modal-overlay.open {
 
 body.modal-open .compact-confirm-modal .modal-container {
     margin: auto !important;
+    filter: none !important;
+    opacity: 1 !important;
 }
 
-body.modal-open:has(.compact-confirm-modal.active) .content-wrap {
+/* Flu: yalnızca .content-wrap yetmez — body’ye mount edilen açık modal katmanları da bulanıklaşır */
+body.modal-open:has(.compact-confirm-modal.active) .content-wrap,
+body.modal-open:has(.compact-confirm-modal.active) #vehicle-detail-modal.modal-overlay.active,
+body.modal-open:has(.compact-confirm-modal.active) #vehicle-detail-modal.modal-overlay.open,
+body.modal-open:has(.compact-confirm-modal.active) #vehicles-modal.modal-overlay.active:not(.detail-underlay),
+body.modal-open:has(.compact-confirm-modal.active) #vehicles-modal.modal-overlay.open:not(.detail-underlay),
+body.modal-open:has(.compact-confirm-modal.active) #event-menu-modal.modal-overlay.active,
+body.modal-open:has(.compact-confirm-modal.active) #event-menu-modal.modal-overlay.open,
+body.modal-open:has(.compact-confirm-modal.active) #dinamik-olay-modal.modal-overlay.active,
+body.modal-open:has(.compact-confirm-modal.active) #dinamik-olay-modal.modal-overlay.open,
+body.modal-open:has(.compact-confirm-modal.active) #vehicle-history-modal.modal-overlay.active,
+body.modal-open:has(.compact-confirm-modal.active) #vehicle-history-modal.modal-overlay.open {
     filter: blur(2px);
     opacity: 0.92;
     transition: filter 0.18s ease, opacity 0.18s ease;
@@ -1895,8 +1911,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
         var(--footer-red-glow) !important;
 }
 
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.active,
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.open {
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.active:not(.compact-confirm-modal),
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.open:not(.compact-confirm-modal) {
     isolation: isolate !important; /* Modal dekor/pseudo katmanlarını kendi stack içinde kilitle */
     background: var(--bg) !important;
     background-color: var(--bg) !important;
@@ -2714,12 +2730,13 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     }
 
     /* Önbellek / bilgi / kompakt onay: ekranda ortala + arka plan karartma */
-    body.modal-open .compact-confirm-modal.modal-overlay.active,
-    body.modal-open .compact-confirm-modal.modal-overlay.open {
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .compact-confirm-modal.modal-overlay.active,
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .compact-confirm-modal.modal-overlay.open {
         align-items: center !important;
         justify-content: center !important;
         padding: env(safe-area-inset-top) 12px env(safe-area-inset-bottom) !important;
         background: rgba(8, 13, 22, 0.55) !important;
+        background-color: rgba(8, 13, 22, 0.55) !important;
         backdrop-filter: none !important;
         -webkit-backdrop-filter: none !important;
     }
