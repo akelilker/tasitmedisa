@@ -172,12 +172,236 @@ assert.match(prodWf, /data\/\*\*/, 'prod FTP excludes data');
 assert.match(deployWf, /MEDISA_SERVER_RESTORE_ENABLED.*false|restore.*false|config_mode=safe|CONFIG_MODE=safe/i, 'safe default restore false');
 assert.match(build, /restoreOn = mode === 'acceptance'/, 'restore only in acceptance mode');
 
-// Banner must not live in committed shell HTML
+// Banner / auth shim must not live in committed shell HTML
 for (const shell of ['index.html', 'driver/index.html', 'driver/dashboard.html', 'admin/driver-report.html']) {
   if (!exists(shell)) continue;
   assertNoMatch(read(shell), /medisa-staging-banner/, `${shell}: committed staging banner yasak`);
   assertNoMatch(read(shell), /STAGING — SENTETİK VERİ/, `${shell}: committed staging banner text yasak`);
+  assertNoMatch(read(shell), /medisa-staging-auth-shim/, `${shell}: committed staging auth shim yasak`);
+  assertNoMatch(read(shell), /X-Medisa-Authorization/, `${shell}: committed X-Medisa-Authorization yasak`);
 }
+
+assert.match(build, /medisa-staging-auth-shim/, 'build injects staging auth shim');
+assert.match(build, /window\.fetch/, 'build auth shim patches fetch');
+assert.match(build, /XMLHttpRequest/, 'build auth shim patches XMLHttpRequest');
+assert.match(build, /X-Medisa-Authorization/, 'build auth shim uses X-Medisa-Authorization');
+assert.match(build, /__medisaStagingAuthShim/, 'build auth shim idempotent window guard');
+assert.match(build, /prototype\.__medisaStagingAuthShim/, 'build auth shim idempotent XHR prototype guard');
+
+/**
+ * Behavioral auth-shim test: generate a temp staging deploy tree, extract the
+ * single medisa-staging-auth-shim script, and exercise fetch + XHR rewrites
+ * against fake browser primitives (no npm deps).
+ */
+function rmRecursive(dir) {
+  if (!fs.existsSync(dir)) return;
+  for (const ent of fs.readdirSync(dir, { withFileTypes: true })) {
+    const p = path.join(dir, ent.name);
+    if (ent.isDirectory()) rmRecursive(p);
+    else fs.unlinkSync(p);
+  }
+  fs.rmdirSync(dir);
+}
+
+function extractAuthShimSource(html) {
+  const m = String(html).match(
+    /<script\s+id=["']medisa-staging-auth-shim["']\s*>([\s\S]*?)<\/script>/i
+  );
+  assert.ok(m && m[1], 'generated index.html must contain medisa-staging-auth-shim');
+  const all = [...String(html).matchAll(/medisa-staging-auth-shim/g)];
+  assert.equal(all.length, 1, 'generated HTML must have exactly one auth shim id occurrence');
+  return m[1].trim();
+}
+
+function createFakeBrowser() {
+  class FakeHeaders {
+    constructor(init) {
+      this._map = new Map();
+      if (!init) return;
+      if (init instanceof FakeHeaders) {
+        for (const [k, v] of init._map) this._map.set(k, v);
+        return;
+      }
+      if (Array.isArray(init)) {
+        for (const pair of init) this.set(pair[0], pair[1]);
+        return;
+      }
+      for (const k of Object.keys(init)) this.set(k, init[k]);
+    }
+    _norm(name) {
+      return String(name || '').toLowerCase();
+    }
+    get(name) {
+      const v = this._map.get(this._norm(name));
+      return v === undefined ? null : v;
+    }
+    set(name, value) {
+      this._map.set(this._norm(name), String(value));
+    }
+    delete(name) {
+      this._map.delete(this._norm(name));
+    }
+    has(name) {
+      return this._map.has(this._norm(name));
+    }
+    entries() {
+      return this._map.entries();
+    }
+  }
+
+  const fetchCalls = [];
+  function fakeFetch(input, init) {
+    fetchCalls.push({ input, init: init || {} });
+    return Promise.resolve({ ok: true });
+  }
+
+  function FakeXHR() {}
+  const underlying = [];
+  FakeXHR.prototype.setRequestHeader = function (name, value) {
+    underlying.push({ name: String(name), value: String(value) });
+  };
+
+  return {
+    FakeHeaders,
+    fakeFetch,
+    FakeXHR,
+    fetchCalls,
+    underlying,
+    window: {
+      fetch: fakeFetch,
+      Headers: FakeHeaders,
+      XMLHttpRequest: FakeXHR,
+      __medisaStagingAuthShim: undefined
+    }
+  };
+}
+
+function runAuthShimBehaviorTests() {
+  const vm = require('node:vm');
+  const os = require('node:os');
+  const tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'medisa-staging-auth-shim-'));
+  const outDir = path.join(tmpRoot, 'deploy');
+  try {
+    const synthSecret = 'medisa-staging-isolation-test-token-secret-32b';
+    assert.ok(synthSecret.length >= 32, 'synthetic token secret length');
+    const buildRun = spawnSync(
+      process.execPath,
+      [path.join(root, 'scripts', 'build-medisa-staging-deploy.js')],
+      {
+        cwd: root,
+        encoding: 'utf8',
+        env: {
+          ...process.env,
+          MEDISA_STAGING_OUTPUT_DIR: outDir,
+          MEDISA_STAGING_INCLUDE_DATA: 'false',
+          MEDISA_STAGING_CONFIG_MODE: 'safe',
+          MEDISA_STAGING_TOKEN_SECRET: synthSecret
+        }
+      }
+    );
+    assert.equal(buildRun.status, 0, 'temp staging deploy build failed: ' + (buildRun.stderr || buildRun.stdout || '').slice(0, 400));
+    const indexHtml = fs.readFileSync(path.join(outDir, 'index.html'), 'utf8');
+    const shimSrc = extractAuthShimSource(indexHtml);
+    assert.match(shimSrc, /XMLHttpRequest/, 'shim source includes XHR patch');
+    assert.match(shimSrc, /window\.fetch|fetch=function/, 'shim source includes fetch patch');
+
+    const env = createFakeBrowser();
+    const sandbox = {
+      window: env.window,
+      Headers: env.FakeHeaders,
+      XMLHttpRequest: env.FakeXHR,
+      console
+    };
+    sandbox.window.Headers = env.FakeHeaders;
+    sandbox.window.XMLHttpRequest = env.FakeXHR;
+    sandbox.window.fetch = env.fakeFetch;
+    vm.createContext(sandbox);
+    vm.runInContext(shimSrc, sandbox);
+
+    // 1) Fetch Bearer rewrite
+    sandbox.window.fetch('https://example.test/save.php', {
+      headers: { Authorization: 'Bearer test-token' }
+    });
+    assert.equal(env.fetchCalls.length, 1, 'fetch shim invoked underlying fetch once');
+    const fetchInit = env.fetchCalls[0].init;
+    assert.equal(fetchInit.credentials, 'include', 'fetch credentials include');
+    assert.ok(fetchInit.headers instanceof env.FakeHeaders, 'fetch headers rewritten to Headers');
+    assert.equal(fetchInit.headers.get('X-Medisa-Authorization'), 'Bearer test-token', 'fetch Bearer → X-Medisa-Authorization PASS');
+    assert.equal(fetchInit.headers.get('Authorization'), null, 'fetch Authorization Bearer removed PASS');
+    console.log('auth-shim-behavior fetch-bearer: PASS');
+
+    // 2) XHR Bearer rewrite
+    env.underlying.length = 0;
+    const xhr = new sandbox.window.XMLHttpRequest();
+    xhr.setRequestHeader('Authorization', 'Bearer test-token');
+    assert.deepEqual(
+      env.underlying,
+      [{ name: 'X-Medisa-Authorization', value: 'Bearer test-token' }],
+      'XHR Bearer → X-Medisa-Authorization only PASS'
+    );
+    console.log('auth-shim-behavior xhr-bearer: PASS');
+
+    // 3) Case-insensitive Authorization name
+    env.underlying.length = 0;
+    xhr.setRequestHeader('authorization', 'Bearer case-lower');
+    xhr.setRequestHeader('AUTHORIZATION', 'Bearer case-upper');
+    assert.deepEqual(
+      env.underlying,
+      [
+        { name: 'X-Medisa-Authorization', value: 'Bearer case-lower' },
+        { name: 'X-Medisa-Authorization', value: 'Bearer case-upper' }
+      ],
+      'XHR Authorization name case-insensitive PASS'
+    );
+    console.log('auth-shim-behavior xhr-case: PASS');
+
+    // 4) XHR Basic preserved
+    env.underlying.length = 0;
+    xhr.setRequestHeader('Authorization', 'Basic test-value');
+    assert.deepEqual(
+      env.underlying,
+      [{ name: 'Authorization', value: 'Basic test-value' }],
+      'XHR Basic Authorization preserved PASS'
+    );
+    console.log('auth-shim-behavior xhr-basic: PASS');
+
+    // 5) Normal headers preserved
+    env.underlying.length = 0;
+    xhr.setRequestHeader('Accept', 'application/json');
+    xhr.setRequestHeader('X-Test', '1');
+    assert.deepEqual(
+      env.underlying,
+      [
+        { name: 'Accept', value: 'application/json' },
+        { name: 'X-Test', value: '1' }
+      ],
+      'XHR normal headers preserved PASS'
+    );
+    console.log('auth-shim-behavior xhr-normal-headers: PASS');
+
+    // 6) Idempotency: second shim install must not double-wrap
+    const beforeProto = sandbox.window.XMLHttpRequest.prototype.setRequestHeader;
+    vm.runInContext(shimSrc, sandbox);
+    assert.equal(
+      sandbox.window.XMLHttpRequest.prototype.setRequestHeader,
+      beforeProto,
+      'second shim install must not rewrap setRequestHeader'
+    );
+    env.underlying.length = 0;
+    xhr.setRequestHeader('Authorization', 'Bearer once');
+    assert.equal(env.underlying.length, 1, 'idempotent shim: one underlying call');
+    assert.deepEqual(env.underlying[0], { name: 'X-Medisa-Authorization', value: 'Bearer once' });
+    console.log('auth-shim-behavior idempotency: PASS');
+
+    // 7+8 already covered: committed shells clean; single shim in generated HTML
+    console.log('auth-shim-behavior production-source-clean: PASS');
+    console.log('auth-shim-behavior single-shim-in-deploy-html: PASS');
+  } finally {
+    rmRecursive(tmpRoot);
+  }
+}
+
+runAuthShimBehaviorTests();
 
 // Rule yerel gitignore altında olabilir; CI checkout'ta dosya bulunmayabilir.
 assert.match(gitignore, /ironbee-devtools-use\.mdc/, 'protected cursor rule remains gitignored');
