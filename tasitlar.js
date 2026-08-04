@@ -197,7 +197,7 @@
 
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20260804.5';
+  const MEDISA_TASITLAR_MODULE_VERSION = '20260804.8';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
@@ -9291,17 +9291,25 @@
         return;
       }
       let settled = false;
+      function syncModalOpenState() {
+        if (typeof window.updateFooterDim === 'function') {
+          window.updateFooterDim();
+          return;
+        }
+        const stillOpen = !!(
+          document.querySelector('.modal-overlay.active, .modal-overlay.open')
+        );
+        document.body.classList.toggle('modal-open', stillOpen);
+      }
       function finish(result) {
         if (settled) return;
         settled = true;
         yesBtn.onclick = null;
         noBtn.onclick = null;
         if (closeBtn) closeBtn.onclick = null;
-        modal.classList.remove('active');
+        modal.classList.remove('active', 'open');
         modal.style.display = 'none';
-        if (typeof window.updateFooterDim === 'function') {
-          window.updateFooterDim();
-        }
+        syncModalOpenState();
         resolve(result);
       }
       msgEl.textContent = String(message || '');
@@ -9322,18 +9330,27 @@
           finish(null);
         };
       }
-      document.body.classList.add('modal-open');
       modal.style.display = 'flex';
-      requestAnimationFrame(function() { modal.classList.add('active'); });
+      requestAnimationFrame(function() {
+        modal.classList.add('active');
+        syncModalOpenState();
+      });
     });
   }
 
   function refreshUiAfterSatisArchive(keepDetailOpen) {
+    if (keepDetailOpen) {
+      /* Soru/upload sırasında detayı kapatma; dashboard’a sıfırlama — yalnız mevcut listeyi güncelle */
+      if (typeof window.renderVehicles === 'function') window.renderVehicles();
+      if (typeof window.updateFooterDim === 'function') window.updateFooterDim();
+      return;
+    }
     if (typeof window.renderBranchDashboard === 'function') window.renderBranchDashboard();
     if (typeof window.renderVehicles === 'function') window.renderVehicles();
-    if (!keepDetailOpen && typeof window.closeVehicleDetailModal === 'function') {
+    if (typeof window.closeVehicleDetailModal === 'function') {
       closeVehicleDetailModal();
     }
+    if (typeof window.updateFooterDim === 'function') window.updateFooterDim();
   }
 
   /** Doğrudan belge modalı — showVehicleDetail + setTimeout yarışı yok. */
@@ -9367,7 +9384,7 @@
       refreshUi(false);
       return Promise.resolve();
     }
-    refreshUi(true);
+    /* Soru öncesi UI yenileme/detay kapatma yok — detay arkada kalsın; liste akış bitince güncellenir */
     return askConfirm('Satış Sözleşmesini Yüklediniz mi?').then(function(first) {
       if (first === true) {
         const vehicle = readVehicles().find(function(v) { return String(v.id) === vid; });
@@ -9377,12 +9394,14 @@
           return;
         }
         openUpload(vid);
+        refreshUi(true);
         return;
       }
       if (first === false) {
         return askConfirm('Satış Sözleşmesini Şimdi Yüklemek İster misiniz?').then(function(second) {
           if (second === true) {
             openUpload(vid);
+            refreshUi(true);
             return;
           }
           refreshUi(false);

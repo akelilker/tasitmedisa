@@ -1751,7 +1751,25 @@ async function saveDataToServer(options) {
                 } catch (parse409Err) {}
                 throw conflictError;
             }
-            throw new Error('HTTP error! status: ' + response.status);
+            var httpErrMsg = 'HTTP error! status: ' + response.status;
+            var httpServerMessage = '';
+            try {
+                var errBody = await response.json();
+                if (errBody && typeof errBody === 'object') {
+                    if (typeof errBody.message === 'string' && errBody.message.trim() !== '') {
+                        httpServerMessage = errBody.message.trim();
+                    } else if (typeof errBody.error === 'string' && errBody.error.trim() !== '') {
+                        httpServerMessage = errBody.error.trim();
+                    }
+                }
+            } catch (parseHttpErr) {}
+            if (httpServerMessage) {
+                httpErrMsg = httpServerMessage + ' (HTTP ' + response.status + ')';
+            }
+            console.error('[Medisa] save.php hata:', response.status, httpServerMessage || httpErrMsg);
+            var httpError = new Error(httpErrMsg);
+            if (httpServerMessage) httpError.medisaServerMessage = httpServerMessage;
+            throw httpError;
         }
 
         var data = await response.json();
