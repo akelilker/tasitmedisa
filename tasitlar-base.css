@@ -2942,7 +2942,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 }
 .v-search-input {
     width: 100%;
-    background: var(--bg-2);
+    color-scheme: dark;
+    background-color: var(--bg-2, #151515);
     border: 1px solid var(--br);
     color: var(--txt-white);
     padding: 6px 12px;
@@ -2958,6 +2959,22 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 }
 .v-search-input::placeholder {
     color: var(--txt-gray-darkest);
+}
+/* Chrome/Firefox autofill: beyaz UA zemini Premium Dark'ı ezmesin */
+.v-search-input:-webkit-autofill,
+.v-search-input:-webkit-autofill:hover,
+.v-search-input:-webkit-autofill:focus,
+.v-search-input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px var(--bg-2, #151515) inset !important;
+    -webkit-text-fill-color: var(--txt-white, #ffffff) !important;
+    background-color: var(--bg-2, #151515) !important;
+    caret-color: var(--txt-white, #ffffff) !important;
+    transition: background-color 5000s ease-in-out 0s, color 5000s ease-in-out 0s !important;
+}
+.v-search-input:-moz-autofill {
+    background-color: var(--bg-2, #151515) !important;
+    color: var(--txt-white, #ffffff) !important;
+    box-shadow: 0 0 0 1000px var(--bg-2, #151515) inset !important;
 }
 
 /* ıman simgesi + dropdown (genişleyip daralmayan) */

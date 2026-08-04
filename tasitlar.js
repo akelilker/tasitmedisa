@@ -2361,7 +2361,7 @@
             <div class="vt-left"></div>
             <div class="vt-right">
                 <div id="v-search-container" class="v-search-container">
-                    <input type="text" id="v-search-input" class="v-search-input" placeholder="Plaka, marka, kullan\u0131c\u0131 ara..." oninput="handleSearch(this.value)">
+                    <input type="text" id="v-search-input" class="v-search-input" placeholder="Plaka, marka, kullan\u0131c\u0131 ara..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" oninput="handleSearch(this.value)">
                 </div>
                 <button class="vt-icon-btn search-toggle-btn" onclick="toggleSearchBox('global')" title="Genel Arama">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg>
@@ -2397,7 +2397,7 @@
             </div>
             <div class="vt-right">
                 <div id="v-search-container" class="v-search-container">
-                    <input type="text" id="v-search-input" class="v-search-input" placeholder="Plaka, marka, kullan\u0131c\u0131 ara..." oninput="handleSearch(this.value)">
+                    <input type="text" id="v-search-input" class="v-search-input" placeholder="Plaka, marka, kullan\u0131c\u0131 ara..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" oninput="handleSearch(this.value)">
                 </div>
                 <button class="vt-icon-btn search-toggle-btn" onclick="toggleSearchBox('local')" title="Ara">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg>
