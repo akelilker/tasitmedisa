@@ -197,7 +197,7 @@
 
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20260804.3';
+  const MEDISA_TASITLAR_MODULE_VERSION = '20260804.4';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
@@ -2761,8 +2761,14 @@
           thirdLine = v.tahsisKisi || '';
         }
         const thirdLineDisplay = thirdLine ? (isArchive ? toTitleCase(thirdLine) : (activeBranchId === 'all' ? toTitleCase(thirdLine) : formatAdSoyad(thirdLine))) : '';
-        const satildiCardSpan = isArchive ? ' <span style="color:#d40000;font-size:12px;">(SATILDI)</span>' : '';
-        const satildiBrandLine = isArchive ? '<span class="archive-satildi-line">(SATILDI)</span>' : '';
+        const archiveStatusLabel = isArchive ? getVehicleArchiveStatusLabel(v) : '';
+        const archiveStatusParen = archiveStatusLabel ? '(' + archiveStatusLabel + ')' : '';
+        const satildiCardSpan = archiveStatusParen
+          ? ' <span style="color:#d40000;font-size:12px;">' + escapeHtml(archiveStatusParen) + '</span>'
+          : '';
+        const satildiBrandLine = archiveStatusParen
+          ? '<span class="archive-status-line">' + escapeHtml(archiveStatusParen) + '</span>'
+          : '';
 
         // Tahsis edilmemiş taşıtlar için kırmızı class (liste ve kartta her zaman)
         const isUnassigned = !v.branchId;
@@ -3014,9 +3020,10 @@
       String(vehicle.satildiMi === true ? 1 : 0),
       String(Array.isArray(vehicle.events) ? vehicle.events.length : 0)
     ].join('|');
-    const isArchiveSoldDetail = vehicle.satildiMi === true && lastListContext && lastListContext.mode === 'archive';
+    const archiveStatusLabel = getVehicleArchiveStatusLabel(vehicle);
+    const isArchiveSoldDetail = !!archiveStatusLabel && lastListContext && lastListContext.mode === 'archive';
 
-    // Plaka (üstte yatayda ortalı) - Satıldı durumu için kırmızı yazı ekle
+    // Plaka (üstte yatayda ortalı) — arşiv durumu için kırmızı etiket (SATILDI | PERT)
     // Plaka container'ını kontrol et, yoksa oluştur
     let plateRow = contentEl.querySelector('.detail-plate-row');
     if (!plateRow) {
@@ -3027,8 +3034,8 @@
       // Yeni plaka elementi oluştur
       const plateEl = document.createElement('div');
       plateEl.className = 'detail-plate';
-      if (vehicle.satildiMi && !isArchiveSoldDetail) {
-        plateEl.innerHTML = `${escapeHtml(vehicle.plate || '-')} <span style="color: #d40000; font-size: 16px; margin-left: 8px;">SATILDI</span>`;
+      if (archiveStatusLabel && !isArchiveSoldDetail) {
+        plateEl.innerHTML = `${escapeHtml(vehicle.plate || '-')} <span style="color: #d40000; font-size: 16px; margin-left: 8px;">${escapeHtml(archiveStatusLabel)}</span>`;
       } else {
         plateEl.textContent = vehicle.plate || '-';
       }
@@ -3045,8 +3052,8 @@
       // Container varsa sadece plakayı güncelle
       const plateEl = plateRow.querySelector('.detail-plate');
       if (plateEl) {
-        if (vehicle.satildiMi && !isArchiveSoldDetail) {
-          plateEl.innerHTML = `${escapeHtml(vehicle.plate || '-')} <span style="color: #d40000; font-size: 16px; margin-left: 8px;">SATILDI</span>`;
+        if (archiveStatusLabel && !isArchiveSoldDetail) {
+          plateEl.innerHTML = `${escapeHtml(vehicle.plate || '-')} <span style="color: #d40000; font-size: 16px; margin-left: 8px;">${escapeHtml(archiveStatusLabel)}</span>`;
         } else {
           plateEl.textContent = vehicle.plate || '-';
         }
@@ -3154,10 +3161,10 @@
       const toolbarCenter = document.createElement('div');
       toolbarCenter.className = 'detail-toolbar-center-absolute';
 
-      if (isArchiveSoldDetail) {
+      if (isArchiveSoldDetail && archiveStatusLabel) {
         const soldBadge = document.createElement('span');
-        soldBadge.className = 'detail-sold-badge';
-        soldBadge.textContent = 'SATILDI';
+        soldBadge.className = 'detail-archive-status-badge';
+        soldBadge.textContent = archiveStatusLabel;
         toolbarCenter.appendChild(soldBadge);
       }
       if (!vehicle.branchId && !isArchivedVehicleAssignmentLocked(vehicle)) {
@@ -3728,6 +3735,14 @@
     return getVehicleArchiveReason(vehicle) === 'pert';
   }
 
+  /** Arşiv durum etiketi: 'SATILDI' | 'PERT' | '' (aktif stokta boş). */
+  function getVehicleArchiveStatusLabel(vehicle) {
+    const reason = getVehicleArchiveReason(vehicle);
+    if (reason === 'pert') return 'PERT';
+    if (reason === 'satis') return 'SATILDI';
+    return '';
+  }
+
   /** Satış sözleşmesi: stoktan düşen (satis|pert) araçlar; aktif stok hariç. */
   function vehicleAllowsSatisSozlesmesi(vehicle) {
     return getVehicleArchiveReason(vehicle) != null;
@@ -3736,6 +3751,7 @@
   window.isVehicleSold = isVehicleSold;
   window.isVehiclePert = isVehiclePert;
   window.getVehicleArchiveReason = getVehicleArchiveReason;
+  window.getVehicleArchiveStatusLabel = getVehicleArchiveStatusLabel;
   window.vehicleAllowsSatisSozlesmesi = vehicleAllowsSatisSozlesmesi;
 
   /**
@@ -9541,7 +9557,7 @@
     return '';
   }
 
-  function getHistoryEventTypeLabel(eventType) {
+  function getHistoryEventTypeLabel(eventType, event) {
     const map = {
       bakim: 'Bakım',
       kaza: 'Kaza',
@@ -9573,6 +9589,15 @@
       'satis-sozlesmesi-yukle': 'Satış Sözleşmesi'
     };
     const key = String(eventType || '').trim();
+    if (key === 'satis') {
+      const data = (event && event.data && typeof event.data === 'object') ? event.data : {};
+      const eventNeden = String(data.arsivNedeni || '').trim().toLowerCase();
+      if (eventNeden === 'pert'
+        || (eventNeden !== 'satis' && data.pertIsaret === true)) {
+        return 'Pert';
+      }
+      return 'Satış';
+    }
     if (map[key]) return map[key];
     return toTitleCase(key || 'Diğer');
   }
@@ -9840,7 +9865,7 @@
     const detailsHtml = details.length
       ? '<div class="history-item-meta history-item-details">' + historyDetailPartsHtml(details) + '</div>'
       : '';
-    const typeLabel = escapeHtml(getHistoryEventTypeLabel(eventType));
+    const typeLabel = escapeHtml(getHistoryEventTypeLabel(eventType, event));
     const datetimeAttr = historyEventDatetimeAttr(event);
 
     return '<div class="history-item history-item-diger">' +

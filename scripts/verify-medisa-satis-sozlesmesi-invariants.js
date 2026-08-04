@@ -70,6 +70,7 @@ function loadArchiveHelpers() {
       '\n;this.getVehicleArchiveReason = getVehicleArchiveReason;' +
       '\n;this.isVehicleSold = isVehicleSold;' +
       '\n;this.isVehiclePert = isVehiclePert;' +
+      '\n;this.getVehicleArchiveStatusLabel = getVehicleArchiveStatusLabel;' +
       '\n;this.vehicleAllowsSatisSozlesmesi = vehicleAllowsSatisSozlesmesi;',
     sandbox
   );
@@ -168,6 +169,21 @@ test('domain: aktif / pert / satış / legacy sınıflandırma', function() {
     }),
     true
   );
+  assert.equal(h.getVehicleArchiveStatusLabel({ satildiMi: false }), '', 'aktif → etiket yok');
+  assert.equal(h.getVehicleArchiveStatusLabel({ satildiMi: true, arsivNedeni: 'satis' }), 'SATILDI');
+  assert.equal(h.getVehicleArchiveStatusLabel({ satildiMi: true, arsivNedeni: 'pert' }), 'PERT');
+  assert.equal(
+    h.getVehicleArchiveStatusLabel({
+      satildiMi: true,
+      events: [{ type: 'satis', data: { pertIsaret: true } }]
+    }),
+    'PERT',
+    'legacy pert → PERT'
+  );
+  assert.doesNotMatch(
+    String(h.getVehicleArchiveStatusLabel({ satildiMi: true, arsivNedeni: 'pert' })),
+    /SATILDI/
+  );
   assert.equal(h.vehicleAllowsSatisSozlesmesi({ satildiMi: false }), false, 'aktif → sözleşme yok');
   assert.equal(h.vehicleAllowsSatisSozlesmesi({ satildiMi: true, arsivNedeni: 'satis' }), true);
   assert.equal(h.vehicleAllowsSatisSozlesmesi({ satildiMi: true, arsivNedeni: 'pert' }), true);
@@ -179,6 +195,49 @@ test('domain: aktif / pert / satış / legacy sınıflandırma', function() {
     true,
     'legacy pert → sözleşme var'
   );
+});
+
+test('source: arşiv kart/liste/detay etiketleri helper üzerinden', function() {
+  assert.match(tasitlar, /function getVehicleArchiveStatusLabel\(vehicle\)/);
+  assert.match(tasitlar, /getVehicleArchiveStatusLabel\(v\)/);
+  assert.match(tasitlar, /archive-status-line/);
+  assert.match(tasitlar, /detail-archive-status-badge/);
+  assert.doesNotMatch(tasitlar, /archive-satildi-line/);
+  assert.doesNotMatch(tasitlar, /detail-sold-badge/);
+  assert.doesNotMatch(tasitlar, /soldBadge\.textContent\s*=\s*'SATILDI'/);
+  assert.doesNotMatch(
+    tasitlar,
+    /isArchive \? ' <span style="color:#d40000;font-size:12px;">\(SATILDI\)<\/span>'/
+  );
+});
+
+test('source: tarihçe satis chip Satış/Pert ayrımı', function() {
+  assert.match(tasitlar, /function getHistoryEventTypeLabel\(eventType,\s*event\)/);
+  assert.match(tasitlar, /getHistoryEventTypeLabel\(eventType,\s*event\)/);
+  const labelFn = extractBetween(
+    tasitlar,
+    'function getHistoryEventTypeLabel(eventType, event) {',
+    'window.showVehicleHistory = function'
+  );
+  const sandbox = {
+    toTitleCase: function(s) { return String(s || ''); }
+  };
+  vm.createContext(sandbox);
+  vm.runInContext(labelFn + '\n;this.getHistoryEventTypeLabel = getHistoryEventTypeLabel;', sandbox);
+  assert.equal(
+    sandbox.getHistoryEventTypeLabel('satis', { data: { arsivNedeni: 'satis' } }),
+    'Satış'
+  );
+  assert.equal(
+    sandbox.getHistoryEventTypeLabel('satis', { data: { arsivNedeni: 'pert' } }),
+    'Pert'
+  );
+  assert.equal(
+    sandbox.getHistoryEventTypeLabel('satis', { data: { pertIsaret: true } }),
+    'Pert'
+  );
+  assert.equal(sandbox.getHistoryEventTypeLabel('satis', { data: {} }), 'Satış');
+  assert.equal(sandbox.getHistoryEventTypeLabel('satis-sozlesmesi-yukle'), 'Satış Sözleşmesi');
 });
 
 test('UI keys: kart stoktan düşen satış ve pertte üretilir', function() {
@@ -490,7 +549,7 @@ test('cache / modül pin parity', function() {
   const notifVer = (scriptCore.match(/notifications:\s*'([^']+)'/) || [])[1];
   const ayarlarCssVer = (scriptCore.match(/ayarlarCss:\s*'([^']+)'/) || [])[1];
   const ayarlarJsVer = (scriptCore.match(/ayarlarJs:\s*'([^']+)'/) || [])[1];
-  assert.equal(moduleVer, '20260804.3');
+  assert.equal(moduleVer, '20260804.4');
   assert.equal(loaderVer, moduleVer);
   assert.equal(notifVer, '20260804.1');
   assert.equal(ayarlarCssVer, '20260804.3');
