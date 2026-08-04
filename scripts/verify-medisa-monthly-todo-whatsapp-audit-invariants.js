@@ -1,5 +1,5 @@
 /**
- * P1-C — Monthly todo WhatsApp audit invariants.
+ * P1-C — Kullanıcı Raporları WhatsApp audit invariants.
  * Çalıştır: node scripts/verify-medisa-monthly-todo-whatsapp-audit-invariants.js
  */
 'use strict';
@@ -23,13 +23,6 @@ async function run(name, fn) {
 }
 function read(rel) { return fs.readFileSync(path.join(ROOT, rel), 'utf8'); }
 
-function extractBlock(src, beginMark, endMark) {
-  const begin = src.indexOf(beginMark);
-  const end = src.indexOf(endMark);
-  assert.ok(begin !== -1 && end !== -1 && end > begin, 'marker bloğu bulunmalı: ' + beginMark);
-  return src.slice(begin, end + endMark.length);
-}
-
 function extractNamedFunction(src, name) {
   const startToken = 'function ' + name + '(';
   const start = src.indexOf(startToken);
@@ -49,7 +42,7 @@ function extractNamedFunction(src, name) {
 }
 
 function loadAuditHelpers() {
-  const src = read('notifications.js');
+  const src = read('admin/admin-report.js');
   const ctx = {
     console,
     Object,
@@ -60,13 +53,8 @@ function loadAuditHelpers() {
     Number,
     String,
     isNaN,
-    resolveMonthlyTodoTaskKind: function(task) {
-      var f = task && task.field;
-      if (f === 'sigortaDate') return 'Sigorta';
-      if (f === 'kaskoDate') return 'Kasko';
-      return '';
-    },
-    formatDateForDisplay: function(v) { return String(v || ''); }
+    formatUserWhatsAppAuditDate: function(v) { return String(v || ''); },
+    userWhatsAppAuditState: { search: '', branchId: 'all', typeCode: 'all', timeFilter: 'all' }
   };
   const code = [
     extractNamedFunction(src, 'getMonthlyTodoWaTypeLabel'),
@@ -98,8 +86,6 @@ function createRecordHarness(opts) {
   const windowRef = {
     appData: { monthlyTodoWhatsAppLogs: logs },
     __medisaLogError: function() {},
-    dispatchEvent: function(ev) { events.push(ev); return true; },
-    CustomEvent: function(type, init) { this.type = type; this.detail = init && init.detail; },
     getElementById: function() { return null; }
   };
   if (opts.saveMode === 'missing') {
@@ -146,11 +132,7 @@ function createRecordHarness(opts) {
     applyMonthlyTodoWhatsAppOpenedUiState: function(anchorEl) {
       if (!anchorEl) return;
       anchorEl.classList.add('monthly-todo-whatsapp-btn', 'is-reminder-opened');
-    },
-    dispatchMonthlyTodoWhatsAppLogsChanged: function(reminderKey, action, updatedAt) {
-      events.push({ type: 'medisa:monthly-todo-whatsapp-logs-changed', detail: { reminderKey, action, updatedAt } });
-    },
-    renderMonthlyTodoWhatsAppAuditModalContent: function() {}
+    }
   };
 
   // Pull the exact recordMonthlyTodoWhatsAppOpened function body from source.
@@ -247,25 +229,28 @@ function createRecordHarness(opts) {
 
 (async function main() {
   const notif = read('notifications.js');
-  const css = read('notifications.css');
+  const notifCss = read('notifications.css');
+  const adminJs = read('admin/admin-report.js');
+  const adminCss = read('admin/admin-report.css');
+  const adminHtml = read('admin/driver-report.html');
+  const adminPhp = read('admin/admin_report.php');
   const core = read('script-core.js');
   const index = read('index.html');
 
-  await run('source: audit modal + role guard + disclosure', function() {
-    assert.match(notif, /monthly-todo-whatsapp-audit-modal/);
-    assert.match(notif, /function openMonthlyTodoWhatsAppAudit/);
-    assert.match(notif, /if \(!isMainAppSessionGenelYonetici\(\)\) return;/);
-    assert.match(notif, /Bu kayıtlar WhatsApp bağlantısının uygulama üzerinden başlatıldığını gösterir/);
-    assert.match(notif, /data-action="open-monthly-todo-wa-audit"/);
-    assert.doesNotMatch(notif, /WhatsApp Geçmişi[\s\S]{0,200}sil/i);
-    assert.doesNotMatch(notif, /exportWhatsApp|deleteWhatsAppAudit|clearWhatsAppLogs/);
+  await run('source: audit UI yalnız Kullanıcı Raporları sekmesinde', function() {
+    assert.doesNotMatch(notif, /WhatsApp Geçmişi|monthly-todo-whatsapp-audit-modal|openMonthlyTodoWhatsAppAudit/);
+    assert.doesNotMatch(notifCss, /monthly-todo-wa-audit|monthly-todo-whatsapp-audit-modal/);
+    assert.match(adminHtml, /id="tab-kullanici"[\s\S]*id="user-whatsapp-audit-btn"[\s\S]*id="user-whatsapp-audit-modal"/);
+    assert.match(adminJs, /function openUserWhatsAppAudit\(\)/);
+    assert.match(adminJs, /Bu kayıtlar WhatsApp bağlantısının uygulama üzerinden başlatıldığını gösterir/);
+    assert.match(adminCss, /#user-whatsapp-audit-modal/);
+    assert.doesNotMatch(adminJs, /exportWhatsApp|deleteWhatsAppAudit|clearWhatsAppLogs/);
   });
 
   await run('source: strict save true + rollback', function() {
     assert.match(notif, /ok !== true/);
     assert.match(notif, /WhatsApp bağlantısı açıldı ancak bildirim geçmişi sunucuya kaydedilemedi/);
     assert.match(notif, /monthlyTodoWaSaveInflight/);
-    assert.match(notif, /medisa:monthly-todo-whatsapp-logs-changed/);
     const thenSliceMatch = notif.match(/window\.saveDataToServer\(\)\.then\(function\(ok\) \{[\s\S]*?\}\)\.catch/);
     assert.ok(thenSliceMatch, 'save then/catch zinciri bulunmalı');
     const thenSlice = thenSliceMatch[0];
@@ -277,17 +262,27 @@ function createRecordHarness(opts) {
     );
   });
 
-  await run('source: notifications JS/CSS pin parity + index script-core', function() {
+  await run('source: notifications ve Kullanıcı Raporları asset pinleri', function() {
     const ver = (core.match(/notifications:\s*'([^']+)'/) || [])[1];
     const scriptPin = (index.match(/script-core\.js\?v=([0-9.]+)/) || [])[1];
+    const adminScriptPin = (adminHtml.match(/script-core\.js\?v=([0-9.]+)/) || [])[1];
     assert.ok(ver, 'notifications version bulunmalı');
     assert.ok(scriptPin, 'script-core pin bulunmalı');
-    assert.equal(ver, scriptPin, 'notifications ile script-core pin parity');
+    assert.equal(scriptPin, adminScriptPin, 'ana uygulama ve Kullanıcı Raporları script-core pin parity');
     assert.match(core, /notifications\.js\?v=' \+ V\.notifications/);
     assert.match(core, /notifications\.css\?v=' \+ V\.notifications/);
     assert.match(index, new RegExp('script-core\\.js\\?v=' + scriptPin.replace(/\./g, '\\.')));
-    assert.match(index, /data-manager\.js\?v=20260801\.5/);
-    assert.match(css, /monthly-todo-wa-audit/);
+    assert.match(index, /data-manager\.js\?v=20260801\.6/);
+    assert.match(adminHtml, /admin-report\.css\?v=20260804\.1/);
+    assert.match(adminHtml, /admin-report\.js\?v=20260804\.1/);
+  });
+
+  await run('role: sunucu ve UI genel yönetici audit kapısı', function() {
+    assert.match(adminPhp, /\$canViewWhatsAppAudit = \(\$context\['role'\] \?\? ''\) === 'genel_yonetici'/);
+    assert.match(adminPhp, /'whatsapp_logs' => \$canViewWhatsAppAudit/);
+    assert.match(adminJs, /userWhatsAppAuditAllowed = data\.can_view_whatsapp_audit === true/);
+    assert.match(adminJs, /if \(!userWhatsAppAuditAllowed\) return;/);
+    assert.match(adminHtml, /id="user-whatsapp-audit-btn"[^>]*hidden/);
   });
 
   const api = loadAuditHelpers();
@@ -335,7 +330,7 @@ function createRecordHarness(opts) {
     assert.equal(rows[0].openedBy, '<b>Hack</b>');
   });
 
-  await run('transaction: save true creates entry + UI + event', async function() {
+  await run('transaction: save true creates entry + UI', async function() {
     const h = createRecordHarness({ saveMode: 'true' });
     const a = h.makeAnchor();
     h.record('rk1', a);
@@ -344,7 +339,7 @@ function createRecordHarness(opts) {
     await new Promise(function(r) { setTimeout(r, 10); });
     assert.equal(h.logs.rk1.openedCount, 1);
     assert.equal(a._openedUi, true);
-    assert.equal(h.events.length, 1);
+    assert.equal(h.events.length, 0);
     assert.equal(h.alerts.length, 0);
   });
 
@@ -430,11 +425,6 @@ function createRecordHarness(opts) {
     h.resolveSave(true);
     await new Promise(function(r) { setTimeout(r, 0); });
     assert.equal(h.logs.rk1.openedCount, 1);
-  });
-
-  await run('role: openMonthlyTodoWhatsAppAudit genel_yonetici guard in source', function() {
-    assert.match(notif, /function openMonthlyTodoWhatsAppAudit\(\) \{\s*if \(!isMainAppSessionGenelYonetici\(\)\) return;/);
-    assert.match(notif, /function getMonthlyTodoWhatsAppAuditButtonHtml\(\) \{\s*if \(!isMainAppSessionGenelYonetici\(\)\) return '';/);
   });
 
   console.log('\nWhatsApp audit invariants: ' + passed + ' passed, ' + failed + ' failed');
