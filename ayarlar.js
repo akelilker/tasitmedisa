@@ -346,8 +346,8 @@
             </div>
         </div>
 
-<div id="cache-confirm-modal" class="modal-overlay ayarlar-modal-overlay">
-            <div class="modal-container" style="max-width: 400px; height: 210px;" onclick="event.stopPropagation();">
+<div id="cache-confirm-modal" class="modal-overlay ayarlar-modal-overlay compact-confirm-modal">
+            <div class="modal-container" onclick="event.stopPropagation();">
                 <div class="modal-header">
                     <h2>ÖNBELLEK TEMİZLEME</h2>
                     <button class="modal-close" onclick="closeCacheConfirmModal()">
@@ -358,7 +358,7 @@
                     </button>
                 </div>
                 <div class="modal-body" onclick="event.stopPropagation();">
-                    <p id="cache-confirm-message" style="color: var(--form-label-color); font-size: 14px; line-height: 1.6; margin-bottom: 18px; text-align: center;"></p>
+                    <p id="cache-confirm-message" class="compact-confirm-message"></p>
                     <div class="universal-btn-group">
                         <button type="button" class="universal-btn-save" onclick="event.stopPropagation(); confirmCacheClear();">Evet</button>
                         <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); closeCacheConfirmModal();">Hayır</button>

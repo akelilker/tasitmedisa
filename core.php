@@ -1881,12 +1881,76 @@ function medisaSaveVehicleNeedsTakograf($vehicle) {
     return medisaSaveVehicleTypeKey($vehicle) === 'kamyon';
 }
 
+function medisaGetLatestSatisEvent($vehicle) {
+    if (!is_array($vehicle) || !isset($vehicle['events']) || !is_array($vehicle['events'])) {
+        return null;
+    }
+    foreach ($vehicle['events'] as $event) {
+        if (!is_array($event)) {
+            continue;
+        }
+        if (strtolower(trim((string)($event['type'] ?? ''))) === 'satis') {
+            return $event;
+        }
+    }
+    return null;
+}
+
+/**
+ * Arşiv nedeni: "satis" | "pert" | null
+ * Öncelik: araç arsivNedeni → event arsivNedeni → legacy pertIsaret → legacy satis.
+ * Legacy fallback'ler yalnız kanonik neden alanları boşsa kullanılır; geçersiz açık değerler fail-closed kalır.
+ */
+function medisaGetVehicleArchiveReason($vehicle) {
+    if (!is_array($vehicle) || ($vehicle['satildiMi'] ?? false) !== true) {
+        return null;
+    }
+    $rawNeden = trim((string)($vehicle['arsivNedeni'] ?? ''));
+    $neden = strtolower($rawNeden);
+    if ($neden === 'pert') {
+        return 'pert';
+    }
+    if ($neden === 'satis') {
+        return 'satis';
+    }
+    $event = medisaGetLatestSatisEvent($vehicle);
+    $data = is_array($event['data'] ?? null) ? $event['data'] : [];
+    $rawEventNeden = trim((string)($data['arsivNedeni'] ?? ''));
+    $eventNeden = strtolower($rawEventNeden);
+    if ($eventNeden === 'pert') {
+        return 'pert';
+    }
+    if ($eventNeden === 'satis') {
+        return 'satis';
+    }
+    if ($rawNeden !== '' || $rawEventNeden !== '') {
+        return null;
+    }
+    if (($data['pertIsaret'] ?? false) === true) {
+        return 'pert';
+    }
+    return 'satis';
+}
+
+function medisaIsVehicleSold($vehicle) {
+    return medisaGetVehicleArchiveReason($vehicle) === 'satis';
+}
+
+function medisaIsVehiclePert($vehicle) {
+    return medisaGetVehicleArchiveReason($vehicle) === 'pert';
+}
+
+/** Satış sözleşmesi: stoktan düşen (satis|pert); aktif stok reddedilir. */
+function medisaVehicleAllowsSatisSozlesmesi($vehicle) {
+    return medisaGetVehicleArchiveReason($vehicle) !== null;
+}
+
 function medisaSavePreserveVehicleDocumentReferences($currentVehicle, $updatedVehicle) {
     if (!is_array($currentVehicle) || !is_array($updatedVehicle)) {
         return $updatedVehicle;
     }
 
-    $alwaysPreserveFields = ['ruhsatPath', 'sigortaPolicePath', 'kaskoPolicePath'];
+    $alwaysPreserveFields = ['ruhsatPath', 'sigortaPolicePath', 'kaskoPolicePath', 'satisSozlesmesiPath'];
     foreach ($alwaysPreserveFields as $field) {
         $currentValue = trim((string)($currentVehicle[$field] ?? ''));
         $updatedValue = trim((string)($updatedVehicle[$field] ?? ''));
@@ -2553,6 +2617,12 @@ function medisaGetVehicleDocumentConfig(string $documentType): ?array {
             'dir' => 'takograf',
             'fallbackName' => 'takograf-belgesi',
             'notFound' => 'Takograf belgesi bulunamadı',
+        ],
+        'satis_sozlesmesi' => [
+            'pathField' => 'satisSozlesmesiPath',
+            'dir' => 'satis_sozlesmesi',
+            'fallbackName' => 'satis-sozlesmesi',
+            'notFound' => 'Satış sözleşmesi bulunamadı',
         ],
     ];
 

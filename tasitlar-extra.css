@@ -267,7 +267,7 @@
     overflow: hidden;
     text-overflow: clip;
 }
-.view-list .list-item.archive-vehicle-row .list-cell.list-brand .archive-satildi-line {
+.view-list .list-item.archive-vehicle-row .list-cell.list-brand .archive-status-line {
     display: block;
     flex: 0 0 auto;
     color: #d40000;
@@ -286,7 +286,7 @@
         max-height: 2.24em;
     }
 
-    .view-list .list-item.archive-vehicle-row .list-cell.list-brand .archive-satildi-line {
+    .view-list .list-item.archive-vehicle-row .list-cell.list-brand .archive-status-line {
         margin-top: 2px;
     }
 }
@@ -423,7 +423,7 @@
   transform: scale(1.05);
 }
 
-.detail-sold-badge {
+.detail-archive-status-badge {
   color: var(--theme-color);
   font-weight: 700;
   font-size: 14px;

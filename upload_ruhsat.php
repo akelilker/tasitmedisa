@@ -154,6 +154,7 @@ function medisaUploadDocumentHistoryMeta($documentType) {
         'kasko' => ['eventType' => 'kasko-policesi-yukle', 'label' => 'Kasko Poliçesi'],
         'tasit_karti' => ['eventType' => 'tasit-karti-yukle', 'label' => 'Taşıt Kartı'],
         'takograf' => ['eventType' => 'takograf-belgesi-yukle', 'label' => 'Takograf Belgesi'],
+        'satis_sozlesmesi' => ['eventType' => 'satis-sozlesmesi-yukle', 'label' => 'Satış Sözleşmesi'],
     ];
     return $map[$type] ?? null;
 }
@@ -324,6 +325,13 @@ if (!$isSettingsDocument) {
         echo json_encode(['error' => 'Bu taşıt tipi için Takograf Belgesi yüklenemez.'], JSON_UNESCAPED_UNICODE);
         exit;
     }
+    if ($documentType === 'satis_sozlesmesi') {
+        if (!medisaVehicleAllowsSatisSozlesmesi($preVehicle)) {
+            http_response_code(403);
+            echo json_encode(['error' => 'Satış Sözleşmesi yalnızca stoktan düşen (satış veya pert) taşıtlara yüklenebilir.'], JSON_UNESCAPED_UNICODE);
+            exit;
+        }
+    }
 } elseif (($context['role'] ?? '') !== 'genel_yonetici') {
     http_response_code(403);
     echo json_encode(['error' => 'Bu belgeyi güncelleme yetkiniz yok.'], JSON_UNESCAPED_UNICODE);
@@ -465,6 +473,11 @@ $result = medisaMutateData(function (&$data) use ($vehicleId, $vehicleVersion, $
     if ($documentType === 'takograf' && !medisaUploadVehicleNeedsTakograf($vehicle)) {
         return medisaBuildErrorResult('Bu taşıt tipi için Takograf Belgesi yüklenemez.', 400);
     }
+    if ($documentType === 'satis_sozlesmesi') {
+        if (!medisaVehicleAllowsSatisSozlesmesi($vehicle)) {
+            return medisaBuildErrorResult('Satış Sözleşmesi yalnızca stoktan düşen (satış veya pert) taşıtlara yüklenebilir.', 403);
+        }
+    }
 
     $versionCheck = medisaEnsureVehicleVersion($vehicle, $vehicleVersion, 'Bu taşıt başka biri tarafından güncellendi. Güncel veriler yüklendi.');
     if ($versionCheck !== true) {
@@ -522,6 +535,8 @@ $result = medisaMutateData(function (&$data) use ($vehicleId, $vehicleVersion, $
         $documentEventExtra['operationDate'] = $documentOperationDate;
         $documentEventExtra['expiryDate'] = $expiryDate;
     }
+    $documentEventExtra['vehicleId'] = (string)$vehicleId;
+    $documentEventExtra['plakaSnapshot'] = trim((string)($vehicle['plate'] ?? $vehicle['plaka'] ?? ''));
     $documentEvent = medisaBuildVehicleDocumentUploadEvent($documentType, $documentPath, $previousDocumentPath, $context, $documentEventExtra);
     if ($documentEvent) {
         if (!isset($vehicle['events']) || !is_array($vehicle['events'])) {

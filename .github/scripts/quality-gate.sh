@@ -47,6 +47,9 @@ npm run tool:verify-vehicle-detail-olay
 echo "[quality-gate] Vehicle history UI invariants"
 npm run tool:verify-vehicle-history-ui
 
+echo "[quality-gate] Satis sozlesmesi invariants"
+npm run tool:verify-satis-sozlesmesi
+
 echo "[quality-gate] Driver lazy module invariants"
 npm run tool:verify-driver-lazy
 
