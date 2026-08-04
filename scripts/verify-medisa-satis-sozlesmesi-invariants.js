@@ -153,6 +153,27 @@ test('domain: aktif / pert / satış / legacy sınıflandırma', function() {
   assert.equal(h.isVehicleSold({ satildiMi: true, arsivNedeni: 'satis' }), true);
   assert.equal(h.isVehicleSold({ satildiMi: true, arsivNedeni: 'pert' }), false);
   assert.equal(h.isVehiclePert({ satildiMi: true, arsivNedeni: 'pert' }), true);
+  assert.equal(
+    h.getVehicleArchiveReason({
+      satildiMi: true,
+      events: [{ type: 'satis', data: { arsivNedeni: 'satis', pertIsaret: true } }]
+    }),
+    'satis',
+    'kanonik event nedeni legacy pertIsaret değerini ezer'
+  );
+  assert.equal(
+    h.getVehicleArchiveReason({
+      satildiMi: true,
+      events: [{ type: 'satis', data: { arsivNedeni: 'pert', pertIsaret: false } }]
+    }),
+    'pert',
+    'kanonik pert nedeni legacy false değerini ezer'
+  );
+  assert.equal(
+    h.getVehicleArchiveReason({ satildiMi: true, arsivNedeni: 'hurda' }),
+    null,
+    'geçersiz açık arşiv nedeni fail-closed'
+  );
   assert.equal(h.isVehicleSold({ satildiMi: true }), true, 'legacy satildiMi → satış');
   assert.equal(
     h.isVehicleSold({
@@ -298,6 +319,8 @@ test('PHP: config + preserve + archive helpers + upload gate', function() {
   assert.match(uploadPhp, /medisaVehicleAllowsSatisSozlesmesi\(\$preVehicle\)/);
   assert.match(uploadPhp, /medisaVehicleAllowsSatisSozlesmesi\(\$vehicle\)/);
   assert.match(uploadPhp, /Satış Sözleşmesi yalnızca stoktan düşen \(satış veya pert\) taşıtlara yüklenebilir/);
+  assert.match(uploadPhp, /\$documentEventExtra\['vehicleId'\]\s*=\s*\(string\)\$vehicleId/);
+  assert.match(uploadPhp, /\$documentEventExtra\['plakaSnapshot'\]/);
   assert.doesNotMatch(uploadPhp, /Pert nedeniyle arşivlenen taşıtlara Satış Sözleşmesi yüklenemez/);
   assert.doesNotMatch(uploadPhp, /medisaIsVehicleSold\(\$preVehicle\)/);
   assert.doesNotMatch(uploadPhp, /medisaIsVehicleSold\(\$vehicle\)/);
@@ -305,6 +328,7 @@ test('PHP: config + preserve + archive helpers + upload gate', function() {
 
 test('notifications + history label registry', function() {
   assert.match(notifications, /'satis-sozlesmesi-yukle'\s*:\s*'Sat/);
+  assert.match(notifications, /evData\.plakaSnapshot\s*\|\|\s*plate/);
   assert.match(tasitlar, /'satis-sozlesmesi-yukle'\s*:\s*'Satış Sözleşmesi'/);
 });
 
@@ -436,6 +460,9 @@ test('behavior: PHP sold/pert allow + aktif deny + satisSozlesmesiPath preserve'
     "$cases[] = medisaIsVehicleSold(['satildiMi' => true, 'arsivNedeni' => 'satis']) === true;",
     "$cases[] = medisaIsVehicleSold(['satildiMi' => true, 'arsivNedeni' => 'pert']) === false;",
     "$cases[] = medisaIsVehiclePert(['satildiMi' => true, 'arsivNedeni' => 'pert']) === true;",
+    "$cases[] = medisaGetVehicleArchiveReason(['satildiMi' => true, 'events' => [['type' => 'satis', 'data' => ['arsivNedeni' => 'satis', 'pertIsaret' => true]]]]) === 'satis';",
+    "$cases[] = medisaGetVehicleArchiveReason(['satildiMi' => true, 'events' => [['type' => 'satis', 'data' => ['arsivNedeni' => 'pert', 'pertIsaret' => false]]]]) === 'pert';",
+    "$cases[] = medisaGetVehicleArchiveReason(['satildiMi' => true, 'arsivNedeni' => 'hurda']) === null;",
     "$cases[] = medisaIsVehicleSold(['satildiMi' => false]) === false;",
     "$cases[] = medisaVehicleAllowsSatisSozlesmesi(['satildiMi' => false]) === false;",
     "$cases[] = medisaVehicleAllowsSatisSozlesmesi(['satildiMi' => true, 'arsivNedeni' => 'satis']) === true;",
@@ -462,6 +489,49 @@ test('behavior: PHP sold/pert allow + aktif deny + satisSozlesmesiPath preserve'
   try {
     const r = spawnSync('php', [tmp], { cwd: ROOT, encoding: 'utf8' });
     assert.equal(r.status, 0, 'PHP behavior exit: ' + (r.stderr || r.stdout || ''));
+    assert.match(String(r.stdout || ''), /ok/);
+  } finally {
+    try { fs.unlinkSync(tmp); } catch (_) {}
+  }
+});
+
+test('behavior: PHP satış sözleşmesi audit event alanları', function() {
+  const eventHelpers = extractBetween(
+    uploadPhp,
+    'function medisaUploadDocumentHistoryMeta($documentType) {',
+    'function medisaCanMergeVehicleDocumentUpload'
+  );
+  const phpSrc = [
+    '<?php',
+    'error_reporting(E_ALL);',
+    eventHelpers,
+    "$event = medisaBuildVehicleDocumentUploadEvent(",
+    "  'satis_sozlesmesi',",
+    "  'data/satis_sozlesmesi/new.pdf',",
+    "  'data/satis_sozlesmesi/old.pdf',",
+    "  ['user' => ['isim' => 'Audit Kullanıcısı']],",
+    "  ['vehicleId' => 'vehicle-42', 'plakaSnapshot' => '78 ABC 123']",
+    ');',
+    '$cases = [];',
+    "$cases[] = ($event['type'] ?? '') === 'satis-sozlesmesi-yukle';",
+    "$cases[] = trim((string)($event['timestamp'] ?? '')) !== '';",
+    "$cases[] = ($event['data']['vehicleId'] ?? '') === 'vehicle-42';",
+    "$cases[] = ($event['data']['plakaSnapshot'] ?? '') === '78 ABC 123';",
+    "$cases[] = ($event['data']['documentPath'] ?? '') === 'data/satis_sozlesmesi/new.pdf';",
+    "$cases[] = ($event['data']['previousDocumentPath'] ?? '') === 'data/satis_sozlesmesi/old.pdf';",
+    "$cases[] = ($event['data']['isReplacement'] ?? false) === true;",
+    "$cases[] = ($event['data']['kaydeden'] ?? '') === 'Audit Kullanıcısı';",
+    'foreach ($cases as $i => $ok) {',
+    '  if (!$ok) { fwrite(STDERR, "PHP audit case fail #" . $i . PHP_EOL); exit(1); }',
+    '}',
+    'echo "ok", PHP_EOL;',
+    ''
+  ].join('\n');
+  const tmp = path.join(ROOT, 'scripts', '.tmp-verify-satis-sozlesmesi-audit.php');
+  fs.writeFileSync(tmp, phpSrc, 'utf8');
+  try {
+    const r = spawnSync('php', [tmp], { cwd: ROOT, encoding: 'utf8' });
+    assert.equal(r.status, 0, 'PHP audit behavior exit: ' + (r.stderr || r.stdout || ''));
     assert.match(String(r.stdout || ''), /ok/);
   } finally {
     try { fs.unlinkSync(tmp); } catch (_) {}

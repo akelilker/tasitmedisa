@@ -184,8 +184,8 @@ function injectBanner(html) {
       out = out.replace(/<body([^>]*)>/i, `<body$1>${banner}`);
     }
   }
-  // Directory Privacy Basic Auth, fetch/XHR Authorization: Bearer ile çakışır.
-  // Staging shell: Bearer'ı X-Medisa-Authorization'a taşı; Basic Auth ezilmesin.
+  // Directory Privacy Basic Auth, fetch Authorization: Bearer ile çakışır.
+  // Staging shell: Bearer'ı X-Medisa-Authorization'a taşı, Basic için credentials include.
   if (!/medisa-staging-auth-shim/.test(out)) {
     const shim = [
       '<script id="medisa-staging-auth-shim">',
@@ -196,18 +196,6 @@ function injectBanner(html) {
       'try{var h=new Headers(n.headers||{});var a=h.get("Authorization");',
       'if(a&&/^Bearer\\s+/i.test(a)){h.set("X-Medisa-Authorization",a);h.delete("Authorization");n.headers=h;}',
       '}catch(e){}return o.call(this,i,n);};',
-      'var X=window.XMLHttpRequest;',
-      'if(X&&X.prototype&&!X.prototype.__medisaStagingAuthShim){',
-      'var s=X.prototype.setRequestHeader;',
-      'X.prototype.setRequestHeader=function(n,v){',
-      'var k=String(n||""),val=String(v==null?"":v);',
-      'if(k.toLowerCase()==="authorization"&&/^Bearer\\s+/i.test(val)){',
-      'return s.call(this,"X-Medisa-Authorization",v);',
-      '}',
-      'return s.call(this,n,v);',
-      '};',
-      'X.prototype.__medisaStagingAuthShim=1;',
-      '}',
       '})();',
       '</script>'
     ].join('');

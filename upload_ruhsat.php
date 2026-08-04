@@ -535,6 +535,8 @@ $result = medisaMutateData(function (&$data) use ($vehicleId, $vehicleVersion, $
         $documentEventExtra['operationDate'] = $documentOperationDate;
         $documentEventExtra['expiryDate'] = $expiryDate;
     }
+    $documentEventExtra['vehicleId'] = (string)$vehicleId;
+    $documentEventExtra['plakaSnapshot'] = trim((string)($vehicle['plate'] ?? $vehicle['plaka'] ?? ''));
     $documentEvent = medisaBuildVehicleDocumentUploadEvent($documentType, $documentPath, $previousDocumentPath, $context, $documentEventExtra);
     if ($documentEvent) {
         if (!isset($vehicle['events']) || !is_array($vehicle['events'])) {

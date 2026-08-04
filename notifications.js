@@ -2536,7 +2536,7 @@
       ? (evData.kaydeden || evData.surucu || evData.kisi)
       : (evData.surucu || evData.kisi || evData.kullaniciAdi || evData.kaydeden);
     const isimStr = actorName ? formatAdSoyad(String(actorName)) : 'Bilinmiyor';
-    const plateStr = (plate || '-').toString().trim();
+    const plateStr = (evData.plakaSnapshot || plate || '-').toString().trim();
     if (type === 'vehicle-created') {
       const createdPlate = (ev.data && ev.data.plakaSnapshot) || plate || '-';
       return 'Yeni Taşıt Bilgisi Kaydedildi. (' + String(createdPlate).trim() + ')';

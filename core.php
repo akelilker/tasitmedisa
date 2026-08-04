@@ -1898,13 +1898,15 @@ function medisaGetLatestSatisEvent($vehicle) {
 
 /**
  * Arşiv nedeni: "satis" | "pert" | null
- * Legacy: arsivNedeni yoksa satis event data.pertIsaret; aksi halde satildiMi=true → satis.
+ * Öncelik: araç arsivNedeni → event arsivNedeni → legacy pertIsaret → legacy satis.
+ * Legacy fallback'ler yalnız kanonik neden alanları boşsa kullanılır; geçersiz açık değerler fail-closed kalır.
  */
 function medisaGetVehicleArchiveReason($vehicle) {
     if (!is_array($vehicle) || ($vehicle['satildiMi'] ?? false) !== true) {
         return null;
     }
-    $neden = strtolower(trim((string)($vehicle['arsivNedeni'] ?? '')));
+    $rawNeden = trim((string)($vehicle['arsivNedeni'] ?? ''));
+    $neden = strtolower($rawNeden);
     if ($neden === 'pert') {
         return 'pert';
     }
@@ -1913,12 +1915,19 @@ function medisaGetVehicleArchiveReason($vehicle) {
     }
     $event = medisaGetLatestSatisEvent($vehicle);
     $data = is_array($event['data'] ?? null) ? $event['data'] : [];
-    $eventNeden = strtolower(trim((string)($data['arsivNedeni'] ?? '')));
-    if ($eventNeden === 'pert' || ($data['pertIsaret'] ?? false) === true) {
+    $rawEventNeden = trim((string)($data['arsivNedeni'] ?? ''));
+    $eventNeden = strtolower($rawEventNeden);
+    if ($eventNeden === 'pert') {
         return 'pert';
     }
     if ($eventNeden === 'satis') {
         return 'satis';
+    }
+    if ($rawNeden !== '' || $rawEventNeden !== '') {
+        return null;
+    }
+    if (($data['pertIsaret'] ?? false) === true) {
+        return 'pert';
     }
     return 'satis';
 }

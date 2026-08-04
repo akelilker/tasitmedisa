@@ -3712,18 +3712,23 @@
 
   /**
    * Arşiv nedeni: 'satis' | 'pert' | null
-   * Legacy: arsivNedeni yoksa satis event data.pertIsaret; aksi halde satildiMi → satis.
+   * Öncelik: araç arsivNedeni → event arsivNedeni → legacy pertIsaret → legacy satis.
+   * Legacy fallback'ler yalnız kanonik neden alanları boşsa kullanılır; geçersiz açık değerler fail-closed kalır.
    */
   function getVehicleArchiveReason(vehicle) {
     if (!vehicle || vehicle.satildiMi !== true) return null;
-    const neden = String(vehicle.arsivNedeni || '').trim().toLowerCase();
+    const rawNeden = String(vehicle.arsivNedeni || '').trim();
+    const neden = rawNeden.toLowerCase();
     if (neden === 'pert') return 'pert';
     if (neden === 'satis') return 'satis';
     const ev = getLatestSatisEvent(vehicle);
     const data = (ev && ev.data && typeof ev.data === 'object') ? ev.data : {};
-    const eventNeden = String(data.arsivNedeni || '').trim().toLowerCase();
-    if (eventNeden === 'pert' || data.pertIsaret === true) return 'pert';
+    const rawEventNeden = String(data.arsivNedeni || '').trim();
+    const eventNeden = rawEventNeden.toLowerCase();
+    if (eventNeden === 'pert') return 'pert';
     if (eventNeden === 'satis') return 'satis';
+    if (rawNeden || rawEventNeden) return null;
+    if (data.pertIsaret === true) return 'pert';
     return 'satis';
   }
 
