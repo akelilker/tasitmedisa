@@ -122,7 +122,7 @@ async function sourceInvariants() {
     assert.ok(pin >= '20260801.7' || Number(pin.replace(/\./g, '')) >= 202608017, 'script-core pin yükselmiş olmalı: ' + pin);
     const notifV = extractNotificationsVersion(core);
     assert.equal(notifV, pin.indexOf('20260801.') === 0 ? notifV : notifV);
-    assert.equal(notifV, '20260804.1');
+    assert.equal(notifV, '20260804.2');
     assert.match(index, new RegExp('script-core\\.js\\?v=' + pin.replace(/\./g, '\\.')));
   });
 
@@ -147,7 +147,7 @@ async function sourceInvariants() {
     assert.doesNotMatch(cacheFiles[1], /'\/style-core\.css'/);
 
     // Backend/runtime data manager pin — thin-shell scope dışı drift yok.
-    assert.match(index, /data-manager\.js\?v=20260801\.6/);
+    assert.match(index, /data-manager\.js\?v=20260804\.8/);
   });
 
   await run('source: quality gate / package thin-shell bağlandı', function() {

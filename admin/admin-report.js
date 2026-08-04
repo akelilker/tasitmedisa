@@ -23,6 +23,17 @@
   var userAnalyticsQuery = '';
   var userAnalyticsBranchId = null;
   var userAnalyticsSelectedUserId = null;
+  var USER_WA_AUDIT_PAGE_SIZE = 50;
+  var userWhatsAppAuditAllowed = false;
+  var userWhatsAppAuditLogs = {};
+  var userWhatsAppAuditCloseTimer = null;
+  var userWhatsAppAuditState = {
+    search: '',
+    branchId: 'all',
+    typeCode: 'all',
+    timeFilter: 'all',
+    limit: USER_WA_AUDIT_PAGE_SIZE
+  };
 
   function getStoredPortalToken() {
     return window.medisaPortalSession && typeof window.medisaPortalSession.getStoredToken === 'function'
@@ -973,6 +984,8 @@
   }
 
   window.switchAdminTab = function(tabId) {
+    if (tabId !== 'kullanici') closeUserWhatsAppAudit(true);
+
     // 1. Tüm butonları pasife çek
     document.querySelectorAll('.admin-tab-btn').forEach(function(btn) {
       btn.classList.remove('active');
@@ -1045,6 +1058,335 @@
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#39;');
+  }
+
+  function formatUserWhatsAppAuditDate(value) {
+    var raw = String(value == null ? '' : value).trim();
+    if (!raw) return '—';
+    var parsed = new Date(raw);
+    if (isNaN(parsed.getTime())) return raw;
+    var day = String(parsed.getDate()).padStart(2, '0');
+    var month = String(parsed.getMonth() + 1).padStart(2, '0');
+    var year = parsed.getFullYear();
+    var hour = String(parsed.getHours()).padStart(2, '0');
+    var minute = String(parsed.getMinutes()).padStart(2, '0');
+    return day + '/' + month + '/' + year + ' ' + hour + ':' + minute;
+  }
+
+  function getMonthlyTodoWaTypeLabel(typeCode, field) {
+    var code = String(typeCode || '').trim().toLowerCase();
+    var labels = {
+      s: 'Sigorta',
+      k: 'Kasko',
+      sk: 'Sigorta + Kasko',
+      m: 'Muayene',
+      e: 'Egzoz Muayene',
+      me: 'Muayene + Egzoz',
+      km: 'KM',
+      k2: 'K2 Belgesi',
+      takograf: 'Takograf'
+    };
+    if (labels[code]) return labels[code];
+    var fieldLabel = String(field || '').trim();
+    return fieldLabel || code || 'Bilinmeyen';
+  }
+
+  function parseMonthlyTodoWaTimeMs(value) {
+    var raw = String(value == null ? '' : value).trim();
+    if (!raw) return 0;
+    var parsed = Date.parse(raw);
+    return isNaN(parsed) ? 0 : parsed;
+  }
+
+  function normalizeMonthlyTodoWhatsAppAuditEntries(rawLogs, vehicleMap, branchNameMap) {
+    var out = [];
+    if (!rawLogs || typeof rawLogs !== 'object' || Array.isArray(rawLogs)) return out;
+    Object.keys(rawLogs).forEach(function(key) {
+      if (!Object.prototype.hasOwnProperty.call(rawLogs, key)) return;
+      var entry = rawLogs[key];
+      if (!entry || typeof entry !== 'object' || Array.isArray(entry)) return;
+      var vehicleId = String(entry.vehicleId || '').trim();
+      var vehicle = vehicleId && vehicleMap ? vehicleMap[vehicleId] : null;
+      var plate = String((vehicle && (vehicle.plaka || vehicle.plate)) || entry.plate || '').trim() || '—';
+      var branchId = vehicle
+        ? String(vehicle.branchId != null ? vehicle.branchId : (vehicle.subeId != null ? vehicle.subeId : '')).trim()
+        : '';
+      var branchName = branchId && branchNameMap && branchNameMap[branchId]
+        ? String(branchNameMap[branchId]).trim()
+        : '';
+      if (!branchName) branchName = vehicle ? '—' : 'Bilinmiyor';
+      var typeCode = String(entry.type || '').trim();
+      var field = String(entry.field || '').trim();
+      var countRaw = Number(entry.openedCount);
+      out.push({
+        reminderKey: String(key),
+        vehicleId: vehicleId,
+        plate: plate,
+        brandModel: vehicle
+          ? String(vehicle.brandModel || [vehicle.arac_marka, vehicle.arac_model].filter(Boolean).join(' ') || '').trim()
+          : '',
+        branchId: branchId,
+        branchName: branchName,
+        branchIsCurrent: !!vehicle,
+        typeCode: typeCode,
+        field: field,
+        typeLabel: getMonthlyTodoWaTypeLabel(typeCode, field),
+        date: String(entry.date || '').trim(),
+        firstOpenedAt: String(entry.firstOpenedAt || '').trim(),
+        lastOpenedAt: String(entry.lastOpenedAt || '').trim(),
+        firstOpenedMs: parseMonthlyTodoWaTimeMs(entry.firstOpenedAt),
+        lastOpenedMs: parseMonthlyTodoWaTimeMs(entry.lastOpenedAt),
+        openedCount: Number.isFinite(countRaw) && countRaw > 0 ? Math.floor(countRaw) : 0,
+        openedBy: String(entry.openedBy || '').trim() || '—'
+      });
+    });
+    out.sort(function(a, b) {
+      if (a.lastOpenedMs !== b.lastOpenedMs) return b.lastOpenedMs - a.lastOpenedMs;
+      var plateCompare = String(a.plate).localeCompare(String(b.plate), 'tr');
+      return plateCompare || String(a.reminderKey).localeCompare(String(b.reminderKey));
+    });
+    return out;
+  }
+
+  function filterMonthlyTodoWhatsAppAuditEntries(entries, state) {
+    var list = Array.isArray(entries) ? entries.slice() : [];
+    var currentState = state || userWhatsAppAuditState;
+    var query = String(currentState.search || '').trim().toLocaleLowerCase('tr-TR');
+    var branchId = String(currentState.branchId || 'all');
+    var typeCode = String(currentState.typeCode || 'all');
+    var timeFilter = String(currentState.timeFilter || 'all');
+    var now = Date.now();
+    var monthStart = new Date();
+    monthStart.setDate(1);
+    monthStart.setHours(0, 0, 0, 0);
+    return list.filter(function(row) {
+      if (branchId !== 'all' && String(row.branchId || '') !== branchId) return false;
+      if (typeCode !== 'all') {
+        var rowType = String(row.typeCode || '').toLowerCase();
+        if (rowType !== typeCode.toLowerCase() && String(row.typeLabel || '') !== typeCode) return false;
+      }
+      if (timeFilter !== 'all') {
+        var timestamp = row.lastOpenedMs || 0;
+        if (!timestamp) return false;
+        if (timeFilter === '7d' && timestamp < now - 7 * 86400000) return false;
+        if (timeFilter === '30d' && timestamp < now - 30 * 86400000) return false;
+        if (timeFilter === 'month' && timestamp < monthStart.getTime()) return false;
+      }
+      if (!query) return true;
+      return [row.plate, row.openedBy, row.typeLabel, row.typeCode, row.field, row.branchName, row.brandModel, row.date]
+        .join(' ')
+        .toLocaleLowerCase('tr-TR')
+        .indexOf(query) !== -1;
+    });
+  }
+
+  function summarizeMonthlyTodoWhatsAppAuditEntries(entries) {
+    var list = Array.isArray(entries) ? entries : [];
+    var totalStarts = 0;
+    var lastMs = 0;
+    var lastIso = '';
+    list.forEach(function(row) {
+      totalStarts += Number(row.openedCount) || 0;
+      if ((row.lastOpenedMs || 0) > lastMs) {
+        lastMs = row.lastOpenedMs || 0;
+        lastIso = row.lastOpenedAt || '';
+      }
+    });
+    return {
+      uniqueCount: list.length,
+      totalStarts: totalStarts,
+      lastOpenedAt: lastIso,
+      lastOpenedDisplay: formatUserWhatsAppAuditDate(lastIso)
+    };
+  }
+
+  function buildUserWhatsAppAuditMaps() {
+    var vehicleMap = Object.create(null);
+    (userAnalyticsTasitlar || []).forEach(function(vehicle) {
+      if (vehicle && vehicle.id != null) vehicleMap[String(vehicle.id)] = vehicle;
+    });
+    var branchNameMap = Object.create(null);
+    (branches || []).forEach(function(branch) {
+      if (!branch || branch.id == null) return;
+      branchNameMap[String(branch.id)] = String(branch.name || branch.isim || '').trim();
+    });
+    return { vehicleMap: vehicleMap, branchNameMap: branchNameMap };
+  }
+
+  function getUserWhatsAppAuditTypeOptions(entries) {
+    var seen = Object.create(null);
+    var options = [];
+    (entries || []).forEach(function(row) {
+      var value = String(row.typeCode || row.typeLabel || '').trim();
+      if (!value || seen[value]) return;
+      seen[value] = true;
+      options.push({ value: value, label: row.typeLabel || value });
+    });
+    options.sort(function(a, b) { return String(a.label).localeCompare(String(b.label), 'tr'); });
+    return options;
+  }
+
+  function renderUserWhatsAppAudit() {
+    var modal = document.getElementById('user-whatsapp-audit-modal');
+    var body = modal ? modal.querySelector('.user-wa-audit-body') : null;
+    if (!body) return;
+    if (!userWhatsAppAuditAllowed) {
+      body.innerHTML = '<div class="user-wa-audit-empty">Bu geçmiş yalnız genel yönetici tarafından görüntülenebilir.</div>';
+      return;
+    }
+
+    var maps = buildUserWhatsAppAuditMaps();
+    var allEntries = normalizeMonthlyTodoWhatsAppAuditEntries(userWhatsAppAuditLogs, maps.vehicleMap, maps.branchNameMap);
+    var filtered = filterMonthlyTodoWhatsAppAuditEntries(allEntries, userWhatsAppAuditState);
+    var summary = summarizeMonthlyTodoWhatsAppAuditEntries(filtered);
+    var typeOptions = getUserWhatsAppAuditTypeOptions(allEntries);
+    var limit = Math.max(USER_WA_AUDIT_PAGE_SIZE, Number(userWhatsAppAuditState.limit) || USER_WA_AUDIT_PAGE_SIZE);
+    var visible = filtered.slice(0, limit);
+    var html = '';
+
+    html += '<p class="user-wa-audit-disclosure">Bu kayıtlar WhatsApp bağlantısının uygulama üzerinden başlatıldığını gösterir. Mesajın gönderildiği, teslim edildiği veya okunduğu anlamına gelmez.</p>';
+    html += '<div class="user-wa-audit-summary">';
+    html += '<div class="user-wa-audit-summary-item"><span class="user-wa-audit-summary-label">Benzersiz bildirim kaydı</span><span class="user-wa-audit-summary-value">' + escapeHtmlLocal(summary.uniqueCount) + '</span></div>';
+    html += '<div class="user-wa-audit-summary-item"><span class="user-wa-audit-summary-label">Toplam başlatma sayısı</span><span class="user-wa-audit-summary-value">' + escapeHtmlLocal(summary.totalStarts) + '</span></div>';
+    html += '<div class="user-wa-audit-summary-item"><span class="user-wa-audit-summary-label">Son başlatma zamanı</span><span class="user-wa-audit-summary-value">' + escapeHtmlLocal(summary.lastOpenedDisplay) + '</span></div>';
+    html += '</div>';
+    html += '<div class="user-wa-audit-filters">';
+    html += '<input type="search" class="user-wa-audit-filter" data-user-wa-filter="search" placeholder="Plaka, kullanıcı, tür, şube ara..." value="' + escapeHtmlLocal(userWhatsAppAuditState.search || '') + '" aria-label="WhatsApp geçmişi arama">';
+    html += '<select class="user-wa-audit-filter" data-user-wa-filter="branch" aria-label="Şube filtresi">';
+    html += '<option value="all"' + (userWhatsAppAuditState.branchId === 'all' ? ' selected' : '') + '>Tüm Şubeler</option>';
+    (branches || []).forEach(function(branch) {
+      if (!branch || branch.id == null) return;
+      var id = String(branch.id);
+      html += '<option value="' + escapeHtmlLocal(id) + '"' + (String(userWhatsAppAuditState.branchId) === id ? ' selected' : '') + '>' + escapeHtmlLocal(String(branch.name || branch.isim || '').trim() || 'İsimsiz Şube') + '</option>';
+    });
+    html += '</select>';
+    html += '<select class="user-wa-audit-filter" data-user-wa-filter="type" aria-label="Bildirim türü filtresi">';
+    html += '<option value="all"' + (userWhatsAppAuditState.typeCode === 'all' ? ' selected' : '') + '>Tüm Türler</option>';
+    typeOptions.forEach(function(option) {
+      html += '<option value="' + escapeHtmlLocal(option.value) + '"' + (String(userWhatsAppAuditState.typeCode) === String(option.value) ? ' selected' : '') + '>' + escapeHtmlLocal(option.label) + '</option>';
+    });
+    html += '</select>';
+    html += '<select class="user-wa-audit-filter" data-user-wa-filter="time" aria-label="Zaman filtresi">';
+    [{ value: 'all', label: 'Tümü' }, { value: '7d', label: 'Son 7 Gün' }, { value: '30d', label: 'Son 30 Gün' }, { value: 'month', label: 'Bu Ay' }].forEach(function(option) {
+      html += '<option value="' + option.value + '"' + (userWhatsAppAuditState.timeFilter === option.value ? ' selected' : '') + '>' + option.label + '</option>';
+    });
+    html += '</select></div>';
+
+    if (!allEntries.length) {
+      html += '<div class="user-wa-audit-empty">Henüz WhatsApp bildirim geçmişi bulunmuyor.</div>';
+      body.innerHTML = html;
+      return;
+    }
+    if (!filtered.length) {
+      html += '<div class="user-wa-audit-empty">Filtrelere uygun kayıt bulunamadı.</div>';
+      body.innerHTML = html;
+      return;
+    }
+
+    html += '<div class="user-wa-audit-list" role="list">';
+    visible.forEach(function(row) {
+      var branchTitle = row.branchIsCurrent ? 'Güncel şube' : 'Kayıt anındaki şube bilinmiyor; güncel eşleşme yok';
+      html += '<article class="user-wa-audit-card" role="listitem">';
+      html += '<div><div class="user-wa-audit-plate">' + escapeHtmlLocal(formatPlaka(row.plate)) + '</div>';
+      if (row.brandModel) html += '<div class="user-wa-audit-meta">' + escapeHtmlLocal(formatBrandModel(row.brandModel)) + '</div>';
+      html += '<div class="user-wa-audit-meta" title="' + escapeHtmlLocal(branchTitle) + '">Şube: ' + escapeHtmlLocal(row.branchName) + '</div>';
+      html += '<div class="user-wa-audit-meta">Tür: ' + escapeHtmlLocal(row.typeLabel) + '</div>';
+      html += '<div class="user-wa-audit-meta">İlgili tarih: ' + escapeHtmlLocal(formatDateForDisplay(row.date)) + '</div></div>';
+      html += '<div><div class="user-wa-audit-meta">İlk: ' + escapeHtmlLocal(formatUserWhatsAppAuditDate(row.firstOpenedAt)) + '</div>';
+      html += '<div class="user-wa-audit-meta">Son: ' + escapeHtmlLocal(formatUserWhatsAppAuditDate(row.lastOpenedAt)) + '</div>';
+      html += '<div class="user-wa-audit-count">Başlatma: ' + escapeHtmlLocal(row.openedCount) + '</div>';
+      html += '<div class="user-wa-audit-meta">Son başlatan: ' + escapeHtmlLocal(row.openedBy) + '</div></div></article>';
+    });
+    html += '</div>';
+    if (filtered.length > visible.length) {
+      html += '<button type="button" class="user-wa-audit-more" data-action="user-wa-audit-more">Daha Fazla Göster</button>';
+    }
+    body.innerHTML = html;
+  }
+
+  function syncUserWhatsAppAuditAccess() {
+    var button = document.getElementById('user-whatsapp-audit-btn');
+    if (button) button.hidden = !userWhatsAppAuditAllowed;
+    if (!userWhatsAppAuditAllowed) closeUserWhatsAppAudit(true);
+  }
+
+  function openUserWhatsAppAudit() {
+    if (!userWhatsAppAuditAllowed) return;
+    var modal = document.getElementById('user-whatsapp-audit-modal');
+    if (!modal) return;
+    if (userWhatsAppAuditCloseTimer) {
+      clearTimeout(userWhatsAppAuditCloseTimer);
+      userWhatsAppAuditCloseTimer = null;
+    }
+    userWhatsAppAuditState.limit = USER_WA_AUDIT_PAGE_SIZE;
+    modal.hidden = false;
+    modal.setAttribute('aria-hidden', 'false');
+    renderUserWhatsAppAudit();
+    requestAnimationFrame(function() { modal.classList.add('active', 'open'); });
+    document.body.classList.add('modal-open');
+  }
+
+  function closeUserWhatsAppAudit(immediate) {
+    var modal = document.getElementById('user-whatsapp-audit-modal');
+    if (!modal) return;
+    if (userWhatsAppAuditCloseTimer) clearTimeout(userWhatsAppAuditCloseTimer);
+    modal.classList.remove('active', 'open');
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('modal-open');
+    if (immediate) {
+      modal.hidden = true;
+      userWhatsAppAuditCloseTimer = null;
+      return;
+    }
+    userWhatsAppAuditCloseTimer = setTimeout(function() {
+      modal.hidden = true;
+      userWhatsAppAuditCloseTimer = null;
+    }, 300);
+  }
+
+  function bindUserWhatsAppAudit() {
+    var button = document.getElementById('user-whatsapp-audit-btn');
+    var modal = document.getElementById('user-whatsapp-audit-modal');
+    if (button && button.dataset.userWaAuditBound !== '1') {
+      button.addEventListener('click', openUserWhatsAppAudit);
+      button.dataset.userWaAuditBound = '1';
+    }
+    if (!modal || modal.dataset.userWaAuditBound === '1') return;
+    modal.addEventListener('click', function(event) {
+      var target = event.target;
+      if (!target || typeof target.closest !== 'function') return;
+      if (target.closest('[data-action="user-wa-audit-close"]') || target.closest('[data-action="user-wa-audit-back"]')) {
+        event.preventDefault();
+        closeUserWhatsAppAudit();
+        return;
+      }
+      if (target.closest('[data-action="user-wa-audit-more"]')) {
+        event.preventDefault();
+        userWhatsAppAuditState.limit += USER_WA_AUDIT_PAGE_SIZE;
+        renderUserWhatsAppAudit();
+        return;
+      }
+      if (target === modal) closeUserWhatsAppAudit();
+    });
+    modal.addEventListener('input', function(event) {
+      var input = event.target;
+      if (!input || input.getAttribute('data-user-wa-filter') !== 'search') return;
+      userWhatsAppAuditState.search = input.value || '';
+      userWhatsAppAuditState.limit = USER_WA_AUDIT_PAGE_SIZE;
+      renderUserWhatsAppAudit();
+    });
+    modal.addEventListener('change', function(event) {
+      var input = event.target;
+      if (!input || !input.getAttribute) return;
+      var kind = input.getAttribute('data-user-wa-filter');
+      if (kind === 'branch') userWhatsAppAuditState.branchId = input.value || 'all';
+      if (kind === 'type') userWhatsAppAuditState.typeCode = input.value || 'all';
+      if (kind === 'time') userWhatsAppAuditState.timeFilter = input.value || 'all';
+      if (!kind || kind === 'search') return;
+      userWhatsAppAuditState.limit = USER_WA_AUDIT_PAGE_SIZE;
+      renderUserWhatsAppAudit();
+    });
+    modal.dataset.userWaAuditBound = '1';
   }
 
   function formatMoney(value) {
@@ -1815,6 +2157,9 @@
       .then(function(data) {
         syncAdminHeaderUserName(data.current_user || null);
         if (!data.success) {
+          userWhatsAppAuditAllowed = false;
+          userWhatsAppAuditLogs = {};
+          syncUserWhatsAppAuditAccess();
           container.innerHTML = '<p style="color:#ef4444; text-align:center; padding:20px;">Veriler çekilemedi.</p>';
           return;
         }
@@ -1822,9 +2167,17 @@
         userAnalyticsUsers = data.users || [];
         userAnalyticsTasitlar = data.tasitlar || [];
         userAnalyticsMonthlyRecords = data.monthly_records || [];
+        userWhatsAppAuditAllowed = data.can_view_whatsapp_audit === true;
+        userWhatsAppAuditLogs = data.whatsapp_logs && typeof data.whatsapp_logs === 'object' && !Array.isArray(data.whatsapp_logs)
+          ? data.whatsapp_logs
+          : {};
+        syncUserWhatsAppAuditAccess();
         window.renderUserAnalytics();
       })
       .catch(function(err) {
+        userWhatsAppAuditAllowed = false;
+        userWhatsAppAuditLogs = {};
+        syncUserWhatsAppAuditAccess();
         if (err && err.message === 'auth') {
           return;
         }
@@ -2120,6 +2473,8 @@
     initPeriodSelect();
     initVersionDisplay();
     initFooterDim();
+    bindUserWhatsAppAudit();
+    syncUserWhatsAppAuditAccess();
     loadBranches().then(function () {
       loadReport();
     });

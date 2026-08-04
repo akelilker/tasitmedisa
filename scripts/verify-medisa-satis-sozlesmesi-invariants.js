@@ -398,6 +398,23 @@ test('source: kompakt onay modalı ortak owner sınıfı', function() {
     /#satis-sozlesmesi-confirm-modal\s*\{[^}]*height:\s*100%/
   );
   assert.doesNotMatch(tasitlar, /#satis-sozlesmesi-confirm-modal\s+\.modal-container/);
+  // Opak modal-open kuralı kompakt onayı hariç tutmalı; şeffaf overlay specificity yeterli olmalı
+  assert.match(
+    styleCore,
+    /\.modal-overlay\.active:not\(\.compact-confirm-modal\)/
+  );
+  assert.match(
+    styleCore,
+    /body:not\(\.dashboard-page\):not\(\.login-page\):not\(\.admin-report-page\)\.modal-open\s+\.compact-confirm-modal\.modal-overlay\.active/
+  );
+  assert.match(
+    styleCore,
+    /rgba\(\s*8\s*,\s*13\s*,\s*22\s*,\s*0\.55\s*\)/
+  );
+  assert.match(
+    styleCore,
+    /body\.modal-open:has\(\.compact-confirm-modal\.active\)\s+#vehicle-detail-modal\.modal-overlay\.active/
+  );
 });
 
 test('source: openSatisSozlesmesiUploadForVehicle setTimeout yarışı yok', function() {
@@ -649,14 +666,14 @@ test('cache / modül pin parity', function() {
   const notifVer = (scriptCore.match(/notifications:\s*'([^']+)'/) || [])[1];
   const ayarlarCssVer = (scriptCore.match(/ayarlarCss:\s*'([^']+)'/) || [])[1];
   const ayarlarJsVer = (scriptCore.match(/ayarlarJs:\s*'([^']+)'/) || [])[1];
-  assert.equal(moduleVer, '20260804.5');
+  assert.equal(moduleVer, '20260804.8');
   assert.equal(loaderVer, moduleVer);
-  assert.equal(notifVer, '20260804.1');
-  assert.equal(ayarlarCssVer, '20260804.3');
+  assert.equal(notifVer, '20260804.2');
+  assert.equal(ayarlarCssVer, '20260804.4');
   assert.equal(ayarlarJsVer, '20260804.2');
-  assert.match(sw, /CACHE_VERSION\s*=\s*'medisa-v2\.272'/);
-  assert.match(read('index.html'), /script-core\.js\?v=20260804\.5/);
-  assert.match(read('index.html'), /style-core\.css\?v=20260804\.3/);
+  assert.match(sw, /CACHE_VERSION\s*=\s*'medisa-v2\.273'/);
+  assert.match(read('index.html'), /script-core\.js\?v=20260804\.8/);
+  assert.match(read('index.html'), /style-core\.css\?v=20260804\.4/);
 });
 
 test('quality gate / package bağlandı', function() {

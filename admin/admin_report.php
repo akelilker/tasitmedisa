@@ -50,6 +50,7 @@ if (($auth['success'] ?? false) !== true) {
 $context = $auth['context'];
 $data = medisaFilterReportDataForContext($rawData, $context);
 $currentUser = $context['user'] ?? [];
+$canViewWhatsAppAudit = ($context['role'] ?? '') === 'genel_yonetici';
 $currentUserPayload = [
     'id' => $currentUser['id'] ?? '',
     'isim' => $currentUser['isim'] ?? $currentUser['name'] ?? '',
@@ -70,6 +71,10 @@ if ($action === 'user_analytics') {
         'users' => $data['users'] ?? [],
         'tasitlar' => $data['tasitlar'] ?? [],
         'monthly_records' => $data['arac_aylik_hareketler'] ?? [],
+        'can_view_whatsapp_audit' => $canViewWhatsAppAudit,
+        'whatsapp_logs' => $canViewWhatsAppAudit && is_array($data['monthlyTodoWhatsAppLogs'] ?? null)
+            ? $data['monthlyTodoWhatsAppLogs']
+            : [],
         'current_user' => $currentUserPayload,
     ], JSON_UNESCAPED_UNICODE);
     exit;
