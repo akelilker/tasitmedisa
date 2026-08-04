@@ -288,14 +288,47 @@ test('UI keys: kart stoktan düşen satış ve pertte üretilir', function() {
   );
 });
 
-test('source: belge satır yerleşimi ruhsat+satış / sigorta+kasko', function() {
-  assert.match(
+test('source: belge satır yerleşimi satış tekli / ruhsat tekli / sigorta+kasko', function() {
+  const pickerBlock = extractBetween(
     tasitlar,
+    'function renderVehicleDocumentsPicker(vehicle, container) {',
+    'function setRuhsatSaveBtnVisibility'
+  );
+  assert.match(
+    pickerBlock,
+    /allowedKeys\.has\('satis_sozlesmesi'\)[\s\S]*?keys:\s*\['satis_sozlesmesi'\][\s\S]*?keys:\s*\['ruhsat'\][\s\S]*?keys:\s*\['sigorta',\s*'kasko'\]/
+  );
+  assert.doesNotMatch(
+    pickerBlock,
     /keys:\s*\['ruhsat',\s*'satis_sozlesmesi'\]/
   );
   assert.match(
     tasitlar,
-    /keys:\s*\['sigorta',\s*'kasko'\]/
+    /docKey\s*===\s*'satis_sozlesmesi'\s*\?\s*' vehicle-document-card-satis-sozlesmesi'/
+  );
+});
+
+test('source: satış sözleşmesi kırmızı ikon CSS kontratı', function() {
+  const extraCss = read('tasitlar-extra.css');
+  assert.match(
+    extraCss,
+    /\.vehicle-document-card-satis-sozlesmesi\s+\.vehicle-document-icon-wrap\s*\{[^}]*color:\s*#ef4444/
+  );
+  assert.match(
+    extraCss,
+    /\.vehicle-document-card\.vehicle-document-card-satis-sozlesmesi:hover\s+\.vehicle-document-icon-wrap[\s\S]*?color:\s*#f87171/
+  );
+  assert.match(
+    extraCss,
+    /\.vehicle-document-card\.vehicle-document-card-satis-sozlesmesi:focus-visible\s+\.vehicle-document-icon-wrap/
+  );
+  assert.match(
+    extraCss,
+    /drop-shadow\(0 0 7px rgba\(239,\s*68,\s*68,\s*0\.28\)\)/
+  );
+  assert.match(
+    extraCss,
+    /\.vehicle-document-icon-wrap\s*\{[^}]*color:\s*#22c55e/
   );
 });
 
@@ -619,13 +652,13 @@ test('cache / modül pin parity', function() {
   const notifVer = (scriptCore.match(/notifications:\s*'([^']+)'/) || [])[1];
   const ayarlarCssVer = (scriptCore.match(/ayarlarCss:\s*'([^']+)'/) || [])[1];
   const ayarlarJsVer = (scriptCore.match(/ayarlarJs:\s*'([^']+)'/) || [])[1];
-  assert.equal(moduleVer, '20260804.4');
+  assert.equal(moduleVer, '20260804.5');
   assert.equal(loaderVer, moduleVer);
   assert.equal(notifVer, '20260804.1');
   assert.equal(ayarlarCssVer, '20260804.3');
   assert.equal(ayarlarJsVer, '20260804.2');
   assert.match(sw, /CACHE_VERSION\s*=\s*'medisa-v2\.272'/);
-  assert.match(read('index.html'), /script-core\.js\?v=20260804\.4/);
+  assert.match(read('index.html'), /script-core\.js\?v=20260804\.5/);
   assert.match(read('index.html'), /style-core\.css\?v=20260804\.3/);
 });
 

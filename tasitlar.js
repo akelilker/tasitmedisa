@@ -197,7 +197,7 @@
 
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20260804.4';
+  const MEDISA_TASITLAR_MODULE_VERSION = '20260804.5';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
@@ -5989,7 +5989,9 @@
     if (hasDoc) preloadIosPwaPrintDocument(vid, docPath, docKey);
     const card = document.createElement('button');
     card.type = 'button';
-    card.className = 'vehicle-document-card' + (hasDoc ? '' : ' vehicle-document-card-missing');
+    card.className = 'vehicle-document-card'
+      + (hasDoc ? '' : ' vehicle-document-card-missing')
+      + (docKey === 'satis_sozlesmesi' ? ' vehicle-document-card-satis-sozlesmesi' : '');
     card.setAttribute('aria-label', cfg.label);
     const iconWrap = document.createElement('div');
     iconWrap.className = 'vehicle-document-icon-wrap';
@@ -6015,14 +6017,18 @@
     if (!container || !vehicle) return;
     const vid = String(vehicle.id != null ? vehicle.id : '');
     const allowedKeys = new Set(getVehicleDocumentKeysForVehicle(vehicle));
-    const firstRow = allowedKeys.has('satis_sozlesmesi')
-      ? { rowClass: 'vehicle-documents-row vehicle-documents-row-pair', keys: ['ruhsat', 'satis_sozlesmesi'] }
-      : { rowClass: 'vehicle-documents-row vehicle-documents-row-single', keys: ['ruhsat'] };
-    const documentRows = [
-      firstRow,
+    const documentRows = [];
+    if (allowedKeys.has('satis_sozlesmesi')) {
+      documentRows.push({
+        rowClass: 'vehicle-documents-row vehicle-documents-row-single',
+        keys: ['satis_sozlesmesi']
+      });
+    }
+    documentRows.push(
+      { rowClass: 'vehicle-documents-row vehicle-documents-row-single', keys: ['ruhsat'] },
       { rowClass: 'vehicle-documents-row vehicle-documents-row-pair', keys: ['sigorta', 'kasko'] },
       { rowClass: 'vehicle-documents-row vehicle-documents-row-pair vehicle-documents-row-optional', keys: ['tasit_karti', 'takograf'] }
-    ];
+    );
     const picker = document.createElement('div');
     picker.className = 'vehicle-document-picker';
     documentRows.forEach(function(row) {
