@@ -326,15 +326,9 @@ if (!$isSettingsDocument) {
         exit;
     }
     if ($documentType === 'satis_sozlesmesi') {
-        if (!medisaIsVehicleSold($preVehicle)) {
-            $reason = medisaGetVehicleArchiveReason($preVehicle);
-            if ($reason === 'pert') {
-                http_response_code(403);
-                echo json_encode(['error' => 'Pert nedeniyle arşivlenen taşıtlara Satış Sözleşmesi yüklenemez.'], JSON_UNESCAPED_UNICODE);
-                exit;
-            }
+        if (!medisaVehicleAllowsSatisSozlesmesi($preVehicle)) {
             http_response_code(403);
-            echo json_encode(['error' => 'Satış Sözleşmesi yalnızca satılmış taşıtlara yüklenebilir.'], JSON_UNESCAPED_UNICODE);
+            echo json_encode(['error' => 'Satış Sözleşmesi yalnızca stoktan düşen (satış veya pert) taşıtlara yüklenebilir.'], JSON_UNESCAPED_UNICODE);
             exit;
         }
     }
@@ -480,11 +474,8 @@ $result = medisaMutateData(function (&$data) use ($vehicleId, $vehicleVersion, $
         return medisaBuildErrorResult('Bu taşıt tipi için Takograf Belgesi yüklenemez.', 400);
     }
     if ($documentType === 'satis_sozlesmesi') {
-        if (!medisaIsVehicleSold($vehicle)) {
-            if (medisaGetVehicleArchiveReason($vehicle) === 'pert') {
-                return medisaBuildErrorResult('Pert nedeniyle arşivlenen taşıtlara Satış Sözleşmesi yüklenemez.', 403);
-            }
-            return medisaBuildErrorResult('Satış Sözleşmesi yalnızca satılmış taşıtlara yüklenebilir.', 403);
+        if (!medisaVehicleAllowsSatisSozlesmesi($vehicle)) {
+            return medisaBuildErrorResult('Satış Sözleşmesi yalnızca stoktan düşen (satış veya pert) taşıtlara yüklenebilir.', 403);
         }
     }
 

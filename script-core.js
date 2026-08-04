@@ -1158,7 +1158,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // style-core.css ana/paylaşılan shell HTML ile yüklenir; taşıt lazy asset sürümünden bağımsızdır.
 // tasitlar loader (bu nesne) ile MEDISA_TASITLAR_MODULE_VERSION kendi aralarında eşit kalmalıdır.
 var MEDISA_MODULE_VERSIONS = {
-  tasitlar: '20260804.2',
+  tasitlar: '20260804.3',
   notifications: '20260804.1',
   raporlar: '20260801.3',
   kayitJs: '20260725.1',

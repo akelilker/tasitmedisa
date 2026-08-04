@@ -197,7 +197,7 @@
 
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20260804.2';
+  const MEDISA_TASITLAR_MODULE_VERSION = '20260804.3';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
@@ -3728,9 +3728,15 @@
     return getVehicleArchiveReason(vehicle) === 'pert';
   }
 
+  /** Satış sözleşmesi: stoktan düşen (satis|pert) araçlar; aktif stok hariç. */
+  function vehicleAllowsSatisSozlesmesi(vehicle) {
+    return getVehicleArchiveReason(vehicle) != null;
+  }
+
   window.isVehicleSold = isVehicleSold;
   window.isVehiclePert = isVehiclePert;
   window.getVehicleArchiveReason = getVehicleArchiveReason;
+  window.vehicleAllowsSatisSozlesmesi = vehicleAllowsSatisSozlesmesi;
 
   /**
    * Taşıtlar modalı liste/kart — kalıcı tarih uyarısı (bildirim okundu ile ilgisiz).
@@ -5917,7 +5923,7 @@
 
   function getVehicleDocumentKeysForVehicle(vehicle) {
     var keys = ['ruhsat', 'sigorta', 'kasko'];
-    if (isVehicleSold(vehicle)) {
+    if (vehicleAllowsSatisSozlesmesi(vehicle)) {
       keys.splice(1, 0, 'satis_sozlesmesi');
     }
     if (window.MedisaVehicleNotificationDomain.vehicleNeedsK2Belgesi(vehicle)) {
@@ -7416,11 +7422,11 @@
     if (!vid) return;
     pinRuhsatUploadVehicleContext(vid);
     var vehicle = findVehicleForDocumentUpload(vid);
-    if (dt === 'satis_sozlesmesi' && !isVehicleSold(vehicle)) {
+    if (dt === 'satis_sozlesmesi' && !vehicleAllowsSatisSozlesmesi(vehicle)) {
       if (typeof showToast === 'function') {
-        showToast('Satış Sözleşmesi yalnızca satılmış taşıtlarda kullanılabilir.', 'error');
+        showToast('Satış Sözleşmesi yalnızca stoktan düşen (satış veya pert) taşıtlarda kullanılabilir.', 'error');
       } else {
-        alert('Satış Sözleşmesi yalnızca satılmış taşıtlarda kullanılabilir.');
+        alert('Satış Sözleşmesi yalnızca stoktan düşen (satış veya pert) taşıtlarda kullanılabilir.');
       }
       return;
     }
@@ -9308,7 +9314,7 @@
     const vid = String(vehicleId || '').trim();
     if (!vid) return;
     const vehicle = readVehicles().find(function(v) { return String(v.id) === vid; });
-    if (!vehicle || !isVehicleSold(vehicle)) return;
+    if (!vehicle || !vehicleAllowsSatisSozlesmesi(vehicle)) return;
     window.currentDetailVehicleId = vid;
     if (typeof window.openVehicleDocumentModal === 'function') {
       window.openVehicleDocumentModal(vid, 'satis_sozlesmesi');
@@ -9414,20 +9420,13 @@
 
     vehicle.events.unshift(event);
     return writeVehicles(vehicles).then(function() {
-      if (islemTuru === 'pert') {
-        return completeDynamicEventSave({
-          modalType: 'satis',
-          vehicleId: vehicleId,
-          message: 'Taşıt pert işlemi kaydedildi. Taşıt arşive taşındı.',
-          afterSuccess: function() {
-            refreshUiAfterSatisArchive(false);
-          }
-        });
-      }
+      const message = islemTuru === 'pert'
+        ? 'Taşıt pert işlemi kaydedildi. Taşıt arşive taşındı.'
+        : 'Taşıt satış işlemi kaydedildi.';
       return completeDynamicEventSave({
         modalType: 'satis',
         vehicleId: vehicleId,
-        message: 'Taşıt satış işlemi kaydedildi.',
+        message: message,
         afterSuccess: function() {
           runSatisSozlesmesiPromptFlow(vehicleId);
         }

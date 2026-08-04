@@ -69,7 +69,8 @@ function loadArchiveHelpers() {
     block +
       '\n;this.getVehicleArchiveReason = getVehicleArchiveReason;' +
       '\n;this.isVehicleSold = isVehicleSold;' +
-      '\n;this.isVehiclePert = isVehiclePert;',
+      '\n;this.isVehiclePert = isVehiclePert;' +
+      '\n;this.vehicleAllowsSatisSozlesmesi = vehicleAllowsSatisSozlesmesi;',
     sandbox
   );
   return sandbox;
@@ -95,7 +96,8 @@ function loadDocumentKeysHelpers() {
     },
     getVehicleArchiveReason: archive.getVehicleArchiveReason,
     isVehicleSold: archive.isVehicleSold,
-    isVehiclePert: archive.isVehiclePert
+    isVehiclePert: archive.isVehiclePert,
+    vehicleAllowsSatisSozlesmesi: archive.vehicleAllowsSatisSozlesmesi
   };
   vm.createContext(sandbox);
   vm.runInContext(
@@ -121,7 +123,7 @@ test('source: satış/pert formunda işlem türü seçimi', function() {
   assert.match(tasitlar, /pertIsaret:\s*islemTuru\s*===\s*'pert'/);
 });
 
-test('source: satış sonrası soru akışı (pert hariç, başarılı kayıt sonrası)', function() {
+test('source: satış/pert sonrası soru akışı (başarılı kayıt sonrası)', function() {
   assert.match(tasitlar, /Satış Sözleşmesini Yüklediniz mi\?/);
   assert.match(tasitlar, /Satış Sözleşmesini Şimdi Yüklemek İster misiniz\?/);
   assert.match(tasitlar, /function runSatisSozlesmesiPromptFlow/);
@@ -134,10 +136,12 @@ test('source: satış sonrası soru akışı (pert hariç, başarılı kayıt so
   const saveBlock = extractBetween(tasitlar, 'window.saveSatisPert = function()', 'function countHistoryEventsByTab');
   assert.match(saveBlock, /writeVehicles\(vehicles\)\.then/);
   assert.match(saveBlock, /islemTuru\s*===\s*'pert'/);
+  assert.match(saveBlock, /Taşıt pert işlemi kaydedildi\. Taşıt arşive taşındı\./);
+  assert.match(saveBlock, /Taşıt satış işlemi kaydedildi\./);
   assert.match(saveBlock, /runSatisSozlesmesiPromptFlow\(vehicleId\)/);
-  assert.ok(
-    saveBlock.indexOf("islemTuru === 'pert'") < saveBlock.indexOf('runSatisSozlesmesiPromptFlow'),
-    'pert dalı satış soru akışından önce ayrılmalı'
+  assert.doesNotMatch(
+    saveBlock,
+    /if\s*\(\s*islemTuru\s*===\s*'pert'\s*\)\s*\{[\s\S]*?refreshUiAfterSatisArchive\(false\)/
   );
 });
 
@@ -164,14 +168,25 @@ test('domain: aktif / pert / satış / legacy sınıflandırma', function() {
     }),
     true
   );
+  assert.equal(h.vehicleAllowsSatisSozlesmesi({ satildiMi: false }), false, 'aktif → sözleşme yok');
+  assert.equal(h.vehicleAllowsSatisSozlesmesi({ satildiMi: true, arsivNedeni: 'satis' }), true);
+  assert.equal(h.vehicleAllowsSatisSozlesmesi({ satildiMi: true, arsivNedeni: 'pert' }), true);
+  assert.equal(
+    h.vehicleAllowsSatisSozlesmesi({
+      satildiMi: true,
+      events: [{ type: 'satis', data: { pertIsaret: true } }]
+    }),
+    true,
+    'legacy pert → sözleşme var'
+  );
 });
 
-test('UI keys: kart yalnızca satılmışta üretilir', function() {
+test('UI keys: kart stoktan düşen satış ve pertte üretilir', function() {
   const h = loadDocumentKeysHelpers();
   const active = h.getVehicleDocumentKeysForVehicle({ satildiMi: false });
   assert.ok(!active.includes('satis_sozlesmesi'), 'aktifte kart yok');
   const pert = h.getVehicleDocumentKeysForVehicle({ satildiMi: true, arsivNedeni: 'pert' });
-  assert.ok(!pert.includes('satis_sozlesmesi'), 'pertte kart yok');
+  assert.ok(pert.includes('satis_sozlesmesi'), 'pertte kart var');
   const sold = h.getVehicleDocumentKeysForVehicle({ satildiMi: true, arsivNedeni: 'satis' });
   assert.ok(sold.includes('satis_sozlesmesi'), 'yeni satışta kart var');
   const legacySold = h.getVehicleDocumentKeysForVehicle({ satildiMi: true });
@@ -180,11 +195,16 @@ test('UI keys: kart yalnızca satılmışta üretilir', function() {
     satildiMi: true,
     events: [{ type: 'satis', data: { pertIsaret: true } }]
   });
-  assert.ok(!legacyPert.includes('satis_sozlesmesi'), 'legacy pertIsaret kart yok');
+  assert.ok(legacyPert.includes('satis_sozlesmesi'), 'legacy pertIsaret kart var');
   assert.equal(
     sold.slice(0, 4).join(','),
     'ruhsat,satis_sozlesmesi,sigorta,kasko',
     'satış belgesi ruhsat sonrası sırada: ' + sold.join(',')
+  );
+  assert.equal(
+    pert.slice(0, 4).join(','),
+    'ruhsat,satis_sozlesmesi,sigorta,kasko',
+    'pert belgesi ruhsat sonrası sırada: ' + pert.join(',')
   );
 });
 
@@ -203,6 +223,7 @@ test('PHP: config + preserve + archive helpers + upload gate', function() {
   assert.match(corePhp, /function medisaGetVehicleArchiveReason/);
   assert.match(corePhp, /function medisaIsVehicleSold/);
   assert.match(corePhp, /function medisaIsVehiclePert/);
+  assert.match(corePhp, /function medisaVehicleAllowsSatisSozlesmesi/);
   assert.match(corePhp, /'satis_sozlesmesi'\s*=>/);
   assert.match(corePhp, /'pathField'\s*=>\s*'satisSozlesmesiPath'/);
   assert.match(corePhp, /'dir'\s*=>\s*'satis_sozlesmesi'/);
@@ -215,10 +236,12 @@ test('PHP: config + preserve + archive helpers + upload gate', function() {
   assert.match(preserve, /satisSozlesmesiPath/);
   assert.match(uploadPhp, /satis-sozlesmesi-yukle/);
   assert.match(uploadPhp, /Satış Sözleşmesi/);
-  assert.match(uploadPhp, /medisaIsVehicleSold\(\$preVehicle\)/);
-  assert.match(uploadPhp, /medisaIsVehicleSold\(\$vehicle\)/);
-  assert.match(uploadPhp, /Satış Sözleşmesi yalnızca satılmış taşıtlara yüklenebilir/);
-  assert.match(uploadPhp, /Pert nedeniyle arşivlenen taşıtlara Satış Sözleşmesi yüklenemez/);
+  assert.match(uploadPhp, /medisaVehicleAllowsSatisSozlesmesi\(\$preVehicle\)/);
+  assert.match(uploadPhp, /medisaVehicleAllowsSatisSozlesmesi\(\$vehicle\)/);
+  assert.match(uploadPhp, /Satış Sözleşmesi yalnızca stoktan düşen \(satış veya pert\) taşıtlara yüklenebilir/);
+  assert.doesNotMatch(uploadPhp, /Pert nedeniyle arşivlenen taşıtlara Satış Sözleşmesi yüklenemez/);
+  assert.doesNotMatch(uploadPhp, /medisaIsVehicleSold\(\$preVehicle\)/);
+  assert.doesNotMatch(uploadPhp, /medisaIsVehicleSold\(\$vehicle\)/);
 });
 
 test('notifications + history label registry', function() {
@@ -275,7 +298,7 @@ test('source: openSatisSozlesmesiUploadForVehicle setTimeout yarışı yok', fun
   assert.doesNotMatch(tasitlar, /setTimeout\s*\(\s*function\s*\(\)\s*\{[\s\S]*?openVehicleDocumentModal[\s\S]*?\}\s*,\s*120\s*\)/);
 });
 
-test('behavior: openSatisSozlesmesiUploadForVehicle sold-gate + doğrudan belge modalı', function() {
+test('behavior: openSatisSozlesmesiUploadForVehicle sold+pert gate + doğrudan belge modalı', function() {
   const archive = loadArchiveHelpers();
   const openFn = extractBetween(
     tasitlar,
@@ -285,6 +308,7 @@ test('behavior: openSatisSozlesmesiUploadForVehicle sold-gate + doğrudan belge 
   const vehicles = [
     { id: 'sold-1', satildiMi: true, arsivNedeni: 'satis' },
     { id: 'pert-1', satildiMi: true, arsivNedeni: 'pert' },
+    { id: 'legacy-pert-1', satildiMi: true, events: [{ type: 'satis', data: { pertIsaret: true } }] },
     { id: 'active-1', satildiMi: false }
   ];
   const openCalls = [];
@@ -299,7 +323,7 @@ test('behavior: openSatisSozlesmesiUploadForVehicle sold-gate + doğrudan belge 
       }
     },
     readVehicles: function() { return vehicles; },
-    isVehicleSold: archive.isVehicleSold
+    vehicleAllowsSatisSozlesmesi: archive.vehicleAllowsSatisSozlesmesi
   };
   vm.createContext(sandbox);
   vm.runInContext(
@@ -314,17 +338,26 @@ test('behavior: openSatisSozlesmesiUploadForVehicle sold-gate + doğrudan belge 
   openCalls.length = 0;
   sandbox.window.currentDetailVehicleId = null;
   sandbox.openSatisSozlesmesiUploadForVehicle('pert-1');
-  assert.equal(sandbox.window.currentDetailVehicleId, null, 'pert → context sabitlenmez');
-  assert.equal(openCalls.length, 0, 'pert → belge modalı açılmaz');
+  assert.equal(sandbox.window.currentDetailVehicleId, 'pert-1', 'pert → context sabitlenir');
+  assert.deepEqual(openCalls, [['pert-1', 'satis_sozlesmesi']], 'pert → belge modalı açılır');
 
+  openCalls.length = 0;
+  sandbox.window.currentDetailVehicleId = null;
+  sandbox.openSatisSozlesmesiUploadForVehicle('legacy-pert-1');
+  assert.equal(sandbox.window.currentDetailVehicleId, 'legacy-pert-1');
+  assert.deepEqual(openCalls, [['legacy-pert-1', 'satis_sozlesmesi']], 'legacy pert → belge modalı açılır');
+
+  openCalls.length = 0;
+  sandbox.window.currentDetailVehicleId = null;
   sandbox.openSatisSozlesmesiUploadForVehicle('active-1');
+  assert.equal(sandbox.window.currentDetailVehicleId, null, 'aktif → context sabitlenmez');
   assert.equal(openCalls.length, 0, 'aktif → belge modalı açılmaz');
 
   sandbox.openSatisSozlesmesiUploadForVehicle('');
   assert.equal(openCalls.length, 0, 'boş id → no-op');
 });
 
-test('behavior: PHP sold/pert + satisSozlesmesiPath preserve', function() {
+test('behavior: PHP sold/pert allow + aktif deny + satisSozlesmesiPath preserve', function() {
   // medisaSaveVehicleNeedsK2/Takograf preserve dalında çağrılır; stub ile izole et.
   const helpers = extractBetween(
     corePhp,
@@ -332,6 +365,7 @@ test('behavior: PHP sold/pert + satisSozlesmesiPath preserve', function() {
     'function medisaSaveApplyVehicleMutation'
   );
   assert.match(helpers, /function medisaSavePreserveVehicleDocumentReferences/);
+  assert.match(helpers, /function medisaVehicleAllowsSatisSozlesmesi/);
   assert.match(helpers, /satisSozlesmesiPath/);
   const phpSrc = [
     '<?php',
@@ -344,7 +378,10 @@ test('behavior: PHP sold/pert + satisSozlesmesiPath preserve', function() {
     "$cases[] = medisaIsVehicleSold(['satildiMi' => true, 'arsivNedeni' => 'pert']) === false;",
     "$cases[] = medisaIsVehiclePert(['satildiMi' => true, 'arsivNedeni' => 'pert']) === true;",
     "$cases[] = medisaIsVehicleSold(['satildiMi' => false]) === false;",
-    "$cases[] = medisaIsVehicleSold(['satildiMi' => true, 'events' => [['type' => 'satis', 'data' => ['pertIsaret' => true]]]]) === false;",
+    "$cases[] = medisaVehicleAllowsSatisSozlesmesi(['satildiMi' => false]) === false;",
+    "$cases[] = medisaVehicleAllowsSatisSozlesmesi(['satildiMi' => true, 'arsivNedeni' => 'satis']) === true;",
+    "$cases[] = medisaVehicleAllowsSatisSozlesmesi(['satildiMi' => true, 'arsivNedeni' => 'pert']) === true;",
+    "$cases[] = medisaVehicleAllowsSatisSozlesmesi(['satildiMi' => true, 'events' => [['type' => 'satis', 'data' => ['pertIsaret' => true]]]]) === true;",
     "$preserved = medisaSavePreserveVehicleDocumentReferences(",
     "  ['satisSozlesmesiPath' => 'data/satis_sozlesmesi/old.pdf', 'ruhsatPath' => 'data/ruhsat/a.pdf'],",
     "  ['satisSozlesmesiPath' => '', 'ruhsatPath' => 'data/ruhsat/a.pdf']",
@@ -438,9 +475,11 @@ test('behavior: satış soru akışı dalları', async function() {
 
   const saveBlock = extractBetween(tasitlar, 'window.saveSatisPert = function()', 'function countHistoryEventsByTab');
   assert.match(saveBlock, /islemTuru\s*===\s*'pert'/);
-  assert.ok(
-    saveBlock.indexOf("islemTuru === 'pert'") < saveBlock.indexOf('runSatisSozlesmesiPromptFlow'),
-    'pert → soru akışı çağrılmaz'
+  assert.match(saveBlock, /Taşıt pert işlemi kaydedildi\. Taşıt arşive taşındı\./);
+  assert.match(saveBlock, /runSatisSozlesmesiPromptFlow\(vehicleId\)/);
+  assert.doesNotMatch(
+    saveBlock,
+    /if\s*\(\s*islemTuru\s*===\s*'pert'\s*\)\s*\{[\s\S]*?runSatisSozlesmesiPromptFlow/
   );
   assert.doesNotMatch(saveBlock, /setTimeout\s*\(\s*[^,]*,\s*120\s*\)/);
 });
@@ -451,13 +490,13 @@ test('cache / modül pin parity', function() {
   const notifVer = (scriptCore.match(/notifications:\s*'([^']+)'/) || [])[1];
   const ayarlarCssVer = (scriptCore.match(/ayarlarCss:\s*'([^']+)'/) || [])[1];
   const ayarlarJsVer = (scriptCore.match(/ayarlarJs:\s*'([^']+)'/) || [])[1];
-  assert.equal(moduleVer, '20260804.2');
+  assert.equal(moduleVer, '20260804.3');
   assert.equal(loaderVer, moduleVer);
   assert.equal(notifVer, '20260804.1');
   assert.equal(ayarlarCssVer, '20260804.3');
   assert.equal(ayarlarJsVer, '20260804.2');
-  assert.match(sw, /CACHE_VERSION\s*=\s*'medisa-v2\.271'/);
-  assert.match(read('index.html'), /script-core\.js\?v=20260804\.3/);
+  assert.match(sw, /CACHE_VERSION\s*=\s*'medisa-v2\.272'/);
+  assert.match(read('index.html'), /script-core\.js\?v=20260804\.4/);
   assert.match(read('index.html'), /style-core\.css\?v=20260804\.3/);
 });
 
