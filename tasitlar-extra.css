@@ -977,8 +977,8 @@
 #dinamik-olay-modal #ruhsat-modal-content .vehicle-document-card-satis-sozlesmesi .vehicle-document-icon-wrap {
   color: #ef4444;
 }
-#dinamik-olay-modal #ruhsat-modal-content .vehicle-document-card.vehicle-document-card-satis-sozlesmesi:hover .vehicle-document-icon-wrap,
-#dinamik-olay-modal #ruhsat-modal-content .vehicle-document-card.vehicle-document-card-satis-sozlesmesi:focus-visible .vehicle-document-icon-wrap {
+#dinamik-olay-modal #ruhsat-modal-content .vehicle-document-card-satis-sozlesmesi:hover .vehicle-document-icon-wrap,
+#dinamik-olay-modal #ruhsat-modal-content .vehicle-document-card-satis-sozlesmesi:focus-visible .vehicle-document-icon-wrap {
   color: #f87171;
   filter: drop-shadow(0 0 7px rgba(239, 68, 68, 0.28));
 }

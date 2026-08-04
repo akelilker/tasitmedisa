@@ -61,15 +61,13 @@ function loadArchiveHelpers() {
   const block = extractBetween(
     tasitlar,
     'function getLatestSatisEvent(vehicle) {',
-    'window.isVehicleSold = isVehicleSold;'
+    'function getVehicleDateSeverityClass(vehicle) {'
   );
   const sandbox = { window: {} };
   vm.createContext(sandbox);
   vm.runInContext(
     block +
       '\n;this.getVehicleArchiveReason = getVehicleArchiveReason;' +
-      '\n;this.isVehicleSold = isVehicleSold;' +
-      '\n;this.isVehiclePert = isVehiclePert;' +
       '\n;this.getVehicleArchiveStatusLabel = getVehicleArchiveStatusLabel;' +
       '\n;this.vehicleAllowsSatisSozlesmesi = vehicleAllowsSatisSozlesmesi;',
     sandbox
@@ -96,8 +94,6 @@ function loadDocumentKeysHelpers() {
       }
     },
     getVehicleArchiveReason: archive.getVehicleArchiveReason,
-    isVehicleSold: archive.isVehicleSold,
-    isVehiclePert: archive.isVehiclePert,
     vehicleAllowsSatisSozlesmesi: archive.vehicleAllowsSatisSozlesmesi
   };
   vm.createContext(sandbox);
@@ -149,10 +145,8 @@ test('source: satış/pert sonrası soru akışı (başarılı kayıt sonrası)'
 test('domain: aktif / pert / satış / legacy sınıflandırma', function() {
   const h = loadArchiveHelpers();
   assert.equal(h.getVehicleArchiveReason({ satildiMi: false }), null);
-  assert.equal(h.isVehicleSold({ satildiMi: false }), false);
-  assert.equal(h.isVehicleSold({ satildiMi: true, arsivNedeni: 'satis' }), true);
-  assert.equal(h.isVehicleSold({ satildiMi: true, arsivNedeni: 'pert' }), false);
-  assert.equal(h.isVehiclePert({ satildiMi: true, arsivNedeni: 'pert' }), true);
+  assert.equal(h.getVehicleArchiveReason({ satildiMi: true, arsivNedeni: 'satis' }), 'satis');
+  assert.equal(h.getVehicleArchiveReason({ satildiMi: true, arsivNedeni: 'pert' }), 'pert');
   assert.equal(
     h.getVehicleArchiveReason({
       satildiMi: true,
@@ -174,21 +168,14 @@ test('domain: aktif / pert / satış / legacy sınıflandırma', function() {
     null,
     'geçersiz açık arşiv nedeni fail-closed'
   );
-  assert.equal(h.isVehicleSold({ satildiMi: true }), true, 'legacy satildiMi → satış');
+  assert.equal(h.getVehicleArchiveReason({ satildiMi: true }), 'satis', 'legacy satildiMi → satış');
   assert.equal(
-    h.isVehicleSold({
+    h.getVehicleArchiveReason({
       satildiMi: true,
       events: [{ type: 'satis', data: { pertIsaret: true } }]
     }),
-    false,
-    'legacy pertIsaret → satış değil'
-  );
-  assert.equal(
-    h.isVehiclePert({
-      satildiMi: true,
-      events: [{ type: 'satis', data: { pertIsaret: true } }]
-    }),
-    true
+    'pert',
+    'legacy pertIsaret → pert'
   );
   assert.equal(h.getVehicleArchiveStatusLabel({ satildiMi: false }), '', 'aktif → etiket yok');
   assert.equal(h.getVehicleArchiveStatusLabel({ satildiMi: true, arsivNedeni: 'satis' }), 'SATILDI');
@@ -232,6 +219,15 @@ test('source: arşiv kart/liste/detay etiketleri helper üzerinden', function() 
   );
 });
 
+test('source: arşiv ve satış sözleşmesi helperları modül içinde kalır', function() {
+  assert.doesNotMatch(tasitlar, /function isVehicleSold\s*\(/);
+  assert.doesNotMatch(tasitlar, /function isVehiclePert\s*\(/);
+  assert.doesNotMatch(
+    tasitlar,
+    /window\.(?:isVehicleSold|isVehiclePert|getVehicleArchiveReason|getVehicleArchiveStatusLabel|vehicleAllowsSatisSozlesmesi|openSatisSozlesmesiUploadForVehicle|runSatisSozlesmesiPromptFlow)\s*=/
+  );
+});
+
 test('source: tarihçe satis chip Satış/Pert ayrımı', function() {
   assert.match(tasitlar, /function getHistoryEventTypeLabel\(eventType,\s*event\)/);
   assert.match(tasitlar, /getHistoryEventTypeLabel\(eventType,\s*event\)/);
@@ -240,11 +236,16 @@ test('source: tarihçe satis chip Satış/Pert ayrımı', function() {
     'function getHistoryEventTypeLabel(eventType, event) {',
     'window.showVehicleHistory = function'
   );
+  const documentLabelOwner = extractBetween(
+    tasitlar,
+    'const VEHICLE_DOCUMENT_UPLOAD_EVENT_LABELS = {',
+    'function getVehicleDocumentConfig(documentType) {'
+  );
   const sandbox = {
     toTitleCase: function(s) { return String(s || ''); }
   };
   vm.createContext(sandbox);
-  vm.runInContext(labelFn + '\n;this.getHistoryEventTypeLabel = getHistoryEventTypeLabel;', sandbox);
+  vm.runInContext(documentLabelOwner + labelFn + '\n;this.getHistoryEventTypeLabel = getHistoryEventTypeLabel;', sandbox);
   assert.equal(
     sandbox.getHistoryEventTypeLabel('satis', { data: { arsivNedeni: 'satis' } }),
     'Satış'
@@ -276,16 +277,7 @@ test('UI keys: kart stoktan düşen satış ve pertte üretilir', function() {
     events: [{ type: 'satis', data: { pertIsaret: true } }]
   });
   assert.ok(legacyPert.includes('satis_sozlesmesi'), 'legacy pertIsaret kart var');
-  assert.equal(
-    sold.slice(0, 4).join(','),
-    'ruhsat,satis_sozlesmesi,sigorta,kasko',
-    'satış belgesi ruhsat sonrası sırada: ' + sold.join(',')
-  );
-  assert.equal(
-    pert.slice(0, 4).join(','),
-    'ruhsat,satis_sozlesmesi,sigorta,kasko',
-    'pert belgesi ruhsat sonrası sırada: ' + pert.join(',')
-  );
+  assert.doesNotMatch(extractDocumentKeysFn(), /\.splice\s*\(/, 'render sırası key listesinden yönetilmemeli');
 });
 
 test('source: belge satır yerleşimi satış tekli / ruhsat tekli / sigorta+kasko', function() {
@@ -316,12 +308,13 @@ test('source: satış sözleşmesi kırmızı ikon CSS kontratı', function() {
   );
   assert.match(
     extraCss,
-    /\.vehicle-document-card\.vehicle-document-card-satis-sozlesmesi:hover\s+\.vehicle-document-icon-wrap[\s\S]*?color:\s*#f87171/
+    /\.vehicle-document-card-satis-sozlesmesi:hover\s+\.vehicle-document-icon-wrap[\s\S]*?color:\s*#f87171/
   );
   assert.match(
     extraCss,
-    /\.vehicle-document-card\.vehicle-document-card-satis-sozlesmesi:focus-visible\s+\.vehicle-document-icon-wrap/
+    /\.vehicle-document-card-satis-sozlesmesi:focus-visible\s+\.vehicle-document-icon-wrap/
   );
+  assert.doesNotMatch(extraCss, /\.vehicle-document-card\.vehicle-document-card-satis-sozlesmesi/);
   assert.match(
     extraCss,
     /drop-shadow\(0 0 7px rgba\(239,\s*68,\s*68,\s*0\.28\)\)/
@@ -334,8 +327,8 @@ test('source: satış sözleşmesi kırmızı ikon CSS kontratı', function() {
 
 test('PHP: config + preserve + archive helpers + upload gate', function() {
   assert.match(corePhp, /function medisaGetVehicleArchiveReason/);
-  assert.match(corePhp, /function medisaIsVehicleSold/);
-  assert.match(corePhp, /function medisaIsVehiclePert/);
+  assert.doesNotMatch(corePhp, /function medisaIsVehicleSold/);
+  assert.doesNotMatch(corePhp, /function medisaIsVehiclePert/);
   assert.match(corePhp, /function medisaVehicleAllowsSatisSozlesmesi/);
   assert.match(corePhp, /'satis_sozlesmesi'\s*=>/);
   assert.match(corePhp, /'pathField'\s*=>\s*'satisSozlesmesiPath'/);
@@ -355,14 +348,19 @@ test('PHP: config + preserve + archive helpers + upload gate', function() {
   assert.match(uploadPhp, /\$documentEventExtra\['vehicleId'\]\s*=\s*\(string\)\$vehicleId/);
   assert.match(uploadPhp, /\$documentEventExtra\['plakaSnapshot'\]/);
   assert.doesNotMatch(uploadPhp, /Pert nedeniyle arşivlenen taşıtlara Satış Sözleşmesi yüklenemez/);
-  assert.doesNotMatch(uploadPhp, /medisaIsVehicleSold\(\$preVehicle\)/);
-  assert.doesNotMatch(uploadPhp, /medisaIsVehicleSold\(\$vehicle\)/);
 });
 
 test('notifications + history label registry', function() {
   assert.match(notifications, /'satis-sozlesmesi-yukle'\s*:\s*'Sat/);
   assert.match(notifications, /evData\.plakaSnapshot\s*\|\|\s*plate/);
-  assert.match(tasitlar, /'satis-sozlesmesi-yukle'\s*:\s*'Satış Sözleşmesi'/);
+  assert.match(tasitlar, /const VEHICLE_DOCUMENT_UPLOAD_EVENT_LABELS\s*=\s*\{/);
+  assert.match(tasitlar, /function getVehicleDocumentUploadEventLabel\(eventType, data\)/);
+  assert.equal(
+    (tasitlar.match(/'satis-sozlesmesi-yukle'\s*:\s*'Satış Sözleşmesi'/g) || []).length,
+    1,
+    'taşıt tarihçesinde belge event etiketi tek registry sahibi olmalı'
+  );
+  assert.doesNotMatch(tasitlar, /function getVehicleDocumentUploadLabel\(type, data\)/);
 });
 
 test('gitignore runtime klasörleri', function() {
@@ -490,13 +488,12 @@ test('behavior: PHP sold/pert allow + aktif deny + satisSozlesmesiPath preserve'
     'function medisaSaveVehicleNeedsTakograf($vehicle) { return false; }',
     helpers,
     '$cases = [];',
-    "$cases[] = medisaIsVehicleSold(['satildiMi' => true, 'arsivNedeni' => 'satis']) === true;",
-    "$cases[] = medisaIsVehicleSold(['satildiMi' => true, 'arsivNedeni' => 'pert']) === false;",
-    "$cases[] = medisaIsVehiclePert(['satildiMi' => true, 'arsivNedeni' => 'pert']) === true;",
+    "$cases[] = medisaGetVehicleArchiveReason(['satildiMi' => true, 'arsivNedeni' => 'satis']) === 'satis';",
+    "$cases[] = medisaGetVehicleArchiveReason(['satildiMi' => true, 'arsivNedeni' => 'pert']) === 'pert';",
     "$cases[] = medisaGetVehicleArchiveReason(['satildiMi' => true, 'events' => [['type' => 'satis', 'data' => ['arsivNedeni' => 'satis', 'pertIsaret' => true]]]]) === 'satis';",
     "$cases[] = medisaGetVehicleArchiveReason(['satildiMi' => true, 'events' => [['type' => 'satis', 'data' => ['arsivNedeni' => 'pert', 'pertIsaret' => false]]]]) === 'pert';",
     "$cases[] = medisaGetVehicleArchiveReason(['satildiMi' => true, 'arsivNedeni' => 'hurda']) === null;",
-    "$cases[] = medisaIsVehicleSold(['satildiMi' => false]) === false;",
+    "$cases[] = medisaGetVehicleArchiveReason(['satildiMi' => false]) === null;",
     "$cases[] = medisaVehicleAllowsSatisSozlesmesi(['satildiMi' => false]) === false;",
     "$cases[] = medisaVehicleAllowsSatisSozlesmesi(['satildiMi' => true, 'arsivNedeni' => 'satis']) === true;",
     "$cases[] = medisaVehicleAllowsSatisSozlesmesi(['satildiMi' => true, 'arsivNedeni' => 'pert']) === true;",
@@ -575,7 +572,7 @@ test('behavior: satış soru akışı dalları', async function() {
   const flowSrc = extractBetween(
     tasitlar,
     'function runSatisSozlesmesiPromptFlow(vehicleId, deps)',
-    'window.openSatisSozlesmesiUploadForVehicle'
+    'window.saveSatisPert = function()'
   );
   function makeSandbox(opts) {
     const uploadCalls = [];

@@ -3732,14 +3732,6 @@
     return 'satis';
   }
 
-  function isVehicleSold(vehicle) {
-    return getVehicleArchiveReason(vehicle) === 'satis';
-  }
-
-  function isVehiclePert(vehicle) {
-    return getVehicleArchiveReason(vehicle) === 'pert';
-  }
-
   /** Arşiv durum etiketi: 'SATILDI' | 'PERT' | '' (aktif stokta boş). */
   function getVehicleArchiveStatusLabel(vehicle) {
     const reason = getVehicleArchiveReason(vehicle);
@@ -3752,12 +3744,6 @@
   function vehicleAllowsSatisSozlesmesi(vehicle) {
     return getVehicleArchiveReason(vehicle) != null;
   }
-
-  window.isVehicleSold = isVehicleSold;
-  window.isVehiclePert = isVehiclePert;
-  window.getVehicleArchiveReason = getVehicleArchiveReason;
-  window.getVehicleArchiveStatusLabel = getVehicleArchiveStatusLabel;
-  window.vehicleAllowsSatisSozlesmesi = vehicleAllowsSatisSozlesmesi;
 
   /**
    * Taşıtlar modalı liste/kart — kalıcı tarih uyarısı (bildirim okundu ile ilgisiz).
@@ -5902,6 +5888,20 @@
     }
   };
 
+  const VEHICLE_DOCUMENT_UPLOAD_EVENT_LABELS = {
+    'ruhsat-yukle': 'Ruhsat Belgesi',
+    'sigorta-policesi-yukle': 'Sigorta Poliçesi',
+    'kasko-policesi-yukle': 'Kasko Poliçesi',
+    'takograf-belgesi-yukle': 'Takograf Belgesi',
+    'tasit-karti-yukle': 'Taşıt Kartı',
+    'satis-sozlesmesi-yukle': 'Satış Sözleşmesi'
+  };
+
+  function getVehicleDocumentUploadEventLabel(eventType, data) {
+    const key = String(eventType || '').trim();
+    return String((data && data.belgeTipi) || VEHICLE_DOCUMENT_UPLOAD_EVENT_LABELS[key] || '').trim();
+  }
+
   function getVehicleDocumentConfig(documentType) {
     return VEHICLE_DOCUMENT_TYPES[String(documentType || 'ruhsat').trim()] || VEHICLE_DOCUMENT_TYPES.ruhsat;
   }
@@ -5945,7 +5945,7 @@
   function getVehicleDocumentKeysForVehicle(vehicle) {
     var keys = ['ruhsat', 'sigorta', 'kasko'];
     if (vehicleAllowsSatisSozlesmesi(vehicle)) {
-      keys.splice(1, 0, 'satis_sozlesmesi');
+      keys.push('satis_sozlesmesi');
     }
     if (window.MedisaVehicleNotificationDomain.vehicleNeedsK2Belgesi(vehicle)) {
       keys.push('tasit_karti');
@@ -9392,9 +9392,6 @@
     });
   }
 
-  window.openSatisSozlesmesiUploadForVehicle = openSatisSozlesmesiUploadForVehicle;
-  window.runSatisSozlesmesiPromptFlow = runSatisSozlesmesiPromptFlow;
-
   /**
    * Satış/Pert kaydet ve arşive taşı
    */
@@ -9591,13 +9588,7 @@
       'driver-feedback': 'Kullanıcı Talebi',
       'not-guncelle': 'Not',
       satis: 'Satış',
-      'kasko-kodu-guncelle': 'Kasko Kodu',
-      'ruhsat-yukle': 'Ruhsat Belgesi',
-      'sigorta-policesi-yukle': 'Sigorta Poliçesi',
-      'kasko-policesi-yukle': 'Kasko Poliçesi',
-      'takograf-belgesi-yukle': 'Takograf Belgesi',
-      'tasit-karti-yukle': 'Taşıt Kartı',
-      'satis-sozlesmesi-yukle': 'Satış Sözleşmesi'
+      'kasko-kodu-guncelle': 'Kasko Kodu'
     };
     const key = String(eventType || '').trim();
     if (key === 'satis') {
@@ -9609,6 +9600,7 @@
       }
       return 'Satış';
     }
+    if (VEHICLE_DOCUMENT_UPLOAD_EVENT_LABELS[key]) return VEHICLE_DOCUMENT_UPLOAD_EVENT_LABELS[key];
     if (map[key]) return map[key];
     return toTitleCase(key || 'Diğer');
   }
@@ -9676,23 +9668,12 @@
     const legacyAciklama = String(eventData.aciklama || eventData.description || '').trim();
     const performerRaw = eventData.kaydeden || eventData.surucu || eventData.kisi || '';
     const performerUpper = formatHistoryPerformerUpper(performerRaw || getRecorderDisplayName());
+    const documentUploadLabel = getVehicleDocumentUploadEventLabel(eventType, eventData);
     const details = [];
 
     function pushDetail(label, value) {
       const v = (value != null && String(value).trim() !== '') ? String(value).trim() : '';
       if (v) details.push({ label: label, value: v });
-    }
-
-    function getVehicleDocumentUploadLabel(type, data) {
-      const labels = {
-        'ruhsat-yukle': 'Ruhsat Belgesi',
-        'sigorta-policesi-yukle': 'Sigorta Poliçesi',
-        'kasko-policesi-yukle': 'Kasko Poliçesi',
-        'takograf-belgesi-yukle': 'Takograf Belgesi',
-        'tasit-karti-yukle': 'Taşıt Kartı',
-        'satis-sozlesmesi-yukle': 'Satış Sözleşmesi'
-      };
-      return String((data && data.belgeTipi) || labels[type] || '').trim();
     }
 
     let summaryInner = '';
@@ -9853,8 +9834,8 @@
       summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text"> Kasko Kodunu G\u00FCncelledi.</span>';
       const yeniKod = (eventData.kaskoKodu || '').trim();
       if (yeniKod) pushDetail('Yeni Kod', yeniKod);
-    } else if (getVehicleDocumentUploadLabel(eventType, eventData)) {
-      const belgeTipi = getVehicleDocumentUploadLabel(eventType, eventData);
+    } else if (documentUploadLabel) {
+      const belgeTipi = documentUploadLabel;
       const actionText = eventData.isReplacement === true ? 'De\u011fi\u015ftirdi' : 'Y\u00fckledi';
       summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, ' + escapeHtml(belgeTipi) + ' ' + actionText + '.</span>';
       if (eventData.fileName) pushDetail('Dosya', eventData.fileName);

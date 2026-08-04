@@ -1932,14 +1932,6 @@ function medisaGetVehicleArchiveReason($vehicle) {
     return 'satis';
 }
 
-function medisaIsVehicleSold($vehicle) {
-    return medisaGetVehicleArchiveReason($vehicle) === 'satis';
-}
-
-function medisaIsVehiclePert($vehicle) {
-    return medisaGetVehicleArchiveReason($vehicle) === 'pert';
-}
-
 /** Satış sözleşmesi: stoktan düşen (satis|pert); aktif stok reddedilir. */
 function medisaVehicleAllowsSatisSozlesmesi($vehicle) {
     return medisaGetVehicleArchiveReason($vehicle) !== null;
