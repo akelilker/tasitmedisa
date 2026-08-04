@@ -8,6 +8,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
+const { spawnSync } = require('node:child_process');
 
 const ROOT = path.join(__dirname, '..');
 const read = (rel) => fs.readFileSync(path.join(ROOT, rel), 'utf8');
@@ -272,6 +273,103 @@ test('source: openSatisSozlesmesiUploadForVehicle setTimeout yarışı yok', fun
   assert.doesNotMatch(openFn, /showVehicleDetail\s*\(/);
   assert.match(openFn, /openVehicleDocumentModal\s*\(\s*vid\s*,\s*'satis_sozlesmesi'\s*\)/);
   assert.doesNotMatch(tasitlar, /setTimeout\s*\(\s*function\s*\(\)\s*\{[\s\S]*?openVehicleDocumentModal[\s\S]*?\}\s*,\s*120\s*\)/);
+});
+
+test('behavior: openSatisSozlesmesiUploadForVehicle sold-gate + doğrudan belge modalı', function() {
+  const archive = loadArchiveHelpers();
+  const openFn = extractBetween(
+    tasitlar,
+    'function openSatisSozlesmesiUploadForVehicle(vehicleId)',
+    'function runSatisSozlesmesiPromptFlow'
+  );
+  const vehicles = [
+    { id: 'sold-1', satildiMi: true, arsivNedeni: 'satis' },
+    { id: 'pert-1', satildiMi: true, arsivNedeni: 'pert' },
+    { id: 'active-1', satildiMi: false }
+  ];
+  const openCalls = [];
+  const sandbox = {
+    window: {
+      currentDetailVehicleId: null,
+      openVehicleDocumentModal: function(vid, dt) {
+        openCalls.push([String(vid), String(dt)]);
+      },
+      showVehicleDetail: function() {
+        throw new Error('showVehicleDetail çağrılmamalı');
+      }
+    },
+    readVehicles: function() { return vehicles; },
+    isVehicleSold: archive.isVehicleSold
+  };
+  vm.createContext(sandbox);
+  vm.runInContext(
+    openFn + '\n;this.openSatisSozlesmesiUploadForVehicle = openSatisSozlesmesiUploadForVehicle;',
+    sandbox
+  );
+
+  sandbox.openSatisSozlesmesiUploadForVehicle('sold-1');
+  assert.equal(sandbox.window.currentDetailVehicleId, 'sold-1');
+  assert.deepEqual(openCalls, [['sold-1', 'satis_sozlesmesi']]);
+
+  openCalls.length = 0;
+  sandbox.window.currentDetailVehicleId = null;
+  sandbox.openSatisSozlesmesiUploadForVehicle('pert-1');
+  assert.equal(sandbox.window.currentDetailVehicleId, null, 'pert → context sabitlenmez');
+  assert.equal(openCalls.length, 0, 'pert → belge modalı açılmaz');
+
+  sandbox.openSatisSozlesmesiUploadForVehicle('active-1');
+  assert.equal(openCalls.length, 0, 'aktif → belge modalı açılmaz');
+
+  sandbox.openSatisSozlesmesiUploadForVehicle('');
+  assert.equal(openCalls.length, 0, 'boş id → no-op');
+});
+
+test('behavior: PHP sold/pert + satisSozlesmesiPath preserve', function() {
+  // medisaSaveVehicleNeedsK2/Takograf preserve dalında çağrılır; stub ile izole et.
+  const helpers = extractBetween(
+    corePhp,
+    'function medisaGetLatestSatisEvent($vehicle) {',
+    'function medisaSaveApplyVehicleMutation'
+  );
+  assert.match(helpers, /function medisaSavePreserveVehicleDocumentReferences/);
+  assert.match(helpers, /satisSozlesmesiPath/);
+  const phpSrc = [
+    '<?php',
+    'error_reporting(E_ALL);',
+    'function medisaSaveVehicleNeedsK2($vehicle) { return false; }',
+    'function medisaSaveVehicleNeedsTakograf($vehicle) { return false; }',
+    helpers,
+    '$cases = [];',
+    "$cases[] = medisaIsVehicleSold(['satildiMi' => true, 'arsivNedeni' => 'satis']) === true;",
+    "$cases[] = medisaIsVehicleSold(['satildiMi' => true, 'arsivNedeni' => 'pert']) === false;",
+    "$cases[] = medisaIsVehiclePert(['satildiMi' => true, 'arsivNedeni' => 'pert']) === true;",
+    "$cases[] = medisaIsVehicleSold(['satildiMi' => false]) === false;",
+    "$cases[] = medisaIsVehicleSold(['satildiMi' => true, 'events' => [['type' => 'satis', 'data' => ['pertIsaret' => true]]]]) === false;",
+    "$preserved = medisaSavePreserveVehicleDocumentReferences(",
+    "  ['satisSozlesmesiPath' => 'data/satis_sozlesmesi/old.pdf', 'ruhsatPath' => 'data/ruhsat/a.pdf'],",
+    "  ['satisSozlesmesiPath' => '', 'ruhsatPath' => 'data/ruhsat/a.pdf']",
+    ');',
+    "$cases[] = ($preserved['satisSozlesmesiPath'] ?? '') === 'data/satis_sozlesmesi/old.pdf';",
+    "$kept = medisaSavePreserveVehicleDocumentReferences(",
+    "  ['satisSozlesmesiPath' => 'data/satis_sozlesmesi/old.pdf'],",
+    "  ['satisSozlesmesiPath' => 'data/satis_sozlesmesi/new.pdf']",
+    ');',
+    "$cases[] = ($kept['satisSozlesmesiPath'] ?? '') === 'data/satis_sozlesmesi/new.pdf';",
+    'foreach ($cases as $i => $ok) {',
+    '  if (!$ok) { fwrite(STDERR, "PHP case fail #" . $i . PHP_EOL); exit(1); }',
+    '}',
+    'echo "ok", PHP_EOL;',
+    ''
+  ].join('\n');
+  const tmp = path.join(ROOT, 'scripts', '.tmp-verify-satis-sozlesmesi-php.php');
+  fs.writeFileSync(tmp, phpSrc, 'utf8');
+  try {
+    const r = spawnSync('php', [tmp], { cwd: ROOT, encoding: 'utf8' });
+    assert.equal(r.status, 0, 'PHP behavior exit: ' + (r.stderr || r.stdout || ''));
+    assert.match(String(r.stdout || ''), /ok/);
+  } finally {
+    try { fs.unlinkSync(tmp); } catch (_) {}
+  }
 });
 
 test('behavior: satış soru akışı dalları', async function() {
