@@ -82,7 +82,8 @@ FAZ 1 kapanışında regex-only doğrulama kaldırıldı. `isValidGgAaYyyyParts(
 
 - `sigorta` / `kasko`: `event-form-stack ruhsat-policy-date-stack` + `getPolicyOperationDateFieldHtml(..., 'Başlangıç Tarihi')`
 - `takograf`: `event-form-stack ruhsat-policy-date-stack--takograf` + `getPolicyOperationDateFieldHtml('takograf')`
-- Dosya seçimi sonrası: `validatePolicyDocumentOperationDate` → `saveRuhsatUpload`
+- Sigorta/Kasko dosya seçimi sonrası dosya ve tarih alanı ekranda korunur; mevcut `Poliçe Yükle` butonu `validatePolicyDocumentOperationDate` → `saveRuhsatUpload` zincirini başlatır
+- Takograf ve diğer belge tiplerinin mevcut otomatik yükleme davranışı değişmez
 - Tarih alanı render sonrası: `applyDinamikOlayFormDateHelpers(modal)` (takvim ikonu / mobil native date)
 
 ### 4.5. `saveRuhsatUpload(documentType)`
@@ -212,7 +213,7 @@ Paralel override dosya sonuna eklenmedi; mevcut `.ruhsat-policy-date-stack` owne
 | --- | --- | --- |
 | Sigorta/Kasko etiket | Yenileme/Başlangıç (gg/aa/yyyy) | Başlangıç Tarihi |
 | Tarih zorunluluğu | Olay kaydında forma göre değişir | **Opsiyonel** |
-| Kaydet tetikleyici | Kaydet butonu | Dosya seçimi (+ replace onay) |
+| Kaydet tetikleyici | Kaydet butonu | Sigorta/Kasko: `Poliçe Yükle` butonu; diğerleri: dosya seçimi (+ replace onay) |
 | Handler | `updateSigortaInfo` / `updateKaskoInfo` / `updateTakografKalibrasyonInfo` | `saveRuhsatUpload` → `upload_ruhsat.php` |
 
 Input ID’leri ve parse/doğrulama owner’ı ortaktır; iki akış birbirinin yerine geçmez.
@@ -269,6 +270,14 @@ Input ID’leri ve parse/doğrulama owner’ı ortaktır; iki akış birbirinin 
 - [x] Ruhsat mobil görünümünde `Yazdır` butonu görünür; mevcut `48px` yükseklik ve `8px` radius korunur
 - [x] Upload modalında tek `Vazgeç` butonu yatay ortalı kalır
 - [ ] İki oturumlu conflict üretimi → çalıştırılmadı; conflict kod yolu ve kullanıcı mesajı statik doğrulandı
+
+### 10.5. Poliçe açık submit kabul testi (2026-08-05)
+
+- [ ] Sigorta/Kasko: dosya önce seçildiğinde tarih alanı ve seçilen dosya ekranda kalır
+- [ ] `Poliçe Yükle`: belge + opsiyonel tarih tek upload mutation içinde kaydedilir
+- [ ] Geçersiz tarih upload'ı engeller; seçilen dosya sıfırlanmaz
+- [ ] Mevcut belge değişim onayı `Poliçe Yükle` sonrasında açılır; `Hayır` seçimi dosyayı temizler
+- [ ] Ruhsat/Taşıt Kartı/Takograf otomatik yükleme davranışı değişmez
 
 Test sırasında oluşan `data.json` değişiklikleri ve yüklenen test PDF’leri başlangıç yedeğine geri alındı.
 

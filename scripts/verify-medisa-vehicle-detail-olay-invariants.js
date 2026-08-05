@@ -63,6 +63,14 @@ function extractAddEventBlock(detailSrc) {
   return detailSrc.slice(start, end);
 }
 
+function extractRuhsatUploadForm() {
+  const start = tasitlar.indexOf('function renderRuhsatUploadForm(');
+  assert.ok(start >= 0, 'renderRuhsatUploadForm bulunmalı');
+  const end = tasitlar.indexOf('\n  function setRuhsatUploadProgressVisible(', start);
+  assert.ok(end > start, 'renderRuhsatUploadForm bitiş sınırı bulunmalı');
+  return tasitlar.slice(start, end);
+}
+
 /** Minimal element for plate-row ensure fixture (no jsdom). */
 function createMiniDom() {
   let seq = 0;
@@ -175,6 +183,7 @@ function runAddEventBlock(blockSrc, plateRow, vehicle, openEventModal, document)
 const hydrateMarkup = extractHydrateMarkup();
 const detailSrc = extractShowVehicleDetail();
 const addEventBlock = extractAddEventBlock(detailSrc);
+const ruhsatUploadForm = extractRuhsatUploadForm();
 
 test('canonical hydrate: detail-plate-row tam bir kez', function() {
   assert.equal(countMatches(hydrateMarkup, /class="detail-plate-row"/g), 1);
@@ -277,6 +286,32 @@ test('Olay menü/form owner source dokunulmamış (window.openEventModal)', func
 test('Belge/Ruhsat handler owner source korunur', function() {
   assert.match(tasitlar, /function openVehicleDocumentsFromDetailButton\s*\(/);
   assert.match(detailSrc, /openVehicleDocumentsFromDetailButton\(\s*e\s*,\s*vehicleId\s*\)/);
+});
+
+test('Sigorta/Kasko dosya seçimi açık submit bekler; diğer belgeler otomatik akışı korur', function() {
+  assert.match(
+    ruhsatUploadForm,
+    /waitsForPolicyUploadSubmit\s*=\s*cfg\.key\s*===\s*'sigorta'\s*\|\|\s*cfg\.key\s*===\s*'kasko'/
+  );
+  assert.match(
+    ruhsatUploadForm,
+    /if \(waitsForPolicyUploadSubmit\) \{[\s\S]*?saveBtn\.onclick\s*=\s*function[\s\S]*?requestSelectedDocumentUpload\(\)/
+  );
+  assert.match(
+    ruhsatUploadForm,
+    /if \(waitsForPolicyUploadSubmit\) \{\s*setRuhsatSaveBtnVisibility\(saveBtn, true\);\s*return;\s*\}\s*if \(!validateSelectedDocumentBeforeUpload\(\)\) return;/
+  );
+  assert.match(
+    ruhsatUploadForm,
+    /if \(hasExistingRuhsat\) \{[\s\S]*?replaceConfirm\.hidden\s*=\s*false;[\s\S]*?\}\s*else \{\s*requestAnimationFrame\(function\(\) \{\s*uploadSelectedDocument\(\);/
+  );
+});
+
+test('Poliçe tarih doğrulama hatası seçilen dosyayı korur', function() {
+  assert.match(
+    ruhsatUploadForm,
+    /alert\(dateValidation\.message\);\s*if \(!waitsForPolicyUploadSubmit\) resetSelectedUploadFile\(\);\s*return false;/
+  );
 });
 
 test('duplicate id: hydrate vehicle detail zorunlu id’ler tekil', function() {

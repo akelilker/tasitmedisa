@@ -197,7 +197,7 @@
 
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20260804.8';
+  const MEDISA_TASITLAR_MODULE_VERSION = '20260805.1';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
@@ -7561,6 +7561,7 @@
 
   function renderRuhsatUploadForm(content, saveBtn, hasExistingRuhsat, documentType) {
     const cfg = getVehicleDocumentConfig(documentType);
+    const waitsForPolicyUploadSubmit = cfg.key === 'sigorta' || cfg.key === 'kasko';
     const pinnedVehicleId = resolveRuhsatUploadVehicleId();
     if (content && pinnedVehicleId) content.dataset.vehicleId = pinnedVehicleId;
     content.innerHTML = '';
@@ -7651,7 +7652,7 @@
         const dateValidation = validatePolicyDocumentOperationDate(cfg.key);
         if (dateValidation.valid) return true;
         alert(dateValidation.message);
-        resetSelectedUploadFile();
+        if (!waitsForPolicyUploadSubmit) resetSelectedUploadFile();
         return false;
       }
       return true;
@@ -7663,6 +7664,23 @@
       if (typeof window.saveRuhsatUpload === 'function') {
         window.saveRuhsatUpload(cfg.key);
       }
+    }
+    function requestSelectedDocumentUpload() {
+      if (!input.files || !input.files.length) return;
+      if (hasExistingRuhsat) {
+        if (!validateSelectedDocumentBeforeUpload()) return;
+        setRuhsatSaveBtnVisibility(saveBtn, false);
+        replaceConfirm.hidden = false;
+        return;
+      }
+      uploadSelectedDocument();
+    }
+    if (waitsForPolicyUploadSubmit) {
+      saveBtn.onclick = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        requestSelectedDocumentUpload();
+      };
     }
     var confirmYesBtn = replaceConfirm ? replaceConfirm.querySelector('.ruhsat-upload-confirm-yes') : null;
     var confirmNoBtn = replaceConfirm ? replaceConfirm.querySelector('.ruhsat-upload-confirm-no') : null;
@@ -7684,6 +7702,10 @@
       setRuhsatSaveBtnVisibility(saveBtn, false);
       hideReplaceConfirm();
       if (!hasFile) return;
+      if (waitsForPolicyUploadSubmit) {
+        setRuhsatSaveBtnVisibility(saveBtn, true);
+        return;
+      }
       if (!validateSelectedDocumentBeforeUpload()) return;
       if (hasExistingRuhsat) {
         replaceConfirm.hidden = false;
