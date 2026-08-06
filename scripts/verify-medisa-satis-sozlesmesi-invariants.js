@@ -668,7 +668,7 @@ test('cache / modül pin parity', function() {
   const ayarlarJsVer = (scriptCore.match(/ayarlarJs:\s*'([^']+)'/) || [])[1];
   assert.equal(moduleVer, '20260806.4');
   assert.equal(loaderVer, moduleVer);
-  assert.equal(notifVer, '20260804.1');
+  assert.equal(notifVer, '20260804.2');
   assert.equal(ayarlarCssVer, '20260804.4');
   assert.equal(ayarlarJsVer, '20260804.2');
   assert.match(sw, /CACHE_VERSION\s*=\s*'medisa-v2\.278'/);

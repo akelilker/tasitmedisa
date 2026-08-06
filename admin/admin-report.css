@@ -2445,6 +2445,203 @@ body.admin-report-page .main-header-user-name.is-empty {
   display: none;
 }
 
+.user-wa-audit-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 32px;
+  padding: 5px 9px;
+  border: 1px solid rgba(200, 208, 216, 0.28);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.04);
+  color: #ffffff;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+}
+
+.user-wa-audit-btn[hidden] {
+  display: none;
+}
+
+.user-wa-audit-btn:hover {
+  border-color: rgba(200, 208, 216, 0.45);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.user-wa-audit-btn:focus-visible {
+  outline: 2px solid rgba(96, 165, 250, 0.85);
+  outline-offset: 2px;
+}
+
+.user-wa-audit-btn svg {
+  flex: 0 0 auto;
+}
+
+#user-whatsapp-audit-modal.user-wa-audit-overlay {
+  display: none;
+  align-items: stretch;
+  justify-content: center;
+  z-index: 10050;
+}
+
+#user-whatsapp-audit-modal.user-wa-audit-overlay.active,
+#user-whatsapp-audit-modal.user-wa-audit-overlay.open {
+  display: flex;
+}
+
+#user-whatsapp-audit-modal .user-wa-audit-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+#user-whatsapp-audit-modal .user-wa-audit-body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 0;
+  overflow: auto;
+  padding: 12px 14px 20px;
+  -webkit-overflow-scrolling: touch;
+}
+
+#user-whatsapp-audit-modal .user-wa-audit-disclosure {
+  margin: 0;
+  color: #a0aec0;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+#user-whatsapp-audit-modal .user-wa-audit-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+#user-whatsapp-audit-modal .user-wa-audit-summary-item {
+  padding: 10px 12px;
+  border: 1px solid rgba(200, 208, 216, 0.22);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+#user-whatsapp-audit-modal .user-wa-audit-summary-label {
+  display: block;
+  margin-bottom: 4px;
+  color: #a0aec0;
+  font-size: 11px;
+}
+
+#user-whatsapp-audit-modal .user-wa-audit-summary-value {
+  display: block;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+#user-whatsapp-audit-modal .user-wa-audit-filters {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr 1fr;
+  gap: 8px;
+}
+
+#user-whatsapp-audit-modal .user-wa-audit-filter {
+  width: 100%;
+  min-width: 0;
+  min-height: 36px;
+  padding: 7px 9px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 7px;
+  background: var(--bg-content, #0d131f);
+  color: #a0aec0;
+  font: inherit;
+  font-size: 12px;
+}
+
+#user-whatsapp-audit-modal .user-wa-audit-filter:focus {
+  border-color: var(--theme-color);
+  outline: none;
+}
+
+#user-whatsapp-audit-modal .user-wa-audit-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+#user-whatsapp-audit-modal .user-wa-audit-card {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid rgba(200, 208, 216, 0.22);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+#user-whatsapp-audit-modal .user-wa-audit-plate {
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+#user-whatsapp-audit-modal .user-wa-audit-meta,
+#user-whatsapp-audit-modal .user-wa-audit-count {
+  color: #a0aec0;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+#user-whatsapp-audit-modal .user-wa-audit-count {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+#user-whatsapp-audit-modal .user-wa-audit-empty {
+  padding: 28px 12px;
+  color: #a0aec0;
+  text-align: center;
+}
+
+#user-whatsapp-audit-modal .user-wa-audit-more {
+  align-self: center;
+  margin: 4px 0 8px;
+  padding: 10px 16px;
+  border: 1px solid rgba(200, 208, 216, 0.28);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
+  cursor: pointer;
+}
+
+#user-whatsapp-audit-modal .user-wa-audit-more:focus-visible {
+  outline: 2px solid rgba(96, 165, 250, 0.85);
+  outline-offset: 2px;
+}
+
+@media (max-width: 768px) {
+  #user-whatsapp-audit-modal .user-wa-audit-summary,
+  #user-whatsapp-audit-modal .user-wa-audit-filters,
+  #user-whatsapp-audit-modal .user-wa-audit-card {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .user-wa-audit-btn {
+    width: 32px;
+    padding: 5px;
+  }
+
+  .user-wa-audit-btn span {
+    display: none;
+  }
+}
+
 @media (min-width: 769px) {
   .user-analytics-toolbar {
     justify-content: space-between;
