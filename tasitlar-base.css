@@ -137,7 +137,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 #dinamik-olay-modal[data-event-type="muayene"] .event-form-stack > div:has(> #muayene-tarih) > .form-label,
 #dinamik-olay-modal[data-event-type="muayene"] .event-form-stack > div:has(> .olay-date-mobile-wrap) > .form-label {
   width: 100%;
-  text-align: center;
+  text-align: center !important;
 }
 #dinamik-olay-modal[data-event-type="muayene"] .olay-date-mobile-wrap {
   width: 100% !important;
