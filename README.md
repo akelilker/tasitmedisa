@@ -1,6 +1,6 @@
 # tasitmedisa
 
-**MEDISA Taşıt Yönetim Sistemi V3** — taşıt kayıt, takip, belge, kullanıcı paneli ve raporlama uygulaması.
+**MEDISA Taşıt Yönetim Sistemi V1** — taşıt kayıt, izleme, belge, kullanıcı paneli ve raporlama uygulaması.
 
 ## Teknik yapı
 
