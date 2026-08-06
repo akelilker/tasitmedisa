@@ -144,6 +144,44 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
   max-width: 100% !important;
   justify-content: center !important;
 }
+/* Arvento/UTTS/Lastik/Anahtar: etiket ve Evet-Hayır / Var-Yok yatay merkez */
+#dinamik-olay-modal[data-event-type="takip"] .event-radio-row,
+#dinamik-olay-modal[data-event-type="utts"] .event-radio-row,
+#dinamik-olay-modal[data-event-type="lastik"] .event-radio-row,
+#dinamik-olay-modal[data-event-type="anahtar"] .event-radio-row {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  gap: 8px !important;
+  box-sizing: border-box !important;
+}
+#dinamik-olay-modal[data-event-type="takip"] .event-radio-label,
+#dinamik-olay-modal[data-event-type="utts"] .event-radio-label,
+#dinamik-olay-modal[data-event-type="lastik"] .event-radio-label,
+#dinamik-olay-modal[data-event-type="anahtar"] .event-radio-label {
+  width: 100% !important;
+  max-width: 100% !important;
+  text-align: center !important;
+  margin-bottom: 0 !important;
+  flex-shrink: 0 !important;
+}
+#dinamik-olay-modal[data-event-type="takip"] .event-radio-actions,
+#dinamik-olay-modal[data-event-type="utts"] .event-radio-actions,
+#dinamik-olay-modal[data-event-type="lastik"] .event-radio-actions,
+#dinamik-olay-modal[data-event-type="anahtar"] .event-radio-actions {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: auto !important;
+  max-width: 100% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  gap: 8px !important;
+}
 #dinamik-olay-modal .egzoz-olay-toggle {
   width: fit-content;
   max-width: 100%;

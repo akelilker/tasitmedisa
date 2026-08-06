@@ -2235,6 +2235,30 @@
     gap: 8px !important;
     width: 100% !important;
   }
+  /* Mobil: Arvento/UTTS/Lastik/Anahtar etiket/buton grubu yatay merkez */
+  #dinamik-olay-modal[data-event-type="takip"] .event-radio-row,
+  #dinamik-olay-modal[data-event-type="utts"] .event-radio-row,
+  #dinamik-olay-modal[data-event-type="lastik"] .event-radio-row,
+  #dinamik-olay-modal[data-event-type="anahtar"] .event-radio-row {
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+  }
+  #dinamik-olay-modal[data-event-type="takip"] .event-radio-label,
+  #dinamik-olay-modal[data-event-type="utts"] .event-radio-label,
+  #dinamik-olay-modal[data-event-type="lastik"] .event-radio-label,
+  #dinamik-olay-modal[data-event-type="anahtar"] .event-radio-label {
+    text-align: center !important;
+  }
+  #dinamik-olay-modal[data-event-type="takip"] .event-radio-actions,
+  #dinamik-olay-modal[data-event-type="utts"] .event-radio-actions,
+  #dinamik-olay-modal[data-event-type="lastik"] .event-radio-actions,
+  #dinamik-olay-modal[data-event-type="anahtar"] .event-radio-actions {
+    justify-content: center !important;
+    width: auto !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
   /* Mobil Olay Ekle 14 modal: hedef radio satırlarında butonlar 4px daha geniş */
   .olay-ekle-modal .event-radio-actions .radio-btn {
     padding-top: 5px !important;
