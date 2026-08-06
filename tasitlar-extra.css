@@ -1840,6 +1840,41 @@
     z-index: 2 !important;
     box-sizing: border-box !important;
   }
+  /* Muayene: mobil takvim yalnızca sade SVG (extra cascade kazananı) */
+  #dinamik-olay-modal[data-event-type="muayene"] .olay-date-mobile-btn {
+    border: none !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    transition: color 0.15s ease !important;
+  }
+  #dinamik-olay-modal[data-event-type="muayene"] .olay-date-mobile-btn:hover,
+  #dinamik-olay-modal[data-event-type="muayene"] .olay-date-mobile-btn:focus-visible {
+    color: #ffffff !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+  #dinamik-olay-modal[data-event-type="muayene"] .olay-date-mobile-btn:focus {
+    outline: none !important;
+  }
+  #dinamik-olay-modal[data-event-type="muayene"] .olay-date-mobile-btn:focus-visible {
+    outline: 2px solid rgba(212, 0, 0, 0.45) !important;
+    outline-offset: 2px !important;
+  }
+  /* Muayene: mobil tarih grubu kompakt kalır, yatayda ortalanır */
+  #dinamik-olay-modal[data-event-type="muayene"] .olay-date-mobile-wrap {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    justify-content: center !important;
+  }
+  #dinamik-olay-modal[data-event-type="muayene"] #muayene-tarih.olay-date-mobile-text {
+    flex: 0 1 auto !important;
+    width: calc((100% - 16px) / 2) !important;
+    max-width: calc((100% - 16px) / 2) !important;
+  }
   #dinamik-olay-modal .olay-date-mobile-native {
     position: absolute !important;
     right: 0 !important;
@@ -1858,6 +1893,12 @@
   }
   #dinamik-olay-modal .olay-date-mobile-btn:active {
     opacity: 0.9 !important;
+  }
+  #dinamik-olay-modal[data-event-type="muayene"] .olay-date-mobile-btn:active {
+    opacity: 0.9 !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
   }
 
   .tasitlar-modal-overlay .modal-container {
@@ -2193,6 +2234,30 @@
     justify-content: flex-start !important;
     gap: 8px !important;
     width: 100% !important;
+  }
+  /* Mobil: Arvento/UTTS/Lastik/Anahtar etiket/buton grubu yatay merkez */
+  #dinamik-olay-modal[data-event-type="takip"] .event-radio-row,
+  #dinamik-olay-modal[data-event-type="utts"] .event-radio-row,
+  #dinamik-olay-modal[data-event-type="lastik"] .event-radio-row,
+  #dinamik-olay-modal[data-event-type="anahtar"] .event-radio-row {
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+  }
+  #dinamik-olay-modal[data-event-type="takip"] .event-radio-label,
+  #dinamik-olay-modal[data-event-type="utts"] .event-radio-label,
+  #dinamik-olay-modal[data-event-type="lastik"] .event-radio-label,
+  #dinamik-olay-modal[data-event-type="anahtar"] .event-radio-label {
+    text-align: center !important;
+  }
+  #dinamik-olay-modal[data-event-type="takip"] .event-radio-actions,
+  #dinamik-olay-modal[data-event-type="utts"] .event-radio-actions,
+  #dinamik-olay-modal[data-event-type="lastik"] .event-radio-actions,
+  #dinamik-olay-modal[data-event-type="anahtar"] .event-radio-actions {
+    justify-content: center !important;
+    width: auto !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
   }
   /* Mobil Olay Ekle 14 modal: hedef radio satırlarında butonlar 4px daha geniş */
   .olay-ekle-modal .event-radio-actions .radio-btn {

@@ -111,24 +111,85 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 }
 
 
-/* Muayene tarihi input: Kaydet butonu ile yatayda hizalı (#dinamik-olay-modal muayene formu) */
+/* Muayene tarihi input: kompakt genişlik korunur; grup yatayda ortalanır */
 #dinamik-olay-modal #muayene-tarih {
   width: calc((100% - 16px) / 2) !important;
   max-width: calc((100% - 16px) / 2) !important;
   min-width: min(140px, calc((100% - 16px) / 2)) !important;
   box-sizing: border-box !important;
+  flex: 0 1 auto !important;
+  text-align: center !important;
 }
 #muayene-tarih {
   min-width: 165px !important;
   box-sizing: border-box !important;
 }
+/* Muayene: etiket + tarih+takvim grubu yatay merkez */
+#dinamik-olay-modal[data-event-type="muayene"] .event-form-stack > div:has(> #muayene-tarih),
+#dinamik-olay-modal[data-event-type="muayene"] .event-form-stack > div:has(> .olay-date-mobile-wrap) {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+#dinamik-olay-modal[data-event-type="muayene"] .event-form-stack > div:has(> #muayene-tarih) > .form-label,
+#dinamik-olay-modal[data-event-type="muayene"] .event-form-stack > div:has(> .olay-date-mobile-wrap) > .form-label {
+  width: 100%;
+  text-align: center !important;
+}
+#dinamik-olay-modal[data-event-type="muayene"] .olay-date-mobile-wrap {
+  width: 100% !important;
+  max-width: 100% !important;
+  justify-content: center !important;
+}
+/* Arvento/UTTS/Lastik/Anahtar: etiket ve Evet-Hayır / Var-Yok yatay merkez */
+#dinamik-olay-modal[data-event-type="takip"] .event-radio-row,
+#dinamik-olay-modal[data-event-type="utts"] .event-radio-row,
+#dinamik-olay-modal[data-event-type="lastik"] .event-radio-row,
+#dinamik-olay-modal[data-event-type="anahtar"] .event-radio-row {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  gap: 8px !important;
+  box-sizing: border-box !important;
+}
+#dinamik-olay-modal[data-event-type="takip"] .event-radio-label,
+#dinamik-olay-modal[data-event-type="utts"] .event-radio-label,
+#dinamik-olay-modal[data-event-type="lastik"] .event-radio-label,
+#dinamik-olay-modal[data-event-type="anahtar"] .event-radio-label {
+  width: 100% !important;
+  max-width: 100% !important;
+  text-align: center !important;
+  margin-bottom: 0 !important;
+  flex-shrink: 0 !important;
+}
+#dinamik-olay-modal[data-event-type="takip"] .event-radio-actions,
+#dinamik-olay-modal[data-event-type="utts"] .event-radio-actions,
+#dinamik-olay-modal[data-event-type="lastik"] .event-radio-actions,
+#dinamik-olay-modal[data-event-type="anahtar"] .event-radio-actions {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: auto !important;
+  max-width: 100% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  gap: 8px !important;
+}
 #dinamik-olay-modal .egzoz-olay-toggle {
-  width: 390px;
+  width: fit-content;
   max-width: 100%;
   margin: 0 auto;
   box-sizing: border-box;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 7px;
   font-size: 12px;
   line-height: 1.25;
@@ -138,6 +199,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 #dinamik-olay-modal .egzoz-olay-toggle > span {
   color: #a0aec0;
   font-weight: 500;
+  min-width: 0;
 }
 #dinamik-olay-modal .egzoz-olay-toggle input[type="checkbox"] {
   -webkit-appearance: none;
@@ -149,9 +211,13 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
   box-sizing: border-box;
   border-radius: 4px;
   background-color: #0d131f;
-  border: 1px solid rgba(212, 0, 0, 0.5);
+  border: 1.5px solid #d40000;
   cursor: pointer;
   transition: border-color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+}
+#dinamik-olay-modal .egzoz-olay-toggle:hover input[type="checkbox"]:not(:checked),
+#dinamik-olay-modal .egzoz-olay-toggle input[type="checkbox"]:hover:not(:checked) {
+  border-color: #ff1a1a;
 }
 #dinamik-olay-modal .egzoz-olay-toggle input[type="checkbox"]:checked {
   background-color: var(--theme-color, #d40000);
@@ -165,7 +231,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
   outline: none;
 }
 #dinamik-olay-modal .egzoz-olay-toggle input[type="checkbox"]:focus-visible {
-  box-shadow: 0 0 0 2px rgba(212, 0, 0, 0.4);
+  border-color: #ff1a1a;
+  box-shadow: 0 0 0 2px rgba(212, 0, 0, 0.55);
 }
 #dinamik-olay-modal .egzoz-olay-date-wrapper {
   display: none;
@@ -219,6 +286,28 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
   cursor: pointer !important;
   z-index: 2 !important;
   box-sizing: border-box !important;
+}
+/* Muayene: takvim yalnızca sade SVG; kutu/çerçeve yok */
+#dinamik-olay-modal[data-event-type="muayene"] .olay-date-mobile-btn {
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  transition: color 0.15s ease !important;
+}
+#dinamik-olay-modal[data-event-type="muayene"] .olay-date-mobile-btn:hover,
+#dinamik-olay-modal[data-event-type="muayene"] .olay-date-mobile-btn:focus-visible {
+  color: #ffffff !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+#dinamik-olay-modal[data-event-type="muayene"] .olay-date-mobile-btn:focus {
+  outline: none !important;
+}
+#dinamik-olay-modal[data-event-type="muayene"] .olay-date-mobile-btn:focus-visible {
+  outline: 2px solid rgba(212, 0, 0, 0.45) !important;
+  outline-offset: 2px !important;
 }
 #dinamik-olay-modal .olay-date-mobile-native {
   position: absolute !important;
@@ -1731,13 +1820,13 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     min-width: 0 !important;
     box-sizing: border-box !important;
   }
-  /* Muayene: egzoz farklı tarih checkbox metni tek satır, 1 punto küçük */
+  /* Muayene: egzoz checkbox metni kontrollü satır kırabilir; grup ortada kalır */
   #dinamik-olay-modal .egzoz-olay-toggle > span {
     font-size: calc(12px - 1pt);
     line-height: 1.25;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: unset;
     min-width: 0;
   }
 }
