@@ -1786,6 +1786,14 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
   border-radius: 8px;
   background: #111720;
   box-shadow: 0 10px 26px rgba(0, 0, 0, 0.38), inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+#monthly-todo-modal .monthly-todo-branch-filter-menu::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
 }
 
 #monthly-todo-modal .monthly-todo-branch-filter-menu.open {
