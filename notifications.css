@@ -2362,6 +2362,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
     min-width: 164px;
     max-height: 228px;
     padding: 5px;
+    border: none;
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.38);
   }
 
   #monthly-todo-modal .monthly-todo-branch-filter-option {
