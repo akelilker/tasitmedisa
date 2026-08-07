@@ -668,11 +668,11 @@ test('cache / modül pin parity', function() {
   const ayarlarJsVer = (scriptCore.match(/ayarlarJs:\s*'([^']+)'/) || [])[1];
   assert.equal(moduleVer, '20260807.1');
   assert.equal(loaderVer, moduleVer);
-  assert.equal(notifVer, '20260804.2');
+  assert.equal(notifVer, '20260807.1');
   assert.equal(ayarlarCssVer, '20260807.8');
   assert.equal(ayarlarJsVer, '20260804.2');
-  assert.match(sw, /CACHE_VERSION\s*=\s*'medisa-v2\.287'/);
-  assert.match(read('index.html'), /script-core\.js\?v=20260807\.9/);
+  assert.match(sw, /CACHE_VERSION\s*=\s*'medisa-v2\.288'/);
+  assert.match(read('index.html'), /script-core\.js\?v=20260807\.10/);
   assert.match(read('index.html'), /style-core\.css\?v=20260807\.8/);
 });
 

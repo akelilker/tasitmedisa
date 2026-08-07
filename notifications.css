@@ -1782,10 +1782,10 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
   max-height: 210px;
   overflow-y: auto;
   padding: 4px;
-  border: 1px solid rgba(var(--theme-color-rgb), 0.46);
+  border: 1px solid rgba(190, 200, 214, 0.42);
   border-radius: 8px;
   background: #111720;
-  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.38);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.38), inset 0 0 0 1px rgba(255, 255, 255, 0.06);
 }
 
 #monthly-todo-modal .monthly-todo-branch-filter-menu.open {
@@ -1796,7 +1796,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
   width: 100%;
   padding: 7px 8px;
   border: 0;
-  border-bottom: 1px solid rgba(var(--theme-color-rgb), 0.46);
+  border-bottom: 1px solid rgba(190, 200, 214, 0.10);
   border-radius: 5px;
   background: transparent;
   color: #ffffff;
@@ -2388,10 +2388,10 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
     min-width: 0;
     max-height: min(250px, 42vh);
     padding: 6px;
-    border-color: rgba(184, 192, 201, 0.54);
+    border-color: rgba(190, 200, 214, 0.42);
     border-radius: 10px;
     background: #0b111b;
-    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.58);
+    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.58), inset 0 0 0 1px rgba(255, 255, 255, 0.06);
   }
 
   #monthly-todo-modal .monthly-todo-branch-filter-option {
