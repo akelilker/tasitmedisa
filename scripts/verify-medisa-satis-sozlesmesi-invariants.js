@@ -666,14 +666,14 @@ test('cache / modül pin parity', function() {
   const notifVer = (scriptCore.match(/notifications:\s*'([^']+)'/) || [])[1];
   const ayarlarCssVer = (scriptCore.match(/ayarlarCss:\s*'([^']+)'/) || [])[1];
   const ayarlarJsVer = (scriptCore.match(/ayarlarJs:\s*'([^']+)'/) || [])[1];
-  assert.equal(moduleVer, '20260806.5');
+  assert.equal(moduleVer, '20260807.1');
   assert.equal(loaderVer, moduleVer);
   assert.equal(notifVer, '20260804.2');
-  assert.equal(ayarlarCssVer, '20260804.4');
+  assert.equal(ayarlarCssVer, '20260807.8');
   assert.equal(ayarlarJsVer, '20260804.2');
-  assert.match(sw, /CACHE_VERSION\s*=\s*'medisa-v2\.279'/);
-  assert.match(read('index.html'), /script-core\.js\?v=20260806\.5/);
-  assert.match(read('index.html'), /style-core\.css\?v=20260804\.4/);
+  assert.match(sw, /CACHE_VERSION\s*=\s*'medisa-v2\.287'/);
+  assert.match(read('index.html'), /script-core\.js\?v=20260807\.9/);
+  assert.match(read('index.html'), /style-core\.css\?v=20260807\.8/);
 });
 
 test('quality gate / package bağlandı', function() {

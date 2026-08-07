@@ -947,13 +947,57 @@
     align-items: center !important;
     padding-top: 0 !important;
     padding-bottom: 28px !important;
-    overflow-y: hidden !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
   }
 
   #dinamik-olay-modal[data-event-type="documents"]:has(#ruhsat-modal-content.vehicle-documents-picker-mode) #ruhsat-modal-content.vehicle-documents-picker-mode {
     flex: 0 0 auto;
     width: 100%;
     margin-top: 26px;
+  }
+
+  /* Satılan/pert: Satış Sözleşmesi + 3 satır — tüm simgeler viewport’a sığsın */
+  #dinamik-olay-modal[data-event-type="documents"]:has(#ruhsat-modal-content.vehicle-documents-picker-mode:has(.vehicle-document-card-satis-sozlesmesi)) .modal-body {
+    justify-content: flex-start !important;
+    padding-top: 8px !important;
+    padding-bottom: 12px !important;
+  }
+
+  #dinamik-olay-modal[data-event-type="documents"]:has(#ruhsat-modal-content.vehicle-documents-picker-mode:has(.vehicle-document-card-satis-sozlesmesi)) #ruhsat-modal-content.vehicle-documents-picker-mode {
+    margin-top: 4px;
+  }
+
+  #dinamik-olay-modal #ruhsat-modal-content.vehicle-documents-picker-mode:has(.vehicle-document-card-satis-sozlesmesi) .vehicle-document-picker {
+    gap: 10px;
+  }
+
+  #dinamik-olay-modal #ruhsat-modal-content.vehicle-documents-picker-mode:has(.vehicle-document-card-satis-sozlesmesi) .vehicle-document-card {
+    padding: 4px 6px;
+    gap: 6px;
+  }
+
+  #dinamik-olay-modal #ruhsat-modal-content.vehicle-documents-picker-mode:has(.vehicle-document-card-satis-sozlesmesi) .vehicle-document-icon-wrap {
+    width: 44px;
+    height: 44px;
+  }
+
+  #dinamik-olay-modal #ruhsat-modal-content.vehicle-documents-picker-mode:has(.vehicle-document-card-satis-sozlesmesi) .vehicle-document-icon {
+    width: 30px;
+    height: 30px;
+  }
+
+  #dinamik-olay-modal #ruhsat-modal-content.vehicle-documents-picker-mode:has(.vehicle-document-card-satis-sozlesmesi) .vehicle-documents-row-single .vehicle-document-icon-wrap,
+  #dinamik-olay-modal #ruhsat-modal-content.vehicle-documents-picker-mode:has(.vehicle-document-card-satis-sozlesmesi) .vehicle-documents-row-one .vehicle-document-icon-wrap {
+    width: 48px;
+    height: 48px;
+  }
+
+  #dinamik-olay-modal #ruhsat-modal-content.vehicle-documents-picker-mode:has(.vehicle-document-card-satis-sozlesmesi) .vehicle-documents-row-single .vehicle-document-icon,
+  #dinamik-olay-modal #ruhsat-modal-content.vehicle-documents-picker-mode:has(.vehicle-document-card-satis-sozlesmesi) .vehicle-documents-row-one .vehicle-document-icon {
+    width: 32px;
+    height: 32px;
   }
 
   #dinamik-olay-modal #ruhsat-modal-content.vehicle-documents-picker-mode .vehicle-document-picker {
@@ -1148,6 +1192,36 @@
 
   #dinamik-olay-modal #ruhsat-modal-content .vehicle-document-picker {
     gap: 24px;
+  }
+
+  /* Satılan/pert: 4 satır kompakt — alt simgeler kesilmesin */
+  #dinamik-olay-modal[data-event-type="documents"]:has(#ruhsat-modal-content.vehicle-documents-picker-mode:has(.vehicle-document-card-satis-sozlesmesi)) .modal-body {
+    justify-content: flex-start !important;
+    padding-top: 6px !important;
+    padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  #dinamik-olay-modal #ruhsat-modal-content.vehicle-documents-picker-mode:has(.vehicle-document-card-satis-sozlesmesi) .vehicle-document-picker {
+    gap: 12px;
+  }
+
+  #dinamik-olay-modal #ruhsat-modal-content.vehicle-documents-picker-mode:has(.vehicle-document-card-satis-sozlesmesi) .vehicle-documents-row-single {
+    margin-bottom: 0;
+  }
+
+  #dinamik-olay-modal #ruhsat-modal-content.vehicle-documents-picker-mode:has(.vehicle-document-card-satis-sozlesmesi) .vehicle-document-card {
+    padding: 4px 6px;
+    gap: 6px;
+  }
+
+  #dinamik-olay-modal #ruhsat-modal-content.vehicle-documents-picker-mode:has(.vehicle-document-card-satis-sozlesmesi) .vehicle-document-icon-wrap {
+    width: 52px;
+    height: 52px;
+  }
+
+  #dinamik-olay-modal #ruhsat-modal-content.vehicle-documents-picker-mode:has(.vehicle-document-card-satis-sozlesmesi) .vehicle-document-icon {
+    width: 38px;
+    height: 38px;
   }
 
   #dinamik-olay-modal #ruhsat-modal-content .vehicle-documents-row {

@@ -1308,7 +1308,7 @@
 /* Ayarlar Menüsü ve Listeler — .settings-dropdown: ortak kabuk (#notifications-dropdown + #settings-menu) */
 .settings-dropdown {
     position: absolute;
-    top: 25px;
+    top: 12px; /* 25px → 12px: style-core ile aynı ~13px yukarı kaydırma */
     right: 4px;
     z-index: 2000;
     display: none;
@@ -1388,12 +1388,12 @@
 
 #settings-menu.settings-dropdown .cache-clear-btn,
 #settings-menu.settings-dropdown .settings-logout-btn {
-  border: 1px solid rgba(var(--theme-color-rgb), 0.5) !important;
+  border: 1px solid rgba(var(--theme-color-rgb), 0.72) !important;
   overflow: visible !important; /* Hover'da metin büyüsün, kesilmesin */
 }
 #settings-menu.settings-dropdown .cache-clear-btn:hover,
 #settings-menu.settings-dropdown .settings-logout-btn:hover {
-  border-color: rgba(var(--theme-color-rgb), 0.7) !important;
+  border-color: rgba(var(--theme-color-rgb), 0.88) !important;
   font-size: calc(17px + 1pt) !important;
 }
 
@@ -2293,24 +2293,27 @@
     }
     #settings-menu > button,
     #settings-menu .has-submenu-wrapper .has-submenu {
-        height: 43px !important;
-        min-height: 43px !important;
-        max-height: 43px !important;
-        padding: 11px 16px !important;
+        height: 39px !important;
+        min-height: 39px !important;
+        max-height: 39px !important;
+        padding: 9px 16px !important;
         border-radius: 12px !important;
         background: linear-gradient(180deg, var(--hero-gradient-start), var(--hero-gradient-end)) !important;
-        border: 1px solid var(--border-subtle) !important;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2), 0 4px 16px rgba(var(--theme-color-rgb), 0.1) !important;
+        /* Ana sayfa #main-menu .menu-btn cold silver; küçük kutuda biraz daha net */
+        border: 1px solid rgba(196, 210, 228, 0.62) !important;
+        box-shadow:
+            0 4px 10px rgba(0, 0, 0, 0.22),
+            inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
         font-weight: 700 !important;
         font-size: clamp(12px, 2.8vw, 14px) !important;
         letter-spacing: 0.06em !important;
         margin-bottom: 0 !important;
     }
     #settings-menu > button.cache-clear-btn {
-        border: 1px solid rgba(var(--theme-color-rgb), 0.5) !important;
+        border: 1px solid rgba(var(--theme-color-rgb), 0.72) !important;
     }
     #settings-menu > button.settings-logout-btn {
-        border: 1px solid rgba(var(--theme-color-rgb), 0.5) !important;
+        border: 1px solid rgba(var(--theme-color-rgb), 0.72) !important;
         color: var(--theme-color) !important;
     }
     #settings-menu > .has-submenu-wrapper {
@@ -3072,7 +3075,7 @@
     }
     /* Çıkış: diğer satırlarla aynı kutu, kırmızı çerçeve + kırmızı metin */
     #settings-menu.settings-dropdown > button.settings-logout-btn {
-        border: 1px solid rgba(var(--theme-color-rgb), 0.5) !important;
+        border: 1px solid rgba(var(--theme-color-rgb), 0.72) !important;
         color: var(--theme-color) !important;
     }
     #settings-menu.settings-dropdown .cache-clear-btn:hover,
@@ -3137,23 +3140,25 @@
     }
 }
 
-/* Gerçek hover: ayarlar menüsü .menu-btn ile aynı hover (dokunmatikte devre dışı); masaüstü dahil */
-@media (hover: hover) {
+/* Hover: masaüstünde her zaman; touch'ta sticky hover olmasın diye (hover:hover) da korunur */
+@media (hover: hover), (min-width: 641px) {
     #settings-menu > button:hover,
     #settings-menu .has-submenu-wrapper .has-submenu:hover {
         background: linear-gradient(180deg, var(--hero-gradient-start), var(--hero-gradient-end)) !important;
-        border-color: var(--border-light) !important;
+        border: 1px solid rgba(255, 255, 255, 0.88) !important;
         color: var(--txt-white) !important;
         box-shadow:
-            0 6px 14px rgba(0, 0, 0, 0.25),
-            0 6px 20px rgba(var(--theme-color-rgb), 0.12) !important;
+            0 6px 16px rgba(0, 0, 0, 0.30),
+            0 8px 24px rgba(var(--theme-color-rgb), 0.16),
+            inset 0 1px 0 rgba(255, 255, 255, 0.18) !important;
     }
     #settings-menu > button.cache-clear-btn:hover,
     #settings-menu > button.settings-logout-btn:hover {
         color: var(--theme-color) !important;
-        border-color: rgba(var(--theme-color-rgb), 0.7) !important;
+        border: 1px solid rgba(var(--theme-color-rgb), 1) !important;
         font-size: inherit !important;
         transform: none !important;
+        box-shadow: 0 8px 18px rgba(var(--theme-color-rgb), 0.28) !important;
     }
     #settings-menu > button:hover,
     #settings-menu .has-submenu-wrapper .has-submenu:hover {

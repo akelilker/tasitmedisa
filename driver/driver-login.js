@@ -9,7 +9,7 @@ var API_BASE = P.API_BASE;
 var DRIVER_PAGE_BASE = P.DRIVER_PAGE_BASE;
 var MAIN_APP_URL = P.MAIN_APP_URL;
 var MAIN_SESSION_URL = P.MAIN_SESSION_URL;
-var APP_VERSION = 'v78.2';
+var APP_VERSION = 'v78.1';
 
 (function setDriverVersion() {
 function apply() {

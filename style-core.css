@@ -1183,7 +1183,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu .m
 .settings-dropdown:not(#notifications-dropdown) {
   display: none;
   position: absolute;
-  top: 32px; /* Azaltıldı: 35px → 32px (daha yakın) */
+  top: 19px; /* 32px → 19px: menü ~13px yukarı; Çıkış / Kullanıcı Paneli çakışmasın */
   right: 0;
   background: transparent;
   border: none;
@@ -1317,16 +1317,16 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu .m
 .settings-dropdown .cache-clear-btn,
 .settings-dropdown .settings-logout-btn {
   color: var(--theme-color) !important; /* Kırmızı metin */
-  border: 1px solid rgba(var(--theme-color-rgb), 0.5) !important; /* Kırmızı çerçeve */
+  border: 1px solid rgba(var(--theme-color-rgb), 0.72) !important; /* Kırmızı çerçeve */
 }
 
 .settings-dropdown .cache-clear-btn:hover,
 .settings-dropdown .settings-logout-btn:hover {
   color: var(--theme-color) !important;
-  border-color: rgba(var(--theme-color-rgb), 0.7) !important; /* Hover'da daha parlak kırmızı */
+  border: 1px solid rgba(var(--theme-color-rgb), 0.92) !important;
   transform: scale(1.025);
   z-index: 3;
-  box-shadow: 0 8px 18px rgba(var(--theme-color-rgb), 0.18) !important;
+  box-shadow: 0 8px 18px rgba(var(--theme-color-rgb), 0.22) !important;
 }
 
 /* Masaüstünde container'ın %45'i + metin ortalı */
@@ -1354,6 +1354,30 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu .m
   .settings-dropdown:not(#notifications-dropdown) button:not(.notification-item) {
     text-align: center; /* Masaüstünde ortalı */
     justify-content: center; /* Flexbox için ortalama */
+    /* Ayarlar dişlisi: ayarlar.css lazy-load öncesi; 8 satırda Çıkış footer altında kalmasın */
+    min-height: 44px;
+    padding: 10px;
+  }
+  /* Ayarlar dişlisi: KAYIT/TAŞIT/RAPOR (.menu-btn) cold silver — resting + hover (ayarlar.css öncesi) */
+  #settings-menu.settings-dropdown > button:not(.cache-clear-btn):not(.settings-logout-btn),
+  #settings-menu.settings-dropdown .has-submenu-wrapper .has-submenu {
+    border: 1px solid rgba(196, 210, 228, 0.62) !important;
+    box-shadow:
+      0 4px 10px rgba(0, 0, 0, 0.22),
+      inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
+  }
+  #settings-menu.settings-dropdown > button:not(.cache-clear-btn):not(.settings-logout-btn):hover,
+  #settings-menu.settings-dropdown .has-submenu-wrapper .has-submenu:hover {
+    border: 1px solid rgba(255, 255, 255, 0.88) !important;
+    box-shadow:
+      0 6px 16px rgba(0, 0, 0, 0.30),
+      0 8px 24px rgba(var(--theme-color-rgb), 0.16),
+      inset 0 1px 0 rgba(255, 255, 255, 0.18) !important;
+  }
+  #settings-menu.settings-dropdown > button.cache-clear-btn:hover,
+  #settings-menu.settings-dropdown > button.settings-logout-btn:hover {
+    border: 1px solid rgba(var(--theme-color-rgb), 1) !important;
+    box-shadow: 0 8px 18px rgba(var(--theme-color-rgb), 0.28) !important;
   }
   #settings-menu .has-submenu {
     justify-content: center !important; /* Masaüstünde ok ve metin ortada */
