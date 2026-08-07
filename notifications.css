@@ -1794,28 +1794,40 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
 
 #monthly-todo-modal .monthly-todo-branch-filter-option {
   width: 100%;
+  box-sizing: border-box;
   padding: 7px 8px;
-  border: 0;
-  border-bottom: 1px solid rgba(190, 200, 214, 0.10);
-  border-radius: 5px;
+  margin: 0 0 4px;
+  border: 1px solid rgba(190, 200, 214, 0.42);
+  border-radius: 6px;
   background: transparent;
   color: #ffffff;
   font-size: 11px;
   line-height: 1.25;
   text-align: center;
   cursor: pointer;
+  transform: scale(1);
+  transform-origin: center center;
+  transition: transform 120ms ease, border-color 120ms ease, color 120ms ease;
 }
 
 #monthly-todo-modal .monthly-todo-branch-filter-option:last-child {
-  border-bottom: 0;
+  margin-bottom: 0;
 }
 
 #monthly-todo-modal .monthly-todo-branch-filter-option:hover,
-#monthly-todo-modal .monthly-todo-branch-filter-option:focus-visible,
+#monthly-todo-modal .monthly-todo-branch-filter-option:focus-visible {
+  outline: 0;
+  background: transparent;
+  color: #ffffff;
+  border-color: rgba(210, 218, 228, 0.72);
+  transform: scale(1.04);
+}
+
 #monthly-todo-modal .monthly-todo-branch-filter-option.selected {
   outline: 0;
-  background: rgba(var(--theme-color-rgb), 0.24);
+  background: transparent;
   color: #ffffff;
+  border-color: rgba(210, 218, 228, 0.72);
 }
 
 @media (min-width: 641px) {
@@ -2358,6 +2370,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
   #monthly-todo-modal .monthly-todo-branch-filter-option.selected {
     color: #ffffff !important;
     -webkit-text-fill-color: #ffffff;
+    background: transparent;
   }
 }
 
