@@ -2001,6 +2001,38 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     white-space: nowrap;
 }
 
+/* Masaüstü kimlik/toolbar eşleri: varsayılan gizli (≤768 mobil DOM görünür) */
+.detail-toolbar-plate,
+.detail-desktop-brand-year,
+.detail-desktop-assign-slot {
+    display: none !important;
+}
+
+.detail-desktop-brand-year {
+    grid-column: 2;
+    justify-self: center;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--txt-gray);
+    text-align: center;
+    line-height: 1.2;
+    margin: 0;
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+.detail-desktop-assign-slot {
+    grid-column: 3;
+    justify-self: end;
+    align-self: center;
+    min-width: 0;
+    max-width: 100%;
+}
+
 /* Marka/model satırı – plakanın 2px altında, yalnızca metin */
 .detail-brand-year-row {
     display: flex !important;

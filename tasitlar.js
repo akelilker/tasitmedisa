@@ -197,7 +197,7 @@
 
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20260806.4';
+  const MEDISA_TASITLAR_MODULE_VERSION = '20260806.5';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
@@ -3102,6 +3102,44 @@
       if (existingAddEventBtn) existingAddEventBtn.remove();
     }
 
+    // Masaüstü kimlik satırı: kanonik marka metnini plaka satırına yansıt (mobil DOM korunur)
+    if (plateRow && brandYearEl) {
+      let desktopBrand = plateRow.querySelector('.detail-desktop-brand-year');
+      if (!desktopBrand) {
+        desktopBrand = document.createElement('div');
+        desktopBrand.className = 'detail-desktop-brand-year';
+        plateRow.appendChild(desktopBrand);
+      }
+      desktopBrand.textContent = brandYearEl.textContent;
+    }
+
+    // Masaüstü tahsis: kimlik satırı sağ kolon (toolbar eş’i CSS ile tek görünür)
+    if (plateRow) {
+      const needsDesktopAssign = !vehicle.branchId && !isArchivedVehicleAssignmentLocked(vehicle);
+      let assignSlot = plateRow.querySelector('.detail-desktop-assign-slot');
+      if (needsDesktopAssign) {
+        if (!assignSlot) {
+          assignSlot = document.createElement('div');
+          assignSlot.className = 'detail-desktop-assign-slot';
+          plateRow.appendChild(assignSlot);
+        }
+        let desktopAssignBtn = assignSlot.querySelector('.detail-assign-button-frameless');
+        if (!desktopAssignBtn) {
+          desktopAssignBtn = document.createElement('button');
+          desktopAssignBtn.type = 'button';
+          desktopAssignBtn.className = 'detail-assign-button-frameless detail-desktop-assign';
+          assignSlot.appendChild(desktopAssignBtn);
+        }
+        desktopAssignBtn.innerHTML = '<span>\u015Eubeye Tahsis Etmek \u0130\u00E7in +</span>';
+        desktopAssignBtn.onclick = (e) => {
+          e.stopPropagation();
+          openEventModal('sube', vehicleId);
+        };
+      } else if (assignSlot) {
+        assignSlot.remove();
+      }
+    }
+
     // İki kolonlu layout'u render et
     renderVehicleDetailLeft(vehicle);
     renderVehicleDetailRight(vehicle);
@@ -3123,6 +3161,7 @@
 
       // Sol taraf (geri butonu + hedef sayfa etiketi)
       const toolbarLeft = document.createElement('div');
+      toolbarLeft.className = 'detail-toolbar-left';
       toolbarLeft.style.display = 'flex';
       toolbarLeft.style.alignItems = 'center';
       toolbarLeft.style.gap = '8px';
@@ -3156,10 +3195,19 @@
       backBar.appendChild(backBtn);
       toolbarLeft.appendChild(backBar);
 
-      // Orta taraf (tahsis butonu - sadece tahsis edilmemiş taşıtlar için)
-      // Yatayda ortalı: sol ok ve Taşıtlar dikkate alınmadan, tam ekran ortası
+      // Orta taraf: masaüstü plaka + arşiv/tahsis (tahsis mobilde burada, masaüstünde kimlik sağında)
       const toolbarCenter = document.createElement('div');
       toolbarCenter.className = 'detail-toolbar-center-absolute';
+
+      const plateElCanonical = plateRow ? plateRow.querySelector('.detail-plate') : null;
+      const toolbarPlate = document.createElement('div');
+      toolbarPlate.className = 'detail-toolbar-plate';
+      if (plateElCanonical) {
+        toolbarPlate.innerHTML = plateElCanonical.innerHTML;
+      } else {
+        toolbarPlate.textContent = vehicle.plate || '-';
+      }
+      toolbarCenter.appendChild(toolbarPlate);
 
       if (isArchiveSoldDetail && archiveStatusLabel) {
         const soldBadge = document.createElement('span');
@@ -3169,7 +3217,8 @@
       }
       if (!vehicle.branchId && !isArchivedVehicleAssignmentLocked(vehicle)) {
         const assignBtn = document.createElement('button');
-        assignBtn.className = 'detail-assign-button-frameless';
+        assignBtn.type = 'button';
+        assignBtn.className = 'detail-assign-button-frameless detail-toolbar-assign';
         assignBtn.innerHTML = '<span>\u015Eubeye Tahsis Etmek \u0130\u00E7in +</span>';
         assignBtn.onclick = (e) => {
           e.stopPropagation();

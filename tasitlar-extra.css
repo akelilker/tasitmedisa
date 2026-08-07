@@ -466,11 +466,107 @@
   #vehicle-detail-modal .vehicle-detail-toolbar {
     height: 32px;
     min-height: 32px;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    justify-content: stretch;
+    column-gap: 8px;
   }
 
   #vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn {
     padding-top: 6px !important;
     padding-bottom: 6px !important;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  #vehicle-detail-modal .vehicle-detail-toolbar .detail-toolbar-left {
+    grid-column: 1;
+    justify-self: start;
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  #vehicle-detail-modal .vehicle-detail-toolbar .detail-toolbar-left .universal-back-bar--toolbar {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  #vehicle-detail-modal .vehicle-detail-toolbar .detail-toolbar-left .universal-back-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+  }
+
+  #vehicle-detail-modal .vehicle-detail-toolbar .detail-toolbar-center-absolute {
+    position: static !important;
+    left: auto !important;
+    transform: none !important;
+    grid-column: 2;
+    justify-self: center;
+    width: auto !important;
+    max-width: min(280px, 42vw);
+    flex-wrap: nowrap !important;
+    gap: 8px !important;
+  }
+
+  #vehicle-detail-modal .vehicle-detail-toolbar .toolbar-right {
+    grid-column: 3;
+    justify-self: end;
+  }
+
+  #vehicle-detail-modal .detail-toolbar-plate {
+    display: block !important;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--txt);
+    text-align: center;
+    letter-spacing: 2px;
+    margin: 0;
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 1.2;
+  }
+
+  /* Mobil toolbar tahsis eş’i masaüstünde gizle (kimlik satırı sağı görünür) */
+  #vehicle-detail-modal .detail-toolbar-assign {
+    display: none !important;
+  }
+
+  /* Kimlik: Olay Ekle | Marka/Model | tahsis; eski plaka + marka satırı kalkar */
+  #vehicle-detail-modal .detail-plate-row .detail-plate {
+    display: none !important;
+  }
+
+  #vehicle-detail-modal .detail-brand-year-row {
+    display: none !important;
+  }
+
+  #vehicle-detail-modal .detail-desktop-brand-year {
+    display: block !important;
+  }
+
+  #vehicle-detail-modal .detail-desktop-assign-slot {
+    display: flex !important;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
+  #vehicle-detail-modal .detail-desktop-assign-slot .detail-assign-button-frameless {
+    flex: 0 1 auto;
+    max-width: 100%;
+  }
+
+  #vehicle-detail-modal .detail-desktop-assign-slot .detail-assign-button-frameless span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
   }
 }
 
@@ -479,6 +575,13 @@
     height: auto;
     min-height: 44px;
     margin-bottom: 2px !important;
+  }
+
+  /* Masaüstü eşleri ≤768’de erişilebilirlik ağacından çıksın */
+  #vehicle-detail-modal .detail-toolbar-plate,
+  #vehicle-detail-modal .detail-desktop-brand-year,
+  #vehicle-detail-modal .detail-desktop-assign-slot {
+    display: none !important;
   }
 }
 

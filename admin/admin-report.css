@@ -1,15 +1,11 @@
 /* Admin Aylık Kullanıcı Raporu – koyu tema (style-core ile uyumlu) */
 
-/* --- Admin sayfa layout override --- */
-html:has(body.admin-report-page) {
-  max-width: 100% !important;
-  width: 100% !important;
-  margin-left: 0 !important;
-  margin-right: 0 !important;
-}
-
+/* --- Admin sayfa layout: ana uygulama ile aynı 500px yatay kontrat --- */
 body.admin-report-page {
-  max-width: 100% !important;
+  max-width: 500px !important;
+  width: 100% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
   overflow-x: hidden;
   overflow-y: auto;
   scrollbar-width: none;
@@ -21,25 +17,88 @@ body.admin-report-page::-webkit-scrollbar {
   display: none;
 }
 
-/* Anasayfa ile aynı: üst + yan kırmızı çizgiler */
+/* Ana uygulama .app-container frame parity; canonical max-width 500 */
 .admin-app-container {
-  max-width: 1200px;
+  isolation: isolate;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  max-width: 500px;
+  width: 100%;
   margin: 0 auto;
   min-height: 100vh;
+  min-height: 100dvh;
   background: var(--bg);
-  border-top: 0.5px solid rgba(var(--theme-color-rgb), 0.78);
-  border-left: 0.7px solid rgba(var(--theme-color-rgb), 0.78);
-  border-right: 0.7px solid rgba(var(--theme-color-rgb), 0.78);
+  /* Çerçeve tek owner: ::before — container üzerinde yan border yok */
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
   box-sizing: border-box;
-  overflow: visible;
-  box-shadow:
-    0 0 16px rgba(var(--theme-color-rgb), 0.24),
-    inset 0 0 18px rgba(var(--theme-color-rgb), 0.10);
+  overflow: hidden;
+  box-shadow: 0 2px 14px rgba(var(--theme-color-rgb), 0.1), inset 0 0 80px rgba(10, 13, 28, 0.22);
+  transition: border-color 0.3s ease;
+}
+
+/* Tek frame owner — style-core .app-container::before ile aynı kontrat */
+.admin-app-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  /* Yan çizgiler static footer üst kenarında bitsin (köşe birikmesi yok) */
+  bottom: var(--app-footer-real-height);
+  bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0));
+  border-top: 0.5px solid var(--border-red-tech);
+  border-left: 0.5px solid var(--border-red-tech);
+  border-right: 0.5px solid var(--border-red-tech);
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  box-sizing: border-box;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* style-core .app-container::after — iç kırmızı glow */
+.admin-app-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  box-shadow: inset 0 0 25px var(--red-glow-subtle);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* İçerik ::after glow üstünde (style-core .app-container > * parity) */
+.admin-app-container > * {
+  position: relative;
+  z-index: 1;
+}
+
+@media (min-width: 769px) {
+  .admin-app-container::before {
+    border-left-width: 0.7px;
+    border-right-width: 0.7px;
+    border-top-color: rgba(var(--theme-color-rgb), 0.78);
+    border-left-color: rgba(var(--theme-color-rgb), 0.78);
+    border-right-color: rgba(var(--theme-color-rgb), 0.78);
+    box-shadow:
+      0 0 16px rgba(var(--theme-color-rgb), 0.24),
+      inset 0 0 18px rgba(var(--theme-color-rgb), 0.10);
+  }
 }
 
 .admin-content-wrap {
+  flex: 1 1 auto;
+  width: 100%;
+  box-sizing: border-box;
   padding: 1rem;
-  padding-bottom: 60px;
+  padding-bottom: 1rem;
   scrollbar-width: none;
   -ms-overflow-style: none;
   overflow: visible;
@@ -49,26 +108,54 @@ body.admin-report-page::-webkit-scrollbar {
   display: none;
 }
 
-/* PWA: hero altında, kırmızı çerçeve içinde ortalı (anasayfa icons-row ile aynı mantık) */
-body.admin-report-page .admin-report-icons-row:not(:has(.pwa-install-bar)) {
+/* Üst işlem satırı: Şubeler | Uygulamayı Yükle | denge — 1fr / auto / 1fr */
+body.admin-report-page .admin-report-icons-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  column-gap: 8px;
+  padding-left: calc(1rem - 3px);
+  padding-right: calc(1rem - 3px);
+  margin-bottom: 6px;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* PWA yok ve Şubeler gizliyse satırı kapat */
+body.admin-report-page .admin-report-icons-row:not(:has(.pwa-install-bar)):not(:has(#report-selection-bar:not([hidden]))) {
   display: none;
   margin: 0;
   padding: 0;
   min-height: 0;
 }
 
-body.admin-report-page .admin-report-icons-row {
-  padding-left: calc(1rem - 3px);
-  padding-right: calc(1rem - 3px);
-  margin-bottom: 6px;
+body.admin-report-page .admin-report-icons-row .icons-row-left {
+  min-width: 0;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+body.admin-report-page .admin-report-icons-row .pwa-install-center {
+  justify-self: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+body.admin-report-page .admin-report-icons-row .icons-row-right {
+  min-width: 0;
 }
 
 /* --- Admin hero: kullanıcı paneli (dashboard) ile aynı iki satırlı grid (.hero.hero-two-rows) --- */
 .admin-report-hero {
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
   margin-left: calc(-1rem + 3px);
   margin-right: calc(-1rem + 3px);
 }
+
+/* selection-bar artık icons-row içinde; ayrı üst boşluk kuralı yok */
 
 body.admin-report-page .hero.admin-report-hero.hero-two-rows {
   display: grid !important;
@@ -291,7 +378,7 @@ body.admin-report-page .main-header-user-name.is-empty {
 
 /* --- Ana içerik --- */
 .driver-report-page {
-  max-width: 1200px;
+  max-width: 100%;
   margin: 0 auto;
   overflow: visible;
 }
@@ -735,7 +822,7 @@ body.admin-report-page .main-header-user-name.is-empty {
   flex-wrap: wrap;
   gap: 8px;
   align-content: flex-start;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 .branch-card {
@@ -744,9 +831,9 @@ body.admin-report-page .main-header-user-name.is-empty {
   width: calc((100% - (4 * 8px)) / 5);
   max-width: calc((100% - (4 * 8px)) / 5);
   flex: 0 0 calc((100% - (4 * 8px)) / 5);
-  aspect-ratio: 1 / 1;
+  height: auto;
   min-height: 0;
-  padding: 14px 10px 12px;
+  padding: 12px 10px 10px;
   border-radius: 10px;
   border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.12));
   background: var(--border-faint-02, rgba(255, 255, 255, 0.03));
@@ -892,7 +979,7 @@ body.admin-report-page .main-header-user-name.is-empty {
 
 .branch-name {
   width: 100%;
-  min-height: 2.5em;
+  min-height: 2.3em;
   margin-bottom: 4px;
   color: #f3f6fb;
   font-size: clamp(11px, 2vw, 14px);
@@ -1582,42 +1669,68 @@ body.admin-report-page .main-header-user-name.is-empty {
   border: 1px solid #c62828;
 }
 
-/* --- Admin footer: anasayfa ile aynı (gri üst, yan soluk, kırmızı glow) --- */
-.admin-footer {
-  position: fixed;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  max-width: 1200px;
+/* --- Admin footer: static akış + ana uygulama footer ışık/token parity --- */
+body.admin-report-page #app-footer.admin-footer,
+body.admin-report-page .admin-footer {
+  position: static !important;
+  left: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  transform: none !important;
+  width: 100% !important;
+  max-width: none !important;
+  flex-shrink: 0;
+  margin: 0 !important;
   background: var(--bg);
-  border-top: 1px solid rgba(200, 200, 200, 0.52);
-  border-left: 0.6px solid rgba(200, 200, 200, 0.32);
-  border-right: 0.6px solid rgba(200, 200, 200, 0.32);
-  box-shadow: 0 -10px 20px rgba(var(--theme-color-rgb), 0.16);
-  z-index: 1000;
+  isolation: isolate;
+  border-top: 1px solid var(--footer-top-border) !important;
+  border-left: 0.5px solid var(--footer-side-border);
+  border-right: 0.5px solid var(--footer-side-border);
+  box-shadow:
+    0 -1px 0 var(--footer-top-highlight),
+    var(--footer-red-glow) !important;
+  z-index: auto;
+  height: auto !important;
+  min-height: var(--app-footer-real-height, 42px) !important;
+  box-sizing: border-box !important;
+  padding-top: 2px !important;
+  padding-bottom: calc(2px + env(safe-area-inset-bottom, 0)) !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  visibility: visible !important;
+  overflow: visible;
+}
+
+@media (min-width: 769px) {
+  body.admin-report-page #app-footer.admin-footer,
+  body.admin-report-page .admin-footer {
+    border-left: 0.6px solid var(--footer-side-border);
+    border-right: 0.6px solid var(--footer-side-border);
+  }
 }
 
 .admin-footer-back-wrap {
-  /* Footer ile aynı yatay kontrat; sol kenara 3px */
-  position: fixed;
-  left: 50%;
-  bottom: calc(var(--app-footer-real-height, 42px) + 6px + env(safe-area-inset-bottom, 0));
-  transform: translateX(-50%);
+  /* Belge akışında; content-wrap ile aynı 1rem sol hiza */
+  position: static;
+  left: auto;
+  right: auto;
+  bottom: auto;
+  transform: none;
   box-sizing: border-box;
   display: flex;
   justify-content: flex-start;
   align-items: center;
   width: 100%;
-  max-width: 1200px;
+  max-width: none;
+  flex-shrink: 0;
   margin: 0 !important;
-  padding-left: 3px !important;
-  padding-right: 12px !important;
+  padding: 4px 1rem 8px !important;
   overflow: visible;
   background: transparent;
   border: 0;
   box-shadow: none;
-  z-index: 1001;
+  z-index: auto;
   pointer-events: none;
 }
 
@@ -1666,9 +1779,14 @@ body.admin-report-page .main-header-user-name.is-empty {
   opacity: 1;
 }
 
+body.admin-report-page #app-footer.admin-footer .footer-content,
 .admin-footer .footer-content {
-  max-width: 1200px;
+  max-width: none;
+  width: 100%;
   margin: 0 auto;
+  box-sizing: border-box;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 .admin-footer .brand img {
@@ -1714,12 +1832,23 @@ body.admin-report-page .main-header-user-name.is-empty {
   opacity: 0.7 !important;
 }
 
-/* --- Mobil: kırmızı çizgiler anasayfa ile aynı (0.99px) --- */
+/* --- Mobil: ana uygulama frame yoğunluğu (style-core mobil ::before parity) --- */
 @media (max-width: 768px) {
   .admin-app-container {
-    border-top: 0.99px solid rgba(var(--theme-color-rgb), 0.55) !important;
-    border-left: 0.99px solid rgba(var(--theme-color-rgb), 0.55) !important;
-    border-right: 0.99px solid rgba(var(--theme-color-rgb), 0.55) !important;
+    border-top: 0.5px solid rgba(var(--theme-color-rgb), 0.82) !important;
+    border-left: none;
+    border-right: none;
+    box-shadow: 0 2px 14px rgba(var(--theme-color-rgb), 0.125), inset 0 0 80px rgba(10, 13, 28, 0.22) !important;
+  }
+  .admin-app-container::before {
+    border-left-width: 0.7px;
+    border-right-width: 0.7px;
+    border-top-color: rgba(var(--theme-color-rgb), 0.82);
+    border-left-color: rgba(var(--theme-color-rgb), 0.80);
+    border-right-color: rgba(var(--theme-color-rgb), 0.80);
+  }
+  .admin-app-container::after {
+    box-shadow: inset 0 0 26px rgba(var(--theme-color-rgb), 0.21);
   }
 }
 
@@ -1830,12 +1959,15 @@ body.admin-report-page .main-header-user-name.is-empty {
     transform: none !important;
   }
 
-  /* Footer anasayfa mobil ile aynı: gri üst, yan yok, kırmızı glow */
-  .admin-footer {
-    border-top: 1px solid rgba(128, 128, 128, 0.5) !important;
+  /* Footer: mobil — ana uygulama token parity (yan yok, aynı glow) */
+  body.admin-report-page #app-footer.admin-footer,
+  body.admin-report-page .admin-footer {
+    border-top: 1px solid var(--footer-top-border) !important;
     border-left: none !important;
     border-right: none !important;
-    box-shadow: 0 -15px 22px rgba(var(--theme-color-rgb), 0.35) !important;
+    box-shadow:
+      0 -1px 0 var(--footer-top-highlight),
+      var(--footer-red-glow) !important;
   }
   .user-analytics-toolbar {
     flex-direction: row;
@@ -1967,13 +2099,15 @@ body.admin-report-page .main-header-user-name.is-empty {
 
 .admin-tabs-container {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   justify-content: stretch;
-  gap: 0;
+  gap: 10px;
   margin-top: 0;
   margin-bottom: 8px;
   width: 100%;
+  max-width: 100%;
   padding: 0;
+  box-sizing: border-box;
 }
 
 .admin-tab-btn {
@@ -1992,9 +2126,6 @@ body.admin-report-page .main-header-user-name.is-empty {
   font-weight: 700;
   letter-spacing: 0.2px;
   text-align: center;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   cursor: pointer;
   transition: color 0.2s ease, border-color 0.2s ease;
 }
@@ -2035,7 +2166,7 @@ body.admin-report-page .main-header-user-name.is-empty {
 }
 
 #report-branch-grid.monthly-branch-grid {
-  justify-content: center;
+  justify-content: flex-start;
   gap: 3px;
   padding: 0 3px;
 }
@@ -2044,10 +2175,9 @@ body.admin-report-page .main-header-user-name.is-empty {
   width: calc((100% - (4 * 3px)) / 5);
   max-width: calc((100% - (4 * 3px)) / 5);
   flex: 0 0 calc((100% - (4 * 3px)) / 5);
+  height: auto;
   border-radius: 8px;
-  padding: 4px;
-  padding-top: 16px !important;
-  padding-bottom: 12px !important;
+  padding: 10px 6px;
   container-type: inline-size;
 }
 
@@ -2057,10 +2187,10 @@ body.admin-report-page .main-header-user-name.is-empty {
 }
 
 .monthly-branch-grid .branch-name {
-  min-height: 2.5em;
-  margin-bottom: 2px;
+  min-height: 2.3em;
+  margin-bottom: 4px;
   font-size: clamp(10.5px, 12cqw, 12px);
-  line-height: 1.06;
+  line-height: 1.15;
   word-break: keep-all;
   overflow-wrap: normal;
 }
@@ -2070,7 +2200,7 @@ body.admin-report-page .main-header-user-name.is-empty {
 }
 
 .user-analytics-branch-grid {
-  justify-content: center;
+  justify-content: flex-start;
   gap: 3px;
   padding: 0 3px;
 }
@@ -2079,18 +2209,17 @@ body.admin-report-page .main-header-user-name.is-empty {
   width: calc((100% - (4 * 3px)) / 5);
   max-width: calc((100% - (4 * 3px)) / 5);
   flex: 0 0 calc((100% - (4 * 3px)) / 5);
+  height: auto;
   border-radius: 8px;
-  padding: 4px;
-  padding-top: 16px !important;
-  padding-bottom: 12px !important;
+  padding: 10px 6px;
   container-type: inline-size;
 }
 
 .user-analytics-branch-grid .branch-name {
-  min-height: 2.5em;
-  margin-bottom: 2px;
+  min-height: 2.3em;
+  margin-bottom: 4px;
   font-size: clamp(10.5px, 12cqw, 12px);
-  line-height: 1.06;
+  line-height: 1.15;
   word-break: keep-all;
   overflow-wrap: normal;
 }
@@ -2099,7 +2228,8 @@ body.admin-report-page .main-header-user-name.is-empty {
   font-size: 12px;
 }
 
-.driver-report-page > #report-selection-bar {
+/* Şubeler: icons-row sol hücre; static akış, PWA ile aynı satır */
+.admin-report-icons-row .icons-row-left > #report-selection-bar {
   margin: 0;
   padding: 0;
   border: none;
@@ -2108,18 +2238,29 @@ body.admin-report-page .main-header-user-name.is-empty {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  width: 100%;
+  width: auto;
+  max-width: 100%;
+  min-width: 0;
   min-height: 0;
 }
 
-.driver-report-page > #report-selection-bar[hidden] {
+.admin-report-icons-row .icons-row-left > #report-selection-bar[hidden] {
   display: none !important;
+  margin: 0;
+  padding: 0;
+  min-height: 0;
 }
 
-/* Şubeler geri satırı: sekme butonlarının üstünde */
-.driver-report-page > #report-selection-bar .report-selection-backbar.universal-back-bar {
+.admin-report-icons-row .icons-row-left > #report-selection-bar .report-selection-backbar.universal-back-bar {
   padding-top: 0 !important;
-  padding-bottom: 2px;
+  padding-bottom: 0;
+  width: auto;
+  max-width: 100%;
+  justify-content: flex-start;
+}
+
+.admin-report-icons-row .icons-row-left > #report-selection-bar .universal-back-label {
+  white-space: nowrap;
 }
 
 .report-selection-left {
@@ -2959,6 +3100,15 @@ body.admin-report-page .main-header-user-name.is-empty {
 }
 
 @media (max-width: 640px) {
+  .admin-tabs-container {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .admin-tab-btn {
+    text-align: center;
+  }
+
   .monthly-stage-empty {
     padding: 10px 2px 0;
     font-size: 12px;
@@ -3196,16 +3346,25 @@ body.admin-report-page .main-header-user-name.is-empty {
     box-sizing: border-box !important;
   }
   .admin-app-container {
-    border-radius: 38px !important;
+    border-radius: 20px !important;
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
     overflow: hidden !important;
-    border-top: 0.5px solid var(--border-red-tech) !important;
-    border-left: 1px solid rgba(var(--theme-color-rgb), 0.55) !important;
-    border-right: 1px solid rgba(var(--theme-color-rgb), 0.55) !important;
-    box-shadow: 0 2px 14px rgba(var(--theme-color-rgb), 0.1) !important;
+    border-top: 0.5px solid rgba(var(--theme-color-rgb), 0.82) !important;
+    border-left: none !important;
+    border-right: none !important;
+    box-shadow: 0 2px 14px rgba(var(--theme-color-rgb), 0.125) !important;
     min-height: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
     min-height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
     max-width: 100% !important;
     margin: 0 !important;
+  }
+  .admin-app-container::before {
+    border-top-color: rgba(var(--theme-color-rgb), 0.82);
+    border-left-color: rgba(var(--theme-color-rgb), 0.80);
+    border-right-color: rgba(var(--theme-color-rgb), 0.80);
+    border-left-width: 0.7px;
+    border-right-width: 0.7px;
   }
   .admin-content-wrap {
     padding-top: max(12px, env(safe-area-inset-top)) !important;
@@ -3218,13 +3377,22 @@ body.admin-report-page .main-header-user-name.is-empty {
   }
   .admin-footer {
     max-width: 100% !important;
-    border-top: 1px solid rgba(128, 128, 128, 0.5) !important;
+    border-top: 1px solid var(--footer-top-border) !important;
     border-left: none !important;
     border-right: none !important;
-    box-shadow: 0 -15px 22px rgba(var(--theme-color-rgb), 0.35) !important;
-    left: 0 !important;
+    box-shadow:
+      0 -1px 0 var(--footer-top-highlight),
+      var(--footer-red-glow) !important;
+    left: auto !important;
     transform: none !important;
+    position: static !important;
     padding-bottom: env(safe-area-inset-bottom, 0) !important;
+  }
+  body.admin-report-page #app-footer.admin-footer {
+    position: static !important;
+    left: auto !important;
+    transform: none !important;
+    max-width: none !important;
   }
   .admin-footer .footer-content {
     max-width: 100% !important;

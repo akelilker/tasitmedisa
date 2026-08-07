@@ -275,6 +275,16 @@ test('toolbar history dual-class ve belge butonu source kontratı', function() {
   assert.match(detailSrc, /openVehicleDocumentsFromDetailButton/);
 });
 
+test('masaüstü toolbar plaka ve sol semantik class source kontratı', function() {
+  assert.match(detailSrc, /className\s*=\s*'detail-toolbar-left'/);
+  assert.match(detailSrc, /className\s*=\s*'detail-toolbar-plate'/);
+  assert.match(detailSrc, /toolbarPlate\.innerHTML\s*=\s*plateElCanonical\.innerHTML/);
+  assert.match(detailSrc, /detail-toolbar-assign/);
+  assert.match(detailSrc, /detail-desktop-brand-year/);
+  assert.match(detailSrc, /detail-desktop-assign-slot/);
+  assert.match(detailSrc, /detail-desktop-assign/);
+});
+
 test('Olay menü/form owner source dokunulmamış (window.openEventModal)', function() {
   assert.match(tasitlar, /window\.openEventModal\s*=\s*function/);
   assert.match(tasitlar, /function openEventModalBody\s*\(/);

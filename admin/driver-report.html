@@ -32,7 +32,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../style-core.css?v=20260804.4">
-  <link rel="stylesheet" href="admin-report.css?v=20260804.1">
+  <link rel="stylesheet" href="admin-report.css?v=20260807.5">
 </head>
 <body class="admin-report-page">
   <div class="admin-app-container">
@@ -53,14 +53,15 @@
   </div>
 
   <div class="icons-row admin-report-icons-row">
-    <div class="icons-row-left" aria-hidden="true"></div>
+    <div class="icons-row-left">
+      <div id="report-selection-bar" class="report-selection-bar" hidden></div>
+    </div>
     <div id="pwa-install-wrapper" class="pwa-install-center"></div>
     <div class="icons-row-right" aria-hidden="true"></div>
   </div>
 
   <div class="driver-report-page">
     <div id="report-error" class="report-error" style="display:none; color:#c62828; margin-bottom:0.5rem;"></div>
-    <div id="report-selection-bar" class="report-selection-bar" hidden></div>
     <div class="admin-tabs-container">
       <button type="button" class="admin-tab-btn active" data-admin-tab="aylik" onclick="switchAdminTab('aylik')">Aylık KM İzleme</button>
       <button type="button" class="admin-tab-btn" data-admin-tab="kullanici" onclick="switchAdminTab('kullanici')">Kullanıcı Raporları</button>
