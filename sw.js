@@ -21,7 +21,7 @@ function getBase() {
 const CACHE_FILES = [
   '/',
   '/index.html',
-  '/style-core.css?v=20260807.8',
+  '/style-core.css?v=20260808.1',
   '/script-core.js',
   '/data-manager.js',
   '/manifest.json',
