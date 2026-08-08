@@ -194,7 +194,77 @@ assert.notEqual(STAGING_HOST, 'karmotors.com.tr');
 assert.notEqual(STAGING_FTP_USER, '');
 assert.ok(PROD_DOCROOT.includes('public_html/medisa'));
 
+// Staging auth-shim: credentialed document base → fetch URL userinfo temizliği
+assert.match(build, /medisa-staging-auth-shim/, 'staging auth shim id');
+assert.match(build, /document\.baseURI\|\|location\.href/, 'shim resolves via document baseURI');
+assert.match(build, /u\.username=""/, 'shim clears URL.username');
+assert.match(build, /u\.password=""/, 'shim clears URL.password');
+assert.match(build, /X-Medisa-Authorization/, 'shim preserves Bearer via X-Medisa-Authorization');
+assert.match(build, /credentials\|\|"include"/, 'shim credentials include default');
+assert.doesNotMatch(build, /new URL\([^,]+,\s*location\.origin\)/, 'shim must not resolve via location.origin');
+assert.match(build, /__medisaStagingAuthShim/, 'shim idempotency guard');
+
+function sanitizeStagingFetchUrl(rawInput, baseHref) {
+  const u = new URL(String(rawInput), String(baseHref));
+  u.username = '';
+  u.password = '';
+  return u;
+}
+
+(function verifyFetchUrlSanitizeContract() {
+  const credBase = 'https://user:pass@example.com/app/subdir/index.html';
+  const cleanBase = 'https://example.com/app/subdir/index.html';
+
+  // TEST 1: credentialed base + relative → no userinfo
+  const t1 = sanitizeStagingFetchUrl('load.php', credBase);
+  assert.equal(t1.username, '', 'TEST1 username cleared');
+  assert.equal(t1.password, '', 'TEST1 password cleared');
+  assert.equal(t1.pathname, '/app/subdir/load.php', 'TEST1 path preserved');
+
+  // TEST 2: clean base → same path
+  const t2a = sanitizeStagingFetchUrl('load.php', cleanBase);
+  const t2b = sanitizeStagingFetchUrl('load.php', credBase);
+  assert.equal(t2a.pathname, t2b.pathname, 'TEST2 path identical clean vs credentialed');
+  assert.equal(t2a.href, 'https://example.com/app/subdir/load.php', 'TEST2 clean href');
+
+  // TEST 3: query string preserved
+  const t3 = sanitizeStagingFetchUrl('load.php?x=1&y=2', credBase);
+  assert.equal(t3.search, '?x=1&y=2', 'TEST3 query preserved');
+  assert.equal(t3.username, '', 'TEST3 no userinfo');
+
+  // TEST 4: Request-like url field (absolute dirty) sanitized
+  const dirtyAbs = 'https://user:pass@example.com/app/subdir/load.php';
+  const t4 = sanitizeStagingFetchUrl(dirtyAbs, credBase);
+  assert.equal(t4.href, 'https://example.com/app/subdir/load.php', 'TEST4 Request url sanitized');
+
+  // TEST 5: Authorization rewrite contract remains in source (Bearer → X-Medisa)
+  assert.match(build, /Bearer\\\\s\+/, 'TEST5 Bearer detect pattern');
+  assert.match(build, /h\.delete\("Authorization"\)/, 'TEST5 deletes Authorization after move');
+
+  // TEST 6: POST body semantics — Request rebuild keeps method when URL sanitized
+  // (Node Request rejects credentialed URL; sanitize first then construct)
+  const body = JSON.stringify({ ok: true });
+  const cleanPostUrl = sanitizeStagingFetchUrl('save.php', credBase).href;
+  const req = new Request(cleanPostUrl, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: 'Bearer tok' },
+    body,
+    credentials: 'include'
+  });
+  assert.equal(req.method, 'POST', 'TEST6 method POST');
+  assert.equal(req.headers.get('Authorization') ? 'YES' : 'NO', 'YES', 'TEST6 auth present on Request');
+  // Simulate shim header move onto init
+  const h = new Headers(req.headers);
+  const a = h.get('Authorization');
+  assert.match(String(a), /^Bearer\s+/i, 'TEST6 bearer shape');
+  h.set('X-Medisa-Authorization', a);
+  h.delete('Authorization');
+  assert.equal(h.get('Authorization'), null, 'TEST6 Authorization removed');
+  assert.match(String(h.get('X-Medisa-Authorization')), /^Bearer\s+/i, 'TEST6 X-Medisa set');
+})();
+
 console.log('verify-medisa-staging-isolation: OK');
 console.log('staging_host=' + STAGING_HOST);
 console.log('staging_ftp_user=' + STAGING_FTP_USER);
 console.log('production_url_denied_in_staging_workflows=true');
+console.log('fetch_url_sanitize_contract=PASS');

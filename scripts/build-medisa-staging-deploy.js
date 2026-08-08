@@ -186,6 +186,8 @@ function injectBanner(html) {
   }
   // Directory Privacy Basic Auth, fetch Authorization: Bearer ile çakışır.
   // Staging shell: Bearer'ı X-Medisa-Authorization'a taşı, Basic için credentials include.
+  // Credentialed document URL (userinfo) relative fetch'i TypeError yapar; resolve sonrası
+  // username/password temizlenir, path semantics korunur (location.origin'e kör geçiş yok).
   if (!/medisa-staging-auth-shim/.test(out)) {
     const shim = [
       '<script id="medisa-staging-auth-shim">',
@@ -193,8 +195,15 @@ function injectBanner(html) {
       'if(window.__medisaStagingAuthShim)return;window.__medisaStagingAuthShim=1;',
       'var o=window.fetch;',
       'window.fetch=function(i,n){n=n||{};n.credentials=n.credentials||"include";',
-      'try{var h=new Headers(n.headers||{});var a=h.get("Authorization");',
-      'if(a&&/^Bearer\\s+/i.test(a)){h.set("X-Medisa-Authorization",a);h.delete("Authorization");n.headers=h;}',
+      'try{',
+      'var base=document.baseURI||location.href;',
+      'var raw=(typeof i==="string")?i:((typeof URL!=="undefined"&&i instanceof URL)?i.href:((i&&typeof i.url==="string")?i.url:String(i)));',
+      'var u=new URL(raw,base);u.username="";u.password="";',
+      'var isReq=(typeof Request!=="undefined"&&i instanceof Request);',
+      'i=isReq?new Request(u.href,i):u.href;',
+      'var hdrSrc=(n.headers!=null)?n.headers:(isReq?i.headers:null);',
+      'if(hdrSrc){var h=new Headers(hdrSrc);var a=h.get("Authorization");',
+      'if(a&&/^Bearer\\s+/i.test(a)){h.set("X-Medisa-Authorization",a);h.delete("Authorization");n.headers=h;}}',
       '}catch(e){}return o.call(this,i,n);};',
       '})();',
       '</script>'
