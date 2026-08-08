@@ -644,6 +644,15 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-returni
     opacity: 0;
 }
 
+/* Masaüstü: modal kapanış return-state — visual close sonrası modal-open bookkeeping
+   sürerken kısa alt yan çerçeveyi closed-shell geometrisine geri al. Mobil etkilenmez. */
+@media (min-width: 641px) {
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open.modal-returning .app-container::before {
+        bottom: var(--app-footer-real-height);
+        bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0));
+    }
+}
+
 /* İÇERİK ALANI - Havada durma (yan kırmızı çerçeve), taşma yok */
 .content-wrap {
     flex: 1;
@@ -2002,11 +2011,26 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         filter: brightness(1.10);
     }
 
-    body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicle-modal .modal-container,
-    body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicles-modal .modal-container,
-    body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #reports-modal .modal-container {
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicle-modal.modal-overlay .modal-container,
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicles-modal.modal-overlay .modal-container,
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #reports-modal.modal-overlay .modal-container {
         border-top-width: 1px !important;
-        border-top-color: rgba(200, 208, 216, 0.72) !important;
+        border-color: transparent !important;
+        outline-color: transparent !important;
+    }
+
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicle-modal.modal-overlay .modal-container::before,
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicles-modal.modal-overlay .modal-container::before,
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #reports-modal.modal-overlay .modal-container::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        box-sizing: border-box;
+        border: 1px solid rgba(200, 208, 216, 0.60);
+        border-radius: inherit;
+        background: transparent;
+        pointer-events: none;
+        z-index: 21;
     }
 
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay .modal-container {
