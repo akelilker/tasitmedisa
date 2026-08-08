@@ -1,0 +1,74 @@
+# Manual-only: verify Option A2 / T4 CSS contract on live staging (no data writes).
+name: Staging A2 T4 CSS Smoke
+
+concurrency:
+  group: medisa-staging-a2-t4-css-smoke
+  cancel-in-progress: true
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: 'Exact: RUN STAGING A2 T4 CSS SMOKE'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  css_smoke:
+    name: Staging A2/T4 CSS contract
+    runs-on: ubuntu-latest
+    environment:
+      name: staging
+      url: https://medisa-staging.karmotors.com.tr
+    env:
+      STAGING_BASE_URL: ${{ vars.STAGING_BASE_URL }}
+    steps:
+      - name: Typed confirmation gate
+        shell: bash
+        env:
+          CONFIRMATION: ${{ inputs.confirmation }}
+        run: |
+          set -euo pipefail
+          if [ "$CONFIRMATION" != "RUN STAGING A2 T4 CSS SMOKE" ]; then
+            echo "::error::confirmation must be exactly: RUN STAGING A2 T4 CSS SMOKE"
+            exit 1
+          fi
+
+      - name: Auth + CSS contract
+        shell: bash
+        env:
+          STAGING_BASIC_AUTH_USERNAME: ${{ secrets.STAGING_BASIC_AUTH_USERNAME }}
+          STAGING_BASIC_AUTH_PASSWORD: ${{ secrets.STAGING_BASIC_AUTH_PASSWORD }}
+        run: |
+          set -euo pipefail
+          test "${STAGING_BASE_URL}" = "https://medisa-staging.karmotors.com.tr"
+          UNAUTH=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 30 "$STAGING_BASE_URL/" || true)
+          echo "STAGING_UNAUTH_STATUS=$UNAUTH"
+          test "$UNAUTH" = "401"
+          CODE=$(curl -sS -o /tmp/stg-home.html -w '%{http_code}' --max-time 30 \
+            -u "${STAGING_BASIC_AUTH_USERNAME}:${STAGING_BASIC_AUTH_PASSWORD}" \
+            "$STAGING_BASE_URL/")
+          echo "STAGING_AUTH_STATUS=$CODE"
+          test "$CODE" = "200"
+          curl -sS --max-time 30 \
+            -u "${STAGING_BASIC_AUTH_USERNAME}:${STAGING_BASIC_AUTH_PASSWORD}" \
+            "$STAGING_BASE_URL/style-core.css?v=20260808.1" -o /tmp/style-core.css
+          curl -sS --max-time 30 \
+            -u "${STAGING_BASIC_AUTH_USERNAME}:${STAGING_BASIC_AUTH_PASSWORD}" \
+            "$STAGING_BASE_URL/tasitlar-base.css" -o /tmp/tasitlar-base.css
+          grep -q 'modal-open.modal-returning .app-container::before' /tmp/style-core.css
+          grep -q 'border: 1px solid rgba(200, 208, 216, 0.60)' /tmp/style-core.css
+          grep -q '#reports-modal.modal-overlay .modal-container::before' /tmp/style-core.css
+          grep -q 'border-color: transparent !important' /tmp/style-core.css
+          grep -q 'Masaüstünde ::before slotu style-core.css ortak single-frame owner' /tmp/tasitlar-base.css
+          grep -q '@media (max-width: 640px)' /tmp/tasitlar-base.css
+          grep -q '#vehicles-modal .modal-container::before' /tmp/tasitlar-base.css
+          # SW 404 noted only — non-blocking for this smoke
+          SW=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 20 \
+            -u "${STAGING_BASIC_AUTH_USERNAME}:${STAGING_BASIC_AUTH_PASSWORD}" \
+            "$STAGING_BASE_URL/service_worker.js" || true)
+          echo "SW_404_PRESENT=$([ "$SW" = "404" ] && echo YES || echo NO) status=$SW"
+          echo "A2_T4_CSS_LIVE=PASS"
