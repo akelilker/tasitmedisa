@@ -94,6 +94,14 @@ assert.match(deployWf, /quality-gate\.sh/, 'deploy runs quality gate');
 assert.match(deployWf, /initialize_synthetic_data/, 'initialize input');
 assert.match(deployWf, /data\/\*\*/, 'normal deploy excludes data/**');
 assert.match(deployWf, /AuthType|AuthUserFile|Directory Privacy|existing.*htaccess|MEDISA_STAGING_EXISTING_HTACCESS/i, 'Auth block preservation');
+assert.match(deployWf, /existing_auth_valid=false|missing complete Directory Privacy Auth contract/, 'workflow fail-closed on missing Auth');
+assert.match(deployWf, /refusing deploy/, 'workflow refuses deploy without Auth');
+assert.doesNotMatch(
+  deployWf,
+  /::warning::existing \.htaccess has no Directory Privacy Auth block/,
+  'warning-only missing Auth path must be removed'
+);
+assert.match(deployWf, /built \.htaccess missing complete Auth contract; refusing FTPS/, 'built Auth gate before FTPS');
 assert.match(deployWf, /unauthenticated|401/, 'Basic Auth health check');
 assert.match(deployWf, /if:\s*always\(\)/, 'deploy cleanup always');
 
@@ -120,6 +128,8 @@ assert.match(build, /medisa-staging-v/, 'SW cache namespace');
 assert.match(build, /Disallow: \//, 'robots disallow');
 assert.match(build, /X-Robots-Tag/, 'noindex header');
 assert.match(build, /AuthUserFile/, 'Auth block extract');
+assert.match(build, /refusing auth-free deploy|cannot preserve Directory Privacy Auth/, 'build fails closed without Auth');
+assert.match(build, /assertCompleteAuthBlock/, 'complete Auth contract helper');
 assert.match(build, /RewriteRule \^ https:/, 'HTTPS redirect');
 assert.match(build, /MEDISA_SERVER_RESTORE_ENABLED/, 'restore flag in config');
 assert.match(build, /MEDISA_PRODUCTION_RESTORE_APPROVED=false/, 'staging production approval false');
@@ -268,3 +278,58 @@ console.log('staging_host=' + STAGING_HOST);
 console.log('staging_ftp_user=' + STAGING_FTP_USER);
 console.log('production_url_denied_in_staging_workflows=true');
 console.log('fetch_url_sanitize_contract=PASS');
+
+(function verifyAuthPreservationFailClosed() {
+  const {
+    extractAuthBlock,
+    assertCompleteAuthBlock,
+    buildHtaccess
+  } = require('./build-medisa-staging-deploy.js');
+
+  const validAuth = [
+    '# cPanel Directory Privacy',
+    'AuthType Basic',
+    'AuthName "MEDISA Staging Test Sistemi"',
+    'AuthUserFile "/home/example/.htpasswds/public_html/medisa-staging/passwd"',
+    'Require valid-user',
+    ''
+  ].join('\n');
+
+  // CASE A: valid Auth → extract + build preserves contract
+  const extracted = extractAuthBlock(validAuth + '\n# app rules\nOptions -Indexes\n');
+  assertCompleteAuthBlock(extracted, 'CASE_A_extract');
+  const built = buildHtaccess('# base\nOptions -Indexes\n', extracted);
+  assertCompleteAuthBlock(extractAuthBlock(built), 'CASE_A_built');
+  assert.match(built, /AuthUserFile\s+"\/home\/example\/\.htpasswds\/public_html\/medisa-staging\/passwd"/, 'CASE_A exact AuthUserFile preserved');
+
+  // CASE B: existing without Auth → FAIL CLOSED
+  assert.throws(
+    () => extractAuthBlock('# only rewrite\nRewriteEngine On\n'),
+    /Auth block not found|missing AuthType|incomplete|empty/i,
+    'CASE_B no Auth fails closed'
+  );
+
+  // CASE C: empty/unavailable → FAIL CLOSED
+  assert.throws(
+    () => extractAuthBlock(''),
+    /empty|unavailable/i,
+    'CASE_C empty fails closed'
+  );
+
+  // CASE D: partial malformed Auth → FAIL CLOSED
+  assert.throws(
+    () => extractAuthBlock('AuthType Basic\nAuthUserFile "/tmp/x"\n'),
+    /missing AuthName|missing Require|incomplete/i,
+    'CASE_D partial Auth fails closed'
+  );
+  assert.throws(
+    () => assertCompleteAuthBlock(
+      'AuthType Basic\nAuthName "x"\nAuthUserFile "/home/x/public_html/medisa/passwd"\nRequire valid-user\n',
+      'CASE_D_prod'
+    ),
+    /production path/i,
+    'CASE_D production AuthUserFile denied'
+  );
+
+  console.log('auth_preservation_fail_closed_contract=PASS');
+})();

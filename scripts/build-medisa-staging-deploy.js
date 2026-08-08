@@ -11,7 +11,7 @@
  *   MEDISA_STAGING_CONFIG_MODE=safe|acceptance|cleanup
  *   MEDISA_STAGING_TOKEN_SECRET (required for config)
  *   MEDISA_STAGING_RESTORE_HMAC_SECRET (acceptance)
- *   MEDISA_STAGING_EXISTING_HTACCESS (optional path to preserve Auth block)
+ *   MEDISA_STAGING_EXISTING_HTACCESS (required for deployable Auth preserve)
  */
 
 const fs = require('node:fs');
@@ -19,26 +19,26 @@ const path = require('node:path');
 const { spawnSync } = require('node:child_process');
 
 const root = path.resolve(__dirname, '..');
-const outDir = process.env.MEDISA_STAGING_OUTPUT_DIR;
-const includeData = String(process.env.MEDISA_STAGING_INCLUDE_DATA || 'false') === 'true';
-const configMode = process.env.MEDISA_STAGING_CONFIG_MODE || 'safe';
-const tokenSecret = process.env.MEDISA_STAGING_TOKEN_SECRET || '';
-const hmacSecret = process.env.MEDISA_STAGING_RESTORE_HMAC_SECRET || '';
-const existingHtaccess = process.env.MEDISA_STAGING_EXISTING_HTACCESS || '';
-const adminUser = process.env.MEDISA_STAGING_ADMIN_USER || 'staging_admin';
-const adminPass = process.env.MEDISA_STAGING_ADMIN_PASSWORD || '';
 
-if (!outDir) {
-  console.error('MEDISA_STAGING_OUTPUT_DIR required');
-  process.exit(1);
-}
-if (!tokenSecret || tokenSecret.length < 32) {
-  console.error('MEDISA_STAGING_TOKEN_SECRET required (>=32)');
-  process.exit(1);
-}
-if (!['safe', 'acceptance', 'cleanup'].includes(configMode)) {
-  console.error('Invalid MEDISA_STAGING_CONFIG_MODE');
-  process.exit(1);
+function readBuildEnv() {
+  const outDir = process.env.MEDISA_STAGING_OUTPUT_DIR;
+  const includeData = String(process.env.MEDISA_STAGING_INCLUDE_DATA || 'false') === 'true';
+  const configMode = process.env.MEDISA_STAGING_CONFIG_MODE || 'safe';
+  const tokenSecret = process.env.MEDISA_STAGING_TOKEN_SECRET || '';
+  const hmacSecret = process.env.MEDISA_STAGING_RESTORE_HMAC_SECRET || '';
+  const existingHtaccess = process.env.MEDISA_STAGING_EXISTING_HTACCESS || '';
+  const adminUser = process.env.MEDISA_STAGING_ADMIN_USER || 'staging_admin';
+  const adminPass = process.env.MEDISA_STAGING_ADMIN_PASSWORD || '';
+  return {
+    outDir,
+    includeData,
+    configMode,
+    tokenSecret,
+    hmacSecret,
+    existingHtaccess,
+    adminUser,
+    adminPass
+  };
 }
 
 const EXCLUDE_DIR_NAMES = new Set([
@@ -65,7 +65,7 @@ function ensureDir(p) {
   fs.mkdirSync(p, { recursive: true });
 }
 
-function shouldCopy(relPosix) {
+function shouldCopy(relPosix, includeData) {
   const parts = relPosix.split('/');
   if (parts.some((p) => EXCLUDE_DIR_NAMES.has(p))) return false;
   if (EXCLUDE_FILE_NAMES.has(parts[parts.length - 1])) return false;
@@ -75,7 +75,7 @@ function shouldCopy(relPosix) {
   return true;
 }
 
-function walkCopy(srcRoot, destRoot) {
+function walkCopy(srcRoot, destRoot, includeData) {
   const stack = [''];
   let count = 0;
   while (stack.length) {
@@ -84,7 +84,7 @@ function walkCopy(srcRoot, destRoot) {
     const st = fs.statSync(src);
     const relPosix = rel.split(path.sep).join('/');
     if (st.isDirectory()) {
-      if (rel && !shouldCopy(relPosix + '/x')) continue;
+      if (rel && !shouldCopy(relPosix + '/x', includeData)) continue;
       if (rel) ensureDir(path.join(destRoot, rel));
       for (const name of fs.readdirSync(src)) {
         if (!rel && isExcludedDirName(name)) continue;
@@ -93,7 +93,7 @@ function walkCopy(srcRoot, destRoot) {
       }
       continue;
     }
-    if (!shouldCopy(relPosix)) continue;
+    if (!shouldCopy(relPosix, includeData)) continue;
     const dest = path.join(destRoot, rel);
     ensureDir(path.dirname(dest));
     fs.copyFileSync(src, dest);
@@ -102,13 +102,43 @@ function walkCopy(srcRoot, destRoot) {
   return count;
 }
 
+/**
+ * Fail-closed Directory Privacy contract check.
+ * Does not invent AuthUserFile; only validates a provided block.
+ */
+function assertCompleteAuthBlock(block, label) {
+  const text = String(block || '');
+  const tag = label || 'auth-block';
+  if (!text.trim()) {
+    throw new Error(tag + ': empty Directory Privacy Auth block');
+  }
+  if (!/AuthType\s+Basic\b/i.test(text)) {
+    throw new Error(tag + ': missing AuthType Basic');
+  }
+  if (!/AuthName\s+/i.test(text)) {
+    throw new Error(tag + ': missing AuthName');
+  }
+  if (!/AuthUserFile\s+\S+/i.test(text)) {
+    throw new Error(tag + ': missing AuthUserFile');
+  }
+  if (!/Require\s+valid-user/i.test(text)) {
+    throw new Error(tag + ': missing Require valid-user');
+  }
+  if (/AuthUserFile\s+.*public_html\/medisa(?!-staging)/i.test(text)) {
+    throw new Error(tag + ': AuthUserFile points at production path');
+  }
+  return text;
+}
+
 function extractAuthBlock(htaccessText) {
-  if (!htaccessText) return '';
-  const lines = htaccessText.split(/\r?\n/);
+  if (!htaccessText || !String(htaccessText).trim()) {
+    throw new Error('existing .htaccess empty or unavailable');
+  }
+  const lines = String(htaccessText).split(/\r?\n/);
   const keep = [];
   let inAuth = false;
   for (const line of lines) {
-    if (/AuthType|AuthName|AuthUserFile|Require\s+valid-user|Directory Privacy|#\s*protected/i.test(line)) {
+    if (/AuthType|AuthName|AuthUserFile|Require\s+valid-user|Directory Privacy|#\s*protected|#\s*cPanel Directory Privacy/i.test(line)) {
       inAuth = true;
     }
     if (inAuth) {
@@ -123,17 +153,13 @@ function extractAuthBlock(htaccessText) {
   }
   // Fallback: grab contiguous Auth* block
   if (!keep.length) {
-    const m = htaccessText.match(/([\s\S]*?(?:AuthType[\s\S]*?Require\s+valid-user[^\n]*))/i);
-    return m ? m[1].trim() + '\n' : '';
+    const m = String(htaccessText).match(/([\s\S]*?(?:AuthType[\s\S]*?Require\s+valid-user[^\n]*))/i);
+    if (!m) {
+      throw new Error('Directory Privacy Auth block not found');
+    }
+    return assertCompleteAuthBlock(m[1].trim() + '\n', 'extract-fallback');
   }
-  const block = keep.join('\n').trim() + '\n';
-  if (/AuthUserFile\s+.*public_html\/medisa(?!-staging)/i.test(block)) {
-    throw new Error('AuthUserFile points at production path');
-  }
-  if (!/AuthUserFile/i.test(block) || !/Require\s+valid-user/i.test(block)) {
-    throw new Error('Directory Privacy Auth block incomplete');
-  }
-  return block;
+  return assertCompleteAuthBlock(keep.join('\n').trim() + '\n', 'extract');
 }
 
 function buildHtaccess(baseHtaccess, authBlock) {
@@ -217,7 +243,7 @@ function injectBanner(html) {
   return out;
 }
 
-function writeConfig(mode) {
+function writeConfig(mode, tokenSecret, hmacSecret) {
   const restoreOn = mode === 'acceptance';
   const maintOn = mode === 'acceptance';
   const hmacLine = restoreOn && hmacSecret
@@ -260,9 +286,37 @@ function patchServiceWorker(filePath) {
 }
 
 function main() {
+  const {
+    outDir,
+    includeData,
+    configMode,
+    tokenSecret,
+    hmacSecret,
+    existingHtaccess,
+    adminUser,
+    adminPass
+  } = readBuildEnv();
+
+  if (!outDir) {
+    console.error('MEDISA_STAGING_OUTPUT_DIR required');
+    process.exit(1);
+  }
+  if (!tokenSecret || tokenSecret.length < 32) {
+    console.error('MEDISA_STAGING_TOKEN_SECRET required (>=32)');
+    process.exit(1);
+  }
+  if (!['safe', 'acceptance', 'cleanup'].includes(configMode)) {
+    console.error('Invalid MEDISA_STAGING_CONFIG_MODE');
+    process.exit(1);
+  }
+  if (!existingHtaccess || !fs.existsSync(existingHtaccess)) {
+    console.error('FATAL: MEDISA_STAGING_EXISTING_HTACCESS missing; refusing auth-free deploy');
+    process.exit(1);
+  }
+
   rmrf(outDir);
   ensureDir(outDir);
-  const copied = walkCopy(root, outDir);
+  const copied = walkCopy(root, outDir, includeData);
   console.log('copied_files=' + copied);
 
   // HTML overlays
@@ -279,17 +333,24 @@ function main() {
   writeRobots(outDir);
 
   const baseHt = fs.readFileSync(path.join(outDir, '.htaccess'), 'utf8');
-  let authBlock = '';
-  if (existingHtaccess && fs.existsSync(existingHtaccess)) {
+  let authBlock;
+  try {
     authBlock = extractAuthBlock(fs.readFileSync(existingHtaccess, 'utf8'));
-  } else if (/AuthType/i.test(baseHt)) {
-    authBlock = extractAuthBlock(baseHt);
-  } else {
-    console.warn('WARN: no Directory Privacy Auth block found; deploy may drop Basic Auth protection');
+  } catch (err) {
+    console.error('FATAL: cannot preserve Directory Privacy Auth: ' + (err && err.message ? err.message : err));
+    process.exit(1);
   }
-  fs.writeFileSync(path.join(outDir, '.htaccess'), buildHtaccess(baseHt, authBlock), 'utf8');
+  const outHt = buildHtaccess(baseHt, authBlock);
+  try {
+    assertCompleteAuthBlock(extractAuthBlock(outHt), 'output');
+  } catch (err) {
+    console.error('FATAL: built .htaccess Auth contract invalid: ' + (err && err.message ? err.message : err));
+    process.exit(1);
+  }
+  fs.writeFileSync(path.join(outDir, '.htaccess'), outHt, 'utf8');
+  console.log('auth_preserve=ok');
 
-  fs.writeFileSync(path.join(outDir, 'config.local.php'), writeConfig(configMode), 'utf8');
+  fs.writeFileSync(path.join(outDir, 'config.local.php'), writeConfig(configMode, tokenSecret, hmacSecret), 'utf8');
 
   if (includeData) {
     if (!adminPass) {
@@ -323,4 +384,13 @@ function main() {
   console.log('include_data=' + includeData);
 }
 
-main();
+module.exports = {
+  extractAuthBlock,
+  assertCompleteAuthBlock,
+  buildHtaccess,
+  injectBanner
+};
+
+if (require.main === module) {
+  main();
+}

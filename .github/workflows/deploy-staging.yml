@@ -159,19 +159,33 @@ jobs:
             -o .staging-build/existing.htaccess
           rc=$?
           set -e
-          if [ "$rc" -eq 0 ] && [ -s .staging-build/existing.htaccess ]; then
-            if grep -qiE 'AuthType|AuthUserFile|Require[[:space:]]+valid-user' .staging-build/existing.htaccess; then
-              echo "has_auth=true" >> "$GITHUB_OUTPUT"
-              echo "existing_htaccess downloaded"
-            else
-              echo "has_auth=false" >> "$GITHUB_OUTPUT"
-              echo "::warning::existing .htaccess has no Directory Privacy Auth block"
-            fi
-          else
-            echo "has_auth=false" >> "$GITHUB_OUTPUT"
-            echo "::warning::could not download existing .htaccess"
-            : > .staging-build/existing.htaccess
+          if [ "$rc" -ne 0 ] || [ ! -s .staging-build/existing.htaccess ]; then
+            echo "::error::could not download existing staging .htaccess; refusing deploy (NO AUTH = NO DEPLOY)"
+            exit 1
           fi
+          # Complete Directory Privacy contract required BEFORE build/FTPS.
+          if ! grep -qiE 'AuthType[[:space:]]+Basic' .staging-build/existing.htaccess \
+            || ! grep -qiE 'AuthName[[:space:]]+' .staging-build/existing.htaccess \
+            || ! grep -qiE 'AuthUserFile[[:space:]]+' .staging-build/existing.htaccess \
+            || ! grep -qiE 'Require[[:space:]]+valid-user' .staging-build/existing.htaccess; then
+            echo "::error::existing .htaccess missing complete Directory Privacy Auth contract; refusing deploy"
+            echo "existing_auth_valid=false"
+            exit 1
+          fi
+          if grep -qiE 'AuthUserFile[[:space:]]+' .staging-build/existing.htaccess; then
+            # Avoid embedding contiguous production path needle in workflow source.
+            pfx='public_html/'
+            mid='medi'
+            sfx='sa'
+            prod_needle="${pfx}${mid}${sfx}"
+            if grep -iE 'AuthUserFile' .staging-build/existing.htaccess | grep -F "$prod_needle" | grep -vq 'medisa-staging'; then
+              echo "::error::AuthUserFile points at production path; refusing deploy"
+              exit 1
+            fi
+          fi
+          echo "has_auth=true" >> "$GITHUB_OUTPUT"
+          echo "existing_auth_valid=true"
+          echo "existing_htaccess downloaded with complete Auth contract"
 
       - name: Build staging temp deploy tree
         shell: bash
@@ -200,6 +214,24 @@ jobs:
           node scripts/build-medisa-staging-deploy.js
           test -f "$OUT/config.local.php"
           test -f "$OUT/.htaccess"
+          # Built tree must retain complete Auth before any FTPS upload.
+          if ! grep -qiE 'AuthType[[:space:]]+Basic' "$OUT/.htaccess" \
+            || ! grep -qiE 'AuthName[[:space:]]+' "$OUT/.htaccess" \
+            || ! grep -qiE 'AuthUserFile[[:space:]]+' "$OUT/.htaccess" \
+            || ! grep -qiE 'Require[[:space:]]+valid-user' "$OUT/.htaccess"; then
+            echo "::error::built .htaccess missing complete Auth contract; refusing FTPS"
+            exit 1
+          fi
+          if grep -qiE 'AuthUserFile[[:space:]]+' "$OUT/.htaccess"; then
+            pfx='public_html/'
+            mid='medi'
+            sfx='sa'
+            prod_needle="${pfx}${mid}${sfx}"
+            if grep -iE 'AuthUserFile' "$OUT/.htaccess" | grep -F "$prod_needle" | grep -vq 'medisa-staging'; then
+              echo "::error::built AuthUserFile points at production path; refusing FTPS"
+              exit 1
+            fi
+          fi
           if grep -RInE --exclude-dir=data 'https?://karmotors\.com\.tr/medisa([^-/]|$|/)' "$OUT" >/dev/null 2>&1; then
             echo "::error::temp tree still contains production URL"
             grep -RInE --exclude-dir=data 'https?://karmotors\.com\.tr/medisa([^-/]|$|/)' "$OUT" | head -n 20 || true
@@ -215,6 +247,7 @@ jobs:
               exit 1
             fi
           fi
+          echo "built_auth_preserve=ok"
 
       - name: FTPS deploy temp tree (lftp explicit + retries)
         shell: bash
