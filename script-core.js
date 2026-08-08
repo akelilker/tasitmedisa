@@ -1945,7 +1945,9 @@ window.addEventListener('dataLoaded', () => {
   var p = (typeof document !== 'undefined' && document.location) ? document.location.pathname : '/';
   var scope = resolveAppRootPath(p);
   var base = scope === '/' ? '' : scope.slice(0, -1);
-  var paths = base ? [base + '/sw.js', './sw.js'] : ['./sw.js', '/sw.js'];
+  // Scope-absolute only: relative sw path under /driver or /admin resolves to nested 404
+  // (staging root and production /medisa/ both use base + '/sw.js').
+  var paths = [base + '/sw.js'];
   window.registerServiceWorker({
     paths: paths,
     scope: scope,

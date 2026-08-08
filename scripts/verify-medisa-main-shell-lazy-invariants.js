@@ -335,6 +335,21 @@ if (implementationPresent) {
     assert.match(cacheVersion, /^medisa-v2\.\d+$/);
     assert.notStrictEqual(cacheVersion, 'medisa-v2.266', 'CACHE_VERSION bilinen merge regressyon değeri olmamalı');
   });
+  test('SW registration scope-absolute sw.js; legacy underscore worker yok', function() {
+    var swRegStart = core.indexOf('SERVICE WORKER REGISTRATION');
+    assert.ok(swRegStart !== -1, 'SW registration owner bloğu bulunmalı');
+    var swRegEnd = core.indexOf('PWA INSTALL PROMPT HANDLER', swRegStart);
+    if (swRegEnd === -1) swRegEnd = swRegStart + 2500;
+    var swReg = core.slice(swRegStart, swRegEnd);
+    assert.match(swReg, /var paths = \[base \+ '\/sw\.js'\];/);
+    assert.doesNotMatch(swReg, /'\.\/sw\.js'/);
+    assert.doesNotMatch(swReg, /service_worker\.js/);
+    assert.doesNotMatch(core, /serviceWorker\.register\(\s*['"][^'"]*service_worker/);
+    assert.equal(fs.existsSync(path.join(ROOT, 'sw.js')), true, 'canonical sw.js source mevcut olmalı');
+    assert.equal(fs.existsSync(path.join(ROOT, 'service_worker.js')), false, 'legacy underscore worker source olmamalı');
+    assert.match(sw, /CACHE_VERSION\s*=/);
+    assert.match(sw, /addEventListener\(\s*'install'/);
+  });
   test('Raporlar modül ve SW cache sürüm paritesi', function() {
     var raporlarModuleVer = (core.match(/raporlar:\s*'([^']+)'/) || [])[1];
     var raporlarCacheVer = (sw.match(/CACHE_RAPORLAR_VERSION\s*=\s*'medisa-raporlar-([^']+)'/) || [])[1];

@@ -85,4 +85,24 @@ assert.match(serverRestore, /SCRIPT_FILENAME/, 'server_restore direct-hit harden
 assert.match(serverRestore, /http_response_code\(404\)/, 'server_restore direct hit 404 dönmeli.');
 assert.match(serverRestore, /Not Found/, 'server_restore direct hit gövdesi sızıntısız olmalı.');
 
+assert.match(cpanel, /\/bin\/test -f sw\.js/, 'cPanel deploy sw.js varlık kontrolü yapmalı.');
+assert.match(cpanel, /\/bin\/cp -a sw\.js/, 'cPanel deploy sw.js kopyalamalı.');
+assert.match(deployWorkflow, /^\s*sw\.js\s*$/m, 'FTP deploy inventory sw.js içermeli.');
+assert.equal(fs.existsSync(path.join(root, 'sw.js')), true, 'Canonical sw.js source mevcut olmalı.');
+assert.equal(fs.existsSync(path.join(root, 'service_worker.js')), false, 'Legacy service_worker.js source olmamalı.');
+
+const stagingBuild = fs.readFileSync(path.join(root, 'scripts', 'build-medisa-staging-deploy.js'), 'utf8');
+assert.match(stagingBuild, /patchServiceWorker\(path\.join\(outDir, 'sw\.js'\)\)/, 'Staging build canonical sw.js patch etmeli.');
+
+const cssSmokePath = path.join(root, '.github', 'workflows', 'staging-a2-t4-css-smoke.yml');
+if (fs.existsSync(cssSmokePath)) {
+  const cssSmoke = fs.readFileSync(cssSmokePath, 'utf8');
+  assert.match(cssSmoke, /\$STAGING_BASE_URL\/sw\.js/, 'CSS smoke canonical /sw.js doğrulamalı.');
+  assert.equal(
+    /\$STAGING_BASE_URL\/service_worker\.js/.test(cssSmoke),
+    false,
+    'CSS smoke obsolete underscore worker URL probe etmemeli.'
+  );
+}
+
 console.log('verify-medisa-deploy-invariants: OK');

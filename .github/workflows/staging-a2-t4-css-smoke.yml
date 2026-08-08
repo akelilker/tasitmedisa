@@ -66,9 +66,12 @@ jobs:
           grep -q 'Masaüstünde ::before slotu style-core.css ortak single-frame owner' /tmp/tasitlar-base.css
           grep -q '@media (max-width: 640px)' /tmp/tasitlar-base.css
           grep -q '#vehicles-modal .modal-container::before' /tmp/tasitlar-base.css
-          # SW 404 noted only — non-blocking for this smoke
-          SW=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 20 \
+          # Canonical PWA worker path (sw.js). Do not probe obsolete underscore worker name.
+          SW=$(curl -sS -o /tmp/stg-sw.js -w '%{http_code}' --max-time 20 \
             -u "${STAGING_BASIC_AUTH_USERNAME}:${STAGING_BASIC_AUTH_PASSWORD}" \
-            "$STAGING_BASE_URL/service_worker.js" || true)
-          echo "SW_404_PRESENT=$([ "$SW" = "404" ] && echo YES || echo NO) status=$SW"
+            "$STAGING_BASE_URL/sw.js")
+          echo "CANONICAL_SW_HTTP=$SW"
+          test "$SW" = "200"
+          grep -q 'CACHE_VERSION\|addEventListener' /tmp/stg-sw.js
+          ! grep -qi '<html\|<!DOCTYPE' /tmp/stg-sw.js
           echo "A2_T4_CSS_LIVE=PASS"
