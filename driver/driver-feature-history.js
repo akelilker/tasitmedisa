@@ -320,6 +320,31 @@ if (t === 'oneri' || t === 'öneri') return 'Önerildi.';
 return 'Talep Edildi.';
 }
 
+function formatHistoryBitisDisplay(raw) {
+var src = String(raw || '').trim();
+if (!src) return '';
+var formatted = h.formatDateDDMMYYYY(src);
+return formatted || src;
+}
+
+function getHistoryDocumentUploadLabel(eventType) {
+var map = {
+'ruhsat-yukle': 'Ruhsat yükledi.',
+'sigorta-policesi-yukle': 'Trafik Sigortası Poliçesi Yükledi.',
+'kasko-policesi-yukle': 'Kasko Poliçesi Yükledi.',
+'takograf-belgesi-yukle': 'Takograf Belgesi Yükledi.',
+'tasit-karti-yukle': 'Taşıt Kartı Yükledi.',
+'satis-sozlesmesi-yukle': 'Satış Sözleşmesi Yükledi.'
+};
+return map[String(eventType || '')] || '';
+}
+
+function buildHistoryBitisDetailHtml(bitisRaw) {
+var bitis = formatHistoryBitisDisplay(bitisRaw);
+if (!bitis) return '';
+return '<p>Bitiş T. ' + h.escapeHtmlDriver(bitis) + '.</p>';
+}
+
 function renderHistoryList() {
 var listEl = document.getElementById('history-list');
 if (!listEl) return;
@@ -372,47 +397,52 @@ if (d.adres) detailsHtml += `<p>Adres: ${h.escapeHtmlDriver(d.adres)}.</p>`;
 const durum = d.durum ? 'Evet' : 'Hay\u0131r';
 detailsHtml = `<p>UTTS ${h.escapeHtmlDriver(durum)} olarak bildirildi.</p>`;
 } else if (item.eventType === 'muayene-guncelle') {
-detailsHtml = '<p>Muayene bilgisi g\u00fcncellendi olarak bildirildi.</p>';
-if (d.bitisTarihi) detailsHtml += `<p>Biti\u015f tarihi: ${h.escapeHtmlDriver(d.bitisTarihi)}.</p>`;
-if (d.egzozMuayeneYapilmaDate) detailsHtml += `<p>Egzoz muayene — yapt\u0131r\u0131lan: ${h.escapeHtmlDriver(d.egzozMuayeneYapilmaDate)}.</p>`;
-if (d.egzozMuayeneDate) detailsHtml += `<p>Egzoz muayene — biti\u015f: ${h.escapeHtmlDriver(d.egzozMuayeneDate)}.</p>`;
+detailsHtml = '<p>Muayene bilgisini güncelledi.</p>';
+detailsHtml += buildHistoryBitisDetailHtml(d.bitisTarihi);
+if (d.egzozMuayeneYapilmaDate) detailsHtml += '<p>Egzoz muayene — yaptırılan: ' + h.escapeHtmlDriver(formatHistoryBitisDisplay(d.egzozMuayeneYapilmaDate) || d.egzozMuayeneYapilmaDate) + '.</p>';
+if (d.egzozMuayeneDate) detailsHtml += '<p>Egzoz muayene — bitiş: ' + h.escapeHtmlDriver(formatHistoryBitisDisplay(d.egzozMuayeneDate) || d.egzozMuayeneDate) + '.</p>';
 } else if (item.eventType === 'kasko-guncelle') {
-detailsHtml = '<p>Kasko yenilemesi bildirildi.</p>';
-if (d.bitisTarihi) detailsHtml += `<p>Biti\u015f tarihi: ${h.escapeHtmlDriver(d.bitisTarihi)}.</p>`;
+detailsHtml = '<p>Kaskosunun yenilendiğini bildirdi.</p>';
+detailsHtml += buildHistoryBitisDetailHtml(d.bitisTarihi);
 } else if (item.eventType === 'sigorta-guncelle') {
-detailsHtml = '<p>Trafik sigortas\u0131 yenileme bildirildi.</p>';
-if (d.bitisTarihi) detailsHtml += `<p>Biti\u015f tarihi: ${h.escapeHtmlDriver(d.bitisTarihi)}.</p>`;
+detailsHtml = '<p>Trafik Sigortasının Yenilendiğini Bildirdi.</p>';
+detailsHtml += buildHistoryBitisDetailHtml(d.bitisTarihi);
 } else if (item.eventType === 'kasko-kodu-guncelle') {
-detailsHtml = '<p>Kasko kodu g\u00fcncellendi.</p>';
-if (d.kaskoKodu) detailsHtml += `<p>Yeni kod: ${h.escapeHtmlDriver(d.kaskoKodu)}.</p>`;
+detailsHtml = '<p>Kasko kodu güncellendi.</p>';
+if (d.kaskoKodu) detailsHtml += '<p>Yeni kod: ' + h.escapeHtmlDriver(d.kaskoKodu) + '.</p>';
 } else if (item.eventType === 'satis') {
-detailsHtml = '<p>Sat\u0131\u015f/pert bildirildi.</p>';
-if (d.tutar) detailsHtml += `<p>Tutar: ${h.escapeHtmlDriver(d.tutar)} TL.</p>`;
-if (d.aciklama) detailsHtml += `<p>A\u00e7\u0131klama: ${h.escapeHtmlDriver(d.aciklama)}.</p>`;
+detailsHtml = '<p>Satış/pert bildirildi.</p>';
+if (d.tutar) detailsHtml += '<p>Tutar: ' + h.escapeHtmlDriver(d.tutar) + ' TL.</p>';
+if (d.aciklama) detailsHtml += '<p>Açıklama: ' + h.escapeHtmlDriver(d.aciklama) + '.</p>';
 } else if (item.eventType === 'ceza') {
-detailsHtml = '<p>Trafik cezas\u0131 bildirildi.</p>';
-if (d.tutar) detailsHtml += `<p>Tutar: ${h.escapeHtmlDriver(d.tutar)} TL.</p>`;
-if (d.aciklama) detailsHtml += `<p>A\u00e7\u0131klama: ${h.escapeHtmlDriver(d.aciklama)}.</p>`;
+detailsHtml = '<p>Trafik cezası bildirildi.</p>';
+if (d.tutar) detailsHtml += '<p>Tutar: ' + h.escapeHtmlDriver(d.tutar) + ' TL.</p>';
+if (d.aciklama) detailsHtml += '<p>Açıklama: ' + h.escapeHtmlDriver(d.aciklama) + '.</p>';
 } else if (item.eventType === 'kredi-guncelle') {
-detailsHtml = '<p>Hak mahrumiyeti bilgisi g\u00fcncellendi olarak bildirildi.</p>';
+detailsHtml = '<p>Hak mahrumiyeti bilgisini güncelledi.</p>';
 } else if (item.eventType === 'takip-cihaz-guncelle') {
-detailsHtml = '<p>Takip cihaz\u0131 bilgisi g\u00fcncellendi olarak bildirildi.</p>';
+detailsHtml = '<p>Takip cihazı bilgisini güncelledi.</p>';
 } else if (item.eventType === 'not-guncelle') {
-detailsHtml = '<p>Not bilgisi g\u00fcncellendi olarak bildirildi.</p>';
+detailsHtml = '<p>Not bilgisini güncelledi.</p>';
 } else if (item.eventType === 'sube-degisiklik') {
-detailsHtml = '<p>\u015eube bilgisi g\u00fcncellendi olarak bildirildi.</p>';
+detailsHtml = '<p>Şube bilgisini güncelledi.</p>';
 } else if (item.eventType === 'kullanici-atama') {
-detailsHtml = '<p>Kullan\u0131c\u0131 atamas\u0131 yap\u0131ld\u0131 olarak bildirildi.</p>';
+detailsHtml = '<p>Kullanıcı ataması yaptı.</p>';
+} else {
+var uploadLabel = getHistoryDocumentUploadLabel(item.eventType);
+if (uploadLabel) {
+detailsHtml = '<p>' + h.escapeHtmlDriver(uploadLabel) + '</p>';
 } else if (item.eventType === 'driver-feedback') {
 const typeRaw = d.konuTuru || d.konu_turu || d.type;
 const mesaj = String(d.mesaj || '').trim();
 const actionLabel = getDriverFeedbackHistoryActionLabel(typeRaw);
 const mesajQuoted = mesaj ? '"' + h.escapeHtmlDriver(mesaj) + '"' : '—';
-detailsHtml = `<p>${mesajQuoted} Konusu ${h.escapeHtmlDriver(actionLabel)}</p>`;
+detailsHtml = '<p>' + mesajQuoted + ' Konusu ' + h.escapeHtmlDriver(actionLabel) + '</p>';
 } else {
-let fallbackLabel = item.eventType || 'G\u00fcncelleme';
+let fallbackLabel = item.eventType || 'Güncelleme';
 fallbackLabel = fallbackLabel.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-detailsHtml = `<p>${h.escapeHtmlDriver(fallbackLabel)} olarak bildirildi.</p>`;
+detailsHtml = '<p>' + h.escapeHtmlDriver(fallbackLabel) + ' bildirildi.</p>';
+}
 }
 }
 
