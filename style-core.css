@@ -1079,7 +1079,7 @@ body.modal-open:has(#info-modal.active) .app-container::after {
   max-width: 500px;
   width: 100%;
   margin: 0 auto;
-  padding: 18px;
+  padding: 16px 18px;
   background: linear-gradient(180deg, var(--hero-gradient-start), var(--hero-gradient-end)); /* Hero ile aynı gradient */
   border: 1px solid var(--border-subtle);
   border-radius: 12px;
@@ -1088,7 +1088,7 @@ body.modal-open:has(#info-modal.active) .app-container::after {
   transition: border-color 0.2s, background 0.2s, transform 0.2s, box-shadow 0.2s;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   margin-bottom: 5px;
-  height: 54px; /* Sabit yükseklik - taşma engellendi */
+  height: 50px; /* Sabit yükseklik - taşma engellendi; iç dikey −2şer px */
   overflow: hidden; /* Metin büyürse taşma gizlensin */
   box-sizing: border-box;
   display: flex;

@@ -2293,10 +2293,10 @@
     }
     #settings-menu > button,
     #settings-menu .has-submenu-wrapper .has-submenu {
-        height: 39px !important;
-        min-height: 39px !important;
-        max-height: 39px !important;
-        padding: 9px 16px !important;
+        height: 35px !important;
+        min-height: 35px !important;
+        max-height: 35px !important;
+        padding: 7px 16px !important;
         border-radius: 12px !important;
         background: linear-gradient(180deg, var(--hero-gradient-start), var(--hero-gradient-end)) !important;
         /* Ana sayfa #main-menu .menu-btn cold silver; küçük kutuda biraz daha net */

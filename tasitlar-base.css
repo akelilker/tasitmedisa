@@ -2506,10 +2506,11 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 
 #vehicle-history-modal #history-tabs .history-tab-count {
     flex-shrink: 0;
-    min-width: 1.25em;
-    padding: 1px 5px;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.12);
+    min-width: 0;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background: none;
     color: #a0aec0;
     font-size: 11px;
     font-weight: 600;
@@ -2517,8 +2518,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 }
 
 #vehicle-history-modal #history-tabs .history-tab.active .history-tab-count {
-    color: #ffffff;
-    background: rgba(var(--theme-color-rgb), 0.28);
+    color: #c40000;
+    background: none;
 }
 
 #vehicle-history-modal #history-tabs .history-tab.active {
