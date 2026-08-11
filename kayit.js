@@ -382,6 +382,16 @@
     return typeKey === 'minivan' || typeKey === 'kamyon' || typeKey === 'romork';
   }
 
+  /** Trafik sigortası takibi: römork kapsam dışı (domain ile aynı kural). */
+  function registrationVehicleNeedsTrafikSigortasi(vehicleOrType) {
+    return getRegistrationVehicleTypeKey(vehicleOrType) !== 'romork';
+  }
+
+  /** Egzoz muayenesi takibi: römork kapsam dışı (domain ile aynı kural). */
+  function registrationVehicleNeedsEgzozMuayene(vehicleOrType) {
+    return getRegistrationVehicleTypeKey(vehicleOrType) !== 'romork';
+  }
+
   function getRegistrationK2ExpiryDate() {
     const state = window.appData && window.appData.ayarlar && window.appData.ayarlar.k2Belgesi;
     return String((state && state.expiryDate) || '').trim();
@@ -396,6 +406,18 @@
     return vehicle;
   }
 
+  function clearVehicleTrafikSigortasiFieldsWhenOutOfScope(vehicle) {
+    if (!vehicle || registrationVehicleNeedsTrafikSigortasi(vehicle)) return vehicle;
+    vehicle.sigortaDate = '';
+    return vehicle;
+  }
+
+  function clearVehicleEgzozMuayeneFieldsWhenOutOfScope(vehicle) {
+    if (!vehicle || registrationVehicleNeedsEgzozMuayene(vehicle)) return vehicle;
+    vehicle.egzozMuayeneDate = '';
+    return vehicle;
+  }
+
   function syncVehicleTasitKartiFieldsForK2Scope(vehicle) {
     if (!vehicle) return vehicle;
     if (registrationVehicleNeedsK2(vehicle)) {
@@ -406,6 +428,74 @@
     vehicle.tasitKartiExpiryDate = '';
     vehicle.tasitKartiPath = '';
     return vehicle;
+  }
+
+  function getRegistrationModalSelectedVehicleType(modal) {
+    const scope = modal || getModal();
+    if (!scope) return '';
+    const activeTypeBtn = $('.vehicle-type-btn.active', scope);
+    return activeTypeBtn?.dataset.type || '';
+  }
+
+  /** Römork seçiminde sigorta/egzoz form alanlarını gizler; diğer tiplerde geri açar. */
+  function syncRegistrationSigortaEgzozScopeUi(modal) {
+    const scope = modal || getModal();
+    if (!scope) return;
+    const typeKey = getRegistrationModalSelectedVehicleType(scope);
+    const needsSigorta = registrationVehicleNeedsTrafikSigortasi(typeKey);
+    const needsEgzoz = registrationVehicleNeedsEgzozMuayene(typeKey);
+
+    const sigortaInput = document.getElementById('vehicle-sigorta-date');
+    const sigortaSection = sigortaInput ? sigortaInput.closest('.form-section') : null;
+    if (sigortaSection) {
+      sigortaSection.classList.toggle('u-hidden', !needsSigorta);
+      sigortaSection.setAttribute('aria-hidden', needsSigorta ? 'false' : 'true');
+    }
+    if (sigortaInput) {
+      sigortaInput.tabIndex = needsSigorta ? 0 : -1;
+      sigortaInput.disabled = !needsSigorta;
+      if (!needsSigorta) {
+        setVehicleDateInputValue(sigortaInput, '');
+        sigortaInput.classList.remove('field-error');
+      }
+    }
+
+    const egzozToggle = scope.querySelector('.egzoz-toggle-section');
+    const egzozDateSection = document.getElementById('vehicle-egzoz-date-section');
+    const egzozCheckbox = document.getElementById('vehicle-egzoz-different');
+    const egzozInput = document.getElementById('vehicle-egzoz-date');
+    if (egzozToggle) {
+      egzozToggle.classList.add('u-hidden');
+      egzozToggle.setAttribute('aria-hidden', 'true');
+    }
+    if (egzozDateSection) {
+      egzozDateSection.classList.add('u-hidden');
+      egzozDateSection.setAttribute('aria-hidden', 'true');
+    }
+    if (!needsEgzoz) {
+      if (egzozCheckbox) {
+        egzozCheckbox.checked = false;
+        egzozCheckbox.tabIndex = -1;
+        egzozCheckbox.disabled = true;
+      }
+      if (egzozInput) {
+        egzozInput.tabIndex = -1;
+        egzozInput.disabled = true;
+        setVehicleDateInputValue(egzozInput, '');
+        egzozInput.classList.remove('field-error');
+      }
+      syncEgzozMuayeneFields(scope);
+      if (vehicleEgzozPromptState.promptOpen || vehicleEgzozPromptState.inputOpen || vehicleEgzozPromptState.resumeSave) {
+        clearVehicleMuayeneEgzozPromptTimers();
+        vehicleEgzozPromptState.resumeSave = false;
+        vehicleEgzozPromptState.pendingMuayeneDate = '';
+        vehicleEgzozPromptState.handledMuayeneDate = '';
+        closeVehicleEgzozConfirmModal();
+        closeVehicleEgzozDateInputModal();
+      }
+    } else if (egzozCheckbox) {
+      egzozCheckbox.disabled = false;
+    }
   }
 
   function mergeDefinedVehicleFields(currentVehicle, incomingVehicle) {
@@ -1693,6 +1783,7 @@
     populateBranchSelect();
 
     closeVehicleTypePickerOverlay();
+    syncRegistrationSigortaEgzozScopeUi(modal);
   }
 
   /**
@@ -1931,6 +2022,9 @@
     const egzozCheckbox = document.getElementById('vehicle-egzoz-different');
     const egzozInput = document.getElementById('vehicle-egzoz-date');
     if (!modal || !isVehicleRegistrationModalVisible() || !muayeneInput || vehicleEgzozPromptState.suppressPrompt || vehicleEgzozPromptState.promptOpen || vehicleEgzozPromptState.inputOpen) {
+      return false;
+    }
+    if (!registrationVehicleNeedsEgzozMuayene(getRegistrationModalSelectedVehicleType(modal))) {
       return false;
     }
     const muayeneDate = readVehicleDateIso(muayeneInput);
@@ -2253,12 +2347,16 @@
       errors.push('Tramer Kaydı');
       if (tramerSection) tramerSection.classList.add('field-error');
     }
-    const egzozDifferent = !!(egzozDifferentEl && egzozDifferentEl.checked);
+    const needsEgzoz = registrationVehicleNeedsEgzozMuayene(vehicleType);
+    const needsSigorta = registrationVehicleNeedsTrafikSigortasi(vehicleType);
+    const egzozDifferent = needsEgzoz && !!(egzozDifferentEl && egzozDifferentEl.checked);
     let egzozMuayeneDate = '';
-    if (egzozDifferent) {
-      egzozMuayeneDate = readVehicleDateIso(egzozDateEl) || '';
-    } else if (muayeneDate && vehicleEgzozPromptState.handledMuayeneDate === muayeneDate) {
-      egzozMuayeneDate = muayeneDate;
+    if (needsEgzoz) {
+      if (egzozDifferent) {
+        egzozMuayeneDate = readVehicleDateIso(egzozDateEl) || '';
+      } else if (muayeneDate && vehicleEgzozPromptState.handledMuayeneDate === muayeneDate) {
+        egzozMuayeneDate = muayeneDate;
+      }
     }
     if (egzozDifferent && !egzozMuayeneDate) {
       errors.push('Egzoz Muayenesi Bitiş Tarihi');
@@ -2278,7 +2376,7 @@
       return;
     }
 
-    if (muayeneDate && vehicleEgzozPromptState.handledMuayeneDate !== muayeneDate) {
+    if (needsEgzoz && muayeneDate && vehicleEgzozPromptState.handledMuayeneDate !== muayeneDate) {
       vehicleEgzozPromptState.resumeSave = true;
       scheduleMaybePromptVehicleEgzozFlow(0);
       return;
@@ -2287,7 +2385,9 @@
     const boya = $('.radio-group button.active', $(`.form-section-inline[data-section="boya"]`, modal))?.dataset.value || '';
     const boyaliParcalar = getBoyaPartsState();
 
-    const sigortaDate = readVehicleDateIso(document.getElementById('vehicle-sigorta-date')) || '';
+    const sigortaDate = needsSigorta
+      ? (readVehicleDateIso(document.getElementById('vehicle-sigorta-date')) || '')
+      : '';
     const kaskoDate = readVehicleDateIso(document.getElementById('vehicle-kasko-date')) || '';
 
     const anahtar = $('.radio-group button.active', $(`.form-section-inline[data-section="anahtar"]`, modal))?.dataset.value || '';
@@ -2364,6 +2464,8 @@
       updatedAt: new Date().toISOString()
     };
 
+    clearVehicleTrafikSigortasiFieldsWhenOutOfScope(record);
+    clearVehicleEgzozMuayeneFieldsWhenOutOfScope(record);
     syncVehicleTasitKartiFieldsForK2Scope(record);
 
     // Tescil tarihi onay modalını aç (kayıt işlemi oradan devam edecek)
@@ -2606,11 +2708,19 @@
       if (isEditMode) {
         const index = vehicles.findIndex(v => v.id === editingVehicleId);
         if (index !== -1) {
-          vehicles[index] = syncVehicleTasitKartiFieldsForK2Scope(clearVehicleTakografFieldsWhenOutOfScope(mergeDefinedVehicleFields(vehicles[index], record)));
+          vehicles[index] = syncVehicleTasitKartiFieldsForK2Scope(
+            clearVehicleEgzozMuayeneFieldsWhenOutOfScope(
+              clearVehicleTrafikSigortasiFieldsWhenOutOfScope(
+                clearVehicleTakografFieldsWhenOutOfScope(mergeDefinedVehicleFields(vehicles[index], record))
+              )
+            )
+          );
         }
       } else {
         // Yeni kayıt: İlk km'yi guncelKm olarak ayarla ve tarihçeye ekle
         clearVehicleTakografFieldsWhenOutOfScope(record);
+        clearVehicleTrafikSigortasiFieldsWhenOutOfScope(record);
+        clearVehicleEgzozMuayeneFieldsWhenOutOfScope(record);
         syncVehicleTasitKartiFieldsForK2Scope(record);
         if (record.km) {
           record.guncelKm = record.km.replace(/\./g, ''); // Noktaları temizle
@@ -2913,6 +3023,7 @@
              $all(".vehicle-type-btn", getModal()).forEach(b => b.classList.remove("active"));
              btn.classList.add("active");
              btn.closest('.form-section-inline, .form-section')?.classList.remove('field-error');
+             syncRegistrationSigortaEgzozScopeUi(getModal());
         });
     });
 
@@ -2936,6 +3047,8 @@
             if (vehicle) {
               vehicle.vehicleType = type;
               clearVehicleTakografFieldsWhenOutOfScope(vehicle);
+              clearVehicleTrafikSigortasiFieldsWhenOutOfScope(vehicle);
+              clearVehicleEgzozMuayeneFieldsWhenOutOfScope(vehicle);
               syncVehicleTasitKartiFieldsForK2Scope(vehicle);
               if (window.dataApi && window.dataApi.saveVehiclesList) {
                 window.dataApi.saveVehiclesList(vehicles).catch(function() {});
@@ -2950,6 +3063,7 @@
               $all('.vehicle-type-btn', modal).forEach(b => b.classList.remove('active'));
               formBtn.classList.add('active');
               formBtn.closest('.form-section-inline, .form-section')?.classList.remove('field-error');
+              syncRegistrationSigortaEgzozScopeUi(modal);
             }
             closeVehicleTypePickerOverlay();
           }
