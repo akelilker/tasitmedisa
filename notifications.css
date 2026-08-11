@@ -2391,14 +2391,24 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
     gap: 3px;
   }
 
+  #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h--desc .monthly-todo-branch-filter {
+    justify-content: flex-end;
+  }
+
   #monthly-todo-modal .monthly-todo-branch-filter {
     z-index: 30;
+    justify-content: flex-end;
   }
 
   #monthly-todo-modal .monthly-todo-branch-filter-trigger {
     min-height: 20px;
     font-size: 11px;
     gap: 4px;
+    justify-content: flex-end;
+  }
+
+  #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h--desc .monthly-todo-branch-filter-trigger {
+    justify-content: flex-end;
   }
 
   #monthly-todo-modal .monthly-todo-branch-filter-trigger .monthly-todo-branch-filter-caret {
@@ -2406,17 +2416,18 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
     height: 9px;
   }
 
+  /* Outer shell yok: desktop ile aynı kontrat (yalnız positioning/scroll) */
   #monthly-todo-modal .monthly-todo-branch-filter-menu {
     top: calc(100% + 6px);
     right: 0;
     width: min(230px, calc(100vw - 32px));
     min-width: 0;
     max-height: min(250px, 42vh);
-    padding: 6px;
-    border-color: rgba(190, 200, 214, 0.42);
-    border-radius: 10px;
-    background: #0b111b;
-    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.58), inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
   }
 
   #monthly-todo-modal .monthly-todo-branch-filter-option {

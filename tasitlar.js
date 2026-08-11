@@ -197,7 +197,7 @@
 
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20260810.1';
+  const MEDISA_TASITLAR_MODULE_VERSION = '20260811.1';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
@@ -9926,7 +9926,7 @@
       if (yeniKod) pushDetail('Yeni Kod', yeniKod);
     } else if (documentUploadLabel) {
       const belgeTipi = documentUploadLabel;
-      const actionText = eventData.isReplacement === true ? 'De\u011fi\u015ftirdi' : 'Y\u00fckledi';
+      const actionText = eventData.isReplacement === true ? 'G\u00fcncelledi' : 'Y\u00fckledi';
       summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, ' + escapeHtml(belgeTipi) + ' ' + actionText + '.</span>';
       if (eventData.fileName) pushDetail('Dosya', eventData.fileName);
       if (eventData.operationDate) {

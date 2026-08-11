@@ -666,13 +666,13 @@ test('cache / modül pin parity', function() {
   const notifVer = (scriptCore.match(/notifications:\s*'([^']+)'/) || [])[1];
   const ayarlarCssVer = (scriptCore.match(/ayarlarCss:\s*'([^']+)'/) || [])[1];
   const ayarlarJsVer = (scriptCore.match(/ayarlarJs:\s*'([^']+)'/) || [])[1];
-  assert.equal(moduleVer, '20260810.1');
+  assert.equal(moduleVer, '20260811.1');
   assert.equal(loaderVer, moduleVer);
-  assert.equal(notifVer, '20260807.3');
+  assert.equal(notifVer, '20260811.1');
   assert.equal(ayarlarCssVer, '20260807.8');
   assert.equal(ayarlarJsVer, '20260804.2');
   assert.match(sw, /CACHE_VERSION\s*=\s*'medisa-v2\.291'/);
-  assert.match(read('index.html'), /script-core\.js\?v=20260810\.1/);
+  assert.match(read('index.html'), /script-core\.js\?v=20260811\.1/);
   assert.match(read('index.html'), /style-core\.css\?v=20260808\.1/);
 });
 

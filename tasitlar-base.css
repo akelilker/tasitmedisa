@@ -1102,7 +1102,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 }
 
 #event-menu-modal .modal-body:has(#event-menu-list.event-menu-list--items) {
-    justify-content: flex-start !important;
+    /* Kısa submenu: marka/model altı ↔ footer üstü alanın ortası; uzun içerikte safe → start */
+    justify-content: safe center !important;
     overflow-y: auto !important;
     overflow-x: visible !important;
 }
@@ -1129,7 +1130,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     }
 
     #event-menu-modal .modal-body:has(#event-menu-list.event-menu-list--items) {
-        justify-content: center !important;
+        justify-content: safe center !important;
         overflow-y: auto !important;
     }
 
@@ -1611,14 +1612,11 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
         padding: 0 16px 18px !important;
     }
 
+    /* Tüm alt-menu item ekranları: kullanılabilir gövdede merkez (muayene istisnası yok) */
     #event-menu-modal .modal-body:has(#event-menu-list.event-menu-list--items) {
-        padding-top: 10px !important;
-    }
-
-    #event-menu-modal .modal-body:has(.event-menu-row-one .event-menu-card[data-event-id="muayene"]) {
         flex: 1 1 auto !important;
         min-height: 0 !important;
-        justify-content: center !important;
+        justify-content: safe center !important;
         align-items: center !important;
         padding-top: 0 !important;
         padding-bottom: calc(18px + env(safe-area-inset-bottom, 0px)) !important;

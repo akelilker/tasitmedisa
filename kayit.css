@@ -1411,6 +1411,31 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal textarea.form-input:focus {
         border-color: rgba(var(--theme-color-rgb), 0.72) !important; /* Kırmızı çerçeve */
     }
+    /* Tahsis şube listesi: outer shell yok; her option bağımsız kart (yalnız mobil) */
+    #vehicle-modal .vehicle-branch-list {
+        background: transparent;
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
+        padding: 0;
+    }
+    #vehicle-modal #vehicle-branch-list .vehicle-branch-option {
+        box-sizing: border-box;
+        margin: 0 0 4px;
+        border: 1px solid rgba(190, 200, 214, 0.42);
+        border-radius: 6px;
+        background: transparent;
+    }
+    #vehicle-modal #vehicle-branch-list .vehicle-branch-option:last-child {
+        margin-bottom: 0;
+        border-bottom: 1px solid rgba(190, 200, 214, 0.42);
+    }
+    #vehicle-modal #vehicle-branch-list .vehicle-branch-option.vehicle-branch-add-hint {
+        border-top: 1px solid rgba(190, 200, 214, 0.42);
+        margin-top: 0;
+        padding-top: 8px !important;
+    }
+
     #vehicle-modal .vehicle-branch-dropdown-wrap.single-branch .vehicle-branch-trigger:focus,
     #vehicle-modal .vehicle-branch-dropdown-wrap.single-branch .vehicle-branch-trigger:focus-visible {
         border-color: rgba(255, 255, 255, 0.40) !important;
