@@ -605,9 +605,9 @@ select option:active {
     right: 0;
     top: 100%;
     margin-top: 4px;
-    background: #101722;
-    border: 1px solid rgba(190, 200, 214, 0.42);
-    border-radius: 8px;
+    background: transparent;
+    border: none;
+    border-radius: 0;
     max-height: 200px;
     overflow-y: auto;
     overflow-x: hidden;
@@ -617,8 +617,8 @@ select option:active {
     scrollbar-width: none;
     -ms-overflow-style: none;
     z-index: 40;
-    padding: 6px;
-    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.48), inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+    padding: 2px;
+    box-shadow: none;
 }
 #vehicle-modal #vehicle-branch-list::-webkit-scrollbar {
     display: none;
@@ -650,7 +650,7 @@ select option:active {
 }
 #vehicle-modal #vehicle-branch-list .vehicle-branch-option {
     box-sizing: border-box;
-    padding: 8px 10px;
+    padding: 6px 10px;
     margin: 0 0 4px;
     font-size: 12px !important;
     line-height: 1.35;
@@ -1439,6 +1439,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     }
     #vehicle-modal #vehicle-branch-list .vehicle-branch-option {
         box-sizing: border-box;
+        padding: 8px 10px;
         margin: 0 0 4px;
         border: 1px solid rgba(190, 200, 214, 0.42);
         border-radius: 6px;
