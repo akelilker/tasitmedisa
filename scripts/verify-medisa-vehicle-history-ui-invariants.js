@@ -330,13 +330,17 @@ test('tab count filtreleri current kategorilerle aynı', function() {
 
 test('event card hierarchy source kontratı', function() {
   assert.match(historyFns.switchTab, /history-item-header/);
-  assert.match(historyFns.switchTab, /history-item-type/);
   assert.match(historyFns.switchTab, /history-item-date/);
   assert.match(historyFns.switchTab, /history-item-body/);
   assert.match(historyFns.switchTab, /history-item-meta/);
+  assert.doesNotMatch(historyFns.switchTab, /history-item-type/);
   assert.match(historyFns.diger, /history-item-header/);
-  assert.match(historyFns.diger, /history-item-type/);
-  assert.match(historyFns.diger, /history-item-meta|history-item-details/);
+  assert.match(historyFns.diger, /history-item-date/);
+  assert.doesNotMatch(historyFns.diger, /history-item-type/);
+  assert.match(historyFns.diger, /history-item-body history-item-summary/);
+  assert.match(historyFns.diger, /history-item-meta history-item-details/);
+  assert.match(tasitlar, /function historyDetailPartsHtml\s*\(/);
+  assert.match(tasitlar, /history-detail-part/);
   assert.doesNotMatch(historyFns.switchTab, /font-size:\s*12px/);
   assert.doesNotMatch(historyFns.diger, /font-size:\s*12px/);
   assert.doesNotMatch(historyFns.switchTab, /edit|sil|delete|href=.*belge/i);
@@ -360,11 +364,15 @@ test('empty state kontratı', function() {
 test('CSS owner: history namespace + mobil ≥15px', function() {
   assert.match(baseCss, /#vehicle-history-modal[^{]*\.history-tab-count/);
   assert.match(baseCss, /#vehicle-history-modal\s+\.history-item-header/);
-  assert.match(baseCss, /#vehicle-history-modal\s+\.history-item-type/);
+  assert.match(baseCss, /#vehicle-history-modal\s+\.history-item-date/);
+  assert.doesNotMatch(baseCss, /#vehicle-history-modal\s+\.history-item-type/);
+  assert.match(baseCss, /#vehicle-history-modal\s+\.history-detail-part/);
   assert.match(baseCss, /#vehicle-history-modal\s+\.history-item-meta/);
   assert.match(baseCss, /#vehicle-history-modal\s+\.history-empty-msg/);
   assert.match(extraCss, /#vehicle-history-modal\s+\.history-item/);
   assert.match(extraCss, /#vehicle-history-modal[\s\S]{0,220}font-size:\s*15px/);
+  assert.match(extraCss, /#vehicle-history-modal\s+\.history-item\s+\.history-item-date/);
+  assert.doesNotMatch(extraCss, /#vehicle-history-modal\s+\.history-item\s+\.history-item-type/);
   assert.doesNotMatch(baseCss, /^\.history-item\s*\{/m);
 });
 

@@ -197,7 +197,7 @@
 
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20260811.2';
+  const MEDISA_TASITLAR_MODULE_VERSION = '20260811.3';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
@@ -955,10 +955,13 @@
 
   function historyDetailPartsHtml(parts) {
     if (!parts || !parts.length) return '';
-    return parts.map(function(p) {
+    return parts.map(function(p, i) {
       var lbl = String(p.label || '').replace(/:\s*$/, '');
-      return '<span class="history-label">' + escapeHtml(lbl) + ':</span> ' + escapeHtml(p.value);
-    }).join(' <span class="history-detail-sep">|</span> ');
+      var sep = i > 0 ? '<span class="history-detail-sep">|</span> ' : '';
+      return '<span class="history-detail-part">' + sep +
+        '<span class="history-label">' + escapeHtml(lbl) + ':</span> ' + escapeHtml(p.value) +
+        '</span>';
+    }).join('');
   }
 
   var parsedKaportaSvgCache = null;
@@ -9977,18 +9980,15 @@
     }
 
     const detailsHtml = details.length
-      ? '<div class="history-item-meta history-item-details">' + historyDetailPartsHtml(details) + '</div>'
+      ? ' <span class="history-item-meta history-item-details">' + historyDetailPartsHtml(details) + '</span>'
       : '';
-    const typeLabel = escapeHtml(getHistoryEventTypeLabel(eventType, event));
     const datetimeAttr = historyEventDatetimeAttr(event);
 
     return '<div class="history-item history-item-diger">' +
       '<div class="history-item-header">' +
-        '<span class="history-item-type">' + typeLabel + '</span>' +
         '<time class="history-item-date"' + datetimeAttr + '>' + dateText + '</time>' +
       '</div>' +
-      '<div class="history-item-body history-item-summary">' + summaryInner + '</div>' +
-      detailsHtml +
+      '<div class="history-item-body history-item-summary">' + summaryInner + detailsHtml + '</div>' +
       '</div>';
   }
 
@@ -10057,7 +10057,6 @@
           const datetimeAttr = historyEventDatetimeAttr(event);
           html += `<div class="history-item">
             <div class="history-item-header">
-              <span class="history-item-type">Bakım</span>
               <time class="history-item-date"${datetimeAttr}>${escapeHtml(formatDateForDisplay(event.date) || '-')}</time>
             </div>
             <div class="history-item-body"><span class="history-label">\u0130\u015flem:</span> ${escapeHtml(islemler)}</div>
@@ -10103,7 +10102,6 @@
           const datetimeAttr = historyEventDatetimeAttr(event);
           html += `<div class="history-item">
             <div class="history-item-header">
-              <span class="history-item-type">Kaza</span>
               <time class="history-item-date"${datetimeAttr}>${escapeHtml(formatDateForDisplay(event.date) || '-')}</time>
             </div>
             <div class="history-item-body"><span class="history-label">Kullanıcı:</span> ${escapeHtml(kullanici)}${hasarStr}</div>
@@ -10124,7 +10122,6 @@
           const datetimeAttr = historyEventDatetimeAttr(syntheticEvent);
           html = `<div class="history-item">
             <div class="history-item-header">
-              <span class="history-item-type">KM</span>
               <time class="history-item-date"${datetimeAttr}>${escapeHtml(sentetikTarih)}</time>
             </div>
             <div class="history-item-body history-item-summary">${duzeltmeNotHtml}</div>
@@ -10159,7 +10156,6 @@
             : '';
           html += `<div class="history-item">
             <div class="history-item-header">
-              <span class="history-item-type">KM</span>
               <time class="history-item-date"${datetimeAttr}>${escapeHtml(formatDateForDisplay(event.date) || '-')}</time>
             </div>
             <div class="history-item-body history-item-summary">${kmSummary}</div>

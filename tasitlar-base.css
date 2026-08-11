@@ -2610,6 +2610,19 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     font-weight: 400 !important;
     padding: 0 2px;
 }
+#vehicle-history-modal .history-detail-part,
+.modal-overlay:has(.history-tabs) .history-detail-part {
+    display: inline-block;
+    white-space: nowrap;
+    vertical-align: baseline;
+}
+#vehicle-history-modal .history-item-summary .history-item-details,
+.modal-overlay:has(.history-tabs) .history-item-summary .history-item-details {
+    display: inline;
+    margin-top: 0;
+    font-size: inherit;
+    line-height: inherit;
+}
 
 #vehicle-history-modal .history-empty-msg,
 .modal-overlay:has(.history-tabs) .history-empty-msg {
@@ -2656,17 +2669,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 #vehicle-history-modal .history-item-header {
     display: flex;
     align-items: baseline;
-    justify-content: space-between;
+    justify-content: flex-start;
     gap: 10px;
     margin-bottom: 4px;
-}
-
-#vehicle-history-modal .history-item-type {
-    color: #ffffff !important;
-    font-size: 13px;
-    font-weight: 600;
-    line-height: 1.25;
-    min-width: 0;
 }
 
 #vehicle-history-modal .history-item-date {

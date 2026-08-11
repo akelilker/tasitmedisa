@@ -2557,14 +2557,9 @@
     font-size: 15px !important;
   }
   
-  /* Mobil Tarihçe Metinleri; etiket beyaz açıklama gri */
+  /* Mobil Tarihçe Metinleri; tarih beyaz, açıklama gri */
   #vehicle-history-modal .history-item-header {
     margin-bottom: 6px !important;
-  }
-  #vehicle-history-modal .history-item .history-item-type {
-    font-size: 15px !important;
-    color: #ffffff !important;
-    font-weight: 600 !important;
   }
   #vehicle-history-modal .history-item .history-item-date {
     font-size: 14px !important;
