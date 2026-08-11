@@ -11,6 +11,8 @@
   var requiredVehicleDomainApi = [
     'vehicleNeedsK2Belgesi',
     'vehicleNeedsTakograf',
+    'vehicleNeedsTrafikSigortasi',
+    'vehicleNeedsEgzozMuayene',
     'getK2BelgesiExpiryDate',
     'isVehicleOperationallyInactive',
     'getEgzozMuayeneState',
@@ -878,7 +880,7 @@
       var plate = vehicle.plate || '-';
       var brandModel = formatBrandModel(vehicle.brandModel || '-');
 
-      if (vehicle.sigortaDate) {
+      if (window.MedisaVehicleNotificationDomain.vehicleNeedsTrafikSigortasi(vehicle) && vehicle.sigortaDate) {
         var wSig = checkDateWarnings(vehicle.sigortaDate);
         if (monthlyOperationalDateTaskFilterPasses(vehicle.sigortaDate, wSig)) {
           monthly.push({

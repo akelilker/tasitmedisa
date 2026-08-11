@@ -197,13 +197,15 @@
 
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20260811.1';
+  const MEDISA_TASITLAR_MODULE_VERSION = '20260811.2';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
   var requiredVehicleDomainApi = [
     'vehicleNeedsK2Belgesi',
     'vehicleNeedsTakograf',
+    'vehicleNeedsTrafikSigortasi',
+    'vehicleNeedsEgzozMuayene',
     'getK2BelgesiState',
     'getK2BelgesiExpiryDate',
     'isVehicleOperationallyInactive',
@@ -1966,6 +1968,7 @@
 
     if (eventId === 'takograf' && !window.MedisaVehicleNotificationDomain.vehicleNeedsTakograf(vehicle)) return 'empty';
     if (eventId === 'tasitkarti' && !window.MedisaVehicleNotificationDomain.vehicleNeedsK2Belgesi(vehicle)) return 'empty';
+    if (eventId === 'sigorta' && !window.MedisaVehicleNotificationDomain.vehicleNeedsTrafikSigortasi(vehicle)) return 'empty';
 
     var rawDate = getEventMenuTimedEventDateRaw(vehicle, eventId);
     if (rawDate == null || String(rawDate).trim() === '') return 'empty';
@@ -3804,11 +3807,12 @@
   function getVehicleDateSeverityClass(vehicle) {
     if (!vehicle || typeof vehicle !== 'object') return '';
     if (window.MedisaVehicleNotificationDomain.isVehicleOperationallyInactive(vehicle)) return '';
-    const dates = [
-      vehicle.sigortaDate,
-      vehicle.kaskoDate,
-      vehicle.muayeneDate
-    ].filter(function(d) { return d != null && String(d).trim() !== ''; });
+    const dates = [];
+    if (window.MedisaVehicleNotificationDomain.vehicleNeedsTrafikSigortasi(vehicle) && vehicle.sigortaDate) {
+      dates.push(vehicle.sigortaDate);
+    }
+    if (vehicle.kaskoDate) dates.push(vehicle.kaskoDate);
+    if (vehicle.muayeneDate) dates.push(vehicle.muayeneDate);
 
     let hasRed = false;
     let hasOrange = false;
@@ -4198,12 +4202,14 @@
     let html = '';
     const isSoldOrArchivedVehicle = window.MedisaVehicleNotificationDomain.isVehicleOperationallyInactive(vehicle);
 
-    // Sigorta bitiş tarihi
-    const sigortaDate = vehicle.sigortaDate || '';
-    const sigortaWarning = checkDateWarnings(sigortaDate);
-    const sigortaWarningClass = isSoldOrArchivedVehicle ? '' : sigortaWarning.class;
-    const sigortaDisplay = formatDateForDetailModal(sigortaDate);
-    html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Sigorta Bitiş Tarihi</span><span class="detail-row-colon">:</span></div><span class="detail-row-value ${sigortaWarningClass}"> ${escapeHtml(sigortaDisplay || '-')}</span></div>`;
+    // Sigorta bitiş tarihi (römork kapsam dışı)
+    if (window.MedisaVehicleNotificationDomain.vehicleNeedsTrafikSigortasi(vehicle)) {
+      const sigortaDate = vehicle.sigortaDate || '';
+      const sigortaWarning = checkDateWarnings(sigortaDate);
+      const sigortaWarningClass = isSoldOrArchivedVehicle ? '' : sigortaWarning.class;
+      const sigortaDisplay = formatDateForDetailModal(sigortaDate);
+      html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Sigorta Bitiş Tarihi</span><span class="detail-row-colon">:</span></div><span class="detail-row-value ${sigortaWarningClass}"> ${escapeHtml(sigortaDisplay || '-')}</span></div>`;
+    }
 
     // Kasko bitiş tarihi
     const kaskoDate = vehicle.kaskoDate || '';
@@ -4228,12 +4234,14 @@
       html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Muayene Bitiş Tarihi</span><span class="detail-row-colon">:</span></div><span class="detail-row-value ${muayeneWarningClass}"> ${escapeHtml(muayeneDisplay || '-')}</span></div>`;
     }
 
-    const egzozRaw = vehicle && vehicle.egzozMuayeneDate != null ? String(vehicle.egzozMuayeneDate).trim() : '';
-    if (egzozRaw) {
-      const egzozState = window.MedisaVehicleNotificationDomain.getEgzozMuayeneState(vehicle);
-      const egzozWarningClass = isSoldOrArchivedVehicle ? '' : egzozState.warningClass;
-      const egzozDisplay = formatDateForDetailModal(egzozState.date);
-      html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Egzoz Muayene Bitiş</span><span class="detail-row-colon">:</span></div><span class="detail-row-value ${egzozWarningClass}"> ${escapeHtml(egzozDisplay || '-')}</span></div>`;
+    if (window.MedisaVehicleNotificationDomain.vehicleNeedsEgzozMuayene(vehicle)) {
+      const egzozRaw = vehicle && vehicle.egzozMuayeneDate != null ? String(vehicle.egzozMuayeneDate).trim() : '';
+      if (egzozRaw) {
+        const egzozState = window.MedisaVehicleNotificationDomain.getEgzozMuayeneState(vehicle);
+        const egzozWarningClass = isSoldOrArchivedVehicle ? '' : egzozState.warningClass;
+        const egzozDisplay = formatDateForDetailModal(egzozState.date);
+        html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Egzoz Muayene Bitiş</span><span class="detail-row-colon">:</span></div><span class="detail-row-value ${egzozWarningClass}"> ${escapeHtml(egzozDisplay || '-')}</span></div>`;
+      }
     }
 
     if (window.MedisaVehicleNotificationDomain.vehicleNeedsK2Belgesi(vehicle)) {
@@ -5073,10 +5081,15 @@
         return '<div class="event-form-stack">' +
           section('Yapılma Tarihi (gg/aa/yyyy)', 'tasit-karti-yapilma-tarih', 'input', [['type', 'text'], ['placeholder', 'gg/aa/yyyy']]) +
           section('Bitiş Tarihi (K2 Belgesi)', 'tasit-karti-bitis-display', 'div', [['class', inputCls], ['aria-readonly', 'true']]) + '</div>';
-      case 'muayene':
+      case 'muayene': {
+        const muayeneVehicle = (typeof window.currentDetailVehicleId !== 'undefined' && window.currentDetailVehicleId)
+          ? readVehicles().find(function(v) { return String(v.id) === String(window.currentDetailVehicleId); })
+          : null;
+        const includeEgzoz = !muayeneVehicle || window.MedisaVehicleNotificationDomain.vehicleNeedsEgzozMuayene(muayeneVehicle);
         return '<div class="event-form-stack">' +
           section('Muayene Tarihi', 'muayene-tarih', 'input', [['type', 'text'], ['placeholder', 'gg/aa/yyyy']]) +
-          egzozMuayeneSection() + '</div>';
+          (includeEgzoz ? egzozMuayeneSection() : '') + '</div>';
+      }
       case 'anahtar':
         return '<div class="event-form-stack">' +
           radioRow('Yedek Anahtar Var mı?', 'var', 'yok', 'Var', 'Yok') +
@@ -5159,6 +5172,7 @@
       const availableEventIds = new Set(EVENT_MENU_DEFAULT_EVENT_IDS);
       if (window.MedisaVehicleNotificationDomain.vehicleNeedsTakograf(currentMenuVehicle)) availableEventIds.add('takograf');
       if (window.MedisaVehicleNotificationDomain.vehicleNeedsK2Belgesi(currentMenuVehicle)) availableEventIds.add('tasitkarti');
+      if (!window.MedisaVehicleNotificationDomain.vehicleNeedsTrafikSigortasi(currentMenuVehicle)) availableEventIds.delete('sigorta');
       if (assignmentLocked) {
         availableEventIds.delete('sube');
         availableEventIds.delete('kullanici');
@@ -5213,6 +5227,14 @@
         if (!window.MedisaVehicleNotificationDomain.vehicleNeedsK2Belgesi(k2ScopeVehicle)) {
           if (typeof showToast === 'function') showToast('Taşıt Kartı güncellemesi sadece K2 belgesi kapsamındaki taşıtlarda kullanılır.', 'error');
           else alert('Taşıt Kartı güncellemesi sadece K2 belgesi kapsamındaki taşıtlarda kullanılır.');
+          return;
+        }
+      }
+      if (type === 'sigorta') {
+        const sigortaScopeVehicle = readVehicles().find(v => String(v.id) === String(effectiveVid));
+        if (!window.MedisaVehicleNotificationDomain.vehicleNeedsTrafikSigortasi(sigortaScopeVehicle)) {
+          if (typeof showToast === 'function') showToast('Trafik sigortası güncellemesi römork/yarı römork taşıtlarda kullanılmaz.', 'error');
+          else alert('Trafik sigortası güncellemesi römork/yarı römork taşıtlarda kullanılmaz.');
           return;
         }
       }
@@ -8659,6 +8681,12 @@
     const vehicle = svc.vehicle;
     const vehicles = svc.vehicles;
 
+    if (config.vehicleDateField === 'sigortaDate'
+      && !window.MedisaVehicleNotificationDomain.vehicleNeedsTrafikSigortasi(vehicle)) {
+      alert('Trafik sigortası güncellemesi römork/yarı römork taşıtlarda kullanılmaz.');
+      return;
+    }
+
     if (!vehicle.events) vehicle.events = [];
 
     const bitisTarihi = addYears(tarih, 1);
@@ -8853,17 +8881,19 @@
       alert('Tarih zorunludur!');
       return;
     }
-    if (egzozDifferent && !egzozYapilmaIso) {
-      alert('Egzoz Muayene Tarihi zorunludur!');
-      if (egzozInput) egzozInput.focus();
-      return;
-    }
 
     const svc = resolveVehicleContextForDynamicSave();
     if (!svc) return;
     const vehicleId = svc.vehicleId;
     const vehicle = svc.vehicle;
     const vehicles = svc.vehicles;
+    const needsEgzoz = window.MedisaVehicleNotificationDomain.vehicleNeedsEgzozMuayene(vehicle);
+
+    if (needsEgzoz && egzozDifferent && !egzozYapilmaIso) {
+      alert('Egzoz Muayene Tarihi zorunludur!');
+      if (egzozInput) egzozInput.focus();
+      return;
+    }
 
     if (!vehicle.events) vehicle.events = [];
 
@@ -8871,15 +8901,17 @@
     const bitisTarihi = calculateNextMuayene(vehicle, tarih);
     let egzozMuayeneDate = '';
     let egzozMuayeneYapilmaIso = '';
-    if (egzozDifferent) {
-      egzozMuayeneDate = calculateNextMuayene(vehicle, egzozYapilmaGgAa);
-      egzozMuayeneYapilmaIso = egzozYapilmaIso;
-    } else {
-      egzozMuayeneDate = bitisTarihi;
+    if (needsEgzoz) {
+      if (egzozDifferent) {
+        egzozMuayeneDate = calculateNextMuayene(vehicle, egzozYapilmaGgAa);
+        egzozMuayeneYapilmaIso = egzozYapilmaIso;
+      } else {
+        egzozMuayeneDate = bitisTarihi;
+      }
     }
 
     vehicle.muayeneDate = bitisTarihi;
-    vehicle.egzozMuayeneDate = egzozMuayeneDate;
+    vehicle.egzozMuayeneDate = needsEgzoz ? egzozMuayeneDate : '';
 
     const event = {
       id: Date.now().toString(),
@@ -8888,8 +8920,8 @@
       timestamp: new Date().toISOString(),
       data: {
         bitisTarihi: bitisTarihi,
-        egzozMuayeneDate: egzozDifferent ? egzozMuayeneDate : '',
-        egzozMuayeneYapilmaDate: egzozMuayeneYapilmaIso,
+        egzozMuayeneDate: (needsEgzoz && egzozDifferent) ? egzozMuayeneDate : '',
+        egzozMuayeneYapilmaDate: needsEgzoz ? egzozMuayeneYapilmaIso : '',
         surucu: getEventPerformerName(vehicle)
       }
     };

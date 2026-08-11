@@ -2,6 +2,8 @@
   var PUBLIC_KEYS = [
     'vehicleNeedsK2Belgesi',
     'vehicleNeedsTakograf',
+    'vehicleNeedsTrafikSigortasi',
+    'vehicleNeedsEgzozMuayene',
     'getK2BelgesiState',
     'getK2BelgesiExpiryDate',
     'isVehicleOperationallyInactive',
@@ -38,6 +40,16 @@
     return getVehicleTypeKey(vehicle) === 'kamyon';
   }
 
+  /** Trafik sigortası takibi: römork kapsam dışı. */
+  function vehicleNeedsTrafikSigortasi(vehicle) {
+    return getVehicleTypeKey(vehicle) !== 'romork';
+  }
+
+  /** Egzoz muayenesi takibi: römork kapsam dışı. */
+  function vehicleNeedsEgzozMuayene(vehicle) {
+    return getVehicleTypeKey(vehicle) !== 'romork';
+  }
+
   function getK2BelgesiState() {
     if (!window.appData) window.appData = {};
     if (!window.appData.ayarlar || typeof window.appData.ayarlar !== 'object' || Array.isArray(window.appData.ayarlar)) {
@@ -64,6 +76,15 @@
   }
 
   function getEgzozMuayeneState(vehicle) {
+    if (!vehicleNeedsEgzozMuayene(vehicle)) {
+      return {
+        state: 'not_applicable',
+        date: '',
+        days: null,
+        warningClass: ''
+      };
+    }
+
     if (isVehicleOperationallyInactive(vehicle)) {
       return {
         state: 'inactive',
@@ -118,6 +139,8 @@
   window.MedisaVehicleNotificationDomain = {
     vehicleNeedsK2Belgesi: vehicleNeedsK2Belgesi,
     vehicleNeedsTakograf: vehicleNeedsTakograf,
+    vehicleNeedsTrafikSigortasi: vehicleNeedsTrafikSigortasi,
+    vehicleNeedsEgzozMuayene: vehicleNeedsEgzozMuayene,
     getK2BelgesiState: getK2BelgesiState,
     getK2BelgesiExpiryDate: getK2BelgesiExpiryDate,
     isVehicleOperationallyInactive: isVehicleOperationallyInactive,
