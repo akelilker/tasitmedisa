@@ -669,10 +669,10 @@ test('cache / modül pin parity', function() {
   assert.equal(moduleVer, '20260812.1');
   assert.equal(loaderVer, moduleVer);
   assert.equal(notifVer, '20260812.2');
-  assert.equal(ayarlarCssVer, '20260812.1');
+  assert.equal(ayarlarCssVer, '20260812.2');
   assert.equal(ayarlarJsVer, '20260804.2');
-  assert.match(sw, /CACHE_VERSION\s*=\s*'medisa-v2\.298'/);
-  assert.match(read('index.html'), /script-core\.js\?v=20260812\.6/);
+  assert.match(sw, /CACHE_VERSION\s*=\s*'medisa-v2\.299'/);
+  assert.match(read('index.html'), /script-core\.js\?v=20260812\.7/);
   assert.match(read('index.html'), /style-core\.css\?v=20260808\.1/);
 });
 

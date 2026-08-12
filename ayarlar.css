@@ -61,10 +61,13 @@
 /* Şube/kullanıcı LİSTE modalı ile FORM modalı aynı z-index (10020) iken tıklama alt katmana kaçabiliyordu.
    Form açıkken her zaman üstte boyansın (hit-test + görsel tutarlılık). */
 #branch-form-modal.modal-overlay.active,
-#branch-form-modal.modal-overlay.open,
+#branch-form-modal.modal-overlay.open {
+    z-index: 10026 !important;
+}
+/* Taşıt Detay (10030) / dinamik olay (10050) üstünde: atama → Yeni Kullanıcı Ekle akışında form görünür kalsın. */
 #user-form-modal.modal-overlay.active,
 #user-form-modal.modal-overlay.open {
-    z-index: 10026 !important;
+    z-index: 10055 !important;
 }
 
 /* Ayarlar modalları: branch/user/data-management container style-core'da; küçük modallar aşağıda override */
