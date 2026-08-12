@@ -197,7 +197,7 @@
 
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20260811.3';
+  const MEDISA_TASITLAR_MODULE_VERSION = '20260812.1';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
@@ -7511,6 +7511,9 @@
     setRuhsatSaveBtnVisibility(saveBtn, false);
 
     renderVehicleDocumentsPicker(vehicle, content);
+
+    var modalBody = modal.querySelector('.modal-body');
+    if (modalBody) modalBody.scrollTop = 0;
 
     modal.style.display = 'flex';
     requestAnimationFrame(function() { modal.classList.add('active'); });
