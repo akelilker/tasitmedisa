@@ -1188,8 +1188,8 @@
     gap: 24px;
   }
 
-  /* Satılan/pert: 4 satır kompakt — alt simgeler kesilmesin */
-  #dinamik-olay-modal[data-event-type="documents"]:has(#ruhsat-modal-content.vehicle-documents-picker-mode:has(.vehicle-document-card-satis-sozlesmesi)) .modal-body {
+  /* Satılan/pert: nested :has() Chromium’da düşer — compound :has ile kompakt padding */
+  #dinamik-olay-modal[data-event-type="documents"]:has(#ruhsat-modal-content.vehicle-documents-picker-mode):has(.vehicle-document-card-satis-sozlesmesi) .modal-body {
     justify-content: flex-start !important;
     padding-top: 6px !important;
     padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px)) !important;
