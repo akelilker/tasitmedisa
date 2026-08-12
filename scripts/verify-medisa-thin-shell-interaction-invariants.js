@@ -121,7 +121,6 @@ async function sourceInvariants() {
     const pin = extractScriptCorePin(index);
     assert.ok(pin >= '20260801.7' || Number(pin.replace(/\./g, '')) >= 202608017, 'script-core pin yükselmiş olmalı: ' + pin);
     const notifV = extractNotificationsVersion(core);
-    assert.equal(notifV, pin.indexOf('20260801.') === 0 ? notifV : notifV);
     assert.equal(notifV, '20260812.3');
     assert.match(index, new RegExp('script-core\\.js\\?v=' + pin.replace(/\./g, '\\.')));
   });
