@@ -1872,7 +1872,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
     line-height: 1.2;
   }
   #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h--desc .monthly-todo-branch-filter {
-    position: relative;
+    position: static;
     width: 100%;
     max-width: 100%;
     min-height: 15px;
@@ -2361,7 +2361,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
   #monthly-todo-modal .monthly-todo-branch-filter-menu {
     min-width: 164px;
     max-height: 228px;
-    padding: 0;
+    padding: 2px 6px;
+    right: -6px;
     border: none;
     border-radius: 0;
     background: transparent;
