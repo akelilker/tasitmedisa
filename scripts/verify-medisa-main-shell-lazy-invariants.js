@@ -192,9 +192,37 @@ if (implementationPresent) {
   });
   test('global ayarlar proxyleri registry ensure kullanır', function() {
     assert.match(core, /MedisaMainSurfaceRegistry\.ensure\('settings'\)/);
-    ['openBranchManagement', 'openUserManagement', 'openZorunluEvraklar', 'openDataManagement', 'openDisVeriPanel', 'exportData', 'showLastBackupMetadata', 'importData'].forEach(function(name) {
+    ['openBranchManagement', 'openUserManagement', 'openUserFormModal', 'openZorunluEvraklar', 'openDataManagement', 'openDisVeriPanel', 'exportData', 'showLastBackupMetadata', 'importData'].forEach(function(name) {
       assert.ok(core.includes("wrapAyarlar('" + name + "')"), name + ' proxy eksik');
     });
+  });
+  test('ayarlar mobil form focus selector gri normal owner\'dan spesifik', function() {
+    var ayarlarCss = read('ayarlar.css');
+    var mobileStart = ayarlarCss.indexOf('/* === MOBİL AYARLAR === */');
+    assert.ok(mobileStart !== -1, 'mobil ayarlar bloğu bulunmalı');
+    var mobileCss = ayarlarCss.slice(mobileStart);
+    assert.match(
+      mobileCss,
+      /#user-form-modal\s+\.form-input:not\(select\):not\(\.medisa-owner-select-trigger\):focus/
+    );
+    assert.match(
+      mobileCss,
+      /#branch-form-modal\s+\.form-input:not\(select\):not\(\.medisa-owner-select-trigger\):focus/
+    );
+    assert.match(
+      mobileCss,
+      /#user-form-modal\s+\.form-input:not\(select\):not\(\.medisa-owner-select-trigger\):focus[\s\S]*?border:\s*1px\s+solid\s+var\(--theme-color\)\s*!important/
+    );
+    assert.match(
+      mobileCss,
+      /#user-form-modal\s+\.form-input:not\(select\):not\(\.medisa-owner-select-trigger\)\s*\{[\s\S]*?border-color:\s*rgba\(255,\s*255,\s*255,\s*0\.4\)\s*!important/
+    );
+    // Desktop focus owner (mobil blok dışında) korunmalı
+    var desktopCss = ayarlarCss.slice(0, mobileStart);
+    assert.match(
+      desktopCss,
+      /#user-form-modal\s+\.form-input:focus[\s\S]*?border:\s*1px\s+solid\s+var\(--theme-color\)\s*!important/
+    );
   });
   test('bildirimden detay geçişi taşıt surface ready ownerını kullanır', function() {
     assert.match(core, /medisaOpenVehicleDetailFromNotification[\s\S]*?ensureVehicleNotificationTargetReady/);

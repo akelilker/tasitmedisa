@@ -2635,14 +2635,14 @@
         border-color: rgba(255, 255, 255, 0.4) !important;
         color: #888 !important;
     }
-    /* Input focus: kırmızı çerçeve (kayıt/olay-ekle modalları ile aynı) */
-    #branch-form-modal .form-input:focus,
+    /* Input focus: kırmızı çerçeve (gri normal owner'dan daha spesifik) */
+    #branch-form-modal .form-input:not(select):not(.medisa-owner-select-trigger):focus,
     #branch-form-modal select.form-input:focus,
     #branch-form-modal select:focus,
-    #user-form-modal .form-input:focus,
+    #user-form-modal .form-input:not(select):not(.medisa-owner-select-trigger):focus,
     #user-form-modal select.form-input:focus,
     #user-form-modal select:focus,
-    #user-form-modal textarea.form-input:focus {
+    #user-form-modal textarea.form-input:not(.medisa-owner-select-trigger):focus {
         border: 1px solid var(--theme-color) !important;
         outline: none !important;
         box-shadow: none !important;

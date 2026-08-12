@@ -1164,7 +1164,7 @@ var MEDISA_MODULE_VERSIONS = {
   kayitJs: '20260811.2',
   kayitCss: '20260811.4',
   ayarlarJs: '20260804.2',
-  ayarlarCss: '20260807.8',
+  ayarlarCss: '20260812.1',
   tasitlarYazici: '20260726.3',
   vehicleNotificationDomain: '20260811.2'
 };
@@ -1749,6 +1749,7 @@ window.ensureMedisaVehicleNotificationDomainReady = function() {
   }
   window.openBranchManagement = wrapAyarlar('openBranchManagement');
   window.openUserManagement = wrapAyarlar('openUserManagement');
+  window.openUserFormModal = wrapAyarlar('openUserFormModal');
   window.openZorunluEvraklar = wrapAyarlar('openZorunluEvraklar');
   window.openDisVeriPanel = wrapAyarlar('openDisVeriPanel');
   window.openDataManagement = wrapAyarlar('openDataManagement');
