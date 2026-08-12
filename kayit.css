@@ -661,7 +661,7 @@ select option:active {
     border-radius: 6px;
     cursor: pointer;
     transform: scale(1);
-    transform-origin: center center;
+    transform-origin: right center;
     transition: transform 120ms ease, border-color 120ms ease, color 120ms ease;
 }
 #vehicle-modal #vehicle-branch-list .vehicle-branch-option:last-child {
