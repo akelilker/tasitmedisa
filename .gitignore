@@ -68,3 +68,4 @@ data/satis_sozlesmesi_preview/
 
 .tools/
 .cursor/rules/ironbee-devtools-use.mdc
+/.playwright-mcp
