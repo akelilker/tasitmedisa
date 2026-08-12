@@ -1433,19 +1433,10 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .vehicle-branch-list {
         left: 0;
         right: 0;
-        background: transparent;
-        border: none;
-        border-radius: 0;
-        box-shadow: none;
         padding: 0;
     }
     #vehicle-modal #vehicle-branch-list .vehicle-branch-option {
-        box-sizing: border-box;
         padding: 8px 10px;
-        margin: 0 0 4px;
-        border: 1px solid rgba(190, 200, 214, 0.42);
-        border-radius: 6px;
-        background: transparent;
     }
     #vehicle-modal #vehicle-branch-list .vehicle-branch-option:last-child {
         margin-bottom: 0;

@@ -1800,10 +1800,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
   height: 0;
 }
 
-#monthly-todo-modal .monthly-todo-branch-filter-menu.open {
-  display: block;
-}
-
 #monthly-todo-modal .monthly-todo-branch-filter-option {
   width: 100%;
   box-sizing: border-box;
