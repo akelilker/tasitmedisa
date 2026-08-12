@@ -1764,7 +1764,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
 }
 
 #monthly-todo-modal .monthly-todo-branch-filter-trigger.is-filtered {
-  color: #ffffff;
+  color: #a0aec0;
 }
 
 #monthly-todo-modal .monthly-todo-branch-filter-trigger:focus-visible {
