@@ -1763,7 +1763,11 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
   color: #ffffff;
 }
 
-#monthly-todo-modal .monthly-todo-branch-filter-trigger.is-filtered {
+/* Şube seçiliyken de gri kalsın; hover/focus beyazı ezemesin (dikkat dağıtmasın). */
+#monthly-todo-modal .monthly-todo-branch-filter-trigger.is-filtered,
+#monthly-todo-modal .monthly-todo-branch-filter-trigger.is-filtered:hover,
+#monthly-todo-modal .monthly-todo-branch-filter-trigger.is-filtered:focus-visible,
+#monthly-todo-modal .monthly-todo-branch-filter-trigger.is-filtered[aria-expanded="true"] {
   color: #a0aec0;
 }
 
