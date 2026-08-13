@@ -337,16 +337,16 @@ test('Takograf tip matrisi aynıdır', () => {
 test('Driver asset version matrisi dar bump kullanır', () => {
   assert.match(files.bootstrap, /bootstrap:\s*'20260813\.1'/);
   assert.match(files.bootstrap, /dashboardCore:\s*'20260731\.3'/);
-  assert.match(files.bootstrap, /history:\s*'20260718\.4'/);
+  assert.match(files.bootstrap, /history:\s*'20260814\.1'/);
   assert.match(files.bootstrap, /documents:\s*'20260718\.3'/);
   assert.match(files.bootstrap, /login:\s*'20260731\.3'/);
   assert.match(files.bootstrap, /feedback:\s*'20260813\.1'/);
   assert.match(files.bootstrap, /password:\s*'20260731\.1'/);
   assert.match(files.bootstrap, /actions:\s*'20260718\.1'/);
   assert.match(files.bootstrap, /shellCss:\s*'20260731\.3'/);
-  assert.match(files.bootstrap, /featureCss:\s*'20260811\.1'/);
+  assert.match(files.bootstrap, /featureCss:\s*'20260814\.1'/);
   assert.match(files.loginHtml, /driver-script\.js\?v=20260813\.1/);
-  assert.match(files.dashboardHtml, /driver-script\.js\?v=20260813\.1/);
+  assert.match(files.dashboardHtml, /driver-script\.js\?v=20260814\.1/);
   assert.match(files.loginHtml, /driver-shell\.css\?v=20260731\.3/);
   assert.match(files.dashboardHtml, /driver-shell\.css\?v=20260731\.3/);
 });

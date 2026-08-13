@@ -184,6 +184,10 @@ var n = parseInt(String(val).replace(/\D/g, ''), 10);
 return isNaN(n) ? null : n;
 }
 
+function normalizeDriverHistoryText(val) {
+return String(val || '').trim().replace(/\s+/g, ' ').toLocaleLowerCase('tr-TR');
+}
+
 function driverHistoryDateKey(tsOrIso) {
 if (!tsOrIso || typeof tsOrIso !== 'string') return '';
 var s = tsOrIso.trim();
@@ -221,6 +225,33 @@ return dayH !== '' && dayH === dayEvt;
 });
 }
 
+function isRedundantDriverOperationEvent(evItem, hareketPool) {
+if (!evItem || evItem._type !== 'event' || (evItem.eventType !== 'bakim' && evItem.eventType !== 'kaza')) return false;
+var isBakim = evItem.eventType === 'bakim';
+var eventData = evItem.data || {};
+var eventText = normalizeDriverHistoryText(isBakim ? eventData.islemler : eventData.aciklama);
+var eventDate = driverHistoryDateKey(evItem.date || '');
+if (!eventText || !eventDate) return false;
+var vid = String(evItem.arac_id != null ? evItem.arac_id : '');
+var eventTimestamp = Date.parse(evItem.timestamp || '');
+var pool = hareketPool || [];
+
+return pool.some(function (h) {
+if (!h || h._type !== 'hareket' || String(h.arac_id) !== vid) return false;
+if (isBakim && !h.bakim_durumu) return false;
+if (!isBakim && !h.kaza_durumu) return false;
+var historyText = normalizeDriverHistoryText(isBakim ? h.bakim_aciklama : h.kaza_aciklama);
+var historyDate = driverHistoryDateKey(isBakim ? h.bakim_tarih : h.kaza_tarih);
+if (historyText !== eventText || historyDate !== eventDate) return false;
+
+var historyTimestamp = Date.parse(h.guncelleme_tarihi || h.kayit_tarihi || '');
+if (!isNaN(eventTimestamp) && !isNaN(historyTimestamp)) {
+return Math.abs(eventTimestamp - historyTimestamp) <= 5000;
+}
+return true;
+});
+}
+
 function buildCombinedHistoryList() {
 var filterEl = document.getElementById('history-vehicle-filter');
 var vehicleFilter = (filterEl && filterEl.value) ? filterEl.value : '';
@@ -246,7 +277,8 @@ const hareketFiltered = vehicleFilter
 ? hareketler.filter(r => String(r.arac_id) === String(vehicleFilter))
 : hareketler;
 const eventItemsDedup = eventItems.filter(function (ei) {
-return !isRedundantKmRevizeEvent(ei, hareketFiltered);
+return !isRedundantKmRevizeEvent(ei, hareketFiltered) &&
+!isRedundantDriverOperationEvent(ei, hareketFiltered);
 });
 const combined = [...hareketFiltered, ...eventItemsDedup];
 
@@ -289,25 +321,28 @@ if (!d || isNaN(d.getTime())) return '';
 const dd = String(d.getDate()).padStart(2, '0');
 const mm = String(d.getMonth() + 1).padStart(2, '0');
 const yyyy = String(d.getFullYear());
-return `${dd}.${mm}.${yyyy}`;
+return `${dd}/${mm}/${yyyy}`;
 }
 
 if (item._type === 'hareket') {
-const ts = item.guncelleme_tarihi || item.kayit_tarihi || '';
-const d = ts ? (parseHistoryDate(ts) || new Date(ts)) : null;
-const f = d && !isNaN(d.getTime()) ? h.formatDateDDMMYYYY(d) : '';
-return f || formatPeriod(item.donem || '');
+const reportedDate = item.kaza_durumu && item.kaza_tarih
+? item.kaza_tarih
+: (item.bakim_durumu && item.bakim_tarih ? item.bakim_tarih : '');
+const dateValue = reportedDate || item.guncelleme_tarihi || item.kayit_tarihi || '';
+const d = dateValue ? parseHistoryDate(dateValue) : null;
+const f = formatDateDDMMYYYY(d);
+return f || (item.donem ? formatPeriod(item.donem) : '');
 }
 
 if (item.date) {
 const d = parseHistoryDate(item.date);
-const f = d ? h.formatDateDDMMYYYY(d) : '';
+const f = formatDateDDMMYYYY(d);
 return f || item.date;
 }
 
 if (item.timestamp) {
-const d = parseHistoryDate(item.timestamp) || new Date(item.timestamp);
-return d && !isNaN(d.getTime()) ? h.formatDateDDMMYYYY(d) : '';
+const d = parseHistoryDate(item.timestamp);
+return formatDateDDMMYYYY(d);
 }
 
 return '';
@@ -378,7 +413,6 @@ if (item.kaza_hasar_tutari) detailsHtml += `<p>Hasar tutar\u0131: ${h.escapeHtml
 } else if (item.bakim_durumu) {
 const bakimAcik = h.escapeHtmlDriver(window.capitalizeWords(item.bakim_aciklama || 'Var'));
 detailsHtml = `<p>Bak\u0131m bilgisi ${bakimAcik} olarak bildirildi.</p>`;
-if (item.bakim_tarih) detailsHtml += `<p>Tarih: ${h.escapeHtmlDriver(item.bakim_tarih)}.</p>`;
 if (item.guncel_km) detailsHtml += `<p>Km; ${h.formatKm(item.guncel_km)} olarak bildirildi.</p>`;
 } else {
 detailsHtml = `<p>Km; ${h.formatKm(item.guncel_km) || '0'} olarak bildirildi.</p>`;

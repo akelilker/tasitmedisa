@@ -2922,6 +2922,32 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .login-page .hero h1 {
     transform: translateY(1px) !important;
   }
+  /* Masaüstü tarih alanı: değer gerçek merkezde, native seçici koyu tema ve gri ikon */
+  .dashboard-page .driver-action-area .driver-report-block input[type="date"] {
+    color-scheme: dark !important;
+    position: relative !important;
+    padding-left: 32px !important;
+    padding-right: 32px !important;
+    text-align: center !important;
+  }
+  .dashboard-page .driver-action-area .driver-report-block input[type="date"]::-webkit-datetime-edit,
+  .dashboard-page .driver-action-area .driver-report-block input[type="date"]::-webkit-datetime-edit-fields-wrapper {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    text-align: center !important;
+  }
+  .dashboard-page .driver-action-area .driver-report-block input[type="date"]::-webkit-calendar-picker-indicator {
+    position: absolute !important;
+    top: 50% !important;
+    right: 10px !important;
+    transform: translateY(-50%) !important;
+    opacity: 0.72 !important;
+    cursor: pointer !important;
+  }
   /* Geçmiş Kayıtlarım: kalem ikonu */
   .dashboard-page .history-edit-icon svg {
     width: 20px;
