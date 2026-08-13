@@ -23,6 +23,14 @@
   mask-repeat: no-repeat;
   mask-position: center;
   mask-size: contain;
+  transform-origin: center center;
+  transition: transform 0.2s ease;
+}
+@media (hover: hover) {
+  #notifications-toggle-btn:hover .notifications-engine-icon,
+  #notifications-toggle-btn:focus-visible .notifications-engine-icon {
+    transform: scale(1.12);
+  }
 }
 #notifications-toggle-btn.notification-red .notifications-bell-icon,
 #notifications-toggle-btn.notification-orange .notifications-bell-icon {
