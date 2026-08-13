@@ -2720,6 +2720,13 @@ body.is-ios-pwa.login-page .form-group-checkbox label {
   .login-page .driver-header-fixed {
     border-top: none !important;
   }
+  /* Mobil dashboard: sağ/sol frame + inset glow — ana uygulama ile eş */
+  .dashboard-page .driver-dashboard-container::before {
+    border-left: 0.7px solid rgba(var(--theme-color-rgb), 0.80) !important;
+    border-right: 0.7px solid rgba(var(--theme-color-rgb), 0.80) !important;
+    box-shadow:
+      inset 0 0 26px rgba(var(--theme-color-rgb), 0.21) !important;
+  }
 @media (min-width: 769px) {
   .dashboard-page .driver-dashboard-container::before,
   .login-page .driver-dashboard-container::before {
