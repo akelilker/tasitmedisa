@@ -2727,6 +2727,8 @@ body.is-ios-pwa.login-page .form-group-checkbox label {
     box-shadow:
       inset 0 0 26px rgba(var(--theme-color-rgb), 0.21) !important;
   }
+}
+
 @media (min-width: 769px) {
   .dashboard-page .driver-dashboard-container::before,
   .login-page .driver-dashboard-container::before {
@@ -2916,7 +2918,7 @@ body.is-ios-pwa.login-page .form-group-checkbox label {
         background: var(--border-red-tech);
         pointer-events: none;
     }
-}}
+}
 
 
 /* Login plain .hero > h1: 500px shell + letter-spacing Arial/fallback taşmayı kapat */

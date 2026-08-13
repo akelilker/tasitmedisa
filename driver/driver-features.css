@@ -3261,25 +3261,8 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
    MASAUSTU PANEL INCE AYARLARI
    ========================================= */
 @media (min-width: 641px) {
-    /* Sol grid: detaylar sağ grid buton metni ile aynı tipografide */
-    .dashboard-page .driver-left-panel .driver-info-item .label,
-    .dashboard-page .driver-left-panel .driver-info-item .value {
-        font-size: 14px !important;
-        font-family: inherit !important;
-    }
-    .dashboard-page .driver-left-panel .driver-current-plaka {
-        font-size: calc((14px - 1pt) + 0.93px) !important;
-    }
-    .dashboard-page .driver-left-panel .driver-plate-subtitle,
-    .dashboard-page .driver-left-panel .driver-user-plate-in-panel .driver-plate-subtitle {
-        font-size: calc((15px - 1pt) + 0.93px) !important;
-    }
-
-    /* Sag grid: işlem satırı butonları — gerçek DOM: .driver-action-group > .driver-action-btn */
+    /* Sag grid: işlem satırı butonları — görsel durum/hover (shell geometrisine dokunma) */
     .dashboard-page .driver-action-area .driver-action-group > .driver-action-btn {
-        padding-top: 8px !important;
-        padding-bottom: 8px !important;
-        min-height: 38px !important;
         transition: border-color 0.2s, color 0.2s, background 0.2s, transform 0.2s !important;
     }
     .dashboard-page .driver-action-area .driver-action-group > .driver-action-btn:not(.warning):hover {
@@ -3305,11 +3288,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     .dashboard-page .driver-action-area .universal-btn-save,
     .dashboard-page .driver-action-area .universal-btn-cancel {
         height: 30px !important;
-    }
-
-    /* Bildir butonu footer isiklarina gomulmesin */
-    .dashboard-page .driver-right-panel {
-        padding-bottom: 4px;
     }
 }
 
