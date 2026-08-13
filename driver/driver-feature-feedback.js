@@ -205,32 +205,6 @@ h.updateDriverModalBodyClass();
 
 };
 
-window.openDriverDocumentsModal = function() {
-const modal = document.getElementById('driver-documents-modal');
-const vehicle = h.getSelectedVehicle();
-if (!modal) return;
-if (!vehicle || vehicle.id == null) {
-setDriverDocumentsMessage('Taşıt bilgisi bulunamadı.', true);
-return;
-}
-renderDriverDocumentsModal(vehicle);
-setDriverDocumentsMessage('', false);
-const inner = document.querySelector('.driver-action-area-inner[data-vehicle-id="' + String(vehicle.id) + '"]');
-if (inner) inner.classList.add('driver-feedback-panel-open');
-modal.classList.add('show');
-h.updateDriverModalBodyClass();
-};
-
-window.closeDriverDocumentsModal = function() {
-const modal = document.getElementById('driver-documents-modal');
-if (modal) modal.classList.remove('show');
-setDriverDocumentsMessage('', false);
-document.querySelectorAll('.driver-action-area-inner.driver-feedback-panel-open').forEach(function(el) {
-el.classList.remove('driver-feedback-panel-open');
-});
-h.updateDriverModalBodyClass();
-};
-
 function closeDriverFeedbackModal() {
 const modal = document.getElementById('driver-feedback-modal');
 const form = document.getElementById('driver-feedback-form');

@@ -197,7 +197,7 @@
 
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20260812.2';
+  const MEDISA_TASITLAR_MODULE_VERSION = '20260813.1';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
@@ -6358,16 +6358,6 @@
     } catch (e) {
       return null;
     }
-  }
-
-  function showDocumentTabError(tabWindow, message) {
-    if (!tabWindow || tabWindow.closed) return;
-    const safeMessage = escapeHtml(message || 'Belge açılamadı.');
-    try {
-      tabWindow.document.open();
-      tabWindow.document.write('<!DOCTYPE html><html lang="tr"><head><meta charset="utf-8"><title>Belge</title></head><body><p>' + safeMessage + '</p></body></html>');
-      tabWindow.document.close();
-    } catch (e) {}
   }
 
   /**

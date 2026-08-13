@@ -44,44 +44,18 @@
   padding: 0px 12px 12px 12px !important; /* style-core .modal-overlay .modal-body 20px'i override */
 }
 
-/* Boya/Değişen ile Notlar alt hizası: sol sütun flex, son blok alta yapışır */
-/* Modal Header */
+/* Kayıt modalına özgü header görünümü; ortak geometry/layout ownerı style-core.css */
 #vehicle-modal .modal-header {
     background: var(--modal-header-red-gradient);
-    padding: 2px 20px;
-    height: 60px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-shrink: 0;
-    position: relative;
     border-bottom: none !important;
-    /* Üst çizgi container çerçevesinde (style-core); çift hat önlenir */
-    border-top: none !important;
-    border-top-left-radius: var(--modal-radius, 10px);
-    border-top-right-radius: var(--modal-radius, 10px);
-    margin-top: 0;
 }
 
 #vehicle-modal .modal-header h2 {
-    opacity: 1 !important;
-    margin: 0;
     text-transform: uppercase;
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    white-space: nowrap;
 }
 
 #vehicle-modal .modal-close {
-    background: none;
-    border: none;
     color: #aaa;
-    cursor: pointer;
-    position: absolute;
-    right: 15px;
-    top: 50%;
-    transform: translateY(-50%);
     font-size: 20px;
 }
 #vehicle-modal .modal-close:hover { color: #fff; }
@@ -1593,8 +1567,6 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         transform: none;
     }
     
-    #vehicle-modal .modal-header { position: relative; }
-    .modal-close { font-size: 21px; }
     textarea.form-input { font-size: 13px; }
     
     .modal-columns {
@@ -1876,8 +1848,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         justify-content: flex-end !important;
     }
     /* Var/Yok butonları: dikey 3px, yatay 8px büyütme */
-    .modal-body .radio-btn,
-    .modal-body .toggle-btn {
+    .modal-body .radio-btn {
         height: 30px !important;
         padding: 0 16px !important;
         font-size: 13px !important;
@@ -1988,13 +1959,6 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     }
     #vehicle-modal .modal-body select:focus {
         background-color: #0d131f !important;
-    }
-    #vehicle-modal .modal-header { 
-        height: 60px !important;
-        padding: 2px 20px !important;
-        position: relative;
-        border-bottom: none !important;
-        justify-content: center;
     }
     #vehicle-modal .modal-body .form-section { margin-bottom: 4px !important; }
     .modal-column-left .form-section:nth-child(5) {
@@ -2480,41 +2444,6 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     stroke-width: 1;
 }
 
-/* === STANDART MODAL HEADER (v79) === */
-#vehicle-modal .modal-header {
-    background: var(--modal-header-red-gradient);
-    padding: 2px 20px;
-    height: 60px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-shrink: 0;
-    position: relative;
-    border-bottom: none !important;
-}
-
-#vehicle-modal .modal-header h2 {
-    opacity: 1 !important;
-    margin: 0;
-    text-align: center;
-}
-
-#vehicle-modal .modal-close {
-    background: none;
-    border: none;
-    color: #aaa;
-    cursor: pointer;
-    position: absolute;
-    right: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 20px;
-    z-index: 10;
-}
-#vehicle-modal .modal-close:hover { 
-    color: #fff; 
-}
-
 /* iOS PWA: içerik Kaydet/Vazgeç butonlarına 10px daha yaklaşsın (elemanlar 10px üzerine kadar esnetilir) */
 @media (max-width: 640px) and (display-mode: standalone) {
     #vehicle-modal .modal-column-left .form-section-inline:first-child .vehicle-type-group {
@@ -2544,8 +2473,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-body .modal-column-right select {
         height: 29px !important;
     }
-    #vehicle-modal .modal-body .radio-btn,
-    #vehicle-modal .modal-body .toggle-btn {
+    #vehicle-modal .modal-body .radio-btn {
         height: 32px !important;
     }
     #vehicle-modal .modal-body .universal-btn-save,

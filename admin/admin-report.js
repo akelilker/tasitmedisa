@@ -397,14 +397,6 @@
     window.location.href = 'mailto:' + encodeURIComponent(address) + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
   }
 
-  function getSelectedMonthlyBranchLabel() {
-    var selectedId = String(reportBranch || 'all');
-    var match = (monthlyReportBranchCards || []).find(function(item) {
-      return String(item.id) === selectedId;
-    });
-    return match ? toTitleCase(match.name || match.id || 'Tümü') : 'Tümü';
-  }
-
   function syncMonthlySelectionBarVisibility() {
     var bar = document.getElementById('report-selection-bar');
     if (!bar) return;
@@ -888,21 +880,8 @@
     bindMonthlyMobileSorting(container);
   }
 
-  function resetPendingAlertUi() {
-    var badge = document.getElementById('pending-alert-count');
-    var alertBtn = document.getElementById('pending-alert-btn');
+  function resetPendingSectionTitleState() {
     var titleEl = document.getElementById('pending-section-title');
-
-    if (badge) {
-      badge.textContent = '';
-      badge.setAttribute('hidden', '');
-      badge.setAttribute('aria-hidden', 'true');
-    }
-
-    if (alertBtn) {
-      alertBtn.classList.remove('has-alert');
-    }
-
     if (titleEl) {
       titleEl.classList.remove('has-pending');
     }
@@ -913,13 +892,13 @@
       .then(function (data) {
         syncAdminHeaderUserName(data.current_user || null);
         if (!data.success) {
-          resetPendingAlertUi();
+          resetPendingSectionTitleState();
           return;
         }
         var container = document.getElementById('pending-requests-list');
         var titleEl = document.getElementById('pending-section-title');
         if (!container) {
-          resetPendingAlertUi();
+          resetPendingSectionTitleState();
           return;
         }
         container.innerHTML = '';
@@ -961,22 +940,9 @@
           card.querySelector('.reject-btn').addEventListener('click', function () { rejectRequest(req.id); });
           container.appendChild(card);
         });
-        var n = requests.length;
-        var badge = document.getElementById('pending-alert-count');
-        var alertBtn = document.getElementById('pending-alert-btn');
-        if (n === 0) {
-          resetPendingAlertUi();
-        } else {
-          if (badge) {
-            badge.textContent = n > 99 ? '99+' : String(n);
-            badge.removeAttribute('hidden');
-            badge.removeAttribute('aria-hidden');
-          }
-          if (alertBtn) alertBtn.classList.add('has-alert');
-        }
       })
       .catch(function (err) {
-        resetPendingAlertUi();
+        resetPendingSectionTitleState();
         if (err && err.message === 'auth') {
           return;
         }

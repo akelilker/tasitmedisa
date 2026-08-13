@@ -309,10 +309,6 @@ function invalidateAllMedisaVisibleCaches(reason) {
     queueMedisaCollectionsChanged(['vehicles', 'branches', 'users'], reason || 'invalidate-all');
 }
 
-function invalidateMedisaVisibleCache() {
-    invalidateAllMedisaVisibleCaches('legacy-invalidate');
-}
-
 function getMedisaSessionFingerprint() {
     var session = getSessionScope();
     var role = getSessionRoleValue(session);
@@ -1412,11 +1408,6 @@ function setServerDatasetBaseline(data) {
     rebuildServerDatasetBaselineFingerprints();
 }
 
-function medisaValuesEqual(a, b) {
-    if (a === b) return true;
-    return medisaFingerprintValue(a) === medisaFingerprintValue(b);
-}
-
 function medisaFindDuplicateVehicleIds(vehicles) {
     var seen = {};
     var duplicates = [];
@@ -2073,13 +2064,6 @@ function getVisibleBranches(branches) {
     return list.filter(function(branch) {
         return !!visibleBranchIds[String(branch && branch.id)];
     });
-}
-
-function getMedisaData(key) {
-    if (window.appData && Array.isArray(window.appData[key])) {
-        return window.appData[key];
-    }
-    return [];
 }
 
 function getMedisaVehicles() {

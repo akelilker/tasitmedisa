@@ -2164,8 +2164,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
   opacity: 1 !important; 
 } 
 #app-footer.dimmed .status,
-#app-footer.dimmed .status.status-ready,
-#app-footer.dimmed .status.status-error { 
+#app-footer.dimmed .status.status-ready {
   opacity: 1 !important; 
 } 
 #app-footer.dimmed .brand img { 
@@ -2178,8 +2177,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
   opacity: 0.3 !important; 
 } 
 #app-footer.dimmed.delayed .status,
-#app-footer.dimmed.delayed .status.status-ready,
-#app-footer.dimmed.delayed .status.status-error { 
+#app-footer.dimmed.delayed .status.status-ready {
   opacity: 0.3 !important; 
 } 
 #app-footer.dimmed.delayed .brand img { 
@@ -2190,12 +2188,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
   font-weight: 600; /* Durum bilgisi kalın */
   text-shadow: 0 0 8px rgba(74, 222, 128, 0.4); /* Yeşil glow */
 }
-.status-error { 
-  color: var(--red); 
-  font-weight: 600; /* Durum bilgisi kalın */
-  text-shadow: 0 0 8px rgba(239, 68, 68, 0.4); /* Kırmızı glow */
-}
-
 /* MOBİL AYARLARI: 768px ve altında modal alt çerçeve footer ışığında ezilmesin; bottom owner: .modal-overlay */
 @media (max-width: 768px) {
     :is(#vehicle-modal, #reports-modal, #vehicles-modal, #vehicle-detail-modal, #dinamik-olay-modal, #event-menu-modal, #vehicle-history-modal).modal-overlay .modal-body {
@@ -2675,8 +2667,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         gap: 4px !important;
     }
     /* Ana formda butonların sağa sola taşmaması için orijinal dar ölçülerine dönüyoruz */
-    #vehicle-modal .modal-body .radio-btn,
-    #vehicle-modal .modal-body .toggle-btn {
+    #vehicle-modal .modal-body .radio-btn {
         height: 27px !important;
         padding: 0 4px !important;
         font-size: 11px !important;

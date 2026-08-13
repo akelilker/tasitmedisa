@@ -281,10 +281,6 @@
       });
   }
 
-  function getTodayNotificationDisplayDate() {
-    return formatDateForDisplay(new Date()) || '-';
-  }
-
   function getCurrentNotificationFirstSeenValue() {
     return String(Date.now());
   }
@@ -433,12 +429,6 @@
 
   function dismissNotificationKeys(keys) {
     updateNotificationKeys(keys, 'dismiss');
-  }
-
-  function getUnreadNotificationKeys() {
-    return (DOM.notificationsDropdown ? Array.from(DOM.notificationsDropdown.querySelectorAll('.notification-item.notification-unread[data-notif-key]')) : [])
-      .map(function(el) { return (el.getAttribute('data-notif-key') || '').toString().trim(); })
-      .filter(Boolean);
   }
 
   function getVisibleMarkableNotificationKeys() {

@@ -272,9 +272,9 @@ function createRecordHarness(opts) {
     assert.match(core, /notifications\.js\?v=' \+ V\.notifications/);
     assert.match(core, /notifications\.css\?v=' \+ V\.notifications/);
     assert.match(index, new RegExp('script-core\\.js\\?v=' + scriptPin.replace(/\./g, '\\.')));
-    assert.match(index, /data-manager\.js\?v=20260804\.8/);
-    assert.match(adminHtml, /admin-report\.css\?v=20260807\.5/);
-    assert.match(adminHtml, /admin-report\.js\?v=20260804\.1/);
+    assert.match(index, /data-manager\.js\?v=20260813\.1/);
+    assert.match(adminHtml, /admin-report\.css\?v=20260813\.1/);
+    assert.match(adminHtml, /admin-report\.js\?v=20260813\.1/);
   });
 
   await run('role: sunucu ve UI genel yönetici audit kapısı', function() {
