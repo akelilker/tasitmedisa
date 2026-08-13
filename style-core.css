@@ -415,18 +415,18 @@ body::-webkit-scrollbar,
   max-width: none !important;
 }
 
-/* Şube/Kullanıcı düzenle: Sil tema rengi, çerçeve ve hover */
+/* Şube/Kullanıcı düzenle: Sil danger rengi, çerçeve ve hover */
 #branch-form-modal .universal-btn-group .settings-btn-delete,
 #user-form-modal .universal-btn-group .settings-btn-delete {
-  color: var(--theme-color, #d40000) !important;
-  border: 1px solid rgba(var(--theme-color-rgb), 0.5) !important;
+  color: #ff4d4d !important;
+  border: 1px solid rgba(255, 77, 77, 0.82) !important;
   font-weight: 500 !important;
   transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease, color 0.2s ease !important;
 }
 #branch-form-modal .universal-btn-group .settings-btn-delete:hover,
 #user-form-modal .universal-btn-group .settings-btn-delete:hover {
-  background: rgba(var(--theme-color-rgb), 0.1) !important;
-  border-color: var(--theme-color) !important;
+  background: rgba(255, 77, 77, 0.1) !important;
+  border-color: #ff4d4d !important;
   font-weight: 700 !important;
   -webkit-text-stroke: 0.3px currentColor;
   transform: scale(1.05);
@@ -1704,7 +1704,7 @@ body.modal-open:has(.compact-confirm-modal.active) .app-container::after {
   transition: color 0.2s;
 }
 .modal-overlay .modal-close:hover {
-  color: var(--theme-color);
+  color: var(--txt-white, #ffffff);
 }
 
 /* Ana sayfa butonu sol köşede, kapat (X) ile simetrik */
@@ -1734,7 +1734,7 @@ body.modal-open:has(.compact-confirm-modal.active) .app-container::after {
   -webkit-tap-highlight-color: transparent;
 }
 .modal-overlay .modal-home:hover {
-  color: var(--theme-color);
+  color: var(--txt-white, #ffffff);
 }
 .modal-overlay .modal-home:focus-visible {
   color: var(--theme-color);
