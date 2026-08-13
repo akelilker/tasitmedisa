@@ -1855,6 +1855,12 @@
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
+/* Masaüstü .form-input border-color !important (kayit.css) üzerine kazanmak için */
+#vehicle-detail-modal textarea.detail-notes-inline-textarea:focus {
+  border-color: var(--theme-color) !important;
+  outline: none;
+  box-shadow: none;
+}
 
 #vehicle-detail-modal textarea.detail-notes-inline-textarea::-webkit-scrollbar {
   width: 0;
