@@ -579,7 +579,7 @@ select option:active {
     right: -8px;
     top: 100%;
     margin-top: 4px;
-    background: transparent;
+    background: #111720;
     border: none;
     border-radius: 0;
     max-height: 200px;
@@ -1408,6 +1408,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         left: 0;
         right: 0;
         padding: 0;
+        background: transparent;
     }
     #vehicle-modal #vehicle-branch-list .vehicle-branch-option {
         padding: 8px 10px;
