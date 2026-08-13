@@ -1617,7 +1617,7 @@ body.modal-open:has(.compact-confirm-modal.active) .app-container::after {
 }
 
 /* Ana modallar — menü .ttl ile birebir metalik başlık (ID + !important: düz renk fallback ezilmesin) */
-:is(#vehicle-modal, #vehicles-modal, #vehicle-detail-modal, #reports-modal) .modal-header h2.premium-title {
+:is(#vehicle-modal, #vehicles-modal, #vehicle-detail-modal, #reports-modal, #monthly-todo-modal) .modal-header h2.premium-title {
   font-weight: var(--premium-title-weight);
   letter-spacing: var(--premium-title-letter-spacing);
   background: var(--premium-title-gradient) !important;
@@ -1635,6 +1635,7 @@ body.modal-open:has(.compact-confirm-modal.active) .app-container::after {
 /* Dış çerçeve .modal-container’da: başlıkta üst border yok — çift katman / üst kırım önlenir */
 #vehicle-modal .modal-header,
 #reports-modal .modal-header,
+#monthly-todo-modal .modal-header,
 .tasitlar-modal-overlay .modal-header {
   border-top: none !important;
 }
@@ -2014,7 +2015,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
 
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicle-modal.modal-overlay .modal-container,
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicles-modal.modal-overlay .modal-container,
-    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #reports-modal.modal-overlay .modal-container {
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #reports-modal.modal-overlay .modal-container,
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #monthly-todo-modal.modal-overlay .modal-container {
         border-top-width: 1px !important;
         border-color: transparent !important;
         outline-color: transparent !important;
@@ -2022,7 +2024,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
 
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicle-modal.modal-overlay .modal-container::before,
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicles-modal.modal-overlay .modal-container::before,
-    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #reports-modal.modal-overlay .modal-container::before {
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #reports-modal.modal-overlay .modal-container::before,
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #monthly-todo-modal.modal-overlay .modal-container::before {
         content: '';
         position: absolute;
         inset: 0;
