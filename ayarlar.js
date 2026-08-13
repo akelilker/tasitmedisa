@@ -290,8 +290,8 @@
                             <img class="data-management-action-icon" src="icon/data-backup.svg?v=20260611.1" alt="" aria-hidden="true">
                             <span>Yedek Al</span>
                         </button>
-                        <button type="button" onclick="showLastBackupMetadata()" class="data-management-text-btn" aria-describedby="data-mgmt-metadata-hint">
-                            <img class="data-management-action-icon" src="icon/data-backup.svg?v=20260611.1" alt="" aria-hidden="true">
+                        <button type="button" onclick="showLastBackupMetadata()" class="data-management-text-btn">
+                            <img class="data-management-action-icon" src="icon/data-restore.svg?v=20260611.1" alt="" aria-hidden="true">
                             <span>Son Sunucu Yedeği Bilgisi</span>
                         </button>
                         <button type="button" onclick="importData()" class="data-management-text-btn">
@@ -299,7 +299,6 @@
                             <span>Dosyadan Geri Yükle</span>
                         </button>
                     </div>
-                    <p id="data-mgmt-metadata-hint" class="form-description">Bu işlem yalnız yedek bilgisini gösterir. Veri geri yüklemez. Güvenli sunucu geri yükleme varsayılan olarak kapalıdır.</p>
                     <section id="server-restore-panel" class="server-restore-panel" aria-labelledby="server-restore-title" aria-describedby="server-restore-status" hidden>
                         <h3 id="server-restore-title" class="server-restore-title">Sunucu Geri Yükleme</h3>
                         <p id="server-restore-status" class="server-restore-status" role="status">Sunucu geri yükleme kapalı.</p>
@@ -3743,10 +3742,6 @@
       modal.style.display = 'flex';
       requestAnimationFrame(() => modal.classList.add('active'));
       pushSettingsHistoryLayer('settings-data');
-      try {
-        bindServerRestorePanelOnce();
-        refreshServerRestorePanel();
-      } catch (_srErr) {}
     };
 
     window.closeDataManagement = function closeDataManagement(options) {
@@ -4411,9 +4406,9 @@
           ? new Date(metadata.modified_at).toLocaleString("tr-TR")
           : "Bilinmiyor";
         alert(
-          `Son sunucu yedeği bilgisi: ${dateStr}\n\n` +
+          `Son sunucu yedeği: ${dateStr}\n\n` +
           `Bu işlem yalnız yedek bilgisini gösterir. Veri geri yüklemez.\n` +
-          `Güvenli sunucu geri yükleme özelliği varsayılan olarak kapalıdır.`
+          `Bilgisayarınıza güncel yedeği indirmek için “Yedek Al” seçeneğini kullanın.`
         );
       } catch (err) {
         if (typeof window.__medisaLogError === "function") window.__medisaLogError("Son yedek bilgisi", err);
