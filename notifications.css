@@ -1778,7 +1778,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
   padding: 4px;
   border: 1px solid rgba(190, 200, 214, 0.42);
   border-radius: 8px;
-  background: #111720;
+  background: transparent;
   box-shadow: 0 10px 26px rgba(0, 0, 0, 0.38), inset 0 0 0 1px rgba(255, 255, 255, 0.06);
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -1797,7 +1797,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
   margin: 0 0 4px;
   border: 1px solid rgba(190, 200, 214, 0.42);
   border-radius: 6px;
-  background: transparent;
+  background: #111720;
   color: #ffffff;
   font-size: 11px;
   line-height: 1.25;
@@ -1815,7 +1815,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
 #monthly-todo-modal .monthly-todo-branch-filter-option:hover,
 #monthly-todo-modal .monthly-todo-branch-filter-option:focus-visible {
   outline: 0;
-  background: transparent;
   color: #ffffff;
   border-color: rgba(210, 218, 228, 0.72);
   transform: scale(1.04);
@@ -1823,7 +1822,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
 
 #monthly-todo-modal .monthly-todo-branch-filter-option.selected {
   outline: 0;
-  background: transparent;
   color: #ffffff;
   border-color: rgba(210, 218, 228, 0.72);
 }
@@ -2360,7 +2358,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
     right: -6px;
     border: none;
     border-radius: 0;
-    background: transparent;
     box-shadow: none;
   }
 
@@ -2378,7 +2375,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
   #monthly-todo-modal .monthly-todo-branch-filter-option.selected {
     color: #ffffff !important;
     -webkit-text-fill-color: #ffffff;
-    background: transparent;
   }
 }
 
@@ -2428,7 +2424,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
     padding: 0;
     border: none;
     border-radius: 0;
-    background: transparent;
     box-shadow: none;
   }
 
