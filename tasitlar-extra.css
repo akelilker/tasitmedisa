@@ -466,6 +466,7 @@
   #vehicle-detail-modal .vehicle-detail-toolbar {
     height: 32px;
     min-height: 32px;
+    margin-bottom: 0 !important;
     display: grid !important;
     grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
     align-items: center;

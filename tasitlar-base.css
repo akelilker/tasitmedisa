@@ -1968,7 +1968,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
     align-items: center !important;
     width: 100%;
-    min-height: 34px;
+    min-height: 28px;
     height: fit-content;
     margin-top: 0 !important;
     margin-bottom: 2px !important;
