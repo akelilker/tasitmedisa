@@ -1922,25 +1922,28 @@ body.modal-open .user-panel-link {
     justify-content: center;
     visibility: visible !important;
 }
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer::before {
+#app-footer::before {
     content: '';
     position: absolute;
     left: 0;
     right: 0;
     bottom: 100%;
     display: block;
-    height: var(--app-footer-gap);
-    background: radial-gradient(ellipse 120% 180% at 50% 100%, rgba(var(--footer-glow-rgb), 0.42) 0%, rgba(var(--footer-glow-rgb), 0.38) 58%, rgba(var(--footer-glow-rgb), 0.22) 78%, rgba(var(--footer-glow-rgb), 0) 100%);
-    opacity: 1;
+    height: 0;
+    opacity: 0;
     pointer-events: none;
     z-index: 0;
 }
 
-/* Ana uygulama: gap ışığı #app-footer::before içinde gerçek bir yüzey olarak çizilir;
-   child opacity animasyonlarının Chromium compositor davranışından etkilenmez. */
+/* Ana uygulama: footer'ın kendi (doğal, yumuşak/yayvan sönümlenen) --footer-red-glow
+   box-shadow bloom'u tek ışık kaynağıdır ve modal açık/kapalı FARK ETMEKSİZİN aynı
+   kalır. Modal yalnızca üste konmuş gibi olur; alttaki footer ışığı değişmez, gap'te
+   görünmeye devam eder (ayrı bir gap katmanı yoktur). */
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
     border-top: 1px solid var(--footer-top-border) !important;
-    box-shadow: 0 -1px 0 var(--footer-top-highlight) !important;
+    box-shadow:
+        0 -1px 0 var(--footer-top-highlight),
+        var(--footer-red-glow) !important;
 }
 
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.active:not(.compact-confirm-modal),
@@ -3008,7 +3011,9 @@ body.modal-open .app-container {
     padding-top: 2px !important;
     padding-bottom: calc(2px + env(safe-area-inset-bottom, 0)) !important;
     border-top: 1px solid var(--footer-top-border) !important;
-    box-shadow: 0 -1px 0 var(--footer-top-highlight) !important;
+    box-shadow:
+      0 -1px 0 var(--footer-top-highlight),
+      var(--footer-red-glow) !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer .footer-content {
     height: 100% !important;
@@ -3147,18 +3152,16 @@ body.modal-open .app-container {
   }
 }
 
-  /* Masaüstü: gap ışığı footer kenarlarının dışında yumuşakça söner. */
+/* Masaüstü: glow footer genişliği içinde üretilir; sağ-sol taşma olmaz */
 @media (min-width: 769px) {
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer::before {
-    left: -24px;
-    right: -24px;
-  }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
     border-left: 0.5px solid var(--footer-side-border) !important;
     border-right: 0.5px solid var(--footer-side-border) !important;
     border-top-color: rgba(156, 166, 180, 0.68) !important;
     overflow: visible !important;
-    box-shadow: 0 -1px 0 rgba(235, 240, 248, 0.22) !important;
+    box-shadow:
+      0 -1px 0 rgba(235, 240, 248, 0.22),
+      var(--footer-red-glow) !important;
   }
   /* İç kırmızı inset footer + modal–footer gap şeridine inmesin */
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-container::after {
