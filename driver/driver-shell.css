@@ -2354,7 +2354,17 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
     max-height: calc(14px + 1.5pt) !important;
   }
   /* Masaüstü: kırmızı çizgiler footer'ın tam üstünde biter */
-  .dashboard-page .driver-dashboard-container::before,
+  .dashboard-page .driver-dashboard-container::before {
+    top: 0 !important;
+    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0) + 1px) !important;
+    height: auto !important;
+    border-top: 0.85px solid rgba(var(--theme-color-rgb), 0.74) !important;
+    border-left: 0.7px solid rgba(var(--theme-color-rgb), 0.78) !important;
+    border-right: 0.7px solid rgba(var(--theme-color-rgb), 0.78) !important;
+    box-shadow:
+      0 0 16px rgba(var(--theme-color-rgb), 0.24),
+      inset 0 0 18px rgba(var(--theme-color-rgb), 0.10) !important;
+  }
   .login-page .driver-dashboard-container::before {
     top: 0 !important;
     bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0) + 1px) !important;
