@@ -42,7 +42,7 @@ body::-webkit-scrollbar,
   --modal-bg: #080d16;
   --modal-max-width: 500px;
   --modal-radius: 10px;
-  --modal-header-red-gradient: linear-gradient(180deg, #880000 0%, #880000 24%, #760000 44%, #5a0000 60%, #450205 72%, #32050a 82%, #20080f 90%, #120b14 96%, var(--modal-bg) 100%);
+  --modal-header-red-gradient: linear-gradient(180deg, #840000 0%, #840000 24%, #760000 44%, #5a0000 60%, #450205 72%, #32050a 82%, #20080f 90%, #120b14 96%, var(--modal-bg) 100%);
   --premium-title-gradient: linear-gradient(to bottom, #ccd7e1 0%, #f4f8fb 38%, #adbdca 56%, #e2ebf2 100%);
   --premium-title-shadow: 0 1px 1px rgba(0, 0, 0, 0.26), 0 0 7px rgba(214, 224, 232, 0.22);
   --premium-title-weight: 700;
@@ -2030,14 +2030,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         position: absolute;
         inset: 0;
         box-sizing: border-box;
-        border: 1px solid rgba(200, 208, 216, 0.60);
-        border-top-color: rgba(200, 208, 216, 0.78);
+        border: 1px solid #9ca4ac;
         border-radius: inherit;
-        background:
-            linear-gradient(rgba(200, 208, 216, 0.45), rgba(200, 208, 216, 0.45)) left 0 top 1px / 1px 59px no-repeat,
-            linear-gradient(rgba(200, 208, 216, 0.45), rgba(200, 208, 216, 0.45)) right 0 top 1px / 1px 59px no-repeat;
-        background-origin: border-box;
-        background-clip: border-box;
         pointer-events: none;
         z-index: 21;
     }
