@@ -2033,7 +2033,11 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         border: 1px solid rgba(200, 208, 216, 0.60);
         border-top-color: rgba(200, 208, 216, 0.78);
         border-radius: inherit;
-        background: transparent;
+        background:
+            linear-gradient(rgba(200, 208, 216, 0.45), rgba(200, 208, 216, 0.45)) left 0 top 1px / 1px 59px no-repeat,
+            linear-gradient(rgba(200, 208, 216, 0.45), rgba(200, 208, 216, 0.45)) right 0 top 1px / 1px 59px no-repeat;
+        background-origin: border-box;
+        background-clip: border-box;
         pointer-events: none;
         z-index: 21;
     }
