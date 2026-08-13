@@ -427,11 +427,11 @@ if (implementationPresent) {
     // Native border/outline transparent; mobile top-highlight stays in tasitlar-base.
     assert.match(
       style,
-      /@media \(min-width:\s*641px\)[\s\S]*?#vehicle-modal\.modal-overlay \.modal-container,[\s\S]*?#vehicles-modal\.modal-overlay \.modal-container,[\s\S]*?#reports-modal\.modal-overlay \.modal-container\s*\{[\s\S]*?border-color:\s*transparent\s*!important;[\s\S]*?outline-color:\s*transparent\s*!important;/
+      /@media \(min-width:\s*641px\)[\s\S]*?#vehicle-modal\.modal-overlay \.modal-container,[\s\S]*?#vehicles-modal\.modal-overlay \.modal-container,[\s\S]*?#reports-modal\.modal-overlay \.modal-container,[\s\S]*?#monthly-todo-modal\.modal-overlay \.modal-container\s*\{[\s\S]*?border-color:\s*transparent\s*!important;[\s\S]*?outline-color:\s*transparent\s*!important;/
     );
     assert.match(
       style,
-      /@media \(min-width:\s*641px\)[\s\S]*?#vehicle-modal\.modal-overlay \.modal-container::before,[\s\S]*?#vehicles-modal\.modal-overlay \.modal-container::before,[\s\S]*?#reports-modal\.modal-overlay \.modal-container::before\s*\{[\s\S]*?inset:\s*0;[\s\S]*?border:\s*1px solid rgba\(200,\s*208,\s*216,\s*0\.60\);/
+      /@media \(min-width:\s*641px\)[\s\S]*?#vehicle-modal\.modal-overlay \.modal-container::before,[\s\S]*?#vehicles-modal\.modal-overlay \.modal-container::before,[\s\S]*?#reports-modal\.modal-overlay \.modal-container::before,[\s\S]*?#monthly-todo-modal\.modal-overlay \.modal-container::before\s*\{[\s\S]*?inset:\s*0;[\s\S]*?border:\s*1px solid rgba\(200,\s*208,\s*216,\s*0\.60\);/
     );
     assert.match(
       style,
