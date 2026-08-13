@@ -1416,17 +1416,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
     overscroll-behavior-x: none !important;
   }
   .monthly-todo-modal-overlay .modal-header {
-    background: linear-gradient(
-      180deg,
-      #760016 0%,
-      #730016 10%,
-      #6d0015 22%,
-      #620013 36%,
-      #550011 52%,
-      #45000e 70%,
-      #2d0009 86%,
-      #140306 100%
-    ) !important;
+    background: var(--modal-header-red-gradient) !important;
     border-top: none !important;
     border-bottom: none !important;
     box-shadow: inset 0 1px 0 rgba(236, 242, 250, 0.28), inset 0 -1px 0 rgba(0, 0, 0, 0.16) !important;
