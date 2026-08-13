@@ -42,7 +42,7 @@ body::-webkit-scrollbar,
   --modal-bg: #080d16;
   --modal-max-width: 500px;
   --modal-radius: 10px;
-  --modal-header-red-gradient: linear-gradient(180deg, #ac0304 0%, #ac0304 24%, #8e0003 50%, #620005 72%, #35040a 88%, var(--modal-bg) 100%);
+  --modal-header-red-gradient: linear-gradient(180deg, #880000 0%, #880000 24%, #760000 44%, #5a0000 60%, #450205 72%, #32050a 82%, #20080f 90%, #120b14 96%, var(--modal-bg) 100%);
   --premium-title-gradient: linear-gradient(to bottom, #ccd7e1 0%, #f4f8fb 38%, #adbdca 56%, #e2ebf2 100%);
   --premium-title-shadow: 0 1px 1px rgba(0, 0, 0, 0.26), 0 0 7px rgba(214, 224, 232, 0.22);
   --premium-title-weight: 700;
@@ -1745,7 +1745,7 @@ body.modal-open:has(.compact-confirm-modal.active) .app-container::after {
   color: var(--theme-color);
   opacity: 0.85;
 }
-/* Masaüstü: yalnız iç SVG 22px ve merkezden +6px aşağı; buton kutusu/tıklama alanı aynı kalır */
+/* Masaüstü: yalnız iç SVG 22px; buton kutusu/tıklama alanı ve gerçek merkez hizası korunur */
 @media (min-width: 769px) {
   .modal-overlay .modal-home > svg {
     width: 22px;
@@ -1753,7 +1753,7 @@ body.modal-open:has(.compact-confirm-modal.active) .app-container::after {
     position: absolute;
     left: 50%;
     top: 50%;
-    transform: translate(-50%, calc(-50% + 6px));
+    transform: translate(-50%, -50%);
   }
 }
 
