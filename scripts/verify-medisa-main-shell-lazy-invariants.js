@@ -446,19 +446,17 @@ if (implementationPresent) {
     assert.match(tasitlarBase, /#vehicles-modal\.detail-underlay[\s\S]*?visibility:\s*hidden\s*!important/);
     assert.match(tasitlarBase, /#vehicles-modal\.detail-underlay[\s\S]*?isolation:\s*auto\s*!important/);
   });
-  test('footer red-glow tek ışık kaynağı (ayrı gap layer yok)', function() {
-    // Ayrı fiziksel gap ışık katmanı (#app-footer-gap-layer) tamamen kaldırıldı.
-    // Işık yalnız footer'ın kendi --footer-red-glow box-shadow'undan gelir ve modal
-    // açık/kapalı FARK ETMEKSİZİN aynı kalır (modal sadece üste biner).
+  test('footer gap ışığı kalıcı pseudo yüzeyden gelir (ayrı DOM layer yok)', function() {
+    // Ayrı DOM katmanı yok; mevcut footer pseudo owner'ı gap'i gerçek yüzey olarak boyar.
+    // Böylece child opacity animasyonu dış box-shadow bloom'unu compositor'da düşüremez.
     assert.strictEqual(index.indexOf('id="app-footer-gap-layer"'), -1, 'gap layer div kaldırılmalı');
     assert.doesNotMatch(style, /#app-footer-gap-layer/, 'gap layer CSS bloğu kaldırılmalı');
     assert.doesNotMatch(core, /getFooterGapLayer|app-footer-gap-layer/, 'gap layer JS mantığı kaldırılmalı');
-    // Footer bloom'u modal açık/kapalı AYNI: red-glow her durumda açık; modal açılınca
-    // footer ışığını kapatan/sadeleştiren override yok (kullanıcı: "modal yokken nasılsa öyle").
-    assert.match(style, /body:not\(\.dashboard-page\):not\(\.login-page\):not\(\.admin-report-page\) #app-footer\s*\{[\s\S]*?var\(--footer-red-glow\)\s*!important/);
+    assert.match(style, /body:not\(\.dashboard-page\):not\(\.login-page\):not\(\.admin-report-page\) #app-footer::before\s*\{[\s\S]*?height:\s*var\(--app-footer-gap\);[\s\S]*?background:\s*radial-gradient\(/);
+    assert.doesNotMatch(style, /body:not\(\.dashboard-page\):not\(\.login-page\):not\(\.admin-report-page\) #app-footer\s*\{[\s\S]*?var\(--footer-red-glow\)\s*!important/);
     assert.doesNotMatch(style, /\.modal-open #app-footer\s*\{[\s\S]*?box-shadow:\s*0 -1px 0 var\(--footer-top-highlight\)\s*!important;/);
     assert.doesNotMatch(style, /:has\([^)]*\)\s*#app-footer::before/);
-    assert.doesNotMatch(style, /#app-footer::before\s*\{[^}]*background:\s*none/, 'ölü #app-footer::before override kaldırılmalı');
+    assert.doesNotMatch(style, /#app-footer::before\s*\{[^}]*height:\s*0/, 'gap pseudo yüzeyi sıfırlanmamalı');
     assert.doesNotMatch(style, /z-index:\s*100060/);
     var footerZMatch = style.match(/^#app-footer\s*\{[\s\S]*?z-index:\s*(\d+)/m);
     var modalZMatch = style.match(/^\.modal-overlay\s*\{[\s\S]*?z-index:\s*(\d+)/m);
