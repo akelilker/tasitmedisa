@@ -25,17 +25,42 @@ function read(rel) {
 }
 
 test('endpoint files exist', function() {
-  ['backup-registry.php', 'backup-restore-dry-run.php', 'backup-restore-commit.php', 'backup-restore-status.php', 'server_restore.php'].forEach(function(f) {
+  ['backup_download.php', 'full_backup.php', 'full_backup_restore.php', 'backup-registry.php', 'backup-restore-dry-run.php', 'backup-restore-commit.php', 'backup-restore-status.php', 'server_restore.php'].forEach(function(f) {
     assert.equal(fs.existsSync(path.join(root, f)), true, f);
   });
 });
 
-test('restore.php remains metadata-only', function() {
+test('backup_download.php is GET-only full ZIP backup (no JSON fallback)', function() {
+  const src = read('backup_download.php');
+  assert.match(src, /REQUEST_METHOD'\] !== 'GET'/);
+  assert.match(src, /medisaResolveAuthorizedContext\(\$currentData,\s*'manage_backups'\)/);
+  assert.match(src, /medisaFullBackupCreateSnapshotUnderLock/);
+  assert.match(src, /medisaFullBackupBuildZipFromSnapshot/);
+  assert.match(src, /medisaFullBackupRequireZipArchive/);
+  assert.match(src, /Content-Disposition:\s*attachment/);
+  assert.match(src, /application\/zip/);
+  assert.match(src, /Cache-Control:\s*no-cache,\s*no-store/);
+  assert.match(src, /\.zip/);
+  assert.equal(/getMainBackupFilePath\s*\(/.test(src), false);
+  assert.equal(/data\.json\.backup/.test(src), false);
+  assert.equal(/saveData\s*\(/.test(src), false);
+  assert.equal(/medisaMutateData\s*\(/.test(src), false);
+  assert.equal(/\$_POST/.test(src), false);
+  assert.equal(/php:\/\/input/.test(src), false);
+  assert.equal(/buildFullBackupPayload/.test(src), false);
+  assert.equal(/window\.appData/.test(src), false);
+});
+
+test('restore.php metadata prefers manual full backup label', function() {
   const src = read('restore.php');
   assert.match(src, /REQUEST_METHOD'\] !== 'GET'/);
   assert.match(src, /'restore_enabled'\s*=>\s*false/);
-  assert.equal(/file_get_contents\s*\(/.test(src), false);
-  assert.equal(/json_decode\s*\(/.test(src), false);
+  assert.match(src, /medisaFullBackupReadLastMeta/);
+  assert.match(src, /Manuel tam yedek/);
+  assert.match(src, /Otomatik sunucu yedeği/);
+  assert.match(src, /getMainBackupFilePath\s*\(/);
+  assert.match(src, /findLatestSnapshotPath\s*\(/);
+  assert.match(src, /filemtime/);
 });
 
 test('feature flags default false via env helpers', function() {
@@ -112,9 +137,15 @@ test('driver login bypasses restore write-freeze', function() {
 
 test('UI wording metadata-only and disabled commit gates', function() {
   const settings = read('ayarlar.js');
-  assert.match(settings, /Son Sunucu Yedeği Bilgisi/);
-  assert.match(settings, /Bu işlem yalnız yedek bilgisini gösterir/);
-  assert.match(settings, /Veri geri yüklemez/);
+  assert.match(settings, /Yedekten Geri Yükle/);
+  assert.match(settings, /Sunucudaki Son Yedekleme Dosyası/);
+  assert.match(settings, /Yedek Almak İçin/);
+  assert.match(settings, /refreshDataManagementBackupMeta/);
+  assert.match(settings, /fetchServerLastBackupMetadata/);
+  assert.match(settings, /backup_download\.php/);
+  assert.match(settings, /Yedek alınamadı\. Sunucu verisi indirilemedi\./);
+  assert.equal(/Son Sunucu Yedeği Bilgisi/.test(settings), false);
+  assert.equal(/window\.exportData[\s\S]{0,800}buildFullBackupPayload\s*\(/.test(settings), false);
   assert.match(settings, /medisa-server-restore-ui:begin/);
   assert.match(settings, /backup-registry\.php/);
   assert.match(settings, /backup-restore-dry-run\.php/);
@@ -127,6 +158,9 @@ test('UI wording metadata-only and disabled commit gates', function() {
 
 test('cpanel deploys new restore endpoints and not secrets', function() {
   const cpanel = read('.cpanel.yml');
+  assert.match(cpanel, /backup_download\.php/);
+  assert.match(cpanel, /full_backup\.php/);
+  assert.match(cpanel, /full_backup_restore\.php/);
   assert.match(cpanel, /backup-registry\.php/);
   assert.match(cpanel, /backup-restore-dry-run\.php/);
   assert.match(cpanel, /backup-restore-commit\.php/);

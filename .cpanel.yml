@@ -27,6 +27,9 @@ deployment:
     - /bin/test -f kasko-index.php
     - /bin/test -f asset.php
     - /bin/test -f restore.php
+    - /bin/test -f backup_download.php
+    - /bin/test -f full_backup.php
+    - /bin/test -f full_backup_restore.php
     - /bin/test -f server_restore.php
     - /bin/test -f backup-registry.php
     - /bin/test -f backup-restore-dry-run.php
@@ -91,7 +94,7 @@ deployment:
     - /bin/mkdir -p "$DEPLOYPATH/driver"
     - /bin/mkdir -p "$DEPLOYPATH/t"
     - /bin/cp -a .htaccess index.html manifest.json favicon.ico portal-session.js "$DEPLOYPATH/"
-    - /bin/cp -a core.php load.php load_kasko.php save.php save_kasko.php kasko-index.php asset.php restore.php server_restore.php backup-registry.php backup-restore-dry-run.php backup-restore-commit.php backup-restore-status.php ruhsat.php ruhsat_preview.php upload_ruhsat.php document_token.php "$DEPLOYPATH/"
+    - /bin/cp -a core.php load.php load_kasko.php save.php save_kasko.php kasko-index.php asset.php restore.php backup_download.php full_backup.php full_backup_restore.php server_restore.php backup-registry.php backup-restore-dry-run.php backup-restore-commit.php backup-restore-status.php ruhsat.php ruhsat_preview.php upload_ruhsat.php document_token.php "$DEPLOYPATH/"
     - /bin/cp -a script-core.js data-manager.js data-service.js vehicle-notification-domain.js notifications.js notifications.css tasitlar.js tasitlar-yazici.js tasitlar-base.css tasitlar-extra.css kayit.js kayit.css raporlar.js raporlar.css ayarlar.js ayarlar.css style-core.css "$DEPLOYPATH/"
     - /bin/cp -a admin/admin-report.css admin/admin-report.js admin/admin_approve.php admin/admin_export.php admin/admin_report.php admin/driver-report.html admin/manifest.json "$DEPLOYPATH/admin/"
     - /bin/cp -a driver/dashboard.html driver/driver-dashboard-core.js driver/driver-feature-actions.js driver/driver-feature-documents.js driver/driver-feature-feedback.js driver/driver-feature-history.js driver/driver-feature-password.js driver/driver-features.css driver/driver-login.js driver/driver-script.js driver/driver-shell.css driver/driver-style.css driver/driver_change_password.php driver/driver_common.php driver/driver_data.php driver/driver_event.php driver/driver_feedback.php driver/driver_history.php driver/driver_login.php driver/driver_request.php driver/driver_save.php driver/index.html driver/manifest.json "$DEPLOYPATH/driver/"

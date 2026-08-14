@@ -58,6 +58,7 @@ assert.match(deployWorkflow, /\.ftp-deploy-sync-state\.json/, 'Deploy state eri�
 assert.match(qualityGate, /tool:verify-deploy/, 'Canonical gate deploy invariantini çalıştırmalı.');
 assert.match(qualityGate, /tool:verify-runtime-data-git/, 'Canonical gate runtime data invariantini çalıştırmalı.');
 assert.match(qualityGate, /tool:verify-server-restore/, 'Canonical gate server restore invariantini çalıştırmalı.');
+assert.match(qualityGate, /tool:verify-full-backup/, 'Canonical gate full-backup invariantini çalıştırmalı.');
 assert.match(qualityGate, /tool:verify-staging-isolation/, 'Canonical gate staging isolation invariantini çalıştırmalı.');
 
 assert.match(deployWorkflow, /\*\*\/\.github\/\*\*/, 'FTP deploy .github exclude etmeli.');
@@ -74,6 +75,9 @@ assert.match(stagingDeploy, /secrets\.STAGING_FTP_PASSWORD/, 'Staging deploy sta
 assert.equal(/secrets\.FTP_PASSWORD/.test(stagingDeploy), false, 'Staging deploy production FTP_PASSWORD kullanmamalı.');
 assert.match(stagingDeploy, /ftp:ssl-force true|protocol:\s*ftps/, 'Staging deploy explicit FTPS kullanmalı.');
 
+assert.match(cpanel, /backup_download\.php/, 'cPanel deploy backup_download.php kopyalamalı.');
+assert.match(cpanel, /full_backup\.php/, 'cPanel deploy full_backup.php kopyalamalı.');
+assert.match(cpanel, /full_backup_restore\.php/, 'cPanel deploy full_backup_restore.php kopyalamalı.');
 assert.match(cpanel, /backup-registry\.php/, 'cPanel deploy backup-registry.php kopyalamalı.');
 assert.match(cpanel, /backup-restore-commit\.php/, 'cPanel deploy backup-restore-commit.php kopyalamalı.');
 assert.match(cpanel, /server_restore\.php/, 'cPanel deploy server_restore.php kopyalamalı.');

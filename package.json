@@ -19,6 +19,7 @@
     "tool:verify-satis-sozlesmesi": "node scripts/verify-medisa-satis-sozlesmesi-invariants.js",
     "tool:verify-import-source-of-truth": "node scripts/verify-medisa-import-source-of-truth-invariants.js",
     "tool:verify-server-restore": "node scripts/verify-medisa-server-restore-invariants.js",
+    "tool:verify-full-backup": "node scripts/verify-medisa-full-backup-invariants.js",
     "tool:measure-vehicle-render": "node scripts/measure-medisa-vehicle-render.js",
     "tool:verify-driver-lazy": "node scripts/verify-medisa-driver-lazy-invariants.js && node scripts/verify-medisa-driver-cold-dependencies.js",
     "tool:measure-driver-boot": "node scripts/measure-medisa-driver-boot.js",

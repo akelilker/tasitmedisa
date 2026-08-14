@@ -34,6 +34,9 @@ npm run tool:verify-import-source-of-truth
 echo "[quality-gate] Server restore contract"
 npm run tool:verify-server-restore
 
+echo "[quality-gate] Full backup ZIP contract"
+npm run tool:verify-full-backup
+
 echo "[quality-gate] Kasko lookup"
 npm run tool:verify-kasko-lookup
 

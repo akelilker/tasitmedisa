@@ -594,7 +594,7 @@ async function main() {
     const end = src.indexOf('async function uploadToServer');
     const body = src.slice(start, end);
     assert.match(body, /document\.createElement\('input'\)/);
-    assert.match(body, /input\.accept = '\.json'/);
+    assert.match(body, /input\.accept = '\.json,\.zip,application\/json,application\/zip'/);
     assert.match(body, /processImportedBackupText/);
   });
 

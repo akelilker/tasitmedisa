@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/core.php';
+require_once __DIR__ . '/full_backup.php';
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, OPTIONS');
@@ -40,18 +41,61 @@ if (($auth['success'] ?? false) !== true) {
     exit;
 }
 
-$backupFile = getMainBackupFilePath();
-$sourceTag = 'main_backup';
+// Öncelik: son manuel tam (ZIP) yedek meta
+$manualMeta = medisaFullBackupReadLastMeta();
+if (is_array($manualMeta) && !empty($manualMeta['created_at'])) {
+    echo json_encode([
+        'success' => true,
+        'available' => true,
+        'restore_enabled' => false,
+        'source' => 'manual_full_backup',
+        'source_label' => 'Manuel tam yedek',
+        'modified_at' => $manualMeta['created_at'],
+        'size_bytes' => isset($manualMeta['total_bytes']) ? (int)$manualMeta['total_bytes'] : null,
+        'file_count' => isset($manualMeta['file_count']) ? (int)$manualMeta['file_count'] : null,
+        'message' => 'Son oluşturulan manuel tam yedek bilgisi.',
+    ], JSON_UNESCAPED_UNICODE);
+    exit;
+}
 
-if (!file_exists($backupFile)) {
-    $fallback = findLatestSnapshotPath();
-    if ($fallback !== null && is_readable($fallback)) {
-        $backupFile = $fallback;
-        $sourceTag = 'latest_snapshot';
+$candidates = [];
+$mainBackup = getMainBackupFilePath();
+if (is_string($mainBackup) && $mainBackup !== '' && file_exists($mainBackup) && is_readable($mainBackup)) {
+    $mtime = filemtime($mainBackup);
+    if ($mtime !== false) {
+        $candidates[] = [
+            'path' => $mainBackup,
+            'source' => 'main_backup',
+            'mtime' => (int)$mtime,
+        ];
     }
 }
 
-if (!file_exists($backupFile)) {
+$latestSnapshot = findLatestSnapshotPath();
+if (
+    is_string($latestSnapshot)
+    && $latestSnapshot !== ''
+    && file_exists($latestSnapshot)
+    && is_readable($latestSnapshot)
+) {
+    $mtime = filemtime($latestSnapshot);
+    if ($mtime !== false) {
+        $candidates[] = [
+            'path' => $latestSnapshot,
+            'source' => 'latest_snapshot',
+            'mtime' => (int)$mtime,
+        ];
+    }
+}
+
+$selected = null;
+foreach ($candidates as $candidate) {
+    if ($selected === null || $candidate['mtime'] > $selected['mtime']) {
+        $selected = $candidate;
+    }
+}
+
+if ($selected === null) {
     http_response_code(404);
     echo json_encode([
         'success' => false,
@@ -62,14 +106,18 @@ if (!file_exists($backupFile)) {
     exit;
 }
 
-$modifiedAt = filemtime($backupFile);
+$backupFile = $selected['path'];
+$sourceTag = $selected['source'];
+$modifiedAt = $selected['mtime'];
 $sizeBytes = filesize($backupFile);
+
 echo json_encode([
     'success' => true,
     'available' => true,
     'restore_enabled' => false,
     'source' => $sourceTag,
-    'modified_at' => $modifiedAt !== false ? date('c', $modifiedAt) : null,
+    'source_label' => 'Otomatik sunucu yedeği',
+    'modified_at' => date('c', $modifiedAt),
     'size_bytes' => $sizeBytes !== false ? (int)$sizeBytes : null,
     'message' => 'Bu endpoint yalnız son yedek bilgisini gösterir; veri geri yüklemez. Güvenli sunucu geri yükleme varsayılan olarak kapalıdır.',
 ], JSON_UNESCAPED_UNICODE);
