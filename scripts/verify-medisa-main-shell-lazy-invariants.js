@@ -82,8 +82,13 @@ test('modal premium başlığı menü metalik kontratından bağımsızdır', fu
   assert.doesNotMatch(style, /--modal-premium-title-shadow:[^;]*7px/);
 });
 
-test('modal header kırmızısı ortak koyu gradient ownerını korur', function() {
-  assert.match(style, /--modal-header-red-gradient:\s*linear-gradient\(180deg,\s*#7f0000 0%,\s*#7f0000 24%,\s*#710000 44%,\s*#570000 60%,\s*#430205 72%/);
+test('modal header ortak clear-coat ve kırmızı taban ownerını korur', function() {
+  const gradientMatch = style.match(/--modal-header-red-gradient:\s*([\s\S]*?);/);
+  assert.ok(gradientMatch, 'modal header gradient ownerı eksik');
+  assert.match(gradientMatch[1], /rgba\(255,\s*255,\s*255,\s*0\.08\)[\s\S]*?rgba\(255,\s*255,\s*255,\s*0\) 12%/);
+  assert.match(gradientMatch[1], /rgba\(212,\s*0,\s*0,\s*0\.36\)[\s\S]*?rgba\(212,\s*0,\s*0,\s*0\) 48%/);
+  assert.match(gradientMatch[1], /linear-gradient\(180deg,\s*#790000 0%,\s*#700000 30%,\s*#580000 52%,\s*#420205 72%/);
+  assert.doesNotMatch(gradientMatch[1], /#a90000|#980000/);
 });
 
 test('mevcut lazy module ownerı korunur', function() {
