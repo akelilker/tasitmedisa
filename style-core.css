@@ -1805,6 +1805,14 @@ body.modal-open:has(.compact-confirm-modal.active) .app-container::after {
   border-bottom: none;
   box-shadow: none;
 }
+@media (min-width: 641px) {
+  #vehicle-history-modal #history-content {
+    padding-top: 6px !important;
+  }
+  #vehicle-history-modal #history-content .history-item {
+    margin-bottom: 6px;
+  }
+}
 #vehicle-history-modal .modal-body,
 #vehicle-history-modal #history-content,
 .modal-overlay:has(.history-tabs) .modal-body {

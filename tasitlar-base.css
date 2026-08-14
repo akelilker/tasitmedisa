@@ -227,6 +227,13 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
   background-position: center;
   background-size: 11px 11px;
 }
+@media (min-width: 769px) {
+  #dinamik-olay-modal .egzoz-olay-toggle input[type="checkbox"]:checked {
+    background-color: #0d131f;
+    border-color: #d40000;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M4 8.5L7 11.5L12.5 4' stroke='%23d40000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  }
+}
 #dinamik-olay-modal .egzoz-olay-toggle input[type="checkbox"]:focus {
   outline: none;
 }
@@ -245,6 +252,11 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
   max-width: calc((100% - 16px) / 2) !important;
   min-width: min(140px, calc((100% - 16px) / 2)) !important;
   box-sizing: border-box !important;
+}
+@media (min-width: 769px) {
+  #dinamik-olay-modal #muayene-egzoz-yapilma-tarih {
+    text-align: center !important;
+  }
 }
 
 /* Dinamik olay: gg/aa/yyyy metin + takvim simgesi (masaüstü + mobil) */
@@ -2526,8 +2538,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 
 @media (min-width: 641px) {
     #vehicle-history-modal #history-tabs .history-tab.active {
-        border-bottom-color: #c40000 !important;
-        box-shadow: inset 0 -1px 0 rgba(196, 0, 0, 0.88), 0 2px 10px rgba(196, 0, 0, 0.18);
+        border-bottom-color: rgba(var(--theme-color-rgb), 0.52) !important;
+        box-shadow: none;
     }
 }
 
@@ -2664,6 +2676,12 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     padding-bottom: 5px !important;
     padding-left: 12px !important;
     padding-right: 12px !important;
+}
+@media (min-width: 641px) {
+    #vehicle-history-modal .history-item,
+    .modal-overlay:has(.history-tabs) .history-item {
+        padding-top: 0 !important;
+    }
 }
 
 #vehicle-history-modal .history-item-header {

@@ -10015,11 +10015,6 @@
       tab.classList.remove('active');
       if (tab.dataset.tab === tabType) {
         tab.classList.add('active');
-        tab.style.borderBottomColor = '#d40000';
-        tab.style.color = '#ffffff';
-      } else {
-        tab.style.borderBottomColor = 'transparent';
-        tab.style.color = '#ffffff';
       }
     });
 
@@ -10142,7 +10137,7 @@
             : 'B\u0130L\u0130NM\u0130YOR';
           const kmSummary = isInitialKmEntry
             ? '<span class="history-user-name">Yeni Taşıt</span><span class="history-action-text"> • </span><span class="history-detail-inline">' + yeniKmFormatli + '</span>'
-            : '<span class="history-user-name">' + escapeHtml(kullanici) + '</span><span class="history-action-text">, G\u00fcncel Km bilgisini </span><span class="history-detail-inline">' + escapeHtml(formatNumber(yeniKm)) + '</span><span class="history-action-text"> olarak g\u00FCncelledi.</span> <span class="history-label">\u00d6nceki Km:</span> ' + escapeHtml(formatNumber(eskiKm));
+            : '<span class="history-user-name">' + escapeHtml(kullanici) + '</span><span class="history-action-text">, G\u00fcncel Km bilgisini </span><span class="history-detail-inline">' + escapeHtml(formatNumber(yeniKm)) + '</span><span class="history-action-text"> olarak g\u00FCncelledi.</span>';
           const datetimeAttr = historyEventDatetimeAttr(event);
           const metaHtml = index === 0 && duzeltmeNotHtml
             ? `<div class="history-item-meta">${duzeltmeNotHtml}</div>`

@@ -10,6 +10,9 @@
     host.innerHTML = `<div id="branch-modal" class="modal-overlay ayarlar-modal-overlay">
             <div class="modal-container">
                 <div class="modal-header">
+                    <button type="button" class="modal-home" onclick="medisaSettingsGoHome(event)" aria-label="Ana sayfaya dön" title="Ana sayfa">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 10v10h14V10"/></svg>
+                    </button>
                     <h2>ŞUBE YÖNETİMİ</h2>
                     <button class="modal-close" onclick="closeBranchManagement()">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -59,6 +62,9 @@
 <div id="branch-form-modal" class="modal-overlay ayarlar-modal-overlay">
             <div class="modal-container">
                 <div class="modal-header">
+                    <button type="button" class="modal-home" onclick="medisaSettingsGoHome(event)" aria-label="Ana sayfaya dön" title="Ana sayfa">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 10v10h14V10"/></svg>
+                    </button>
                     <h2>YENİ ŞUBE EKLE</h2>
                     <button class="modal-close" onclick="closeBranchFormModal()">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -96,6 +102,9 @@
 <div id="user-modal" class="modal-overlay ayarlar-modal-overlay">
             <div class="modal-container">
                 <div class="modal-header">
+                    <button type="button" class="modal-home" onclick="medisaSettingsGoHome(event)" aria-label="Ana sayfaya dön" title="Ana sayfa">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 10v10h14V10"/></svg>
+                    </button>
                     <h2>KULLANICI YÖNETİMİ</h2>
                     <button class="modal-close" onclick="closeUserManagement()">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -145,6 +154,9 @@
 <div id="user-form-modal" class="modal-overlay ayarlar-modal-overlay">
             <div class="modal-container">
                 <div class="modal-header">
+                    <button type="button" class="modal-home" onclick="medisaSettingsGoHome(event)" aria-label="Ana sayfaya dön" title="Ana sayfa">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 10v10h14V10"/></svg>
+                    </button>
                     <h2>YENİ KULLANICI EKLE</h2>
                     <button class="modal-close" onclick="closeUserFormModal()">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -227,6 +239,9 @@
 <div id="required-documents-modal" class="modal-overlay ayarlar-modal-overlay">
             <div class="modal-container">
                 <div class="modal-header">
+                    <button type="button" class="modal-home" onclick="medisaSettingsGoHome(event)" aria-label="Ana sayfaya dön" title="Ana sayfa">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 10v10h14V10"/></svg>
+                    </button>
                     <h2>ZORUNLU EVRAKLAR</h2>
                     <button class="modal-close" onclick="closeZorunluEvraklar()">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -270,6 +285,9 @@
 <div id="data-management-modal" class="modal-overlay ayarlar-modal-overlay">
             <div class="modal-container">
                 <div class="modal-header">
+                    <button type="button" class="modal-home" onclick="medisaSettingsGoHome(event)" aria-label="Ana sayfaya dön" title="Ana sayfa">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 10v10h14V10"/></svg>
+                    </button>
                     <h2>VERİ YEDEKLEME</h2>
                     <button class="modal-close" onclick="closeDataManagement()">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -321,6 +339,9 @@
 <div id="dis-veri-panel" class="modal-overlay ayarlar-modal-overlay">
             <div class="modal-container">
                 <div class="modal-header">
+                    <button type="button" class="modal-home" onclick="medisaSettingsGoHome(event)" aria-label="Ana sayfaya dön" title="Ana sayfa">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 10v10h14V10"/></svg>
+                    </button>
                     <h2>Dış Veri Yönetimi</h2>
                     <button class="modal-close" onclick="closeDisVeriPanel()">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -547,6 +568,12 @@
       if (e && typeof e.stopPropagation === 'function') e.stopPropagation();
       if (e && typeof e.preventDefault === 'function') e.preventDefault();
       try { history.back(); } catch (err) {}
+    };
+
+    window.medisaSettingsGoHome = function medisaSettingsGoHome(e) {
+      if (e && typeof e.stopPropagation === 'function') e.stopPropagation();
+      if (e && typeof e.preventDefault === 'function') e.preventDefault();
+      resetToHomeFromPanel();
     };
 
     if (!window.__medisaSettingsHistoryReady) {
