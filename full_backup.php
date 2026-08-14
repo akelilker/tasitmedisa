@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * MEDISA full-backup (ZIP) owner library.
  * Canonical source-of-truth: data/data.json + JSON'da referans verilen fiziksel belgeler.
@@ -199,10 +199,36 @@ function medisaFullBackupAssertRegularFile($absolutePath) {
     return null;
 }
 
+function medisaFullBackupLogicalAbsoluteFromArchivePath($archivePath, array $env = null) {
+    $env = $env ?: medisaFullBackupEnv();
+    $safeArchive = medisaFullBackupValidateArchivePath($archivePath);
+    if ($safeArchive === null || strpos($safeArchive, 'data/') !== 0) {
+        return null;
+    }
+    $relative = substr($safeArchive, 5);
+    $dataDir = (string)($env['data_dir'] ?? getDataDirPath());
+    if ($dataDir === '' || $relative === '') {
+        return null;
+    }
+    return rtrim($dataDir, DIRECTORY_SEPARATOR)
+        . DIRECTORY_SEPARATOR
+        . str_replace('/', DIRECTORY_SEPARATOR, $relative);
+}
+
 function medisaFullBackupAddReferencedEntry(array &$filesByArchive, $archivePath, $absolutePath, $source) {
     $safeArchive = medisaFullBackupValidateArchivePath($archivePath);
     if ($safeArchive === null) {
         return medisaFullBackupError('UNSAFE_PATH', 'Güvensiz belge yolu.', 422, ['source' => $source]);
+    }
+    // realpath symlink takip eder; önce logical (pre-realpath) path üzerinde fail-closed kontrol.
+    $logical = medisaFullBackupLogicalAbsoluteFromArchivePath($safeArchive);
+    if ($logical !== null) {
+        $logicalErr = medisaFullBackupAssertRegularFile($logical);
+        if ($logicalErr !== null) {
+            $logicalErr['source'] = $source;
+            $logicalErr['archive_path'] = $safeArchive;
+            return $logicalErr;
+        }
     }
     $fileErr = medisaFullBackupAssertRegularFile($absolutePath);
     if ($fileErr !== null) {
