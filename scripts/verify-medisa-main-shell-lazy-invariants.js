@@ -73,6 +73,15 @@ test('splash minimum süresi 2000 ms kalır', function() {
   assert.match(index, /MIN_SPLASH_MS\s*=\s*2000/);
 });
 
+test('modal premium başlığı menü metalik kontratından bağımsızdır', function() {
+  assert.match(style, /--modal-premium-title-gradient:\s*linear-gradient/);
+  assert.match(style, /--modal-premium-title-shadow:\s*[^;]+;/);
+  assert.match(style, /\.modal-overlay \.modal-header h2\.premium-title\s*\{[\s\S]*?background:\s*var\(--modal-premium-title-gradient\)/);
+  assert.match(style, /\.modal-overlay \.modal-header h2\.premium-title\s*\{[\s\S]*?text-shadow:\s*var\(--modal-premium-title-shadow\)/);
+  assert.match(style, /#main-menu \.menu-btn \.ttl\s*\{[\s\S]*?background:\s*var\(--premium-title-gradient\)/);
+  assert.doesNotMatch(style, /--modal-premium-title-shadow:[^;]*7px/);
+});
+
 test('mevcut lazy module ownerı korunur', function() {
   assert.match(core, /window\.loadAppModule\s*=/);
   assert.match(core, /window\.openVehiclesView\s*=\s*lazyOpenVehiclesView/);

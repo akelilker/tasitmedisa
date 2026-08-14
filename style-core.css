@@ -45,6 +45,8 @@ body::-webkit-scrollbar,
   --modal-header-red-gradient: linear-gradient(180deg, #840000 0%, #840000 24%, #760000 44%, #5a0000 60%, #450205 72%, #32050a 82%, #20080f 90%, #120b14 96%, var(--modal-bg) 100%);
   --premium-title-gradient: linear-gradient(to bottom, #ccd7e1 0%, #f4f8fb 38%, #adbdca 56%, #e2ebf2 100%);
   --premium-title-shadow: 0 1px 1px rgba(0, 0, 0, 0.26), 0 0 7px rgba(214, 224, 232, 0.22);
+  --modal-premium-title-gradient: linear-gradient(to bottom, #f8fbfd 0%, #ffffff 38%, #dce6ed 57%, #f5f9fc 100%);
+  --modal-premium-title-shadow: 0 1px 1px rgba(0, 0, 0, 0.38), 0 0 2px rgba(255, 255, 255, 0.20);
   --premium-title-weight: 700;
   --premium-title-letter-spacing: 0.085em;
   --back-bar-standalone-padding: 8px 16px 4px 16px;
@@ -1605,7 +1607,7 @@ body.modal-open:has(.compact-confirm-modal.active) .app-container::after {
 .modal-overlay .modal-header h2.premium-title {
   font-weight: var(--premium-title-weight);
   letter-spacing: var(--premium-title-letter-spacing);
-  background: var(--premium-title-gradient);
+  background: var(--modal-premium-title-gradient);
   background-size: 100% 180%;
   background-position: 50% 54%;
   -webkit-background-clip: text;
@@ -1613,14 +1615,14 @@ body.modal-open:has(.compact-confirm-modal.active) .app-container::after {
   -webkit-text-fill-color: transparent;
   color: transparent;
   filter: brightness(1.01);
-  text-shadow: var(--premium-title-shadow);
+  text-shadow: var(--modal-premium-title-shadow);
 }
 
-/* Ana modallar — menü .ttl ile birebir metalik başlık (ID + !important: düz renk fallback ezilmesin) */
+/* Ana modallar — modal için ayrılmış temiz metalik başlık (ID + !important: düz renk fallback ezilmesin) */
 :is(#vehicle-modal, #vehicles-modal, #vehicle-detail-modal, #reports-modal, #monthly-todo-modal) .modal-header h2.premium-title {
   font-weight: var(--premium-title-weight);
   letter-spacing: var(--premium-title-letter-spacing);
-  background: var(--premium-title-gradient) !important;
+  background: var(--modal-premium-title-gradient) !important;
   background-size: 100% 180% !important;
   background-position: 50% 54% !important;
   -webkit-background-clip: text !important;
@@ -1628,7 +1630,7 @@ body.modal-open:has(.compact-confirm-modal.active) .app-container::after {
   -webkit-text-fill-color: transparent !important;
   color: transparent !important;
   filter: brightness(1.01);
-  text-shadow: var(--premium-title-shadow) !important;
+  text-shadow: var(--modal-premium-title-shadow) !important;
   transform: translate(-50%, -5px) !important;
 }
 
@@ -2018,7 +2020,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     }
 
     :is(#vehicle-modal, #vehicles-modal, #vehicle-detail-modal, #reports-modal) .modal-header h2.premium-title {
-        filter: brightness(1.10);
+        filter: brightness(1.04);
     }
 
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicle-modal.modal-overlay .modal-container,

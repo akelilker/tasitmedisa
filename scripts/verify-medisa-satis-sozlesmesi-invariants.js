@@ -673,7 +673,7 @@ test('cache / modül pin parity', function() {
   assert.equal(ayarlarJsVer, '20260814.4');
   assert.match(sw, /CACHE_VERSION\s*=\s*'medisa-v2\.303'/);
   assert.match(read('index.html'), /script-core\.js\?v=20260814\.4/);
-  assert.match(read('index.html'), /style-core\.css\?v=20260814\.1/);
+  assert.match(read('index.html'), /style-core\.css\?v=20260814\.2/);
 });
 
 test('quality gate / package bağlandı', function() {
