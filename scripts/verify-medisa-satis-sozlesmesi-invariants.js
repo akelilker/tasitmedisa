@@ -670,9 +670,9 @@ test('cache / modül pin parity', function() {
   assert.equal(loaderVer, moduleVer);
   assert.equal(notifVer, '20260813.2');
   assert.equal(ayarlarCssVer, '20260814.3');
-  assert.equal(ayarlarJsVer, '20260814.3');
+  assert.equal(ayarlarJsVer, '20260814.4');
   assert.match(sw, /CACHE_VERSION\s*=\s*'medisa-v2\.303'/);
-  assert.match(read('index.html'), /script-core\.js\?v=20260814\.3/);
+  assert.match(read('index.html'), /script-core\.js\?v=20260814\.4/);
   assert.match(read('index.html'), /style-core\.css\?v=20260814\.1/);
 });
 

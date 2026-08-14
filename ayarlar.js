@@ -4158,11 +4158,8 @@
         setDataManagementBackupMetaText('Sunucudaki Son Yedekleme Dosyası: Bilgi alınamadı.');
         return;
       }
-      const sourceLabel = metadata.source_label
-        ? (' (' + String(metadata.source_label) + ')')
-        : '';
       setDataManagementBackupMetaText(
-        'Sunucudaki Son Yedekleme Dosyası' + sourceLabel + ': ' + formatBackupMetadataDate(metadata.modified_at)
+        'Sunucudaki Son Yedekleme Dosyası: ' + formatBackupMetadataDate(metadata.modified_at)
       );
     }
 
