@@ -42,7 +42,7 @@ body::-webkit-scrollbar,
   --modal-bg: #080d16;
   --modal-max-width: 500px;
   --modal-radius: 10px;
-  --modal-header-red-gradient: linear-gradient(180deg, #840000 0%, #840000 24%, #760000 44%, #5a0000 60%, #450205 72%, #32050a 82%, #20080f 90%, #120b14 96%, var(--modal-bg) 100%);
+  --modal-header-red-gradient: linear-gradient(180deg, #7f0000 0%, #7f0000 24%, #710000 44%, #570000 60%, #430205 72%, #32050a 82%, #20080f 90%, #120b14 96%, var(--modal-bg) 100%);
   --premium-title-gradient: linear-gradient(to bottom, #ccd7e1 0%, #f4f8fb 38%, #adbdca 56%, #e2ebf2 100%);
   --premium-title-shadow: 0 1px 1px rgba(0, 0, 0, 0.26), 0 0 7px rgba(214, 224, 232, 0.22);
   --modal-premium-title-gradient: linear-gradient(to bottom, #f8fbfd 0%, #ffffff 38%, #dce6ed 57%, #f5f9fc 100%);

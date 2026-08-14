@@ -82,6 +82,10 @@ test('modal premium başlığı menü metalik kontratından bağımsızdır', fu
   assert.doesNotMatch(style, /--modal-premium-title-shadow:[^;]*7px/);
 });
 
+test('modal header kırmızısı ortak koyu gradient ownerını korur', function() {
+  assert.match(style, /--modal-header-red-gradient:\s*linear-gradient\(180deg,\s*#7f0000 0%,\s*#7f0000 24%,\s*#710000 44%,\s*#570000 60%,\s*#430205 72%/);
+});
+
 test('mevcut lazy module ownerı korunur', function() {
   assert.match(core, /window\.loadAppModule\s*=/);
   assert.match(core, /window\.openVehiclesView\s*=\s*lazyOpenVehiclesView/);
