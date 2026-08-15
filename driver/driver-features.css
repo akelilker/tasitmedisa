@@ -61,20 +61,6 @@ body.driver-modal-open {
     min-height: 26px !important;
   }}
 
-/* Masaüstü: Tarihçe modalı – düzeltme simgesi %85, 2. satırda sağa yaslı */
-@media (min-width: 769px) {
-  #history-modal .history-details-row {
-    align-items: flex-end !important;
-  }
-  #history-modal .history-period {
-    color: var(--form-label-color, #ffffff) !important;
-  }
-  #history-modal .history-edit-icon {
-    transform: scale(0.85) !important;
-    transform-origin: center bottom !important;
-    align-self: flex-end !important;
-  }
-}
 .driver-info-item .label {
   color: var(--form-label-color, #ffffff) !important;
   font-weight: 500;
@@ -1654,8 +1640,7 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
     box-sizing: border-box;
   }
 
-  #driver-password-modal .driver-password-form .form-group input,
-  #driver-feedback-modal .driver-feedback-type-dropdown-wrap .vehicle-branch-trigger {
+  #driver-password-modal .driver-password-form .form-group input {
     height: 27px;
     min-height: 27px;
     padding-top: 0;
@@ -1673,8 +1658,7 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
   }
 
   #driver-password-modal .driver-password-form .form-group input:focus,
-  #driver-feedback-modal .driver-feedback-form .form-group textarea.driver-feedback-message:focus,
-  #driver-feedback-modal .driver-feedback-type-dropdown-wrap .vehicle-branch-trigger:focus {
+  #driver-feedback-modal .driver-feedback-form .form-group textarea.driver-feedback-message:focus {
     outline: none;
     border-color: var(--theme-color) !important;
     box-shadow: none;
@@ -1812,19 +1796,6 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
   box-shadow: none !important;
   transition: border-color 120ms ease, color 120ms ease, background-color 120ms ease;
 }
-/* Masaüstü (769px+): Talep Gönder modalı — tür seçici iç dikey alan −3px, Kaydet/Vazgeç blok 12px yukarı */
-@media (min-width: 769px) {
-  #driver-feedback-modal .driver-feedback-type-dropdown-wrap .vehicle-branch-trigger {
-    height: 27px;
-    min-height: 27px;
-    padding: 0 28px 0 12px;
-    border-radius: 8px;
-    font-size: 12px;
-  }
-  #driver-feedback-modal .driver-feedback-actions {
-    margin-top: 6px; /* taban 18px − 12px */
-  }
-}
 #driver-feedback-modal .driver-feedback-type-dropdown-wrap .vehicle-branch-trigger:focus {
   border-color: var(--theme-color);
   outline: none;
@@ -1879,6 +1850,57 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
 #driver-feedback-modal #driver-feedback-type-list .vehicle-branch-option.selected {
   background: rgba(var(--theme-color-rgb), 0.16);
   color: rgba(255, 255, 255, 0.98);
+}
+/* Masaüstü (769px+): Talep Gönder modalı — trigger, actions ve option kartları */
+@media (min-width: 769px) {
+  #driver-feedback-modal .driver-feedback-type-dropdown-wrap .vehicle-branch-trigger {
+    height: 27px;
+    min-height: 27px;
+    padding: 0 28px 0 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #driver-feedback-modal .driver-feedback-actions {
+    margin-top: 6px; /* taban 18px − 12px */
+  }
+  #driver-feedback-modal #driver-feedback-type-list {
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 2px 10px;
+  }
+  #driver-feedback-modal #driver-feedback-type-list .vehicle-branch-option {
+    box-sizing: border-box;
+    padding: 6px 10px;
+    margin: 0 0 4px;
+    background: #111720;
+    border: 1px solid rgba(190, 200, 214, 0.42);
+    border-radius: 6px;
+    text-align: center;
+    transform: scale(1);
+    transform-origin: right center;
+    transition: transform 120ms ease, border-color 120ms ease, color 120ms ease;
+  }
+  #driver-feedback-modal #driver-feedback-type-list .vehicle-branch-option:last-child {
+    margin-bottom: 0;
+    border-bottom: 1px solid rgba(190, 200, 214, 0.42);
+  }
+  #driver-feedback-modal #driver-feedback-type-list .vehicle-branch-option:hover {
+    background: #111720;
+    color: rgba(255, 255, 255, 0.98);
+    border-color: rgba(190, 200, 214, 0.78);
+    transform: scale(1.03);
+  }
+  #driver-feedback-modal #driver-feedback-type-list .vehicle-branch-option.selected {
+    background: #111720;
+    color: rgba(255, 255, 255, 0.98);
+    border-color: rgba(190, 200, 214, 0.88);
+  }
 }
 #driver-feedback-modal:has(#driver-feedback-type-list.open) .driver-feedback-actions {
   pointer-events: none !important;
@@ -2080,38 +2102,6 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
   font-size: 13.5px;
 }
 
-/* Masaüstü: Geçmiş modalı – sol ok+etiket 6px yukarı, Taşıt Seç 2px yukarı + Tüm Taşıtlar gri, kart içi dikey daralt */
-@media (min-width: 769px) {
-  #history-modal .universal-back-bar,
-  #edit-request-modal .universal-back-bar {
-    margin-top: -6px !important;
-  }
-  #history-modal .history-filters {
-    margin-top: -2px !important;
-  }
-  #history-modal .history-card {
-    padding: 7px 14px !important;
-    gap: 2px !important;
-  }
-  /* Tarih satırı ile içerik satırları arasındaki dikey boşluk masaüstünde 2px */
-  #history-modal .history-header {
-    margin-bottom: 2px !important;
-  }
-  #history-modal .history-details p + p {
-    margin-top: 2px !important;
-  }
-  /* Masaüstü: punto 0.5 küçült */
-  #history-modal .history-period {
-    font-size: 14.5px !important;
-  }
-  #history-modal .history-vehicle {
-    font-size: 13.5px !important;
-  }
-  #history-modal .history-details p {
-    font-size: 13.5px !important;
-  }
-}
-
 /* Geçmiş kayıtlar modal içi */
 .history-filters {
   margin-bottom: 16px;
@@ -2250,7 +2240,6 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
 .history-vehicle-option:last-child {
   border-radius: 0 0 8px 8px;
 }
-
 body.dashboard-page.driver-history-vehicle-dropdown-open #history-modal .universal-back-bar,
 body.dashboard-page.driver-history-vehicle-dropdown-open #history-modal .history-container {
   filter: blur(2px);
@@ -2389,6 +2378,91 @@ body.dashboard-page.driver-history-vehicle-dropdown-open #history-modal .history
 #history-modal .history-card.history-row-editing {
   box-shadow: inset 0 0 0 1.5px rgba(var(--theme-color-rgb), 0.7);
   border-radius: 8px;
+}
+
+/* Masaüstü: Geçmiş modalı — ince ayarlar ve taşıt dropdown kartları */
+@media (min-width: 769px) {
+  #history-modal .history-details-row {
+    align-items: flex-end !important;
+  }
+  #history-modal .history-period {
+    color: var(--form-label-color, #ffffff) !important;
+  }
+  #history-modal .history-edit-icon {
+    transform: scale(0.85) !important;
+    transform-origin: center bottom !important;
+    align-self: flex-end !important;
+  }
+  #history-modal .universal-back-bar,
+  #edit-request-modal .universal-back-bar {
+    margin-top: -6px !important;
+  }
+  #history-modal .history-filters {
+    margin-top: -2px !important;
+  }
+  #history-modal .history-card {
+    padding: 7px 14px !important;
+    gap: 2px !important;
+  }
+  /* Tarih satırı ile içerik satırları arasındaki dikey boşluk masaüstünde 2px */
+  #history-modal .history-header {
+    margin-bottom: 2px !important;
+  }
+  #history-modal .history-details p + p {
+    margin-top: 2px !important;
+  }
+  /* Masaüstü: punto 0.5 küçült */
+  #history-modal .history-period {
+    font-size: 14.5px !important;
+  }
+  #history-modal .history-vehicle {
+    font-size: 13.5px !important;
+  }
+  #history-modal .history-details p {
+    font-size: 13.5px !important;
+  }
+  .history-vehicle-dropdown {
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0;
+    box-shadow: none !important;
+    padding: 2px 10px;
+  }
+  .history-vehicle-option {
+    box-sizing: border-box;
+    padding: 6px 10px;
+    margin: 0 0 4px;
+    color: rgba(232, 236, 241, 0.94);
+    background: #111720;
+    border: 1px solid rgba(190, 200, 214, 0.42);
+    border-radius: 6px;
+    text-align: center;
+    transform: scale(1);
+    transform-origin: right center;
+    transition: transform 120ms ease, border-color 120ms ease, color 120ms ease;
+  }
+  .history-vehicle-option:nth-child(odd),
+  .history-vehicle-option:nth-child(even),
+  #history-modal .history-vehicle-option[data-value=""] {
+    background: #111720;
+  }
+  .history-vehicle-option:last-child {
+    margin-bottom: 0;
+  }
+  .history-vehicle-option:hover {
+    background: #111720;
+    color: rgba(255, 255, 255, 0.98);
+    border-color: rgba(190, 200, 214, 0.78);
+    transform: scale(1.03);
+  }
+  #history-modal .history-vehicle-option[data-value=""] {
+    color: var(--muted, #adb5bd);
+    border-color: rgba(190, 200, 214, 0.42);
+  }
+  .history-vehicle-option:first-child,
+  .history-vehicle-option:last-child {
+    border-radius: 6px;
+  }
 }
 
 /* Yönetim Sistemi (evrensel geri düğmesi) – ortak stil (konum sayfa bazlı) */
@@ -3200,6 +3274,53 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     min-width: 350px !important;
     box-sizing: border-box !important;
     overflow-x: hidden !important;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    padding: 2px 10px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 4px !important;
+  }
+
+  .dashboard-page .driver-plate-dropdown-item {
+    box-sizing: border-box;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    background: #111720;
+    border: 1px solid rgba(190, 200, 214, 0.42);
+    border-radius: 6px;
+    text-align: center;
+    transform: scale(1);
+    transform-origin: right center;
+    transition: transform 120ms ease, border-color 120ms ease, color 120ms ease;
+  }
+  .dashboard-page .driver-plate-dropdown-item-plate,
+  .dashboard-page .driver-plate-dropdown-item-brand {
+    text-align: center;
+  }
+
+  .dashboard-page .driver-plate-dropdown-item:last-child {
+    border-bottom: 1px solid rgba(190, 200, 214, 0.42);
+  }
+
+  .dashboard-page .driver-plate-dropdown-item:hover,
+  .dashboard-page .driver-plate-dropdown-item:focus {
+    background: #111720;
+    border-color: rgba(190, 200, 214, 0.78);
+    color: rgba(255, 255, 255, 0.98);
+    outline: none;
+    transform: scale(1.03);
+  }
+
+  .dashboard-page .driver-plate-dropdown-item[aria-selected="true"] {
+    background: #111720;
+    border-color: rgba(190, 200, 214, 0.88);
+  }
+
+  .dashboard-page .driver-plate-dropdown-item:nth-child(even):not(:hover):not(:focus):not([aria-selected="true"]) {
+    background: #111720;
   }
 
   .dashboard-page .driver-plate-warning-dot {
