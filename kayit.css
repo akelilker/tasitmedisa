@@ -81,10 +81,23 @@
 .modal-columns {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); 
-    gap: 0; 
+    column-gap: 8px;
+    row-gap: 0;
     margin-top: -8px;
     margin-bottom: 4px;
     align-items: start; 
+    position: relative;
+}
+
+.modal-columns::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 1px;
+    background: var(--border-red-side);
+    pointer-events: none;
 }
 
 /* Sol ve sağ sütun ilk elemanları */
@@ -1376,7 +1389,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
   font-weight: 600 !important;
 }
 
-.modal-column-left { padding-right: 10px; padding-left: 0; border-right: 1px solid var(--border-red-side); box-shadow: none; }
+.modal-column-left { padding-right: 10px; padding-left: 0; border-right: none; box-shadow: none; }
 .modal-column-right { padding-left: 10px; padding-right: 0; }
 
 /* === MOBİL ÖZEL === */
@@ -1573,7 +1586,8 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     .modal-columns {
         display: grid;
         grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-        gap: 0;
+        column-gap: 8px;
+        row-gap: 0;
         min-width: 0;
         margin-top: 0 !important;
         align-items: stretch !important;
