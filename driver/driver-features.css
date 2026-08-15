@@ -1882,9 +1882,7 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
     border: 1px solid rgba(190, 200, 214, 0.42);
     border-radius: 6px;
     text-align: center;
-    transform: scale(1);
-    transform-origin: right center;
-    transition: transform 120ms ease, border-color 120ms ease, color 120ms ease;
+    transition: border-color 120ms ease, color 120ms ease;
   }
   #driver-feedback-modal #driver-feedback-type-list .vehicle-branch-option:last-child {
     margin-bottom: 0;
@@ -1894,7 +1892,6 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
     background: #111720;
     color: rgba(255, 255, 255, 0.98);
     border-color: rgba(190, 200, 214, 0.78);
-    transform: scale(1.03);
   }
   #driver-feedback-modal #driver-feedback-type-list .vehicle-branch-option.selected {
     background: #111720;
@@ -2437,9 +2434,7 @@ body.dashboard-page.driver-history-vehicle-dropdown-open #history-modal .history
     border: 1px solid rgba(190, 200, 214, 0.42);
     border-radius: 6px;
     text-align: center;
-    transform: scale(1);
-    transform-origin: right center;
-    transition: transform 120ms ease, border-color 120ms ease, color 120ms ease;
+    transition: border-color 120ms ease, color 120ms ease;
   }
   .history-vehicle-option:nth-child(odd),
   .history-vehicle-option:nth-child(even),
@@ -2453,7 +2448,6 @@ body.dashboard-page.driver-history-vehicle-dropdown-open #history-modal .history
     background: #111720;
     color: rgba(255, 255, 255, 0.98);
     border-color: rgba(190, 200, 214, 0.78);
-    transform: scale(1.03);
   }
   #history-modal .history-vehicle-option[data-value=""] {
     color: var(--muted, #adb5bd);
