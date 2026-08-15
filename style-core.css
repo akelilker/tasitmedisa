@@ -2645,10 +2645,16 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
             0 0 9px rgba(214, 188, 132, 0.12);
     }
 
-    /* Ana modal başlıkları mobilde: koyu glow kaldır, metalik gradient rengi korunur */
-    :is(#vehicle-modal, #vehicles-modal, #vehicle-detail-modal, #reports-modal) .modal-header h2.premium-title {
+    /* Mobil modal başlıkları: premium gradient yerine net beyaz metin */
+    .modal-overlay .modal-header h2.premium-title {
+        background: none !important;
+        -webkit-background-clip: border-box !important;
+        background-clip: border-box !important;
+        -webkit-text-fill-color: #ffffff !important;
+        color: #ffffff !important;
         letter-spacing: 1.5px !important;
         text-shadow: none !important;
+        filter: none !important;
     }
     
     /* Mobil: Kullanıcı paneli giriş butonu 2px aşağı */
