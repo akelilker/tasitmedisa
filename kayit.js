@@ -2208,20 +2208,17 @@
       }
     }
 
-    if (typeof window.loadAppModule === 'function' &&
-        (typeof window._ayarlarLoaded === 'undefined' || !window._ayarlarLoaded)) {
-      var _mv = window.MEDISA_MODULE_VERSIONS || {};
-      var AYARLAR_JS = 'ayarlar.js?v=' + (_mv.ayarlarJs || '20260328.2');
-      var AYARLAR_CSS = 'ayarlar.css?v=' + (_mv.ayarlarCss || '20260405.1');
-      window.loadAppModule(AYARLAR_JS, AYARLAR_CSS).then(function() {
+    if (window.MedisaMainSurfaceRegistry && typeof window.MedisaMainSurfaceRegistry.ensure === 'function') {
+      window.MedisaMainSurfaceRegistry.ensure('settings').then(function() {
         window._ayarlarLoaded = true;
         ensureAyarlarAndOpen();
       }).catch(function() {
         alert('Ayarlar modülü yüklenemedi.');
       });
-    } else {
-      ensureAyarlarAndOpen();
+      return;
     }
+
+    ensureAyarlarAndOpen();
   }
 
   // --- Modal Functions ---

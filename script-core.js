@@ -1161,7 +1161,7 @@ var MEDISA_MODULE_VERSIONS = {
   tasitlar: '20260813.1',
   notifications: '20260813.2',
   raporlar: '20260801.3',
-  kayitJs: '20260811.2',
+  kayitJs: '20260815.1',
   kayitCss: '20260813.1',
   ayarlarJs: '20260814.4',
   ayarlarCss: '20260814.3',
@@ -1336,30 +1336,52 @@ window.ensureMedisaVehicleNotificationDomainReady = function() {
     return metrics;
   }
 
-  function duplicateIdCount() {
-    var seen = Object.create(null);
-    var duplicate = Object.create(null);
+  function getDocumentIdCounts() {
+    var counts = Object.create(null);
     var nodes = document.querySelectorAll('[id]');
     for (var i = 0; i < nodes.length; i++) {
       var id = String(nodes[i].id || '');
       if (!id) continue;
-      if (seen[id]) duplicate[id] = true;
-      seen[id] = true;
+      counts[id] = (counts[id] || 0) + 1;
     }
-    return Object.keys(duplicate).length;
+    return counts;
   }
 
-  function verifyRequiredIds(name, definition) {
+  function duplicateIdCount(counts) {
+    var source = counts || getDocumentIdCounts();
+    var ids = Object.keys(source);
+    var duplicates = 0;
+    for (var i = 0; i < ids.length; i++) {
+      if (source[ids[i]] > 1) duplicates++;
+    }
+    return duplicates;
+  }
+
+  function surfaceProducedDuplicateId(beforeIdCounts, afterIdCounts) {
+    var ids = Object.keys(afterIdCounts);
+    for (var i = 0; i < ids.length; i++) {
+      var id = ids[i];
+      if (afterIdCounts[id] > 1 && afterIdCounts[id] > (beforeIdCounts[id] || 0)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  function verifyRequiredIds(name, definition, beforeIdCounts) {
     var ids = Array.isArray(definition.requiredIds) ? definition.requiredIds : [];
     for (var i = 0; i < ids.length; i++) {
       if (!document.getElementById(ids[i])) {
         throw new Error(name + ' surface markup eksik: #' + ids[i]);
       }
     }
-    var duplicates = duplicateIdCount();
+    var afterIdCounts = getDocumentIdCounts();
+    var duplicates = duplicateIdCount(afterIdCounts);
     var ownerMetrics = getMetricsOwner();
     if (ownerMetrics) ownerMetrics.duplicateIdCount = duplicates;
-    if (duplicates > 0) throw new Error(name + ' surface duplicate ID üretti');
+    if (surfaceProducedDuplicateId(beforeIdCounts || Object.create(null), afterIdCounts)) {
+      throw new Error(name + ' surface duplicate ID üretti');
+    }
   }
 
   function showSurfaceLoadError() {
@@ -1394,10 +1416,11 @@ window.ensureMedisaVehicleNotificationDomainReady = function() {
       if (!definition) return Promise.reject(new Error('Main surface kayıtlı değil: ' + name));
       var startedAt = typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();
       var beforeRoot = definition.rootId ? document.getElementById(definition.rootId) : null;
+      var beforeIdCounts = getDocumentIdCounts();
       var promise = Promise.resolve()
         .then(definition.load)
         .then(function() {
-          verifyRequiredIds(name, definition);
+          verifyRequiredIds(name, definition, beforeIdCounts);
           hydrated[name] = true;
           var ownerMetrics = getMetricsOwner();
           if (ownerMetrics) {
