@@ -666,14 +666,28 @@ test('cache / modül pin parity', function() {
   const notifVer = (scriptCore.match(/notifications:\s*'([^']+)'/) || [])[1];
   const ayarlarCssVer = (scriptCore.match(/ayarlarCss:\s*'([^']+)'/) || [])[1];
   const ayarlarJsVer = (scriptCore.match(/ayarlarJs:\s*'([^']+)'/) || [])[1];
+  const indexHtml = read('index.html');
+  const styleCorePins = [
+    indexHtml.match(/<link\b[^>]*rel=["']preload["'][^>]*href=["']style-core\.css\?v=([^"'&\s]+)["'][^>]*>/i),
+    indexHtml.match(/<link\b[^>]*rel=["']stylesheet["'][^>]*href=["']style-core\.css\?v=([^"'&\s]+)["'][^>]*>/i),
+    indexHtml.match(/<noscript>[\s\S]*?<link\b[^>]*rel=["']stylesheet["'][^>]*href=["']style-core\.css\?v=([^"'&\s]+)["'][^>]*>[\s\S]*?<\/noscript>/i)
+  ];
   assert.equal(moduleVer, '20260813.1');
   assert.equal(loaderVer, moduleVer);
   assert.equal(notifVer, '20260813.2');
   assert.equal(ayarlarCssVer, '20260814.3');
   assert.equal(ayarlarJsVer, '20260814.4');
   assert.match(sw, /CACHE_VERSION\s*=\s*'medisa-v2\.303'/);
-  assert.match(read('index.html'), /script-core\.js\?v=20260815\.3/);
-  assert.match(read('index.html'), /style-core\.css\?v=20260814\.7/);
+  assert.match(indexHtml, /script-core\.js\?v=20260815\.3/);
+  styleCorePins.forEach(function(pin, index) {
+    assert.ok(pin, 'style-core.css pin #' + (index + 1) + ' bulunmalı');
+    assert.ok(pin[1], 'style-core.css pin #' + (index + 1) + ' version boş olmamalı');
+  });
+  assert.equal(
+    new Set(styleCorePins.map(function(pin) { return pin[1]; })).size,
+    1,
+    'preload / stylesheet / noscript version değerleri aynı olmalı'
+  );
 });
 
 test('quality gate / package bağlandı', function() {
