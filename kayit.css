@@ -1376,7 +1376,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
   font-weight: 600 !important;
 }
 
-.modal-column-left { padding-right: 10px; padding-left: 0; border-right: 1px solid rgba(var(--theme-color-rgb), 0.28); box-shadow: 10px 0 18px -18px rgba(var(--theme-color-rgb), 0.45); }
+.modal-column-left { padding-right: 10px; padding-left: 0; border-right: 1px solid var(--border-red-side); box-shadow: none; }
 .modal-column-right { padding-left: 10px; padding-right: 0; }
 
 /* === MOBİL ÖZEL === */
@@ -1581,7 +1581,6 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     .modal-column-left {
         padding-right: 8px;
         padding-left: 0;
-        border-right: 1px solid rgba(var(--theme-color-rgb), 0.28);
         min-width: 0;
     }
     .modal-column-right {
