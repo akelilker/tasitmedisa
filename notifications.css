@@ -2389,13 +2389,11 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
 @media (max-width: 640px) {
   #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h--desc {
     justify-content: center;
-    gap: 0;
+    gap: 2px;
   }
 
   #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h--desc .monthly-todo-branch-filter {
-    position: absolute;
-    top: 0;
-    right: 0;
+    position: static;
     width: 100%;
     max-width: 100%;
     justify-content: flex-end;
