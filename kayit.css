@@ -959,6 +959,17 @@ textarea.notes-auto-expand {
     margin-bottom: 0;
 }
 
+/* Egzoz tarih ayrımı: koyu dialog yüzeyinde "Hayır" seçeneği görünür kalmalı. */
+#vehicle-egzoz-confirm-modal .universal-btn-cancel {
+    color: #ff5a5f !important;
+    border-color: rgba(255, 90, 95, 0.78) !important;
+}
+
+#vehicle-egzoz-confirm-modal .universal-btn-cancel:hover {
+    background: rgba(255, 90, 95, 0.12) !important;
+    border-color: #ff5a5f !important;
+}
+
 .egzoz-dialog-date-field {
     margin-bottom: 10px;
     text-align: center;
