@@ -1643,6 +1643,53 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
   min-height: 100px;
 }
 
+/* Masaüstü: Şifre ve Talep modalları, Olay Ekle form kontratını kullanır. */
+@media (min-width: 769px) {
+  #driver-password-modal .driver-password-form,
+  #driver-feedback-modal .driver-feedback-form {
+    width: 100%;
+    max-width: 390px;
+    margin-left: auto;
+    margin-right: auto;
+    box-sizing: border-box;
+  }
+
+  #driver-password-modal .driver-password-form .form-group input,
+  #driver-feedback-modal .driver-feedback-type-dropdown-wrap .vehicle-branch-trigger {
+    height: 27px;
+    min-height: 27px;
+    padding-top: 0;
+    padding-bottom: 0;
+    border-radius: 8px;
+    font-size: 12px;
+    box-sizing: border-box;
+  }
+
+  #driver-feedback-modal .driver-feedback-form .form-group textarea.driver-feedback-message {
+    padding: 5px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    box-sizing: border-box;
+  }
+
+  #driver-password-modal .driver-password-form .form-group input:focus,
+  #driver-feedback-modal .driver-feedback-form .form-group textarea.driver-feedback-message:focus,
+  #driver-feedback-modal .driver-feedback-type-dropdown-wrap .vehicle-branch-trigger:focus {
+    outline: none;
+    border-color: var(--theme-color) !important;
+    box-shadow: none;
+    transform: none;
+  }
+
+  #driver-password-modal .driver-password-form .universal-btn-group,
+  #driver-feedback-modal .driver-feedback-form .universal-btn-group {
+    max-width: 390px;
+    margin-left: auto;
+    margin-right: auto;
+    box-sizing: border-box;
+  }
+}
+
 .driver-password-actions {
   display: flex;
   flex-wrap: nowrap;
@@ -1684,69 +1731,16 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
   width: 100%;
 }
 
-/* Talep / Şifre modalları: Gönder-Kaydet ile Vazgeç — style-core universal (32px) ile btn-submit boyutunu eşitle */
-#driver-feedback-modal .driver-feedback-actions .btn-submit,
+/* Talep / Şifre modalları: iki eşit kolon, ölçüleri style-core universal owner'ı belirler. */
+#driver-feedback-modal .driver-feedback-actions .universal-btn-save,
 #driver-feedback-modal .driver-feedback-actions .universal-btn-cancel,
-#driver-password-modal .driver-password-actions .btn-submit,
+#driver-password-modal .driver-password-actions .universal-btn-save,
 #driver-password-modal .driver-password-actions .universal-btn-cancel {
   flex: 1 1 0;
   min-width: 0;
   width: auto !important;
   max-width: none !important;
   margin-top: 0 !important;
-  height: auto !important;
-  min-height: 44px;
-  padding: 12px 14px !important;
-  font-size: 15px !important;
-  font-weight: 600 !important;
-  line-height: 1.2 !important;
-  border-radius: 8px !important;
-  box-sizing: border-box !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  transition:
-    border-color 0.18s ease,
-    color 0.18s ease,
-    font-weight 0.18s ease,
-    background-color 0.18s ease !important;
-}
-
-#driver-feedback-modal .driver-feedback-actions .btn-submit,
-#driver-feedback-modal .driver-feedback-actions .universal-btn-cancel {
-  font-weight: 400 !important;
-}
-
-/* Talep modalı: hover — style-core universal-btn-save / universal-btn-cancel ile aynı (yarı saydam zemin, çerçeve koyulaşır, metin tonu korunur; scale / punto büyütme / beyaz metin yok) */
-#driver-feedback-modal .driver-feedback-actions .btn-submit:hover,
-#driver-feedback-modal .driver-feedback-actions .btn-submit:focus-visible {
-  transform: none !important;
-  box-shadow: none !important;
-  text-shadow: none !important;
-  font-size: 15px !important;
-  background: rgba(74, 222, 128, 0.15) !important;
-  font-weight: 700 !important;
-  border-color: #4ade80 !important;
-  color: #4ade80 !important;
-  -webkit-text-stroke: 0.3px currentColor;
-}
-
-#driver-feedback-modal .driver-feedback-actions .universal-btn-cancel:hover,
-#driver-feedback-modal .driver-feedback-actions .universal-btn-cancel:focus-visible {
-  transform: none !important;
-  box-shadow: none !important;
-  text-shadow: none !important;
-  font-size: 15px !important;
-  background: rgba(var(--theme-color-rgb), 0.15) !important;
-  font-weight: 700 !important;
-  border-color: #d40000 !important;
-  color: #d40000 !important;
-  -webkit-text-stroke: 0.3px currentColor;
-}
-
-#driver-feedback-modal .driver-feedback-actions .btn-submit,
-#driver-password-modal .driver-password-actions .btn-submit {
-  border-width: 1px;
 }
 
 .driver-password-message {
@@ -1821,7 +1815,11 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
 /* Masaüstü (769px+): Talep Gönder modalı — tür seçici iç dikey alan −3px, Kaydet/Vazgeç blok 12px yukarı */
 @media (min-width: 769px) {
   #driver-feedback-modal .driver-feedback-type-dropdown-wrap .vehicle-branch-trigger {
-    padding: calc(11px - 1.5px) 28px calc(11px - 1.5px) 12px;
+    height: 27px;
+    min-height: 27px;
+    padding: 0 28px 0 12px;
+    border-radius: 8px;
+    font-size: 12px;
   }
   #driver-feedback-modal .driver-feedback-actions {
     margin-top: 6px; /* taban 18px − 12px */
@@ -2515,13 +2513,29 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     align-items: center;
     justify-content: center;
   }
-  #driver-feedback-modal .driver-feedback-actions .btn-submit,
-  #driver-feedback-modal .driver-feedback-actions .universal-btn-cancel {
+  #driver-feedback-modal .driver-feedback-actions .universal-btn-save,
+  #driver-feedback-modal .driver-feedback-actions .universal-btn-cancel,
+  #driver-password-modal .driver-password-actions .universal-btn-save,
+  #driver-password-modal .driver-password-actions .universal-btn-cancel {
+    height: auto !important;
+    min-height: 44px;
+    padding: 12px 14px !important;
+    line-height: 1.2 !important;
+    border-radius: 8px !important;
     font-size: 17px !important;
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
+  }
+  #driver-password-modal .driver-password-actions .universal-btn-save,
+  #driver-password-modal .driver-password-actions .universal-btn-cancel {
+    font-size: 15px !important;
+    font-weight: 600 !important;
+  }
+  #driver-feedback-modal .driver-feedback-actions.universal-btn-group,
+  #driver-password-modal .driver-password-actions.universal-btn-group {
+    gap: 10px !important;
   }
 
   /* Mobil modal container: footer arkasında kalmayacak şekilde yükseklik sınırla */

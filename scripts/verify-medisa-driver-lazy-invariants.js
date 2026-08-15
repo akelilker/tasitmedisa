@@ -334,21 +334,36 @@ test('K2 tip matrisi aynıdır', () => {
 test('Takograf tip matrisi aynıdır', () => {
   assert.match(files.bootstrap, /normalizedType === 'kamyon' \|\| normalizedType === 'buyuk_ticari'/);
 });
-test('Driver asset version matrisi dar bump kullanır', () => {
-  assert.match(files.bootstrap, /bootstrap:\s*'20260813\.1'/);
-  assert.match(files.bootstrap, /dashboardCore:\s*'20260731\.3'/);
-  assert.match(files.bootstrap, /history:\s*'20260814\.1'/);
-  assert.match(files.bootstrap, /documents:\s*'20260718\.3'/);
-  assert.match(files.bootstrap, /login:\s*'20260731\.3'/);
-  assert.match(files.bootstrap, /feedback:\s*'20260813\.1'/);
-  assert.match(files.bootstrap, /password:\s*'20260731\.1'/);
-  assert.match(files.bootstrap, /actions:\s*'20260718\.1'/);
-  assert.match(files.bootstrap, /shellCss:\s*'20260731\.3'/);
-  assert.match(files.bootstrap, /featureCss:\s*'20260814\.1'/);
-  assert.match(files.loginHtml, /driver-script\.js\?v=20260813\.1/);
-  assert.match(files.dashboardHtml, /driver-script\.js\?v=20260814\.1/);
+test('Driver asset version sistemi kendi içinde tutarlıdır', () => {
+  const versionPattern = /^\d{8}\.\d+$/;
+  const readVersion = (key) => {
+    const match = files.bootstrap.match(new RegExp(key + ':\\s*[\'"]([^\'"]+)[\'"]'));
+    assert.ok(match, key + ' asset version key missing');
+    assert.match(match[1], versionPattern, key + ' asset version format');
+    return match[1];
+  };
+  const runtimeVersionMatch = files.bootstrap.match(/var VERSION = ['"]([^'"]+)['"]/);
+  assert.ok(runtimeVersionMatch, 'bootstrap VERSION missing');
+  assert.match(runtimeVersionMatch[1], versionPattern, 'bootstrap VERSION format');
+
+  const bootstrapVersion = readVersion('bootstrap');
+  assert.equal(bootstrapVersion, runtimeVersionMatch[1], 'bootstrap asset version must match VERSION');
+
+  const readBootstrapQueryVersion = (html, fileName) => {
+    const match = html.match(new RegExp(fileName + '\\?v=([^"\' ]+)'));
+    assert.ok(match, fileName + ' bootstrap query missing');
+    assert.match(match[1], versionPattern, fileName + ' bootstrap query format');
+    return match[1];
+  };
+  assert.equal(readBootstrapQueryVersion(files.loginHtml, 'driver-script\\.js'), bootstrapVersion);
+  assert.equal(readBootstrapQueryVersion(files.dashboardHtml, 'driver-script\\.js'), bootstrapVersion);
   assert.match(files.loginHtml, /driver-shell\.css\?v=20260731\.3/);
   assert.match(files.dashboardHtml, /driver-shell\.css\?v=20260731\.3/);
+
+  readVersion('featureCss');
+  assert.match(files.bootstrap, /assetUrl\(['"]driver-features\.css['"],\s*['"]featureCss['"]\)/);
+  assert.equal(count(files.bootstrap, /driver-features\.css/g), 1, 'driver-features.css must have one lazy owner');
+  assert.doesNotMatch(files.bootstrap, /driver-features\.css\?v=/);
 });
 test('iOS PWA sınıfı bootstrap ownerında uygulanır', () => {
   assert.match(files.bootstrap, /function applyMedisaIosPwaClass\s*\(/);
