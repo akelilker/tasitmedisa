@@ -1872,7 +1872,7 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
     border: none;
     border-radius: 0;
     box-shadow: none;
-    padding: 2px 10px;
+    padding: 2px 0;
   }
   #driver-feedback-modal #driver-feedback-type-list .vehicle-branch-option {
     box-sizing: border-box;
@@ -3458,7 +3458,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-vehicle-info,
   body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-left-quick-actions,
   body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-footer-back-wrap {
-    filter: blur(2px);
+    filter: blur(2px) brightness(0.68);
     opacity: 0.9;
     transition: filter 0.18s ease, opacity 0.18s ease;
   }
