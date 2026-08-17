@@ -35,9 +35,11 @@ if (($auth['success'] ?? false) !== true) {
 }
 
 if ($isSettingsDocument) {
-    $vehicle = [];
+    $vehicle = ['branchId' => $auth['doc_claims']['bid'] ?? ''];
     $sourcePath = medisaResolveVehicleDocumentFilePath($vehicle, $documentType, $data);
-    $safeId = (string)($config['settingsKey'] ?? $documentType);
+    $safeId = $documentType === 'k2'
+        ? medisaSafeK2BelgeGroupFileIdentity($auth['doc_claims']['gid'] ?? 'invalid')
+        : (string)($config['settingsKey'] ?? $documentType);
 } else {
     $vehicleIndex = medisaFindVehicleIndex($data, $vehicleId);
     if ($vehicleIndex < 0) {

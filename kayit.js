@@ -393,8 +393,7 @@
   }
 
   function getRegistrationK2ExpiryDate() {
-    const state = window.appData && window.appData.ayarlar && window.appData.ayarlar.k2Belgesi;
-    return String((state && state.expiryDate) || '').trim();
+    return '';
   }
 
   function clearVehicleTakografFieldsWhenOutOfScope(vehicle) {
@@ -421,7 +420,11 @@
   function syncVehicleTasitKartiFieldsForK2Scope(vehicle) {
     if (!vehicle) return vehicle;
     if (registrationVehicleNeedsK2(vehicle)) {
-      vehicle.tasitKartiExpiryDate = getRegistrationK2ExpiryDate();
+      const group = window.MedisaVehicleNotificationDomain
+        && window.MedisaVehicleNotificationDomain.getK2BelgeGroupForVehicle
+        ? window.MedisaVehicleNotificationDomain.getK2BelgeGroupForVehicle(vehicle)
+        : null;
+      vehicle.tasitKartiExpiryDate = String(group && group.expiryDate || '').trim();
       return vehicle;
     }
     vehicle.tasitKartiYapilmaDate = '';

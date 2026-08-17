@@ -38,7 +38,7 @@ if (($contextResult['success'] ?? false) !== true) {
 $context = $contextResult['context'];
 
 // Taşıt objesini kullanıcı paneli response formatına dönüştür (sol panel + uyarılar için)
-function buildVehicleForDriver($tasit, $branches = [], $k2Belgesi = []) {
+function buildVehicleForDriver($tasit, $branches = [], $k2BelgeGruplari = []) {
     $branchId = $tasit['branchId'] ?? null;
     $branchName = '';
     if ($branchId && is_array($branches)) {
@@ -56,6 +56,13 @@ function buildVehicleForDriver($tasit, $branches = [], $k2Belgesi = []) {
     $vehicleType = strtolower(trim((string)($tasit['vehicleType'] ?? $tasit['tip'] ?? 'otomobil')));
     $k2Required = in_array($vehicleType, ['minivan', 'kamyon', 'romork'], true);
     $takografRequired = $vehicleType === 'kamyon';
+    $k2Group = null;
+    foreach (is_array($k2BelgeGruplari) ? $k2BelgeGruplari : [] as $candidate) {
+        if (is_array($candidate) && in_array((string)$branchId, array_map('strval', $candidate['branchIds'] ?? []), true)) {
+            $k2Group = $candidate;
+            break;
+        }
+    }
     return [
         'id' => $tasit['id'],
         'version' => medisaGetVehicleVersion($tasit),
@@ -72,8 +79,8 @@ function buildVehicleForDriver($tasit, $branches = [], $k2Belgesi = []) {
         'ruhsatPath' => $tasit['ruhsatPath'] ?? '',
         'sigortaPolicePath' => $tasit['sigortaPolicePath'] ?? '',
         'kaskoPolicePath' => $tasit['kaskoPolicePath'] ?? '',
-        'k2BelgesiPath' => $k2Required && is_array($k2Belgesi) ? ($k2Belgesi['documentPath'] ?? '') : '',
-        'k2BelgesiExpiryDate' => $k2Required && is_array($k2Belgesi) ? ($k2Belgesi['expiryDate'] ?? '') : '',
+        'k2BelgesiPath' => $k2Required && is_array($k2Group) ? ($k2Group['documentPath'] ?? '') : '',
+        'k2BelgesiExpiryDate' => $k2Required && is_array($k2Group) ? ($k2Group['expiryDate'] ?? '') : '',
         'tasitKartiPath' => $k2Required ? ($tasit['tasitKartiPath'] ?? '') : '',
         'tasitKartiExpiryDate' => $k2Required ? ($tasit['tasitKartiExpiryDate'] ?? '') : '',
         'takografBelgesiPath' => $takografRequired ? ($tasit['takografBelgesiPath'] ?? '') : '',
@@ -156,11 +163,11 @@ $user = $context['user'];
 $branches = $data['branches'] ?? [];
 $vehicles = [];
 $tasitlar = $data['tasitlar'] ?? [];
-$k2Belgesi = is_array($data['ayarlar']['k2Belgesi'] ?? null) ? $data['ayarlar']['k2Belgesi'] : [];
+$k2BelgeGruplari = medisaNormalizeK2BelgeGruplari($data['ayarlar']['k2BelgeGruplari'] ?? [], $branches);
 foreach ($tasitlar as $tasit) {
     $assignedUserId = $tasit['assignedUserId'] ?? null;
     if ($assignedUserId !== null && (string)$assignedUserId === (string)$user['id']) {
-        $vehicles[] = buildVehicleForDriver($tasit, $branches, $k2Belgesi);
+        $vehicles[] = buildVehicleForDriver($tasit, $branches, $k2BelgeGruplari);
     }
 }
 // Eski format yedek: zimmetli_araclar varsa ve assignedUserId ile taşıt bulunamadıysa kullanılabilir
@@ -169,7 +176,7 @@ if (count($vehicles) === 0 && !empty($user['zimmetli_araclar'])) {
     foreach ($zimmetliAraclar as $aracId) {
         foreach ($tasitlar as $tasit) {
             if (isset($tasit['id']) && (string)$tasit['id'] === (string)$aracId) {
-                $vehicles[] = buildVehicleForDriver($tasit, $branches, $k2Belgesi);
+                $vehicles[] = buildVehicleForDriver($tasit, $branches, $k2BelgeGruplari);
                 break;
             }
         }

@@ -305,6 +305,23 @@ function medisaFullBackupCollectReferencedFiles(array $data, array $env = null) 
         }
     }
 
+    foreach (medisaNormalizeK2BelgeGruplari($data['ayarlar']['k2BelgeGruplari'] ?? [], $data['branches'] ?? []) as $group) {
+        $rawPath = trim((string)($group['documentPath'] ?? ''));
+        if ($rawPath === '') continue;
+        $config = medisaGetVehicleDocumentConfig('k2');
+        $archivePath = medisaFullBackupRelativeArchivePathFromRaw($rawPath, $config);
+        $absolute = medisaResolveVehicleDocumentCandidatePath($rawPath, $config);
+        if ($archivePath === null || $absolute === null) {
+            return medisaFullBackupError('MISSING_REFERENCED_FILE', 'K2 grup belgesi bulunamadı.', 422, [
+                'source' => 'k2-group:' . $group['id'],
+                'group_id' => $group['id'],
+                'document_path' => $rawPath,
+            ]);
+        }
+        $addErr = medisaFullBackupAddReferencedEntry($filesByArchive, $archivePath, $absolute, 'k2-group:' . $group['id']);
+        if ($addErr !== null) return $addErr;
+    }
+
     $vehicles = $data['tasitlar'] ?? ($data['vehicles'] ?? []);
     if (!is_array($vehicles)) {
         $vehicles = [];

@@ -73,6 +73,7 @@ function medisaDefaultData() {
                 'documentPath' => '',
                 'updatedAt' => '',
             ],
+            'k2BelgeGruplari' => [],
         ],
         'sifreler' => [],
         'arac_aylik_hareketler' => [],
@@ -80,6 +81,182 @@ function medisaDefaultData() {
         'notificationReadState' => [],
         'monthlyTodoWhatsAppLogs' => [],
     ];
+}
+
+/**
+ * Canonical K2 branch-group domain. Legacy ayarlar.k2Belgesi is intentionally
+ * preserved as inert historical data and is never used by these helpers.
+ */
+function medisaNormalizeK2BelgeGruplari($groups, $branches = []) {
+    if (!is_array($groups)) return [];
+    $knownBranchIds = [];
+    foreach (is_array($branches) ? $branches : [] as $branch) {
+        $id = trim((string)($branch['id'] ?? ''));
+        if ($id !== '') $knownBranchIds[$id] = true;
+    }
+    $seenGroups = [];
+    $seenBranches = [];
+    $normalized = [];
+    foreach ($groups as $group) {
+        if (!is_array($group)) continue;
+        $id = trim((string)($group['id'] ?? ''));
+        if ($id === '' || isset($seenGroups[$id])) continue;
+        $branchIds = [];
+        foreach (is_array($group['branchIds'] ?? null) ? $group['branchIds'] : [] as $branchId) {
+            $branchId = trim((string)$branchId);
+            if ($branchId === '' || isset($seenBranches[$branchId])) continue;
+            if ($knownBranchIds && !isset($knownBranchIds[$branchId])) continue;
+            $branchIds[] = $branchId;
+            $seenBranches[$branchId] = true;
+        }
+        if (!$branchIds) continue;
+        $normalized[] = [
+            'id' => $id,
+            'branchIds' => $branchIds,
+            'expiryDate' => trim((string)($group['expiryDate'] ?? '')),
+            'documentPath' => trim((string)($group['documentPath'] ?? '')),
+            'updatedAt' => trim((string)($group['updatedAt'] ?? '')),
+        ];
+        $seenGroups[$id] = true;
+    }
+    return $normalized;
+}
+
+function medisaGetK2BelgeGruplari(&$data) {
+    if (!is_array($data)) return [];
+    if (!isset($data['ayarlar']) || !is_array($data['ayarlar'])) $data['ayarlar'] = [];
+    $data['ayarlar']['k2BelgeGruplari'] = medisaNormalizeK2BelgeGruplari(
+        $data['ayarlar']['k2BelgeGruplari'] ?? [],
+        $data['branches'] ?? []
+    );
+    return $data['ayarlar']['k2BelgeGruplari'];
+}
+
+function medisaFindK2BelgeGroupById($data, $groupId) {
+    $groupId = trim((string)$groupId);
+    foreach (medisaNormalizeK2BelgeGruplari($data['ayarlar']['k2BelgeGruplari'] ?? [], $data['branches'] ?? []) as $group) {
+        if ($group['id'] === $groupId) return $group;
+    }
+    return null;
+}
+
+function medisaFindK2BelgeGroupByBranchId($data, $branchId) {
+    $branchId = trim((string)$branchId);
+    if ($branchId === '') return null;
+    foreach (medisaNormalizeK2BelgeGruplari($data['ayarlar']['k2BelgeGruplari'] ?? [], $data['branches'] ?? []) as $group) {
+        if (in_array($branchId, $group['branchIds'], true)) return $group;
+    }
+    return null;
+}
+
+function medisaResolveK2BelgeGroupForVehicle($data, $vehicle) {
+    return is_array($vehicle) ? medisaFindK2BelgeGroupByBranchId($data, $vehicle['branchId'] ?? '') : null;
+}
+
+function medisaCanAccessK2BelgeBranch($branchId, $context) {
+    $role = $context['role'] ?? 'kullanici';
+    return $role === 'genel_yonetici'
+        || ($role === 'sube_yonetici' && medisaArrayHasId($context['branch_ids'] ?? [], $branchId));
+}
+
+function medisaCanAccessK2BelgeGroup($group, $context) {
+    if (!is_array($group)) return false;
+    foreach ($group['branchIds'] ?? [] as $branchId) {
+        if (medisaCanAccessK2BelgeBranch($branchId, $context)) return true;
+    }
+    return false;
+}
+
+function medisaBuildK2BelgeGroupId() {
+    return 'k2g_' . bin2hex(random_bytes(12));
+}
+
+function medisaSafeK2BelgeGroupFileIdentity($groupId) {
+    $safe = preg_replace('/[^a-zA-Z0-9_-]/', '', trim((string)$groupId));
+    return $safe !== '' ? $safe : 'invalid';
+}
+
+function medisaSyncTasitKartiExpiryForK2Branches(&$data, $branchIds, $expiryDate) {
+    $branchSet = [];
+    foreach (is_array($branchIds) ? $branchIds : [] as $branchId) $branchSet[(string)$branchId] = true;
+    $count = 0;
+    if (!isset($data['tasitlar']) || !is_array($data['tasitlar'])) $data['tasitlar'] = [];
+    foreach ($data['tasitlar'] as &$vehicle) {
+        if (!isset($branchSet[(string)($vehicle['branchId'] ?? '')])) continue;
+        $type = strtolower(trim((string)($vehicle['vehicleType'] ?? $vehicle['tip'] ?? '')));
+        if (!in_array($type, ['minivan', 'kamyon', 'romork'], true)) continue;
+        if (($vehicle['satildiMi'] ?? false) === true || ($vehicle['arsiv'] ?? false) === true
+            || ($vehicle['pasif'] ?? false) === true || ($vehicle['aktif'] ?? true) === false
+            || ($vehicle['aktifMi'] ?? true) === false || strtolower(trim((string)($vehicle['durum'] ?? ''))) === 'pasif') continue;
+        if ((string)($vehicle['tasitKartiExpiryDate'] ?? '') !== (string)$expiryDate) {
+            $vehicle['tasitKartiExpiryDate'] = (string)$expiryDate;
+            $count++;
+        }
+    }
+    unset($vehicle);
+    return $count;
+}
+
+function medisaApplyK2BelgeGroupMutation(&$data, $context, $branchId, $expiryDate, $branchIds = null) {
+    $branchId = trim((string)$branchId);
+    if ($branchId === '' || !medisaCanAccessK2BelgeBranch($branchId, $context)) {
+        return medisaBuildErrorResult('Bu şube için K2 yetkiniz yok.', 403);
+    }
+    if (($context['role'] ?? '') !== 'genel_yonetici' && $branchIds !== null) {
+        return medisaBuildErrorResult('K2 grup üyeliğini değiştirme yetkiniz yok.', 403);
+    }
+    $known = [];
+    foreach (($data['branches'] ?? []) as $branch) $known[(string)($branch['id'] ?? '')] = true;
+    $requested = [$branchId];
+    if (($context['role'] ?? '') === 'genel_yonetici' && is_array($branchIds)) $requested = array_values(array_unique(array_map('strval', $branchIds)));
+    foreach ($requested as $id) {
+        if ($id === '' || !isset($known[$id])) return medisaBuildErrorResult('Geçersiz şube.', 400);
+    }
+    $groups = medisaGetK2BelgeGruplari($data);
+    $existing = medisaFindK2BelgeGroupByBranchId($data, $branchId);
+    if (($context['role'] ?? '') === 'genel_yonetici' && is_array($branchIds)) {
+        foreach ($requested as $id) {
+            $other = medisaFindK2BelgeGroupByBranchId($data, $id);
+            if ($other && (!$existing || $other['id'] !== $existing['id'])) {
+                return medisaBuildErrorResult('Şube başka bir Yetki Belgesine bağlı.', 409);
+            }
+        }
+        $removedBranchIds = [];
+        if ($existing) {
+            $removedBranchIds = array_values(array_diff($existing['branchIds'], $requested));
+        }
+        foreach ($groups as &$group) {
+            if ($existing && $group['id'] === $existing['id']) $group['branchIds'] = $requested;
+        }
+        unset($group);
+        if ($removedBranchIds) medisaSyncTasitKartiExpiryForK2Branches($data, $removedBranchIds, '');
+    }
+    if ($existing) {
+        $groupId = $existing['id'];
+        if (!is_array($branchIds) || ($context['role'] ?? '') !== 'genel_yonetici') {
+            foreach ($groups as &$group) {
+                if ($group['id'] === $groupId) $group['branchIds'] = array_values(array_unique(array_merge($group['branchIds'], $requested)));
+            }
+            unset($group);
+        }
+    } else {
+        $groupId = medisaBuildK2BelgeGroupId();
+        $groups[] = ['id' => $groupId, 'branchIds' => $requested, 'expiryDate' => '', 'documentPath' => '', 'updatedAt' => ''];
+    }
+    foreach ($groups as &$group) {
+        if ($group['id'] === $groupId) {
+            $group['expiryDate'] = trim((string)$expiryDate);
+            $group['updatedAt'] = date('c');
+        }
+    }
+    unset($group);
+    $groups = array_values(array_filter($groups, function ($group) {
+        return !empty($group['branchIds']);
+    }));
+    $data['ayarlar']['k2BelgeGruplari'] = medisaNormalizeK2BelgeGruplari($groups, $data['branches'] ?? []);
+    $target = medisaFindK2BelgeGroupById($data, $groupId);
+    medisaSyncTasitKartiExpiryForK2Branches($data, $target['branchIds'] ?? [], $target['expiryDate'] ?? '');
+    return ['success' => true, 'group' => $target];
 }
 
 /**
@@ -358,6 +535,10 @@ function medisaMutateData(callable $mutator) {
             return $result;
         }
 
+        $data['ayarlar']['k2BelgeGruplari'] = medisaNormalizeK2BelgeGruplari(
+            $data['ayarlar']['k2BelgeGruplari'] ?? [],
+            $data['branches'] ?? []
+        );
         $shouldSave = !array_key_exists('save', $result) || $result['save'] !== false;
         if ($shouldSave && !saveData($data)) {
             return medisaBuildErrorResult('Kayıt sırasında hata oluştu!', 500);
@@ -1660,12 +1841,42 @@ function medisaFilterDataForContextWithUserPredicate($data, $context, $userPredi
         return isset($visibleAylikKayitIds[(string)($request['kayit_id'] ?? '')]);
     }));
 
+    $ayarlar = is_array($data['ayarlar'] ?? null) ? $data['ayarlar'] : [];
+    $allK2Groups = medisaNormalizeK2BelgeGruplari($ayarlar['k2BelgeGruplari'] ?? [], $data['branches'] ?? []);
+    $visibleK2BranchIds = array_map('strval', array_keys($visibleBranchIds));
+    if (($context['role'] ?? 'kullanici') === 'genel_yonetici') {
+        $ayarlar['k2BelgeGruplari'] = $allK2Groups;
+    } elseif (($context['role'] ?? 'kullanici') === 'sube_yonetici') {
+        $ayarlar['k2BelgeGruplari'] = array_values(array_map(function ($group) use ($visibleK2BranchIds) {
+            $group['branchIds'] = array_values(array_intersect($group['branchIds'], $visibleK2BranchIds));
+            return $group;
+        }, array_filter($allK2Groups, function ($group) use ($visibleK2BranchIds) {
+            return count(array_intersect($group['branchIds'], $visibleK2BranchIds)) > 0;
+        })));
+        unset($ayarlar['k2Belgesi']);
+    } else {
+        $vehicleBranchIds = [];
+        foreach ($visibleVehicles as $vehicle) {
+            $branchId = trim((string)($vehicle['branchId'] ?? ''));
+            if ($branchId !== '') $vehicleBranchIds[$branchId] = true;
+        }
+        $ayarlar['k2BelgeGruplari'] = array_values(array_map(function ($group) use ($vehicleBranchIds) {
+            $group['branchIds'] = array_values(array_filter($group['branchIds'], function ($id) use ($vehicleBranchIds) {
+                return isset($vehicleBranchIds[(string)$id]);
+            }));
+            return $group;
+        }, array_filter($allK2Groups, function ($group) use ($vehicleBranchIds) {
+            foreach ($group['branchIds'] as $id) if (isset($vehicleBranchIds[(string)$id])) return true;
+            return false;
+        })));
+        unset($ayarlar['k2Belgesi']);
+    }
     return [
         'tasitlar' => $visibleVehicles,
         'kayitlar' => ($context['role'] ?? 'kullanici') === 'genel_yonetici' ? ($data['kayitlar'] ?? []) : [],
         'branches' => $visibleBranches,
         'users' => $visibleUsers,
-        'ayarlar' => $data['ayarlar'] ?? [
+        'ayarlar' => $ayarlar ?: [
             'sirketAdi' => 'Medisa',
             'yetkiliKisi' => '',
             'telefon' => '',
@@ -1675,6 +1886,7 @@ function medisaFilterDataForContextWithUserPredicate($data, $context, $userPredi
                 'documentPath' => '',
                 'updatedAt' => '',
             ],
+            'k2BelgeGruplari' => [],
         ],
         'sifreler' => ($context['role'] ?? 'kullanici') === 'genel_yonetici' ? ($data['sifreler'] ?? []) : [],
         'arac_aylik_hareketler' => $visibleAylikKayitlar,
@@ -2593,6 +2805,7 @@ function medisaGetVehicleDocumentConfig(string $documentType): ?array {
         'k2' => [
             'pathField' => 'k2BelgesiPath',
             'settingsKey' => 'k2Belgesi',
+            'k2GroupDocument' => true,
             'settingsPathField' => 'documentPath',
             'dir' => 'k2_belgesi',
             'fallbackName' => 'k2-belgesi',
@@ -2677,6 +2890,13 @@ function medisaResolveVehicleDocumentFilePath($vehicle, string $documentType, $d
         return null;
     }
 
+    if ($documentType === 'k2' && is_array($data)) {
+        $group = medisaResolveK2BelgeGroupForVehicle($data, $vehicle);
+        if ($group && trim((string)($group['documentPath'] ?? '')) !== '') {
+            return medisaResolveVehicleDocumentCandidatePath($group['documentPath'], $config);
+        }
+        return null;
+    }
     $candidates = [];
     $settingsKey = (string)($config['settingsKey'] ?? '');
     if ($settingsKey !== '' && is_array($data)) {
@@ -2786,7 +3006,7 @@ function medisaValidateDocumentToken(string $token): ?array {
     return $decoded;
 }
 
-function medisaMintDocumentAccessToken(array $data, array $context, string $vehicleId, string $documentType): array {
+function medisaMintDocumentAccessToken(array $data, array $context, string $vehicleId, string $documentType, string $branchId = ''): array {
     $documentType = strtolower(trim($documentType));
     if ($documentType === '') {
         $documentType = 'ruhsat';
@@ -2812,6 +3032,38 @@ function medisaMintDocumentAccessToken(array $data, array $context, string $vehi
     }
 
     $isSettingsDocument = !empty($config['settingsKey']);
+    if ($documentType === 'k2') {
+        $branchId = trim($branchId);
+        $vehicle = null;
+        if ($branchId === '' && trim($vehicleId) !== '') {
+            $vehicleIndex = medisaFindVehicleIndex($data, trim($vehicleId));
+            if ($vehicleIndex >= 0 && medisaCanViewVehicleRecord($data['tasitlar'][$vehicleIndex], $context)) {
+                $vehicle = $data['tasitlar'][$vehicleIndex];
+                $branchId = trim((string)($vehicle['branchId'] ?? ''));
+            }
+        }
+        $group = medisaFindK2BelgeGroupByBranchId($data, $branchId);
+        $groupAllowed = $vehicle
+            ? ($vehicle !== null && medisaCanViewVehicleRecord($vehicle, $context))
+            : medisaCanAccessK2BelgeGroup($group, $context);
+        if (!$group || !$groupAllowed) {
+            return ['success' => false, 'status' => 403, 'message' => 'Bu K2 grubu için yetkiniz yok.'];
+        }
+        $claims = [
+            'sub' => $userId,
+            'role' => $role,
+            'vid' => $vehicle ? trim((string)$vehicleId) : 'settings',
+            'bid' => $branchId,
+            'gid' => $group['id'],
+            'dtype' => 'k2',
+            'scope' => 'settings-k2',
+        ];
+        return [
+            'success' => true,
+            'token' => medisaCreateDocumentToken($claims, MEDISA_DOCUMENT_TOKEN_TTL_SECONDS),
+            'expiresAt' => time() + MEDISA_DOCUMENT_TOKEN_TTL_SECONDS,
+        ];
+    }
     if ($isSettingsDocument) {
         if (!medisaHasMainAppAccessRole($role)) {
             return [
@@ -2955,7 +3207,14 @@ function medisaResolveDocumentAccessContext(array $data, string $vehicleId, stri
 
     $scope = strtolower(trim((string)($docClaims['scope'] ?? 'vehicle')));
     if ($isSettingsDocument) {
-        if ($scope !== 'settings') {
+        if ($documentType === 'k2' && $scope !== 'settings-k2') {
+            return [
+                'success' => false,
+                'status' => 403,
+                'message' => 'Belge erişim anahtarı uyuşmuyor.',
+            ];
+        }
+        if ($documentType !== 'k2' && $scope !== 'settings') {
             return [
                 'success' => false,
                 'status' => 403,
@@ -3010,6 +3269,33 @@ function medisaResolveDocumentAccessContext(array $data, string $vehicleId, stri
     }
 
     if ($isSettingsDocument) {
+        if ($documentType === 'k2') {
+            $group = medisaFindK2BelgeGroupById($data, $docClaims['gid'] ?? '');
+            $branchId = trim((string)($docClaims['bid'] ?? ''));
+            $tokenVehicleId = trim((string)($docClaims['vid'] ?? ''));
+            if ($tokenVehicleId !== 'settings' && ($tokenVehicleId === '' || $tokenVehicleId !== trim($vehicleId))) {
+                return [
+                    'success' => false,
+                    'status' => 403,
+                    'message' => 'Belge erişim anahtarı uyuşmuyor.',
+                ];
+            }
+            $vehicleAccessAllowed = false;
+            if ($tokenVehicleId !== 'settings') {
+                $vehicleIndex = medisaFindVehicleIndex($data, $tokenVehicleId);
+                $vehicleAccessAllowed = $vehicleIndex >= 0
+                    && medisaCanViewVehicleRecord($data['tasitlar'][$vehicleIndex], $context)
+                    && (string)($data['tasitlar'][$vehicleIndex]['branchId'] ?? '') === $branchId;
+            }
+            if (!$group || !in_array($branchId, $group['branchIds'], true)
+                || (!$vehicleAccessAllowed && !medisaCanAccessK2BelgeBranch($branchId, $context))) {
+                return [
+                    'success' => false,
+                    'status' => 403,
+                    'message' => 'Bu K2 grubu için yetkiniz yok.',
+                ];
+            }
+        }
         if (!medisaHasMainAppAccessRole($context['role'] ?? 'kullanici')) {
             return [
                 'success' => false,
@@ -3041,6 +3327,7 @@ function medisaResolveDocumentAccessContext(array $data, string $vehicleId, stri
         'success' => true,
         'context' => $context,
         'auth_method' => 'doc_token',
+        'doc_claims' => $docClaims,
     ];
 }
 

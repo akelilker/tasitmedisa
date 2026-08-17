@@ -56,12 +56,13 @@ if (!is_array($input)) {
 }
 
 $vehicleId = trim((string)($input['vehicleId'] ?? $input['id'] ?? ''));
+$branchId = trim((string)($input['branchId'] ?? ''));
 $documentType = strtolower(trim((string)($input['documentType'] ?? 'ruhsat')));
 if ($documentType === '') {
     $documentType = 'ruhsat';
 }
 
-$result = medisaMintDocumentAccessToken($data, $context, $vehicleId, $documentType);
+$result = medisaMintDocumentAccessToken($data, $context, $vehicleId, $documentType, $branchId);
 if (($result['success'] ?? false) !== true) {
     $status = (int)($result['status'] ?? 400);
     http_response_code($status);

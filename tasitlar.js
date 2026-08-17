@@ -197,7 +197,7 @@
 
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20260813.1';
+  const MEDISA_TASITLAR_MODULE_VERSION = '20260817.2';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
@@ -206,8 +206,11 @@
     'vehicleNeedsTakograf',
     'vehicleNeedsTrafikSigortasi',
     'vehicleNeedsEgzozMuayene',
-    'getK2BelgesiState',
-    'getK2BelgesiExpiryDate',
+    'getK2BelgeGroups',
+    'getK2BelgeGroupForBranch',
+    'getK2BelgeGroupForVehicle',
+    'getK2BelgesiExpiryDateForVehicle',
+    'getK2BelgesiDocumentPathForVehicle',
     'isVehicleOperationallyInactive',
     'getEgzozMuayeneState',
     'isEgzozMuayeneCritical'
@@ -3743,8 +3746,8 @@
     return rawType;
   }
 
-  function getK2BelgesiDocumentPath() {
-    return String(window.MedisaVehicleNotificationDomain.getK2BelgesiState().documentPath || '').trim();
+  function getK2BelgesiDocumentPath(vehicle) {
+    return String(window.MedisaVehicleNotificationDomain.getK2BelgesiDocumentPathForVehicle(vehicle) || '').trim();
   }
 
 
@@ -5410,7 +5413,7 @@
         }
         const bitisDisplay = document.getElementById('tasit-karti-bitis-display');
         if (bitisDisplay) {
-          const k2ExpiryIso = getTasitKartiSourceK2ExpiryIsoDate();
+          const k2ExpiryIso = getTasitKartiSourceK2ExpiryIsoDate(vehicle);
           bitisDisplay.textContent = k2ExpiryIso
             ? formatVehicleDocumentExpiryDate(k2ExpiryIso)
             : 'Önce K2 Belgesi Geçerlilik Süresi Kaydedilmelidir';
@@ -5983,7 +5986,7 @@
   function getVehicleDocumentPath(vehicle, documentType) {
     const config = getVehicleDocumentConfig(documentType);
     if (config.scope === 'settings') {
-      return getK2BelgesiDocumentPath();
+      return window.MedisaVehicleNotificationDomain.getK2BelgesiDocumentPathForVehicle(vehicle);
     }
     return vehicle ? String(vehicle[config.pathField] || '') : '';
   }
@@ -6004,15 +6007,15 @@
   }
 
   function getTasitKartiExpiryDate(vehicle) {
-    return String(window.MedisaVehicleNotificationDomain.getK2BelgesiExpiryDate() || (vehicle && vehicle.tasitKartiExpiryDate) || '').trim();
+    return String((vehicle && vehicle.tasitKartiExpiryDate) || window.MedisaVehicleNotificationDomain.getK2BelgesiExpiryDateForVehicle(vehicle) || '').trim();
   }
 
-  function getTasitKartiSourceK2ExpiryIsoDate() {
-    return parseVehicleDocumentExpiryDate(window.MedisaVehicleNotificationDomain.getK2BelgesiExpiryDate());
+  function getTasitKartiSourceK2ExpiryIsoDate(vehicle) {
+    return parseVehicleDocumentExpiryDate(window.MedisaVehicleNotificationDomain.getK2BelgesiExpiryDateForVehicle(vehicle));
   }
 
-  function validateTasitKartiK2SourceDate() {
-    if (getTasitKartiSourceK2ExpiryIsoDate()) return { valid: true };
+  function validateTasitKartiK2SourceDate(vehicle) {
+    if (getTasitKartiSourceK2ExpiryIsoDate(vehicle)) return { valid: true };
     return { valid: false, message: 'Taşıt Kartı işlemi için önce K2 Belgesi Geçerlilik Süresi kaydedilmelidir.' };
   }
 
@@ -7709,7 +7712,7 @@
     }
     function validateSelectedDocumentBeforeUpload() {
       if (cfg.key === 'tasit_karti') {
-        const expiryValidation = validateTasitKartiK2SourceDate();
+        const expiryValidation = validateTasitKartiK2SourceDate(vehicle);
         if (expiryValidation.valid) return true;
         alert(expiryValidation.message);
         resetSelectedUploadFile();
@@ -8077,7 +8080,7 @@
       const tasitKartiExpiryDateBefore = getTasitKartiExpiryDate(vehicle);
       uploadMeta.tasitKartiExpiryDateBefore = tasitKartiExpiryDateBefore;
       uploadUrlParams.set('tasitKartiExpiryDateBefore', tasitKartiExpiryDateBefore);
-      const expiryValidation = validateTasitKartiK2SourceDate();
+      const expiryValidation = validateTasitKartiK2SourceDate(vehicle);
       if (!expiryValidation.valid) {
         alert(expiryValidation.message);
         return;
@@ -8118,14 +8121,11 @@
         invalidateRuhsatDocumentCache(vehicleId, cfg.key);
         var newPath = data.documentPath || data.ruhsatPath;
         if (cfg.scope === 'settings') {
-          const k2State = window.MedisaVehicleNotificationDomain.getK2BelgesiState();
+          const k2Group = window.MedisaVehicleNotificationDomain.getK2BelgeGroupForVehicle(
+            (window.appData?.tasitlar || []).find(function(x) { return String(x.id) === String(vehicleId); })
+          );
           if (newPath) {
-            k2State.documentPath = newPath;
-          }
-          if (data.settingsDocument && typeof data.settingsDocument === 'object') {
-            Object.assign(k2State, data.settingsDocument);
-          } else {
-            k2State.updatedAt = new Date().toISOString();
+            if (k2Group) k2Group.documentPath = newPath;
           }
         } else {
           const currentVehicles = window.appData?.tasitlar || [];
@@ -8816,14 +8816,14 @@
       return;
     }
 
-    const expiryValidation = validateTasitKartiK2SourceDate();
+    const svc = resolveVehicleContextForDynamicSave();
+    if (!svc) return;
+    const expiryValidation = validateTasitKartiK2SourceDate(svc.vehicle);
     if (!expiryValidation.valid) {
       alert(expiryValidation.message);
       return;
     }
 
-    const svc = resolveVehicleContextForDynamicSave();
-    if (!svc) return;
     const vehicleId = svc.vehicleId;
     const vehicle = svc.vehicle;
     const vehicles = svc.vehicles;
@@ -8833,7 +8833,7 @@
     }
 
     const yapilmaIso = parseGgAaYyyyToIso(tarih);
-    const bitisTarihi = getTasitKartiSourceK2ExpiryIsoDate();
+    const bitisTarihi = getTasitKartiSourceK2ExpiryIsoDate(vehicle);
     vehicle.tasitKartiYapilmaDate = yapilmaIso;
     vehicle.tasitKartiExpiryDate = bitisTarihi;
 
@@ -9259,6 +9259,12 @@
     const yeniSube = branches.find(b => String(b.id) === String(yeniSubeId));
     const normalizedSubeId = yeniSube ? yeniSube.id : yeniSubeId;
     vehicle.branchId = normalizedSubeId;
+    if (window.MedisaVehicleNotificationDomain.vehicleNeedsK2Belgesi(vehicle)) {
+      const targetK2Group = window.MedisaVehicleNotificationDomain.getK2BelgeGroupForVehicle(vehicle);
+      vehicle.tasitKartiExpiryDate = String(targetK2Group && targetK2Group.expiryDate || '').trim();
+    } else {
+      vehicle.tasitKartiExpiryDate = '';
+    }
 
     const event = {
       id: Date.now().toString(),

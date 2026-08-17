@@ -2059,7 +2059,8 @@
 
 /* Şube Yönetimi & Kullanıcı Yönetimi: kutulardaki metinler üstten hizalı */
 #branch-modal #branch-list .settings-card,
-#user-modal #user-list .settings-card {
+#user-modal #user-list .settings-card,
+#required-documents-modal #required-documents-branch-list .settings-card {
     align-items: center !important;
     justify-content: center !important;
 }
@@ -2078,14 +2079,16 @@
     display: none !important;
 }
 #branch-modal #branch-list .settings-card-content,
-#user-modal #user-list .settings-card-content {
+#user-modal #user-list .settings-card-content,
+#required-documents-modal #required-documents-branch-list .settings-card-content {
     justify-content: center !important;
     align-items: center !important;
 }
 
 /* Şube Yönetimi & Kullanıcı Yönetimi: isimler ilk satıra sığmazsa ikinci satıra insın (diğer ayarlar bozulmasın) */
 #branch-modal #branch-list .settings-card .settings-card-title,
-#user-modal #user-list .settings-card .settings-card-title {
+#user-modal #user-list .settings-card .settings-card-title,
+#required-documents-modal #required-documents-branch-list .settings-card .settings-card-title {
     white-space: normal !important;
     overflow: hidden !important;
     text-overflow: clip !important;

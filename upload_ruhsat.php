@@ -90,6 +90,7 @@ if (!$config) {
     exit;
 }
 $isSettingsDocument = !empty($config['settingsKey']);
+$requestedBranchId = trim((string)medisaUploadRequestValue('branchId', '', true));
 
 function medisaNormalizeUploadDocumentDateToIso($rawDate) {
     $value = trim((string)$rawDate);
@@ -313,7 +314,9 @@ if (!$isSettingsDocument) {
             echo json_encode(['error' => 'Bu taşıt tipi için Taşıt Kartı yüklenemez.'], JSON_UNESCAPED_UNICODE);
             exit;
         }
-        $tasitKartiK2ExpiryDate = medisaNormalizeUploadDocumentDateToIso($preloadData['ayarlar']['k2Belgesi']['expiryDate'] ?? '');
+        $tasitKartiK2ExpiryDate = medisaNormalizeUploadDocumentDateToIso(
+            medisaResolveK2BelgeGroupForVehicle($preloadData, $preVehicle)['expiryDate'] ?? ''
+        );
         if ($tasitKartiK2ExpiryDate === '') {
             http_response_code(400);
             echo json_encode(['error' => 'Taşıt Kartı yüklemek için önce K2 Belgesi Geçerlilik Süresi kaydedilmelidir.'], JSON_UNESCAPED_UNICODE);
@@ -331,6 +334,18 @@ if (!$isSettingsDocument) {
             echo json_encode(['error' => 'Satış Sözleşmesi yalnızca stoktan düşen (satış veya pert) taşıtlara yüklenebilir.'], JSON_UNESCAPED_UNICODE);
             exit;
         }
+    }
+} elseif ($documentType === 'k2') {
+    $k2Group = medisaFindK2BelgeGroupByBranchId($preloadData, $requestedBranchId);
+    if ($requestedBranchId === '' || !medisaCanAccessK2BelgeBranch($requestedBranchId, $context)) {
+        http_response_code(403);
+        echo json_encode(['error' => 'Bu şube için K2 yükleme yetkiniz yok.'], JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+    if ($k2Group && !medisaCanAccessK2BelgeGroup($k2Group, $context)) {
+        http_response_code(403);
+        echo json_encode(['error' => 'Bu K2 grubu için yetkiniz yok.'], JSON_UNESCAPED_UNICODE);
+        exit;
     }
 } elseif (($context['role'] ?? '') !== 'genel_yonetici') {
     http_response_code(403);
@@ -393,7 +408,10 @@ if (strpos((string)$header, '%PDF') === false) {
     exit;
 }
 
-$safeId = $isSettingsDocument ? (string)($config['settingsKey'] ?? $documentType) : preg_replace('/[^a-zA-Z0-9_-]/', '', $vehicleId);
+$k2GroupForUpload = $documentType === 'k2' ? medisaFindK2BelgeGroupByBranchId($preloadData, $requestedBranchId) : null;
+$safeId = $documentType === 'k2'
+    ? medisaSafeK2BelgeGroupFileIdentity($k2GroupForUpload['id'] ?? ('pending_' . $requestedBranchId))
+    : ($isSettingsDocument ? (string)($config['settingsKey'] ?? $documentType) : preg_replace('/[^a-zA-Z0-9_-]/', '', $vehicleId));
 if ($safeId === '') {
     $safeId = 'vehicle_' . (preg_replace('/\D/', '', $vehicleId) ?: 'unknown');
 }
@@ -408,7 +426,9 @@ if ($plate === '') {
     $plate = strtoupper($safeId);
 }
 
-$filename = $plate . '_' . $documentType . '_' . time() . '.pdf';
+$filename = $documentType === 'k2'
+    ? 'k2_' . $safeId . '.pdf'
+    : $plate . '_' . $documentType . '_' . time() . '.pdf';
 $dataDir = __DIR__ . '/data/' . $config['dir'];
 if (!is_dir($dataDir)) {
     @mkdir($dataDir, 0755, true);
@@ -426,13 +446,29 @@ $previewDir = __DIR__ . '/data/' . $config['dir'] . '_preview';
 $previewPath = $previewDir . '/' . $safeId . '.jpg';
 
 $documentPath = $config['dir'] . '/' . $filename;
-$result = medisaMutateData(function (&$data) use ($vehicleId, $vehicleVersion, $documentPath, $config, $isSettingsDocument, $documentType, $tasitKartiK2ExpiryDate, $clientDocumentPath, $clientTasitKartiSyncDate, $hasClientDocumentPath, $hasClientTasitKartiSyncDate, $documentOperationDate) {
+$result = medisaMutateData(function (&$data) use ($vehicleId, $vehicleVersion, $documentPath, $config, $isSettingsDocument, $documentType, $requestedBranchId, $tasitKartiK2ExpiryDate, $clientDocumentPath, $clientTasitKartiSyncDate, $hasClientDocumentPath, $hasClientTasitKartiSyncDate, $documentOperationDate) {
     $auth = medisaResolveAuthorizedContext($data, 'view_main_app');
     if (($auth['success'] ?? false) !== true) {
         return medisaBuildErrorResult($auth['message'] ?? 'Bu işlem için yetkiniz yok.', (int)($auth['status'] ?? 403));
     }
     $context = $auth['context'];
 
+    if ($documentType === 'k2') {
+        $group = medisaFindK2BelgeGroupByBranchId($data, $requestedBranchId);
+        if (!$group || !medisaCanAccessK2BelgeGroup($group, $context)) {
+            return medisaBuildErrorResult('Bu K2 grubu için yetkiniz yok.', 403);
+        }
+        foreach ($data['ayarlar']['k2BelgeGruplari'] as &$candidate) {
+            if (($candidate['id'] ?? '') === $group['id']) {
+                $candidate['documentPath'] = $documentPath;
+                $candidate['updatedAt'] = date('c');
+            }
+        }
+        unset($candidate);
+        medisaSyncTasitKartiExpiryForK2Branches($data, $group['branchIds'], $group['expiryDate']);
+        $updatedGroup = medisaFindK2BelgeGroupById($data, $group['id']);
+        return ['success' => true, 'group' => $updatedGroup];
+    }
     if ($isSettingsDocument) {
         if (($context['role'] ?? '') !== 'genel_yonetici') {
             return medisaBuildErrorResult('Bu belgeyi güncelleme yetkiniz yok.', 403);
@@ -485,7 +521,7 @@ $result = medisaMutateData(function (&$data) use ($vehicleId, $vehicleVersion, $
             return $versionCheck;
         }
         $k2ExpiryDateForMerge = $documentType === 'tasit_karti'
-            ? medisaNormalizeUploadDocumentDateToIso($data['ayarlar']['k2Belgesi']['expiryDate'] ?? '')
+            ? (medisaResolveK2BelgeGroupForVehicle($data, $vehicle)['expiryDate'] ?? '')
             : '';
         $canMergeDocumentUpload = medisaCanMergeVehicleDocumentUpload(
             $vehicle,
@@ -507,7 +543,7 @@ $result = medisaMutateData(function (&$data) use ($vehicleId, $vehicleVersion, $
     $vehicle[$pathField] = $documentPath;
     $documentEventExtra = [];
     if ($documentType === 'tasit_karti') {
-        $k2ExpiryDate = medisaNormalizeUploadDocumentDateToIso($data['ayarlar']['k2Belgesi']['expiryDate'] ?? '');
+        $k2ExpiryDate = medisaNormalizeUploadDocumentDateToIso(medisaResolveK2BelgeGroupForVehicle($data, $vehicle)['expiryDate'] ?? '');
         if ($k2ExpiryDate === '') {
             return medisaBuildErrorResult('Taşıt Kartı yüklemek için önce K2 Belgesi Geçerlilik Süresi kaydedilmelidir.', 400);
         }

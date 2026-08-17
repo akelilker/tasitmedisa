@@ -27,7 +27,8 @@
             expiryDate: '',
             documentPath: '',
             updatedAt: ''
-          }
+          },
+          k2BelgeGruplari: []
         },
         sifreler: [],
         arac_aylik_hareketler: [],
