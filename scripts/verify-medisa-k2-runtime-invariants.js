@@ -1,5 +1,6 @@
 const fs = require('fs');
 const assert = require('assert');
+const vm = require('vm');
 
 const notifications = fs.readFileSync('notifications.js', 'utf8');
 const driver = fs.readFileSync('driver/driver_data.php', 'utf8');
@@ -34,5 +35,80 @@ assert.equal(tasks.filter((task) => task.branchIds.includes('a')).length, 1);
 assert.equal(tasks.filter((task) => task.branchIds.includes('b')).length, 1);
 assert.equal(tasks.filter((task) => task.branchIds.includes('c')).length, 0);
 assert.notEqual('date|settings-k2|g1|2027-05-17', 'date|settings-k2|g2|2027-05-17');
+
+const k2Start = ayarlar.indexOf('let selectedZorunluEvrakBranchId');
+const k2End = ayarlar.indexOf('function formatZorunluEvrakDate', k2Start);
+assert.ok(k2Start !== -1 && k2End > k2Start, 'K2 required documents helper bloğu bulunmalı');
+const k2Helpers = ayarlar.slice(k2Start, k2End);
+
+function createK2RequiredDocumentsContext(session, visibleBranches) {
+  const branchListHost = { innerHTML: '' };
+  const membersHost = { innerHTML: '' };
+  const sandbox = {
+    window: {
+      appData: {
+        branches: [{ id: 'app-data-only', name: 'Yanlış owner' }],
+        ayarlar: { k2BelgeGruplari: [{ id: 'g1', branchIds: ['A'], expiryDate: '2027-05-17' }] }
+      },
+      medisaSession: session,
+      getMedisaBranches: () => visibleBranches
+    },
+    document: {
+      getElementById: (id) => id === 'required-documents-branch-list'
+        ? branchListHost
+        : id === 'required-k2-group-members' ? membersHost : null,
+      querySelectorAll: () => []
+    },
+    escapeHtml: (value) => String(value),
+    readBranches: () => visibleBranches
+  };
+  vm.createContext(sandbox);
+  vm.runInContext(`
+    function readBranches() {
+      var result = window.getMedisaBranches();
+      return Array.isArray(result) ? result.slice() : [];
+    }
+    ${k2Helpers}
+    this.__k2 = {
+      getVisible: getVisibleRequiredDocumentBranches,
+      renderBranches: renderRequiredDocumentBranchList,
+      renderMembers: renderRequiredDocumentGroupMembers,
+      selectBranch: function(id) { selectedZorunluEvrakBranchId = id; }
+    };
+  `, sandbox);
+  return { sandbox, branchListHost, membersHost };
+}
+
+const gmContext = createK2RequiredDocumentsContext(
+  { authenticated: true, role: 'genel_yonetici', branch_ids: [] },
+  [{ id: 'A', name: 'Şube A' }, { id: 'B', name: 'Şube B' }, { id: 'C', name: 'Şube C' }]
+);
+assert.deepEqual(
+  gmContext.sandbox.__k2.getVisible().map((branch) => branch.id),
+  ['A', 'B', 'C']
+);
+gmContext.sandbox.__k2.renderBranches();
+assert.match(gmContext.branchListHost.innerHTML, /Şube A/);
+assert.match(gmContext.branchListHost.innerHTML, /Şube B/);
+assert.match(gmContext.branchListHost.innerHTML, /Şube C/);
+gmContext.sandbox.__k2.selectBranch('A');
+gmContext.sandbox.__k2.renderMembers();
+assert.match(gmContext.membersHost.innerHTML, /Bu belgeyi kullanan şubeler/);
+
+const bmContext = createK2RequiredDocumentsContext(
+  { authenticated: true, role: 'sube_yonetici', branch_ids: ['A'] },
+  [{ id: 'A', name: 'Şube A' }]
+);
+assert.deepEqual(bmContext.sandbox.__k2.getVisible().map((branch) => branch.id), ['A']);
+bmContext.sandbox.__k2.renderBranches();
+assert.match(bmContext.branchListHost.innerHTML, /Şube A/);
+bmContext.sandbox.__k2.selectBranch('A');
+bmContext.sandbox.__k2.renderMembers();
+assert.equal(bmContext.membersHost.innerHTML, '');
+
+assert.doesNotMatch(ayarlar, /window\.appData\s*&&\s*window\.appData\.session/);
+assert.match(ayarlar, /const session = getZorunluEvrakSession\(\);[\s\S]*?mutationPayload\.branchIds = memberIds/);
+assert.match(ayarlar, /const session = getZorunluEvrakSession\(\);[\s\S]*?const isGM = String\(session\.role/);
+assert.match(ayarlar, /settings-empty-state.*Görüntülenecek şube bulunamadı/);
 
 console.log('PASS: K2 notification, monthly filter and driver/UI scope invariants');

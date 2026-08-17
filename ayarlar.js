@@ -856,6 +856,12 @@
     let selectedZorunluEvrakBranchId = '';
     let selectedZorunluEvrakGroupId = '';
 
+    function getZorunluEvrakSession() {
+      return window.medisaSession && typeof window.medisaSession === 'object'
+        ? window.medisaSession
+        : {};
+    }
+
     function getZorunluEvraklarK2Groups() {
       const groups = window.appData && window.appData.ayarlar && window.appData.ayarlar.k2BelgeGruplari;
       return Array.isArray(groups) ? groups : [];
@@ -869,18 +875,18 @@
     }
 
     function getVisibleRequiredDocumentBranches() {
-      const branches = readBranches();
-      const session = window.appData && window.appData.session ? window.appData.session : {};
-      const role = String(session.role || '').toLowerCase();
-      if (role === 'genel_yonetici' || role === 'admin') return branches;
-      const allowed = Array.isArray(session.branch_ids) ? session.branch_ids.map(String) : [];
-      return branches.filter(function(branch) { return allowed.indexOf(String(branch.id)) !== -1; });
+      return readBranches();
     }
 
     function renderRequiredDocumentBranchList() {
       const host = document.getElementById('required-documents-branch-list');
       if (!host) return;
-      host.innerHTML = getVisibleRequiredDocumentBranches().map(function(branch) {
+      const branches = getVisibleRequiredDocumentBranches();
+      if (!branches.length) {
+        host.innerHTML = '<div class="settings-empty-state">Görüntülenecek şube bulunamadı.</div>';
+        return;
+      }
+      host.innerHTML = branches.map(function(branch) {
         const title = escapeHtml(branch.name || branch.ad || branch.id || '');
         return '<div class="settings-card" data-branch-id="' + escapeHtml(String(branch.id)) + '" role="button" tabindex="0">' +
           '<div class="settings-card-content"><div class="settings-card-title">' + title + '</div></div></div>';
@@ -890,7 +896,7 @@
     function renderRequiredDocumentGroupMembers() {
       const host = document.getElementById('required-k2-group-members');
       if (!host || !selectedZorunluEvrakBranchId) return;
-      const session = window.appData && window.appData.session ? window.appData.session : {};
+      const session = getZorunluEvrakSession();
       const isGM = String(session.role || '').toLowerCase() === 'genel_yonetici';
       const group = getZorunluEvraklarK2Groups().find(function(item) {
         return item && Array.isArray(item.branchIds) && item.branchIds.map(String).indexOf(String(selectedZorunluEvrakBranchId)) !== -1;
@@ -1536,7 +1542,7 @@
           return String(input.getAttribute('data-k2-member-id'));
         });
         if (memberIds.indexOf(String(selectedZorunluEvrakBranchId)) === -1) memberIds.push(String(selectedZorunluEvrakBranchId));
-        const session = window.appData && window.appData.session ? window.appData.session : {};
+        const session = getZorunluEvrakSession();
         const mutationPayload = { documentType: 'k2', branchId: selectedZorunluEvrakBranchId, expiryDate: isoDate };
         if (String(session.role || '').toLowerCase() === 'genel_yonetici') mutationPayload.branchIds = memberIds;
         const response = await fetch('required_documents.php', {
