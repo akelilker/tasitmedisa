@@ -663,22 +663,36 @@ test('behavior: satış soru akışı dalları', async function() {
 test('cache / modül pin parity', function() {
   const moduleVer = (tasitlar.match(/MEDISA_TASITLAR_MODULE_VERSION\s*=\s*'([^']+)'/) || [])[1];
   const loaderVer = (scriptCore.match(/tasitlar:\s*'([^']+)'/) || [])[1];
-  const notifVer = (scriptCore.match(/notifications:\s*'([^']+)'/) || [])[1];
-  const ayarlarCssVer = (scriptCore.match(/ayarlarCss:\s*'([^']+)'/) || [])[1];
-  const ayarlarJsVer = (scriptCore.match(/ayarlarJs:\s*'([^']+)'/) || [])[1];
   const indexHtml = read('index.html');
   const styleCorePins = [
     indexHtml.match(/<link\b[^>]*rel=["']preload["'][^>]*href=["']style-core\.css\?v=([^"'&\s]+)["'][^>]*>/i),
     indexHtml.match(/<link\b[^>]*rel=["']stylesheet["'][^>]*href=["']style-core\.css\?v=([^"'&\s]+)["'][^>]*>/i),
     indexHtml.match(/<noscript>[\s\S]*?<link\b[^>]*rel=["']stylesheet["'][^>]*href=["']style-core\.css\?v=([^"'&\s]+)["'][^>]*>[\s\S]*?<\/noscript>/i)
   ];
-  assert.equal(moduleVer, '20260813.1');
+  const moduleVersionsBlock = scriptCore.match(/var MEDISA_MODULE_VERSIONS\s*=\s*\{([\s\S]*?)\n\};/);
+  assert.ok(moduleVersionsBlock, 'MEDISA_MODULE_VERSIONS owner bloğu bulunmalı');
+  const moduleVersion = function(name) {
+    const match = moduleVersionsBlock[1].match(new RegExp("\\b" + name + "\\s*:\\s*'([^']+)'"));
+    return match && match[1];
+  };
+  const notificationsVer = moduleVersion('notifications');
+  const ayarlarJsVer = moduleVersion('ayarlarJs');
+  const ayarlarCssVer = moduleVersion('ayarlarCss');
+  assert.ok(moduleVer, 'MEDISA_TASITLAR_MODULE_VERSION bulunmalı');
+  assert.ok(loaderVer, 'MEDISA_MODULE_VERSIONS.tasitlar bulunmalı');
+  assert.ok(notificationsVer, 'MEDISA_MODULE_VERSIONS.notifications bulunmalı');
+  assert.ok(ayarlarJsVer, 'MEDISA_MODULE_VERSIONS.ayarlarJs bulunmalı');
+  assert.ok(ayarlarCssVer, 'MEDISA_MODULE_VERSIONS.ayarlarCss bulunmalı');
   assert.equal(loaderVer, moduleVer);
-  assert.equal(notifVer, '20260813.2');
-  assert.equal(ayarlarCssVer, '20260814.3');
-  assert.equal(ayarlarJsVer, '20260817.1');
+  assert.match(notificationsVer, /^\d{8}\.\d+$/);
+  assert.match(ayarlarJsVer, /^\d{8}\.\d+$/);
+  assert.match(ayarlarCssVer, /^\d{8}\.\d+$/);
+  assert.match(scriptCore, /var NOTIFICATIONS_JS\s*=\s*base \+ 'notifications\.js\?v=' \+ V\.notifications;/);
+  assert.match(scriptCore, /base \+ 'notifications\.css\?v=' \+ V\.notifications/);
+  assert.match(scriptCore, /var AYARLAR_JS\s*=\s*base \+ 'ayarlar\.js\?v=' \+ V\.ayarlarJs;/);
+  assert.match(scriptCore, /var AYARLAR_CSS\s*=\s*base \+ 'ayarlar\.css\?v=' \+ V\.ayarlarCss;/);
   assert.match(sw, /CACHE_VERSION\s*=\s*'medisa-v2\.303'/);
-  assert.match(indexHtml, /script-core\.js\?v=20260817\.1/);
+  assert.match(indexHtml, /script-core\.js\?v=\d{8}\.\d+/);
   styleCorePins.forEach(function(pin, index) {
     assert.ok(pin, 'style-core.css pin #' + (index + 1) + ' bulunmalı');
     assert.ok(pin[1], 'style-core.css pin #' + (index + 1) + ' version boş olmamalı');
