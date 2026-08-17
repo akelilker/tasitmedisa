@@ -2025,13 +2025,15 @@
 
 /* === KART YAPISI (GRID) === */
 #branch-list,
-#user-list {
+#user-list,
+#required-documents-branch-list {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
     align-content: start;
 }
-#branch-modal #branch-list {
+#branch-modal #branch-list,
+#required-documents-modal #required-documents-branch-list {
     justify-content: center !important;
     padding-top: 0;
     padding-bottom: 6px;
@@ -2784,7 +2786,9 @@
     #user-form-modal .modal-header {
         border-bottom: none !important;
     }
-    #branch-list, #user-list {
+    #branch-list,
+    #user-list,
+    #required-documents-branch-list {
         gap: 8px;
     }
     /* Mobil: taşıtlar .branch-card ile aynı ölçü (clamp + kare + padding) */
@@ -2795,7 +2799,8 @@
         aspect-ratio: 1 / 1 !important;
         padding: 16px 3px 12px 3px !important;
     }
-    #branch-modal #branch-list .settings-card {
+    #branch-modal #branch-list .settings-card,
+    #required-documents-modal #required-documents-branch-list .settings-card {
         width: calc((100% - 16px) / 3) !important;
         max-width: calc((100% - 16px) / 3) !important;
         flex: 0 0 calc((100% - 16px) / 3) !important;
@@ -2831,7 +2836,8 @@
     }
     .settings-card-title { font-size: 15px; }
     .settings-card-gorev { font-size: 12px; }
-    #branch-modal #branch-list .settings-card .settings-card-title {
+    #branch-modal #branch-list .settings-card .settings-card-title,
+    #required-documents-modal #required-documents-branch-list .settings-card .settings-card-title {
         display: -webkit-box !important;
         -webkit-box-orient: vertical !important;
         -webkit-line-clamp: 2 !important;
