@@ -1088,7 +1088,7 @@
 
     function openZorunluEvrakK2BlankTab() {
       try {
-        return window.open('about:blank', '_blank', 'noopener,noreferrer');
+        return window.open('about:blank', '_blank');
       } catch (e) {
         return null;
       }
@@ -1412,7 +1412,7 @@
               return;
             } catch (e) {}
           }
-          window.open(targetUrl, '_blank', 'noopener,noreferrer');
+          window.location.href = targetUrl;
         })
         .catch(function(err) {
           if (blankTab && !blankTab.closed) {
