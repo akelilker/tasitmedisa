@@ -2064,7 +2064,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #user-modal.modal-overlay .modal-container,
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #user-form-modal.modal-overlay .modal-container,
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #data-management-modal.modal-overlay .modal-container,
-    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #dis-veri-panel.modal-overlay .modal-container {
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #dis-veri-panel.modal-overlay .modal-container,
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #required-documents-modal.modal-overlay .modal-container {
         border: 0.5px solid var(--border-medium) !important;
         border-bottom: 1px solid var(--border-medium) !important;
         box-shadow: none !important;
@@ -2415,7 +2416,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         letter-spacing: 0.12em !important;
     }
     
-    .modal-overlay {
+    .modal-overlay:not(.ayarlar-modal-overlay) {
         top: 0 !important;
         overflow: hidden !important;
         overscroll-behavior: none !important;

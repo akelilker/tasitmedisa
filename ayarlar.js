@@ -261,9 +261,6 @@
                         <div id="required-documents-branch-list" class="settings-card-grid"></div>
                     </div>
                     <div id="required-documents-detail-view" class="u-p-16" hidden>
-                        <button type="button" class="universal-back-btn" onclick="backToZorunluEvrakBranchList(event)">
-                            <span>← Şubeler</span>
-                        </button>
                         <h3 class="required-k2-section-title">K2 Taşıt Belgesi</h3>
                         <div id="required-k2-selected-branch" class="settings-card-title"></div>
                         <div class="form-section">
@@ -528,6 +525,7 @@
           bindUserManagementKeyboardHandlers();
           clearUserManagementKeyboardOffset();
         } else if (layer === 'settings-required-docs') {
+          showRequiredDocumentBranchList();
           refreshZorunluEvraklarK2View();
           setupZorunluEvraklarK2DatePicker();
           setupZorunluEvraklarK2DocumentPicker();
@@ -892,6 +890,17 @@
         return '<div class="settings-card" data-branch-id="' + escapeHtml(String(branch.id)) + '" role="button" tabindex="0">' +
           '<div class="settings-card-content"><div class="settings-card-title">' + title + '</div></div></div>';
       }).join('');
+    }
+
+    function showRequiredDocumentBranchList() {
+      closeRequiredK2MembersDropdown();
+      selectedZorunluEvrakBranchId = '';
+      selectedZorunluEvrakGroupId = '';
+      const listView = document.getElementById('required-documents-branch-list-view');
+      const detailView = document.getElementById('required-documents-detail-view');
+      if (listView) listView.hidden = false;
+      if (detailView) detailView.hidden = true;
+      renderRequiredDocumentBranchList();
     }
 
     function renderRequiredDocumentGroupMembers() {
@@ -1562,12 +1571,7 @@
 
     window.backToZorunluEvrakBranchList = function backToZorunluEvrakBranchList(event) {
       if (event) event.preventDefault();
-      closeRequiredK2MembersDropdown();
-      selectedZorunluEvrakBranchId = '';
-      selectedZorunluEvrakGroupId = '';
-      document.getElementById('required-documents-branch-list-view').hidden = false;
-      document.getElementById('required-documents-detail-view').hidden = true;
-      renderRequiredDocumentBranchList();
+      showRequiredDocumentBranchList();
       pushSettingsHistoryLayer('settings-required-docs');
     };
 
