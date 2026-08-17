@@ -251,9 +251,9 @@
                     </button>
                 </div>
                 <div class="universal-back-bar universal-back-bar--standalone">
-                    <button type="button" class="universal-back-btn" aria-label="Ayarlar" onclick="medisaSettingsHistoryBack(event)">
+                    <button type="button" class="universal-back-btn" aria-label="Şubeler" onclick="backToZorunluEvrakBranchList(event)">
                         <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-                        <span class="universal-back-label">Ayarlar</span>
+                        <span class="universal-back-label">Şubeler</span>
                     </button>
                 </div>
                 <div class="modal-body">
@@ -886,7 +886,11 @@
         return;
       }
       host.innerHTML = branches.map(function(branch) {
-        const title = escapeHtml(branch.name || branch.ad || branch.id || '');
+        const rawTitle = String(branch.name || branch.ad || branch.id || '').trim();
+        const titleParts = rawTitle.split(/\s+/);
+        const title = titleParts.length === 2
+          ? escapeHtml(titleParts[0]) + '<br>' + escapeHtml(titleParts[1])
+          : escapeHtml(rawTitle);
         return '<div class="settings-card" data-branch-id="' + escapeHtml(String(branch.id)) + '" role="button" tabindex="0">' +
           '<div class="settings-card-content"><div class="settings-card-title">' + title + '</div></div></div>';
       }).join('');
@@ -919,6 +923,7 @@
       });
       host.innerHTML = '<div class="required-k2-members-title">Belge, Başka Şubeler İçin de Geçerliyse Seçiniz.</div>' +
         '<div class="required-k2-members-select">' +
+        '<div class="required-k2-members-backdrop" aria-hidden="true"></div>' +
         '<button type="button" class="required-k2-members-trigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="required-k2-members-menu">' +
         '<span class="required-k2-members-summary"></span>' +
         '<svg class="required-k2-members-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>' +
@@ -933,13 +938,20 @@
           const branchName = branch.name || branch.ad || branchId;
           return '<label class="required-k2-members-option' + (disabled ? ' is-disabled' : '') + '">' +
             '<input type="checkbox" data-k2-member-id="' + escapeHtml(branchId) + '"' +
-            (checked ? ' checked' : '') + (branchId === String(selectedZorunluEvrakBranchId) || disabled ? ' disabled' : '') + '> ' +
-            '<span>' + escapeHtml(branchName) + (disabled ? ' (Başka Yetki Belgesine Bağlı)' : '') + '</span></label>';
+            (checked ? ' checked' : '') + (branchId === String(selectedZorunluEvrakBranchId) || disabled ? ' disabled' : '') + '>' +
+            '<span><span class="required-k2-members-branch-name">' + escapeHtml(branchName) + '</span>' +
+            (disabled ? '<span class="required-k2-members-disabled-note">Başka Yetki Belgesine Bağlı</span>' : '') +
+            '</span><span aria-hidden="true"></span></label>';
         }).join('');
       updateRequiredK2MembersSummary(host);
       if (host.dataset.k2MembersBound !== '1') {
         host.dataset.k2MembersBound = '1';
         host.addEventListener('click', function(event) {
+          if (event.target.closest('.required-k2-members-backdrop')) {
+            event.preventDefault();
+            closeRequiredK2MembersDropdown();
+            return;
+          }
           const trigger = event.target.closest('.required-k2-members-trigger');
           if (!trigger) return;
           event.preventDefault();
@@ -957,7 +969,7 @@
       const summary = host.querySelector('.required-k2-members-summary');
       if (!summary) return;
       const count = host.querySelectorAll('[data-k2-member-id]:checked').length;
-      summary.textContent = count ? count + ' Şube Seçildi' : 'Başka Şube Seçilmedi';
+      summary.textContent = count ? count + ' Şube Seçildi' : 'Şube Seçiniz';
     }
 
     function positionRequiredK2MembersDropdown(host) {
