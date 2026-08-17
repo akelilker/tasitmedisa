@@ -43,7 +43,13 @@ const k2Helpers = ayarlar.slice(k2Start, k2End);
 
 function createK2RequiredDocumentsContext(session, visibleBranches) {
   const branchListHost = { innerHTML: '' };
-  const membersHost = { innerHTML: '' };
+  const membersHost = {
+    innerHTML: '',
+    dataset: {},
+    querySelector: () => null,
+    querySelectorAll: () => [],
+    addEventListener: () => {}
+  };
   const sandbox = {
     window: {
       appData: {
@@ -93,7 +99,10 @@ assert.match(gmContext.branchListHost.innerHTML, /Şube B/);
 assert.match(gmContext.branchListHost.innerHTML, /Şube C/);
 gmContext.sandbox.__k2.selectBranch('A');
 gmContext.sandbox.__k2.renderMembers();
-assert.match(gmContext.membersHost.innerHTML, /Bu belgeyi kullanan şubeler/);
+assert.match(gmContext.membersHost.innerHTML, /Belge, Başka Şubeler İçin de Geçerliyse Seçiniz\./);
+assert.match(gmContext.membersHost.innerHTML, /required-k2-members-trigger/);
+assert.match(gmContext.membersHost.innerHTML, /required-k2-members-menu/);
+assert.doesNotMatch(gmContext.membersHost.innerHTML, /Şube A/);
 
 const bmContext = createK2RequiredDocumentsContext(
   { authenticated: true, role: 'sube_yonetici', branch_ids: ['A'] },

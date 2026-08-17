@@ -855,6 +855,7 @@
 
     let selectedZorunluEvrakBranchId = '';
     let selectedZorunluEvrakGroupId = '';
+    let requiredK2MembersDropdownOpen = false;
 
     function getZorunluEvrakSession() {
       return window.medisaSession && typeof window.medisaSession === 'object'
@@ -896,6 +897,7 @@
     function renderRequiredDocumentGroupMembers() {
       const host = document.getElementById('required-k2-group-members');
       if (!host || !selectedZorunluEvrakBranchId) return;
+      closeRequiredK2MembersDropdown();
       const session = getZorunluEvrakSession();
       const isGM = String(session.role || '').toLowerCase() === 'genel_yonetici';
       const group = getZorunluEvraklarK2Groups().find(function(item) {
@@ -903,15 +905,100 @@
       });
       if (!isGM) { host.innerHTML = ''; return; }
       const currentIds = group ? group.branchIds.map(String) : [String(selectedZorunluEvrakBranchId)];
-      host.innerHTML = '<div class="form-label">Bu belgeyi kullanan şubeler</div>' +
-        getVisibleRequiredDocumentBranches().map(function(branch) {
+      const availableBranches = getVisibleRequiredDocumentBranches().filter(function(branch) {
+        return String(branch.id) !== String(selectedZorunluEvrakBranchId);
+      });
+      host.innerHTML = '<div class="required-k2-members-title">Belge, Başka Şubeler İçin de Geçerliyse Seçiniz.</div>' +
+        '<div class="required-k2-members-select">' +
+        '<button type="button" class="required-k2-members-trigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="required-k2-members-menu">' +
+        '<span class="required-k2-members-summary"></span>' +
+        '<svg class="required-k2-members-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>' +
+        '</button>' +
+        '<div id="required-k2-members-menu" class="required-k2-members-menu" role="listbox" aria-hidden="true"></div>' +
+        '</div>';
+      const menu = host.querySelector('.required-k2-members-menu');
+      if (menu) menu.innerHTML = availableBranches.map(function(branch) {
           const branchId = String(branch.id);
           const checked = currentIds.indexOf(branchId) !== -1;
           const disabled = !checked && getZorunluEvrakGroupsForBranch(branchId);
-          return '<label><input type="checkbox" data-k2-member-id="' + escapeHtml(branchId) + '"' +
+          const branchName = branch.name || branch.ad || branchId;
+          return '<label class="required-k2-members-option' + (disabled ? ' is-disabled' : '') + '">' +
+            '<input type="checkbox" data-k2-member-id="' + escapeHtml(branchId) + '"' +
             (checked ? ' checked' : '') + (branchId === String(selectedZorunluEvrakBranchId) || disabled ? ' disabled' : '') + '> ' +
-            escapeHtml(branch.name || branch.ad || branchId) + (disabled ? ' (Başka Yetki Belgesine Bağlı)' : '') + '</label>';
+            '<span>' + escapeHtml(branchName) + (disabled ? ' (Başka Yetki Belgesine Bağlı)' : '') + '</span></label>';
         }).join('');
+      updateRequiredK2MembersSummary(host);
+      if (host.dataset.k2MembersBound !== '1') {
+        host.dataset.k2MembersBound = '1';
+        host.addEventListener('click', function(event) {
+          const trigger = event.target.closest('.required-k2-members-trigger');
+          if (!trigger) return;
+          event.preventDefault();
+          if (requiredK2MembersDropdownOpen) closeRequiredK2MembersDropdown({ focusTrigger: true });
+          else openRequiredK2MembersDropdown(host);
+        });
+        host.addEventListener('change', function(event) {
+          if (event.target.matches('[data-k2-member-id]')) updateRequiredK2MembersSummary(host);
+        });
+      }
+    }
+
+    function updateRequiredK2MembersSummary(host) {
+      if (!host) return;
+      const summary = host.querySelector('.required-k2-members-summary');
+      if (!summary) return;
+      const count = host.querySelectorAll('[data-k2-member-id]:checked').length;
+      summary.textContent = count ? count + ' Şube Seçildi' : 'Başka Şube Seçilmedi';
+    }
+
+    function positionRequiredK2MembersDropdown(host) {
+      const select = host && host.querySelector('.required-k2-members-select');
+      const trigger = host && host.querySelector('.required-k2-members-trigger');
+      const menu = host && host.querySelector('.required-k2-members-menu');
+      if (!select || !trigger || !menu) return;
+      const rect = trigger.getBoundingClientRect();
+      const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 800;
+      const spaceBelow = Math.max(120, viewportHeight - rect.bottom - 12);
+      const spaceAbove = Math.max(120, rect.top - 12);
+      const useAbove = spaceBelow < 180 && spaceAbove > spaceBelow;
+      const maxHeight = Math.max(120, Math.min(260, useAbove ? spaceAbove : spaceBelow));
+      menu.style.maxHeight = maxHeight + 'px';
+      menu.style.top = useAbove ? 'auto' : 'calc(100% + 6px)';
+      menu.style.bottom = useAbove ? 'calc(100% + 6px)' : 'auto';
+    }
+
+    function openRequiredK2MembersDropdown(host) {
+      const trigger = host && host.querySelector('.required-k2-members-trigger');
+      const menu = host && host.querySelector('.required-k2-members-menu');
+      if (!trigger || !menu) return;
+      requiredK2MembersDropdownOpen = true;
+      host.querySelector('.required-k2-members-select').classList.add('is-open');
+      trigger.setAttribute('aria-expanded', 'true');
+      menu.classList.add('open');
+      menu.setAttribute('aria-hidden', 'false');
+      positionRequiredK2MembersDropdown(host);
+    }
+
+    function closeRequiredK2MembersDropdown(options) {
+      const host = document.getElementById('required-k2-group-members');
+      const opts = options || {};
+      requiredK2MembersDropdownOpen = false;
+      if (!host) return;
+      const select = host.querySelector('.required-k2-members-select');
+      const trigger = host.querySelector('.required-k2-members-trigger');
+      const menu = host.querySelector('.required-k2-members-menu');
+      if (select) select.classList.remove('is-open');
+      if (trigger) {
+        trigger.setAttribute('aria-expanded', 'false');
+        if (opts.focusTrigger) trigger.focus();
+      }
+      if (menu) {
+        menu.classList.remove('open');
+        menu.setAttribute('aria-hidden', 'true');
+        menu.style.maxHeight = '';
+        menu.style.top = '';
+        menu.style.bottom = '';
+      }
     }
 
     function getZorunluEvrakGroupsForBranch(branchId) {
@@ -1475,6 +1562,7 @@
 
     window.backToZorunluEvrakBranchList = function backToZorunluEvrakBranchList(event) {
       if (event) event.preventDefault();
+      closeRequiredK2MembersDropdown();
       selectedZorunluEvrakBranchId = '';
       selectedZorunluEvrakGroupId = '';
       document.getElementById('required-documents-branch-list-view').hidden = false;
@@ -1486,6 +1574,7 @@
     window.closeZorunluEvraklar = function closeZorunluEvraklar(options) {
       const modal = document.getElementById('required-documents-modal');
       if (!modal) return;
+      closeRequiredK2MembersDropdown();
       modal.classList.remove('active');
       closeSettingsDropdown();
       setTimeout(() => {
@@ -1495,6 +1584,17 @@
         resetToHomeFromPanel();
       }
     };
+
+    document.addEventListener('click', function(event) {
+      const host = document.getElementById('required-k2-group-members');
+      if (requiredK2MembersDropdownOpen && host && !host.contains(event.target)) {
+        closeRequiredK2MembersDropdown();
+      }
+    }, true);
+
+    window.addEventListener('resize', function() {
+      if (requiredK2MembersDropdownOpen) closeRequiredK2MembersDropdown();
+    });
 
     window.viewZorunluEvrakK2 = function viewZorunluEvrakK2() {
       const state = getZorunluEvraklarK2State();
@@ -3784,6 +3884,14 @@
       const infoModal = document.getElementById('info-modal');
       const cacheConfirmModal = document.getElementById('cache-confirm-modal');
       const centeredInfoBox = document.getElementById('centered-info-box');
+      const requiredDocumentsModal = document.getElementById('required-documents-modal');
+
+      if (requiredK2MembersDropdownOpen) {
+        e.preventDefault();
+        e.stopPropagation();
+        closeRequiredK2MembersDropdown({ focusTrigger: true });
+        return;
+      }
 
       const isSettingsModalActive =
         (centeredInfoBox && centeredInfoBox.style.display === 'flex') ||
@@ -3794,7 +3902,8 @@
         (branchFormModal && branchFormModal.classList.contains('active')) ||
         (userFormModal && userFormModal.classList.contains('active')) ||
         (branchModal && branchModal.classList.contains('active')) ||
-        (userModal && userModal.classList.contains('active'));
+        (userModal && userModal.classList.contains('active')) ||
+        (requiredDocumentsModal && requiredDocumentsModal.classList.contains('active'));
 
       if (isSettingsModalActive) {
         e.preventDefault();
