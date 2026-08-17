@@ -676,9 +676,9 @@ test('cache / modül pin parity', function() {
   assert.equal(loaderVer, moduleVer);
   assert.equal(notifVer, '20260813.2');
   assert.equal(ayarlarCssVer, '20260814.3');
-  assert.equal(ayarlarJsVer, '20260814.4');
+  assert.equal(ayarlarJsVer, '20260817.1');
   assert.match(sw, /CACHE_VERSION\s*=\s*'medisa-v2\.303'/);
-  assert.match(indexHtml, /script-core\.js\?v=20260815\.3/);
+  assert.match(indexHtml, /script-core\.js\?v=20260817\.1/);
   styleCorePins.forEach(function(pin, index) {
     assert.ok(pin, 'style-core.css pin #' + (index + 1) + ' bulunmalı');
     assert.ok(pin[1], 'style-core.css pin #' + (index + 1) + ' version boş olmamalı');
