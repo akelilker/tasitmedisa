@@ -608,7 +608,7 @@
     text-align: center;
     cursor: pointer;
     background: var(--dropdown-option-bg);
-    transition: transform 120ms ease, border-color 120ms ease, color 120ms ease;
+    transition: border-color 120ms ease, color 120ms ease;
 }
 
 #required-documents-modal .required-k2-members-option:last-child {
@@ -620,7 +620,6 @@
         background: var(--dropdown-option-bg);
         color: rgba(255, 255, 255, 0.98);
         border-color: rgba(190, 200, 214, 0.78);
-        transform: scale(1.03);
     }
 }
 

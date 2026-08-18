@@ -2790,7 +2790,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     border: none !important;
     box-shadow: none !important;
     padding: 0 !important;
-    display: flex !important;
     flex-direction: column !important;
     gap: 4px !important;
   }
@@ -3273,7 +3272,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     border-radius: 0 !important;
     box-shadow: none !important;
     padding: 2px 10px !important;
-    display: flex !important;
     flex-direction: column !important;
     gap: 4px !important;
   }
