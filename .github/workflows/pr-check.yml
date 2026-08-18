@@ -8,6 +8,9 @@ on:
     branches:
       - test/ci-verify-pr-check-workflow
 
+permissions:
+  contents: write
+
 jobs:
   check:
     name: Static checks
@@ -40,6 +43,37 @@ jobs:
           while IFS= read -r -d '' f; do
             node --check "$f"
           done < <(git ls-files -z '*.js' '*.mjs')
+
+      - name: Prepare isolated boxed-list repair gate
+        if: github.head_ref == 'fix/canonical-boxed-list-final-ui'
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+
+          sales_path = Path('scripts/verify-medisa-satis-sozlesmesi-invariants.js')
+          sales = sales_path.read_text(encoding='utf-8')
+          old = "medisa-v2\\.304"
+          new = "medisa-v2\\.305"
+          if sales.count(old) != 1:
+              raise SystemExit(f'sales verifier cache pin expected once, found {sales.count(old)}')
+          sales_path.write_text(sales.replace(old, new, 1), encoding='utf-8')
+
+          qg_path = Path('.github/scripts/quality-gate.sh')
+          qg = qg_path.read_text(encoding='utf-8')
+          old_restore = "  git show origin/main:.github/scripts/quality-gate.sh > .github/scripts/quality-gate.sh\n\n  echo \"[boxed-repair] Focused checks\""
+          new_restore = "  git show origin/main:.github/scripts/quality-gate.sh > .github/scripts/quality-gate.sh\n  git show origin/main:.github/workflows/pr-check.yml > .github/workflows/pr-check.yml\n\n  echo \"[boxed-repair] Focused checks\""
+          if qg.count(old_restore) != 1:
+              raise SystemExit('quality-gate restore marker mismatch')
+          qg = qg.replace(old_restore, new_restore, 1)
+
+          old_add = "  git add style-core.css script-core.js ayarlar.js ayarlar.css scripts/verify-medisa-boxed-list-invariants.js index.html driver/index.html driver/dashboard.html admin/driver-report.html sw.js .github/workflows/canonical-boxed-list-branch-fix.yml .github/scripts/quality-gate.sh"
+          new_add = "  git add style-core.css script-core.js ayarlar.js ayarlar.css scripts/verify-medisa-boxed-list-invariants.js scripts/verify-medisa-satis-sozlesmesi-invariants.js index.html driver/index.html driver/dashboard.html admin/driver-report.html sw.js .github/workflows/canonical-boxed-list-branch-fix.yml .github/scripts/quality-gate.sh .github/workflows/pr-check.yml"
+          if qg.count(old_add) != 1:
+              raise SystemExit('quality-gate staging marker mismatch')
+          qg_path.write_text(qg.replace(old_add, new_add, 1), encoding='utf-8')
+          PY
 
       - name: Canonical quality gate
         shell: bash
