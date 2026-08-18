@@ -79,6 +79,7 @@ body::-webkit-scrollbar,
   --bg-content: #0d131f;
   --bg-input: #0f1418;
   --bg-input-focus: #0f1622;
+  --dropdown-option-bg: #111720;
   --txt-white: #ffffff;
   --txt-muted: #e0e0e0;
   --txt-gray: #ccc;

@@ -1810,7 +1810,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
   margin: 0 0 4px;
   border: 1px solid rgba(190, 200, 214, 0.42);
   border-radius: 6px;
-  background: #111720;
+  background: var(--dropdown-option-bg);
   color: #ffffff;
   font-size: 11px;
   line-height: 1.25;

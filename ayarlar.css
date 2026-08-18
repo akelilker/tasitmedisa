@@ -607,7 +607,7 @@
     line-height: 1.35;
     text-align: center;
     cursor: pointer;
-    background: rgba(8, 13, 22, 0.55);
+    background: var(--dropdown-option-bg);
     transition: transform 120ms ease, border-color 120ms ease, color 120ms ease;
 }
 
@@ -617,7 +617,7 @@
 
 @media (hover: hover) {
     #required-documents-modal .required-k2-members-option:hover {
-        background: transparent;
+        background: var(--dropdown-option-bg);
         color: rgba(255, 255, 255, 0.98);
         border-color: rgba(190, 200, 214, 0.78);
         transform: scale(1.03);
@@ -632,7 +632,7 @@
 #required-documents-modal .required-k2-members-option.is-disabled {
     opacity: 0.52;
     cursor: default;
-    background: rgba(8, 13, 22, 0.55);
+    background: var(--dropdown-option-bg);
 }
 
 #required-documents-modal .required-k2-members-option > span {

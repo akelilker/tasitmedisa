@@ -1878,7 +1878,7 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
     box-sizing: border-box;
     padding: 6px 10px;
     margin: 0 0 4px;
-    background: #111720;
+    background: var(--dropdown-option-bg);
     border: 1px solid rgba(190, 200, 214, 0.42);
     border-radius: 6px;
     text-align: center;
@@ -1889,12 +1889,12 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
     border-bottom: 1px solid rgba(190, 200, 214, 0.42);
   }
   #driver-feedback-modal #driver-feedback-type-list .vehicle-branch-option:hover {
-    background: #111720;
+    background: var(--dropdown-option-bg);
     color: rgba(255, 255, 255, 0.98);
     border-color: rgba(190, 200, 214, 0.78);
   }
   #driver-feedback-modal #driver-feedback-type-list .vehicle-branch-option.selected {
-    background: #111720;
+    background: var(--dropdown-option-bg);
     color: rgba(255, 255, 255, 0.98);
     border-color: rgba(190, 200, 214, 0.88);
   }
@@ -2430,7 +2430,7 @@ body.dashboard-page.driver-history-vehicle-dropdown-open #history-modal .history
     padding: 6px 10px;
     margin: 0 0 4px;
     color: rgba(232, 236, 241, 0.94);
-    background: #111720;
+    background: var(--dropdown-option-bg);
     border: 1px solid rgba(190, 200, 214, 0.42);
     border-radius: 6px;
     text-align: center;
@@ -2439,13 +2439,13 @@ body.dashboard-page.driver-history-vehicle-dropdown-open #history-modal .history
   .history-vehicle-option:nth-child(odd),
   .history-vehicle-option:nth-child(even),
   #history-modal .history-vehicle-option[data-value=""] {
-    background: #111720;
+    background: var(--dropdown-option-bg);
   }
   .history-vehicle-option:last-child {
     margin-bottom: 0;
   }
   .history-vehicle-option:hover {
-    background: #111720;
+    background: var(--dropdown-option-bg);
     color: rgba(255, 255, 255, 0.98);
     border-color: rgba(190, 200, 214, 0.78);
   }
@@ -3282,7 +3282,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     box-sizing: border-box;
     padding-top: 6px;
     padding-bottom: 6px;
-    background: #111720;
+    background: var(--dropdown-option-bg);
     border: 1px solid rgba(190, 200, 214, 0.42);
     border-radius: 6px;
     text-align: center;
@@ -3301,7 +3301,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 
   .dashboard-page .driver-plate-dropdown-item:hover,
   .dashboard-page .driver-plate-dropdown-item:focus {
-    background: #111720;
+    background: var(--dropdown-option-bg);
     border-color: rgba(190, 200, 214, 0.78);
     color: rgba(255, 255, 255, 0.98);
     outline: none;
@@ -3309,12 +3309,12 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
 
   .dashboard-page .driver-plate-dropdown-item[aria-selected="true"] {
-    background: #111720;
+    background: var(--dropdown-option-bg);
     border-color: rgba(190, 200, 214, 0.88);
   }
 
   .dashboard-page .driver-plate-dropdown-item:nth-child(even):not(:hover):not(:focus):not([aria-selected="true"]) {
-    background: #111720;
+    background: var(--dropdown-option-bg);
   }
 
   .dashboard-page .driver-plate-warning-dot {
