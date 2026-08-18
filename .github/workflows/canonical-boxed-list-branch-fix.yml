@@ -1,0 +1,178 @@
+name: Canonical boxed-list isolated repair
+
+on:
+  push:
+    branches:
+      - fix/canonical-boxed-list-final-ui
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: fix/canonical-boxed-list-final-ui
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+
+      - name: Apply canonical repair at the real owners
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          def read(path):
+              return Path(path).read_text(encoding='utf-8')
+
+          def write(path, text):
+              Path(path).write_text(text, encoding='utf-8')
+
+          def replace_exact(path, old, new, expected=1):
+              text = read(path)
+              count = text.count(old)
+              if count != expected:
+                  raise SystemExit(f'{path}: expected {expected} occurrences, found {count}: {old[:90]!r}')
+              write(path, text.replace(old, new, expected))
+
+          # Shared CSS owner: make canonical custom control visually fail-closed.
+          replace_exact(
+              'style-core.css',
+              '.medisa-boxed-select-native {\n  position: absolute !important;',
+              '.medisa-boxed-select-native {\n  display: none !important;\n  position: absolute !important;'
+          )
+          replace_exact(
+              'style-core.css',
+              '  background: var(--dropdown-option-bg);\n  color: rgba(240, 244, 248, 0.96);',
+              '  background: var(--dropdown-option-bg, #111720);\n  background-clip: padding-box;\n  opacity: 1;\n  color: rgba(240, 244, 248, 0.96);'
+          )
+          # hover + selected must stay on the same opaque dark fill.
+          replace_exact(
+              'style-core.css',
+              '    background: var(--dropdown-option-bg);',
+              '    background: var(--dropdown-option-bg, #111720);'
+          )
+          replace_exact(
+              'style-core.css',
+              '  background: var(--dropdown-option-bg);\n  border-color: rgba(190, 200, 214, 0.88);',
+              '  background: var(--dropdown-option-bg, #111720);\n  border-color: rgba(190, 200, 214, 0.88);'
+          )
+
+          # Generic JS owner: every ensure() re-asserts the native-hidden/canonical shell contract,
+          # and repairs an incomplete stale wrapper instead of falling back to a native select.
+          replace_exact(
+              'script-core.js',
+              "  function ensure(select, options) {\n    if (!select) return null;\n    var shell = select.closest('.medisa-owner-select');\n    if (!shell) {",
+              "  function ensure(select, options) {\n    if (!select) return null;\n    select.classList.add('medisa-owner-select-native', 'medisa-boxed-select-native');\n    var shell = select.closest('.medisa-owner-select');\n    if (shell && (!shell.querySelector('.medisa-owner-select-trigger') || !shell.querySelector('.medisa-owner-select-menu'))) {\n      var staleParent = shell.parentNode;\n      if (staleParent) staleParent.insertBefore(select, shell);\n      shell.remove();\n      shell = null;\n    }\n    if (!shell) {"
+          )
+          replace_exact(
+              'script-core.js',
+              "    var opts = options || {};\n    shell.dataset.placeholderText = opts.placeholderText || '';",
+              "    shell.classList.add('medisa-owner-select', 'medisa-boxed-select');\n    var ensuredTrigger = shell.querySelector('.medisa-owner-select-trigger');\n    var ensuredMenu = shell.querySelector('.medisa-owner-select-menu');\n    if (ensuredTrigger) ensuredTrigger.classList.add('medisa-owner-select-trigger', 'medisa-boxed-select-trigger');\n    if (ensuredMenu) ensuredMenu.classList.add('medisa-owner-select-menu', 'medisa-boxed-select-menu');\n    var opts = options || {};\n    shell.dataset.placeholderText = opts.placeholderText || '';"
+          )
+
+          # User-form adapter: retry briefly if lazy hydration/API ordering momentarily races.
+          replace_exact(
+              'ayarlar.js',
+              "    function syncUserFormCustomSelects(modal) {\n      const root = modal || document.getElementById('user-form-modal');\n      if (!root || !window.MedisaOwnerSelect) return;\n      window.MedisaOwnerSelect.ensure($('#user-branch', root), { placeholderText: 'Şube Seçin' });\n      window.MedisaOwnerSelect.ensure($('#user-role', root), { placeholderText: 'Kullanıcı Tipi' });\n    }",
+              "    function syncUserFormCustomSelects(modal, retryCount) {\n      const root = modal || document.getElementById('user-form-modal');\n      if (!root) return false;\n      const attempt = Number(retryCount || 0);\n      if (!window.MedisaOwnerSelect) {\n        if (attempt < 6 && typeof requestAnimationFrame === 'function') {\n          requestAnimationFrame(() => syncUserFormCustomSelects(root, attempt + 1));\n        }\n        return false;\n      }\n      const branchShell = window.MedisaOwnerSelect.ensure($('#user-branch', root), { placeholderText: 'Şube Seçin' });\n      const roleShell = window.MedisaOwnerSelect.ensure($('#user-role', root), { placeholderText: 'Kullanıcı Tipi' });\n      const ready = !!(branchShell && roleShell);\n      if (!ready && attempt < 6 && typeof requestAnimationFrame === 'function') {\n        requestAnimationFrame(() => syncUserFormCustomSelects(root, attempt + 1));\n      }\n      return ready;\n    }"
+          )
+
+          # Native fallback must never paint a burgundy selected row if it is ever exposed.
+          replace_exact(
+              'ayarlar.css',
+              '    background: rgba(var(--theme-color-rgb), 0.28) !important;\n    color: var(--txt-white, #ffffff) !important;',
+              '    background: var(--dropdown-option-bg, #111720) !important;\n    color: var(--txt-white, #ffffff) !important;'
+          )
+
+          # Lazy module cache pins.
+          replace_exact('script-core.js', "  ayarlarJs: '20260818.1',", "  ayarlarJs: '20260818.2',")
+          replace_exact('script-core.js', "  ayarlarCss: '20260817.13',", "  ayarlarCss: '20260818.1',")
+
+          # Shared owner cache pins. script-core changed too, so self-pin must move in the same change.
+          shell_files = ['index.html', 'driver/index.html', 'driver/dashboard.html', 'admin/driver-report.html']
+          for path in shell_files:
+              text = read(path)
+              style_count = text.count('style-core.css?v=20260818.3')
+              script_count = text.count('script-core.js?v=20260818.2')
+              if style_count < 1 or script_count < 1:
+                  raise SystemExit(f'{path}: asset pins missing style={style_count} script={script_count}')
+              text = text.replace('style-core.css?v=20260818.3', 'style-core.css?v=20260818.4')
+              text = text.replace('script-core.js?v=20260818.2', 'script-core.js?v=20260818.3')
+              write(path, text)
+
+          sw = read('sw.js')
+          if '/style-core.css?v=20260818.3' not in sw:
+              raise SystemExit('sw.js: old style-core pin not found')
+          sw = sw.replace('/style-core.css?v=20260818.3', '/style-core.css?v=20260818.4')
+          if '/script-core.js?v=20260818.2' in sw:
+              sw = sw.replace('/script-core.js?v=20260818.2', '/script-core.js?v=20260818.3')
+          write('sw.js', sw)
+
+          # Strengthen the focused verifier so the exact regression cannot pass again.
+          verifier = read('scripts/verify-medisa-boxed-list-invariants.js')
+          marker = "check(\n  !/\\.medisa-boxed-select-(?:trigger|menu|option)[^{]*\\{[^}]*\\b(?:background|border|border-radius|padding|min-height|transition)\\s*:/.test(featureCss),"
+          if marker not in verifier:
+              raise SystemExit('verifier insertion marker not found')
+          addition = r'''const settingsCss = read('ayarlar.css');
+const canonicalOptionBlock =
+  (styleCore.match(/\.medisa-boxed-select-option\s*\{([^}]*)\}/) || [])[1] || '';
+check(
+  /--dropdown-option-bg:\s*#111720/.test(styleCore) &&
+  /background:\s*var\(--dropdown-option-bg,\s*#111720\)/.test(canonicalOptionBlock) &&
+  /background-clip:\s*padding-box/.test(canonicalOptionBlock) &&
+  /opacity:\s*1/.test(canonicalOptionBlock) &&
+  /\.medisa-boxed-select-native\s*\{[^}]*display:\s*none\s*!important/.test(styleCore),
+  'canonical options are opaque dark boxes and upgraded native selects are hidden'
+);
+
+check(
+  !/option:checked[\s\S]{0,900}?background:\s*rgba\(var\(--theme-color-rgb\),\s*0\.28\)/.test(settingsCss),
+  'user-form native fallback has no burgundy selected fill'
+);
+
+check(
+  /function\s+syncUserFormCustomSelects\s*\(modal,\s*retryCount\)/.test(settings) &&
+  /requestAnimationFrame\(\(\)\s*=>\s*syncUserFormCustomSelects/.test(settings) &&
+  /select\.classList\.add\('medisa-owner-select-native',\s*'medisa-boxed-select-native'\)/.test(core),
+  'user edit and shared owner fail closed onto the canonical custom select runtime'
+);
+
+'''
+          verifier = verifier.replace(marker, addition + marker, 1)
+          write('scripts/verify-medisa-boxed-list-invariants.js', verifier)
+          PY
+
+      - name: Focused regression suite
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --check
+          node --check script-core.js
+          node --check ayarlar.js
+          node --check scripts/verify-medisa-boxed-list-invariants.js
+          node scripts/verify-medisa-boxed-list-invariants.js
+          node scripts/verify-medisa-main-shell-lazy-invariants.js
+          node scripts/verify-medisa-thin-shell-interaction-invariants.js
+          node scripts/verify-medisa-driver-lazy-invariants.js
+          node scripts/verify-medisa-driver-cold-dependencies.js
+
+      - name: Commit only the real repair
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -f .github/workflows/canonical-boxed-list-branch-fix.yml
+          git diff --check
+          git status --short
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add style-core.css script-core.js ayarlar.js ayarlar.css scripts/verify-medisa-boxed-list-invariants.js index.html driver/index.html driver/dashboard.html admin/driver-report.html sw.js .github/workflows/canonical-boxed-list-branch-fix.yml
+          git diff --cached --check
+          git commit -m 'fix(ui): finish canonical boxed list runtime contract'
+          git push origin HEAD:fix/canonical-boxed-list-final-ui
