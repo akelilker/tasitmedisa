@@ -680,11 +680,17 @@
       host.innerHTML = branches.map(function(branch) {
         const rawTitle = String(branch.name || branch.ad || branch.id || '').trim();
         const titleParts = rawTitle.split(/\s+/);
+        const longestWordLength = titleParts.reduce(function(maxLen, part) {
+          return Math.max(maxLen, part.length);
+        }, 0);
+        const titleClass = longestWordLength >= 9
+          ? 'settings-card-title settings-card-title--compact'
+          : 'settings-card-title';
         const title = titleParts.length === 2
           ? escapeHtml(titleParts[0]) + '<br>' + escapeHtml(titleParts[1])
           : escapeHtml(rawTitle);
         return '<div class="settings-card" data-branch-id="' + escapeHtml(String(branch.id)) + '" role="button" tabindex="0">' +
-          '<div class="settings-card-content"><div class="settings-card-title">' + title + '</div></div></div>';
+          '<div class="settings-card-content"><div class="' + titleClass + '">' + title + '</div></div></div>';
       }).join('');
     }
 

@@ -197,7 +197,7 @@
 
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20260817.2';
+  const MEDISA_TASITLAR_MODULE_VERSION = '20260819.1';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
@@ -9294,17 +9294,8 @@
     return counts;
   }
 
-  function buildHistoryEmptyHtml(tabType, counts) {
-    const labels = { bakim: 'Bakım', kaza: 'Kaza', km: 'KM', diger: 'Diğer' };
-    const safeCounts = counts || { bakim: 0, kaza: 0, km: 0, diger: 0 };
-    const allEmpty = !safeCounts.bakim && !safeCounts.kaza && !safeCounts.km && !safeCounts.diger;
-    if (allEmpty) {
-      return '<div class="history-empty-msg">' + escapeHtml('Bu taşıt için henüz tarihçe kaydı bulunmuyor.') + '</div>';
-    }
-    const cat = labels[tabType] || 'Bu';
-    return '<div class="history-empty-msg">' + escapeHtml(
-      'Bu taşıt için ' + cat + ' kategorisinde kayıt bulunmuyor. Diğer tarihçe sekmelerini kontrol edebilirsiniz.'
-    ) + '</div>';
+  function buildHistoryEmptyHtml() {
+    return '<div class="history-empty-msg">' + escapeHtml('Kayıt Bulunmamaktadır.') + '</div>';
   }
 
   function historyEventDatetimeAttr(event) {
@@ -9782,7 +9773,7 @@
             : 'B\u0130L\u0130NM\u0130YOR';
           const kmSummary = isInitialKmEntry
             ? '<span class="history-user-name">Yeni Taşıt</span><span class="history-action-text"> • </span><span class="history-detail-inline">' + yeniKmFormatli + '</span>'
-            : '<span class="history-user-name">' + escapeHtml(kullanici) + '</span><span class="history-action-text">, G\u00fcncel Km bilgisini </span><span class="history-detail-inline">' + escapeHtml(formatNumber(yeniKm)) + '</span><span class="history-action-text"> olarak g\u00FCncelledi.</span>';
+            : '<span class="history-user-name">' + escapeHtml(kullanici) + '</span><span class="history-action-text"> Km Bilgisini </span><span class="history-detail-inline">' + escapeHtml(formatNumber(yeniKm)) + '</span><span class="history-action-text"> Olarak Güncelledi.</span>';
           const datetimeAttr = historyEventDatetimeAttr(event);
           const metaHtml = index === 0 && duzeltmeNotHtml
             ? `<div class="history-item-meta">${duzeltmeNotHtml}</div>`

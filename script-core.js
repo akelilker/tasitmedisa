@@ -1499,13 +1499,13 @@ document.addEventListener('DOMContentLoaded', () => {
 // style-core.css ana/paylaşılan shell HTML ile yüklenir; taşıt lazy asset sürümünden bağımsızdır.
 // tasitlar loader (bu nesne) ile MEDISA_TASITLAR_MODULE_VERSION kendi aralarında eşit kalmalıdır.
 var MEDISA_MODULE_VERSIONS = {
-  tasitlar: '20260817.2',
+  tasitlar: '20260819.1',
   notifications: '20260817.2',
   raporlar: '20260801.3',
   kayitJs: '20260817.2',
-  kayitCss: '20260815.2',
-  ayarlarJs: '20260818.2',
-  ayarlarCss: '20260818.1',
+  kayitCss: '20260819.1',
+  ayarlarJs: '20260819.1',
+  ayarlarCss: '20260819.1',
   tasitlarYazici: '20260726.3',
   vehicleNotificationDomain: '20260817.2'
 };

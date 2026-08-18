@@ -206,6 +206,19 @@ body::-webkit-scrollbar,
   box-shadow: 0 0 0 1px rgba(var(--theme-color-rgb), 0.2);
 }
 
+.medisa-owner-select-chevron {
+  flex: 0 0 16px;
+  width: 16px;
+  height: 16px;
+  margin-left: 8px;
+  pointer-events: none;
+  transition: transform 0.18s ease;
+}
+
+.medisa-owner-select.is-open .medisa-owner-select-chevron {
+  transform: rotate(180deg);
+}
+
 .medisa-boxed-select-trigger.placeholder,
 .medisa-boxed-select-option.is-placeholder,
 .medisa-boxed-select-option.is-muted-choice {

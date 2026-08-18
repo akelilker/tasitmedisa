@@ -357,7 +357,7 @@ test('escapeHtml / safe rendering korunur', function() {
 test('empty state kontratı', function() {
   assert.match(historyFns.switchTab, /buildHistoryEmptyHtml\(/);
   assert.match(historyFns.block, /history-empty-msg/);
-  assert.match(historyFns.block, /Diğer tarihçe sekmelerini kontrol edebilirsiniz/);
+  assert.match(historyFns.block, /Kayıt Bulunmamaktadır\./);
   assert.doesNotMatch(historyFns.block, /Olay Ekle|openEventModal|writeVehicles/);
 });
 
@@ -485,8 +485,7 @@ test('fixture: empty html write CTA içermez', function() {
     sandbox
   );
   assert.match(String(html), /history-empty-msg/);
-  assert.match(String(html), /Bakım/);
-  assert.match(String(html), /Diğer tarihçe sekmelerini kontrol edebilirsiniz/);
+  assert.equal(String(html), '<div class="history-empty-msg">Kayıt Bulunmamaktadır.</div>');
   assert.doesNotMatch(String(html), /Olay Ekle|button|href=/i);
 });
 

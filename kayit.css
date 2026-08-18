@@ -1381,7 +1381,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         right: 0;
     }
     #vehicle-modal #vehicle-branch-list .vehicle-branch-option {
-        padding: 8px 10px;
+        padding: 5px 10px;
     }
 
     #vehicle-modal .vehicle-branch-dropdown-wrap.single-branch .vehicle-branch-trigger:focus,

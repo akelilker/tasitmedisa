@@ -2573,8 +2573,9 @@
     color: #a0aec0 !important;
   }
   #vehicle-history-modal .history-item .history-item-meta {
-    font-size: 13px !important;
-    line-height: 1.45 !important;
+    font-size: 15px !important;
+    line-height: 1.5 !important;
+    color: #a0aec0 !important;
   }
   #vehicle-history-modal .history-item-summary .history-user-name,
   #vehicle-history-modal .history-item-summary .history-user-name-secondary {
