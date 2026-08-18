@@ -1,0 +1,3 @@
+Purpose: trigger the existing Deploy cPanel workflow after the mobile-fix production commit.
+Target SHA: 2bf17d70ed80771310a12ef4555daf4e1852bc46
+This file is under .github and is excluded from FTP deployment.
