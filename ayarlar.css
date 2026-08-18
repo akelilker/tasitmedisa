@@ -1862,17 +1862,9 @@
   right: 0;
   min-width: 100%;
   margin-top: 6px;
-  background: #101722;
-  border: 1px solid rgba(190, 200, 214, 0.42);
-  border-radius: 8px;
-  padding: 10px;
   max-height: 320px;
   overflow: hidden;
   z-index: 20;
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.48), inset 0 0 0 1px rgba(255, 255, 255, 0.06);
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
   box-sizing: border-box;
 }
 
@@ -1941,9 +1933,6 @@
   min-height: 0;
   max-height: 260px;
   overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 0;
   padding: 0;
 }
 .user-vehicles-checkbox-list {
