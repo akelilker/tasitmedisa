@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - fix/canonical-boxed-list-final-ui
+  pull_request:
+    branches:
+      - main
 
 permissions:
   contents: write
