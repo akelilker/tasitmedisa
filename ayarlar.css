@@ -1722,7 +1722,7 @@
 #branch-form-modal #user-branch option:checked,
 #user-form-modal #user-branch option:checked,
 #user-form-modal #user-role option:checked {
-    background: rgba(var(--theme-color-rgb), 0.28) !important;
+    background: var(--bg-content, #0d131f) !important;
     color: var(--txt-white, #ffffff) !important;
 }
 #branch-form-modal select.form-input option:hover,

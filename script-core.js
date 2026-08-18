@@ -1393,7 +1393,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function ensure(select, options) {
     if (!select) return null;
+    select.classList.add('medisa-owner-select-native', 'medisa-boxed-select-native');
     var shell = select.closest('.medisa-owner-select');
+    if (shell && (!shell.querySelector('.medisa-owner-select-trigger') || !shell.querySelector('.medisa-owner-select-menu'))) {
+      var staleParent = shell.parentNode;
+      if (staleParent) staleParent.insertBefore(select, shell);
+      shell.remove();
+      shell = null;
+    }
     if (!shell) {
       shell = document.createElement('div');
       shell.className = 'medisa-owner-select medisa-boxed-select';
@@ -1453,6 +1460,11 @@ document.addEventListener('DOMContentLoaded', () => {
       });
       select.addEventListener('change', function() { refresh(shell); });
     }
+    shell.classList.add('medisa-owner-select', 'medisa-boxed-select');
+    var ensuredTrigger = shell.querySelector('.medisa-owner-select-trigger');
+    var ensuredMenu = shell.querySelector('.medisa-owner-select-menu');
+    if (ensuredTrigger) ensuredTrigger.classList.add('medisa-owner-select-trigger', 'medisa-boxed-select-trigger');
+    if (ensuredMenu) ensuredMenu.classList.add('medisa-owner-select-menu', 'medisa-boxed-select-menu');
     var opts = options || {};
     shell.dataset.placeholderText = opts.placeholderText || '';
     shell.dataset.secondaryValues = Array.isArray(opts.secondaryValues) ? opts.secondaryValues.join('|') : '';
@@ -1492,8 +1504,8 @@ var MEDISA_MODULE_VERSIONS = {
   raporlar: '20260801.3',
   kayitJs: '20260817.2',
   kayitCss: '20260815.2',
-  ayarlarJs: '20260818.1',
-  ayarlarCss: '20260817.13',
+  ayarlarJs: '20260818.2',
+  ayarlarCss: '20260818.1',
   tasitlarYazici: '20260726.3',
   vehicleNotificationDomain: '20260817.2'
 };
