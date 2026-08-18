@@ -141,12 +141,12 @@
                             </div>
                             <div class="form-section" id="vehicle-branch-form-section">
                                 <span class="form-label" id="vehicle-branch-label">Tahsis Edilen Şube</span>
-                                <div class="vehicle-branch-dropdown-wrap">
-                                    <select id="vehicle-branch-select" class="form-input" aria-hidden="true" tabindex="-1">
+                                <div class="vehicle-branch-dropdown-wrap medisa-boxed-select">
+                                    <select id="vehicle-branch-select" class="form-input medisa-boxed-select-native" aria-hidden="true" tabindex="-1">
                                         <option value="">Seçiniz</option>
                                     </select>
-                                    <div id="vehicle-branch-trigger" class="vehicle-branch-trigger form-input placeholder" tabindex="0" role="combobox" aria-expanded="false" aria-haspopup="listbox" aria-controls="vehicle-branch-list" aria-labelledby="vehicle-branch-label">Seçiniz</div>
-                                    <div id="vehicle-branch-list" class="vehicle-branch-list" role="listbox" aria-hidden="true"></div>
+                                    <div id="vehicle-branch-trigger" class="vehicle-branch-trigger medisa-boxed-select-trigger form-input placeholder" tabindex="0" role="combobox" aria-expanded="false" aria-haspopup="listbox" aria-controls="vehicle-branch-list" aria-labelledby="vehicle-branch-label">Seçiniz</div>
+                                    <div id="vehicle-branch-list" class="vehicle-branch-list medisa-boxed-select-menu" role="listbox" aria-hidden="true"></div>
                                 </div>
                             </div>
                             <div class="form-section">
@@ -1677,14 +1677,14 @@
       const opt = select.options[i];
       if (opt.disabled && opt.text === "Önce Şube Ekleyiniz") continue;
       const div = document.createElement("div");
-      div.className = "vehicle-branch-option";
+      div.className = "vehicle-branch-option medisa-boxed-select-option";
       div.textContent = opt.textContent;
       if (!opt.disabled) div.setAttribute("data-value", opt.value);
       if (opt.selected) div.classList.add("selected");
       listEl.appendChild(div);
     }
     var addDiv = document.createElement("div");
-    addDiv.className = "vehicle-branch-option vehicle-branch-add-hint";
+    addDiv.className = "vehicle-branch-option medisa-boxed-select-option vehicle-branch-add-hint";
     addDiv.textContent = "+ Yeni Şube Ekle";
     listEl.appendChild(addDiv);
   }

@@ -215,12 +215,12 @@
                         <div class="form-section form-section-vehicles">
                             <span id="user-vehicles-label" class="form-label">Tahsis Edilecek Taşıt</span>
                             <div class="user-vehicles-wrap">
-                                <div id="user-vehicles-trigger" class="user-vehicles-trigger form-input" tabindex="0" role="combobox" aria-labelledby="user-vehicles-label" aria-controls="user-vehicles-dropdown" aria-haspopup="listbox" aria-expanded="false" onclick="if(window.toggleUserVehiclesDropdown) window.toggleUserVehiclesDropdown()">
+                                <div id="user-vehicles-trigger" class="user-vehicles-trigger medisa-boxed-select-trigger form-input" tabindex="0" role="combobox" aria-labelledby="user-vehicles-label" aria-controls="user-vehicles-dropdown" aria-haspopup="listbox" aria-expanded="false" onclick="if(window.toggleUserVehiclesDropdown) window.toggleUserVehiclesDropdown()">
                                     <span class="user-vehicles-trigger-text">Taşıt Seçin</span>
                                     <svg class="user-vehicles-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
                                 </div>
-                                <div id="user-vehicles-dropdown" class="user-vehicles-dropdown" style="display:none;" role="listbox" aria-hidden="true">
-                                    <div id="user-vehicles-container" class="user-vehicles-checkbox-list" role="group"></div>
+                                <div id="user-vehicles-dropdown" class="user-vehicles-dropdown medisa-boxed-select-menu" style="display:none;" role="listbox" aria-hidden="true">
+                                    <div id="user-vehicles-container" class="user-vehicles-checkbox-list medisa-boxed-select-options" role="group"></div>
                                     <div class="user-vehicles-search-wrap">
                                         <input type="text" id="user-vehicles-search" class="form-input user-vehicles-search-input" placeholder="Plaka İle Ara..." aria-label="Plaka İle Ara" oninput="if(window.handleUserVehiclesSearch) window.handleUserVehiclesSearch(this.value)">
                                     </div>
@@ -589,235 +589,12 @@
       window.addEventListener('popstate', onSettingsHistoryPopstate);
     }
 
-    let activeUserFormCustomSelect = null;
-    let userFormSelectedVehicleIds = [];
-
-    function getUserFormSelectedVehicleIds() {
-      return userFormSelectedVehicleIds.slice();
-    }
-
-    function setUserFormSelectedVehicleIds(ids) {
-      userFormSelectedVehicleIds = Array.from(new Set((Array.isArray(ids) ? ids : []).map(function(id) {
-        return String(id || '').trim();
-      }).filter(Boolean)));
-    }
-
-    function closeUserFormCustomSelect(options) {
-      const opts = options || {};
-      const shell = activeUserFormCustomSelect;
-      if (!shell) return;
-      const trigger = shell.querySelector('.medisa-owner-select-trigger');
-      const menu = shell.querySelector('.medisa-owner-select-menu');
-      shell.classList.remove('is-open');
-      if (trigger) {
-        trigger.classList.remove('is-open');
-        trigger.setAttribute('aria-expanded', 'false');
-        if (opts.focusTrigger) trigger.focus();
-      }
-      if (menu) {
-        menu.classList.remove('open');
-        menu.setAttribute('aria-hidden', 'true');
-        menu.style.position = '';
-        menu.style.top = '';
-        menu.style.bottom = '';
-        menu.style.left = '';
-        menu.style.width = '';
-        menu.style.maxHeight = '';
-      }
-      activeUserFormCustomSelect = null;
-    }
-
-    function positionUserFormCustomSelectMenu(shell) {
-      if (!shell) return;
-      const trigger = shell.querySelector('.medisa-owner-select-trigger');
-      const menu = shell.querySelector('.medisa-owner-select-menu');
-      if (!trigger || !menu) return;
-
-      const rect = trigger.getBoundingClientRect();
-      const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 800;
-      const desiredHeight = Math.min(menu.scrollHeight || 240, 260);
-      const spaceBelow = Math.max(120, viewportHeight - rect.bottom - 12);
-      const spaceAbove = Math.max(120, rect.top - 12);
-      const useAbove = spaceBelow < Math.min(180, desiredHeight) && spaceAbove > spaceBelow;
-      const maxHeight = Math.max(120, Math.min(260, useAbove ? spaceAbove : spaceBelow));
-      const shellHeight = trigger.offsetHeight || rect.height || 44;
-
-      menu.style.position = 'absolute';
-      menu.style.left = '0';
-      menu.style.width = '100%';
-      menu.style.maxHeight = maxHeight + 'px';
-      if (useAbove) {
-        menu.style.top = 'auto';
-        menu.style.bottom = (shellHeight + 6) + 'px';
-      } else {
-        menu.style.top = (shellHeight + 6) + 'px';
-        menu.style.bottom = 'auto';
-      }
-    }
-
-    function refreshUserFormCustomSelect(shell) {
-      if (!shell) return;
-      const select = shell.querySelector('select');
-      const trigger = shell.querySelector('.medisa-owner-select-trigger');
-      const triggerText = shell.querySelector('.medisa-owner-select-trigger-text');
-      const menu = shell.querySelector('.medisa-owner-select-menu');
-      if (!select || !trigger || !triggerText || !menu) return;
-
-      const options = Array.from(select.options || []);
-      const selectedValue = String(select.value || '');
-      let selectedOption = options.find(function(option) {
-        return String(option.value || '') === String(selectedValue);
-      }) || options[select.selectedIndex] || options[0] || null;
-
-      if (!selectedOption && options.length) {
-        selectedOption = options[0];
-        select.value = selectedOption.value;
-      }
-
-      const placeholderText = shell.dataset.placeholderText || (options[0] ? options[0].textContent : 'Seçiniz');
-      const selectedText = selectedOption ? String(selectedOption.textContent || '').trim() : '';
-      const selectedOptionValue = selectedOption ? String(selectedOption.value || '') : '';
-
-      triggerText.textContent = selectedText || placeholderText;
-      trigger.classList.toggle('placeholder', !selectedOptionValue);
-      trigger.disabled = !!select.disabled;
-      trigger.setAttribute('aria-disabled', select.disabled ? 'true' : 'false');
-
-      menu.innerHTML = '';
-      options.forEach(function(option) {
-        const value = String(option.value || '');
-        const text = String(option.textContent || '').trim();
-        const item = document.createElement('button');
-        item.type = 'button';
-        item.className = 'medisa-owner-select-option';
-        item.textContent = text;
-        item.dataset.value = value;
-        item.setAttribute('role', 'option');
-        item.setAttribute('aria-selected', value === selectedValue ? 'true' : 'false');
-
-        if (!value) item.classList.add('is-placeholder');
-        if (value === selectedValue) item.classList.add('selected');
-        if (option.disabled) {
-          item.classList.add('is-disabled');
-          item.disabled = true;
-        }
-
-        menu.appendChild(item);
-      });
-
-      if (activeUserFormCustomSelect === shell && menu.classList.contains('open')) {
-        positionUserFormCustomSelectMenu(shell);
-      }
-    }
-
-    function openUserFormCustomSelect(shell) {
-      if (!shell) return;
-      if (activeUserFormCustomSelect && activeUserFormCustomSelect !== shell) {
-        closeUserFormCustomSelect();
-      }
-      const trigger = shell.querySelector('.medisa-owner-select-trigger');
-      const menu = shell.querySelector('.medisa-owner-select-menu');
-      if (!trigger || !menu || trigger.disabled) return;
-
-      activeUserFormCustomSelect = shell;
-      shell.classList.add('is-open');
-      trigger.classList.add('is-open');
-      trigger.setAttribute('aria-expanded', 'true');
-      menu.classList.add('open');
-      menu.setAttribute('aria-hidden', 'false');
-      positionUserFormCustomSelectMenu(shell);
-    }
-
-    function ensureUserFormCustomSelect(select, options) {
-      if (!select) return null;
-      let shell = select.closest('.medisa-owner-select');
-      if (!shell) {
-        shell = document.createElement('div');
-        shell.className = 'medisa-owner-select';
-        select.parentNode.insertBefore(shell, select);
-        shell.appendChild(select);
-        select.classList.add('medisa-owner-select-native');
-
-        const trigger = document.createElement('button');
-        trigger.type = 'button';
-        trigger.className = 'form-input medisa-owner-select-trigger';
-        trigger.setAttribute('aria-haspopup', 'listbox');
-        trigger.setAttribute('aria-expanded', 'false');
-        trigger.innerHTML = '<span class="medisa-owner-select-trigger-text"></span><svg class="medisa-owner-select-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
-
-        const menu = document.createElement('div');
-        menu.className = 'medisa-owner-select-menu';
-        menu.setAttribute('role', 'listbox');
-        menu.setAttribute('aria-hidden', 'true');
-
-        shell.appendChild(trigger);
-        shell.appendChild(menu);
-
-        const label = shell.parentNode ? shell.parentNode.querySelector('label[for="' + select.id + '"]') : null;
-        if (label && !label.dataset.medisaOwnerSelectBound) {
-          label.dataset.medisaOwnerSelectBound = '1';
-          label.addEventListener('click', function(e) {
-            if (!select.closest('.medisa-owner-select')) return;
-            e.preventDefault();
-            trigger.focus();
-          });
-        }
-
-        trigger.addEventListener('click', function(e) {
-          e.preventDefault();
-          e.stopPropagation();
-          if (activeUserFormCustomSelect === shell) closeUserFormCustomSelect();
-          else openUserFormCustomSelect(shell);
-        });
-
-        trigger.addEventListener('keydown', function(e) {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            if (activeUserFormCustomSelect === shell) closeUserFormCustomSelect();
-            else openUserFormCustomSelect(shell);
-          } else if (e.key === 'ArrowDown') {
-            e.preventDefault();
-            openUserFormCustomSelect(shell);
-          } else if (e.key === 'Escape' && activeUserFormCustomSelect === shell) {
-            e.preventDefault();
-            closeUserFormCustomSelect({ focusTrigger: true });
-          }
-        });
-
-        menu.addEventListener('click', function(e) {
-          const item = e.target.closest('.medisa-owner-select-option');
-          if (!item || item.disabled) return;
-          select.value = item.dataset.value || '';
-          select.dispatchEvent(new Event('change', { bubbles: true }));
-          refreshUserFormCustomSelect(shell);
-          closeUserFormCustomSelect({ focusTrigger: true });
-        });
-
-        select.addEventListener('change', function() {
-          refreshUserFormCustomSelect(shell);
-        });
-      }
-
-      shell.dataset.placeholderText = options && options.placeholderText ? options.placeholderText : '';
-      refreshUserFormCustomSelect(shell);
-      return shell;
-    }
-
     function syncUserFormCustomSelects(modal) {
       const root = modal || document.getElementById('user-form-modal');
-      if (!root) return;
-      ensureUserFormCustomSelect($('#user-branch', root), { placeholderText: 'Şube Seçin' });
-      ensureUserFormCustomSelect($('#user-role', root), { placeholderText: 'Kullanıcı Tipi' });
+      if (!root || !window.MedisaOwnerSelect) return;
+      window.MedisaOwnerSelect.ensure($('#user-branch', root), { placeholderText: 'Şube Seçin' });
+      window.MedisaOwnerSelect.ensure($('#user-role', root), { placeholderText: 'Kullanıcı Tipi' });
     }
-
-    document.addEventListener('click', function(e) {
-      if (!activeUserFormCustomSelect) return;
-      if (!activeUserFormCustomSelect.contains(e.target)) closeUserFormCustomSelect();
-    }, true);
-
-    window.addEventListener('resize', function() {
-      if (activeUserFormCustomSelect) closeUserFormCustomSelect();
-    });
 
 
     // ========================================
@@ -922,13 +699,13 @@
         return String(branch.id) !== String(selectedZorunluEvrakBranchId);
       });
       host.innerHTML = '<div class="required-k2-members-title">Belge, Başka Şubeler İçin de Geçerliyse Seçiniz.</div>' +
-        '<div class="required-k2-members-select">' +
+        '<div class="required-k2-members-select medisa-boxed-select">' +
         '<div class="required-k2-members-backdrop" aria-hidden="true"></div>' +
-        '<button type="button" class="required-k2-members-trigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="required-k2-members-menu">' +
+        '<button type="button" class="required-k2-members-trigger medisa-boxed-select-trigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="required-k2-members-menu">' +
         '<span class="required-k2-members-summary"></span>' +
         '<svg class="required-k2-members-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>' +
         '</button>' +
-        '<div id="required-k2-members-menu" class="required-k2-members-menu" role="listbox" aria-hidden="true"></div>' +
+        '<div id="required-k2-members-menu" class="required-k2-members-menu medisa-boxed-select-menu" role="listbox" aria-hidden="true"></div>' +
         '</div>';
       const menu = host.querySelector('.required-k2-members-menu');
       if (menu) menu.innerHTML = availableBranches.map(function(branch) {
@@ -936,7 +713,7 @@
           const checked = currentIds.indexOf(branchId) !== -1;
           const disabled = !checked && getZorunluEvrakGroupsForBranch(branchId);
           const branchName = branch.name || branch.ad || branchId;
-          return '<label class="required-k2-members-option' + (disabled ? ' is-disabled' : '') + '">' +
+          return '<label class="required-k2-members-option medisa-boxed-select-option' + (disabled ? ' is-disabled' : '') + '">' +
             '<input type="checkbox" data-k2-member-id="' + escapeHtml(branchId) + '"' +
             (checked ? ' checked' : '') + (branchId === String(selectedZorunluEvrakBranchId) || disabled ? ' disabled' : '') + '>' +
             '<span><span class="required-k2-members-branch-name">' + escapeHtml(branchName) + '</span>' +
@@ -2977,7 +2754,7 @@
         const raw = (v.brandModel || (v.brand || v.marka || '') + ' ' + (v.model || '')).trim();
         const markaModel = (typeof window.formatBrandModel === 'function' ? window.formatBrandModel(raw) : (typeof window.toTitleCase === 'function' ? window.toTitleCase(raw) : raw));
         const labelEl = document.createElement('label');
-        labelEl.className = 'user-vehicle-row';
+        labelEl.className = 'user-vehicle-row medisa-boxed-select-option';
         labelEl.style.userSelect = 'none';
         const cb = document.createElement('input');
         cb.type = 'checkbox';
@@ -3266,7 +3043,7 @@
       if (form) form.reset();
       setUserFormSelectedVehicleIds([]);
       closeUserVehiclesDropdown();
-      closeUserFormCustomSelect();
+      window.MedisaOwnerSelect && window.MedisaOwnerSelect.close();
       const searchInput = document.getElementById('user-vehicles-search');
       if (searchInput) searchInput.value = '';
       const deleteBtn = $('#user-delete-btn', modal);

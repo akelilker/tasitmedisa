@@ -119,7 +119,7 @@ list.innerHTML = '';
 for (var i = 0; i < select.options.length; i++) {
 var opt = select.options[i];
 var div = document.createElement('div');
-div.className = 'vehicle-branch-option';
+div.className = 'vehicle-branch-option medisa-boxed-select-option';
 div.setAttribute('role', 'option');
 div.setAttribute('data-value', opt.value);
 div.textContent = opt.textContent;

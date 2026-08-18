@@ -670,19 +670,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
   pointer-events: none !important;
 }
 #dinamik-olay-modal .medisa-owner-select-trigger {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
   gap: 10px;
   position: relative;
-  width: 100%;
-  min-height: 27px;
   padding-right: 40px !important;
-  font-size: 13px !important;
-  line-height: 1.35 !important;
-  text-align: left;
-  cursor: pointer;
-  user-select: none;
 }
 #dinamik-olay-modal .medisa-owner-select-trigger-text {
   flex: 1 1 auto;
@@ -710,18 +700,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 #dinamik-olay-modal .medisa-owner-select-trigger.is-open .medisa-owner-select-chevron {
   transform: translateY(-50%) rotate(180deg);
 }
-#dinamik-olay-modal .medisa-owner-select-menu {
-  display: none;
-  background: #101722;
-  border: 1px solid rgba(190, 200, 214, 0.42);
-  border-radius: 8px;
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.48), inset 0 0 0 1px rgba(255, 255, 255, 0.06);
-  overflow-y: auto;
-  overflow-x: hidden;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  z-index: 10060;
-}
 #dinamik-olay-modal .medisa-owner-select-menu::-webkit-scrollbar,
 #dinamik-olay-modal .medisa-owner-select-menu::-webkit-scrollbar-track,
 #dinamik-olay-modal .medisa-owner-select-menu::-webkit-scrollbar-thumb {
@@ -737,9 +715,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
   position: sticky;
   top: 0;
   z-index: 1;
-  padding: 8px;
-  background: #101722;
-  border-bottom: 1px solid rgba(190, 200, 214, 0.12);
+  padding: 8px 0;
 }
 #dinamik-olay-modal .medisa-owner-select-search-input {
   width: 100%;
@@ -754,22 +730,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
   min-height: 0;
 }
 #dinamik-olay-modal .medisa-owner-select-option {
-  width: 100%;
-  border: 0;
-  border-bottom: 1px solid rgba(190, 200, 214, 0.10);
-  background: transparent;
-  color: rgba(240, 244, 248, 0.96);
-  padding: 10px 12px;
-  font-size: 13px !important;
-  line-height: 1.35 !important;
-  text-align: left;
   font-family: inherit;
   font-weight: 400;
-  cursor: pointer;
-  transition: background-color 120ms ease, color 120ms ease;
-}
-#dinamik-olay-modal .medisa-owner-select-option:last-child {
-  border-bottom: 0;
 }
 #dinamik-olay-modal .medisa-owner-select-option.is-placeholder {
   color: var(--txt-gray-darker, #a0aec0);
@@ -779,22 +741,18 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 }
 #dinamik-olay-modal .medisa-owner-select-option.is-secondary-action {
   color: rgba(148, 163, 184, 0.82);
-  background: rgba(255, 255, 255, 0.02);
 }
 #dinamik-olay-modal .medisa-owner-select-option:hover,
 #dinamik-olay-modal .medisa-owner-select-option:focus {
-  background: rgba(var(--theme-color-rgb), 0.14);
   color: #ffffff;
   outline: none;
 }
 #dinamik-olay-modal .medisa-owner-select-option.selected {
-  background: rgba(var(--theme-color-rgb), 0.20);
   color: #ffffff;
 }
 #dinamik-olay-modal .medisa-owner-select-option.is-secondary-action:hover,
 #dinamik-olay-modal .medisa-owner-select-option.is-secondary-action:focus,
 #dinamik-olay-modal .medisa-owner-select-option.is-secondary-action.selected {
-  background: rgba(255, 255, 255, 0.05);
   color: rgba(196, 206, 220, 0.96);
 }
 #dinamik-olay-modal .medisa-owner-select-option.is-disabled {

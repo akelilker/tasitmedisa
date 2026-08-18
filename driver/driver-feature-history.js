@@ -105,14 +105,14 @@ var dropdown = document.getElementById('history-vehicle-dropdown');
 if (!modal || !hiddenInput || !dropdown) return;
 dropdown.innerHTML = '';
 var optAll = document.createElement('div');
-optAll.className = 'history-vehicle-option';
+optAll.className = 'history-vehicle-option medisa-boxed-select-option';
 optAll.dataset.value = '';
 optAll.textContent = 'Tüm Taşıtlar';
 optAll.onclick = function() { selectHistoryVehicle('', 'Tüm Taşıtlar'); };
 dropdown.appendChild(optAll);
 (s.allHistoryVehicles || []).forEach(function(v) {
 var opt = document.createElement('div');
-opt.className = 'history-vehicle-option';
+opt.className = 'history-vehicle-option medisa-boxed-select-option';
 opt.dataset.value = String(v.id);
 var raw = v.brandModel || [v.marka, v.model].filter(Boolean).join(' ');
 var brandModel = h.formatDriverBrandModel(raw || '');
