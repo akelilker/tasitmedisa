@@ -77,7 +77,7 @@ check(
 );
 
 check(
-  /\.medisa-boxed-select-trigger[\s\S]*?min-height:\s*36px[\s\S]*?border-radius:\s*8px/.test(styleCore) &&
+  /\.medisa-boxed-select-trigger[\s\S]*?height:\s*36px[\s\S]*?min-height:\s*36px[\s\S]*?max-height:\s*36px[\s\S]*?padding:\s*8px 12px[\s\S]*?box-sizing:\s*border-box[\s\S]*?border-radius:\s*8px/.test(styleCore) &&
   /\.medisa-boxed-select-menu[\s\S]*?max-height:\s*260px[\s\S]*?padding:\s*2px 10px/.test(styleCore) &&
   /\.medisa-boxed-select-option[\s\S]*?min-height:\s*38px[\s\S]*?border-radius:\s*6px/.test(styleCore),
   'canonical trigger/menu/option base contract is owned by style-core.css'
