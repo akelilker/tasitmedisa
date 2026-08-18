@@ -79,7 +79,7 @@ body::-webkit-scrollbar,
   --bg-content: #0d131f;
   --bg-input: #0f1418;
   --bg-input-focus: #0f1622;
-  --dropdown-option-bg: #111720;
+  --dropdown-option-bg: #0d131f;
   --txt-white: #ffffff;
   --txt-muted: #e0e0e0;
   --txt-gray: #ccc;
@@ -156,6 +156,7 @@ body::-webkit-scrollbar,
 }
 
 .medisa-boxed-select-native {
+  display: none !important;
   position: absolute !important;
   width: 1px !important;
   height: 1px !important;
@@ -256,7 +257,9 @@ body::-webkit-scrollbar,
   box-sizing: border-box;
   border: 1px solid rgba(190, 200, 214, 0.42);
   border-radius: 6px;
-  background: var(--dropdown-option-bg);
+  background: var(--dropdown-option-bg, #0d131f);
+  background-clip: padding-box;
+  opacity: 1;
   color: rgba(240, 244, 248, 0.96);
   font-size: 13px;
   line-height: 1.35;
@@ -274,7 +277,7 @@ body::-webkit-scrollbar,
 @media (hover: hover) {
   .medisa-boxed-select-option:hover,
   .medisa-boxed-select-option:focus-visible {
-    background: var(--dropdown-option-bg);
+    background: var(--dropdown-option-bg, #0d131f);
     border-color: rgba(190, 200, 214, 0.78);
     color: rgba(255, 255, 255, 0.98);
     outline: none;
@@ -283,7 +286,7 @@ body::-webkit-scrollbar,
 
 .medisa-boxed-select-option.selected,
 .medisa-boxed-select-option[aria-selected="true"] {
-  background: var(--dropdown-option-bg);
+  background: var(--dropdown-option-bg, #0d131f);
   border-color: rgba(190, 200, 214, 0.88);
   color: rgba(255, 255, 255, 0.98);
 }

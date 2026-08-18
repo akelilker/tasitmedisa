@@ -94,6 +94,31 @@ check(
   'canonical trigger geometry is natural globally and fixed only for mobile user edit'
 );
 
+const settingsCss = read('ayarlar.css');
+const canonicalOptionBlock =
+  (styleCore.match(/\.medisa-boxed-select-option\s*\{([^}]*)\}/) || [])[1] || '';
+check(
+  /--dropdown-option-bg:\s*#0d131f/.test(styleCore) &&
+  /background:\s*var\(--dropdown-option-bg,\s*#0d131f\)/.test(canonicalOptionBlock) &&
+  /background-clip:\s*padding-box/.test(canonicalOptionBlock) &&
+  /opacity:\s*1/.test(canonicalOptionBlock) &&
+  /\.medisa-boxed-select-native\s*\{[^}]*display:\s*none\s*!important/.test(styleCore),
+  'canonical options are opaque dark boxes and upgraded native selects are hidden'
+);
+
+check(
+  !/option:checked[\s\S]{0,900}?background:\s*rgba\(var\(--theme-color-rgb\),\s*0\.28\)/.test(settingsCss),
+  'user-form native fallback has no burgundy selected fill'
+);
+
+check(
+  /function\s+syncUserFormCustomSelects\s*\(modal,\s*retryCount\)/.test(settings) &&
+  /requestAnimationFrame\(\(\)\s*=>\s*syncUserFormCustomSelects/.test(settings) &&
+  /select\.classList\.add\('medisa-owner-select-native',\s*'medisa-boxed-select-native'\)/.test(core) &&
+  /id === 'user-form-modal'\)\s*syncUserFormCustomSelects\(modal\)/.test(settings),
+  'user edit and shared owner fail closed onto the canonical custom select runtime'
+);
+
 check(
   !/\.medisa-boxed-select-(?:trigger|menu|option)[^{]*\{[^}]*\b(?:background|border|border-radius|padding|min-height|transition)\s*:/.test(featureCss),
   'feature CSS does not redefine boxed-select canonical base skin'

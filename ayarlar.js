@@ -495,7 +495,10 @@
       const modal = document.getElementById(id);
       if (!modal) return;
       modal.style.display = 'flex';
-      requestAnimationFrame(function() { modal.classList.add('active'); });
+      requestAnimationFrame(function() {
+        modal.classList.add('active');
+        if (id === 'user-form-modal') syncUserFormCustomSelects(modal);
+      });
     }
 
     function applySettingsHistoryLayer(layer) {
@@ -589,11 +592,23 @@
       window.addEventListener('popstate', onSettingsHistoryPopstate);
     }
 
-    function syncUserFormCustomSelects(modal) {
+    function syncUserFormCustomSelects(modal, retryCount) {
       const root = modal || document.getElementById('user-form-modal');
-      if (!root || !window.MedisaOwnerSelect) return;
-      window.MedisaOwnerSelect.ensure($('#user-branch', root), { placeholderText: 'Şube Seçin' });
-      window.MedisaOwnerSelect.ensure($('#user-role', root), { placeholderText: 'Kullanıcı Tipi' });
+      if (!root) return false;
+      const attempt = Number(retryCount || 0);
+      if (!window.MedisaOwnerSelect) {
+        if (attempt < 6 && typeof requestAnimationFrame === 'function') {
+          requestAnimationFrame(() => syncUserFormCustomSelects(root, attempt + 1));
+        }
+        return false;
+      }
+      const branchShell = window.MedisaOwnerSelect.ensure($('#user-branch', root), { placeholderText: 'Şube Seçin' });
+      const roleShell = window.MedisaOwnerSelect.ensure($('#user-role', root), { placeholderText: 'Kullanıcı Tipi' });
+      const ready = !!(branchShell && roleShell);
+      if (!ready && attempt < 6 && typeof requestAnimationFrame === 'function') {
+        requestAnimationFrame(() => syncUserFormCustomSelects(root, attempt + 1));
+      }
+      return ready;
     }
 
 
