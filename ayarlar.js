@@ -2719,6 +2719,18 @@
       document.addEventListener('keydown', onUserVehiclesGlobalTypeaheadKeydown, true);
     }
 
+    let userFormSelectedVehicleIds = [];
+
+    function getUserFormSelectedVehicleIds() {
+      return userFormSelectedVehicleIds.slice();
+    }
+
+    function setUserFormSelectedVehicleIds(ids) {
+      userFormSelectedVehicleIds = Array.from(new Set((Array.isArray(ids) ? ids : []).map(function(id) {
+        return String(id || '').trim();
+      }).filter(Boolean)));
+    }
+
     // Kullanıcı formu: atanmış Taşıtlar checkbox listesi doldur (arama + filtreleme)
     function populateUserVehiclesMulti(searchFilter = '') {
       const container = document.getElementById('user-vehicles-container');

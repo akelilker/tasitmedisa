@@ -57,6 +57,18 @@ check(
   'ayarlar.js contains no generic select engine or instance state'
 );
 
+const userFormVehicleStateContract =
+  /\b(?:let|const|var)\s+userFormSelectedVehicleIds\s*=\s*\[\s*\]/.test(settings) &&
+  /function\s+getUserFormSelectedVehicleIds\s*\(\)[\s\S]*?return\s+userFormSelectedVehicleIds\.slice\(\)/.test(settings) &&
+  /function\s+setUserFormSelectedVehicleIds\s*\([\s\S]*?Array\.from\(new Set\([\s\S]*?\.trim\(\)/.test(settings) &&
+  /function\s+populateUserVehiclesMulti[\s\S]*?getUserFormSelectedVehicleIds\(\)/.test(settings) &&
+  /function\s+openUserFormModal[\s\S]*?setUserFormSelectedVehicleIds\(/.test(settings) &&
+  /function\s+saveUser[\s\S]*?getUserFormSelectedVehicleIds\(\)/.test(settings);
+check(
+  userFormVehicleStateContract,
+  'ayarlar.js owns user-form vehicle selection state and its business-flow callers'
+);
+
 check(
   !/function\s+(refresh|open|position|filter|normalize)\w*DynamicModalCustomSelect/.test(vehicles) &&
   !/activeDynamicModalCustomSelect/.test(vehicles) &&
