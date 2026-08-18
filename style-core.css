@@ -174,9 +174,6 @@ body::-webkit-scrollbar,
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: 36px;
-  min-height: 36px;
-  max-height: 36px;
   padding: 8px 12px;
   box-sizing: border-box;
   border: 1px solid rgba(190, 200, 214, 0.42);
@@ -189,6 +186,15 @@ body::-webkit-scrollbar,
   text-align: center;
   cursor: pointer;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+@media (max-width: 768px) {
+  #user-form-modal .medisa-boxed-select-trigger.form-input:not(select) {
+    height: 36px !important;
+    min-height: 36px !important;
+    max-height: 36px !important;
+    box-sizing: border-box;
+  }
 }
 
 .medisa-boxed-select-trigger:hover,

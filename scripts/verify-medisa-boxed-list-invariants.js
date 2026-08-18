@@ -39,6 +39,10 @@ const sourceFiles = {
   driverFeedback: read('driver/driver-feature-feedback.js'),
   driverHistory: read('driver/driver-feature-history.js')
 };
+const canonicalTriggerBlock =
+  (styleCore.match(/\.medisa-boxed-select-trigger\s*\{([^}]*)\}/) || [])[1] || '';
+const mobileUserEditGeometryBlock =
+  (styleCore.match(/@media\s*\(max-width:\s*768px\)\s*\{[\s\S]*?#user-form-modal\s+\.medisa-boxed-select-trigger\.form-input:not\(select\)\s*\{([^}]*)\}/) || [])[1] || '';
 
 check(
   /window\.MedisaOwnerSelect\s*=\s*\{/.test(core) &&
@@ -77,10 +81,17 @@ check(
 );
 
 check(
-  /\.medisa-boxed-select-trigger[\s\S]*?height:\s*36px[\s\S]*?min-height:\s*36px[\s\S]*?max-height:\s*36px[\s\S]*?padding:\s*8px 12px[\s\S]*?box-sizing:\s*border-box[\s\S]*?border-radius:\s*8px/.test(styleCore) &&
+  /padding:\s*8px 12px/.test(canonicalTriggerBlock) &&
+  /box-sizing:\s*border-box/.test(canonicalTriggerBlock) &&
+  /border-radius:\s*8px/.test(canonicalTriggerBlock) &&
+  !/(?:^|;)\s*(?:height|min-height|max-height)\s*:/.test(canonicalTriggerBlock) &&
+  /height:\s*36px\s*!important/.test(mobileUserEditGeometryBlock) &&
+  /min-height:\s*36px\s*!important/.test(mobileUserEditGeometryBlock) &&
+  /max-height:\s*36px\s*!important/.test(mobileUserEditGeometryBlock) &&
+  /box-sizing:\s*border-box/.test(mobileUserEditGeometryBlock) &&
   /\.medisa-boxed-select-menu[\s\S]*?max-height:\s*260px[\s\S]*?padding:\s*2px 10px/.test(styleCore) &&
   /\.medisa-boxed-select-option[\s\S]*?min-height:\s*38px[\s\S]*?border-radius:\s*6px/.test(styleCore),
-  'canonical trigger/menu/option base contract is owned by style-core.css'
+  'canonical trigger geometry is natural globally and fixed only for mobile user edit'
 );
 
 check(
