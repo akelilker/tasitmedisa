@@ -1321,6 +1321,7 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
   gap: 1px; /* Panelde plaka–model arası toplam 1px (.driver-user-plate-row 4px'i override eder) */
 }
 .driver-plate-subtitle {
+  display: none;
   font-size: 14px;
   color: #a0aec0;
   margin-top: 2px;
