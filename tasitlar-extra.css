@@ -2564,9 +2564,21 @@
     margin-bottom: 6px !important;
   }
   #vehicle-history-modal .history-item .history-item-date {
-    font-size: 14px !important;
+    font-size: 15px !important;
     color: #ffffff !important;
     font-weight: 600 !important;
+  }
+  #vehicle-history-modal .history-item .history-label,
+  #vehicle-history-modal .history-item-summary .history-item-details,
+  #vehicle-history-modal .history-item-summary .history-item-details .history-label {
+    font-size: 15px !important;
+    line-height: 1.5 !important;
+  }
+  #vehicle-history-modal .history-item-body--km-note {
+    font-size: 15px !important;
+    margin-top: 4px !important;
+    color: #d40000 !important;
+    line-height: 1.35 !important;
   }
   #vehicle-history-modal .history-item .history-item-body {
     font-size: 15px !important;

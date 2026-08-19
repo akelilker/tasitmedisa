@@ -2137,6 +2137,12 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
   transition: opacity 1s ease !important;
 }
 
+.login-page #app-footer.login-footer .status.status-error {
+  color: #ef4444 !important;
+  font-weight: 600 !important;
+  transition: opacity 1s ease !important;
+}
+
 .login-page #app-footer.login-footer .brand img {
   height: calc(12.5px + 1.5pt) !important;
   width: auto !important;
@@ -2152,7 +2158,8 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
 }
 
 .login-page #app-footer.login-footer.dimmed .status,
-.login-page #app-footer.login-footer.dimmed .status.status-ready {
+.login-page #app-footer.login-footer.dimmed .status.status-ready,
+.login-page #app-footer.login-footer.dimmed .status.status-error {
   opacity: 1 !important;
 }
 
@@ -2166,7 +2173,8 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
 }
 
 .login-page #app-footer.login-footer.dimmed.delayed .status,
-.login-page #app-footer.login-footer.dimmed.delayed .status.status-ready {
+.login-page #app-footer.login-footer.dimmed.delayed .status.status-ready,
+.login-page #app-footer.login-footer.dimmed.delayed .status.status-error {
   opacity: 0.3 !important;
 }
 

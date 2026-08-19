@@ -2359,7 +2359,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
   opacity: 1 !important; 
 } 
 #app-footer.dimmed .status,
-#app-footer.dimmed .status.status-ready {
+#app-footer.dimmed .status.status-ready,
+#app-footer.dimmed .status.status-error {
   opacity: 1 !important; 
 } 
 #app-footer.dimmed .brand img { 
@@ -2372,7 +2373,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
   opacity: 0.3 !important; 
 } 
 #app-footer.dimmed.delayed .status,
-#app-footer.dimmed.delayed .status.status-ready {
+#app-footer.dimmed.delayed .status.status-ready,
+#app-footer.dimmed.delayed .status.status-error {
   opacity: 0.3 !important; 
 } 
 #app-footer.dimmed.delayed .brand img { 
@@ -2382,6 +2384,11 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
   color: var(--green) !important; /* Zorla yeşil */
   font-weight: 600; /* Durum bilgisi kalın */
   text-shadow: 0 0 8px rgba(74, 222, 128, 0.4); /* Yeşil glow */
+}
+.status-error {
+  color: #ef4444 !important;
+  font-weight: 600;
+  text-shadow: 0 0 8px rgba(239, 68, 68, 0.35);
 }
 /* MOBİL AYARLARI: 768px ve altında modal alt çerçeve footer ışığında ezilmesin; bottom owner: .modal-overlay */
 @media (max-width: 768px) {

@@ -2586,6 +2586,13 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     white-space: nowrap;
     vertical-align: baseline;
 }
+#vehicle-history-modal .history-item-body--km-note,
+.modal-overlay:has(.history-tabs) .history-item-body--km-note {
+  font-size: 13px;
+  margin-top: 4px;
+  color: #d40000 !important;
+  line-height: 1.35;
+}
 #vehicle-history-modal .history-item-summary .history-item-details,
 .modal-overlay:has(.history-tabs) .history-item-summary .history-item-details {
     display: inline;

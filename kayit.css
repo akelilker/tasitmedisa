@@ -1546,7 +1546,8 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     .modal-column-left {
         padding-right: 8px;
         padding-left: 0;
-        border-right: 1px solid rgba(var(--theme-color-rgb), 0.28);
+        border-right: 1px solid rgba(var(--theme-color-rgb), var(--border-red-side, 0.78));
+        box-shadow: none;
         min-width: 0;
     }
     .modal-column-right {

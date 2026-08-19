@@ -169,6 +169,7 @@ test('6) Başarısız giriş kaynakta hatırlama kaydını değiştirmez', () =>
   assert.ok(catchIdx >= 0);
   const catchBlock = files.loginJs.slice(catchIdx, catchIdx + 350);
   assert.doesNotMatch(catchBlock, /clearRememberCredentials|saveRememberCredentials|driver_saved_/);
+  assert.match(catchBlock, /setLoginFooterStatus\('error'\)/);
 });
 
 test('7) Normal çıkış token siler, hatırlamayı korur', () => {
@@ -330,7 +331,7 @@ test('iOS PWA login class ve CSS owner kuralları', () => {
 });
 
 test('Bu görev style-core.css ownerına dokunmaz ve asset pinleri tutarlıdır', () => {
-  assert.match(files.bootstrap, /shellCss:\s*'20260731\.3'/);
+  assert.match(files.bootstrap, /shellCss:\s*'20260820\.4'/);
   assert.match(files.bootstrap, /bootstrap:\s*'20260731\.3'/);
   assert.match(files.loginHtml, /driver-shell\.css\?v=20260731\.3/);
   assert.match(files.dashboardHtml, /driver-shell\.css\?v=20260731\.3/);

@@ -331,6 +331,23 @@ if (footer) footer.classList.add('delayed');
 }, 4000);
 })();
 
+function getLoginFooterStatusEl() {
+return document.querySelector('#app-footer .status');
+}
+
+function setLoginFooterStatus(mode) {
+var statusEl = getLoginFooterStatusEl();
+if (!statusEl) return;
+statusEl.classList.remove('status-ready', 'status-error');
+if (mode === 'error') {
+statusEl.classList.add('status-error');
+statusEl.textContent = '● Bağlantı Hatası';
+return;
+}
+statusEl.classList.add('status-ready');
+statusEl.textContent = '● Sistem Hazır';
+}
+
 function revealDriverLoginView() {
 if (document.body) document.body.classList.remove('login-gate-active');
 }
@@ -439,6 +456,7 @@ const btnText = loginBtn.querySelector('.btn-text');
 const btnLoader = loginBtn.querySelector('.btn-loader');
 
 errorDiv.classList.remove('show');
+setLoginFooterStatus('ready');
 loginBtn.disabled = true;
 btnText.style.display = 'none';
 btnLoader.style.display = 'inline';
@@ -502,6 +520,7 @@ btnLoader.style.display = 'none';
 console.error('Hata:', error);
 errorDiv.textContent = 'Bağlantı hatası! Lütfen tekrar deneyin.';
 errorDiv.classList.add('show');
+setLoginFooterStatus('error');
 loginBtn.disabled = false;
 btnText.style.display = 'inline';
 btnLoader.style.display = 'none';

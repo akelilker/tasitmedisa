@@ -3556,7 +3556,7 @@
     const talepTarihi = formatDateForDisplay(talep.talep_tarihi || '');
     const talepKm = formatNumber(talep.yeni_km || '');
     const notMetni = `Not; Km Bilgisi, ${talepTarihi || '-'} Tarihli D\u00fczeltme Talebine \u0130stinaden ${talepKm || '-'} Km Olarak G\u00fcncellenmi\u015ftir.`;
-    return `<div class="history-item-body" style="font-size: 11px; margin-top: 4px; color: #d40000; line-height: 1.35;">${escapeHtml(notMetni)}</div>`;
+    return `<div class="history-item-body history-item-body--km-note">${escapeHtml(notMetni)}</div>`;
   }
 
   /**
