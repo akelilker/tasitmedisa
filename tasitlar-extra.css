@@ -1416,25 +1416,10 @@
 
 /* Ruhsat: Dosya Seç — şeffaf arka plan, beyaz metin (etiket rengi) */
 #dinamik-olay-modal #ruhsat-file-input.ruhsat-file-input-native {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  opacity: 0;
-  cursor: pointer;
-  z-index: 2;
-  display: block;
-  font-size: 0;
-  color: transparent;
-  background: transparent;
-  border: 0;
-  box-sizing: border-box;
+  display: none !important;
 }
 #dinamik-olay-modal #ruhsat-file-input.ruhsat-file-input-native:disabled {
   pointer-events: none;
-  cursor: default;
 }
 #dinamik-olay-modal #ruhsat-file-input {
   color: var(--form-label-color, #ffffff) !important;
@@ -1486,16 +1471,26 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
+  padding: 0;
   border: 1px dashed rgba(255, 255, 255, 0.35) !important;
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.03) !important;
   color: var(--form-label-color, #ffffff) !important;
   font-size: 14px;
-  pointer-events: none;
+  font-family: inherit;
+  line-height: 1.2;
+  cursor: pointer;
+  box-sizing: border-box;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
   transition: border-color 0.2s, background 0.2s;
+}
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-select-box:focus-visible {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.5) !important;
+  background: rgba(255, 255, 255, 0.06) !important;
 }
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-select-box:hover {
   border-color: rgba(255, 255, 255, 0.5) !important;
@@ -1646,6 +1641,12 @@
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-select-box.ruhsat-select-box--uploading {
   pointer-events: none;
   opacity: 0.65;
+  cursor: default;
+}
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-select-box:disabled {
+  pointer-events: none;
+  opacity: 0.65;
+  cursor: default;
 }
 
 /* Olay Ekle butonu - plaka satırında solda */

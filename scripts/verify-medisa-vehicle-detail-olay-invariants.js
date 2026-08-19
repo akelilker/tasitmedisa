@@ -298,6 +298,14 @@ test('Belge/Ruhsat handler owner source korunur', function() {
   assert.match(detailSrc, /openVehicleDocumentsFromDetailButton\(\s*e\s*,\s*vehicleId\s*\)/);
 });
 
+test('Ruhsat upload picker mobil güvenli button + input.click owner', function() {
+  assert.match(ruhsatUploadForm, /const selectBox = document\.createElement\('button'\)/);
+  assert.match(ruhsatUploadForm, /selectBox\.type = 'button'/);
+  assert.match(ruhsatUploadForm, /function openRuhsatFilePicker\(\)/);
+  assert.match(ruhsatUploadForm, /input\.click\(\)/);
+  assert.match(ruhsatUploadForm, /selectBox\.addEventListener\('click'/);
+});
+
 test('Sigorta/Kasko dosya seçimi açık submit bekler; diğer belgeler otomatik akışı korur', function() {
   assert.match(
     ruhsatUploadForm,

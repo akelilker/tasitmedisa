@@ -7285,16 +7285,18 @@
     }
     const uploadBox = document.createElement('div');
     uploadBox.className = 'ruhsat-upload-box';
-    const selectBox = document.createElement('div');
+    const selectBox = document.createElement('button');
+    selectBox.type = 'button';
     selectBox.className = 'ruhsat-select-box';
-    selectBox.setAttribute('aria-hidden', 'true');
+    selectBox.setAttribute('aria-label', cfg.label + ' dosyası seç');
     selectBox.innerHTML = '<span class="ruhsat-select-box-icon" aria-hidden="true">+</span><span class="ruhsat-select-box-label">Dosya Seç</span>';
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = 'application/pdf,.pdf,application/octet-stream';
     input.id = 'ruhsat-file-input';
     input.className = 'ruhsat-file-input-native';
-    input.setAttribute('aria-label', cfg.label + ' dosyası seç');
+    input.setAttribute('aria-hidden', 'true');
+    input.tabIndex = -1;
     uploadBox.appendChild(selectBox);
     uploadBox.appendChild(input);
     content.appendChild(uploadBox);
@@ -7327,6 +7329,15 @@
       '</div>' +
       '<div class="ruhsat-upload-progress-pct" id="ruhsat-upload-progress-pct">0%</div>';
     content.appendChild(progressWrap);
+    function openRuhsatFilePicker() {
+      if (!input || input.disabled) return;
+      input.click();
+    }
+    selectBox.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      openRuhsatFilePicker();
+    });
     function syncSelectedFileBox(hasFile) {
       if (!selectBox) return;
       if (hasFile) {
@@ -7685,6 +7696,8 @@
     if (cancelBtn) cancelBtn.disabled = !!locked;
     if (selectBox) {
       selectBox.classList.toggle('ruhsat-select-box--uploading', !!locked);
+      selectBox.disabled = !!locked;
+      selectBox.setAttribute('aria-disabled', locked ? 'true' : 'false');
     }
     var inputEl = document.getElementById('ruhsat-file-input');
     if (inputEl) {
