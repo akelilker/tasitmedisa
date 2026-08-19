@@ -1326,8 +1326,7 @@ document.addEventListener('DOMContentLoaded', () => {
       select.value = selected.value;
     }
     var selectedOptionValue = selected ? String(selected.value || '') : '';
-    triggerText.textContent = (selected && String(selected.textContent || '').trim()) ||
-      shell.dataset.placeholderText || 'Seçiniz';
+    triggerText.textContent = (selected && String(selected.textContent || '').trim()) || '';
     trigger.classList.toggle('placeholder', !selectedOptionValue);
     trigger.disabled = !!select.disabled;
     trigger.setAttribute('aria-disabled', select.disabled ? 'true' : 'false');
@@ -1369,6 +1368,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     options.forEach(function(option) {
       var value = String(option.value || '');
+      if (!value || option.hidden || value === '__none__') return;
       var text = String(option.textContent || '').trim();
       var item = document.createElement('button');
       item.type = 'button';
@@ -1377,7 +1377,6 @@ document.addEventListener('DOMContentLoaded', () => {
       item.dataset.value = value;
       item.setAttribute('role', 'option');
       item.setAttribute('aria-selected', value === selectedValue ? 'true' : 'false');
-      if (!value) item.classList.add('is-placeholder');
       if (value === selectedValue) item.classList.add('selected');
       if (secondaryValues.indexOf(value) !== -1 || /^\+/.test(text)) item.classList.add('is-secondary-action');
       if (mutedValues.indexOf(value) !== -1) item.classList.add('is-muted-choice');
