@@ -3253,6 +3253,12 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     filter: none;
     opacity: 1;
   }
+
+  body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-plate-subtitle {
+    filter: blur(2px) brightness(0.68);
+    opacity: 0.9;
+    transition: filter 0.18s ease, opacity 0.18s ease;
+  }
 }
 
 @media (max-width: 768px) {
@@ -3284,6 +3290,13 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 
   body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) #driver-plate-dropdown.driver-plate-dropdown {
     z-index: 10060 !important;
+  }
+
+  body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-plate-subtitle {
+    filter: blur(2px) !important;
+    -webkit-filter: blur(2px) !important;
+    opacity: 0.9 !important;
+    transition: filter 0.18s ease, opacity 0.18s ease;
   }
 }
 
