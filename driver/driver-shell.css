@@ -1566,11 +1566,37 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
   }
   .dashboard-page .driver-vehicle-shortcuts-item:hover,
   .dashboard-page .driver-vehicle-shortcuts-item:focus-visible {
-    color: #ffffff;
     border: none;
     background: transparent;
     box-shadow: none;
     outline: none;
+  }
+  .dashboard-page .driver-vehicle-shortcuts-item-history .driver-vehicle-shortcuts-item-icon,
+  .dashboard-page .driver-vehicle-shortcuts-item-documents .driver-vehicle-shortcuts-item-icon,
+  .dashboard-page .driver-vehicle-shortcuts-item-feedback .driver-vehicle-shortcuts-item-icon,
+  .dashboard-page .driver-vehicle-shortcuts-item-password .driver-vehicle-shortcuts-item-icon {
+    color: #22c55e;
+  }
+  .dashboard-page .driver-vehicle-shortcuts-item-history:hover .driver-vehicle-shortcuts-item-icon,
+  .dashboard-page .driver-vehicle-shortcuts-item-history:focus-visible .driver-vehicle-shortcuts-item-icon,
+  .dashboard-page .driver-vehicle-shortcuts-item-documents:hover .driver-vehicle-shortcuts-item-icon,
+  .dashboard-page .driver-vehicle-shortcuts-item-documents:focus-visible .driver-vehicle-shortcuts-item-icon,
+  .dashboard-page .driver-vehicle-shortcuts-item-feedback:hover .driver-vehicle-shortcuts-item-icon,
+  .dashboard-page .driver-vehicle-shortcuts-item-feedback:focus-visible .driver-vehicle-shortcuts-item-icon,
+  .dashboard-page .driver-vehicle-shortcuts-item-password:hover .driver-vehicle-shortcuts-item-icon,
+  .dashboard-page .driver-vehicle-shortcuts-item-password:focus-visible .driver-vehicle-shortcuts-item-icon {
+    color: #22c55e;
+  }
+  .dashboard-page .driver-vehicle-shortcuts-item-forget-device .driver-vehicle-shortcuts-item-icon {
+    color: var(--theme-color, #d40000);
+  }
+  .dashboard-page .driver-vehicle-shortcuts-item-forget-device:hover .driver-vehicle-shortcuts-item-icon,
+  .dashboard-page .driver-vehicle-shortcuts-item-forget-device:focus-visible .driver-vehicle-shortcuts-item-icon {
+    color: var(--theme-color, #d40000);
+  }
+  .dashboard-page .driver-vehicle-shortcuts-item-forget-device {
+    grid-column: 1 / -1;
+    justify-self: center;
   }
 }
 .driver-plate-dropdown-row {
