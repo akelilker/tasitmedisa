@@ -3249,7 +3249,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-plate-dropdown-row,
   body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-plate-trigger,
   body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-current-plaka,
-  body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-plate-subtitle,
   body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-plate-dropdown {
     filter: none;
     opacity: 1;
@@ -3276,7 +3275,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-plate-dropdown-row,
   body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-plate-trigger,
   body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-current-plaka,
-  body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-plate-subtitle,
   body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-plate-dropdown,
   body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) #driver-plate-dropdown.driver-plate-dropdown {
     filter: none !important;
