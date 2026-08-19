@@ -275,6 +275,7 @@ body::-webkit-scrollbar,
   opacity: 1;
   color: rgba(240, 244, 248, 0.96);
   font-size: 13px;
+  font-weight: 400;
   line-height: 1.15;
   text-align: center;
   cursor: pointer;

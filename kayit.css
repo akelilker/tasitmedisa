@@ -614,6 +614,7 @@ select option:active {
     min-height: 27px !important;
     padding: 2px 10px !important;
     line-height: 1.15 !important;
+    font-weight: 400 !important;
     color: rgba(232, 236, 241, 0.94);
     cursor: pointer;
 }
@@ -627,7 +628,7 @@ select option:active {
 }
 #vehicle-modal #vehicle-branch-list .vehicle-branch-option.vehicle-branch-add-hint {
     color: rgba(148, 163, 184, 0.76);
-    font-weight: 500;
+    font-weight: 400 !important;
     cursor: pointer;
 }
 @media (hover: hover) {
