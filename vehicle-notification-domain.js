@@ -4,8 +4,11 @@
     'vehicleNeedsTakograf',
     'vehicleNeedsTrafikSigortasi',
     'vehicleNeedsEgzozMuayene',
-    'getK2BelgesiState',
-    'getK2BelgesiExpiryDate',
+    'getK2BelgeGroups',
+    'getK2BelgeGroupForBranch',
+    'getK2BelgeGroupForVehicle',
+    'getK2BelgesiExpiryDateForVehicle',
+    'getK2BelgesiDocumentPathForVehicle',
     'isVehicleOperationallyInactive',
     'getEgzozMuayeneState',
     'isEgzozMuayeneCritical'
@@ -50,19 +53,31 @@
     return getVehicleTypeKey(vehicle) !== 'romork';
   }
 
-  function getK2BelgesiState() {
-    if (!window.appData) window.appData = {};
-    if (!window.appData.ayarlar || typeof window.appData.ayarlar !== 'object' || Array.isArray(window.appData.ayarlar)) {
-      window.appData.ayarlar = {};
-    }
-    if (!window.appData.ayarlar.k2Belgesi || typeof window.appData.ayarlar.k2Belgesi !== 'object' || Array.isArray(window.appData.ayarlar.k2Belgesi)) {
-      window.appData.ayarlar.k2Belgesi = { expiryDate: '', documentPath: '', updatedAt: '' };
-    }
-    return window.appData.ayarlar.k2Belgesi;
+  function getK2BelgeGroups() {
+    var groups = window.appData && window.appData.ayarlar && window.appData.ayarlar.k2BelgeGruplari;
+    return Array.isArray(groups) ? groups : [];
   }
 
-  function getK2BelgesiExpiryDate() {
-    return String(getK2BelgesiState().expiryDate || '').trim();
+  function getK2BelgeGroupForBranch(branchId) {
+    var id = String(branchId || '').trim();
+    if (!id) return null;
+    return getK2BelgeGroups().find(function(group) {
+      return group && Array.isArray(group.branchIds) && group.branchIds.map(String).indexOf(id) !== -1;
+    }) || null;
+  }
+
+  function getK2BelgeGroupForVehicle(vehicle) {
+    return getK2BelgeGroupForBranch(vehicle && vehicle.branchId);
+  }
+
+  function getK2BelgesiExpiryDateForVehicle(vehicle) {
+    var group = getK2BelgeGroupForVehicle(vehicle);
+    return String(group && group.expiryDate || '').trim();
+  }
+
+  function getK2BelgesiDocumentPathForVehicle(vehicle) {
+    var group = getK2BelgeGroupForVehicle(vehicle);
+    return String(group && group.documentPath || '').trim();
   }
 
   function isVehicleOperationallyInactive(vehicle) {
@@ -141,8 +156,11 @@
     vehicleNeedsTakograf: vehicleNeedsTakograf,
     vehicleNeedsTrafikSigortasi: vehicleNeedsTrafikSigortasi,
     vehicleNeedsEgzozMuayene: vehicleNeedsEgzozMuayene,
-    getK2BelgesiState: getK2BelgesiState,
-    getK2BelgesiExpiryDate: getK2BelgesiExpiryDate,
+    getK2BelgeGroups: getK2BelgeGroups,
+    getK2BelgeGroupForBranch: getK2BelgeGroupForBranch,
+    getK2BelgeGroupForVehicle: getK2BelgeGroupForVehicle,
+    getK2BelgesiExpiryDateForVehicle: getK2BelgesiExpiryDateForVehicle,
+    getK2BelgesiDocumentPathForVehicle: getK2BelgesiDocumentPathForVehicle,
     isVehicleOperationallyInactive: isVehicleOperationallyInactive,
     getEgzozMuayeneState: getEgzozMuayeneState,
     isEgzozMuayeneCritical: isEgzozMuayeneCritical

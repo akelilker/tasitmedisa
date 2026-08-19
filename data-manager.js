@@ -103,7 +103,8 @@ function getDefaultAppData() {
                 expiryDate: '',
                 documentPath: '',
                 updatedAt: ''
-            }
+            },
+            k2BelgeGruplari: []
         },
         sifreler: [],
         arac_aylik_hareketler: [],
@@ -1050,7 +1051,8 @@ function normalizeOfflineAppDataSnapshot(data) {
                 expiryDate: '',
                 documentPath: '',
                 updatedAt: ''
-            }
+            },
+            k2BelgeGruplari: []
         },
         sifreler: Array.isArray(data.sifreler) ? data.sifreler : [],
         arac_aylik_hareketler: Array.isArray(data.arac_aylik_hareketler) ? data.arac_aylik_hareketler : [],
@@ -1293,7 +1295,8 @@ async function loadDataFromServer(forceRefresh) {
                         expiryDate: '',
                         documentPath: '',
                         updatedAt: ''
-                    }
+            },
+            k2BelgeGruplari: []
                 },
                 sifreler: data.sifreler || [],
                 arac_aylik_hareketler: data.arac_aylik_hareketler || [],

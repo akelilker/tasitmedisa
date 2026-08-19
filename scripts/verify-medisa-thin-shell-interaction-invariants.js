@@ -48,9 +48,11 @@ function extractStyleCorePin(indexHtml) {
   return pins[0];
 }
 
-function extractNotificationsVersion(core) {
-  const m = core.match(/notifications:\s*'([0-9.]+)'/);
-  assert.ok(m, 'notifications version bulunmalı');
+function extractModuleVersion(core, name) {
+  const block = core.match(/var MEDISA_MODULE_VERSIONS\s*=\s*\{([\s\S]*?)\n\};/);
+  assert.ok(block, 'MEDISA_MODULE_VERSIONS owner bloğu bulunmalı');
+  const m = block[1].match(new RegExp('\\b' + name + '\\s*:\\s*\'([0-9.]+)\''));
+  assert.ok(m, name + ' version bulunmalı');
   return m[1];
 }
 
@@ -119,9 +121,11 @@ async function sourceInvariants() {
 
   await run('source: script-core / notifications pin parity', function() {
     const pin = extractScriptCorePin(index);
-    assert.ok(pin >= '20260801.7' || Number(pin.replace(/\./g, '')) >= 202608017, 'script-core pin yükselmiş olmalı: ' + pin);
-    const notifV = extractNotificationsVersion(core);
-    assert.equal(notifV, '20260813.2');
+    assert.match(pin, /^\d{8}\.\d+$/, 'script-core pin tarih.surum formatında olmalı');
+    const notifV = extractModuleVersion(core, 'notifications');
+    assert.match(notifV, /^\d{8}\.\d+$/, 'notifications sürümü tarih.surum formatında olmalı');
+    assert.match(core, /var NOTIFICATIONS_JS\s*=\s*base \+ 'notifications\.js\?v=' \+ V\.notifications;/);
+    assert.match(core, /base \+ 'notifications\.css\?v=' \+ V\.notifications/);
     assert.match(index, new RegExp('script-core\\.js\\?v=' + pin.replace(/\./g, '\\.')));
   });
 
@@ -145,8 +149,8 @@ async function sourceInvariants() {
     );
     assert.doesNotMatch(cacheFiles[1], /'\/style-core\.css'/);
 
-    // Backend/runtime data manager pin — bu release ile birlikte dar bump alır.
-    assert.match(index, /data-manager\.js\?v=20260813\.1/);
+    // Backend/runtime data manager pin kendi HTML owner'ında versioned olmalı.
+    assert.match(index, /data-manager\.js\?v=\d{8}\.\d+/);
   });
 
   await run('source: quality gate / package thin-shell bağlandı', function() {

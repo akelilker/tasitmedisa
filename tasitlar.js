@@ -197,7 +197,7 @@
 
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20260813.1';
+  const MEDISA_TASITLAR_MODULE_VERSION = '20260819.1';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
@@ -206,8 +206,11 @@
     'vehicleNeedsTakograf',
     'vehicleNeedsTrafikSigortasi',
     'vehicleNeedsEgzozMuayene',
-    'getK2BelgesiState',
-    'getK2BelgesiExpiryDate',
+    'getK2BelgeGroups',
+    'getK2BelgeGroupForBranch',
+    'getK2BelgeGroupForVehicle',
+    'getK2BelgesiExpiryDateForVehicle',
+    'getK2BelgesiDocumentPathForVehicle',
     'isVehicleOperationallyInactive',
     'getEgzozMuayeneState',
     'isEgzozMuayeneCritical'
@@ -388,7 +391,7 @@
     };
 
     const updateTrigger = function() {
-      triggerText.textContent = selectedUserName || 'Kullanıcı Seçiniz';
+      triggerText.textContent = selectedUserName || '';
       trigger.classList.toggle('placeholder', !selectedUserName);
       hiddenInput.value = selectedUserName;
     };
@@ -509,375 +512,14 @@
     setSelectedUser(defaultUserName);
   }
 
-  let activeDynamicModalCustomSelect = null;
-
-  function normalizeDynamicModalSelectSearch(value) {
-    return String(value || '')
-      .toLocaleLowerCase('tr-TR')
-      .replace(/ı/g, 'i')
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '');
-  }
-
-  function isDynamicModalSelectTouchDevice() {
-    return window.matchMedia && window.matchMedia('(hover: none)').matches;
-  }
-
-  function isDynamicModalSelectPrintableKey(e) {
-    return e.key && e.key.length === 1 && !e.altKey && !e.ctrlKey && !e.metaKey;
-  }
-
-  function filterDynamicModalCustomSelect(shell) {
-    if (!shell || shell.dataset.searchable !== '1') return;
-    const menu = shell.querySelector('.medisa-owner-select-menu');
-    const searchInput = shell.querySelector('.medisa-owner-select-search-input');
-    const optionsHost = shell.querySelector('.medisa-owner-select-options') || menu;
-    if (!menu || !searchInput || !optionsHost) return;
-
-    const query = normalizeDynamicModalSelectSearch(searchInput.value || '');
-    const secondaryValues = (shell.dataset.secondaryValues || '').split('|').filter(Boolean);
-    const mutedValues = (shell.dataset.mutedValues || '').split('|').filter(Boolean);
-    const optionItems = Array.from(optionsHost.querySelectorAll('.medisa-owner-select-option'));
-    let visibleRegularCount = 0;
-    let regularCount = 0;
-
-    optionItems.forEach(function(item) {
-      const value = String(item.dataset.value || '');
-      const text = String(item.textContent || '');
-      const isPlaceholder = !value || item.classList.contains('is-placeholder');
-      const isPinned = secondaryValues.indexOf(value) !== -1 || mutedValues.indexOf(value) !== -1;
-      const isRegular = !isPlaceholder && !isPinned && !item.classList.contains('is-secondary-action');
-      let shouldShow = true;
-
-      if (isRegular) {
-        regularCount += 1;
-        shouldShow = !query || normalizeDynamicModalSelectSearch(text).indexOf(query) !== -1;
-        if (shouldShow) visibleRegularCount += 1;
-      } else if (isPlaceholder) {
-        shouldShow = !query;
-      }
-
-      item.hidden = !shouldShow;
-      item.classList.toggle('is-filter-hidden', !shouldShow);
-    });
-
-    let emptyItem = optionsHost.querySelector('.medisa-owner-select-empty');
-    const shouldShowEmpty = !!query && regularCount > 0 && visibleRegularCount === 0;
-    if (shouldShowEmpty) {
-      if (!emptyItem) {
-        emptyItem = document.createElement('div');
-        emptyItem.className = 'medisa-owner-select-empty';
-        emptyItem.setAttribute('aria-live', 'polite');
-        const firstSecondary = optionsHost.querySelector('.medisa-owner-select-option.is-secondary-action');
-        optionsHost.insertBefore(emptyItem, firstSecondary || null);
-      }
-      emptyItem.textContent = shell.dataset.noResultsText || 'Sonuç bulunamadı';
-    } else if (emptyItem) {
-      emptyItem.remove();
-    }
-  }
-
-  function focusDynamicModalCustomSelectSearch(shell, initialValue) {
-    if (!shell || shell.dataset.searchable !== '1') return false;
-    const searchInput = shell.querySelector('.medisa-owner-select-search-input');
-    if (!searchInput) return false;
-    if (typeof initialValue === 'string') {
-      searchInput.value = initialValue;
-      filterDynamicModalCustomSelect(shell);
-      positionDynamicModalCustomSelectMenu(shell);
-    }
-    requestAnimationFrame(function() {
-      searchInput.focus();
-      if (typeof initialValue === 'string') {
-        const cursorPosition = searchInput.value.length;
-        searchInput.setSelectionRange(cursorPosition, cursorPosition);
-      } else {
-        searchInput.select();
-      }
-    });
-    return true;
-  }
-
   function closeDynamicModalCustomSelect(options) {
-    const opts = options || {};
-    const shell = activeDynamicModalCustomSelect;
-    if (!shell) return;
-    const trigger = shell.querySelector('.medisa-owner-select-trigger');
-    const menu = shell.querySelector('.medisa-owner-select-menu');
-    const searchInput = shell.querySelector('.medisa-owner-select-search-input');
-    shell.classList.remove('is-open');
-    if (trigger) {
-      trigger.classList.remove('is-open');
-      trigger.setAttribute('aria-expanded', 'false');
-      if (opts.focusTrigger) trigger.focus();
-    }
-    if (searchInput) searchInput.value = '';
-    if (menu) {
-      menu.classList.remove('open');
-      menu.setAttribute('aria-hidden', 'true');
-      menu.style.position = '';
-      menu.style.top = '';
-      menu.style.bottom = '';
-      menu.style.left = '';
-      menu.style.right = '';
-      menu.style.width = '';
-      menu.style.maxHeight = '';
-    }
-    refreshDynamicModalCustomSelect(shell);
-    activeDynamicModalCustomSelect = null;
-  }
-
-  function positionDynamicModalCustomSelectMenu(shell) {
-    if (!shell) return;
-    const trigger = shell.querySelector('.medisa-owner-select-trigger');
-    const menu = shell.querySelector('.medisa-owner-select-menu');
-    if (!trigger || !menu) return;
-
-    const rect = trigger.getBoundingClientRect();
-    const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 800;
-    const desiredHeight = Math.min(menu.scrollHeight || 240, 260);
-    const spaceBelow = Math.max(120, viewportHeight - rect.bottom - 12);
-    const spaceAbove = Math.max(120, rect.top - 12);
-    const useAbove = spaceBelow < Math.min(180, desiredHeight) && spaceAbove > spaceBelow;
-    const maxHeight = Math.max(120, Math.min(260, useAbove ? spaceAbove : spaceBelow));
-    const triggerHeight = trigger.offsetHeight || rect.height || 44;
-
-    menu.style.position = 'absolute';
-    menu.style.left = '0';
-    menu.style.right = '0';
-    menu.style.width = '100%';
-    menu.style.maxHeight = maxHeight + 'px';
-    if (useAbove) {
-      menu.style.top = 'auto';
-      menu.style.bottom = (triggerHeight + 6) + 'px';
-    } else {
-      menu.style.top = (triggerHeight + 6) + 'px';
-      menu.style.bottom = 'auto';
-    }
-  }
-
-  function refreshDynamicModalCustomSelect(shell) {
-    if (!shell) return;
-    const select = shell.querySelector('select');
-    const trigger = shell.querySelector('.medisa-owner-select-trigger');
-    const triggerText = shell.querySelector('.medisa-owner-select-trigger-text');
-    const menu = shell.querySelector('.medisa-owner-select-menu');
-    if (!select || !trigger || !triggerText || !menu) return;
-
-    const options = Array.from(select.options || []);
-    const selectedValue = String(select.value || '');
-    let selectedOption = options.find(function(option) {
-      return String(option.value || '') === selectedValue;
-    }) || options[select.selectedIndex] || options[0] || null;
-
-    if (!selectedOption && options.length) {
-      selectedOption = options[0];
-      select.value = selectedOption.value;
-    }
-
-    const placeholderText = shell.dataset.placeholderText || (options[0] ? options[0].textContent : 'Seçiniz');
-    const selectedText = selectedOption ? String(selectedOption.textContent || '').trim() : '';
-    const selectedOptionValue = selectedOption ? String(selectedOption.value || '') : '';
-    const secondaryValues = (shell.dataset.secondaryValues || '').split('|').filter(Boolean);
-    const mutedValues = (shell.dataset.mutedValues || '').split('|').filter(Boolean);
-    const isSearchable = shell.dataset.searchable === '1';
-    const existingSearchInput = shell.querySelector('.medisa-owner-select-search-input');
-    const searchValue = existingSearchInput ? existingSearchInput.value : '';
-
-    triggerText.textContent = selectedText || placeholderText;
-    trigger.classList.toggle('placeholder', !selectedOptionValue);
-    trigger.disabled = !!select.disabled;
-    trigger.setAttribute('aria-disabled', select.disabled ? 'true' : 'false');
-
-    menu.innerHTML = '';
-    let optionsHost = menu;
-    if (isSearchable) {
-      const searchWrap = document.createElement('div');
-      searchWrap.className = 'medisa-owner-select-search-wrap';
-
-      const searchInput = document.createElement('input');
-      searchInput.type = 'text';
-      searchInput.className = 'form-input medisa-owner-select-search-input';
-      searchInput.placeholder = shell.dataset.searchPlaceholder || 'Ara';
-      searchInput.value = searchValue;
-      searchInput.setAttribute('autocomplete', 'off');
-      searchInput.setAttribute('aria-label', shell.dataset.searchPlaceholder || 'Ara');
-
-      const list = document.createElement('div');
-      list.className = 'medisa-owner-select-options';
-
-      searchWrap.appendChild(searchInput);
-      menu.appendChild(searchWrap);
-      menu.appendChild(list);
-      optionsHost = list;
-
-      searchInput.addEventListener('click', function(e) {
-        e.stopPropagation();
-      });
-      searchInput.addEventListener('input', function() {
-        filterDynamicModalCustomSelect(shell);
-        positionDynamicModalCustomSelectMenu(shell);
-      });
-      searchInput.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-          e.preventDefault();
-          if (searchInput.value) {
-            searchInput.value = '';
-            filterDynamicModalCustomSelect(shell);
-            positionDynamicModalCustomSelectMenu(shell);
-          } else {
-            closeDynamicModalCustomSelect({ focusTrigger: true });
-          }
-        }
-      });
-    }
-
-    options.forEach(function(option) {
-      const value = String(option.value || '');
-      const text = String(option.textContent || '').trim();
-      const item = document.createElement('button');
-      item.type = 'button';
-      item.className = 'medisa-owner-select-option';
-      item.textContent = text;
-      item.dataset.value = value;
-      item.setAttribute('role', 'option');
-      item.setAttribute('aria-selected', value === selectedValue ? 'true' : 'false');
-
-      if (!value) item.classList.add('is-placeholder');
-      if (value === selectedValue) item.classList.add('selected');
-      if (secondaryValues.indexOf(value) !== -1 || /^\+/.test(text)) item.classList.add('is-secondary-action');
-      if (mutedValues.indexOf(value) !== -1) item.classList.add('is-muted-choice');
-      if (option.disabled) {
-        item.classList.add('is-disabled');
-        item.disabled = true;
-      }
-
-      optionsHost.appendChild(item);
-    });
-
-    filterDynamicModalCustomSelect(shell);
-
-    if (activeDynamicModalCustomSelect === shell && menu.classList.contains('open')) {
-      positionDynamicModalCustomSelectMenu(shell);
-    }
-  }
-
-  function openDynamicModalCustomSelect(shell) {
-    if (!shell) return;
-    if (activeDynamicModalCustomSelect && activeDynamicModalCustomSelect !== shell) {
-      closeDynamicModalCustomSelect();
-    }
-    const trigger = shell.querySelector('.medisa-owner-select-trigger');
-    const menu = shell.querySelector('.medisa-owner-select-menu');
-    if (!trigger || !menu || trigger.disabled) return;
-
-    activeDynamicModalCustomSelect = shell;
-    shell.classList.add('is-open');
-    trigger.classList.add('is-open');
-    trigger.setAttribute('aria-expanded', 'true');
-    menu.classList.add('open');
-    menu.setAttribute('aria-hidden', 'false');
-    positionDynamicModalCustomSelectMenu(shell);
-    if (shell.dataset.searchable === '1' && !isDynamicModalSelectTouchDevice()) {
-      focusDynamicModalCustomSelectSearch(shell);
-    }
+    if (window.MedisaOwnerSelect) window.MedisaOwnerSelect.close(options);
   }
 
   function ensureDynamicModalCustomSelect(select, options) {
-    if (!select) return null;
-    let shell = select.closest('.medisa-owner-select');
-    if (!shell) {
-      shell = document.createElement('div');
-      shell.className = 'medisa-owner-select';
-      select.parentNode.insertBefore(shell, select);
-      shell.appendChild(select);
-      select.classList.add('medisa-owner-select-native');
-
-      const trigger = document.createElement('button');
-      trigger.type = 'button';
-      trigger.className = 'form-input medisa-owner-select-trigger';
-      trigger.setAttribute('aria-haspopup', 'listbox');
-      trigger.setAttribute('aria-expanded', 'false');
-      trigger.innerHTML = '<span class="medisa-owner-select-trigger-text"></span><svg class="medisa-owner-select-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
-
-      const menu = document.createElement('div');
-      menu.className = 'medisa-owner-select-menu';
-      menu.setAttribute('role', 'listbox');
-      menu.setAttribute('aria-hidden', 'true');
-
-      shell.appendChild(trigger);
-      shell.appendChild(menu);
-
-      const label = shell.parentNode ? shell.parentNode.querySelector('label[for="' + select.id + '"]') : null;
-      if (label && !label.dataset.medisaOwnerSelectBound) {
-        label.dataset.medisaOwnerSelectBound = '1';
-        label.addEventListener('click', function(e) {
-          if (!select.closest('.medisa-owner-select')) return;
-          e.preventDefault();
-          trigger.focus();
-        });
-      }
-
-      trigger.addEventListener('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        if (activeDynamicModalCustomSelect === shell) closeDynamicModalCustomSelect();
-        else openDynamicModalCustomSelect(shell);
-      });
-
-      trigger.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          if (activeDynamicModalCustomSelect === shell) closeDynamicModalCustomSelect();
-          else openDynamicModalCustomSelect(shell);
-        } else if (e.key === 'ArrowDown') {
-          e.preventDefault();
-          openDynamicModalCustomSelect(shell);
-        } else if (e.key === 'Escape' && activeDynamicModalCustomSelect === shell) {
-          e.preventDefault();
-          closeDynamicModalCustomSelect({ focusTrigger: true });
-        } else if (shell.dataset.searchable === '1' && isDynamicModalSelectPrintableKey(e)) {
-          e.preventDefault();
-          openDynamicModalCustomSelect(shell);
-          focusDynamicModalCustomSelectSearch(shell, e.key);
-        }
-      });
-
-      menu.addEventListener('click', function(e) {
-        const item = e.target.closest('.medisa-owner-select-option');
-        if (!item || item.disabled) return;
-        select.value = item.dataset.value || '';
-        select.dispatchEvent(new Event('change', { bubbles: true }));
-        refreshDynamicModalCustomSelect(shell);
-        closeDynamicModalCustomSelect({ focusTrigger: true });
-      });
-
-      select.addEventListener('change', function() {
-        refreshDynamicModalCustomSelect(shell);
-      });
-    }
-
-    shell.dataset.placeholderText = options && options.placeholderText ? options.placeholderText : '';
-    shell.dataset.secondaryValues = options && Array.isArray(options.secondaryValues) ? options.secondaryValues.join('|') : '';
-    shell.dataset.mutedValues = options && Array.isArray(options.mutedValues) ? options.mutedValues.join('|') : '';
-    shell.dataset.searchable = options && options.searchable ? '1' : '';
-    shell.dataset.searchPlaceholder = options && options.searchPlaceholder ? options.searchPlaceholder : '';
-    shell.dataset.noResultsText = options && options.noResultsText ? options.noResultsText : '';
-    refreshDynamicModalCustomSelect(shell);
-    return shell;
+    return window.MedisaOwnerSelect ? window.MedisaOwnerSelect.ensure(select, options) : null;
   }
 
-  document.addEventListener('click', function(e) {
-    if (!activeDynamicModalCustomSelect) return;
-    if (!activeDynamicModalCustomSelect.contains(e.target)) closeDynamicModalCustomSelect();
-  }, true);
-
-  window.addEventListener('resize', function() {
-    if (activeDynamicModalCustomSelect) closeDynamicModalCustomSelect();
-  });
-
-
-  /** Ana uygulamada olay satırında görünen sürücü adı: genel yönetici kendi adıyla; aksi halde atanmış kullanıcı / tahsis. */
   function isMainAppSessionGenelYonetici() {
     try {
       var sess = typeof window.medisaSession === 'object' && window.medisaSession ? window.medisaSession : null;
@@ -3743,8 +3385,8 @@
     return rawType;
   }
 
-  function getK2BelgesiDocumentPath() {
-    return String(window.MedisaVehicleNotificationDomain.getK2BelgesiState().documentPath || '').trim();
+  function getK2BelgesiDocumentPath(vehicle) {
+    return String(window.MedisaVehicleNotificationDomain.getK2BelgesiDocumentPathForVehicle(vehicle) || '').trim();
   }
 
 
@@ -5049,7 +4691,7 @@
             '<input type="hidden" id="ceza-surucu">' +
             '<div id="ceza-user-wrap" class="ceza-user-dropdown-wrap">' +
               '<button type="button" id="ceza-user-trigger" class="form-input ceza-user-trigger placeholder" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="ceza-user-dropdown" aria-labelledby="ceza-user-label ceza-user-trigger-text">' +
-                '<span id="ceza-user-trigger-text">Kullanıcı Seçiniz</span>' +
+                '<span id="ceza-user-trigger-text"></span>' +
                 '<svg class="ceza-user-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>' +
               '</button>' +
               '<div id="ceza-user-dropdown" class="ceza-user-dropdown" role="listbox" aria-hidden="true">' +
@@ -5410,7 +5052,7 @@
         }
         const bitisDisplay = document.getElementById('tasit-karti-bitis-display');
         if (bitisDisplay) {
-          const k2ExpiryIso = getTasitKartiSourceK2ExpiryIsoDate();
+          const k2ExpiryIso = getTasitKartiSourceK2ExpiryIsoDate(vehicle);
           bitisDisplay.textContent = k2ExpiryIso
             ? formatVehicleDocumentExpiryDate(k2ExpiryIso)
             : 'Önce K2 Belgesi Geçerlilik Süresi Kaydedilmelidir';
@@ -5483,6 +5125,7 @@
             const noneOpt = document.createElement('option');
             noneOpt.value = '__none__';
             noneOpt.textContent = 'Henüz Tanımlanmadı';
+            noneOpt.hidden = true;
             targetSelect.appendChild(noneOpt);
             const users = getAssignableUsersForVehicle(targetVehicle);
             users.forEach(u => {
@@ -5498,11 +5141,8 @@
             const selected = selectedUserId != null ? String(selectedUserId) : '';
             if (selected && users.some(function(u) { return String(u.id) === selected; })) {
               targetSelect.value = selected;
-            } else if (selected && selected !== '__none__') {
-              // Eski atama artık aday değilse listeye yönetici eklenmez; seçim sıfırlanır.
-              targetSelect.value = '__none__';
             } else {
-              targetSelect.value = '__none__';
+              targetSelect.value = '';
             }
           };
           fillAssignableUserOptions(selectEl, vehicle, vehicle && vehicle.assignedUserId);
@@ -5983,7 +5623,7 @@
   function getVehicleDocumentPath(vehicle, documentType) {
     const config = getVehicleDocumentConfig(documentType);
     if (config.scope === 'settings') {
-      return getK2BelgesiDocumentPath();
+      return window.MedisaVehicleNotificationDomain.getK2BelgesiDocumentPathForVehicle(vehicle);
     }
     return vehicle ? String(vehicle[config.pathField] || '') : '';
   }
@@ -6004,15 +5644,15 @@
   }
 
   function getTasitKartiExpiryDate(vehicle) {
-    return String(window.MedisaVehicleNotificationDomain.getK2BelgesiExpiryDate() || (vehicle && vehicle.tasitKartiExpiryDate) || '').trim();
+    return String((vehicle && vehicle.tasitKartiExpiryDate) || window.MedisaVehicleNotificationDomain.getK2BelgesiExpiryDateForVehicle(vehicle) || '').trim();
   }
 
-  function getTasitKartiSourceK2ExpiryIsoDate() {
-    return parseVehicleDocumentExpiryDate(window.MedisaVehicleNotificationDomain.getK2BelgesiExpiryDate());
+  function getTasitKartiSourceK2ExpiryIsoDate(vehicle) {
+    return parseVehicleDocumentExpiryDate(window.MedisaVehicleNotificationDomain.getK2BelgesiExpiryDateForVehicle(vehicle));
   }
 
-  function validateTasitKartiK2SourceDate() {
-    if (getTasitKartiSourceK2ExpiryIsoDate()) return { valid: true };
+  function validateTasitKartiK2SourceDate(vehicle) {
+    if (getTasitKartiSourceK2ExpiryIsoDate(vehicle)) return { valid: true };
     return { valid: false, message: 'Taşıt Kartı işlemi için önce K2 Belgesi Geçerlilik Süresi kaydedilmelidir.' };
   }
 
@@ -7707,9 +7347,20 @@
       syncSelectedFileBox(false);
       setRuhsatSaveBtnVisibility(saveBtn, false);
     }
+    function resolveActiveVehicleForDocumentUpload() {
+      if (typeof vehicle !== 'undefined' && vehicle) return vehicle;
+      var vehicleId = (window.currentDetailVehicleId != null ? String(window.currentDetailVehicleId) : '');
+      if (!vehicleId) return null;
+      var appTasitlar = window.appData && Array.isArray(window.appData.tasitlar) ? window.appData.tasitlar : [];
+      var found = appTasitlar.find(function(v) { return String(v.id) === vehicleId; });
+      if (found) return found;
+      var list = typeof readVehicles === 'function' ? readVehicles() : [];
+      return list.find(function(v) { return String(v.id) === vehicleId; }) || null;
+    }
     function validateSelectedDocumentBeforeUpload() {
+      const activeVehicle = resolveActiveVehicleForDocumentUpload();
       if (cfg.key === 'tasit_karti') {
-        const expiryValidation = validateTasitKartiK2SourceDate();
+        const expiryValidation = validateTasitKartiK2SourceDate(activeVehicle);
         if (expiryValidation.valid) return true;
         alert(expiryValidation.message);
         resetSelectedUploadFile();
@@ -8077,7 +7728,7 @@
       const tasitKartiExpiryDateBefore = getTasitKartiExpiryDate(vehicle);
       uploadMeta.tasitKartiExpiryDateBefore = tasitKartiExpiryDateBefore;
       uploadUrlParams.set('tasitKartiExpiryDateBefore', tasitKartiExpiryDateBefore);
-      const expiryValidation = validateTasitKartiK2SourceDate();
+      const expiryValidation = validateTasitKartiK2SourceDate(vehicle);
       if (!expiryValidation.valid) {
         alert(expiryValidation.message);
         return;
@@ -8118,14 +7769,11 @@
         invalidateRuhsatDocumentCache(vehicleId, cfg.key);
         var newPath = data.documentPath || data.ruhsatPath;
         if (cfg.scope === 'settings') {
-          const k2State = window.MedisaVehicleNotificationDomain.getK2BelgesiState();
+          const k2Group = window.MedisaVehicleNotificationDomain.getK2BelgeGroupForVehicle(
+            (window.appData?.tasitlar || []).find(function(x) { return String(x.id) === String(vehicleId); })
+          );
           if (newPath) {
-            k2State.documentPath = newPath;
-          }
-          if (data.settingsDocument && typeof data.settingsDocument === 'object') {
-            Object.assign(k2State, data.settingsDocument);
-          } else {
-            k2State.updatedAt = new Date().toISOString();
+            if (k2Group) k2Group.documentPath = newPath;
           }
         } else {
           const currentVehicles = window.appData?.tasitlar || [];
@@ -8816,14 +8464,14 @@
       return;
     }
 
-    const expiryValidation = validateTasitKartiK2SourceDate();
+    const svc = resolveVehicleContextForDynamicSave();
+    if (!svc) return;
+    const expiryValidation = validateTasitKartiK2SourceDate(svc.vehicle);
     if (!expiryValidation.valid) {
       alert(expiryValidation.message);
       return;
     }
 
-    const svc = resolveVehicleContextForDynamicSave();
-    if (!svc) return;
     const vehicleId = svc.vehicleId;
     const vehicle = svc.vehicle;
     const vehicles = svc.vehicles;
@@ -8833,7 +8481,7 @@
     }
 
     const yapilmaIso = parseGgAaYyyyToIso(tarih);
-    const bitisTarihi = getTasitKartiSourceK2ExpiryIsoDate();
+    const bitisTarihi = getTasitKartiSourceK2ExpiryIsoDate(vehicle);
     vehicle.tasitKartiYapilmaDate = yapilmaIso;
     vehicle.tasitKartiExpiryDate = bitisTarihi;
 
@@ -9259,6 +8907,12 @@
     const yeniSube = branches.find(b => String(b.id) === String(yeniSubeId));
     const normalizedSubeId = yeniSube ? yeniSube.id : yeniSubeId;
     vehicle.branchId = normalizedSubeId;
+    if (window.MedisaVehicleNotificationDomain.vehicleNeedsK2Belgesi(vehicle)) {
+      const targetK2Group = window.MedisaVehicleNotificationDomain.getK2BelgeGroupForVehicle(vehicle);
+      vehicle.tasitKartiExpiryDate = String(targetK2Group && targetK2Group.expiryDate || '').trim();
+    } else {
+      vehicle.tasitKartiExpiryDate = '';
+    }
 
     const event = {
       id: Date.now().toString(),
@@ -9649,17 +9303,8 @@
     return counts;
   }
 
-  function buildHistoryEmptyHtml(tabType, counts) {
-    const labels = { bakim: 'Bakım', kaza: 'Kaza', km: 'KM', diger: 'Diğer' };
-    const safeCounts = counts || { bakim: 0, kaza: 0, km: 0, diger: 0 };
-    const allEmpty = !safeCounts.bakim && !safeCounts.kaza && !safeCounts.km && !safeCounts.diger;
-    if (allEmpty) {
-      return '<div class="history-empty-msg">' + escapeHtml('Bu taşıt için henüz tarihçe kaydı bulunmuyor.') + '</div>';
-    }
-    const cat = labels[tabType] || 'Bu';
-    return '<div class="history-empty-msg">' + escapeHtml(
-      'Bu taşıt için ' + cat + ' kategorisinde kayıt bulunmuyor. Diğer tarihçe sekmelerini kontrol edebilirsiniz.'
-    ) + '</div>';
+  function buildHistoryEmptyHtml() {
+    return '<div class="history-empty-msg">' + escapeHtml('Kayıt Bulunmamaktadır.') + '</div>';
   }
 
   function historyEventDatetimeAttr(event) {
@@ -10137,7 +9782,7 @@
             : 'B\u0130L\u0130NM\u0130YOR';
           const kmSummary = isInitialKmEntry
             ? '<span class="history-user-name">Yeni Taşıt</span><span class="history-action-text"> • </span><span class="history-detail-inline">' + yeniKmFormatli + '</span>'
-            : '<span class="history-user-name">' + escapeHtml(kullanici) + '</span><span class="history-action-text">, G\u00fcncel Km bilgisini </span><span class="history-detail-inline">' + escapeHtml(formatNumber(yeniKm)) + '</span><span class="history-action-text"> olarak g\u00FCncelledi.</span>';
+            : '<span class="history-user-name">' + escapeHtml(kullanici) + '</span><span class="history-action-text"> Km Bilgisini </span><span class="history-detail-inline">' + escapeHtml(formatNumber(yeniKm)) + '</span><span class="history-action-text"> Olarak Güncelledi.</span>';
           const datetimeAttr = historyEventDatetimeAttr(event);
           const metaHtml = index === 0 && duzeltmeNotHtml
             ? `<div class="history-item-meta">${duzeltmeNotHtml}</div>`

@@ -141,12 +141,12 @@
                             </div>
                             <div class="form-section" id="vehicle-branch-form-section">
                                 <span class="form-label" id="vehicle-branch-label">Tahsis Edilen Şube</span>
-                                <div class="vehicle-branch-dropdown-wrap">
-                                    <select id="vehicle-branch-select" class="form-input" aria-hidden="true" tabindex="-1">
+                                <div class="vehicle-branch-dropdown-wrap medisa-boxed-select">
+                                    <select id="vehicle-branch-select" class="form-input medisa-boxed-select-native" aria-hidden="true" tabindex="-1">
                                         <option value="">Seçiniz</option>
                                     </select>
-                                    <div id="vehicle-branch-trigger" class="vehicle-branch-trigger form-input placeholder" tabindex="0" role="combobox" aria-expanded="false" aria-haspopup="listbox" aria-controls="vehicle-branch-list" aria-labelledby="vehicle-branch-label">Seçiniz</div>
-                                    <div id="vehicle-branch-list" class="vehicle-branch-list" role="listbox" aria-hidden="true"></div>
+                                    <div id="vehicle-branch-trigger" class="vehicle-branch-trigger medisa-boxed-select-trigger form-input placeholder" tabindex="0" role="combobox" aria-expanded="false" aria-haspopup="listbox" aria-controls="vehicle-branch-list" aria-labelledby="vehicle-branch-label"></div>
+                                    <div id="vehicle-branch-list" class="vehicle-branch-list medisa-boxed-select-menu" role="listbox" aria-hidden="true"></div>
                                 </div>
                             </div>
                             <div class="form-section">
@@ -393,8 +393,7 @@
   }
 
   function getRegistrationK2ExpiryDate() {
-    const state = window.appData && window.appData.ayarlar && window.appData.ayarlar.k2Belgesi;
-    return String((state && state.expiryDate) || '').trim();
+    return '';
   }
 
   function clearVehicleTakografFieldsWhenOutOfScope(vehicle) {
@@ -421,7 +420,11 @@
   function syncVehicleTasitKartiFieldsForK2Scope(vehicle) {
     if (!vehicle) return vehicle;
     if (registrationVehicleNeedsK2(vehicle)) {
-      vehicle.tasitKartiExpiryDate = getRegistrationK2ExpiryDate();
+      const group = window.MedisaVehicleNotificationDomain
+        && window.MedisaVehicleNotificationDomain.getK2BelgeGroupForVehicle
+        ? window.MedisaVehicleNotificationDomain.getK2BelgeGroupForVehicle(vehicle)
+        : null;
+      vehicle.tasitKartiExpiryDate = String(group && group.expiryDate || '').trim();
       return vehicle;
     }
     vehicle.tasitKartiYapilmaDate = '';
@@ -1598,7 +1601,7 @@
       trigger.removeAttribute("aria-disabled");
       trigger.tabIndex = 0;
       const opt = select.options[select.selectedIndex];
-      trigger.textContent = opt ? opt.textContent : "Seçiniz";
+      trigger.textContent = opt && select.value ? opt.textContent : '';
       if (select.value === "") trigger.classList.add("placeholder");
       else trigger.classList.remove("placeholder");
     }
@@ -1673,15 +1676,16 @@
     for (let i = 0; i < select.options.length; i++) {
       const opt = select.options[i];
       if (opt.disabled && opt.text === "Önce Şube Ekleyiniz") continue;
+      if (!opt.value || opt.hidden) continue;
       const div = document.createElement("div");
-      div.className = "vehicle-branch-option";
+      div.className = "vehicle-branch-option medisa-boxed-select-option";
       div.textContent = opt.textContent;
       if (!opt.disabled) div.setAttribute("data-value", opt.value);
       if (opt.selected) div.classList.add("selected");
       listEl.appendChild(div);
     }
     var addDiv = document.createElement("div");
-    addDiv.className = "vehicle-branch-option vehicle-branch-add-hint";
+    addDiv.className = "vehicle-branch-option medisa-boxed-select-option vehicle-branch-add-hint";
     addDiv.textContent = "+ Yeni Şube Ekle";
     listEl.appendChild(addDiv);
   }

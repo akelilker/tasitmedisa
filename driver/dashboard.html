@@ -36,10 +36,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../style-core.css?v=20260814.7">
-<link rel="stylesheet" href="driver-shell.css?v=20260731.3">
+    <link rel="stylesheet" href="../style-core.css?v=20260819.1">
+<link rel="stylesheet" href="driver-shell.css?v=20260819.1">
 <script defer src="../portal-session.js?v=20260731.3"></script>
-<script defer src="../script-core.js?v=20260815.3"></script>
+<script defer src="../script-core.js?v=20260819.1"></script>
 </head>
 <body class="dashboard-page driver-splash-active">
     <div id="driver-splash" class="driver-splash driver-splash--dashboard" aria-hidden="false">
@@ -187,7 +187,7 @@
                                     <button type="button" id="driver-plate-trigger" class="driver-plate-trigger" aria-label="Taşıt seç" style="display: none;">
                                         <span class="driver-plate-chevron">▾</span>
                                     </button>
-                                    <div id="driver-plate-dropdown" class="driver-plate-dropdown" role="listbox" style="display:none"></div>
+                                    <div id="driver-plate-dropdown" class="driver-plate-dropdown medisa-boxed-select-menu" role="listbox" style="display:none"></div>
                                 </div>
                                 <span id="driver-plate-subtitle" class="driver-plate-subtitle" aria-hidden="true"></span>
                             </div>
@@ -269,20 +269,20 @@
                 <form id="driver-password-form" class="driver-password-form" onsubmit="return submitDriverPasswordChange(event);">
                     <div class="form-group">
                         <label for="driver-current-password">Mevcut Şifre</label>
-                        <input type="password" id="driver-current-password" autocomplete="current-password" required>
+                        <input type="password" id="driver-current-password" class="form-input" autocomplete="current-password" required>
                     </div>
                     <div class="form-group">
                         <label for="driver-new-password">Yeni Şifre</label>
-                        <input type="password" id="driver-new-password" autocomplete="new-password" minlength="6" required aria-describedby="driver-password-policy">
+                        <input type="password" id="driver-new-password" class="form-input" autocomplete="new-password" minlength="6" required aria-describedby="driver-password-policy">
                     </div>
                     <div class="form-group">
                         <label for="driver-new-password-confirm">Yeni Şifre Tekrar</label>
-                        <input type="password" id="driver-new-password-confirm" autocomplete="new-password" minlength="6" required>
+                        <input type="password" id="driver-new-password-confirm" class="form-input" autocomplete="new-password" minlength="6" required>
                     </div>
                     <p id="driver-password-policy" class="driver-password-policy">En az 6 karakter; büyük harf, küçük harf ve rakam içermelidir.</p>
                     <div id="driver-password-message" class="driver-password-message" aria-live="polite"></div>
-                    <div class="driver-password-actions">
-                        <button type="submit" id="driver-password-submit" class="btn-submit">Kaydet</button>
+                    <div class="driver-password-actions universal-btn-group">
+                        <button type="submit" id="driver-password-submit" class="universal-btn-save">Kaydet</button>
                         <button type="button" id="driver-password-cancel" class="universal-btn-cancel" onclick="closeDriverPasswordModal()">Vazgeç</button>
                     </div>
                 </form>
@@ -305,15 +305,15 @@
                 <form id="driver-feedback-form" class="driver-feedback-form" onsubmit="return submitDriverFeedback(event);">
                     <div class="form-group">
                         <label id="driver-feedback-type-label">Talep Türü</label>
-                        <div class="vehicle-branch-dropdown-wrap driver-feedback-type-dropdown-wrap">
-                            <select id="driver-feedback-type" required aria-hidden="true" tabindex="-1">
+                        <div class="vehicle-branch-dropdown-wrap driver-feedback-type-dropdown-wrap medisa-boxed-select">
+                            <select id="driver-feedback-type" class="medisa-boxed-select-native" required aria-hidden="true" tabindex="-1">
                                 <option value="talep">Talep</option>
                                 <option value="sikayet">Şikayet</option>
                                 <option value="oneri">Öneri</option>
                                 <option value="diger">Diğer</option>
                             </select>
-                            <div id="driver-feedback-type-trigger" class="vehicle-branch-trigger form-input" tabindex="0" role="combobox" aria-expanded="false" aria-controls="driver-feedback-type-list" aria-labelledby="driver-feedback-type-label"></div>
-                            <div id="driver-feedback-type-list" class="vehicle-branch-list" role="listbox" aria-hidden="true"></div>
+                            <div id="driver-feedback-type-trigger" class="vehicle-branch-trigger medisa-boxed-select-trigger form-input" tabindex="0" role="combobox" aria-expanded="false" aria-controls="driver-feedback-type-list" aria-labelledby="driver-feedback-type-label"></div>
+                            <div id="driver-feedback-type-list" class="vehicle-branch-list medisa-boxed-select-menu" role="listbox" aria-hidden="true"></div>
                         </div>
                     </div>
                     <div class="form-group">
@@ -321,8 +321,8 @@
                         <textarea id="driver-feedback-message" class="form-input driver-feedback-message" rows="4" maxlength="500" placeholder="Yöneticiye iletmek istediğiniz notu yazın..." required></textarea>
                     </div>
                     <div id="driver-feedback-message-status" class="driver-feedback-message-status" aria-live="polite"></div>
-                    <div class="driver-feedback-actions">
-                        <button type="submit" id="driver-feedback-submit" class="btn-submit">Kaydet</button>
+                    <div class="driver-feedback-actions universal-btn-group">
+                        <button type="submit" id="driver-feedback-submit" class="universal-btn-save">Kaydet</button>
                         <button type="button" class="universal-btn-cancel" onclick="closeDriverFeedbackModal()">Vazgeç</button>
                     </div>
                 </form>
@@ -367,14 +367,14 @@
             </div>
             <div class="modal-body">
                 <div class="history-filters">
-                    <div class="history-vehicle-dropdown-wrap">
+                    <div class="history-vehicle-dropdown-wrap medisa-boxed-select">
                         <span id="history-vehicle-label" class="history-filter-label">Taşıt:</span>
-                        <div id="history-vehicle-trigger" class="history-vehicle-trigger" onclick="toggleHistoryVehicleDropdown(event)" role="button" tabindex="0" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="history-vehicle-label">
+                        <div id="history-vehicle-trigger" class="history-vehicle-trigger medisa-boxed-select-trigger" onclick="toggleHistoryVehicleDropdown(event)" role="button" tabindex="0" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="history-vehicle-label">
                             <span class="history-vehicle-trigger-text">Tüm Taşıtlar</span>
                             <span class="history-vehicle-chevron">▾</span>
                         </div>
                         <input type="hidden" id="history-vehicle-filter" value="">
-                        <div id="history-vehicle-dropdown" class="history-vehicle-dropdown" role="listbox" style="display:none"></div>
+                        <div id="history-vehicle-dropdown" class="history-vehicle-dropdown medisa-boxed-select-menu" role="listbox" style="display:none"></div>
                     </div>
                 </div>
                 <div id="history-list" class="history-container"></div>
@@ -454,6 +454,6 @@
             <button type="button" class="btn-confirm-yes" onclick="confirmForgetThisDevice()">Evet</button>
         </div>
     </div>
-<script defer src="driver-script.js?v=20260814.1"></script>
+<script defer src="driver-script.js?v=20260816.2"></script>
 </body>
 </html>

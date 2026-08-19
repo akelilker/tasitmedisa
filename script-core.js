@@ -1153,20 +1153,360 @@ document.addEventListener('DOMContentLoaded', () => {
   bodyModalObserver.observe(document.body, { childList: true, subtree: false });
 });
 
+/* Generic custom single-select owner shared by Ayarlar and Taşıtlar. */
+(function installMedisaOwnerSelect() {
+  var activeShell = null;
+
+  function normalizeSearch(value) {
+    return String(value || '')
+      .toLocaleLowerCase('tr-TR')
+      .replace(/ı/g, 'i')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '');
+  }
+
+  function isTouchDevice() {
+    return !!(window.matchMedia && window.matchMedia('(hover: none)').matches);
+  }
+
+  function isPrintableKey(event) {
+    return !!(event.key && event.key.length === 1 && !event.altKey && !event.ctrlKey && !event.metaKey);
+  }
+
+  function position(shell) {
+    if (!shell) return;
+    var trigger = shell.querySelector('.medisa-owner-select-trigger');
+    var menu = shell.querySelector('.medisa-owner-select-menu');
+    if (!trigger || !menu) return;
+    var rect = trigger.getBoundingClientRect();
+    var viewportHeight = window.innerHeight || document.documentElement.clientHeight || 800;
+    var desiredHeight = Math.min(menu.scrollHeight || 240, 260);
+    var spaceBelow = Math.max(120, viewportHeight - rect.bottom - 12);
+    var spaceAbove = Math.max(120, rect.top - 12);
+    var useAbove = spaceBelow < Math.min(180, desiredHeight) && spaceAbove > spaceBelow;
+    var maxHeight = Math.max(120, Math.min(260, useAbove ? spaceAbove : spaceBelow));
+    var triggerHeight = trigger.offsetHeight || rect.height || 44;
+    menu.style.position = 'absolute';
+    menu.style.left = '0';
+    menu.style.right = '0';
+    menu.style.width = '100%';
+    menu.style.maxHeight = maxHeight + 'px';
+    if (useAbove) {
+      menu.style.top = 'auto';
+      menu.style.bottom = (triggerHeight + 6) + 'px';
+    } else {
+      menu.style.top = (triggerHeight + 6) + 'px';
+      menu.style.bottom = 'auto';
+    }
+  }
+
+  function filter(shell) {
+    if (!shell || shell.dataset.searchable !== '1') return;
+    var menu = shell.querySelector('.medisa-owner-select-menu');
+    var searchInput = shell.querySelector('.medisa-owner-select-search-input');
+    var optionsHost = shell.querySelector('.medisa-owner-select-options') || menu;
+    if (!menu || !searchInput || !optionsHost) return;
+    var query = normalizeSearch(searchInput.value || '');
+    var secondaryValues = (shell.dataset.secondaryValues || '').split('|').filter(Boolean);
+    var mutedValues = (shell.dataset.mutedValues || '').split('|').filter(Boolean);
+    var items = Array.from(optionsHost.querySelectorAll('.medisa-owner-select-option'));
+    var regularCount = 0;
+    var visibleRegularCount = 0;
+    items.forEach(function(item) {
+      var value = String(item.dataset.value || '');
+      var text = String(item.textContent || '');
+      var placeholder = !value || item.classList.contains('is-placeholder');
+      var pinned = secondaryValues.indexOf(value) !== -1 ||
+        mutedValues.indexOf(value) !== -1 ||
+        item.classList.contains('is-secondary-action');
+      var regular = !placeholder && !pinned;
+      var visible = true;
+      if (regular) {
+        regularCount += 1;
+        visible = !query || normalizeSearch(text).indexOf(query) !== -1;
+        if (visible) visibleRegularCount += 1;
+      } else if (placeholder) {
+        visible = !query;
+      }
+      item.hidden = !visible;
+      item.classList.toggle('is-filter-hidden', !visible);
+    });
+    var empty = optionsHost.querySelector('.medisa-owner-select-empty');
+    var showEmpty = !!query && regularCount > 0 && visibleRegularCount === 0;
+    if (showEmpty) {
+      if (!empty) {
+        empty = document.createElement('div');
+        empty.className = 'medisa-owner-select-empty';
+        empty.setAttribute('aria-live', 'polite');
+        var firstSecondary = optionsHost.querySelector('.medisa-owner-select-option.is-secondary-action');
+        optionsHost.insertBefore(empty, firstSecondary || null);
+      }
+      empty.textContent = shell.dataset.noResultsText || 'Sonuç bulunamadı';
+    } else if (empty) {
+      empty.remove();
+    }
+  }
+
+  function focusSearch(shell, initialValue) {
+    var input = shell && shell.querySelector('.medisa-owner-select-search-input');
+    if (!input) return false;
+    if (typeof initialValue === 'string') {
+      input.value = initialValue;
+      filter(shell);
+      position(shell);
+    }
+    requestAnimationFrame(function() {
+      input.focus();
+      if (typeof initialValue === 'string') {
+        input.setSelectionRange(input.value.length, input.value.length);
+      } else {
+        input.select();
+      }
+    });
+    return true;
+  }
+
+  function close(options) {
+    var opts = options || {};
+    var shell = activeShell;
+    if (!shell) return;
+    var trigger = shell.querySelector('.medisa-owner-select-trigger');
+    var menu = shell.querySelector('.medisa-owner-select-menu');
+    var input = shell.querySelector('.medisa-owner-select-search-input');
+    shell.classList.remove('is-open');
+    if (trigger) {
+      trigger.classList.remove('is-open');
+      trigger.setAttribute('aria-expanded', 'false');
+      if (opts.focusTrigger) trigger.focus();
+    }
+    if (input) input.value = '';
+    if (menu) {
+      menu.classList.remove('open');
+      menu.setAttribute('aria-hidden', 'true');
+      ['position', 'top', 'bottom', 'left', 'right', 'width', 'maxHeight'].forEach(function(prop) {
+        menu.style[prop] = '';
+      });
+    }
+    refresh(shell);
+    activeShell = null;
+  }
+
+  function open(shell) {
+    if (!shell) return;
+    if (activeShell && activeShell !== shell) close();
+    var trigger = shell.querySelector('.medisa-owner-select-trigger');
+    var menu = shell.querySelector('.medisa-owner-select-menu');
+    if (!trigger || !menu || trigger.disabled) return;
+    activeShell = shell;
+    shell.classList.add('is-open');
+    trigger.classList.add('is-open');
+    trigger.setAttribute('aria-expanded', 'true');
+    menu.classList.add('open');
+    menu.setAttribute('aria-hidden', 'false');
+    position(shell);
+    if (shell.dataset.searchable === '1' && shell.dataset.autoFocusSearch !== '0' && !isTouchDevice()) {
+      focusSearch(shell);
+    }
+  }
+
+  function refresh(shell) {
+    if (!shell) return;
+    var select = shell.querySelector('select');
+    var trigger = shell.querySelector('.medisa-owner-select-trigger');
+    var triggerText = shell.querySelector('.medisa-owner-select-trigger-text');
+    var menu = shell.querySelector('.medisa-owner-select-menu');
+    if (!select || !trigger || !triggerText || !menu) return;
+    var options = Array.from(select.options || []);
+    var selectedValue = String(select.value || '');
+    var selected = options.find(function(option) {
+      return String(option.value || '') === selectedValue;
+    }) || options[select.selectedIndex] || options[0] || null;
+    if (!selected && options.length) {
+      selected = options[0];
+      select.value = selected.value;
+    }
+    var selectedOptionValue = selected ? String(selected.value || '') : '';
+    triggerText.textContent = (selected && String(selected.textContent || '').trim()) || '';
+    trigger.classList.toggle('placeholder', !selectedOptionValue);
+    trigger.disabled = !!select.disabled;
+    trigger.setAttribute('aria-disabled', select.disabled ? 'true' : 'false');
+    var secondaryValues = (shell.dataset.secondaryValues || '').split('|').filter(Boolean);
+    var mutedValues = (shell.dataset.mutedValues || '').split('|').filter(Boolean);
+    var searchInput = shell.querySelector('.medisa-owner-select-search-input');
+    var searchValue = searchInput ? searchInput.value : '';
+    menu.innerHTML = '';
+    var optionsHost = menu;
+    if (shell.dataset.searchable === '1') {
+      var searchWrap = document.createElement('div');
+      searchWrap.className = 'medisa-owner-select-search-wrap';
+      var input = document.createElement('input');
+      input.type = 'text';
+      input.className = 'form-input medisa-owner-select-search-input';
+      input.placeholder = shell.dataset.searchPlaceholder || 'Ara';
+      input.value = searchValue;
+      input.setAttribute('autocomplete', 'off');
+      input.setAttribute('aria-label', shell.dataset.searchPlaceholder || 'Ara');
+      var list = document.createElement('div');
+      list.className = 'medisa-owner-select-options';
+      searchWrap.appendChild(input);
+      menu.appendChild(searchWrap);
+      menu.appendChild(list);
+      optionsHost = list;
+      input.addEventListener('click', function(event) { event.stopPropagation(); });
+      input.addEventListener('input', function() { filter(shell); position(shell); });
+      input.addEventListener('keydown', function(event) {
+        if (event.key !== 'Escape') return;
+        event.preventDefault();
+        if (input.value) {
+          input.value = '';
+          filter(shell);
+          position(shell);
+        } else {
+          close({ focusTrigger: true });
+        }
+      });
+    }
+    options.forEach(function(option) {
+      var value = String(option.value || '');
+      if (!value || option.hidden || value === '__none__') return;
+      var text = String(option.textContent || '').trim();
+      var item = document.createElement('button');
+      item.type = 'button';
+      item.className = 'medisa-owner-select-option medisa-boxed-select-option';
+      item.textContent = text;
+      item.dataset.value = value;
+      item.setAttribute('role', 'option');
+      item.setAttribute('aria-selected', value === selectedValue ? 'true' : 'false');
+      if (value === selectedValue) item.classList.add('selected');
+      if (secondaryValues.indexOf(value) !== -1 || /^\+/.test(text)) item.classList.add('is-secondary-action');
+      if (mutedValues.indexOf(value) !== -1) item.classList.add('is-muted-choice');
+      if (option.disabled) {
+        item.classList.add('is-disabled');
+        item.disabled = true;
+      }
+      optionsHost.appendChild(item);
+    });
+    filter(shell);
+    if (activeShell === shell && menu.classList.contains('open')) position(shell);
+  }
+
+  function ensure(select, options) {
+    if (!select) return null;
+    select.classList.add('medisa-owner-select-native', 'medisa-boxed-select-native');
+    var shell = select.closest('.medisa-owner-select');
+    if (shell && (!shell.querySelector('.medisa-owner-select-trigger') || !shell.querySelector('.medisa-owner-select-menu'))) {
+      var staleParent = shell.parentNode;
+      if (staleParent) staleParent.insertBefore(select, shell);
+      shell.remove();
+      shell = null;
+    }
+    if (!shell) {
+      shell = document.createElement('div');
+      shell.className = 'medisa-owner-select medisa-boxed-select';
+      select.parentNode.insertBefore(shell, select);
+      shell.appendChild(select);
+      select.classList.add('medisa-owner-select-native', 'medisa-boxed-select-native');
+      var trigger = document.createElement('button');
+      trigger.type = 'button';
+      trigger.className = 'form-input medisa-owner-select-trigger medisa-boxed-select-trigger';
+      trigger.setAttribute('aria-haspopup', 'listbox');
+      trigger.setAttribute('aria-expanded', 'false');
+      trigger.innerHTML = '<span class="medisa-owner-select-trigger-text"></span><svg class="medisa-owner-select-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
+      var menu = document.createElement('div');
+      menu.className = 'medisa-owner-select-menu medisa-boxed-select-menu';
+      menu.setAttribute('role', 'listbox');
+      menu.setAttribute('aria-hidden', 'true');
+      shell.appendChild(trigger);
+      shell.appendChild(menu);
+      var label = shell.parentNode && shell.parentNode.querySelector('label[for="' + select.id + '"]');
+      if (label && !label.dataset.medisaOwnerSelectBound) {
+        label.dataset.medisaOwnerSelectBound = '1';
+        label.addEventListener('click', function(event) {
+          event.preventDefault();
+          trigger.focus();
+        });
+      }
+      trigger.addEventListener('click', function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        if (activeShell === shell) close();
+        else open(shell);
+      });
+      trigger.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          if (activeShell === shell) close();
+          else open(shell);
+        } else if (event.key === 'ArrowDown') {
+          event.preventDefault();
+          open(shell);
+        } else if (event.key === 'Escape' && activeShell === shell) {
+          event.preventDefault();
+          close({ focusTrigger: true });
+        } else if (shell.dataset.searchable === '1' && isPrintableKey(event)) {
+          event.preventDefault();
+          open(shell);
+          focusSearch(shell, event.key);
+        }
+      });
+      menu.addEventListener('click', function(event) {
+        var item = event.target.closest('.medisa-owner-select-option');
+        if (!item || item.disabled) return;
+        select.value = item.dataset.value || '';
+        select.dispatchEvent(new Event('change', { bubbles: true }));
+        refresh(shell);
+        close({ focusTrigger: true });
+      });
+      select.addEventListener('change', function() { refresh(shell); });
+    }
+    shell.classList.add('medisa-owner-select', 'medisa-boxed-select');
+    var ensuredTrigger = shell.querySelector('.medisa-owner-select-trigger');
+    var ensuredMenu = shell.querySelector('.medisa-owner-select-menu');
+    if (ensuredTrigger) ensuredTrigger.classList.add('medisa-owner-select-trigger', 'medisa-boxed-select-trigger');
+    if (ensuredMenu) ensuredMenu.classList.add('medisa-owner-select-menu', 'medisa-boxed-select-menu');
+    var opts = options || {};
+    shell.dataset.placeholderText = opts.placeholderText || '';
+    shell.dataset.secondaryValues = Array.isArray(opts.secondaryValues) ? opts.secondaryValues.join('|') : '';
+    shell.dataset.mutedValues = Array.isArray(opts.mutedValues) ? opts.mutedValues.join('|') : '';
+    shell.dataset.searchable = opts.searchable ? '1' : '';
+    shell.dataset.searchPlaceholder = opts.searchPlaceholder || '';
+    shell.dataset.noResultsText = opts.noResultsText || '';
+    shell.dataset.autoFocusSearch = opts.autoFocusSearch === false ? '0' : '1';
+    refresh(shell);
+    return shell;
+  }
+
+  document.addEventListener('click', function(event) {
+    if (activeShell && !activeShell.contains(event.target)) close();
+  }, true);
+  window.addEventListener('resize', function() {
+    if (activeShell) close();
+  });
+
+  window.MedisaOwnerSelect = {
+    ensure: ensure,
+    refresh: refresh,
+    open: open,
+    close: close,
+    position: position,
+    filter: filter
+  };
+})();
+
 
 // Lazy modül asset sürümleri — tek nesne.
 // style-core.css ana/paylaşılan shell HTML ile yüklenir; taşıt lazy asset sürümünden bağımsızdır.
 // tasitlar loader (bu nesne) ile MEDISA_TASITLAR_MODULE_VERSION kendi aralarında eşit kalmalıdır.
 var MEDISA_MODULE_VERSIONS = {
-  tasitlar: '20260813.1',
-  notifications: '20260813.2',
+  tasitlar: '20260819.1',
+  notifications: '20260817.2',
   raporlar: '20260801.3',
-  kayitJs: '20260815.1',
-  kayitCss: '20260815.2',
-  ayarlarJs: '20260814.4',
-  ayarlarCss: '20260814.3',
+  kayitJs: '20260817.2',
+  kayitCss: '20260819.1',
+  ayarlarJs: '20260819.1',
+  ayarlarCss: '20260819.1',
   tasitlarYazici: '20260726.3',
-  vehicleNotificationDomain: '20260811.2'
+  vehicleNotificationDomain: '20260817.2'
 };
 window.MEDISA_MODULE_VERSIONS = MEDISA_MODULE_VERSIONS;
 
@@ -1235,8 +1575,11 @@ var MEDISA_VEHICLE_NOTIFICATION_DOMAIN_KEYS = [
   'vehicleNeedsTakograf',
   'vehicleNeedsTrafikSigortasi',
   'vehicleNeedsEgzozMuayene',
-  'getK2BelgesiState',
-  'getK2BelgesiExpiryDate',
+  'getK2BelgeGroups',
+  'getK2BelgeGroupForBranch',
+  'getK2BelgeGroupForVehicle',
+  'getK2BelgesiExpiryDateForVehicle',
+  'getK2BelgesiDocumentPathForVehicle',
   'isVehicleOperationallyInactive',
   'getEgzozMuayeneState',
   'isEgzozMuayeneCritical'

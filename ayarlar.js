@@ -215,12 +215,12 @@
                         <div class="form-section form-section-vehicles">
                             <span id="user-vehicles-label" class="form-label">Tahsis Edilecek Taşıt</span>
                             <div class="user-vehicles-wrap">
-                                <div id="user-vehicles-trigger" class="user-vehicles-trigger form-input" tabindex="0" role="combobox" aria-labelledby="user-vehicles-label" aria-controls="user-vehicles-dropdown" aria-haspopup="listbox" aria-expanded="false" onclick="if(window.toggleUserVehiclesDropdown) window.toggleUserVehiclesDropdown()">
+                                <div id="user-vehicles-trigger" class="user-vehicles-trigger medisa-boxed-select-trigger form-input" tabindex="0" role="combobox" aria-labelledby="user-vehicles-label" aria-controls="user-vehicles-dropdown" aria-haspopup="listbox" aria-expanded="false" onclick="if(window.toggleUserVehiclesDropdown) window.toggleUserVehiclesDropdown()">
                                     <span class="user-vehicles-trigger-text">Taşıt Seçin</span>
                                     <svg class="user-vehicles-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
                                 </div>
-                                <div id="user-vehicles-dropdown" class="user-vehicles-dropdown" style="display:none;" role="listbox" aria-hidden="true">
-                                    <div id="user-vehicles-container" class="user-vehicles-checkbox-list" role="group"></div>
+                                <div id="user-vehicles-dropdown" class="user-vehicles-dropdown medisa-boxed-select-menu" style="display:none;" role="listbox" aria-hidden="true">
+                                    <div id="user-vehicles-container" class="user-vehicles-checkbox-list medisa-boxed-select-options" role="group"></div>
                                     <div class="user-vehicles-search-wrap">
                                         <input type="text" id="user-vehicles-search" class="form-input user-vehicles-search-input" placeholder="Plaka İle Ara..." aria-label="Plaka İle Ara" oninput="if(window.handleUserVehiclesSearch) window.handleUserVehiclesSearch(this.value)">
                                     </div>
@@ -251,14 +251,18 @@
                     </button>
                 </div>
                 <div class="universal-back-bar universal-back-bar--standalone">
-                    <button type="button" class="universal-back-btn" aria-label="Ayarlar" onclick="medisaSettingsHistoryBack(event)">
+                    <button type="button" class="universal-back-btn" aria-label="Şubeler" onclick="backToZorunluEvrakBranchList(event)">
                         <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-                        <span class="universal-back-label">Ayarlar</span>
+                        <span class="universal-back-label">Şubeler</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div class="u-p-16">
+                    <div id="required-documents-branch-list-view" class="u-p-16">
+                        <div id="required-documents-branch-list" class="settings-card-grid"></div>
+                    </div>
+                    <div id="required-documents-detail-view" class="u-p-16" hidden>
                         <h3 class="required-k2-section-title">K2 Taşıt Belgesi</h3>
+                        <div id="required-k2-selected-branch" class="settings-card-title"></div>
                         <div class="form-section">
                             <div id="required-k2-document-area" class="required-k2-document-area">
                                 <button type="button" id="required-k2-document-picker" class="required-k2-document-picker">
@@ -277,6 +281,7 @@
                             <button type="button" class="universal-btn-save" onclick="saveZorunluEvraklarK2()">Kaydet</button>
                             <button type="button" class="universal-btn-cancel" onclick="closeZorunluEvraklar()">Vazgeç</button>
                         </div>
+                        <div id="required-k2-group-members" class="required-k2-group-members"></div>
                     </div>
                 </div>
             </div>
@@ -490,7 +495,10 @@
       const modal = document.getElementById(id);
       if (!modal) return;
       modal.style.display = 'flex';
-      requestAnimationFrame(function() { modal.classList.add('active'); });
+      requestAnimationFrame(function() {
+        modal.classList.add('active');
+        if (id === 'user-form-modal') syncUserFormCustomSelects(modal);
+      });
     }
 
     function applySettingsHistoryLayer(layer) {
@@ -520,6 +528,7 @@
           bindUserManagementKeyboardHandlers();
           clearUserManagementKeyboardOffset();
         } else if (layer === 'settings-required-docs') {
+          showRequiredDocumentBranchList();
           refreshZorunluEvraklarK2View();
           setupZorunluEvraklarK2DatePicker();
           setupZorunluEvraklarK2DocumentPicker();
@@ -583,235 +592,24 @@
       window.addEventListener('popstate', onSettingsHistoryPopstate);
     }
 
-    let activeUserFormCustomSelect = null;
-    let userFormSelectedVehicleIds = [];
-
-    function getUserFormSelectedVehicleIds() {
-      return userFormSelectedVehicleIds.slice();
-    }
-
-    function setUserFormSelectedVehicleIds(ids) {
-      userFormSelectedVehicleIds = Array.from(new Set((Array.isArray(ids) ? ids : []).map(function(id) {
-        return String(id || '').trim();
-      }).filter(Boolean)));
-    }
-
-    function closeUserFormCustomSelect(options) {
-      const opts = options || {};
-      const shell = activeUserFormCustomSelect;
-      if (!shell) return;
-      const trigger = shell.querySelector('.medisa-owner-select-trigger');
-      const menu = shell.querySelector('.medisa-owner-select-menu');
-      shell.classList.remove('is-open');
-      if (trigger) {
-        trigger.classList.remove('is-open');
-        trigger.setAttribute('aria-expanded', 'false');
-        if (opts.focusTrigger) trigger.focus();
-      }
-      if (menu) {
-        menu.classList.remove('open');
-        menu.setAttribute('aria-hidden', 'true');
-        menu.style.position = '';
-        menu.style.top = '';
-        menu.style.bottom = '';
-        menu.style.left = '';
-        menu.style.width = '';
-        menu.style.maxHeight = '';
-      }
-      activeUserFormCustomSelect = null;
-    }
-
-    function positionUserFormCustomSelectMenu(shell) {
-      if (!shell) return;
-      const trigger = shell.querySelector('.medisa-owner-select-trigger');
-      const menu = shell.querySelector('.medisa-owner-select-menu');
-      if (!trigger || !menu) return;
-
-      const rect = trigger.getBoundingClientRect();
-      const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 800;
-      const desiredHeight = Math.min(menu.scrollHeight || 240, 260);
-      const spaceBelow = Math.max(120, viewportHeight - rect.bottom - 12);
-      const spaceAbove = Math.max(120, rect.top - 12);
-      const useAbove = spaceBelow < Math.min(180, desiredHeight) && spaceAbove > spaceBelow;
-      const maxHeight = Math.max(120, Math.min(260, useAbove ? spaceAbove : spaceBelow));
-      const shellHeight = trigger.offsetHeight || rect.height || 44;
-
-      menu.style.position = 'absolute';
-      menu.style.left = '0';
-      menu.style.width = '100%';
-      menu.style.maxHeight = maxHeight + 'px';
-      if (useAbove) {
-        menu.style.top = 'auto';
-        menu.style.bottom = (shellHeight + 6) + 'px';
-      } else {
-        menu.style.top = (shellHeight + 6) + 'px';
-        menu.style.bottom = 'auto';
-      }
-    }
-
-    function refreshUserFormCustomSelect(shell) {
-      if (!shell) return;
-      const select = shell.querySelector('select');
-      const trigger = shell.querySelector('.medisa-owner-select-trigger');
-      const triggerText = shell.querySelector('.medisa-owner-select-trigger-text');
-      const menu = shell.querySelector('.medisa-owner-select-menu');
-      if (!select || !trigger || !triggerText || !menu) return;
-
-      const options = Array.from(select.options || []);
-      const selectedValue = String(select.value || '');
-      let selectedOption = options.find(function(option) {
-        return String(option.value || '') === String(selectedValue);
-      }) || options[select.selectedIndex] || options[0] || null;
-
-      if (!selectedOption && options.length) {
-        selectedOption = options[0];
-        select.value = selectedOption.value;
-      }
-
-      const placeholderText = shell.dataset.placeholderText || (options[0] ? options[0].textContent : 'Seçiniz');
-      const selectedText = selectedOption ? String(selectedOption.textContent || '').trim() : '';
-      const selectedOptionValue = selectedOption ? String(selectedOption.value || '') : '';
-
-      triggerText.textContent = selectedText || placeholderText;
-      trigger.classList.toggle('placeholder', !selectedOptionValue);
-      trigger.disabled = !!select.disabled;
-      trigger.setAttribute('aria-disabled', select.disabled ? 'true' : 'false');
-
-      menu.innerHTML = '';
-      options.forEach(function(option) {
-        const value = String(option.value || '');
-        const text = String(option.textContent || '').trim();
-        const item = document.createElement('button');
-        item.type = 'button';
-        item.className = 'medisa-owner-select-option';
-        item.textContent = text;
-        item.dataset.value = value;
-        item.setAttribute('role', 'option');
-        item.setAttribute('aria-selected', value === selectedValue ? 'true' : 'false');
-
-        if (!value) item.classList.add('is-placeholder');
-        if (value === selectedValue) item.classList.add('selected');
-        if (option.disabled) {
-          item.classList.add('is-disabled');
-          item.disabled = true;
-        }
-
-        menu.appendChild(item);
-      });
-
-      if (activeUserFormCustomSelect === shell && menu.classList.contains('open')) {
-        positionUserFormCustomSelectMenu(shell);
-      }
-    }
-
-    function openUserFormCustomSelect(shell) {
-      if (!shell) return;
-      if (activeUserFormCustomSelect && activeUserFormCustomSelect !== shell) {
-        closeUserFormCustomSelect();
-      }
-      const trigger = shell.querySelector('.medisa-owner-select-trigger');
-      const menu = shell.querySelector('.medisa-owner-select-menu');
-      if (!trigger || !menu || trigger.disabled) return;
-
-      activeUserFormCustomSelect = shell;
-      shell.classList.add('is-open');
-      trigger.classList.add('is-open');
-      trigger.setAttribute('aria-expanded', 'true');
-      menu.classList.add('open');
-      menu.setAttribute('aria-hidden', 'false');
-      positionUserFormCustomSelectMenu(shell);
-    }
-
-    function ensureUserFormCustomSelect(select, options) {
-      if (!select) return null;
-      let shell = select.closest('.medisa-owner-select');
-      if (!shell) {
-        shell = document.createElement('div');
-        shell.className = 'medisa-owner-select';
-        select.parentNode.insertBefore(shell, select);
-        shell.appendChild(select);
-        select.classList.add('medisa-owner-select-native');
-
-        const trigger = document.createElement('button');
-        trigger.type = 'button';
-        trigger.className = 'form-input medisa-owner-select-trigger';
-        trigger.setAttribute('aria-haspopup', 'listbox');
-        trigger.setAttribute('aria-expanded', 'false');
-        trigger.innerHTML = '<span class="medisa-owner-select-trigger-text"></span><svg class="medisa-owner-select-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
-
-        const menu = document.createElement('div');
-        menu.className = 'medisa-owner-select-menu';
-        menu.setAttribute('role', 'listbox');
-        menu.setAttribute('aria-hidden', 'true');
-
-        shell.appendChild(trigger);
-        shell.appendChild(menu);
-
-        const label = shell.parentNode ? shell.parentNode.querySelector('label[for="' + select.id + '"]') : null;
-        if (label && !label.dataset.medisaOwnerSelectBound) {
-          label.dataset.medisaOwnerSelectBound = '1';
-          label.addEventListener('click', function(e) {
-            if (!select.closest('.medisa-owner-select')) return;
-            e.preventDefault();
-            trigger.focus();
-          });
-        }
-
-        trigger.addEventListener('click', function(e) {
-          e.preventDefault();
-          e.stopPropagation();
-          if (activeUserFormCustomSelect === shell) closeUserFormCustomSelect();
-          else openUserFormCustomSelect(shell);
-        });
-
-        trigger.addEventListener('keydown', function(e) {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            if (activeUserFormCustomSelect === shell) closeUserFormCustomSelect();
-            else openUserFormCustomSelect(shell);
-          } else if (e.key === 'ArrowDown') {
-            e.preventDefault();
-            openUserFormCustomSelect(shell);
-          } else if (e.key === 'Escape' && activeUserFormCustomSelect === shell) {
-            e.preventDefault();
-            closeUserFormCustomSelect({ focusTrigger: true });
-          }
-        });
-
-        menu.addEventListener('click', function(e) {
-          const item = e.target.closest('.medisa-owner-select-option');
-          if (!item || item.disabled) return;
-          select.value = item.dataset.value || '';
-          select.dispatchEvent(new Event('change', { bubbles: true }));
-          refreshUserFormCustomSelect(shell);
-          closeUserFormCustomSelect({ focusTrigger: true });
-        });
-
-        select.addEventListener('change', function() {
-          refreshUserFormCustomSelect(shell);
-        });
-      }
-
-      shell.dataset.placeholderText = options && options.placeholderText ? options.placeholderText : '';
-      refreshUserFormCustomSelect(shell);
-      return shell;
-    }
-
-    function syncUserFormCustomSelects(modal) {
+    function syncUserFormCustomSelects(modal, retryCount) {
       const root = modal || document.getElementById('user-form-modal');
-      if (!root) return;
-      ensureUserFormCustomSelect($('#user-branch', root), { placeholderText: 'Şube Seçin' });
-      ensureUserFormCustomSelect($('#user-role', root), { placeholderText: 'Kullanıcı Tipi' });
+      if (!root) return false;
+      const attempt = Number(retryCount || 0);
+      if (!window.MedisaOwnerSelect) {
+        if (attempt < 6 && typeof requestAnimationFrame === 'function') {
+          requestAnimationFrame(() => syncUserFormCustomSelects(root, attempt + 1));
+        }
+        return false;
+      }
+      const branchShell = window.MedisaOwnerSelect.ensure($('#user-branch', root), { placeholderText: 'Şube Seçin' });
+      const roleShell = window.MedisaOwnerSelect.ensure($('#user-role', root), { placeholderText: 'Kullanıcı Tipi' });
+      const ready = !!(branchShell && roleShell);
+      if (!ready && attempt < 6 && typeof requestAnimationFrame === 'function') {
+        requestAnimationFrame(() => syncUserFormCustomSelects(root, attempt + 1));
+      }
+      return ready;
     }
-
-    document.addEventListener('click', function(e) {
-      if (!activeUserFormCustomSelect) return;
-      if (!activeUserFormCustomSelect.contains(e.target)) closeUserFormCustomSelect();
-    }, true);
-
-    window.addEventListener('resize', function() {
-      if (activeUserFormCustomSelect) closeUserFormCustomSelect();
-    });
 
 
     // ========================================
@@ -845,15 +643,187 @@
       return [];
     }
 
+    let selectedZorunluEvrakBranchId = '';
+    let selectedZorunluEvrakGroupId = '';
+    let requiredK2MembersDropdownOpen = false;
+
+    function getZorunluEvrakSession() {
+      return window.medisaSession && typeof window.medisaSession === 'object'
+        ? window.medisaSession
+        : {};
+    }
+
+    function getZorunluEvraklarK2Groups() {
+      const groups = window.appData && window.appData.ayarlar && window.appData.ayarlar.k2BelgeGruplari;
+      return Array.isArray(groups) ? groups : [];
+    }
+
     function getZorunluEvraklarK2State() {
-      if (!window.appData || typeof window.appData !== 'object') window.appData = {};
-      if (!window.appData.ayarlar || typeof window.appData.ayarlar !== 'object' || Array.isArray(window.appData.ayarlar)) {
-        window.appData.ayarlar = {};
+      const group = getZorunluEvraklarK2Groups().find(function(item) {
+        return item && item.id === selectedZorunluEvrakGroupId;
+      });
+      return group || { id: '', branchIds: [selectedZorunluEvrakBranchId], expiryDate: '', documentPath: '', updatedAt: '' };
+    }
+
+    function getVisibleRequiredDocumentBranches() {
+      return readBranches();
+    }
+
+    function renderRequiredDocumentBranchList() {
+      const host = document.getElementById('required-documents-branch-list');
+      if (!host) return;
+      const branches = getVisibleRequiredDocumentBranches();
+      if (!branches.length) {
+        host.innerHTML = '<div class="settings-empty-state">Görüntülenecek şube bulunamadı.</div>';
+        return;
       }
-      if (!window.appData.ayarlar.k2Belgesi || typeof window.appData.ayarlar.k2Belgesi !== 'object' || Array.isArray(window.appData.ayarlar.k2Belgesi)) {
-        window.appData.ayarlar.k2Belgesi = { expiryDate: '', documentPath: '', updatedAt: '' };
+      host.innerHTML = branches.map(function(branch) {
+        const rawTitle = String(branch.name || branch.ad || branch.id || '').trim();
+        const titleParts = rawTitle.split(/\s+/);
+        const longestWordLength = titleParts.reduce(function(maxLen, part) {
+          return Math.max(maxLen, part.length);
+        }, 0);
+        const titleClass = longestWordLength >= 9
+          ? 'settings-card-title settings-card-title--compact'
+          : 'settings-card-title';
+        const title = titleParts.length === 2
+          ? escapeHtml(titleParts[0]) + '<br>' + escapeHtml(titleParts[1])
+          : escapeHtml(rawTitle);
+        return '<div class="settings-card" data-branch-id="' + escapeHtml(String(branch.id)) + '" role="button" tabindex="0">' +
+          '<div class="settings-card-content"><div class="' + titleClass + '">' + title + '</div></div></div>';
+      }).join('');
+    }
+
+    function showRequiredDocumentBranchList() {
+      closeRequiredK2MembersDropdown();
+      selectedZorunluEvrakBranchId = '';
+      selectedZorunluEvrakGroupId = '';
+      const listView = document.getElementById('required-documents-branch-list-view');
+      const detailView = document.getElementById('required-documents-detail-view');
+      if (listView) listView.hidden = false;
+      if (detailView) detailView.hidden = true;
+      renderRequiredDocumentBranchList();
+    }
+
+    function renderRequiredDocumentGroupMembers() {
+      const host = document.getElementById('required-k2-group-members');
+      if (!host || !selectedZorunluEvrakBranchId) return;
+      closeRequiredK2MembersDropdown();
+      const session = getZorunluEvrakSession();
+      const isGM = String(session.role || '').toLowerCase() === 'genel_yonetici';
+      const group = getZorunluEvraklarK2Groups().find(function(item) {
+        return item && Array.isArray(item.branchIds) && item.branchIds.map(String).indexOf(String(selectedZorunluEvrakBranchId)) !== -1;
+      });
+      if (!isGM) { host.innerHTML = ''; return; }
+      const currentIds = group ? group.branchIds.map(String) : [String(selectedZorunluEvrakBranchId)];
+      const availableBranches = getVisibleRequiredDocumentBranches().filter(function(branch) {
+        return String(branch.id) !== String(selectedZorunluEvrakBranchId);
+      });
+      host.innerHTML = '<div class="required-k2-members-title">Belge, Başka Şubeler İçin de Geçerliyse Seçiniz.</div>' +
+        '<div class="required-k2-members-select medisa-boxed-select">' +
+        '<div class="required-k2-members-backdrop" aria-hidden="true"></div>' +
+        '<button type="button" class="required-k2-members-trigger medisa-boxed-select-trigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="required-k2-members-menu">' +
+        '<span class="required-k2-members-summary"></span>' +
+        '<svg class="required-k2-members-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>' +
+        '</button>' +
+        '<div id="required-k2-members-menu" class="required-k2-members-menu medisa-boxed-select-menu" role="listbox" aria-hidden="true"></div>' +
+        '</div>';
+      const menu = host.querySelector('.required-k2-members-menu');
+      if (menu) menu.innerHTML = availableBranches.map(function(branch) {
+          const branchId = String(branch.id);
+          const checked = currentIds.indexOf(branchId) !== -1;
+          const disabled = !checked && getZorunluEvrakGroupsForBranch(branchId);
+          const branchName = branch.name || branch.ad || branchId;
+          return '<label class="required-k2-members-option medisa-boxed-select-option' + (disabled ? ' is-disabled' : '') + '">' +
+            '<input type="checkbox" data-k2-member-id="' + escapeHtml(branchId) + '"' +
+            (checked ? ' checked' : '') + (branchId === String(selectedZorunluEvrakBranchId) || disabled ? ' disabled' : '') + '>' +
+            '<span><span class="required-k2-members-branch-name">' + escapeHtml(branchName) + '</span>' +
+            (disabled ? '<span class="required-k2-members-disabled-note">Başka Yetki Belgesine Bağlı</span>' : '') +
+            '</span><span aria-hidden="true"></span></label>';
+        }).join('');
+      updateRequiredK2MembersSummary(host);
+      if (host.dataset.k2MembersBound !== '1') {
+        host.dataset.k2MembersBound = '1';
+        host.addEventListener('click', function(event) {
+          if (event.target.closest('.required-k2-members-backdrop')) {
+            event.preventDefault();
+            closeRequiredK2MembersDropdown();
+            return;
+          }
+          const trigger = event.target.closest('.required-k2-members-trigger');
+          if (!trigger) return;
+          event.preventDefault();
+          if (requiredK2MembersDropdownOpen) closeRequiredK2MembersDropdown({ focusTrigger: true });
+          else openRequiredK2MembersDropdown(host);
+        });
+        host.addEventListener('change', function(event) {
+          if (event.target.matches('[data-k2-member-id]')) updateRequiredK2MembersSummary(host);
+        });
       }
-      return window.appData.ayarlar.k2Belgesi;
+    }
+
+    function updateRequiredK2MembersSummary(host) {
+      if (!host) return;
+      const summary = host.querySelector('.required-k2-members-summary');
+      if (!summary) return;
+      const count = host.querySelectorAll('[data-k2-member-id]:checked').length;
+      summary.textContent = count ? count + ' Şube Seçildi' : 'Şube Seçiniz';
+    }
+
+    function positionRequiredK2MembersDropdown(host) {
+      const select = host && host.querySelector('.required-k2-members-select');
+      const trigger = host && host.querySelector('.required-k2-members-trigger');
+      const menu = host && host.querySelector('.required-k2-members-menu');
+      if (!select || !trigger || !menu) return;
+      const rect = trigger.getBoundingClientRect();
+      const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 800;
+      const spaceBelow = Math.max(120, viewportHeight - rect.bottom - 12);
+      const spaceAbove = Math.max(120, rect.top - 12);
+      const useAbove = spaceBelow < 180 && spaceAbove > spaceBelow;
+      const maxHeight = Math.max(120, Math.min(260, useAbove ? spaceAbove : spaceBelow));
+      menu.style.maxHeight = maxHeight + 'px';
+      menu.style.top = useAbove ? 'auto' : 'calc(100% + 6px)';
+      menu.style.bottom = useAbove ? 'calc(100% + 6px)' : 'auto';
+    }
+
+    function openRequiredK2MembersDropdown(host) {
+      const trigger = host && host.querySelector('.required-k2-members-trigger');
+      const menu = host && host.querySelector('.required-k2-members-menu');
+      if (!trigger || !menu) return;
+      requiredK2MembersDropdownOpen = true;
+      host.querySelector('.required-k2-members-select').classList.add('is-open');
+      trigger.setAttribute('aria-expanded', 'true');
+      menu.classList.add('open');
+      menu.setAttribute('aria-hidden', 'false');
+      positionRequiredK2MembersDropdown(host);
+    }
+
+    function closeRequiredK2MembersDropdown(options) {
+      const host = document.getElementById('required-k2-group-members');
+      const opts = options || {};
+      requiredK2MembersDropdownOpen = false;
+      if (!host) return;
+      const select = host.querySelector('.required-k2-members-select');
+      const trigger = host.querySelector('.required-k2-members-trigger');
+      const menu = host.querySelector('.required-k2-members-menu');
+      if (select) select.classList.remove('is-open');
+      if (trigger) {
+        trigger.setAttribute('aria-expanded', 'false');
+        if (opts.focusTrigger) trigger.focus();
+      }
+      if (menu) {
+        menu.classList.remove('open');
+        menu.setAttribute('aria-hidden', 'true');
+        menu.style.maxHeight = '';
+        menu.style.top = '';
+        menu.style.bottom = '';
+      }
+    }
+
+    function getZorunluEvrakGroupsForBranch(branchId) {
+      return getZorunluEvraklarK2Groups().find(function(group) {
+        return group && Array.isArray(group.branchIds) && group.branchIds.map(String).indexOf(String(branchId)) !== -1;
+      }) || null;
     }
 
     function formatZorunluEvrakDate(isoDate) {
@@ -1046,7 +1016,7 @@
         method: 'POST',
         cache: 'no-store',
         headers: buildZorunluEvraklarAuthHeaders({ 'Content-Type': 'application/json' }),
-        body: JSON.stringify({ documentType: 'k2' })
+        body: JSON.stringify({ documentType: 'k2', branchId: selectedZorunluEvrakBranchId })
       })
         .then(function(response) {
           return response.json().then(function(data) {
@@ -1088,7 +1058,7 @@
 
     function openZorunluEvrakK2BlankTab() {
       try {
-        return window.open('about:blank', '_blank', 'noopener,noreferrer');
+        return window.open('about:blank', '_blank');
       } catch (e) {
         return null;
       }
@@ -1359,6 +1329,8 @@
       const formData = new FormData();
       formData.append('document', fileInput.files[0]);
       formData.append('documentType', 'k2');
+      formData.append('branchId', selectedZorunluEvrakBranchId);
+      formData.append('expiryDate', parseZorunluEvrakDate(document.getElementById('required-k2-expiry-date')?.value || ''));
       const response = await fetch('upload_ruhsat.php', {
         method: 'POST',
         headers: buildZorunluEvraklarAuthHeaders(),
@@ -1375,17 +1347,48 @@
       closeSettingsDropdown();
       const modal = document.getElementById('required-documents-modal');
       if (!modal) return;
-      refreshZorunluEvraklarK2View();
-      setupZorunluEvraklarK2DatePicker();
-      setupZorunluEvraklarK2DocumentPicker();
+      selectedZorunluEvrakBranchId = '';
+      selectedZorunluEvrakGroupId = '';
+      document.getElementById('required-documents-branch-list-view').hidden = false;
+      document.getElementById('required-documents-detail-view').hidden = true;
+      renderRequiredDocumentBranchList();
+      const branchList = document.getElementById('required-documents-branch-list');
+      if (branchList && branchList.dataset.bound !== '1') {
+        branchList.dataset.bound = '1';
+        branchList.addEventListener('click', function(event) {
+          const card = event.target.closest('.settings-card[data-branch-id]');
+          if (!card) return;
+          const branchId = card.getAttribute('data-branch-id');
+          const group = getZorunluEvrakGroupsForBranch(branchId);
+          selectedZorunluEvrakBranchId = branchId;
+          selectedZorunluEvrakGroupId = group ? group.id : '';
+          document.getElementById('required-documents-branch-list-view').hidden = true;
+          document.getElementById('required-documents-detail-view').hidden = false;
+          const branch = readBranches().find(function(item) { return String(item.id) === String(branchId); });
+          const title = document.getElementById('required-k2-selected-branch');
+          if (title) title.textContent = branch ? (branch.name || branch.ad || branchId) : branchId;
+          refreshZorunluEvraklarK2View();
+          setupZorunluEvraklarK2DatePicker();
+          setupZorunluEvraklarK2DocumentPicker();
+          renderRequiredDocumentGroupMembers();
+          pushSettingsHistoryLayer('settings-required-docs-detail');
+        });
+      }
       modal.style.display = 'flex';
       requestAnimationFrame(() => modal.classList.add('active'));
+      pushSettingsHistoryLayer('settings-required-docs');
+    };
+
+    window.backToZorunluEvrakBranchList = function backToZorunluEvrakBranchList(event) {
+      if (event) event.preventDefault();
+      showRequiredDocumentBranchList();
       pushSettingsHistoryLayer('settings-required-docs');
     };
 
     window.closeZorunluEvraklar = function closeZorunluEvraklar(options) {
       const modal = document.getElementById('required-documents-modal');
       if (!modal) return;
+      closeRequiredK2MembersDropdown();
       modal.classList.remove('active');
       closeSettingsDropdown();
       setTimeout(() => {
@@ -1395,6 +1398,17 @@
         resetToHomeFromPanel();
       }
     };
+
+    document.addEventListener('click', function(event) {
+      const host = document.getElementById('required-k2-group-members');
+      if (requiredK2MembersDropdownOpen && host && !host.contains(event.target)) {
+        closeRequiredK2MembersDropdown();
+      }
+    }, true);
+
+    window.addEventListener('resize', function() {
+      if (requiredK2MembersDropdownOpen) closeRequiredK2MembersDropdown();
+    });
 
     window.viewZorunluEvrakK2 = function viewZorunluEvrakK2() {
       const state = getZorunluEvraklarK2State();
@@ -1412,7 +1426,7 @@
               return;
             } catch (e) {}
           }
-          window.open(targetUrl, '_blank', 'noopener,noreferrer');
+          window.location.href = targetUrl;
         })
         .catch(function(err) {
           if (blankTab && !blankTab.closed) {
@@ -1438,16 +1452,31 @@
       }
       try {
         const state = getZorunluEvraklarK2State();
-        state.expiryDate = isoDate;
-        state.updatedAt = new Date().toISOString();
+        const memberIds = Array.from(document.querySelectorAll('[data-k2-member-id]:checked')).map(function(input) {
+          return String(input.getAttribute('data-k2-member-id'));
+        });
+        if (memberIds.indexOf(String(selectedZorunluEvrakBranchId)) === -1) memberIds.push(String(selectedZorunluEvrakBranchId));
+        const session = getZorunluEvrakSession();
+        const mutationPayload = { documentType: 'k2', branchId: selectedZorunluEvrakBranchId, expiryDate: isoDate };
+        if (String(session.role || '').toLowerCase() === 'genel_yonetici') mutationPayload.branchIds = memberIds;
+        const response = await fetch('required_documents.php', {
+          method: 'POST',
+          headers: buildZorunluEvraklarAuthHeaders({ 'Content-Type': 'application/json' }),
+          body: JSON.stringify(mutationPayload)
+        });
+        const metadata = await response.json().catch(function() { return {}; });
+        if (!response.ok || metadata.success !== true) throw new Error(metadata.message || 'K2 bilgisi kaydedilemedi.');
+        const canonicalGroup = metadata.group;
         const uploadResult = await uploadZorunluEvraklarK2Document(fileInput);
-        if (uploadResult && uploadResult.settingsDocument && typeof uploadResult.settingsDocument === 'object') {
-          Object.assign(state, uploadResult.settingsDocument);
-          state.expiryDate = isoDate;
+        if (canonicalGroup && Array.isArray(window.appData.ayarlar.k2BelgeGruplari)) {
+          const index = window.appData.ayarlar.k2BelgeGruplari.findIndex(function(item) { return item.id === canonicalGroup.id; });
+          if (index >= 0) window.appData.ayarlar.k2BelgeGruplari[index] = canonicalGroup;
+          else window.appData.ayarlar.k2BelgeGruplari.push(canonicalGroup);
+          selectedZorunluEvrakGroupId = canonicalGroup.id;
         }
-        syncActiveVehicleTasitKartiExpiryWithK2(isoDate);
-        if (typeof window.saveDataToServer === 'function') {
-          await window.saveDataToServer();
+        if (uploadResult && uploadResult.group && Array.isArray(window.appData.ayarlar.k2BelgeGruplari)) {
+          const index = window.appData.ayarlar.k2BelgeGruplari.findIndex(function(item) { return item.id === uploadResult.group.id; });
+          if (index >= 0) window.appData.ayarlar.k2BelgeGruplari[index] = uploadResult.group;
         }
         if (typeof window.updateNotifications === 'function') window.updateNotifications();
         refreshZorunluEvraklarK2View();
@@ -2711,6 +2740,18 @@
       document.addEventListener('keydown', onUserVehiclesGlobalTypeaheadKeydown, true);
     }
 
+    let userFormSelectedVehicleIds = [];
+
+    function getUserFormSelectedVehicleIds() {
+      return userFormSelectedVehicleIds.slice();
+    }
+
+    function setUserFormSelectedVehicleIds(ids) {
+      userFormSelectedVehicleIds = Array.from(new Set((Array.isArray(ids) ? ids : []).map(function(id) {
+        return String(id || '').trim();
+      }).filter(Boolean)));
+    }
+
     // Kullanıcı formu: atanmış Taşıtlar checkbox listesi doldur (arama + filtreleme)
     function populateUserVehiclesMulti(searchFilter = '') {
       const container = document.getElementById('user-vehicles-container');
@@ -2746,7 +2787,7 @@
         const raw = (v.brandModel || (v.brand || v.marka || '') + ' ' + (v.model || '')).trim();
         const markaModel = (typeof window.formatBrandModel === 'function' ? window.formatBrandModel(raw) : (typeof window.toTitleCase === 'function' ? window.toTitleCase(raw) : raw));
         const labelEl = document.createElement('label');
-        labelEl.className = 'user-vehicle-row';
+        labelEl.className = 'user-vehicle-row medisa-boxed-select-option';
         labelEl.style.userSelect = 'none';
         const cb = document.createElement('input');
         cb.type = 'checkbox';
@@ -3035,7 +3076,7 @@
       if (form) form.reset();
       setUserFormSelectedVehicleIds([]);
       closeUserVehiclesDropdown();
-      closeUserFormCustomSelect();
+      window.MedisaOwnerSelect && window.MedisaOwnerSelect.close();
       const searchInput = document.getElementById('user-vehicles-search');
       if (searchInput) searchInput.value = '';
       const deleteBtn = $('#user-delete-btn', modal);
@@ -3669,6 +3710,14 @@
       const infoModal = document.getElementById('info-modal');
       const cacheConfirmModal = document.getElementById('cache-confirm-modal');
       const centeredInfoBox = document.getElementById('centered-info-box');
+      const requiredDocumentsModal = document.getElementById('required-documents-modal');
+
+      if (requiredK2MembersDropdownOpen) {
+        e.preventDefault();
+        e.stopPropagation();
+        closeRequiredK2MembersDropdown({ focusTrigger: true });
+        return;
+      }
 
       const isSettingsModalActive =
         (centeredInfoBox && centeredInfoBox.style.display === 'flex') ||
@@ -3679,7 +3728,8 @@
         (branchFormModal && branchFormModal.classList.contains('active')) ||
         (userFormModal && userFormModal.classList.contains('active')) ||
         (branchModal && branchModal.classList.contains('active')) ||
-        (userModal && userModal.classList.contains('active'));
+        (userModal && userModal.classList.contains('active')) ||
+        (requiredDocumentsModal && requiredDocumentsModal.classList.contains('active'));
 
       if (isSettingsModalActive) {
         e.preventDefault();

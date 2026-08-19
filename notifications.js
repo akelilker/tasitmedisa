@@ -13,7 +13,9 @@
     'vehicleNeedsTakograf',
     'vehicleNeedsTrafikSigortasi',
     'vehicleNeedsEgzozMuayene',
-    'getK2BelgesiExpiryDate',
+    'getK2BelgeGroups',
+    'getK2BelgeGroupForVehicle',
+    'getK2BelgesiExpiryDateForVehicle',
     'isVehicleOperationallyInactive',
     'getEgzozMuayeneState',
     'isEgzozMuayeneCritical'
@@ -445,7 +447,7 @@
 
   function buildDateNotificationKey(notif) {
     if (notif && notif.type === 'k2') {
-      return ['date', 'settings', 'k2', String(notif.date || '')].join('|');
+      return ['date', 'settings-k2', String(notif.k2GroupId || ''), String(notif.date || '')].join('|');
     }
     return ['date', String(notif.vehicleId || ''), String(notif.type || ''), String(notif.date || ''), String(notif.type || '')].join('|');
   }
@@ -1027,37 +1029,39 @@
       }
     });
 
-    var k2Date = window.MedisaVehicleNotificationDomain.getK2BelgesiExpiryDate();
-    var k2AnchorVehicle = vehicles.find(function(vehicle) {
-      return !window.MedisaVehicleNotificationDomain.isVehicleOperationallyInactive(vehicle) && window.MedisaVehicleNotificationDomain.vehicleNeedsK2Belgesi(vehicle);
-    });
-    if (k2AnchorVehicle && k2Date) {
+    window.MedisaVehicleNotificationDomain.getK2BelgeGroups().forEach(function(group) {
+      var k2Date = String(group && group.expiryDate || '').trim();
+      if (!k2Date) return;
+      var visible = vehicles.some(function(vehicle) {
+        return !window.MedisaVehicleNotificationDomain.isVehicleOperationallyInactive(vehicle)
+          && window.MedisaVehicleNotificationDomain.vehicleNeedsK2Belgesi(vehicle)
+          && Array.isArray(group.branchIds) && group.branchIds.map(String).indexOf(String(vehicle.branchId)) !== -1;
+      });
+      if (!visible) return;
       var wK2 = checkK2BelgesiWarnings(k2Date);
-      if (monthlyOperationalDateTaskFilterPasses(k2Date, wK2)) {
-        monthly.push({
-          vehicle: { id: '', plate: 'Şirket Evrakı', brandModel: 'K2 Belgesi' },
-          type: 'K2 Belgesi',
-          field: 'k2BelgesiExpiryDate',
-          date: k2Date,
-          days: wK2.days,
-          status: (typeof wK2.days === 'number' && wK2.days < 0) ? 'past' : 'upcoming',
-          warningClass: wK2.class
-        });
-      }
+      var k2Task = {
+        id: 'k2|' + String(group.id),
+        k2GroupId: String(group.id),
+        branchIds: Array.isArray(group.branchIds) ? group.branchIds.slice() : [],
+        vehicle: { id: '', plate: 'Şirket Evrakı', brandModel: 'K2 Belgesi' },
+        type: 'K2 Belgesi',
+        field: 'k2BelgesiExpiryDate',
+        date: k2Date,
+        days: wK2.days,
+        status: (typeof wK2.days === 'number' && wK2.days < 0) ? 'past' : 'upcoming',
+        warningClass: wK2.class
+      };
+      if (monthlyOperationalDateTaskFilterPasses(k2Date, wK2)) monthly.push(k2Task);
       if (attachNotif && wK2.class) {
-        var dk2 = wK2.days;
-        notificationsArray.push({
+        notificationsArray.push(Object.assign({}, k2Task, {
           type: 'k2',
           vehicleId: '',
           plate: 'Şirket Evrakı',
           brandModel: 'K2 Belgesi',
-          date: k2Date,
-          days: dk2,
-          warningClass: wK2.class,
-          status: dk2 < 0 ? 'geçmiş' : dk2 <= 3 ? 'çok yakın' : 'yaklaşıyor'
-        });
+          status: wK2.days < 0 ? 'geçmiş' : wK2.days <= 3 ? 'çok yakın' : 'yaklaşıyor'
+        }));
       }
-    }
+    });
 
     monthly.sort(function(a, b) {
       var da = typeof a.days === 'number' ? a.days : 9999;
@@ -1723,6 +1727,9 @@
     if (isMainAppSessionGenelYonetici() && monthlyTodoBranchFilterId !== 'all') {
       filteredTasks = filteredTasks.filter(function(task) {
         var vehicle = task && task.vehicle;
+        if (task && task.k2GroupId) {
+          return Array.isArray(task.branchIds) && task.branchIds.map(String).indexOf(String(monthlyTodoBranchFilterId)) !== -1;
+        }
         return vehicle && String(vehicle.branchId || '') === String(monthlyTodoBranchFilterId);
       });
     }

@@ -880,18 +880,6 @@ body.dashboard-page {
     transform: scale(1.18);
     filter: drop-shadow(0 0 3px rgba(238, 246, 255, 0.2));
   }
-  /* Plaka liste çerçevesi: ince gri, parlak (masaüstü) */
-  .dashboard-page .driver-left-panel .driver-plate-dropdown {
-    border: 1px solid rgba(255, 255, 255, 0.38) !important;
-    box-shadow: 0 2px 14px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.08) !important;
-  }
-  /* Plakalar arası yatay çizgi: çerçeve ile aynı gri ton */
-  .dashboard-page .driver-left-panel .driver-plate-dropdown-item {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.38) !important;
-  }
-  .dashboard-page .driver-left-panel .driver-plate-dropdown-item:last-child {
-    border-bottom: none !important;
-  }
   /* Sağ grid: aksiyon alanı üstten hafif boşlukla görsel dengeye alınır, satır aralığı sıfırlanır */
   .dashboard-page .driver-action-area {
     padding-top: 8px;
@@ -1426,14 +1414,14 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
   .dashboard-page .driver-below-hero {
     overflow: visible;
   }
-  /* Düz karartma — açık durumda tam ekran (blur yok; ana modal kontratı ile uyumlu) */
+  /* Mobil uygulamalar paneli: tam ekran karartma + arka plan bulanıklığı */
   .dashboard-page .driver-shortcuts-overlay {
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(3, 7, 14, 0.68);
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
+    background: rgba(3, 7, 14, 0.62);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     z-index: 10042;
     cursor: default;
   }
@@ -1715,30 +1703,15 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
   margin-top: 6px;
   min-width: 200px;
   max-width: 90vw;
-  max-height: 240px;
-  overflow-y: auto;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  background: var(--bg);
-  border: 1px solid rgba(var(--theme-color-rgb), 0.25);
-  border-radius: 8px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(var(--theme-color-rgb), 0.08);
   z-index: 100;
 }
-.driver-plate-dropdown::-webkit-scrollbar {
-  display: none;
-}
 .driver-plate-dropdown-item {
-  padding: 10px 14px;
-  font-size: 12px;
   color: var(--txt);
   display: grid;
   grid-template-columns: 8px 9ch 0.75em minmax(0, 1fr);
   align-items: start;
   column-gap: 0.35em;
   cursor: pointer;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  transition: background 0.15s, color 0.15s;
   width: 100%;
   overflow: hidden;
   max-width: 100%;
@@ -1789,22 +1762,6 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
   -webkit-box-orient: vertical;
   text-overflow: clip;
 }
-.driver-plate-dropdown-item:last-child {
-  border-bottom: none;
-}
-.driver-plate-dropdown-item:hover,
-.driver-plate-dropdown-item:focus {
-  background: rgba(var(--theme-color-rgb), 0.12);
-  color: var(--txt);
-  outline: none;
-}
-.driver-plate-dropdown-item[aria-selected="true"] {
-  background: rgba(var(--theme-color-rgb), 0.15);
-}
-.driver-plate-dropdown-item:nth-child(even):not(:hover):not(:focus):not([aria-selected="true"]) {
-  background: rgba(255, 255, 255, 0.045);
-}
-
 @keyframes slideDown {
   from { opacity: 0; transform: translateY(-5px); }
   to { opacity: 1; transform: translateY(0); }

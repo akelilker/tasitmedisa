@@ -59,7 +59,7 @@ if (($auth['success'] ?? false) !== true) {
 }
 
 if ($isSettingsDocument) {
-    $vehicle = [];
+    $vehicle = ['branchId' => $auth['doc_claims']['bid'] ?? ''];
     $filePath = medisaResolveVehicleDocumentFilePath($vehicle, $documentType, $data);
     if (!$filePath || !is_file($filePath)) {
         ruhsatRespondTextError(404, $config['notFound']);
