@@ -1,0 +1,43 @@
+﻿2026-08-19T22:53:00.9145951Z ##[debug]Evaluating condition for step: 'Setup PHP'
+2026-08-19T22:53:00.9151710Z ##[debug]Evaluating: success()
+2026-08-19T22:53:00.9153312Z ##[debug]Evaluating success:
+2026-08-19T22:53:00.9154941Z ##[debug]=> true
+2026-08-19T22:53:00.9156312Z ##[debug]Result: true
+2026-08-19T22:53:00.9158165Z ##[debug]Starting: Setup PHP
+2026-08-19T22:53:00.9218136Z ##[debug]Loading inputs
+2026-08-19T22:53:00.9234155Z ##[debug]Evaluating: github.token
+2026-08-19T22:53:00.9235277Z ##[debug]Evaluating Index:
+2026-08-19T22:53:00.9236267Z ##[debug]..Evaluating github:
+2026-08-19T22:53:00.9237285Z ##[debug]..=> Object
+2026-08-19T22:53:00.9238223Z ##[debug]..Evaluating String:
+2026-08-19T22:53:00.9239228Z ##[debug]..=> 'token'
+2026-08-19T22:53:00.9247761Z ##[debug]=> '***'
+2026-08-19T22:53:00.9256081Z ##[debug]Result: '***'
+2026-08-19T22:53:00.9265849Z ##[debug]Loading env
+2026-08-19T22:53:00.9281014Z ##[group]Run shivammathur/setup-php@v2
+2026-08-19T22:53:00.9282075Z with:
+2026-08-19T22:53:00.9282876Z   php-version: 8.2
+2026-08-19T22:53:00.9283802Z   ini-file: production
+2026-08-19T22:53:00.9291858Z   github-token: ***
+2026-08-19T22:53:00.9292726Z env:
+2026-08-19T22:53:00.9293533Z   FTP_REMOTE_DIR: ***
+2026-08-19T22:53:00.9294441Z   FTP_PROTOCOL: ftps
+2026-08-19T22:53:00.9295345Z   FTP_PORT: 21
+2026-08-19T22:53:00.9296198Z   FTP_SECURITY: loose
+2026-08-19T22:53:00.9297101Z ##[endgroup]
+2026-08-19T22:53:00.9615713Z [command]/usr/bin/bash /home/runner/work/_actions/shivammathur/setup-php/v2/src/scripts/run.sh
+2026-08-19T22:53:00.9975126Z 
+2026-08-19T22:53:00.9976157Z [90;1m==> [0m[37;1mSetup PHP[0m
+2026-08-19T22:53:04.9893081Z [32;1m✓ [0m[34;1mPHP [0m[90;1mInstalled PHP 8.2.33[0m
+2026-08-19T22:53:04.9893794Z 
+2026-08-19T22:53:04.9894258Z [90;1m==> [0m[37;1mSetup Tools[0m
+2026-08-19T22:53:05.2174681Z [32;1m✓ [0m[34;1mcomposer [0m[90;1mAdded composer 2.10.2[0m
+2026-08-19T22:53:05.2175169Z 
+2026-08-19T22:53:05.2176501Z [90;1m==> [0m[37;1mSponsor setup-php[0m
+2026-08-19T22:53:05.2176957Z [32;1m✓ [0m[34;1msetup-php [0m[90;1mhttps://setup-php.com/sponsor[0m
+2026-08-19T22:53:05.2289691Z ##[debug]Node Action run completed with exit code 0
+2026-08-19T22:53:05.2294172Z ##[debug]COMPOSER_PROCESS_TIMEOUT='0'
+2026-08-19T22:53:05.2294829Z ##[debug]COMPOSER_NO_INTERACTION='1'
+2026-08-19T22:53:05.2295109Z ##[debug]COMPOSER_NO_AUDIT='1'
+2026-08-19T22:53:05.2296470Z ##[debug]Set output php-version = 8.2.33
+2026-08-19T22:53:05.2297586Z ##[debug]Finishing: Setup PHP

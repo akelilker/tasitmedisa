@@ -1,0 +1,225 @@
+﻿2026-08-19T22:52:59.7927737Z ##[debug]Evaluating condition for step: 'Run actions/checkout@v6'
+2026-08-19T22:52:59.7945608Z ##[debug]Evaluating: success()
+2026-08-19T22:52:59.7946815Z ##[debug]Evaluating success:
+2026-08-19T22:52:59.7953297Z ##[debug]=> true
+2026-08-19T22:52:59.7955344Z ##[debug]Result: true
+2026-08-19T22:52:59.7969634Z ##[debug]Starting: Run actions/checkout@v6
+2026-08-19T22:52:59.8040159Z ##[debug]Register post job cleanup for action: actions/checkout@v6
+2026-08-19T22:52:59.8117065Z ##[debug]Loading inputs
+2026-08-19T22:52:59.8124230Z ##[debug]Evaluating: github.repository
+2026-08-19T22:52:59.8124938Z ##[debug]Evaluating Index:
+2026-08-19T22:52:59.8125483Z ##[debug]..Evaluating github:
+2026-08-19T22:52:59.8126038Z ##[debug]..=> Object
+2026-08-19T22:52:59.8126520Z ##[debug]..Evaluating String:
+2026-08-19T22:52:59.8127061Z ##[debug]..=> 'repository'
+2026-08-19T22:52:59.8127958Z ##[debug]=> 'akelilker/tasitmedisa'
+2026-08-19T22:52:59.8128563Z ##[debug]Result: 'akelilker/tasitmedisa'
+2026-08-19T22:52:59.8132134Z ##[debug]Evaluating: github.token
+2026-08-19T22:52:59.8132786Z ##[debug]Evaluating Index:
+2026-08-19T22:52:59.8133301Z ##[debug]..Evaluating github:
+2026-08-19T22:52:59.8133840Z ##[debug]..=> Object
+2026-08-19T22:52:59.8134332Z ##[debug]..Evaluating String:
+2026-08-19T22:52:59.8134849Z ##[debug]..=> 'token'
+2026-08-19T22:52:59.8138949Z ##[debug]=> '***'
+2026-08-19T22:52:59.8143083Z ##[debug]Result: '***'
+2026-08-19T22:52:59.8167985Z ##[debug]Loading env
+2026-08-19T22:52:59.8225189Z ##[group]Run actions/checkout@v6
+2026-08-19T22:52:59.8225920Z with:
+2026-08-19T22:52:59.8226389Z   repository: akelilker/tasitmedisa
+2026-08-19T22:52:59.8230691Z   token: ***
+2026-08-19T22:52:59.8231135Z   ssh-strict: true
+2026-08-19T22:52:59.8231595Z   ssh-user: git
+2026-08-19T22:52:59.8232061Z   persist-credentials: true
+2026-08-19T22:52:59.8232564Z   clean: true
+2026-08-19T22:52:59.8233023Z   sparse-checkout-cone-mode: true
+2026-08-19T22:52:59.8233557Z   fetch-depth: 1
+2026-08-19T22:52:59.8233993Z   fetch-tags: false
+2026-08-19T22:52:59.8234472Z   show-progress: true
+2026-08-19T22:52:59.8234927Z   lfs: false
+2026-08-19T22:52:59.8235345Z   submodules: false
+2026-08-19T22:52:59.8235809Z   set-safe-directory: true
+2026-08-19T22:52:59.8236333Z   allow-unsafe-pr-checkout: false
+2026-08-19T22:52:59.8237054Z env:
+2026-08-19T22:52:59.8237500Z   FTP_REMOTE_DIR: ***
+2026-08-19T22:52:59.8237969Z   FTP_PROTOCOL: ftps
+2026-08-19T22:52:59.8238425Z   FTP_PORT: 21
+2026-08-19T22:52:59.8238855Z   FTP_SECURITY: loose
+2026-08-19T22:52:59.8239309Z ##[endgroup]
+2026-08-19T22:52:59.8961220Z ##[debug]GITHUB_WORKSPACE = '/home/runner/work/tasitmedisa/tasitmedisa'
+2026-08-19T22:52:59.8963714Z ##[debug]qualified repository = 'akelilker/tasitmedisa'
+2026-08-19T22:52:59.8965244Z ##[debug]ref = 'refs/heads/main'
+2026-08-19T22:52:59.8966693Z ##[debug]commit = 'bb44edcd939a860998ad5335ae7e66a0ac031556'
+2026-08-19T22:52:59.8968223Z ##[debug]clean = true
+2026-08-19T22:52:59.8969381Z ##[debug]filter = undefined
+2026-08-19T22:52:59.8970731Z ##[debug]fetch depth = 1
+2026-08-19T22:52:59.8972100Z ##[debug]fetch tags = false
+2026-08-19T22:52:59.8973373Z ##[debug]show progress = true
+2026-08-19T22:52:59.8974604Z ##[debug]lfs = false
+2026-08-19T22:52:59.8975746Z ##[debug]submodules = false
+2026-08-19T22:52:59.8977292Z ##[debug]recursive submodules = false
+2026-08-19T22:52:59.8978584Z ##[debug]GitHub Host URL = 
+2026-08-19T22:52:59.8979802Z ##[debug]allow unsafe PR checkout = false
+2026-08-19T22:52:59.8983295Z ::add-matcher::/home/runner/work/_actions/actions/checkout/v6/dist/problem-matcher.json
+2026-08-19T22:52:59.9060861Z ##[debug]Added matchers: 'checkout-git'. Problem matchers scan action output for known warning or error strings and report these inline.
+2026-08-19T22:52:59.9066683Z Syncing repository: akelilker/tasitmedisa
+2026-08-19T22:52:59.9068360Z ::group::Getting Git version info
+2026-08-19T22:52:59.9069804Z ##[group]Getting Git version info
+2026-08-19T22:52:59.9071140Z Working directory is '/home/runner/work/tasitmedisa/tasitmedisa'
+2026-08-19T22:52:59.9072702Z ##[debug]Getting git version
+2026-08-19T22:52:59.9073835Z [command]/usr/bin/git version
+2026-08-19T22:52:59.9074628Z git version 2.54.0
+2026-08-19T22:52:59.9105334Z ##[debug]0
+2026-08-19T22:52:59.9106452Z ##[debug]git version 2.54.0
+2026-08-19T22:52:59.9107212Z ##[debug]
+2026-08-19T22:52:59.9109425Z ##[debug]Set git useragent to: git/2.54.0 (github-actions-checkout) actions_orchestration_id/06b8b893-4310-492b-9ca6-a8e3d5da90d1.deploy_preflight.__default
+2026-08-19T22:52:59.9112038Z ::endgroup::
+2026-08-19T22:52:59.9112715Z ##[endgroup]
+2026-08-19T22:52:59.9118013Z ::add-mask::***
+2026-08-19T22:52:59.9120808Z Temporarily overriding HOME='/home/runner/work/_temp/bdbc452c-8fb3-40a5-a4a1-b55f7cca235a' before making global git config changes
+2026-08-19T22:52:59.9123067Z Adding repository directory to the temporary git global config as a safe directory
+2026-08-19T22:52:59.9126641Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/tasitmedisa/tasitmedisa
+2026-08-19T22:52:59.9155816Z ##[debug]0
+2026-08-19T22:52:59.9157099Z ##[debug]
+2026-08-19T22:52:59.9160688Z Deleting the contents of '/home/runner/work/tasitmedisa/tasitmedisa'
+2026-08-19T22:52:59.9171768Z ::group::Determining repository object format
+2026-08-19T22:52:59.9172749Z ##[group]Determining repository object format
+2026-08-19T22:52:59.9174402Z ::endgroup::
+2026-08-19T22:52:59.9174860Z ##[endgroup]
+2026-08-19T22:52:59.9175981Z ::group::Initializing the repository
+2026-08-19T22:52:59.9176622Z ##[group]Initializing the repository
+2026-08-19T22:52:59.9178017Z [command]/usr/bin/git init /home/runner/work/tasitmedisa/tasitmedisa
+2026-08-19T22:52:59.9258882Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-08-19T22:52:59.9260684Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-08-19T22:52:59.9262108Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-08-19T22:52:59.9262937Z hint: call:
+2026-08-19T22:52:59.9263355Z hint:
+2026-08-19T22:52:59.9263865Z hint: 	git config --global init.defaultBranch <name>
+2026-08-19T22:52:59.9264832Z hint:
+2026-08-19T22:52:59.9265527Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-08-19T22:52:59.9266520Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-08-19T22:52:59.9267419Z hint:
+2026-08-19T22:52:59.9351313Z hint: 	git branch -m <name>
+2026-08-19T22:52:59.9352323Z hint:
+2026-08-19T22:52:59.9353361Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-08-19T22:52:59.9355118Z Initialized empty Git repository in /home/runner/work/tasitmedisa/tasitmedisa/.git/
+2026-08-19T22:52:59.9357050Z ##[debug]0
+2026-08-19T22:52:59.9358579Z ##[debug]Initialized empty Git repository in /home/runner/work/tasitmedisa/tasitmedisa/.git/
+2026-08-19T22:52:59.9359921Z ##[debug]
+2026-08-19T22:52:59.9362870Z [command]/usr/bin/git remote add origin https://github.com/akelilker/tasitmedisa
+2026-08-19T22:52:59.9364902Z ##[debug]0
+2026-08-19T22:52:59.9366111Z ##[debug]
+2026-08-19T22:52:59.9367296Z ::endgroup::
+2026-08-19T22:52:59.9367918Z ##[endgroup]
+2026-08-19T22:52:59.9369178Z ::group::Disabling automatic garbage collection
+2026-08-19T22:52:59.9370567Z ##[group]Disabling automatic garbage collection
+2026-08-19T22:52:59.9371782Z [command]/usr/bin/git config --local gc.auto 0
+2026-08-19T22:52:59.9373257Z ##[debug]0
+2026-08-19T22:52:59.9374471Z ##[debug]
+2026-08-19T22:52:59.9375846Z ::endgroup::
+2026-08-19T22:52:59.9376461Z ##[endgroup]
+2026-08-19T22:52:59.9377639Z ::group::Setting up auth
+2026-08-19T22:52:59.9378369Z ##[group]Setting up auth
+2026-08-19T22:52:59.9379294Z Removing SSH command configuration
+2026-08-19T22:52:59.9380726Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-08-19T22:52:59.9382555Z ##[debug]1
+2026-08-19T22:52:59.9383697Z ##[debug]
+2026-08-19T22:52:59.9385825Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-08-19T22:52:59.9637382Z ##[debug]0
+2026-08-19T22:52:59.9638785Z ##[debug]
+2026-08-19T22:52:59.9639570Z Removing HTTP extra header
+2026-08-19T22:52:59.9644982Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-08-19T22:52:59.9670854Z ##[debug]1
+2026-08-19T22:52:59.9672016Z ##[debug]
+2026-08-19T22:52:59.9677482Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-08-19T22:52:59.9885472Z ##[debug]0
+2026-08-19T22:52:59.9886529Z ##[debug]
+2026-08-19T22:52:59.9887368Z Removing includeIf entries pointing to credentials config files
+2026-08-19T22:52:59.9895891Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-08-19T22:52:59.9925005Z ##[debug]1
+2026-08-19T22:52:59.9926262Z ##[debug]
+2026-08-19T22:52:59.9931090Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-08-19T22:53:00.0118935Z ##[debug]0
+2026-08-19T22:53:00.0120155Z ##[debug]
+2026-08-19T22:53:00.0126467Z ##[debug]Credentials config path: /home/runner/work/_temp/git-credentials-df6c3cb3-5f49-4a88-b86f-99baf47b667d.config
+2026-08-19T22:53:00.0133237Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-df6c3cb3-5f49-4a88-b86f-99baf47b667d.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-08-19T22:53:00.0159237Z ##[debug]0
+2026-08-19T22:53:00.0160465Z ##[debug]
+2026-08-19T22:53:00.0173851Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/tasitmedisa/tasitmedisa/.git.path /home/runner/work/_temp/git-credentials-df6c3cb3-5f49-4a88-b86f-99baf47b667d.config
+2026-08-19T22:53:00.0200978Z ##[debug]0
+2026-08-19T22:53:00.0201834Z ##[debug]
+2026-08-19T22:53:00.0206785Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/tasitmedisa/tasitmedisa/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-df6c3cb3-5f49-4a88-b86f-99baf47b667d.config
+2026-08-19T22:53:00.0234212Z ##[debug]0
+2026-08-19T22:53:00.0235088Z ##[debug]
+2026-08-19T22:53:00.0239947Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-df6c3cb3-5f49-4a88-b86f-99baf47b667d.config
+2026-08-19T22:53:00.0268790Z ##[debug]0
+2026-08-19T22:53:00.0269664Z ##[debug]
+2026-08-19T22:53:00.0274198Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-df6c3cb3-5f49-4a88-b86f-99baf47b667d.config
+2026-08-19T22:53:00.0310448Z ##[debug]0
+2026-08-19T22:53:00.0311232Z ##[debug]
+2026-08-19T22:53:00.0311933Z ::endgroup::
+2026-08-19T22:53:00.0312359Z ##[endgroup]
+2026-08-19T22:53:00.0313087Z ::group::Fetching the repository
+2026-08-19T22:53:00.0313632Z ##[group]Fetching the repository
+2026-08-19T22:53:00.0320324Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +bb44edcd939a860998ad5335ae7e66a0ac031556:refs/remotes/origin/main
+2026-08-19T22:53:00.8377938Z From https://github.com/akelilker/tasitmedisa
+2026-08-19T22:53:00.8379775Z  * [new ref]         bb44edcd939a860998ad5335ae7e66a0ac031556 -> origin/main
+2026-08-19T22:53:00.8395741Z ##[debug]0
+2026-08-19T22:53:00.8396826Z ##[debug]
+2026-08-19T22:53:00.8401974Z [command]/usr/bin/git branch --list --remote origin/main
+2026-08-19T22:53:00.8425439Z   origin/main
+2026-08-19T22:53:00.8428849Z ##[debug]0
+2026-08-19T22:53:00.8430382Z ##[debug]  origin/main
+2026-08-19T22:53:00.8431077Z ##[debug]
+2026-08-19T22:53:00.8432084Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+2026-08-19T22:53:00.8454291Z bb44edcd939a860998ad5335ae7e66a0ac031556
+2026-08-19T22:53:00.8457343Z ##[debug]0
+2026-08-19T22:53:00.8458931Z ##[debug]bb44edcd939a860998ad5335ae7e66a0ac031556
+2026-08-19T22:53:00.8459880Z ##[debug]
+2026-08-19T22:53:00.8461638Z ::endgroup::
+2026-08-19T22:53:00.8462587Z ##[endgroup]
+2026-08-19T22:53:00.8464083Z ::group::Determining the checkout info
+2026-08-19T22:53:00.8465312Z ##[group]Determining the checkout info
+2026-08-19T22:53:00.8467283Z ::endgroup::
+2026-08-19T22:53:00.8468264Z ##[endgroup]
+2026-08-19T22:53:00.8469397Z [command]/usr/bin/git sparse-checkout disable
+2026-08-19T22:53:00.8494325Z ##[debug]0
+2026-08-19T22:53:00.8496072Z ##[debug]
+2026-08-19T22:53:00.8497731Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-08-19T22:53:00.8522173Z ##[debug]0
+2026-08-19T22:53:00.8523828Z ##[debug]
+2026-08-19T22:53:00.8525706Z ::group::Checking out the ref
+2026-08-19T22:53:00.8526885Z ##[group]Checking out the ref
+2026-08-19T22:53:00.8528483Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2026-08-19T22:53:00.8904475Z Switched to a new branch 'main'
+2026-08-19T22:53:00.8906411Z branch 'main' set up to track 'origin/main'.
+2026-08-19T22:53:00.8912657Z ##[debug]0
+2026-08-19T22:53:00.8914425Z ##[debug]branch 'main' set up to track 'origin/main'.
+2026-08-19T22:53:00.8915926Z ##[debug]
+2026-08-19T22:53:00.8917420Z ::endgroup::
+2026-08-19T22:53:00.8918344Z ##[endgroup]
+2026-08-19T22:53:00.8947472Z ##[debug]0
+2026-08-19T22:53:00.8949877Z ##[debug]commit bb44edcd939a860998ad5335ae7e66a0ac031556
+2026-08-19T22:53:00.8951960Z ##[debug]Author: akelilker <ilkerakel@gmail.com>
+2026-08-19T22:53:00.8953683Z ##[debug]Date:   Thu Aug 20 01:45:16 2026 +0300
+2026-08-19T22:53:00.8955210Z ##[debug]
+2026-08-19T22:53:00.8956754Z ##[debug]    fix(deploy): align asset version pins for CI preflight
+2026-08-19T22:53:00.8958326Z ##[debug]    
+2026-08-19T22:53:00.8960530Z ##[debug]    Sync tasitlar module version, style-core/script-core HTML pins, SW cache, and verify script expectations so deploy preflight passes.
+2026-08-19T22:53:00.8962920Z ##[debug]    
+2026-08-19T22:53:00.8964192Z ##[debug]    Co-authored-by: Cursor <cursoragent@cursor.com>
+2026-08-19T22:53:00.8965905Z ##[debug]
+2026-08-19T22:53:00.8966968Z [command]/usr/bin/git log -1 --format=%H
+2026-08-19T22:53:00.8975295Z bb44edcd939a860998ad5335ae7e66a0ac031556
+2026-08-19T22:53:00.8978823Z ##[debug]0
+2026-08-19T22:53:00.8980663Z ##[debug]bb44edcd939a860998ad5335ae7e66a0ac031556
+2026-08-19T22:53:00.8981981Z ##[debug]
+2026-08-19T22:53:00.8984090Z ##[debug]Unsetting HOME override
+2026-08-19T22:53:00.8989814Z ::remove-matcher owner=checkout-git::
+2026-08-19T22:53:00.9000921Z ##[debug]Removed matchers: 'checkout-git'
+2026-08-19T22:53:00.9059230Z ##[debug]Node Action run completed with exit code 0
+2026-08-19T22:53:00.9090565Z ##[debug]Save intra-action state isPost = true
+2026-08-19T22:53:00.9092184Z ##[debug]Save intra-action state setSafeDirectory = true
+2026-08-19T22:53:00.9094223Z ##[debug]Save intra-action state repositoryPath = /home/runner/work/tasitmedisa/tasitmedisa
+2026-08-19T22:53:00.9099549Z ##[debug]Set output commit = bb44edcd939a860998ad5335ae7e66a0ac031556
+2026-08-19T22:53:00.9101819Z ##[debug]Set output ref = refs/heads/main
+2026-08-19T22:53:00.9117548Z ##[debug]Finishing: Run actions/checkout@v6

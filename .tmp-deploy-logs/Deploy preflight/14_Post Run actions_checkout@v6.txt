@@ -1,0 +1,104 @@
+﻿2026-08-19T22:53:29.0333013Z ##[debug]Evaluating condition for step: 'Post Run actions/checkout@v6'
+2026-08-19T22:53:29.0334666Z ##[debug]Evaluating: always()
+2026-08-19T22:53:29.0335033Z ##[debug]Evaluating always:
+2026-08-19T22:53:29.0335651Z ##[debug]=> true
+2026-08-19T22:53:29.0335997Z ##[debug]Result: true
+2026-08-19T22:53:29.0336470Z ##[debug]Starting: Post Run actions/checkout@v6
+2026-08-19T22:53:29.0364495Z ##[debug]Loading inputs
+2026-08-19T22:53:29.0365653Z ##[debug]Evaluating: github.repository
+2026-08-19T22:53:29.0365941Z ##[debug]Evaluating Index:
+2026-08-19T22:53:29.0366191Z ##[debug]..Evaluating github:
+2026-08-19T22:53:29.0366441Z ##[debug]..=> Object
+2026-08-19T22:53:29.0366676Z ##[debug]..Evaluating String:
+2026-08-19T22:53:29.0366916Z ##[debug]..=> 'repository'
+2026-08-19T22:53:29.0367193Z ##[debug]=> 'akelilker/tasitmedisa'
+2026-08-19T22:53:29.0367474Z ##[debug]Result: 'akelilker/tasitmedisa'
+2026-08-19T22:53:29.0368850Z ##[debug]Evaluating: github.token
+2026-08-19T22:53:29.0369105Z ##[debug]Evaluating Index:
+2026-08-19T22:53:29.0369359Z ##[debug]..Evaluating github:
+2026-08-19T22:53:29.0369594Z ##[debug]..=> Object
+2026-08-19T22:53:29.0369811Z ##[debug]..Evaluating String:
+2026-08-19T22:53:29.0370170Z ##[debug]..=> 'token'
+2026-08-19T22:53:29.0372149Z ##[debug]=> '***'
+2026-08-19T22:53:29.0374065Z ##[debug]Result: '***'
+2026-08-19T22:53:29.0384735Z ##[debug]Loading env
+2026-08-19T22:53:29.0388808Z Post job cleanup.
+2026-08-19T22:53:29.1053486Z ##[debug]Getting git version
+2026-08-19T22:53:29.1064198Z [command]/usr/bin/git version
+2026-08-19T22:53:29.1128250Z git version 2.54.0
+2026-08-19T22:53:29.1142492Z ##[debug]0
+2026-08-19T22:53:29.1143071Z ##[debug]git version 2.54.0
+2026-08-19T22:53:29.1143376Z ##[debug]
+2026-08-19T22:53:29.1146062Z ##[debug]Set git useragent to: git/2.54.0 (github-actions-checkout) actions_orchestration_id/06b8b893-4310-492b-9ca6-a8e3d5da90d1.deploy_preflight.__default
+2026-08-19T22:53:29.1147750Z ::add-mask::***
+2026-08-19T22:53:29.1159761Z Temporarily overriding HOME='/home/runner/work/_temp/36c7d12b-fd79-44f3-a655-8e390b155c72' before making global git config changes
+2026-08-19T22:53:29.1161099Z Adding repository directory to the temporary git global config as a safe directory
+2026-08-19T22:53:29.1164813Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/tasitmedisa/tasitmedisa
+2026-08-19T22:53:29.1188988Z ##[debug]0
+2026-08-19T22:53:29.1189502Z ##[debug]
+2026-08-19T22:53:29.1190075Z Removing SSH command configuration
+2026-08-19T22:53:29.1195452Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-08-19T22:53:29.1220378Z ##[debug]1
+2026-08-19T22:53:29.1221320Z ##[debug]
+2026-08-19T22:53:29.1224836Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-08-19T22:53:29.1428182Z ##[debug]0
+2026-08-19T22:53:29.1431463Z ##[debug]
+2026-08-19T22:53:29.1431903Z Removing HTTP extra header
+2026-08-19T22:53:29.1432467Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-08-19T22:53:29.1455096Z ##[debug]1
+2026-08-19T22:53:29.1455636Z ##[debug]
+2026-08-19T22:53:29.1460488Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-08-19T22:53:29.1667071Z ##[debug]0
+2026-08-19T22:53:29.1667613Z ##[debug]
+2026-08-19T22:53:29.1668228Z Removing includeIf entries pointing to credentials config files
+2026-08-19T22:53:29.1676072Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-08-19T22:53:29.1696775Z includeif.gitdir:/home/runner/work/tasitmedisa/tasitmedisa/.git.path
+2026-08-19T22:53:29.1697961Z includeif.gitdir:/home/runner/work/tasitmedisa/tasitmedisa/.git/worktrees/*.path
+2026-08-19T22:53:29.1699016Z includeif.gitdir:/github/workspace/.git.path
+2026-08-19T22:53:29.1700469Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-08-19T22:53:29.1701439Z ##[debug]0
+2026-08-19T22:53:29.1702143Z ##[debug]includeif.gitdir:/home/runner/work/tasitmedisa/tasitmedisa/.git.path
+2026-08-19T22:53:29.1702858Z ##[debug]includeif.gitdir:/home/runner/work/tasitmedisa/tasitmedisa/.git/worktrees/*.path
+2026-08-19T22:53:29.1703467Z ##[debug]includeif.gitdir:/github/workspace/.git.path
+2026-08-19T22:53:29.1703964Z ##[debug]includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-08-19T22:53:29.1704348Z ##[debug]
+2026-08-19T22:53:29.1706086Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/tasitmedisa/tasitmedisa/.git.path
+2026-08-19T22:53:29.1727274Z /home/runner/work/_temp/git-credentials-df6c3cb3-5f49-4a88-b86f-99baf47b667d.config
+2026-08-19T22:53:29.1729902Z ##[debug]0
+2026-08-19T22:53:29.1730798Z ##[debug]/home/runner/work/_temp/git-credentials-df6c3cb3-5f49-4a88-b86f-99baf47b667d.config
+2026-08-19T22:53:29.1731377Z ##[debug]
+2026-08-19T22:53:29.1737191Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/tasitmedisa/tasitmedisa/.git.path /home/runner/work/_temp/git-credentials-df6c3cb3-5f49-4a88-b86f-99baf47b667d.config
+2026-08-19T22:53:29.1764699Z ##[debug]0
+2026-08-19T22:53:29.1765396Z ##[debug]
+2026-08-19T22:53:29.1769814Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/tasitmedisa/tasitmedisa/.git/worktrees/*.path
+2026-08-19T22:53:29.1791762Z /home/runner/work/_temp/git-credentials-df6c3cb3-5f49-4a88-b86f-99baf47b667d.config
+2026-08-19T22:53:29.1794760Z ##[debug]0
+2026-08-19T22:53:29.1795480Z ##[debug]/home/runner/work/_temp/git-credentials-df6c3cb3-5f49-4a88-b86f-99baf47b667d.config
+2026-08-19T22:53:29.1796133Z ##[debug]
+2026-08-19T22:53:29.1800313Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/tasitmedisa/tasitmedisa/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-df6c3cb3-5f49-4a88-b86f-99baf47b667d.config
+2026-08-19T22:53:29.1826945Z ##[debug]0
+2026-08-19T22:53:29.1827486Z ##[debug]
+2026-08-19T22:53:29.1830548Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+2026-08-19T22:53:29.1852308Z /github/runner_temp/git-credentials-df6c3cb3-5f49-4a88-b86f-99baf47b667d.config
+2026-08-19T22:53:29.1854797Z ##[debug]0
+2026-08-19T22:53:29.1855547Z ##[debug]/github/runner_temp/git-credentials-df6c3cb3-5f49-4a88-b86f-99baf47b667d.config
+2026-08-19T22:53:29.1856170Z ##[debug]
+2026-08-19T22:53:29.1859060Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-df6c3cb3-5f49-4a88-b86f-99baf47b667d.config
+2026-08-19T22:53:29.1885237Z ##[debug]0
+2026-08-19T22:53:29.1885830Z ##[debug]
+2026-08-19T22:53:29.1888944Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-08-19T22:53:29.1911079Z /github/runner_temp/git-credentials-df6c3cb3-5f49-4a88-b86f-99baf47b667d.config
+2026-08-19T22:53:29.1914244Z ##[debug]0
+2026-08-19T22:53:29.1914818Z ##[debug]/github/runner_temp/git-credentials-df6c3cb3-5f49-4a88-b86f-99baf47b667d.config
+2026-08-19T22:53:29.1915207Z ##[debug]
+2026-08-19T22:53:29.1918825Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-df6c3cb3-5f49-4a88-b86f-99baf47b667d.config
+2026-08-19T22:53:29.1944866Z ##[debug]0
+2026-08-19T22:53:29.1945201Z ##[debug]
+2026-08-19T22:53:29.1949750Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-08-19T22:53:29.2136358Z ##[debug]0
+2026-08-19T22:53:29.2136788Z ##[debug]
+2026-08-19T22:53:29.2137362Z Removing credentials config '/home/runner/work/_temp/git-credentials-df6c3cb3-5f49-4a88-b86f-99baf47b667d.config'
+2026-08-19T22:53:29.2144121Z ##[debug]Skipping removal of credentials config '/github/runner_temp/git-credentials-df6c3cb3-5f49-4a88-b86f-99baf47b667d.config' - not under RUNNER_TEMP
+2026-08-19T22:53:29.2145305Z ##[debug]Unsetting HOME override
+2026-08-19T22:53:29.2215477Z ##[debug]Node Action run completed with exit code 0
+2026-08-19T22:53:29.2217967Z ##[debug]Finishing: Post Run actions/checkout@v6

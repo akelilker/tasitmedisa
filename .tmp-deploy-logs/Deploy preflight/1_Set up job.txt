@@ -1,0 +1,112 @@
+﻿2026-08-19T22:52:59.0140408Z ##[debug]Starting: Set up job
+2026-08-19T22:52:59.0141815Z Current runner version: '2.336.0'
+2026-08-19T22:52:59.0166608Z ##[group]Runner Image Provisioner
+2026-08-19T22:52:59.0167654Z Hosted Compute Agent
+2026-08-19T22:52:59.0168435Z Version: 20260729.566
+2026-08-19T22:52:59.0169421Z Commit: cf7153fe6e25b664e8693c24944bf2b00355d109
+2026-08-19T22:52:59.0170552Z Build Date: 2026-07-29T19:17:02Z
+2026-08-19T22:52:59.0172064Z Worker ID: {a457fa00-1a88-4d74-a50e-3d9d97a1fefc}
+2026-08-19T22:52:59.0173089Z Azure Region: eastus
+2026-08-19T22:52:59.0173940Z ##[endgroup]
+2026-08-19T22:52:59.0175759Z ##[group]Operating System
+2026-08-19T22:52:59.0176618Z Ubuntu
+2026-08-19T22:52:59.0177508Z 24.04.4
+2026-08-19T22:52:59.0178197Z LTS
+2026-08-19T22:52:59.0178953Z ##[endgroup]
+2026-08-19T22:52:59.0179783Z ##[group]Runner Image
+2026-08-19T22:52:59.0180794Z Image: ubuntu-24.04
+2026-08-19T22:52:59.0182090Z Version: 20260810.271.1
+2026-08-19T22:52:59.0183649Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260810.271/images/ubuntu/Ubuntu2404-Readme.md
+2026-08-19T22:52:59.0185716Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260810.271
+2026-08-19T22:52:59.0187099Z ##[endgroup]
+2026-08-19T22:52:59.0188751Z ##[group]GITHUB_TOKEN Permissions
+2026-08-19T22:52:59.0191251Z Contents: read
+2026-08-19T22:52:59.0192041Z Metadata: read
+2026-08-19T22:52:59.0192887Z Packages: read
+2026-08-19T22:52:59.0193596Z ##[endgroup]
+2026-08-19T22:52:59.0195931Z Secret source: Actions
+2026-08-19T22:52:59.0197467Z ##[debug]Primary repository: akelilker/tasitmedisa
+2026-08-19T22:52:59.0198745Z Prepare workflow directory
+2026-08-19T22:52:59.0268198Z ##[debug]Creating pipeline directory: '/home/runner/work/tasitmedisa'
+2026-08-19T22:52:59.0272615Z ##[debug]Creating workspace directory: '/home/runner/work/tasitmedisa/tasitmedisa'
+2026-08-19T22:52:59.0274876Z ##[debug]Update context data
+2026-08-19T22:52:59.0279176Z ##[debug]Evaluating job-level environment variables
+2026-08-19T22:52:59.0674364Z ##[debug]Evaluating: (secrets.FTP_REMOTE_DIR || vars.FTP_REMOTE_DIR)
+2026-08-19T22:52:59.0680823Z ##[debug]Evaluating Or:
+2026-08-19T22:52:59.0683693Z ##[debug]..Evaluating Index:
+2026-08-19T22:52:59.0686305Z ##[debug]....Evaluating secrets:
+2026-08-19T22:52:59.0696849Z ##[debug]....=> Object
+2026-08-19T22:52:59.0706046Z ##[debug]....Evaluating String:
+2026-08-19T22:52:59.0707514Z ##[debug]....=> 'FTP_REMOTE_DIR'
+2026-08-19T22:52:59.0712658Z ##[debug]..=> '***'
+2026-08-19T22:52:59.0715140Z ##[debug]=> '***'
+2026-08-19T22:52:59.0722329Z ##[debug]Expanded: ('***' || vars['FTP_REMOTE_DIR'])
+2026-08-19T22:52:59.0723368Z ##[debug]Result: '***'
+2026-08-19T22:52:59.0738241Z ##[debug]Evaluating: (vars.FTP_PROTOCOL || 'ftps')
+2026-08-19T22:52:59.0739299Z ##[debug]Evaluating Or:
+2026-08-19T22:52:59.0740354Z ##[debug]..Evaluating Index:
+2026-08-19T22:52:59.0741209Z ##[debug]....Evaluating vars:
+2026-08-19T22:52:59.0742177Z ##[debug]....=> Object
+2026-08-19T22:52:59.0742986Z ##[debug]....Evaluating String:
+2026-08-19T22:52:59.0743904Z ##[debug]....=> 'FTP_PROTOCOL'
+2026-08-19T22:52:59.0744772Z ##[debug]..=> null
+2026-08-19T22:52:59.0745611Z ##[debug]..Evaluating String:
+2026-08-19T22:52:59.0746457Z ##[debug]..=> 'ftps'
+2026-08-19T22:52:59.0747203Z ##[debug]=> 'ftps'
+2026-08-19T22:52:59.0748060Z ##[debug]Expanded: (null || 'ftps')
+2026-08-19T22:52:59.0748953Z ##[debug]Result: 'ftps'
+2026-08-19T22:52:59.0750602Z ##[debug]Evaluating: (vars.FTP_PORT || '21')
+2026-08-19T22:52:59.0751526Z ##[debug]Evaluating Or:
+2026-08-19T22:52:59.0752438Z ##[debug]..Evaluating Index:
+2026-08-19T22:52:59.0753231Z ##[debug]....Evaluating vars:
+2026-08-19T22:52:59.0754086Z ##[debug]....=> Object
+2026-08-19T22:52:59.0754944Z ##[debug]....Evaluating String:
+2026-08-19T22:52:59.0755726Z ##[debug]....=> 'FTP_PORT'
+2026-08-19T22:52:59.0756558Z ##[debug]..=> null
+2026-08-19T22:52:59.0757266Z ##[debug]..Evaluating String:
+2026-08-19T22:52:59.0758587Z ##[debug]..=> '21'
+2026-08-19T22:52:59.0759294Z ##[debug]=> '21'
+2026-08-19T22:52:59.0760331Z ##[debug]Expanded: (null || '21')
+2026-08-19T22:52:59.0761443Z ##[debug]Result: '21'
+2026-08-19T22:52:59.0762848Z ##[debug]Evaluating: (vars.FTP_SECURITY || 'loose')
+2026-08-19T22:52:59.0763811Z ##[debug]Evaluating Or:
+2026-08-19T22:52:59.0764725Z ##[debug]..Evaluating Index:
+2026-08-19T22:52:59.0765541Z ##[debug]....Evaluating vars:
+2026-08-19T22:52:59.0766446Z ##[debug]....=> Object
+2026-08-19T22:52:59.0767293Z ##[debug]....Evaluating String:
+2026-08-19T22:52:59.0768125Z ##[debug]....=> 'FTP_SECURITY'
+2026-08-19T22:52:59.0769029Z ##[debug]..=> null
+2026-08-19T22:52:59.0769761Z ##[debug]..Evaluating String:
+2026-08-19T22:52:59.0770900Z ##[debug]..=> 'loose'
+2026-08-19T22:52:59.0771624Z ##[debug]=> 'loose'
+2026-08-19T22:52:59.0772507Z ##[debug]Expanded: (null || 'loose')
+2026-08-19T22:52:59.0773330Z ##[debug]Result: 'loose'
+2026-08-19T22:52:59.0785630Z ##[debug]Evaluating job container
+2026-08-19T22:52:59.0788708Z ##[debug]Evaluating job service containers
+2026-08-19T22:52:59.0791966Z ##[debug]Evaluating job defaults
+2026-08-19T22:52:59.0825805Z Prepare all required actions
+2026-08-19T22:52:59.0879937Z Getting action download info
+2026-08-19T22:52:59.2362580Z Download action repository 'actions/checkout@v6' (SHA:d23441a48e516b6c34aea4fa41551a30e30af803)
+2026-08-19T22:52:59.2390674Z ##[debug]Copied action archive '/opt/actionarchivecache/actions_checkout/d23441a48e516b6c34aea4fa41551a30e30af803.tar.gz' to '/home/runner/work/_actions/_temp_dae3c237-144e-4898-9edd-f5d87a155dbe/7d6d5a7e-57af-429d-9ca6-eed38053d2aa.tar.gz'
+2026-08-19T22:52:59.3770876Z ##[debug]Unwrap 'actions-checkout-d23441a' to '/home/runner/work/_actions/actions/checkout/v6'
+2026-08-19T22:52:59.3865883Z ##[debug]Archive '/home/runner/work/_actions/_temp_dae3c237-144e-4898-9edd-f5d87a155dbe/7d6d5a7e-57af-429d-9ca6-eed38053d2aa.tar.gz' has been unzipped into '/home/runner/work/_actions/actions/checkout/v6'.
+2026-08-19T22:52:59.3941553Z Download action repository 'shivammathur/setup-php@v2' (SHA:f3e473d116dcccaddc5834248c87452386958240)
+2026-08-19T22:52:59.4815587Z ##[debug]Download 'https://codeload.github.com/shivammathur/setup-php/tar.gz/f3e473d116dcccaddc5834248c87452386958240' to '/home/runner/work/_actions/_temp_33906701-75dd-4dff-aead-66bd847916d2/cafb643b-e579-4ecc-9901-15b0ae0d581d.tar.gz'
+2026-08-19T22:52:59.5040971Z ##[debug]Unwrap 'setup-php-f3e473d116dcccaddc5834248c87452386958240' to '/home/runner/work/_actions/shivammathur/setup-php/v2'
+2026-08-19T22:52:59.5158595Z ##[debug]Archive '/home/runner/work/_actions/_temp_33906701-75dd-4dff-aead-66bd847916d2/cafb643b-e579-4ecc-9901-15b0ae0d581d.tar.gz' has been unzipped into '/home/runner/work/_actions/shivammathur/setup-php/v2'.
+2026-08-19T22:52:59.5185771Z Download action repository 'actions/setup-node@v6' (SHA:249970729cb0ef3589644e2896645e5dc5ba9c38)
+2026-08-19T22:52:59.5951922Z ##[debug]Copied action archive '/opt/actionarchivecache/actions_setup-node/249970729cb0ef3589644e2896645e5dc5ba9c38.tar.gz' to '/home/runner/work/_actions/_temp_ee2f72d6-fcc0-4724-b67a-dac5b81355a8/27c46a7d-fe61-4226-b0bc-4c9defce81ce.tar.gz'
+2026-08-19T22:52:59.6404185Z ##[debug]Unwrap 'actions-setup-node-2499707' to '/home/runner/work/_actions/actions/setup-node/v6'
+2026-08-19T22:52:59.6827100Z ##[debug]Archive '/home/runner/work/_actions/_temp_ee2f72d6-fcc0-4724-b67a-dac5b81355a8/27c46a7d-fe61-4226-b0bc-4c9defce81ce.tar.gz' has been unzipped into '/home/runner/work/_actions/actions/setup-node/v6'.
+2026-08-19T22:52:59.6877840Z ##[debug]action.yml for action: '/home/runner/work/_actions/actions/checkout/v6/action.yml'.
+2026-08-19T22:52:59.7459521Z ##[debug]action.yml for action: '/home/runner/work/_actions/shivammathur/setup-php/v2/action.yml'.
+2026-08-19T22:52:59.7502733Z ##[debug]action.yml for action: '/home/runner/work/_actions/actions/setup-node/v6/action.yml'.
+2026-08-19T22:52:59.7592189Z ##[debug]Set step '__actions_checkout' display name to: 'Run actions/checkout@v6'
+2026-08-19T22:52:59.7596202Z ##[debug]Set step '__shivammathur_setup-php' display name to: 'Setup PHP'
+2026-08-19T22:52:59.7598638Z ##[debug]Set step '__actions_setup-node' display name to: 'Setup Node.js'
+2026-08-19T22:52:59.7601213Z ##[debug]Set step '__run' display name to: 'Deploy quality gates'
+2026-08-19T22:52:59.7604120Z ##[debug]Set step '__run_2' display name to: 'Secrets kontrolü (boşsa FTP sunucu köküne yazar; canlıda değişiklik görünmez)'
+2026-08-19T22:52:59.7607048Z ##[debug]Set step '__run_3' display name to: 'Deploy öncesi — commit ve kritik dosyalar (logda doğrulayın)'
+2026-08-19T22:52:59.7608122Z Complete job name: Deploy preflight
+2026-08-19T22:52:59.7641094Z ##[debug]Collect running processes for tracking orphan processes.
+2026-08-19T22:52:59.7813669Z ##[debug]Finishing: Set up job

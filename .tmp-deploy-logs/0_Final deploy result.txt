@@ -1,0 +1,709 @@
+﻿2026-08-19T22:53:34.2540910Z ##[debug]Starting: Final deploy result
+2026-08-19T22:53:34.2572940Z ##[debug]Cleaning runner temp folder: /home/runner/work/_temp
+2026-08-19T22:53:34.2795401Z ##[debug]Starting: Set up job
+2026-08-19T22:53:34.2797048Z Current runner version: '2.336.0'
+2026-08-19T22:53:34.2828492Z ##[group]Runner Image Provisioner
+2026-08-19T22:53:34.2829746Z Hosted Compute Agent
+2026-08-19T22:53:34.2830663Z Version: 20260729.566
+2026-08-19T22:53:34.2831781Z Commit: cf7153fe6e25b664e8693c24944bf2b00355d109
+2026-08-19T22:53:34.2832907Z Build Date: 2026-07-29T19:17:02Z
+2026-08-19T22:53:34.2834217Z Worker ID: {c2818954-5c21-4bc3-ae4f-80dae7b15f62}
+2026-08-19T22:53:34.2835381Z Azure Region: eastus
+2026-08-19T22:53:34.2836252Z ##[endgroup]
+2026-08-19T22:53:34.2838962Z ##[group]Operating System
+2026-08-19T22:53:34.2839923Z Ubuntu
+2026-08-19T22:53:34.2840827Z 24.04.4
+2026-08-19T22:53:34.2841601Z LTS
+2026-08-19T22:53:34.2842354Z ##[endgroup]
+2026-08-19T22:53:34.2843565Z ##[group]Runner Image
+2026-08-19T22:53:34.2844521Z Image: ubuntu-24.04
+2026-08-19T22:53:34.2845898Z Version: 20260810.271.1
+2026-08-19T22:53:34.2847715Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260810.271/images/ubuntu/Ubuntu2404-Readme.md
+2026-08-19T22:53:34.2850128Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260810.271
+2026-08-19T22:53:34.2851775Z ##[endgroup]
+2026-08-19T22:53:34.2853845Z ##[group]GITHUB_TOKEN Permissions
+2026-08-19T22:53:34.2856554Z Contents: read
+2026-08-19T22:53:34.2857508Z Metadata: read
+2026-08-19T22:53:34.2858355Z Packages: read
+2026-08-19T22:53:34.2859344Z ##[endgroup]
+2026-08-19T22:53:34.2862346Z Secret source: Actions
+2026-08-19T22:53:34.2864677Z ##[debug]Primary repository: akelilker/tasitmedisa
+2026-08-19T22:53:34.2865921Z Prepare workflow directory
+2026-08-19T22:53:34.3043834Z ##[debug]Creating pipeline directory: '/home/runner/work/tasitmedisa'
+2026-08-19T22:53:34.3049644Z ##[debug]Creating workspace directory: '/home/runner/work/tasitmedisa/tasitmedisa'
+2026-08-19T22:53:34.3052505Z ##[debug]Update context data
+2026-08-19T22:53:34.3058577Z ##[debug]Evaluating job-level environment variables
+2026-08-19T22:53:34.3563180Z ##[debug]Evaluating: (secrets.FTP_REMOTE_DIR || vars.FTP_REMOTE_DIR)
+2026-08-19T22:53:34.3568703Z ##[debug]Evaluating Or:
+2026-08-19T22:53:34.3571460Z ##[debug]..Evaluating Index:
+2026-08-19T22:53:34.3573987Z ##[debug]....Evaluating secrets:
+2026-08-19T22:53:34.3582788Z ##[debug]....=> Object
+2026-08-19T22:53:34.3591292Z ##[debug]....Evaluating String:
+2026-08-19T22:53:34.3592498Z ##[debug]....=> 'FTP_REMOTE_DIR'
+2026-08-19T22:53:34.3596621Z ##[debug]..=> '***'
+2026-08-19T22:53:34.3598752Z ##[debug]=> '***'
+2026-08-19T22:53:34.3606214Z ##[debug]Expanded: ('***' || vars['FTP_REMOTE_DIR'])
+2026-08-19T22:53:34.3607031Z ##[debug]Result: '***'
+2026-08-19T22:53:34.3622158Z ##[debug]Evaluating: (vars.FTP_PROTOCOL || 'ftps')
+2026-08-19T22:53:34.3622976Z ##[debug]Evaluating Or:
+2026-08-19T22:53:34.3624066Z ##[debug]..Evaluating Index:
+2026-08-19T22:53:34.3624702Z ##[debug]....Evaluating vars:
+2026-08-19T22:53:34.3625527Z ##[debug]....=> Object
+2026-08-19T22:53:34.3626223Z ##[debug]....Evaluating String:
+2026-08-19T22:53:34.3626890Z ##[debug]....=> 'FTP_PROTOCOL'
+2026-08-19T22:53:34.3627686Z ##[debug]..=> null
+2026-08-19T22:53:34.3628269Z ##[debug]..Evaluating String:
+2026-08-19T22:53:34.3628937Z ##[debug]..=> 'ftps'
+2026-08-19T22:53:34.3629525Z ##[debug]=> 'ftps'
+2026-08-19T22:53:34.3630202Z ##[debug]Expanded: (null || 'ftps')
+2026-08-19T22:53:34.3630925Z ##[debug]Result: 'ftps'
+2026-08-19T22:53:34.3632188Z ##[debug]Evaluating: (vars.FTP_PORT || '21')
+2026-08-19T22:53:34.3632987Z ##[debug]Evaluating Or:
+2026-08-19T22:53:34.3633814Z ##[debug]..Evaluating Index:
+2026-08-19T22:53:34.3634526Z ##[debug]....Evaluating vars:
+2026-08-19T22:53:34.3635179Z ##[debug]....=> Object
+2026-08-19T22:53:34.3635795Z ##[debug]....Evaluating String:
+2026-08-19T22:53:34.3637445Z ##[debug]....=> 'FTP_PORT'
+2026-08-19T22:53:34.3638079Z ##[debug]..=> null
+2026-08-19T22:53:34.3638730Z ##[debug]..Evaluating String:
+2026-08-19T22:53:34.3639830Z ##[debug]..=> '21'
+2026-08-19T22:53:34.3640462Z ##[debug]=> '21'
+2026-08-19T22:53:34.3641286Z ##[debug]Expanded: (null || '21')
+2026-08-19T22:53:34.3641973Z ##[debug]Result: '21'
+2026-08-19T22:53:34.3643122Z ##[debug]Evaluating: (vars.FTP_SECURITY || 'loose')
+2026-08-19T22:53:34.3644234Z ##[debug]Evaluating Or:
+2026-08-19T22:53:34.3644840Z ##[debug]..Evaluating Index:
+2026-08-19T22:53:34.3645578Z ##[debug]....Evaluating vars:
+2026-08-19T22:53:34.3646215Z ##[debug]....=> Object
+2026-08-19T22:53:34.3646897Z ##[debug]....Evaluating String:
+2026-08-19T22:53:34.3647580Z ##[debug]....=> 'FTP_SECURITY'
+2026-08-19T22:53:34.3648222Z ##[debug]..=> null
+2026-08-19T22:53:34.3648859Z ##[debug]..Evaluating String:
+2026-08-19T22:53:34.3649525Z ##[debug]..=> 'loose'
+2026-08-19T22:53:34.3650134Z ##[debug]=> 'loose'
+2026-08-19T22:53:34.3650879Z ##[debug]Expanded: (null || 'loose')
+2026-08-19T22:53:34.3651504Z ##[debug]Result: 'loose'
+2026-08-19T22:53:34.3663168Z ##[debug]Evaluating job container
+2026-08-19T22:53:34.3666393Z ##[debug]Evaluating job service containers
+2026-08-19T22:53:34.3668976Z ##[debug]Evaluating job defaults
+2026-08-19T22:53:34.3700151Z Prepare all required actions
+2026-08-19T22:53:34.3750045Z Getting action download info
+2026-08-19T22:53:34.5113635Z Download action repository 'actions/checkout@v6' (SHA:d23441a48e516b6c34aea4fa41551a30e30af803)
+2026-08-19T22:53:34.5208690Z ##[debug]Copied action archive '/opt/actionarchivecache/actions_checkout/d23441a48e516b6c34aea4fa41551a30e30af803.tar.gz' to '/home/runner/work/_actions/_temp_ac790a54-11ae-46ae-b4d9-bd2544af10c4/d8633609-2e62-4a64-b01e-21265b3637f1.tar.gz'
+2026-08-19T22:53:34.6487908Z ##[debug]Unwrap 'actions-checkout-d23441a' to '/home/runner/work/_actions/actions/checkout/v6'
+2026-08-19T22:53:34.9610972Z ##[debug]Archive '/home/runner/work/_actions/_temp_ac790a54-11ae-46ae-b4d9-bd2544af10c4/d8633609-2e62-4a64-b01e-21265b3637f1.tar.gz' has been unzipped into '/home/runner/work/_actions/actions/checkout/v6'.
+2026-08-19T22:53:34.9724029Z ##[debug]action.yml for action: '/home/runner/work/_actions/actions/checkout/v6/action.yml'.
+2026-08-19T22:53:35.0568483Z ##[debug]Set step '__actions_checkout' display name to: 'Run actions/checkout@v6'
+2026-08-19T22:53:35.0572357Z ##[debug]Set step 'evaluate' display name to: 'Evaluate FTP deploy result'
+2026-08-19T22:53:35.0575236Z ##[debug]Set step '__run' display name to: 'HTTP verification — canlı site erişilebilir mi'
+2026-08-19T22:53:35.0577989Z ##[debug]Set step '__run_2' display name to: 'Exact assets, API boundary and security headers'
+2026-08-19T22:53:35.0579010Z Complete job name: Final deploy result
+2026-08-19T22:53:35.0604778Z ##[debug]Collect running processes for tracking orphan processes.
+2026-08-19T22:53:35.0820065Z ##[debug]Finishing: Set up job
+2026-08-19T22:53:35.0957710Z ##[debug]Evaluating condition for step: 'Run actions/checkout@v6'
+2026-08-19T22:53:35.0978063Z ##[debug]Evaluating: success()
+2026-08-19T22:53:35.0979538Z ##[debug]Evaluating success:
+2026-08-19T22:53:35.0987200Z ##[debug]=> true
+2026-08-19T22:53:35.0989678Z ##[debug]Result: true
+2026-08-19T22:53:35.1010575Z ##[debug]Starting: Run actions/checkout@v6
+2026-08-19T22:53:35.1095223Z ##[debug]Register post job cleanup for action: actions/checkout@v6
+2026-08-19T22:53:35.1191359Z ##[debug]Loading inputs
+2026-08-19T22:53:35.1200234Z ##[debug]Evaluating: github.repository
+2026-08-19T22:53:35.1200987Z ##[debug]Evaluating Index:
+2026-08-19T22:53:35.1201588Z ##[debug]..Evaluating github:
+2026-08-19T22:53:35.1202223Z ##[debug]..=> Object
+2026-08-19T22:53:35.1202786Z ##[debug]..Evaluating String:
+2026-08-19T22:53:35.1203640Z ##[debug]..=> 'repository'
+2026-08-19T22:53:35.1204803Z ##[debug]=> 'akelilker/tasitmedisa'
+2026-08-19T22:53:35.1205506Z ##[debug]Result: 'akelilker/tasitmedisa'
+2026-08-19T22:53:35.1209763Z ##[debug]Evaluating: github.token
+2026-08-19T22:53:35.1210418Z ##[debug]Evaluating Index:
+2026-08-19T22:53:35.1211002Z ##[debug]..Evaluating github:
+2026-08-19T22:53:35.1211603Z ##[debug]..=> Object
+2026-08-19T22:53:35.1212417Z ##[debug]..Evaluating String:
+2026-08-19T22:53:35.1213076Z ##[debug]..=> 'token'
+2026-08-19T22:53:35.1217853Z ##[debug]=> '***'
+2026-08-19T22:53:35.1222252Z ##[debug]Result: '***'
+2026-08-19T22:53:35.1248618Z ##[debug]Loading env
+2026-08-19T22:53:35.1317944Z ##[group]Run actions/checkout@v6
+2026-08-19T22:53:35.1318728Z with:
+2026-08-19T22:53:35.1319215Z   repository: akelilker/tasitmedisa
+2026-08-19T22:53:35.1323856Z   token: ***
+2026-08-19T22:53:35.1324344Z   ssh-strict: true
+2026-08-19T22:53:35.1324828Z   ssh-user: git
+2026-08-19T22:53:35.1325318Z   persist-credentials: true
+2026-08-19T22:53:35.1325864Z   clean: true
+2026-08-19T22:53:35.1326342Z   sparse-checkout-cone-mode: true
+2026-08-19T22:53:35.1326903Z   fetch-depth: 1
+2026-08-19T22:53:35.1327406Z   fetch-tags: false
+2026-08-19T22:53:35.1327901Z   show-progress: true
+2026-08-19T22:53:35.1328387Z   lfs: false
+2026-08-19T22:53:35.1328833Z   submodules: false
+2026-08-19T22:53:35.1329317Z   set-safe-directory: true
+2026-08-19T22:53:35.1329880Z   allow-unsafe-pr-checkout: false
+2026-08-19T22:53:35.1330660Z env:
+2026-08-19T22:53:35.1331151Z   FTP_REMOTE_DIR: ***
+2026-08-19T22:53:35.1331644Z   FTP_PROTOCOL: ftps
+2026-08-19T22:53:35.1332120Z   FTP_PORT: 21
+2026-08-19T22:53:35.1332576Z   FTP_SECURITY: loose
+2026-08-19T22:53:35.1333061Z ##[endgroup]
+2026-08-19T22:53:35.2358463Z ##[debug]GITHUB_WORKSPACE = '/home/runner/work/tasitmedisa/tasitmedisa'
+2026-08-19T22:53:35.2360203Z ##[debug]qualified repository = 'akelilker/tasitmedisa'
+2026-08-19T22:53:35.2361599Z ##[debug]ref = 'refs/heads/main'
+2026-08-19T22:53:35.2363015Z ##[debug]commit = 'bb44edcd939a860998ad5335ae7e66a0ac031556'
+2026-08-19T22:53:35.2364956Z ##[debug]clean = true
+2026-08-19T22:53:35.2366253Z ##[debug]filter = undefined
+2026-08-19T22:53:35.2367601Z ##[debug]fetch depth = 1
+2026-08-19T22:53:35.2368930Z ##[debug]fetch tags = false
+2026-08-19T22:53:35.2370354Z ##[debug]show progress = true
+2026-08-19T22:53:35.2371721Z ##[debug]lfs = false
+2026-08-19T22:53:35.2372981Z ##[debug]submodules = false
+2026-08-19T22:53:35.2374508Z ##[debug]recursive submodules = false
+2026-08-19T22:53:35.2376992Z ##[debug]GitHub Host URL = 
+2026-08-19T22:53:35.2403936Z ##[debug]allow unsafe PR checkout = false
+2026-08-19T22:53:35.2407414Z ::add-matcher::/home/runner/work/_actions/actions/checkout/v6/dist/problem-matcher.json
+2026-08-19T22:53:35.2511055Z ##[debug]Added matchers: 'checkout-git'. Problem matchers scan action output for known warning or error strings and report these inline.
+2026-08-19T22:53:35.2518259Z Syncing repository: akelilker/tasitmedisa
+2026-08-19T22:53:35.2520397Z ::group::Getting Git version info
+2026-08-19T22:53:35.2522460Z ##[group]Getting Git version info
+2026-08-19T22:53:35.2523882Z Working directory is '/home/runner/work/tasitmedisa/tasitmedisa'
+2026-08-19T22:53:35.2526131Z ##[debug]Getting git version
+2026-08-19T22:53:35.2527025Z [command]/usr/bin/git version
+2026-08-19T22:53:35.2589848Z git version 2.54.0
+2026-08-19T22:53:35.2617398Z ##[debug]0
+2026-08-19T22:53:35.2638618Z ##[debug]git version 2.54.0
+2026-08-19T22:53:35.2639800Z ##[debug]
+2026-08-19T22:53:35.2643865Z ##[debug]Set git useragent to: git/2.54.0 (github-actions-checkout) actions_orchestration_id/06b8b893-4310-492b-9ca6-a8e3d5da90d1.deploy_result.__default
+2026-08-19T22:53:35.2664967Z ::endgroup::
+2026-08-19T22:53:35.2665809Z ##[endgroup]
+2026-08-19T22:53:35.2671218Z ::add-mask::***
+2026-08-19T22:53:35.2682156Z Temporarily overriding HOME='/home/runner/work/_temp/cb3fa902-e133-4209-85e0-e520d4ef696e' before making global git config changes
+2026-08-19T22:53:35.2685369Z Adding repository directory to the temporary git global config as a safe directory
+2026-08-19T22:53:35.2696522Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/tasitmedisa/tasitmedisa
+2026-08-19T22:53:35.2699171Z ##[debug]0
+2026-08-19T22:53:35.2701080Z ##[debug]
+2026-08-19T22:53:35.2702650Z Deleting the contents of '/home/runner/work/tasitmedisa/tasitmedisa'
+2026-08-19T22:53:35.2705025Z ::group::Determining repository object format
+2026-08-19T22:53:35.2706450Z ##[group]Determining repository object format
+2026-08-19T22:53:35.2708237Z ::endgroup::
+2026-08-19T22:53:35.2708976Z ##[endgroup]
+2026-08-19T22:53:35.2710425Z ::group::Initializing the repository
+2026-08-19T22:53:35.2711458Z ##[group]Initializing the repository
+2026-08-19T22:53:35.2715842Z [command]/usr/bin/git init /home/runner/work/tasitmedisa/tasitmedisa
+2026-08-19T22:53:35.2877829Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-08-19T22:53:35.2890032Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-08-19T22:53:35.2891762Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-08-19T22:53:35.2892633Z hint: call:
+2026-08-19T22:53:35.2893740Z hint:
+2026-08-19T22:53:35.2894883Z hint: 	git config --global init.defaultBranch <name>
+2026-08-19T22:53:35.2896020Z hint:
+2026-08-19T22:53:35.2897061Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-08-19T22:53:35.2898733Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-08-19T22:53:35.2900038Z hint:
+2026-08-19T22:53:35.2900756Z hint: 	git branch -m <name>
+2026-08-19T22:53:35.2901573Z hint:
+2026-08-19T22:53:35.2902993Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-08-19T22:53:35.2904386Z Initialized empty Git repository in /home/runner/work/tasitmedisa/tasitmedisa/.git/
+2026-08-19T22:53:35.2905875Z ##[debug]0
+2026-08-19T22:53:35.2906974Z ##[debug]Initialized empty Git repository in /home/runner/work/tasitmedisa/tasitmedisa/.git/
+2026-08-19T22:53:35.2907919Z ##[debug]
+2026-08-19T22:53:35.2908658Z [command]/usr/bin/git remote add origin https://github.com/akelilker/tasitmedisa
+2026-08-19T22:53:35.2974257Z ##[debug]0
+2026-08-19T22:53:35.2975439Z ##[debug]
+2026-08-19T22:53:35.2976242Z ::endgroup::
+2026-08-19T22:53:35.2976715Z ##[endgroup]
+2026-08-19T22:53:35.2977726Z ::group::Disabling automatic garbage collection
+2026-08-19T22:53:35.2978484Z ##[group]Disabling automatic garbage collection
+2026-08-19T22:53:35.2979767Z [command]/usr/bin/git config --local gc.auto 0
+2026-08-19T22:53:35.3012091Z ##[debug]0
+2026-08-19T22:53:35.3030088Z ##[debug]
+2026-08-19T22:53:35.3030987Z ::endgroup::
+2026-08-19T22:53:35.3031456Z ##[endgroup]
+2026-08-19T22:53:35.3032732Z ::group::Setting up auth
+2026-08-19T22:53:35.3033794Z ##[group]Setting up auth
+2026-08-19T22:53:35.3034778Z Removing SSH command configuration
+2026-08-19T22:53:35.3036105Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-08-19T22:53:35.3057721Z ##[debug]1
+2026-08-19T22:53:35.3059290Z ##[debug]
+2026-08-19T22:53:35.3066382Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-08-19T22:53:35.3426647Z ##[debug]0
+2026-08-19T22:53:35.3427506Z ##[debug]
+2026-08-19T22:53:35.3428714Z Removing HTTP extra header
+2026-08-19T22:53:35.3438324Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-08-19T22:53:35.3484241Z ##[debug]1
+2026-08-19T22:53:35.3485084Z ##[debug]
+2026-08-19T22:53:35.3492218Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-08-19T22:53:35.3732992Z ##[debug]0
+2026-08-19T22:53:35.3734690Z ##[debug]
+2026-08-19T22:53:35.3735940Z Removing includeIf entries pointing to credentials config files
+2026-08-19T22:53:35.3741354Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-08-19T22:53:35.3775042Z ##[debug]1
+2026-08-19T22:53:35.3776499Z ##[debug]
+2026-08-19T22:53:35.3782072Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-08-19T22:53:35.4015890Z ##[debug]0
+2026-08-19T22:53:35.4017639Z ##[debug]
+2026-08-19T22:53:35.4024154Z ##[debug]Credentials config path: /home/runner/work/_temp/git-credentials-572db2f4-b9f6-40fc-883a-850655099c24.config
+2026-08-19T22:53:35.4030839Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-572db2f4-b9f6-40fc-883a-850655099c24.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-08-19T22:53:35.4062848Z ##[debug]0
+2026-08-19T22:53:35.4064356Z ##[debug]
+2026-08-19T22:53:35.4075810Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/tasitmedisa/tasitmedisa/.git.path /home/runner/work/_temp/git-credentials-572db2f4-b9f6-40fc-883a-850655099c24.config
+2026-08-19T22:53:35.4107489Z ##[debug]0
+2026-08-19T22:53:35.4108536Z ##[debug]
+2026-08-19T22:53:35.4113175Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/tasitmedisa/tasitmedisa/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-572db2f4-b9f6-40fc-883a-850655099c24.config
+2026-08-19T22:53:35.4144501Z ##[debug]0
+2026-08-19T22:53:35.4145653Z ##[debug]
+2026-08-19T22:53:35.4150129Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-572db2f4-b9f6-40fc-883a-850655099c24.config
+2026-08-19T22:53:35.4180739Z ##[debug]0
+2026-08-19T22:53:35.4181753Z ##[debug]
+2026-08-19T22:53:35.4186064Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-572db2f4-b9f6-40fc-883a-850655099c24.config
+2026-08-19T22:53:35.4222733Z ##[debug]0
+2026-08-19T22:53:35.4223893Z ##[debug]
+2026-08-19T22:53:35.4224666Z ::endgroup::
+2026-08-19T22:53:35.4225129Z ##[endgroup]
+2026-08-19T22:53:35.4225915Z ::group::Fetching the repository
+2026-08-19T22:53:35.4226505Z ##[group]Fetching the repository
+2026-08-19T22:53:35.4231928Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +bb44edcd939a860998ad5335ae7e66a0ac031556:refs/remotes/origin/main
+2026-08-19T22:53:36.3116044Z From https://github.com/akelilker/tasitmedisa
+2026-08-19T22:53:36.3117936Z  * [new ref]         bb44edcd939a860998ad5335ae7e66a0ac031556 -> origin/main
+2026-08-19T22:53:36.3138563Z ##[debug]0
+2026-08-19T22:53:36.3139623Z ##[debug]
+2026-08-19T22:53:36.3145815Z [command]/usr/bin/git branch --list --remote origin/main
+2026-08-19T22:53:36.3175540Z   origin/main
+2026-08-19T22:53:36.3179731Z ##[debug]0
+2026-08-19T22:53:36.3180937Z ##[debug]  origin/main
+2026-08-19T22:53:36.3181629Z ##[debug]
+2026-08-19T22:53:36.3183901Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+2026-08-19T22:53:36.3211800Z bb44edcd939a860998ad5335ae7e66a0ac031556
+2026-08-19T22:53:36.3215711Z ##[debug]0
+2026-08-19T22:53:36.3217501Z ##[debug]bb44edcd939a860998ad5335ae7e66a0ac031556
+2026-08-19T22:53:36.3218935Z ##[debug]
+2026-08-19T22:53:36.3220150Z ::endgroup::
+2026-08-19T22:53:36.3221217Z ##[endgroup]
+2026-08-19T22:53:36.3222728Z ::group::Determining the checkout info
+2026-08-19T22:53:36.3224103Z ##[group]Determining the checkout info
+2026-08-19T22:53:36.3226077Z ::endgroup::
+2026-08-19T22:53:36.3227088Z ##[endgroup]
+2026-08-19T22:53:36.3228421Z [command]/usr/bin/git sparse-checkout disable
+2026-08-19T22:53:36.3369084Z ##[debug]0
+2026-08-19T22:53:36.3370845Z ##[debug]
+2026-08-19T22:53:36.3373109Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-08-19T22:53:36.3407767Z ##[debug]0
+2026-08-19T22:53:36.3409478Z ##[debug]
+2026-08-19T22:53:36.3411640Z ::group::Checking out the ref
+2026-08-19T22:53:36.3412895Z ##[group]Checking out the ref
+2026-08-19T22:53:36.3414896Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2026-08-19T22:53:36.3863708Z Switched to a new branch 'main'
+2026-08-19T22:53:36.3866132Z branch 'main' set up to track 'origin/main'.
+2026-08-19T22:53:36.3873882Z ##[debug]0
+2026-08-19T22:53:36.3875884Z ##[debug]branch 'main' set up to track 'origin/main'.
+2026-08-19T22:53:36.3877355Z ##[debug]
+2026-08-19T22:53:36.3879223Z ::endgroup::
+2026-08-19T22:53:36.3880481Z ##[endgroup]
+2026-08-19T22:53:36.3916820Z ##[debug]0
+2026-08-19T22:53:36.3919027Z ##[debug]commit bb44edcd939a860998ad5335ae7e66a0ac031556
+2026-08-19T22:53:36.3920891Z ##[debug]Author: akelilker <ilkerakel@gmail.com>
+2026-08-19T22:53:36.3922224Z ##[debug]Date:   Thu Aug 20 01:45:16 2026 +0300
+2026-08-19T22:53:36.3923607Z ##[debug]
+2026-08-19T22:53:36.3924752Z ##[debug]    fix(deploy): align asset version pins for CI preflight
+2026-08-19T22:53:36.3926234Z ##[debug]    
+2026-08-19T22:53:36.3928408Z ##[debug]    Sync tasitlar module version, style-core/script-core HTML pins, SW cache, and verify script expectations so deploy preflight passes.
+2026-08-19T22:53:36.3931027Z ##[debug]    
+2026-08-19T22:53:36.3932221Z ##[debug]    Co-authored-by: Cursor <cursoragent@cursor.com>
+2026-08-19T22:53:36.3933858Z ##[debug]
+2026-08-19T22:53:36.3934968Z [command]/usr/bin/git log -1 --format=%H
+2026-08-19T22:53:36.3949714Z bb44edcd939a860998ad5335ae7e66a0ac031556
+2026-08-19T22:53:36.3953915Z ##[debug]0
+2026-08-19T22:53:36.3956051Z ##[debug]bb44edcd939a860998ad5335ae7e66a0ac031556
+2026-08-19T22:53:36.3957426Z ##[debug]
+2026-08-19T22:53:36.3959912Z ##[debug]Unsetting HOME override
+2026-08-19T22:53:36.3967447Z ::remove-matcher owner=checkout-git::
+2026-08-19T22:53:36.3981243Z ##[debug]Removed matchers: 'checkout-git'
+2026-08-19T22:53:36.4052539Z ##[debug]Node Action run completed with exit code 0
+2026-08-19T22:53:36.4091028Z ##[debug]Save intra-action state isPost = true
+2026-08-19T22:53:36.4092758Z ##[debug]Save intra-action state setSafeDirectory = true
+2026-08-19T22:53:36.4095242Z ##[debug]Save intra-action state repositoryPath = /home/runner/work/tasitmedisa/tasitmedisa
+2026-08-19T22:53:36.4101839Z ##[debug]Set output commit = bb44edcd939a860998ad5335ae7e66a0ac031556
+2026-08-19T22:53:36.4104131Z ##[debug]Set output ref = refs/heads/main
+2026-08-19T22:53:36.4122592Z ##[debug]Finishing: Run actions/checkout@v6
+2026-08-19T22:53:36.4155761Z ##[debug]Evaluating condition for step: 'Evaluate FTP deploy result'
+2026-08-19T22:53:36.4163031Z ##[debug]Evaluating: success()
+2026-08-19T22:53:36.4164826Z ##[debug]Evaluating success:
+2026-08-19T22:53:36.4166404Z ##[debug]=> true
+2026-08-19T22:53:36.4167934Z ##[debug]Result: true
+2026-08-19T22:53:36.4170135Z ##[debug]Starting: Evaluate FTP deploy result
+2026-08-19T22:53:36.4271614Z ##[debug]Loading inputs
+2026-08-19T22:53:36.4278968Z ##[debug]Evaluating: format('if [ "{0}" != "success" ]; then
+2026-08-19T22:53:36.4280468Z ##[debug]  echo "::error::Deploy preflight failed."
+2026-08-19T22:53:36.4281721Z ##[debug]  exit 1
+2026-08-19T22:53:36.4282572Z ##[debug]fi
+2026-08-19T22:53:36.4283636Z ##[debug]
+2026-08-19T22:53:36.4284441Z ##[debug]a1="{1}"
+2026-08-19T22:53:36.4285296Z ##[debug]a2="{2}"
+2026-08-19T22:53:36.4286152Z ##[debug]a3="{3}"
+2026-08-19T22:53:36.4287002Z ##[debug]
+2026-08-19T22:53:36.4287826Z ##[debug]if [ "$a1" = "true" ]; then
+2026-08-19T22:53:36.4289111Z ##[debug]  echo "succeeded=true" >> "$GITHUB_OUTPUT"
+2026-08-19T22:53:36.4290552Z ##[debug]  echo "successful_attempt=1" >> "$GITHUB_OUTPUT"
+2026-08-19T22:53:36.4292004Z ##[debug]  echo "FTP deploy succeeded on attempt 1"
+2026-08-19T22:53:36.4293244Z ##[debug]  exit 0
+2026-08-19T22:53:36.4294276Z ##[debug]fi
+2026-08-19T22:53:36.4295084Z ##[debug]
+2026-08-19T22:53:36.4295923Z ##[debug]if [ "$a2" = "true" ]; then
+2026-08-19T22:53:36.4297136Z ##[debug]  echo "succeeded=true" >> "$GITHUB_OUTPUT"
+2026-08-19T22:53:36.4298571Z ##[debug]  echo "successful_attempt=2" >> "$GITHUB_OUTPUT"
+2026-08-19T22:53:36.4300025Z ##[debug]  echo "FTP deploy succeeded on attempt 2"
+2026-08-19T22:53:36.4301271Z ##[debug]  exit 0
+2026-08-19T22:53:36.4302131Z ##[debug]fi
+2026-08-19T22:53:36.4302933Z ##[debug]
+2026-08-19T22:53:36.4303940Z ##[debug]if [ "$a3" = "true" ]; then
+2026-08-19T22:53:36.4305153Z ##[debug]  echo "succeeded=true" >> "$GITHUB_OUTPUT"
+2026-08-19T22:53:36.4306713Z ##[debug]  echo "successful_attempt=3" >> "$GITHUB_OUTPUT"
+2026-08-19T22:53:36.4308176Z ##[debug]  echo "FTP deploy succeeded on attempt 3"
+2026-08-19T22:53:36.4309429Z ##[debug]  exit 0
+2026-08-19T22:53:36.4310506Z ##[debug]fi
+2026-08-19T22:53:36.4311309Z ##[debug]
+2026-08-19T22:53:36.4312439Z ##[debug]echo "succeeded=false" >> "$GITHUB_OUTPUT"
+2026-08-19T22:53:36.4314669Z ##[debug]echo "::error::FTP server control socket was unreachable from three separate GitHub-hosted runners."
+2026-08-19T22:53:36.4317631Z ##[debug]echo "::error::FTP deploy failed after 3 fresh-runner attempts."
+2026-08-19T22:53:36.4319115Z ##[debug]exit 1
+2026-08-19T22:53:36.4321534Z ##[debug]', needs.deploy_preflight.result, needs.ftp_attempt_1.outputs.succeeded, needs.ftp_attempt_2.outputs.succeeded, needs.ftp_attempt_3.outputs.succeeded)
+2026-08-19T22:53:36.4324712Z ##[debug]Evaluating format:
+2026-08-19T22:53:36.4329372Z ##[debug]..Evaluating String:
+2026-08-19T22:53:36.4330668Z ##[debug]..=> 'if [ "{0}" != "success" ]; then
+2026-08-19T22:53:36.4332054Z ##[debug]  echo "::error::Deploy preflight failed."
+2026-08-19T22:53:36.4333568Z ##[debug]  exit 1
+2026-08-19T22:53:36.4334487Z ##[debug]fi
+2026-08-19T22:53:36.4335323Z ##[debug]
+2026-08-19T22:53:36.4336136Z ##[debug]a1="{1}"
+2026-08-19T22:53:36.4337017Z ##[debug]a2="{2}"
+2026-08-19T22:53:36.4337900Z ##[debug]a3="{3}"
+2026-08-19T22:53:36.4338762Z ##[debug]
+2026-08-19T22:53:36.4339620Z ##[debug]if [ "$a1" = "true" ]; then
+2026-08-19T22:53:36.4340893Z ##[debug]  echo "succeeded=true" >> "$GITHUB_OUTPUT"
+2026-08-19T22:53:36.4342376Z ##[debug]  echo "successful_attempt=1" >> "$GITHUB_OUTPUT"
+2026-08-19T22:53:36.4344056Z ##[debug]  echo "FTP deploy succeeded on attempt 1"
+2026-08-19T22:53:36.4345328Z ##[debug]  exit 0
+2026-08-19T22:53:36.4346202Z ##[debug]fi
+2026-08-19T22:53:36.4347007Z ##[debug]
+2026-08-19T22:53:36.4347847Z ##[debug]if [ "$a2" = "true" ]; then
+2026-08-19T22:53:36.4349056Z ##[debug]  echo "succeeded=true" >> "$GITHUB_OUTPUT"
+2026-08-19T22:53:36.4350500Z ##[debug]  echo "successful_attempt=2" >> "$GITHUB_OUTPUT"
+2026-08-19T22:53:36.4352233Z ##[debug]  echo "FTP deploy succeeded on attempt 2"
+2026-08-19T22:53:36.4353555Z ##[debug]  exit 0
+2026-08-19T22:53:36.4354429Z ##[debug]fi
+2026-08-19T22:53:36.4355236Z ##[debug]
+2026-08-19T22:53:36.4356100Z ##[debug]if [ "$a3" = "true" ]; then
+2026-08-19T22:53:36.4357319Z ##[debug]  echo "succeeded=true" >> "$GITHUB_OUTPUT"
+2026-08-19T22:53:36.4358758Z ##[debug]  echo "successful_attempt=3" >> "$GITHUB_OUTPUT"
+2026-08-19T22:53:36.4360206Z ##[debug]  echo "FTP deploy succeeded on attempt 3"
+2026-08-19T22:53:36.4361422Z ##[debug]  exit 0
+2026-08-19T22:53:36.4362256Z ##[debug]fi
+2026-08-19T22:53:36.4363059Z ##[debug]
+2026-08-19T22:53:36.4364240Z ##[debug]echo "succeeded=false" >> "$GITHUB_OUTPUT"
+2026-08-19T22:53:36.4366294Z ##[debug]echo "::error::FTP server control socket was unreachable from three separate GitHub-hosted runners."
+2026-08-19T22:53:36.4368589Z ##[debug]echo "::error::FTP deploy failed after 3 fresh-runner attempts."
+2026-08-19T22:53:36.4370069Z ##[debug]exit 1
+2026-08-19T22:53:36.4371064Z ##[debug]'
+2026-08-19T22:53:36.4384077Z ##[debug]..Evaluating Index:
+2026-08-19T22:53:36.4385204Z ##[debug]....Evaluating Index:
+2026-08-19T22:53:36.4386334Z ##[debug]......Evaluating needs:
+2026-08-19T22:53:36.4387469Z ##[debug]......=> Object
+2026-08-19T22:53:36.4388533Z ##[debug]......Evaluating String:
+2026-08-19T22:53:36.4389664Z ##[debug]......=> 'deploy_preflight'
+2026-08-19T22:53:36.4390877Z ##[debug]....=> Object
+2026-08-19T22:53:36.4391875Z ##[debug]....Evaluating String:
+2026-08-19T22:53:36.4392941Z ##[debug]....=> 'result'
+2026-08-19T22:53:36.4394064Z ##[debug]..=> 'failure'
+2026-08-19T22:53:36.4395680Z ##[debug]..Evaluating Index:
+2026-08-19T22:53:36.4396779Z ##[debug]....Evaluating Index:
+2026-08-19T22:53:36.4397893Z ##[debug]......Evaluating Index:
+2026-08-19T22:53:36.4399001Z ##[debug]........Evaluating needs:
+2026-08-19T22:53:36.4400171Z ##[debug]........=> Object
+2026-08-19T22:53:36.4401227Z ##[debug]........Evaluating String:
+2026-08-19T22:53:36.4402357Z ##[debug]........=> 'ftp_attempt_1'
+2026-08-19T22:53:36.4403616Z ##[debug]......=> Object
+2026-08-19T22:53:36.4404628Z ##[debug]......Evaluating String:
+2026-08-19T22:53:36.4405916Z ##[debug]......=> 'outputs'
+2026-08-19T22:53:36.4406937Z ##[debug]....=> Object
+2026-08-19T22:53:36.4407899Z ##[debug]....Evaluating String:
+2026-08-19T22:53:36.4408966Z ##[debug]....=> 'succeeded'
+2026-08-19T22:53:36.4409985Z ##[debug]..=> null
+2026-08-19T22:53:36.4410937Z ##[debug]..Evaluating Index:
+2026-08-19T22:53:36.4411978Z ##[debug]....Evaluating Index:
+2026-08-19T22:53:36.4413073Z ##[debug]......Evaluating Index:
+2026-08-19T22:53:36.4414327Z ##[debug]........Evaluating needs:
+2026-08-19T22:53:36.4415419Z ##[debug]........=> Object
+2026-08-19T22:53:36.4416458Z ##[debug]........Evaluating String:
+2026-08-19T22:53:36.4417589Z ##[debug]........=> 'ftp_attempt_2'
+2026-08-19T22:53:36.4418709Z ##[debug]......=> Object
+2026-08-19T22:53:36.4419712Z ##[debug]......Evaluating String:
+2026-08-19T22:53:36.4420796Z ##[debug]......=> 'outputs'
+2026-08-19T22:53:36.4421828Z ##[debug]....=> Object
+2026-08-19T22:53:36.4422802Z ##[debug]....Evaluating String:
+2026-08-19T22:53:36.4424033Z ##[debug]....=> 'succeeded'
+2026-08-19T22:53:36.4425029Z ##[debug]..=> null
+2026-08-19T22:53:36.4425975Z ##[debug]..Evaluating Index:
+2026-08-19T22:53:36.4427017Z ##[debug]....Evaluating Index:
+2026-08-19T22:53:36.4428112Z ##[debug]......Evaluating Index:
+2026-08-19T22:53:36.4429178Z ##[debug]........Evaluating needs:
+2026-08-19T22:53:36.4430272Z ##[debug]........=> Object
+2026-08-19T22:53:36.4431292Z ##[debug]........Evaluating String:
+2026-08-19T22:53:36.4432438Z ##[debug]........=> 'ftp_attempt_3'
+2026-08-19T22:53:36.4433631Z ##[debug]......=> Object
+2026-08-19T22:53:36.4434640Z ##[debug]......Evaluating String:
+2026-08-19T22:53:36.4435713Z ##[debug]......=> 'outputs'
+2026-08-19T22:53:36.4436722Z ##[debug]....=> Object
+2026-08-19T22:53:36.4437685Z ##[debug]....Evaluating String:
+2026-08-19T22:53:36.4438782Z ##[debug]....=> 'succeeded'
+2026-08-19T22:53:36.4439787Z ##[debug]..=> null
+2026-08-19T22:53:36.4441138Z ##[debug]=> 'if [ "failure" != "success" ]; then
+2026-08-19T22:53:36.4442518Z ##[debug]  echo "::error::Deploy preflight failed."
+2026-08-19T22:53:36.4443880Z ##[debug]  exit 1
+2026-08-19T22:53:36.4444738Z ##[debug]fi
+2026-08-19T22:53:36.4445536Z ##[debug]
+2026-08-19T22:53:36.4446328Z ##[debug]a1=""
+2026-08-19T22:53:36.4447158Z ##[debug]a2=""
+2026-08-19T22:53:36.4447993Z ##[debug]a3=""
+2026-08-19T22:53:36.4448825Z ##[debug]
+2026-08-19T22:53:36.4449647Z ##[debug]if [ "$a1" = "true" ]; then
+2026-08-19T22:53:36.4450852Z ##[debug]  echo "succeeded=true" >> "$GITHUB_OUTPUT"
+2026-08-19T22:53:36.4452302Z ##[debug]  echo "successful_attempt=1" >> "$GITHUB_OUTPUT"
+2026-08-19T22:53:36.4453828Z ##[debug]  echo "FTP deploy succeeded on attempt 1"
+2026-08-19T22:53:36.4455084Z ##[debug]  exit 0
+2026-08-19T22:53:36.4455947Z ##[debug]fi
+2026-08-19T22:53:36.4456775Z ##[debug]
+2026-08-19T22:53:36.4457621Z ##[debug]if [ "$a2" = "true" ]; then
+2026-08-19T22:53:36.4458851Z ##[debug]  echo "succeeded=true" >> "$GITHUB_OUTPUT"
+2026-08-19T22:53:36.4460300Z ##[debug]  echo "successful_attempt=2" >> "$GITHUB_OUTPUT"
+2026-08-19T22:53:36.4461749Z ##[debug]  echo "FTP deploy succeeded on attempt 2"
+2026-08-19T22:53:36.4463001Z ##[debug]  exit 0
+2026-08-19T22:53:36.4464028Z ##[debug]fi
+2026-08-19T22:53:36.4464833Z ##[debug]
+2026-08-19T22:53:36.4465671Z ##[debug]if [ "$a3" = "true" ]; then
+2026-08-19T22:53:36.4466886Z ##[debug]  echo "succeeded=true" >> "$GITHUB_OUTPUT"
+2026-08-19T22:53:36.4468329Z ##[debug]  echo "successful_attempt=3" >> "$GITHUB_OUTPUT"
+2026-08-19T22:53:36.4469769Z ##[debug]  echo "FTP deploy succeeded on attempt 3"
+2026-08-19T22:53:36.4471025Z ##[debug]  exit 0
+2026-08-19T22:53:36.4471881Z ##[debug]fi
+2026-08-19T22:53:36.4472674Z ##[debug]
+2026-08-19T22:53:36.4473765Z ##[debug]echo "succeeded=false" >> "$GITHUB_OUTPUT"
+2026-08-19T22:53:36.4475891Z ##[debug]echo "::error::FTP server control socket was unreachable from three separate GitHub-hosted runners."
+2026-08-19T22:53:36.4478283Z ##[debug]echo "::error::FTP deploy failed after 3 fresh-runner attempts."
+2026-08-19T22:53:36.4479771Z ##[debug]exit 1
+2026-08-19T22:53:36.4480794Z ##[debug]'
+2026-08-19T22:53:36.4481884Z ##[debug]Result: 'if [ "failure" != "success" ]; then
+2026-08-19T22:53:36.4483280Z ##[debug]  echo "::error::Deploy preflight failed."
+2026-08-19T22:53:36.4484617Z ##[debug]  exit 1
+2026-08-19T22:53:36.4485478Z ##[debug]fi
+2026-08-19T22:53:36.4486278Z ##[debug]
+2026-08-19T22:53:36.4487075Z ##[debug]a1=""
+2026-08-19T22:53:36.4487929Z ##[debug]a2=""
+2026-08-19T22:53:36.4488768Z ##[debug]a3=""
+2026-08-19T22:53:36.4489598Z ##[debug]
+2026-08-19T22:53:36.4490440Z ##[debug]if [ "$a1" = "true" ]; then
+2026-08-19T22:53:36.4491685Z ##[debug]  echo "succeeded=true" >> "$GITHUB_OUTPUT"
+2026-08-19T22:53:36.4493144Z ##[debug]  echo "successful_attempt=1" >> "$GITHUB_OUTPUT"
+2026-08-19T22:53:36.4494703Z ##[debug]  echo "FTP deploy succeeded on attempt 1"
+2026-08-19T22:53:36.4495970Z ##[debug]  exit 0
+2026-08-19T22:53:36.4496825Z ##[debug]fi
+2026-08-19T22:53:36.4497632Z ##[debug]
+2026-08-19T22:53:36.4498467Z ##[debug]if [ "$a2" = "true" ]; then
+2026-08-19T22:53:36.4499690Z ##[debug]  echo "succeeded=true" >> "$GITHUB_OUTPUT"
+2026-08-19T22:53:36.4501197Z ##[debug]  echo "successful_attempt=2" >> "$GITHUB_OUTPUT"
+2026-08-19T22:53:36.4502693Z ##[debug]  echo "FTP deploy succeeded on attempt 2"
+2026-08-19T22:53:36.4504049Z ##[debug]  exit 0
+2026-08-19T22:53:36.4504917Z ##[debug]fi
+2026-08-19T22:53:36.4505725Z ##[debug]
+2026-08-19T22:53:36.4506578Z ##[debug]if [ "$a3" = "true" ]; then
+2026-08-19T22:53:36.4507802Z ##[debug]  echo "succeeded=true" >> "$GITHUB_OUTPUT"
+2026-08-19T22:53:36.4509263Z ##[debug]  echo "successful_attempt=3" >> "$GITHUB_OUTPUT"
+2026-08-19T22:53:36.4510714Z ##[debug]  echo "FTP deploy succeeded on attempt 3"
+2026-08-19T22:53:36.4511949Z ##[debug]  exit 0
+2026-08-19T22:53:36.4512807Z ##[debug]fi
+2026-08-19T22:53:36.4513730Z ##[debug]
+2026-08-19T22:53:36.4514683Z ##[debug]echo "succeeded=false" >> "$GITHUB_OUTPUT"
+2026-08-19T22:53:36.4516930Z ##[debug]echo "::error::FTP server control socket was unreachable from three separate GitHub-hosted runners."
+2026-08-19T22:53:36.4519253Z ##[debug]echo "::error::FTP deploy failed after 3 fresh-runner attempts."
+2026-08-19T22:53:36.4520770Z ##[debug]exit 1
+2026-08-19T22:53:36.4521619Z ##[debug]'
+2026-08-19T22:53:36.4526932Z ##[debug]Loading env
+2026-08-19T22:53:36.4554859Z ##[group]Run if [ "failure" != "success" ]; then
+2026-08-19T22:53:36.4556304Z [36;1mif [ "failure" != "success" ]; then[0m
+2026-08-19T22:53:36.4557649Z [36;1m  echo "::error::Deploy preflight failed."[0m
+2026-08-19T22:53:36.4558891Z [36;1m  exit 1[0m
+2026-08-19T22:53:36.4559755Z [36;1mfi[0m
+2026-08-19T22:53:36.4560576Z [36;1m[0m
+2026-08-19T22:53:36.4561369Z [36;1ma1=""[0m
+2026-08-19T22:53:36.4562224Z [36;1ma2=""[0m
+2026-08-19T22:53:36.4563079Z [36;1ma3=""[0m
+2026-08-19T22:53:36.4564034Z [36;1m[0m
+2026-08-19T22:53:36.4564873Z [36;1mif [ "$a1" = "true" ]; then[0m
+2026-08-19T22:53:36.4566129Z [36;1m  echo "succeeded=true" >> "$GITHUB_OUTPUT"[0m
+2026-08-19T22:53:36.4567568Z [36;1m  echo "successful_attempt=1" >> "$GITHUB_OUTPUT"[0m
+2026-08-19T22:53:36.4569017Z [36;1m  echo "FTP deploy succeeded on attempt 1"[0m
+2026-08-19T22:53:36.4570257Z [36;1m  exit 0[0m
+2026-08-19T22:53:36.4571118Z [36;1mfi[0m
+2026-08-19T22:53:36.4571926Z [36;1m[0m
+2026-08-19T22:53:36.4572761Z [36;1mif [ "$a2" = "true" ]; then[0m
+2026-08-19T22:53:36.4574152Z [36;1m  echo "succeeded=true" >> "$GITHUB_OUTPUT"[0m
+2026-08-19T22:53:36.4575580Z [36;1m  echo "successful_attempt=2" >> "$GITHUB_OUTPUT"[0m
+2026-08-19T22:53:36.4577023Z [36;1m  echo "FTP deploy succeeded on attempt 2"[0m
+2026-08-19T22:53:36.4578269Z [36;1m  exit 0[0m
+2026-08-19T22:53:36.4579140Z [36;1mfi[0m
+2026-08-19T22:53:36.4579947Z [36;1m[0m
+2026-08-19T22:53:36.4580778Z [36;1mif [ "$a3" = "true" ]; then[0m
+2026-08-19T22:53:36.4582000Z [36;1m  echo "succeeded=true" >> "$GITHUB_OUTPUT"[0m
+2026-08-19T22:53:36.4583520Z [36;1m  echo "successful_attempt=3" >> "$GITHUB_OUTPUT"[0m
+2026-08-19T22:53:36.4584970Z [36;1m  echo "FTP deploy succeeded on attempt 3"[0m
+2026-08-19T22:53:36.4586191Z [36;1m  exit 0[0m
+2026-08-19T22:53:36.4587239Z [36;1mfi[0m
+2026-08-19T22:53:36.4588038Z [36;1m[0m
+2026-08-19T22:53:36.4588980Z [36;1mecho "succeeded=false" >> "$GITHUB_OUTPUT"[0m
+2026-08-19T22:53:36.4591048Z [36;1mecho "::error::FTP server control socket was unreachable from three separate GitHub-hosted runners."[0m
+2026-08-19T22:53:36.4593479Z [36;1mecho "::error::FTP deploy failed after 3 fresh-runner attempts."[0m
+2026-08-19T22:53:36.4595010Z [36;1mexit 1[0m
+2026-08-19T22:53:36.4642096Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-08-19T22:53:36.4643610Z env:
+2026-08-19T22:53:36.4644834Z   FTP_REMOTE_DIR: ***
+2026-08-19T22:53:36.4645764Z   FTP_PROTOCOL: ftps
+2026-08-19T22:53:36.4646643Z   FTP_PORT: 21
+2026-08-19T22:53:36.4647488Z   FTP_SECURITY: loose
+2026-08-19T22:53:36.4648367Z ##[endgroup]
+2026-08-19T22:53:36.4717938Z ##[debug]/usr/bin/bash --noprofile --norc -e -o pipefail /home/runner/work/_temp/59f41e02-ccbb-49cf-9522-899b111cd039.sh
+2026-08-19T22:53:36.4766638Z ##[error]Deploy preflight failed.
+2026-08-19T22:53:36.4779568Z ##[error]Process completed with exit code 1.
+2026-08-19T22:53:36.4794393Z ##[debug]Finishing: Evaluate FTP deploy result
+2026-08-19T22:53:36.4826598Z ##[debug]Evaluating condition for step: 'HTTP verification — canlı site erişilebilir mi'
+2026-08-19T22:53:36.4835555Z ##[debug]Evaluating: (success() && (steps.evaluate.outputs.succeeded == 'true'))
+2026-08-19T22:53:36.4837598Z ##[debug]Evaluating And:
+2026-08-19T22:53:36.4840604Z ##[debug]..Evaluating success:
+2026-08-19T22:53:36.4842083Z ##[debug]..=> false
+2026-08-19T22:53:36.4843529Z ##[debug]=> false
+2026-08-19T22:53:36.4848553Z ##[debug]Expanded: (false && (steps['evaluate']['outputs']['succeeded'] == 'true'))
+2026-08-19T22:53:36.4850542Z ##[debug]Result: false
+2026-08-19T22:53:36.4867987Z ##[debug]Evaluating condition for step: 'Exact assets, API boundary and security headers'
+2026-08-19T22:53:36.4872903Z ##[debug]Evaluating: (success() && (steps.evaluate.outputs.succeeded == 'true'))
+2026-08-19T22:53:36.4875002Z ##[debug]Evaluating And:
+2026-08-19T22:53:36.4876338Z ##[debug]..Evaluating success:
+2026-08-19T22:53:36.4877721Z ##[debug]..=> false
+2026-08-19T22:53:36.4878934Z ##[debug]=> false
+2026-08-19T22:53:36.4881058Z ##[debug]Expanded: (false && (steps['evaluate']['outputs']['succeeded'] == 'true'))
+2026-08-19T22:53:36.4882969Z ##[debug]Result: false
+2026-08-19T22:53:36.4916663Z ##[debug]Evaluating condition for step: 'Post Run actions/checkout@v6'
+2026-08-19T22:53:36.4920993Z ##[debug]Evaluating: always()
+2026-08-19T22:53:36.4922492Z ##[debug]Evaluating always:
+2026-08-19T22:53:36.4924394Z ##[debug]=> true
+2026-08-19T22:53:36.4925742Z ##[debug]Result: true
+2026-08-19T22:53:36.4927338Z ##[debug]Starting: Post Run actions/checkout@v6
+2026-08-19T22:53:36.5029538Z ##[debug]Loading inputs
+2026-08-19T22:53:36.5033557Z ##[debug]Evaluating: github.repository
+2026-08-19T22:53:36.5034724Z ##[debug]Evaluating Index:
+2026-08-19T22:53:36.5035736Z ##[debug]..Evaluating github:
+2026-08-19T22:53:36.5036767Z ##[debug]..=> Object
+2026-08-19T22:53:36.5037720Z ##[debug]..Evaluating String:
+2026-08-19T22:53:36.5038747Z ##[debug]..=> 'repository'
+2026-08-19T22:53:36.5039822Z ##[debug]=> 'akelilker/tasitmedisa'
+2026-08-19T22:53:36.5040949Z ##[debug]Result: 'akelilker/tasitmedisa'
+2026-08-19T22:53:36.5046166Z ##[debug]Evaluating: github.token
+2026-08-19T22:53:36.5047271Z ##[debug]Evaluating Index:
+2026-08-19T22:53:36.5048276Z ##[debug]..Evaluating github:
+2026-08-19T22:53:36.5049281Z ##[debug]..=> Object
+2026-08-19T22:53:36.5050197Z ##[debug]..Evaluating String:
+2026-08-19T22:53:36.5051187Z ##[debug]..=> 'token'
+2026-08-19T22:53:36.5059569Z ##[debug]=> '***'
+2026-08-19T22:53:36.5067862Z ##[debug]Result: '***'
+2026-08-19T22:53:36.5111278Z ##[debug]Loading env
+2026-08-19T22:53:36.5126829Z Post job cleanup.
+2026-08-19T22:53:36.5980036Z ##[debug]Getting git version
+2026-08-19T22:53:36.5992760Z [command]/usr/bin/git version
+2026-08-19T22:53:36.6034872Z git version 2.54.0
+2026-08-19T22:53:36.6053843Z ##[debug]0
+2026-08-19T22:53:36.6056195Z ##[debug]git version 2.54.0
+2026-08-19T22:53:36.6058202Z ##[debug]
+2026-08-19T22:53:36.6062539Z ##[debug]Set git useragent to: git/2.54.0 (github-actions-checkout) actions_orchestration_id/06b8b893-4310-492b-9ca6-a8e3d5da90d1.deploy_result.__default
+2026-08-19T22:53:36.6067842Z ::add-mask::***
+2026-08-19T22:53:36.6076068Z Temporarily overriding HOME='/home/runner/work/_temp/709faa04-f25f-4a9a-96c2-08d6a7430766' before making global git config changes
+2026-08-19T22:53:36.6080540Z Adding repository directory to the temporary git global config as a safe directory
+2026-08-19T22:53:36.6084472Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/tasitmedisa/tasitmedisa
+2026-08-19T22:53:36.6117978Z ##[debug]0
+2026-08-19T22:53:36.6120038Z ##[debug]
+2026-08-19T22:53:36.6121528Z Removing SSH command configuration
+2026-08-19T22:53:36.6135120Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-08-19T22:53:36.6165436Z ##[debug]1
+2026-08-19T22:53:36.6167566Z ##[debug]
+2026-08-19T22:53:36.6170275Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-08-19T22:53:36.6432982Z ##[debug]0
+2026-08-19T22:53:36.6435750Z ##[debug]
+2026-08-19T22:53:36.6437371Z Removing HTTP extra header
+2026-08-19T22:53:36.6442887Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-08-19T22:53:36.6481261Z ##[debug]1
+2026-08-19T22:53:36.6483807Z ##[debug]
+2026-08-19T22:53:36.6488595Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-08-19T22:53:36.6809292Z ##[debug]0
+2026-08-19T22:53:36.6812173Z ##[debug]
+2026-08-19T22:53:36.6814485Z Removing includeIf entries pointing to credentials config files
+2026-08-19T22:53:36.6819861Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-08-19T22:53:36.6865726Z includeif.gitdir:/home/runner/work/tasitmedisa/tasitmedisa/.git.path
+2026-08-19T22:53:36.6876403Z includeif.gitdir:/home/runner/work/tasitmedisa/tasitmedisa/.git/worktrees/*.path
+2026-08-19T22:53:36.6879626Z includeif.gitdir:/github/workspace/.git.path
+2026-08-19T22:53:36.6881140Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-08-19T22:53:36.6883140Z ##[debug]0
+2026-08-19T22:53:36.6886069Z ##[debug]includeif.gitdir:/home/runner/work/tasitmedisa/tasitmedisa/.git.path
+2026-08-19T22:53:36.6888966Z ##[debug]includeif.gitdir:/home/runner/work/tasitmedisa/tasitmedisa/.git/worktrees/*.path
+2026-08-19T22:53:36.6891030Z ##[debug]includeif.gitdir:/github/workspace/.git.path
+2026-08-19T22:53:36.6892522Z ##[debug]includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-08-19T22:53:36.6894226Z ##[debug]
+2026-08-19T22:53:36.6896272Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/tasitmedisa/tasitmedisa/.git.path
+2026-08-19T22:53:36.6938740Z /home/runner/work/_temp/git-credentials-572db2f4-b9f6-40fc-883a-850655099c24.config
+2026-08-19T22:53:36.6942206Z ##[debug]0
+2026-08-19T22:53:36.6945486Z ##[debug]/home/runner/work/_temp/git-credentials-572db2f4-b9f6-40fc-883a-850655099c24.config
+2026-08-19T22:53:36.6948010Z ##[debug]
+2026-08-19T22:53:36.6956656Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/tasitmedisa/tasitmedisa/.git.path /home/runner/work/_temp/git-credentials-572db2f4-b9f6-40fc-883a-850655099c24.config
+2026-08-19T22:53:36.6989180Z ##[debug]0
+2026-08-19T22:53:36.6991475Z ##[debug]
+2026-08-19T22:53:36.6994815Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/tasitmedisa/tasitmedisa/.git/worktrees/*.path
+2026-08-19T22:53:36.7023892Z /home/runner/work/_temp/git-credentials-572db2f4-b9f6-40fc-883a-850655099c24.config
+2026-08-19T22:53:36.7027911Z ##[debug]0
+2026-08-19T22:53:36.7030869Z ##[debug]/home/runner/work/_temp/git-credentials-572db2f4-b9f6-40fc-883a-850655099c24.config
+2026-08-19T22:53:36.7033741Z ##[debug]
+2026-08-19T22:53:36.7038165Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/tasitmedisa/tasitmedisa/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-572db2f4-b9f6-40fc-883a-850655099c24.config
+2026-08-19T22:53:36.7071901Z ##[debug]0
+2026-08-19T22:53:36.7074102Z ##[debug]
+2026-08-19T22:53:36.7077139Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+2026-08-19T22:53:36.7105308Z /github/runner_temp/git-credentials-572db2f4-b9f6-40fc-883a-850655099c24.config
+2026-08-19T22:53:36.7108618Z ##[debug]0
+2026-08-19T22:53:36.7111865Z ##[debug]/github/runner_temp/git-credentials-572db2f4-b9f6-40fc-883a-850655099c24.config
+2026-08-19T22:53:36.7114405Z ##[debug]
+2026-08-19T22:53:36.7130088Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-572db2f4-b9f6-40fc-883a-850655099c24.config
+2026-08-19T22:53:36.7156540Z ##[debug]0
+2026-08-19T22:53:36.7158570Z ##[debug]
+2026-08-19T22:53:36.7163739Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-08-19T22:53:36.7191934Z /github/runner_temp/git-credentials-572db2f4-b9f6-40fc-883a-850655099c24.config
+2026-08-19T22:53:36.7195218Z ##[debug]0
+2026-08-19T22:53:36.7197222Z ##[debug]/github/runner_temp/git-credentials-572db2f4-b9f6-40fc-883a-850655099c24.config
+2026-08-19T22:53:36.7199601Z ##[debug]
+2026-08-19T22:53:36.7204073Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-572db2f4-b9f6-40fc-883a-850655099c24.config
+2026-08-19T22:53:36.7237152Z ##[debug]0
+2026-08-19T22:53:36.7242963Z ##[debug]
+2026-08-19T22:53:36.7244924Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-08-19T22:53:36.7472848Z ##[debug]0
+2026-08-19T22:53:36.7474704Z ##[debug]
+2026-08-19T22:53:36.7476240Z Removing credentials config '/home/runner/work/_temp/git-credentials-572db2f4-b9f6-40fc-883a-850655099c24.config'
+2026-08-19T22:53:36.7484450Z ##[debug]Skipping removal of credentials config '/github/runner_temp/git-credentials-572db2f4-b9f6-40fc-883a-850655099c24.config' - not under RUNNER_TEMP
+2026-08-19T22:53:36.7487046Z ##[debug]Unsetting HOME override
+2026-08-19T22:53:36.7573151Z ##[debug]Node Action run completed with exit code 0
+2026-08-19T22:53:36.7579363Z ##[debug]Finishing: Post Run actions/checkout@v6
+2026-08-19T22:53:36.7655008Z ##[debug]Starting: Complete job
+2026-08-19T22:53:36.7659810Z Uploading runner diagnostic logs
+2026-08-19T22:53:36.7673179Z ##[debug]Starting diagnostic file upload.
+2026-08-19T22:53:36.7674526Z ##[debug]Setting up diagnostic log folders.
+2026-08-19T22:53:36.7678991Z ##[debug]Creating diagnostic log files folder.
+2026-08-19T22:53:36.7690171Z ##[debug]Copying 1 worker diagnostic logs.
+2026-08-19T22:53:36.7700013Z ##[debug]Copying 1 runner diagnostic logs.
+2026-08-19T22:53:36.7702084Z ##[debug]Zipping diagnostic files.
+2026-08-19T22:53:36.7771193Z ##[debug]Uploading diagnostic metadata file.
+2026-08-19T22:53:36.7808803Z ##[debug]Diagnostic file upload complete.
+2026-08-19T22:53:36.7810426Z Completed runner diagnostic log upload
+2026-08-19T22:53:36.7811415Z Cleaning up orphan processes
+2026-08-19T22:53:36.8215440Z ##[debug]Finishing: Complete job
+2026-08-19T22:53:36.8253931Z ##[debug]Finishing: Final deploy result

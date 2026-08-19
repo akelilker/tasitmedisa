@@ -1,0 +1,8 @@
+﻿2026-08-19T22:53:36.4867970Z ##[debug]Evaluating condition for step: 'Exact assets, API boundary and security headers'
+2026-08-19T22:53:36.4872895Z ##[debug]Evaluating: (success() && (steps.evaluate.outputs.succeeded == 'true'))
+2026-08-19T22:53:36.4874994Z ##[debug]Evaluating And:
+2026-08-19T22:53:36.4876332Z ##[debug]..Evaluating success:
+2026-08-19T22:53:36.4877715Z ##[debug]..=> false
+2026-08-19T22:53:36.4878928Z ##[debug]=> false
+2026-08-19T22:53:36.4881049Z ##[debug]Expanded: (false && (steps['evaluate']['outputs']['succeeded'] == 'true'))
+2026-08-19T22:53:36.4882963Z ##[debug]Result: false

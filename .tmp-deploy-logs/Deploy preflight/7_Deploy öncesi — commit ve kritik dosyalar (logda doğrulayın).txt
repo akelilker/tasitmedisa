@@ -1,0 +1,5 @@
+﻿2026-08-19T22:53:29.0303227Z ##[debug]Evaluating condition for step: 'Deploy öncesi — commit ve kritik dosyalar (logda doğrulayın)'
+2026-08-19T22:53:29.0304353Z ##[debug]Evaluating: success()
+2026-08-19T22:53:29.0304693Z ##[debug]Evaluating success:
+2026-08-19T22:53:29.0305041Z ##[debug]=> false
+2026-08-19T22:53:29.0305375Z ##[debug]Result: false

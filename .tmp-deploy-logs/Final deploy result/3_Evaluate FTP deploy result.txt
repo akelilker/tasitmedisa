@@ -1,0 +1,248 @@
+﻿2026-08-19T22:53:36.4155744Z ##[debug]Evaluating condition for step: 'Evaluate FTP deploy result'
+2026-08-19T22:53:36.4163019Z ##[debug]Evaluating: success()
+2026-08-19T22:53:36.4164818Z ##[debug]Evaluating success:
+2026-08-19T22:53:36.4166397Z ##[debug]=> true
+2026-08-19T22:53:36.4167928Z ##[debug]Result: true
+2026-08-19T22:53:36.4170125Z ##[debug]Starting: Evaluate FTP deploy result
+2026-08-19T22:53:36.4271598Z ##[debug]Loading inputs
+2026-08-19T22:53:36.4278954Z ##[debug]Evaluating: format('if [ "{0}" != "success" ]; then
+2026-08-19T22:53:36.4280462Z ##[debug]  echo "::error::Deploy preflight failed."
+2026-08-19T22:53:36.4281716Z ##[debug]  exit 1
+2026-08-19T22:53:36.4282568Z ##[debug]fi
+2026-08-19T22:53:36.4283632Z ##[debug]
+2026-08-19T22:53:36.4284436Z ##[debug]a1="{1}"
+2026-08-19T22:53:36.4285291Z ##[debug]a2="{2}"
+2026-08-19T22:53:36.4286147Z ##[debug]a3="{3}"
+2026-08-19T22:53:36.4286997Z ##[debug]
+2026-08-19T22:53:36.4287822Z ##[debug]if [ "$a1" = "true" ]; then
+2026-08-19T22:53:36.4289044Z ##[debug]  echo "succeeded=true" >> "$GITHUB_OUTPUT"
+2026-08-19T22:53:36.4290547Z ##[debug]  echo "successful_attempt=1" >> "$GITHUB_OUTPUT"
+2026-08-19T22:53:36.4291999Z ##[debug]  echo "FTP deploy succeeded on attempt 1"
+2026-08-19T22:53:36.4293239Z ##[debug]  exit 0
+2026-08-19T22:53:36.4294270Z ##[debug]fi
+2026-08-19T22:53:36.4295079Z ##[debug]
+2026-08-19T22:53:36.4295919Z ##[debug]if [ "$a2" = "true" ]; then
+2026-08-19T22:53:36.4297131Z ##[debug]  echo "succeeded=true" >> "$GITHUB_OUTPUT"
+2026-08-19T22:53:36.4298567Z ##[debug]  echo "successful_attempt=2" >> "$GITHUB_OUTPUT"
+2026-08-19T22:53:36.4300018Z ##[debug]  echo "FTP deploy succeeded on attempt 2"
+2026-08-19T22:53:36.4301267Z ##[debug]  exit 0
+2026-08-19T22:53:36.4302127Z ##[debug]fi
+2026-08-19T22:53:36.4302930Z ##[debug]
+2026-08-19T22:53:36.4303933Z ##[debug]if [ "$a3" = "true" ]; then
+2026-08-19T22:53:36.4305148Z ##[debug]  echo "succeeded=true" >> "$GITHUB_OUTPUT"
+2026-08-19T22:53:36.4306708Z ##[debug]  echo "successful_attempt=3" >> "$GITHUB_OUTPUT"
+2026-08-19T22:53:36.4308161Z ##[debug]  echo "FTP deploy succeeded on attempt 3"
+2026-08-19T22:53:36.4309424Z ##[debug]  exit 0
+2026-08-19T22:53:36.4310500Z ##[debug]fi
+2026-08-19T22:53:36.4311304Z ##[debug]
+2026-08-19T22:53:36.4312426Z ##[debug]echo "succeeded=false" >> "$GITHUB_OUTPUT"
+2026-08-19T22:53:36.4314661Z ##[debug]echo "::error::FTP server control socket was unreachable from three separate GitHub-hosted runners."
+2026-08-19T22:53:36.4317626Z ##[debug]echo "::error::FTP deploy failed after 3 fresh-runner attempts."
+2026-08-19T22:53:36.4319108Z ##[debug]exit 1
+2026-08-19T22:53:36.4321528Z ##[debug]', needs.deploy_preflight.result, needs.ftp_attempt_1.outputs.succeeded, needs.ftp_attempt_2.outputs.succeeded, needs.ftp_attempt_3.outputs.succeeded)
+2026-08-19T22:53:36.4324705Z ##[debug]Evaluating format:
+2026-08-19T22:53:36.4329358Z ##[debug]..Evaluating String:
+2026-08-19T22:53:36.4330662Z ##[debug]..=> 'if [ "{0}" != "success" ]; then
+2026-08-19T22:53:36.4332028Z ##[debug]  echo "::error::Deploy preflight failed."
+2026-08-19T22:53:36.4333562Z ##[debug]  exit 1
+2026-08-19T22:53:36.4334480Z ##[debug]fi
+2026-08-19T22:53:36.4335318Z ##[debug]
+2026-08-19T22:53:36.4336131Z ##[debug]a1="{1}"
+2026-08-19T22:53:36.4337013Z ##[debug]a2="{2}"
+2026-08-19T22:53:36.4337897Z ##[debug]a3="{3}"
+2026-08-19T22:53:36.4338758Z ##[debug]
+2026-08-19T22:53:36.4339616Z ##[debug]if [ "$a1" = "true" ]; then
+2026-08-19T22:53:36.4340887Z ##[debug]  echo "succeeded=true" >> "$GITHUB_OUTPUT"
+2026-08-19T22:53:36.4342372Z ##[debug]  echo "successful_attempt=1" >> "$GITHUB_OUTPUT"
+2026-08-19T22:53:36.4344050Z ##[debug]  echo "FTP deploy succeeded on attempt 1"
+2026-08-19T22:53:36.4345323Z ##[debug]  exit 0
+2026-08-19T22:53:36.4346196Z ##[debug]fi
+2026-08-19T22:53:36.4347002Z ##[debug]
+2026-08-19T22:53:36.4347842Z ##[debug]if [ "$a2" = "true" ]; then
+2026-08-19T22:53:36.4349051Z ##[debug]  echo "succeeded=true" >> "$GITHUB_OUTPUT"
+2026-08-19T22:53:36.4350496Z ##[debug]  echo "successful_attempt=2" >> "$GITHUB_OUTPUT"
+2026-08-19T22:53:36.4351938Z ##[debug]  echo "FTP deploy succeeded on attempt 2"
+2026-08-19T22:53:36.4353551Z ##[debug]  exit 0
+2026-08-19T22:53:36.4354423Z ##[debug]fi
+2026-08-19T22:53:36.4355232Z ##[debug]
+2026-08-19T22:53:36.4356095Z ##[debug]if [ "$a3" = "true" ]; then
+2026-08-19T22:53:36.4357314Z ##[debug]  echo "succeeded=true" >> "$GITHUB_OUTPUT"
+2026-08-19T22:53:36.4358753Z ##[debug]  echo "successful_attempt=3" >> "$GITHUB_OUTPUT"
+2026-08-19T22:53:36.4360201Z ##[debug]  echo "FTP deploy succeeded on attempt 3"
+2026-08-19T22:53:36.4361418Z ##[debug]  exit 0
+2026-08-19T22:53:36.4362252Z ##[debug]fi
+2026-08-19T22:53:36.4363056Z ##[debug]
+2026-08-19T22:53:36.4364233Z ##[debug]echo "succeeded=false" >> "$GITHUB_OUTPUT"
+2026-08-19T22:53:36.4366287Z ##[debug]echo "::error::FTP server control socket was unreachable from three separate GitHub-hosted runners."
+2026-08-19T22:53:36.4368584Z ##[debug]echo "::error::FTP deploy failed after 3 fresh-runner attempts."
+2026-08-19T22:53:36.4370065Z ##[debug]exit 1
+2026-08-19T22:53:36.4371046Z ##[debug]'
+2026-08-19T22:53:36.4384061Z ##[debug]..Evaluating Index:
+2026-08-19T22:53:36.4385199Z ##[debug]....Evaluating Index:
+2026-08-19T22:53:36.4386328Z ##[debug]......Evaluating needs:
+2026-08-19T22:53:36.4387463Z ##[debug]......=> Object
+2026-08-19T22:53:36.4388521Z ##[debug]......Evaluating String:
+2026-08-19T22:53:36.4389659Z ##[debug]......=> 'deploy_preflight'
+2026-08-19T22:53:36.4390871Z ##[debug]....=> Object
+2026-08-19T22:53:36.4391870Z ##[debug]....Evaluating String:
+2026-08-19T22:53:36.4392936Z ##[debug]....=> 'result'
+2026-08-19T22:53:36.4394059Z ##[debug]..=> 'failure'
+2026-08-19T22:53:36.4395669Z ##[debug]..Evaluating Index:
+2026-08-19T22:53:36.4396774Z ##[debug]....Evaluating Index:
+2026-08-19T22:53:36.4397888Z ##[debug]......Evaluating Index:
+2026-08-19T22:53:36.4398995Z ##[debug]........Evaluating needs:
+2026-08-19T22:53:36.4400165Z ##[debug]........=> Object
+2026-08-19T22:53:36.4401222Z ##[debug]........Evaluating String:
+2026-08-19T22:53:36.4402351Z ##[debug]........=> 'ftp_attempt_1'
+2026-08-19T22:53:36.4403593Z ##[debug]......=> Object
+2026-08-19T22:53:36.4404623Z ##[debug]......Evaluating String:
+2026-08-19T22:53:36.4405910Z ##[debug]......=> 'outputs'
+2026-08-19T22:53:36.4406932Z ##[debug]....=> Object
+2026-08-19T22:53:36.4407892Z ##[debug]....Evaluating String:
+2026-08-19T22:53:36.4408961Z ##[debug]....=> 'succeeded'
+2026-08-19T22:53:36.4409980Z ##[debug]..=> null
+2026-08-19T22:53:36.4410932Z ##[debug]..Evaluating Index:
+2026-08-19T22:53:36.4411973Z ##[debug]....Evaluating Index:
+2026-08-19T22:53:36.4413069Z ##[debug]......Evaluating Index:
+2026-08-19T22:53:36.4414318Z ##[debug]........Evaluating needs:
+2026-08-19T22:53:36.4415413Z ##[debug]........=> Object
+2026-08-19T22:53:36.4416452Z ##[debug]........Evaluating String:
+2026-08-19T22:53:36.4417584Z ##[debug]........=> 'ftp_attempt_2'
+2026-08-19T22:53:36.4418700Z ##[debug]......=> Object
+2026-08-19T22:53:36.4419707Z ##[debug]......Evaluating String:
+2026-08-19T22:53:36.4420791Z ##[debug]......=> 'outputs'
+2026-08-19T22:53:36.4421812Z ##[debug]....=> Object
+2026-08-19T22:53:36.4422790Z ##[debug]....Evaluating String:
+2026-08-19T22:53:36.4424027Z ##[debug]....=> 'succeeded'
+2026-08-19T22:53:36.4425024Z ##[debug]..=> null
+2026-08-19T22:53:36.4425970Z ##[debug]..Evaluating Index:
+2026-08-19T22:53:36.4427012Z ##[debug]....Evaluating Index:
+2026-08-19T22:53:36.4428108Z ##[debug]......Evaluating Index:
+2026-08-19T22:53:36.4429174Z ##[debug]........Evaluating needs:
+2026-08-19T22:53:36.4430266Z ##[debug]........=> Object
+2026-08-19T22:53:36.4431287Z ##[debug]........Evaluating String:
+2026-08-19T22:53:36.4432433Z ##[debug]........=> 'ftp_attempt_3'
+2026-08-19T22:53:36.4433624Z ##[debug]......=> Object
+2026-08-19T22:53:36.4434634Z ##[debug]......Evaluating String:
+2026-08-19T22:53:36.4435708Z ##[debug]......=> 'outputs'
+2026-08-19T22:53:36.4436717Z ##[debug]....=> Object
+2026-08-19T22:53:36.4437680Z ##[debug]....Evaluating String:
+2026-08-19T22:53:36.4438775Z ##[debug]....=> 'succeeded'
+2026-08-19T22:53:36.4439782Z ##[debug]..=> null
+2026-08-19T22:53:36.4440931Z ##[debug]=> 'if [ "failure" != "success" ]; then
+2026-08-19T22:53:36.4442511Z ##[debug]  echo "::error::Deploy preflight failed."
+2026-08-19T22:53:36.4443873Z ##[debug]  exit 1
+2026-08-19T22:53:36.4444732Z ##[debug]fi
+2026-08-19T22:53:36.4445532Z ##[debug]
+2026-08-19T22:53:36.4446324Z ##[debug]a1=""
+2026-08-19T22:53:36.4447155Z ##[debug]a2=""
+2026-08-19T22:53:36.4447989Z ##[debug]a3=""
+2026-08-19T22:53:36.4448821Z ##[debug]
+2026-08-19T22:53:36.4449643Z ##[debug]if [ "$a1" = "true" ]; then
+2026-08-19T22:53:36.4450848Z ##[debug]  echo "succeeded=true" >> "$GITHUB_OUTPUT"
+2026-08-19T22:53:36.4452297Z ##[debug]  echo "successful_attempt=1" >> "$GITHUB_OUTPUT"
+2026-08-19T22:53:36.4453822Z ##[debug]  echo "FTP deploy succeeded on attempt 1"
+2026-08-19T22:53:36.4455079Z ##[debug]  exit 0
+2026-08-19T22:53:36.4455943Z ##[debug]fi
+2026-08-19T22:53:36.4456772Z ##[debug]
+2026-08-19T22:53:36.4457617Z ##[debug]if [ "$a2" = "true" ]; then
+2026-08-19T22:53:36.4458835Z ##[debug]  echo "succeeded=true" >> "$GITHUB_OUTPUT"
+2026-08-19T22:53:36.4460296Z ##[debug]  echo "successful_attempt=2" >> "$GITHUB_OUTPUT"
+2026-08-19T22:53:36.4461743Z ##[debug]  echo "FTP deploy succeeded on attempt 2"
+2026-08-19T22:53:36.4462996Z ##[debug]  exit 0
+2026-08-19T22:53:36.4464021Z ##[debug]fi
+2026-08-19T22:53:36.4464828Z ##[debug]
+2026-08-19T22:53:36.4465667Z ##[debug]if [ "$a3" = "true" ]; then
+2026-08-19T22:53:36.4466881Z ##[debug]  echo "succeeded=true" >> "$GITHUB_OUTPUT"
+2026-08-19T22:53:36.4468323Z ##[debug]  echo "successful_attempt=3" >> "$GITHUB_OUTPUT"
+2026-08-19T22:53:36.4469764Z ##[debug]  echo "FTP deploy succeeded on attempt 3"
+2026-08-19T22:53:36.4471022Z ##[debug]  exit 0
+2026-08-19T22:53:36.4471877Z ##[debug]fi
+2026-08-19T22:53:36.4472670Z ##[debug]
+2026-08-19T22:53:36.4473749Z ##[debug]echo "succeeded=false" >> "$GITHUB_OUTPUT"
+2026-08-19T22:53:36.4475884Z ##[debug]echo "::error::FTP server control socket was unreachable from three separate GitHub-hosted runners."
+2026-08-19T22:53:36.4478265Z ##[debug]echo "::error::FTP deploy failed after 3 fresh-runner attempts."
+2026-08-19T22:53:36.4479767Z ##[debug]exit 1
+2026-08-19T22:53:36.4480788Z ##[debug]'
+2026-08-19T22:53:36.4481878Z ##[debug]Result: 'if [ "failure" != "success" ]; then
+2026-08-19T22:53:36.4483274Z ##[debug]  echo "::error::Deploy preflight failed."
+2026-08-19T22:53:36.4484611Z ##[debug]  exit 1
+2026-08-19T22:53:36.4485473Z ##[debug]fi
+2026-08-19T22:53:36.4486274Z ##[debug]
+2026-08-19T22:53:36.4487072Z ##[debug]a1=""
+2026-08-19T22:53:36.4487924Z ##[debug]a2=""
+2026-08-19T22:53:36.4488765Z ##[debug]a3=""
+2026-08-19T22:53:36.4489594Z ##[debug]
+2026-08-19T22:53:36.4490435Z ##[debug]if [ "$a1" = "true" ]; then
+2026-08-19T22:53:36.4491680Z ##[debug]  echo "succeeded=true" >> "$GITHUB_OUTPUT"
+2026-08-19T22:53:36.4493139Z ##[debug]  echo "successful_attempt=1" >> "$GITHUB_OUTPUT"
+2026-08-19T22:53:36.4494696Z ##[debug]  echo "FTP deploy succeeded on attempt 1"
+2026-08-19T22:53:36.4495965Z ##[debug]  exit 0
+2026-08-19T22:53:36.4496822Z ##[debug]fi
+2026-08-19T22:53:36.4497622Z ##[debug]
+2026-08-19T22:53:36.4498463Z ##[debug]if [ "$a2" = "true" ]; then
+2026-08-19T22:53:36.4499686Z ##[debug]  echo "succeeded=true" >> "$GITHUB_OUTPUT"
+2026-08-19T22:53:36.4501184Z ##[debug]  echo "successful_attempt=2" >> "$GITHUB_OUTPUT"
+2026-08-19T22:53:36.4502688Z ##[debug]  echo "FTP deploy succeeded on attempt 2"
+2026-08-19T22:53:36.4504046Z ##[debug]  exit 0
+2026-08-19T22:53:36.4504913Z ##[debug]fi
+2026-08-19T22:53:36.4505722Z ##[debug]
+2026-08-19T22:53:36.4506574Z ##[debug]if [ "$a3" = "true" ]; then
+2026-08-19T22:53:36.4507796Z ##[debug]  echo "succeeded=true" >> "$GITHUB_OUTPUT"
+2026-08-19T22:53:36.4509259Z ##[debug]  echo "successful_attempt=3" >> "$GITHUB_OUTPUT"
+2026-08-19T22:53:36.4510710Z ##[debug]  echo "FTP deploy succeeded on attempt 3"
+2026-08-19T22:53:36.4511945Z ##[debug]  exit 0
+2026-08-19T22:53:36.4512804Z ##[debug]fi
+2026-08-19T22:53:36.4513724Z ##[debug]
+2026-08-19T22:53:36.4514677Z ##[debug]echo "succeeded=false" >> "$GITHUB_OUTPUT"
+2026-08-19T22:53:36.4516751Z ##[debug]echo "::error::FTP server control socket was unreachable from three separate GitHub-hosted runners."
+2026-08-19T22:53:36.4519247Z ##[debug]echo "::error::FTP deploy failed after 3 fresh-runner attempts."
+2026-08-19T22:53:36.4520763Z ##[debug]exit 1
+2026-08-19T22:53:36.4521616Z ##[debug]'
+2026-08-19T22:53:36.4526914Z ##[debug]Loading env
+2026-08-19T22:53:36.4554838Z ##[group]Run if [ "failure" != "success" ]; then
+2026-08-19T22:53:36.4556298Z [36;1mif [ "failure" != "success" ]; then[0m
+2026-08-19T22:53:36.4557645Z [36;1m  echo "::error::Deploy preflight failed."[0m
+2026-08-19T22:53:36.4558885Z [36;1m  exit 1[0m
+2026-08-19T22:53:36.4559749Z [36;1mfi[0m
+2026-08-19T22:53:36.4560570Z [36;1m[0m
+2026-08-19T22:53:36.4561365Z [36;1ma1=""[0m
+2026-08-19T22:53:36.4562221Z [36;1ma2=""[0m
+2026-08-19T22:53:36.4563075Z [36;1ma3=""[0m
+2026-08-19T22:53:36.4564027Z [36;1m[0m
+2026-08-19T22:53:36.4564868Z [36;1mif [ "$a1" = "true" ]; then[0m
+2026-08-19T22:53:36.4566103Z [36;1m  echo "succeeded=true" >> "$GITHUB_OUTPUT"[0m
+2026-08-19T22:53:36.4567564Z [36;1m  echo "successful_attempt=1" >> "$GITHUB_OUTPUT"[0m
+2026-08-19T22:53:36.4569012Z [36;1m  echo "FTP deploy succeeded on attempt 1"[0m
+2026-08-19T22:53:36.4570251Z [36;1m  exit 0[0m
+2026-08-19T22:53:36.4571113Z [36;1mfi[0m
+2026-08-19T22:53:36.4571923Z [36;1m[0m
+2026-08-19T22:53:36.4572757Z [36;1mif [ "$a2" = "true" ]; then[0m
+2026-08-19T22:53:36.4574146Z [36;1m  echo "succeeded=true" >> "$GITHUB_OUTPUT"[0m
+2026-08-19T22:53:36.4575575Z [36;1m  echo "successful_attempt=2" >> "$GITHUB_OUTPUT"[0m
+2026-08-19T22:53:36.4577018Z [36;1m  echo "FTP deploy succeeded on attempt 2"[0m
+2026-08-19T22:53:36.4578265Z [36;1m  exit 0[0m
+2026-08-19T22:53:36.4579136Z [36;1mfi[0m
+2026-08-19T22:53:36.4579943Z [36;1m[0m
+2026-08-19T22:53:36.4580774Z [36;1mif [ "$a3" = "true" ]; then[0m
+2026-08-19T22:53:36.4581997Z [36;1m  echo "succeeded=true" >> "$GITHUB_OUTPUT"[0m
+2026-08-19T22:53:36.4583517Z [36;1m  echo "successful_attempt=3" >> "$GITHUB_OUTPUT"[0m
+2026-08-19T22:53:36.4584956Z [36;1m  echo "FTP deploy succeeded on attempt 3"[0m
+2026-08-19T22:53:36.4586185Z [36;1m  exit 0[0m
+2026-08-19T22:53:36.4587233Z [36;1mfi[0m
+2026-08-19T22:53:36.4588034Z [36;1m[0m
+2026-08-19T22:53:36.4588975Z [36;1mecho "succeeded=false" >> "$GITHUB_OUTPUT"[0m
+2026-08-19T22:53:36.4591042Z [36;1mecho "::error::FTP server control socket was unreachable from three separate GitHub-hosted runners."[0m
+2026-08-19T22:53:36.4593474Z [36;1mecho "::error::FTP deploy failed after 3 fresh-runner attempts."[0m
+2026-08-19T22:53:36.4595002Z [36;1mexit 1[0m
+2026-08-19T22:53:36.4642080Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-08-19T22:53:36.4643606Z env:
+2026-08-19T22:53:36.4644829Z   FTP_REMOTE_DIR: ***
+2026-08-19T22:53:36.4645759Z   FTP_PROTOCOL: ftps
+2026-08-19T22:53:36.4646640Z   FTP_PORT: 21
+2026-08-19T22:53:36.4647482Z   FTP_SECURITY: loose
+2026-08-19T22:53:36.4648364Z ##[endgroup]
+2026-08-19T22:53:36.4717896Z ##[debug]/usr/bin/bash --noprofile --norc -e -o pipefail /home/runner/work/_temp/59f41e02-ccbb-49cf-9522-899b111cd039.sh
+2026-08-19T22:53:36.4766616Z ##[error]Deploy preflight failed.
+2026-08-19T22:53:36.4779550Z ##[error]Process completed with exit code 1.
+2026-08-19T22:53:36.4794380Z ##[debug]Finishing: Evaluate FTP deploy result

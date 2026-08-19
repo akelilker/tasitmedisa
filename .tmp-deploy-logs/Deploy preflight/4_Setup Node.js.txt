@@ -1,0 +1,74 @@
+﻿2026-08-19T22:53:05.2305077Z ##[debug]Evaluating condition for step: 'Setup Node.js'
+2026-08-19T22:53:05.2306871Z ##[debug]Evaluating: success()
+2026-08-19T22:53:05.2307209Z ##[debug]Evaluating success:
+2026-08-19T22:53:05.2307604Z ##[debug]=> true
+2026-08-19T22:53:05.2307935Z ##[debug]Result: true
+2026-08-19T22:53:05.2308495Z ##[debug]Starting: Setup Node.js
+2026-08-19T22:53:05.2336534Z ##[debug]Register post job cleanup for action: actions/setup-node@v6
+2026-08-19T22:53:05.2347354Z ##[debug]Loading inputs
+2026-08-19T22:53:05.2354651Z ##[debug]Evaluating: (((github.server_url == 'https://github.com') && github.token) || '')
+2026-08-19T22:53:05.2355121Z ##[debug]Evaluating Or:
+2026-08-19T22:53:05.2355392Z ##[debug]..Evaluating And:
+2026-08-19T22:53:05.2357122Z ##[debug]....Evaluating Equal:
+2026-08-19T22:53:05.2357921Z ##[debug]......Evaluating Index:
+2026-08-19T22:53:05.2358173Z ##[debug]........Evaluating github:
+2026-08-19T22:53:05.2358464Z ##[debug]........=> Object
+2026-08-19T22:53:05.2358718Z ##[debug]........Evaluating String:
+2026-08-19T22:53:05.2358999Z ##[debug]........=> 'server_url'
+2026-08-19T22:53:05.2359330Z ##[debug]......=> 'https://github.com'
+2026-08-19T22:53:05.2359595Z ##[debug]......Evaluating String:
+2026-08-19T22:53:05.2359843Z ##[debug]......=> 'https://github.com'
+2026-08-19T22:53:05.2362560Z ##[debug]....=> true
+2026-08-19T22:53:05.2362904Z ##[debug]....Evaluating Index:
+2026-08-19T22:53:05.2363188Z ##[debug]......Evaluating github:
+2026-08-19T22:53:05.2363428Z ##[debug]......=> Object
+2026-08-19T22:53:05.2363669Z ##[debug]......Evaluating String:
+2026-08-19T22:53:05.2363903Z ##[debug]......=> 'token'
+2026-08-19T22:53:05.2365959Z ##[debug]....=> '***'
+2026-08-19T22:53:05.2368086Z ##[debug]..=> '***'
+2026-08-19T22:53:05.2370413Z ##[debug]=> '***'
+2026-08-19T22:53:05.2374340Z ##[debug]Expanded: ((('https://github.com' == 'https://github.com') && '***') || '')
+2026-08-19T22:53:05.2376408Z ##[debug]Result: '***'
+2026-08-19T22:53:05.2381424Z ##[debug]Loading env
+2026-08-19T22:53:05.2385340Z ##[group]Run actions/setup-node@v6
+2026-08-19T22:53:05.2385575Z with:
+2026-08-19T22:53:05.2385764Z   node-version: 24
+2026-08-19T22:53:05.2385957Z   check-latest: false
+2026-08-19T22:53:05.2387876Z   token: ***
+2026-08-19T22:53:05.2388090Z   package-manager-cache: true
+2026-08-19T22:53:05.2388309Z env:
+2026-08-19T22:53:05.2388506Z   FTP_REMOTE_DIR: ***
+2026-08-19T22:53:05.2388706Z   FTP_PROTOCOL: ftps
+2026-08-19T22:53:05.2388910Z   FTP_PORT: 21
+2026-08-19T22:53:05.2389099Z   FTP_SECURITY: loose
+2026-08-19T22:53:05.2389298Z   COMPOSER_PROCESS_TIMEOUT: 0
+2026-08-19T22:53:05.2389522Z   COMPOSER_NO_INTERACTION: 1
+2026-08-19T22:53:05.2389738Z   COMPOSER_NO_AUDIT: 1
+2026-08-19T22:53:05.2389947Z ##[endgroup]
+2026-08-19T22:53:05.3471722Z ##[debug]isExplicit: 
+2026-08-19T22:53:05.3473126Z ##[debug]explicit? false
+2026-08-19T22:53:05.3532717Z ##[debug]isExplicit: 22.23.2
+2026-08-19T22:53:05.3533208Z ##[debug]explicit? true
+2026-08-19T22:53:05.3536576Z ##[debug]isExplicit: 24.19.0
+2026-08-19T22:53:05.3537120Z ##[debug]explicit? true
+2026-08-19T22:53:05.3544909Z ##[debug]evaluating 2 versions
+2026-08-19T22:53:05.3560613Z ##[debug]matched: 24.19.0
+2026-08-19T22:53:05.3561247Z ##[debug]checking cache: /opt/hostedtoolcache/node/24.19.0/x64
+2026-08-19T22:53:05.3561972Z ##[debug]Found tool in cache node 24.19.0 x64
+2026-08-19T22:53:05.3562442Z Found in cache @ /opt/hostedtoolcache/node/24.19.0/x64
+2026-08-19T22:53:05.3565379Z ::group::Environment details
+2026-08-19T22:53:05.3565760Z ##[group]Environment details
+2026-08-19T22:53:08.6379419Z node: v24.19.0
+2026-08-19T22:53:08.6379796Z npm: 11.17.0
+2026-08-19T22:53:08.6380237Z yarn: 1.22.22
+2026-08-19T22:53:08.6381425Z ::endgroup::
+2026-08-19T22:53:08.6381980Z ##[endgroup]
+2026-08-19T22:53:08.6406222Z ##[add-matcher]/home/runner/work/_actions/actions/setup-node/v6/.github/tsc.json
+2026-08-19T22:53:08.6426160Z ##[debug]Added matchers: 'tsc'. Problem matchers scan action output for known warning or error strings and report these inline.
+2026-08-19T22:53:08.6427003Z ##[add-matcher]/home/runner/work/_actions/actions/setup-node/v6/.github/eslint-stylish.json
+2026-08-19T22:53:08.6434464Z ##[debug]Added matchers: 'eslint-stylish'. Problem matchers scan action output for known warning or error strings and report these inline.
+2026-08-19T22:53:08.6435428Z ##[add-matcher]/home/runner/work/_actions/actions/setup-node/v6/.github/eslint-compact.json
+2026-08-19T22:53:08.6437529Z ##[debug]Added matchers: 'eslint-compact'. Problem matchers scan action output for known warning or error strings and report these inline.
+2026-08-19T22:53:08.6478394Z ##[debug]Node Action run completed with exit code 0
+2026-08-19T22:53:08.6480568Z ##[debug]Set output node-version = v24.19.0
+2026-08-19T22:53:08.6481462Z ##[debug]Finishing: Setup Node.js

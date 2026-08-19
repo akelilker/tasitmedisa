@@ -1,0 +1,100 @@
+﻿2026-08-19T22:53:34.2795336Z ##[debug]Starting: Set up job
+2026-08-19T22:53:34.2797035Z Current runner version: '2.336.0'
+2026-08-19T22:53:34.2828466Z ##[group]Runner Image Provisioner
+2026-08-19T22:53:34.2829740Z Hosted Compute Agent
+2026-08-19T22:53:34.2830656Z Version: 20260729.566
+2026-08-19T22:53:34.2831773Z Commit: cf7153fe6e25b664e8693c24944bf2b00355d109
+2026-08-19T22:53:34.2832899Z Build Date: 2026-07-29T19:17:02Z
+2026-08-19T22:53:34.2834206Z Worker ID: {c2818954-5c21-4bc3-ae4f-80dae7b15f62}
+2026-08-19T22:53:34.2835373Z Azure Region: eastus
+2026-08-19T22:53:34.2836247Z ##[endgroup]
+2026-08-19T22:53:34.2838939Z ##[group]Operating System
+2026-08-19T22:53:34.2839917Z Ubuntu
+2026-08-19T22:53:34.2840820Z 24.04.4
+2026-08-19T22:53:34.2841595Z LTS
+2026-08-19T22:53:34.2842349Z ##[endgroup]
+2026-08-19T22:53:34.2843554Z ##[group]Runner Image
+2026-08-19T22:53:34.2844513Z Image: ubuntu-24.04
+2026-08-19T22:53:34.2845887Z Version: 20260810.271.1
+2026-08-19T22:53:34.2847528Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260810.271/images/ubuntu/Ubuntu2404-Readme.md
+2026-08-19T22:53:34.2850118Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260810.271
+2026-08-19T22:53:34.2851769Z ##[endgroup]
+2026-08-19T22:53:34.2853837Z ##[group]GITHUB_TOKEN Permissions
+2026-08-19T22:53:34.2856531Z Contents: read
+2026-08-19T22:53:34.2857502Z Metadata: read
+2026-08-19T22:53:34.2858349Z Packages: read
+2026-08-19T22:53:34.2859337Z ##[endgroup]
+2026-08-19T22:53:34.2862324Z Secret source: Actions
+2026-08-19T22:53:34.2864601Z ##[debug]Primary repository: akelilker/tasitmedisa
+2026-08-19T22:53:34.2865916Z Prepare workflow directory
+2026-08-19T22:53:34.3043776Z ##[debug]Creating pipeline directory: '/home/runner/work/tasitmedisa'
+2026-08-19T22:53:34.3049621Z ##[debug]Creating workspace directory: '/home/runner/work/tasitmedisa/tasitmedisa'
+2026-08-19T22:53:34.3052487Z ##[debug]Update context data
+2026-08-19T22:53:34.3058555Z ##[debug]Evaluating job-level environment variables
+2026-08-19T22:53:34.3563042Z ##[debug]Evaluating: (secrets.FTP_REMOTE_DIR || vars.FTP_REMOTE_DIR)
+2026-08-19T22:53:34.3568671Z ##[debug]Evaluating Or:
+2026-08-19T22:53:34.3571442Z ##[debug]..Evaluating Index:
+2026-08-19T22:53:34.3573960Z ##[debug]....Evaluating secrets:
+2026-08-19T22:53:34.3582768Z ##[debug]....=> Object
+2026-08-19T22:53:34.3591273Z ##[debug]....Evaluating String:
+2026-08-19T22:53:34.3592490Z ##[debug]....=> 'FTP_REMOTE_DIR'
+2026-08-19T22:53:34.3596606Z ##[debug]..=> '***'
+2026-08-19T22:53:34.3598733Z ##[debug]=> '***'
+2026-08-19T22:53:34.3606194Z ##[debug]Expanded: ('***' || vars['FTP_REMOTE_DIR'])
+2026-08-19T22:53:34.3607027Z ##[debug]Result: '***'
+2026-08-19T22:53:34.3622138Z ##[debug]Evaluating: (vars.FTP_PROTOCOL || 'ftps')
+2026-08-19T22:53:34.3622971Z ##[debug]Evaluating Or:
+2026-08-19T22:53:34.3624059Z ##[debug]..Evaluating Index:
+2026-08-19T22:53:34.3624698Z ##[debug]....Evaluating vars:
+2026-08-19T22:53:34.3625522Z ##[debug]....=> Object
+2026-08-19T22:53:34.3626207Z ##[debug]....Evaluating String:
+2026-08-19T22:53:34.3626860Z ##[debug]....=> 'FTP_PROTOCOL'
+2026-08-19T22:53:34.3627680Z ##[debug]..=> null
+2026-08-19T22:53:34.3628263Z ##[debug]..Evaluating String:
+2026-08-19T22:53:34.3628932Z ##[debug]..=> 'ftps'
+2026-08-19T22:53:34.3629522Z ##[debug]=> 'ftps'
+2026-08-19T22:53:34.3630196Z ##[debug]Expanded: (null || 'ftps')
+2026-08-19T22:53:34.3630920Z ##[debug]Result: 'ftps'
+2026-08-19T22:53:34.3632180Z ##[debug]Evaluating: (vars.FTP_PORT || '21')
+2026-08-19T22:53:34.3632983Z ##[debug]Evaluating Or:
+2026-08-19T22:53:34.3633809Z ##[debug]..Evaluating Index:
+2026-08-19T22:53:34.3634523Z ##[debug]....Evaluating vars:
+2026-08-19T22:53:34.3635174Z ##[debug]....=> Object
+2026-08-19T22:53:34.3635790Z ##[debug]....Evaluating String:
+2026-08-19T22:53:34.3637435Z ##[debug]....=> 'FTP_PORT'
+2026-08-19T22:53:34.3638073Z ##[debug]..=> null
+2026-08-19T22:53:34.3638728Z ##[debug]..Evaluating String:
+2026-08-19T22:53:34.3639825Z ##[debug]..=> '21'
+2026-08-19T22:53:34.3640459Z ##[debug]=> '21'
+2026-08-19T22:53:34.3641124Z ##[debug]Expanded: (null || '21')
+2026-08-19T22:53:34.3641929Z ##[debug]Result: '21'
+2026-08-19T22:53:34.3643115Z ##[debug]Evaluating: (vars.FTP_SECURITY || 'loose')
+2026-08-19T22:53:34.3644228Z ##[debug]Evaluating Or:
+2026-08-19T22:53:34.3644834Z ##[debug]..Evaluating Index:
+2026-08-19T22:53:34.3645575Z ##[debug]....Evaluating vars:
+2026-08-19T22:53:34.3646209Z ##[debug]....=> Object
+2026-08-19T22:53:34.3646893Z ##[debug]....Evaluating String:
+2026-08-19T22:53:34.3647576Z ##[debug]....=> 'FTP_SECURITY'
+2026-08-19T22:53:34.3648219Z ##[debug]..=> null
+2026-08-19T22:53:34.3648855Z ##[debug]..Evaluating String:
+2026-08-19T22:53:34.3649520Z ##[debug]..=> 'loose'
+2026-08-19T22:53:34.3650129Z ##[debug]=> 'loose'
+2026-08-19T22:53:34.3650875Z ##[debug]Expanded: (null || 'loose')
+2026-08-19T22:53:34.3651501Z ##[debug]Result: 'loose'
+2026-08-19T22:53:34.3663143Z ##[debug]Evaluating job container
+2026-08-19T22:53:34.3666373Z ##[debug]Evaluating job service containers
+2026-08-19T22:53:34.3668942Z ##[debug]Evaluating job defaults
+2026-08-19T22:53:34.3700128Z Prepare all required actions
+2026-08-19T22:53:34.3750010Z Getting action download info
+2026-08-19T22:53:34.5113594Z Download action repository 'actions/checkout@v6' (SHA:d23441a48e516b6c34aea4fa41551a30e30af803)
+2026-08-19T22:53:34.5208641Z ##[debug]Copied action archive '/opt/actionarchivecache/actions_checkout/d23441a48e516b6c34aea4fa41551a30e30af803.tar.gz' to '/home/runner/work/_actions/_temp_ac790a54-11ae-46ae-b4d9-bd2544af10c4/d8633609-2e62-4a64-b01e-21265b3637f1.tar.gz'
+2026-08-19T22:53:34.6487869Z ##[debug]Unwrap 'actions-checkout-d23441a' to '/home/runner/work/_actions/actions/checkout/v6'
+2026-08-19T22:53:34.9610883Z ##[debug]Archive '/home/runner/work/_actions/_temp_ac790a54-11ae-46ae-b4d9-bd2544af10c4/d8633609-2e62-4a64-b01e-21265b3637f1.tar.gz' has been unzipped into '/home/runner/work/_actions/actions/checkout/v6'.
+2026-08-19T22:53:34.9723980Z ##[debug]action.yml for action: '/home/runner/work/_actions/actions/checkout/v6/action.yml'.
+2026-08-19T22:53:35.0568398Z ##[debug]Set step '__actions_checkout' display name to: 'Run actions/checkout@v6'
+2026-08-19T22:53:35.0572340Z ##[debug]Set step 'evaluate' display name to: 'Evaluate FTP deploy result'
+2026-08-19T22:53:35.0575222Z ##[debug]Set step '__run' display name to: 'HTTP verification — canlı site erişilebilir mi'
+2026-08-19T22:53:35.0577980Z ##[debug]Set step '__run_2' display name to: 'Exact assets, API boundary and security headers'
+2026-08-19T22:53:35.0579003Z Complete job name: Final deploy result
+2026-08-19T22:53:35.0604749Z ##[debug]Collect running processes for tracking orphan processes.
+2026-08-19T22:53:35.0820025Z ##[debug]Finishing: Set up job

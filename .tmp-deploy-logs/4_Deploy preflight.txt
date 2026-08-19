@@ -1,0 +1,1953 @@
+﻿2026-08-19T22:52:58.9952659Z ##[debug]Starting: Deploy preflight
+2026-08-19T22:52:58.9978191Z ##[debug]Cleaning runner temp folder: /home/runner/work/_temp
+2026-08-19T22:52:59.0140449Z ##[debug]Starting: Set up job
+2026-08-19T22:52:59.0141841Z Current runner version: '2.336.0'
+2026-08-19T22:52:59.0166633Z ##[group]Runner Image Provisioner
+2026-08-19T22:52:59.0167659Z Hosted Compute Agent
+2026-08-19T22:52:59.0168438Z Version: 20260729.566
+2026-08-19T22:52:59.0169433Z Commit: cf7153fe6e25b664e8693c24944bf2b00355d109
+2026-08-19T22:52:59.0170566Z Build Date: 2026-07-29T19:17:02Z
+2026-08-19T22:52:59.0172083Z Worker ID: {a457fa00-1a88-4d74-a50e-3d9d97a1fefc}
+2026-08-19T22:52:59.0173094Z Azure Region: eastus
+2026-08-19T22:52:59.0173949Z ##[endgroup]
+2026-08-19T22:52:59.0175780Z ##[group]Operating System
+2026-08-19T22:52:59.0176627Z Ubuntu
+2026-08-19T22:52:59.0177518Z 24.04.4
+2026-08-19T22:52:59.0178204Z LTS
+2026-08-19T22:52:59.0178963Z ##[endgroup]
+2026-08-19T22:52:59.0179791Z ##[group]Runner Image
+2026-08-19T22:52:59.0180803Z Image: ubuntu-24.04
+2026-08-19T22:52:59.0182100Z Version: 20260810.271.1
+2026-08-19T22:52:59.0183752Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260810.271/images/ubuntu/Ubuntu2404-Readme.md
+2026-08-19T22:52:59.0185733Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260810.271
+2026-08-19T22:52:59.0187115Z ##[endgroup]
+2026-08-19T22:52:59.0188767Z ##[group]GITHUB_TOKEN Permissions
+2026-08-19T22:52:59.0191269Z Contents: read
+2026-08-19T22:52:59.0192046Z Metadata: read
+2026-08-19T22:52:59.0192893Z Packages: read
+2026-08-19T22:52:59.0193602Z ##[endgroup]
+2026-08-19T22:52:59.0195949Z Secret source: Actions
+2026-08-19T22:52:59.0197527Z ##[debug]Primary repository: akelilker/tasitmedisa
+2026-08-19T22:52:59.0198761Z Prepare workflow directory
+2026-08-19T22:52:59.0268220Z ##[debug]Creating pipeline directory: '/home/runner/work/tasitmedisa'
+2026-08-19T22:52:59.0272669Z ##[debug]Creating workspace directory: '/home/runner/work/tasitmedisa/tasitmedisa'
+2026-08-19T22:52:59.0274887Z ##[debug]Update context data
+2026-08-19T22:52:59.0279193Z ##[debug]Evaluating job-level environment variables
+2026-08-19T22:52:59.0674444Z ##[debug]Evaluating: (secrets.FTP_REMOTE_DIR || vars.FTP_REMOTE_DIR)
+2026-08-19T22:52:59.0680844Z ##[debug]Evaluating Or:
+2026-08-19T22:52:59.0683709Z ##[debug]..Evaluating Index:
+2026-08-19T22:52:59.0686321Z ##[debug]....Evaluating secrets:
+2026-08-19T22:52:59.0696868Z ##[debug]....=> Object
+2026-08-19T22:52:59.0706065Z ##[debug]....Evaluating String:
+2026-08-19T22:52:59.0707526Z ##[debug]....=> 'FTP_REMOTE_DIR'
+2026-08-19T22:52:59.0712675Z ##[debug]..=> '***'
+2026-08-19T22:52:59.0715155Z ##[debug]=> '***'
+2026-08-19T22:52:59.0722345Z ##[debug]Expanded: ('***' || vars['FTP_REMOTE_DIR'])
+2026-08-19T22:52:59.0723372Z ##[debug]Result: '***'
+2026-08-19T22:52:59.0738261Z ##[debug]Evaluating: (vars.FTP_PROTOCOL || 'ftps')
+2026-08-19T22:52:59.0739306Z ##[debug]Evaluating Or:
+2026-08-19T22:52:59.0740363Z ##[debug]..Evaluating Index:
+2026-08-19T22:52:59.0741216Z ##[debug]....Evaluating vars:
+2026-08-19T22:52:59.0742183Z ##[debug]....=> Object
+2026-08-19T22:52:59.0743006Z ##[debug]....Evaluating String:
+2026-08-19T22:52:59.0743908Z ##[debug]....=> 'FTP_PROTOCOL'
+2026-08-19T22:52:59.0744779Z ##[debug]..=> null
+2026-08-19T22:52:59.0745618Z ##[debug]..Evaluating String:
+2026-08-19T22:52:59.0746462Z ##[debug]..=> 'ftps'
+2026-08-19T22:52:59.0747207Z ##[debug]=> 'ftps'
+2026-08-19T22:52:59.0748067Z ##[debug]Expanded: (null || 'ftps')
+2026-08-19T22:52:59.0748960Z ##[debug]Result: 'ftps'
+2026-08-19T22:52:59.0750615Z ##[debug]Evaluating: (vars.FTP_PORT || '21')
+2026-08-19T22:52:59.0751532Z ##[debug]Evaluating Or:
+2026-08-19T22:52:59.0752446Z ##[debug]..Evaluating Index:
+2026-08-19T22:52:59.0753238Z ##[debug]....Evaluating vars:
+2026-08-19T22:52:59.0754092Z ##[debug]....=> Object
+2026-08-19T22:52:59.0754950Z ##[debug]....Evaluating String:
+2026-08-19T22:52:59.0755731Z ##[debug]....=> 'FTP_PORT'
+2026-08-19T22:52:59.0756564Z ##[debug]..=> null
+2026-08-19T22:52:59.0757270Z ##[debug]..Evaluating String:
+2026-08-19T22:52:59.0758596Z ##[debug]..=> '21'
+2026-08-19T22:52:59.0759298Z ##[debug]=> '21'
+2026-08-19T22:52:59.0760561Z ##[debug]Expanded: (null || '21')
+2026-08-19T22:52:59.0761450Z ##[debug]Result: '21'
+2026-08-19T22:52:59.0762860Z ##[debug]Evaluating: (vars.FTP_SECURITY || 'loose')
+2026-08-19T22:52:59.0763816Z ##[debug]Evaluating Or:
+2026-08-19T22:52:59.0764734Z ##[debug]..Evaluating Index:
+2026-08-19T22:52:59.0765545Z ##[debug]....Evaluating vars:
+2026-08-19T22:52:59.0766453Z ##[debug]....=> Object
+2026-08-19T22:52:59.0767298Z ##[debug]....Evaluating String:
+2026-08-19T22:52:59.0768130Z ##[debug]....=> 'FTP_SECURITY'
+2026-08-19T22:52:59.0769034Z ##[debug]..=> null
+2026-08-19T22:52:59.0769767Z ##[debug]..Evaluating String:
+2026-08-19T22:52:59.0770907Z ##[debug]..=> 'loose'
+2026-08-19T22:52:59.0771628Z ##[debug]=> 'loose'
+2026-08-19T22:52:59.0772515Z ##[debug]Expanded: (null || 'loose')
+2026-08-19T22:52:59.0773335Z ##[debug]Result: 'loose'
+2026-08-19T22:52:59.0785650Z ##[debug]Evaluating job container
+2026-08-19T22:52:59.0788730Z ##[debug]Evaluating job service containers
+2026-08-19T22:52:59.0792004Z ##[debug]Evaluating job defaults
+2026-08-19T22:52:59.0825829Z Prepare all required actions
+2026-08-19T22:52:59.0879958Z Getting action download info
+2026-08-19T22:52:59.2362612Z Download action repository 'actions/checkout@v6' (SHA:d23441a48e516b6c34aea4fa41551a30e30af803)
+2026-08-19T22:52:59.2390701Z ##[debug]Copied action archive '/opt/actionarchivecache/actions_checkout/d23441a48e516b6c34aea4fa41551a30e30af803.tar.gz' to '/home/runner/work/_actions/_temp_dae3c237-144e-4898-9edd-f5d87a155dbe/7d6d5a7e-57af-429d-9ca6-eed38053d2aa.tar.gz'
+2026-08-19T22:52:59.3770910Z ##[debug]Unwrap 'actions-checkout-d23441a' to '/home/runner/work/_actions/actions/checkout/v6'
+2026-08-19T22:52:59.3865904Z ##[debug]Archive '/home/runner/work/_actions/_temp_dae3c237-144e-4898-9edd-f5d87a155dbe/7d6d5a7e-57af-429d-9ca6-eed38053d2aa.tar.gz' has been unzipped into '/home/runner/work/_actions/actions/checkout/v6'.
+2026-08-19T22:52:59.3941567Z Download action repository 'shivammathur/setup-php@v2' (SHA:f3e473d116dcccaddc5834248c87452386958240)
+2026-08-19T22:52:59.4815651Z ##[debug]Download 'https://codeload.github.com/shivammathur/setup-php/tar.gz/f3e473d116dcccaddc5834248c87452386958240' to '/home/runner/work/_actions/_temp_33906701-75dd-4dff-aead-66bd847916d2/cafb643b-e579-4ecc-9901-15b0ae0d581d.tar.gz'
+2026-08-19T22:52:59.5040999Z ##[debug]Unwrap 'setup-php-f3e473d116dcccaddc5834248c87452386958240' to '/home/runner/work/_actions/shivammathur/setup-php/v2'
+2026-08-19T22:52:59.5158610Z ##[debug]Archive '/home/runner/work/_actions/_temp_33906701-75dd-4dff-aead-66bd847916d2/cafb643b-e579-4ecc-9901-15b0ae0d581d.tar.gz' has been unzipped into '/home/runner/work/_actions/shivammathur/setup-php/v2'.
+2026-08-19T22:52:59.5185782Z Download action repository 'actions/setup-node@v6' (SHA:249970729cb0ef3589644e2896645e5dc5ba9c38)
+2026-08-19T22:52:59.5952029Z ##[debug]Copied action archive '/opt/actionarchivecache/actions_setup-node/249970729cb0ef3589644e2896645e5dc5ba9c38.tar.gz' to '/home/runner/work/_actions/_temp_ee2f72d6-fcc0-4724-b67a-dac5b81355a8/27c46a7d-fe61-4226-b0bc-4c9defce81ce.tar.gz'
+2026-08-19T22:52:59.6404211Z ##[debug]Unwrap 'actions-setup-node-2499707' to '/home/runner/work/_actions/actions/setup-node/v6'
+2026-08-19T22:52:59.6827130Z ##[debug]Archive '/home/runner/work/_actions/_temp_ee2f72d6-fcc0-4724-b67a-dac5b81355a8/27c46a7d-fe61-4226-b0bc-4c9defce81ce.tar.gz' has been unzipped into '/home/runner/work/_actions/actions/setup-node/v6'.
+2026-08-19T22:52:59.6877867Z ##[debug]action.yml for action: '/home/runner/work/_actions/actions/checkout/v6/action.yml'.
+2026-08-19T22:52:59.7459546Z ##[debug]action.yml for action: '/home/runner/work/_actions/shivammathur/setup-php/v2/action.yml'.
+2026-08-19T22:52:59.7502746Z ##[debug]action.yml for action: '/home/runner/work/_actions/actions/setup-node/v6/action.yml'.
+2026-08-19T22:52:59.7592216Z ##[debug]Set step '__actions_checkout' display name to: 'Run actions/checkout@v6'
+2026-08-19T22:52:59.7596224Z ##[debug]Set step '__shivammathur_setup-php' display name to: 'Setup PHP'
+2026-08-19T22:52:59.7598810Z ##[debug]Set step '__actions_setup-node' display name to: 'Setup Node.js'
+2026-08-19T22:52:59.7601222Z ##[debug]Set step '__run' display name to: 'Deploy quality gates'
+2026-08-19T22:52:59.7604129Z ##[debug]Set step '__run_2' display name to: 'Secrets kontrolü (boşsa FTP sunucu köküne yazar; canlıda değişiklik görünmez)'
+2026-08-19T22:52:59.7607055Z ##[debug]Set step '__run_3' display name to: 'Deploy öncesi — commit ve kritik dosyalar (logda doğrulayın)'
+2026-08-19T22:52:59.7608128Z Complete job name: Deploy preflight
+2026-08-19T22:52:59.7641117Z ##[debug]Collect running processes for tracking orphan processes.
+2026-08-19T22:52:59.7813697Z ##[debug]Finishing: Set up job
+2026-08-19T22:52:59.7927755Z ##[debug]Evaluating condition for step: 'Run actions/checkout@v6'
+2026-08-19T22:52:59.7945629Z ##[debug]Evaluating: success()
+2026-08-19T22:52:59.7946824Z ##[debug]Evaluating success:
+2026-08-19T22:52:59.7953316Z ##[debug]=> true
+2026-08-19T22:52:59.7955355Z ##[debug]Result: true
+2026-08-19T22:52:59.7969646Z ##[debug]Starting: Run actions/checkout@v6
+2026-08-19T22:52:59.8040170Z ##[debug]Register post job cleanup for action: actions/checkout@v6
+2026-08-19T22:52:59.8117096Z ##[debug]Loading inputs
+2026-08-19T22:52:59.8124252Z ##[debug]Evaluating: github.repository
+2026-08-19T22:52:59.8124944Z ##[debug]Evaluating Index:
+2026-08-19T22:52:59.8125486Z ##[debug]..Evaluating github:
+2026-08-19T22:52:59.8126044Z ##[debug]..=> Object
+2026-08-19T22:52:59.8126523Z ##[debug]..Evaluating String:
+2026-08-19T22:52:59.8127067Z ##[debug]..=> 'repository'
+2026-08-19T22:52:59.8127962Z ##[debug]=> 'akelilker/tasitmedisa'
+2026-08-19T22:52:59.8128568Z ##[debug]Result: 'akelilker/tasitmedisa'
+2026-08-19T22:52:59.8132191Z ##[debug]Evaluating: github.token
+2026-08-19T22:52:59.8132791Z ##[debug]Evaluating Index:
+2026-08-19T22:52:59.8133303Z ##[debug]..Evaluating github:
+2026-08-19T22:52:59.8133842Z ##[debug]..=> Object
+2026-08-19T22:52:59.8134335Z ##[debug]..Evaluating String:
+2026-08-19T22:52:59.8134851Z ##[debug]..=> 'token'
+2026-08-19T22:52:59.8138952Z ##[debug]=> '***'
+2026-08-19T22:52:59.8143086Z ##[debug]Result: '***'
+2026-08-19T22:52:59.8167995Z ##[debug]Loading env
+2026-08-19T22:52:59.8225214Z ##[group]Run actions/checkout@v6
+2026-08-19T22:52:59.8225929Z with:
+2026-08-19T22:52:59.8226392Z   repository: akelilker/tasitmedisa
+2026-08-19T22:52:59.8230695Z   token: ***
+2026-08-19T22:52:59.8231139Z   ssh-strict: true
+2026-08-19T22:52:59.8231598Z   ssh-user: git
+2026-08-19T22:52:59.8232065Z   persist-credentials: true
+2026-08-19T22:52:59.8232567Z   clean: true
+2026-08-19T22:52:59.8233026Z   sparse-checkout-cone-mode: true
+2026-08-19T22:52:59.8233560Z   fetch-depth: 1
+2026-08-19T22:52:59.8234014Z   fetch-tags: false
+2026-08-19T22:52:59.8234476Z   show-progress: true
+2026-08-19T22:52:59.8234931Z   lfs: false
+2026-08-19T22:52:59.8235348Z   submodules: false
+2026-08-19T22:52:59.8235812Z   set-safe-directory: true
+2026-08-19T22:52:59.8236336Z   allow-unsafe-pr-checkout: false
+2026-08-19T22:52:59.8237058Z env:
+2026-08-19T22:52:59.8237503Z   FTP_REMOTE_DIR: ***
+2026-08-19T22:52:59.8237972Z   FTP_PROTOCOL: ftps
+2026-08-19T22:52:59.8238427Z   FTP_PORT: 21
+2026-08-19T22:52:59.8238859Z   FTP_SECURITY: loose
+2026-08-19T22:52:59.8239312Z ##[endgroup]
+2026-08-19T22:52:59.8961320Z ##[debug]GITHUB_WORKSPACE = '/home/runner/work/tasitmedisa/tasitmedisa'
+2026-08-19T22:52:59.8963731Z ##[debug]qualified repository = 'akelilker/tasitmedisa'
+2026-08-19T22:52:59.8965253Z ##[debug]ref = 'refs/heads/main'
+2026-08-19T22:52:59.8966703Z ##[debug]commit = 'bb44edcd939a860998ad5335ae7e66a0ac031556'
+2026-08-19T22:52:59.8968232Z ##[debug]clean = true
+2026-08-19T22:52:59.8969389Z ##[debug]filter = undefined
+2026-08-19T22:52:59.8970802Z ##[debug]fetch depth = 1
+2026-08-19T22:52:59.8972117Z ##[debug]fetch tags = false
+2026-08-19T22:52:59.8973385Z ##[debug]show progress = true
+2026-08-19T22:52:59.8974613Z ##[debug]lfs = false
+2026-08-19T22:52:59.8975755Z ##[debug]submodules = false
+2026-08-19T22:52:59.8977303Z ##[debug]recursive submodules = false
+2026-08-19T22:52:59.8978591Z ##[debug]GitHub Host URL = 
+2026-08-19T22:52:59.8979809Z ##[debug]allow unsafe PR checkout = false
+2026-08-19T22:52:59.8983318Z ::add-matcher::/home/runner/work/_actions/actions/checkout/v6/dist/problem-matcher.json
+2026-08-19T22:52:59.9060890Z ##[debug]Added matchers: 'checkout-git'. Problem matchers scan action output for known warning or error strings and report these inline.
+2026-08-19T22:52:59.9066708Z Syncing repository: akelilker/tasitmedisa
+2026-08-19T22:52:59.9068371Z ::group::Getting Git version info
+2026-08-19T22:52:59.9069815Z ##[group]Getting Git version info
+2026-08-19T22:52:59.9071148Z Working directory is '/home/runner/work/tasitmedisa/tasitmedisa'
+2026-08-19T22:52:59.9073039Z ##[debug]Getting git version
+2026-08-19T22:52:59.9073841Z [command]/usr/bin/git version
+2026-08-19T22:52:59.9074633Z git version 2.54.0
+2026-08-19T22:52:59.9105357Z ##[debug]0
+2026-08-19T22:52:59.9106458Z ##[debug]git version 2.54.0
+2026-08-19T22:52:59.9107217Z ##[debug]
+2026-08-19T22:52:59.9109433Z ##[debug]Set git useragent to: git/2.54.0 (github-actions-checkout) actions_orchestration_id/06b8b893-4310-492b-9ca6-a8e3d5da90d1.deploy_preflight.__default
+2026-08-19T22:52:59.9112046Z ::endgroup::
+2026-08-19T22:52:59.9112720Z ##[endgroup]
+2026-08-19T22:52:59.9118036Z ::add-mask::***
+2026-08-19T22:52:59.9120820Z Temporarily overriding HOME='/home/runner/work/_temp/bdbc452c-8fb3-40a5-a4a1-b55f7cca235a' before making global git config changes
+2026-08-19T22:52:59.9123073Z Adding repository directory to the temporary git global config as a safe directory
+2026-08-19T22:52:59.9126649Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/tasitmedisa/tasitmedisa
+2026-08-19T22:52:59.9155894Z ##[debug]0
+2026-08-19T22:52:59.9157108Z ##[debug]
+2026-08-19T22:52:59.9160703Z Deleting the contents of '/home/runner/work/tasitmedisa/tasitmedisa'
+2026-08-19T22:52:59.9171788Z ::group::Determining repository object format
+2026-08-19T22:52:59.9172757Z ##[group]Determining repository object format
+2026-08-19T22:52:59.9174417Z ::endgroup::
+2026-08-19T22:52:59.9174864Z ##[endgroup]
+2026-08-19T22:52:59.9175991Z ::group::Initializing the repository
+2026-08-19T22:52:59.9176626Z ##[group]Initializing the repository
+2026-08-19T22:52:59.9178034Z [command]/usr/bin/git init /home/runner/work/tasitmedisa/tasitmedisa
+2026-08-19T22:52:59.9258927Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-08-19T22:52:59.9260691Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-08-19T22:52:59.9262121Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-08-19T22:52:59.9262939Z hint: call:
+2026-08-19T22:52:59.9263358Z hint:
+2026-08-19T22:52:59.9263890Z hint: 	git config --global init.defaultBranch <name>
+2026-08-19T22:52:59.9264840Z hint:
+2026-08-19T22:52:59.9265534Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-08-19T22:52:59.9266524Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-08-19T22:52:59.9267423Z hint:
+2026-08-19T22:52:59.9351362Z hint: 	git branch -m <name>
+2026-08-19T22:52:59.9352332Z hint:
+2026-08-19T22:52:59.9353370Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-08-19T22:52:59.9355136Z Initialized empty Git repository in /home/runner/work/tasitmedisa/tasitmedisa/.git/
+2026-08-19T22:52:59.9357058Z ##[debug]0
+2026-08-19T22:52:59.9358585Z ##[debug]Initialized empty Git repository in /home/runner/work/tasitmedisa/tasitmedisa/.git/
+2026-08-19T22:52:59.9359926Z ##[debug]
+2026-08-19T22:52:59.9362897Z [command]/usr/bin/git remote add origin https://github.com/akelilker/tasitmedisa
+2026-08-19T22:52:59.9364910Z ##[debug]0
+2026-08-19T22:52:59.9366140Z ##[debug]
+2026-08-19T22:52:59.9367304Z ::endgroup::
+2026-08-19T22:52:59.9367923Z ##[endgroup]
+2026-08-19T22:52:59.9369185Z ::group::Disabling automatic garbage collection
+2026-08-19T22:52:59.9370577Z ##[group]Disabling automatic garbage collection
+2026-08-19T22:52:59.9371789Z [command]/usr/bin/git config --local gc.auto 0
+2026-08-19T22:52:59.9373266Z ##[debug]0
+2026-08-19T22:52:59.9374477Z ##[debug]
+2026-08-19T22:52:59.9375855Z ::endgroup::
+2026-08-19T22:52:59.9376465Z ##[endgroup]
+2026-08-19T22:52:59.9377646Z ::group::Setting up auth
+2026-08-19T22:52:59.9378373Z ##[group]Setting up auth
+2026-08-19T22:52:59.9379299Z Removing SSH command configuration
+2026-08-19T22:52:59.9380732Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-08-19T22:52:59.9382563Z ##[debug]1
+2026-08-19T22:52:59.9383704Z ##[debug]
+2026-08-19T22:52:59.9386035Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-08-19T22:52:59.9637461Z ##[debug]0
+2026-08-19T22:52:59.9638797Z ##[debug]
+2026-08-19T22:52:59.9639576Z Removing HTTP extra header
+2026-08-19T22:52:59.9645005Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-08-19T22:52:59.9670871Z ##[debug]1
+2026-08-19T22:52:59.9672024Z ##[debug]
+2026-08-19T22:52:59.9677493Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-08-19T22:52:59.9885511Z ##[debug]0
+2026-08-19T22:52:59.9886535Z ##[debug]
+2026-08-19T22:52:59.9887378Z Removing includeIf entries pointing to credentials config files
+2026-08-19T22:52:59.9895916Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-08-19T22:52:59.9925032Z ##[debug]1
+2026-08-19T22:52:59.9926320Z ##[debug]
+2026-08-19T22:52:59.9931117Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-08-19T22:53:00.0118971Z ##[debug]0
+2026-08-19T22:53:00.0120164Z ##[debug]
+2026-08-19T22:53:00.0126481Z ##[debug]Credentials config path: /home/runner/work/_temp/git-credentials-df6c3cb3-5f49-4a88-b86f-99baf47b667d.config
+2026-08-19T22:53:00.0133260Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-df6c3cb3-5f49-4a88-b86f-99baf47b667d.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-08-19T22:53:00.0159260Z ##[debug]0
+2026-08-19T22:53:00.0160477Z ##[debug]
+2026-08-19T22:53:00.0173876Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/tasitmedisa/tasitmedisa/.git.path /home/runner/work/_temp/git-credentials-df6c3cb3-5f49-4a88-b86f-99baf47b667d.config
+2026-08-19T22:53:00.0201001Z ##[debug]0
+2026-08-19T22:53:00.0201839Z ##[debug]
+2026-08-19T22:53:00.0206825Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/tasitmedisa/tasitmedisa/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-df6c3cb3-5f49-4a88-b86f-99baf47b667d.config
+2026-08-19T22:53:00.0234234Z ##[debug]0
+2026-08-19T22:53:00.0235095Z ##[debug]
+2026-08-19T22:53:00.0240088Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-df6c3cb3-5f49-4a88-b86f-99baf47b667d.config
+2026-08-19T22:53:00.0268816Z ##[debug]0
+2026-08-19T22:53:00.0269671Z ##[debug]
+2026-08-19T22:53:00.0274216Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-df6c3cb3-5f49-4a88-b86f-99baf47b667d.config
+2026-08-19T22:53:00.0310472Z ##[debug]0
+2026-08-19T22:53:00.0311236Z ##[debug]
+2026-08-19T22:53:00.0311937Z ::endgroup::
+2026-08-19T22:53:00.0312362Z ##[endgroup]
+2026-08-19T22:53:00.0313090Z ::group::Fetching the repository
+2026-08-19T22:53:00.0313635Z ##[group]Fetching the repository
+2026-08-19T22:53:00.0320374Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +bb44edcd939a860998ad5335ae7e66a0ac031556:refs/remotes/origin/main
+2026-08-19T22:53:00.8378045Z From https://github.com/akelilker/tasitmedisa
+2026-08-19T22:53:00.8379782Z  * [new ref]         bb44edcd939a860998ad5335ae7e66a0ac031556 -> origin/main
+2026-08-19T22:53:00.8395759Z ##[debug]0
+2026-08-19T22:53:00.8396829Z ##[debug]
+2026-08-19T22:53:00.8401988Z [command]/usr/bin/git branch --list --remote origin/main
+2026-08-19T22:53:00.8425461Z   origin/main
+2026-08-19T22:53:00.8428865Z ##[debug]0
+2026-08-19T22:53:00.8430396Z ##[debug]  origin/main
+2026-08-19T22:53:00.8431082Z ##[debug]
+2026-08-19T22:53:00.8432093Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+2026-08-19T22:53:00.8454314Z bb44edcd939a860998ad5335ae7e66a0ac031556
+2026-08-19T22:53:00.8457359Z ##[debug]0
+2026-08-19T22:53:00.8458938Z ##[debug]bb44edcd939a860998ad5335ae7e66a0ac031556
+2026-08-19T22:53:00.8460362Z ##[debug]
+2026-08-19T22:53:00.8461666Z ::endgroup::
+2026-08-19T22:53:00.8462594Z ##[endgroup]
+2026-08-19T22:53:00.8464091Z ::group::Determining the checkout info
+2026-08-19T22:53:00.8465317Z ##[group]Determining the checkout info
+2026-08-19T22:53:00.8467291Z ::endgroup::
+2026-08-19T22:53:00.8468269Z ##[endgroup]
+2026-08-19T22:53:00.8469402Z [command]/usr/bin/git sparse-checkout disable
+2026-08-19T22:53:00.8494339Z ##[debug]0
+2026-08-19T22:53:00.8496079Z ##[debug]
+2026-08-19T22:53:00.8497739Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-08-19T22:53:00.8522196Z ##[debug]0
+2026-08-19T22:53:00.8523835Z ##[debug]
+2026-08-19T22:53:00.8525714Z ::group::Checking out the ref
+2026-08-19T22:53:00.8526890Z ##[group]Checking out the ref
+2026-08-19T22:53:00.8528490Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2026-08-19T22:53:00.8904540Z Switched to a new branch 'main'
+2026-08-19T22:53:00.8906421Z branch 'main' set up to track 'origin/main'.
+2026-08-19T22:53:00.8912733Z ##[debug]0
+2026-08-19T22:53:00.8914432Z ##[debug]branch 'main' set up to track 'origin/main'.
+2026-08-19T22:53:00.8915935Z ##[debug]
+2026-08-19T22:53:00.8917426Z ::endgroup::
+2026-08-19T22:53:00.8918356Z ##[endgroup]
+2026-08-19T22:53:00.8947492Z ##[debug]0
+2026-08-19T22:53:00.8949895Z ##[debug]commit bb44edcd939a860998ad5335ae7e66a0ac031556
+2026-08-19T22:53:00.8951974Z ##[debug]Author: akelilker <ilkerakel@gmail.com>
+2026-08-19T22:53:00.8953692Z ##[debug]Date:   Thu Aug 20 01:45:16 2026 +0300
+2026-08-19T22:53:00.8955217Z ##[debug]
+2026-08-19T22:53:00.8956765Z ##[debug]    fix(deploy): align asset version pins for CI preflight
+2026-08-19T22:53:00.8958334Z ##[debug]    
+2026-08-19T22:53:00.8960538Z ##[debug]    Sync tasitlar module version, style-core/script-core HTML pins, SW cache, and verify script expectations so deploy preflight passes.
+2026-08-19T22:53:00.8962925Z ##[debug]    
+2026-08-19T22:53:00.8964200Z ##[debug]    Co-authored-by: Cursor <cursoragent@cursor.com>
+2026-08-19T22:53:00.8965941Z ##[debug]
+2026-08-19T22:53:00.8966975Z [command]/usr/bin/git log -1 --format=%H
+2026-08-19T22:53:00.8975314Z bb44edcd939a860998ad5335ae7e66a0ac031556
+2026-08-19T22:53:00.8978831Z ##[debug]0
+2026-08-19T22:53:00.8980670Z ##[debug]bb44edcd939a860998ad5335ae7e66a0ac031556
+2026-08-19T22:53:00.8981985Z ##[debug]
+2026-08-19T22:53:00.8984097Z ##[debug]Unsetting HOME override
+2026-08-19T22:53:00.8989832Z ::remove-matcher owner=checkout-git::
+2026-08-19T22:53:00.9000940Z ##[debug]Removed matchers: 'checkout-git'
+2026-08-19T22:53:00.9059248Z ##[debug]Node Action run completed with exit code 0
+2026-08-19T22:53:00.9090584Z ##[debug]Save intra-action state isPost = true
+2026-08-19T22:53:00.9092191Z ##[debug]Save intra-action state setSafeDirectory = true
+2026-08-19T22:53:00.9094228Z ##[debug]Save intra-action state repositoryPath = /home/runner/work/tasitmedisa/tasitmedisa
+2026-08-19T22:53:00.9099565Z ##[debug]Set output commit = bb44edcd939a860998ad5335ae7e66a0ac031556
+2026-08-19T22:53:00.9101851Z ##[debug]Set output ref = refs/heads/main
+2026-08-19T22:53:00.9117559Z ##[debug]Finishing: Run actions/checkout@v6
+2026-08-19T22:53:00.9145963Z ##[debug]Evaluating condition for step: 'Setup PHP'
+2026-08-19T22:53:00.9151719Z ##[debug]Evaluating: success()
+2026-08-19T22:53:00.9153318Z ##[debug]Evaluating success:
+2026-08-19T22:53:00.9154948Z ##[debug]=> true
+2026-08-19T22:53:00.9156318Z ##[debug]Result: true
+2026-08-19T22:53:00.9158170Z ##[debug]Starting: Setup PHP
+2026-08-19T22:53:00.9218152Z ##[debug]Loading inputs
+2026-08-19T22:53:00.9234167Z ##[debug]Evaluating: github.token
+2026-08-19T22:53:00.9235284Z ##[debug]Evaluating Index:
+2026-08-19T22:53:00.9236272Z ##[debug]..Evaluating github:
+2026-08-19T22:53:00.9237290Z ##[debug]..=> Object
+2026-08-19T22:53:00.9238229Z ##[debug]..Evaluating String:
+2026-08-19T22:53:00.9239233Z ##[debug]..=> 'token'
+2026-08-19T22:53:00.9247765Z ##[debug]=> '***'
+2026-08-19T22:53:00.9256086Z ##[debug]Result: '***'
+2026-08-19T22:53:00.9265857Z ##[debug]Loading env
+2026-08-19T22:53:00.9281024Z ##[group]Run shivammathur/setup-php@v2
+2026-08-19T22:53:00.9282082Z with:
+2026-08-19T22:53:00.9282914Z   php-version: 8.2
+2026-08-19T22:53:00.9283807Z   ini-file: production
+2026-08-19T22:53:00.9291862Z   github-token: ***
+2026-08-19T22:53:00.9292732Z env:
+2026-08-19T22:53:00.9293537Z   FTP_REMOTE_DIR: ***
+2026-08-19T22:53:00.9294447Z   FTP_PROTOCOL: ftps
+2026-08-19T22:53:00.9295350Z   FTP_PORT: 21
+2026-08-19T22:53:00.9296203Z   FTP_SECURITY: loose
+2026-08-19T22:53:00.9297106Z ##[endgroup]
+2026-08-19T22:53:00.9615769Z [command]/usr/bin/bash /home/runner/work/_actions/shivammathur/setup-php/v2/src/scripts/run.sh
+2026-08-19T22:53:00.9975173Z 
+2026-08-19T22:53:00.9976172Z [90;1m==> [0m[37;1mSetup PHP[0m
+2026-08-19T22:53:04.9893124Z [32;1m✓ [0m[34;1mPHP [0m[90;1mInstalled PHP 8.2.33[0m
+2026-08-19T22:53:04.9893799Z 
+2026-08-19T22:53:04.9894266Z [90;1m==> [0m[37;1mSetup Tools[0m
+2026-08-19T22:53:05.2174730Z [32;1m✓ [0m[34;1mcomposer [0m[90;1mAdded composer 2.10.2[0m
+2026-08-19T22:53:05.2175173Z 
+2026-08-19T22:53:05.2176505Z [90;1m==> [0m[37;1mSponsor setup-php[0m
+2026-08-19T22:53:05.2177001Z [32;1m✓ [0m[34;1msetup-php [0m[90;1mhttps://setup-php.com/sponsor[0m
+2026-08-19T22:53:05.2289704Z ##[debug]Node Action run completed with exit code 0
+2026-08-19T22:53:05.2294179Z ##[debug]COMPOSER_PROCESS_TIMEOUT='0'
+2026-08-19T22:53:05.2294832Z ##[debug]COMPOSER_NO_INTERACTION='1'
+2026-08-19T22:53:05.2295111Z ##[debug]COMPOSER_NO_AUDIT='1'
+2026-08-19T22:53:05.2296474Z ##[debug]Set output php-version = 8.2.33
+2026-08-19T22:53:05.2297589Z ##[debug]Finishing: Setup PHP
+2026-08-19T22:53:05.2305082Z ##[debug]Evaluating condition for step: 'Setup Node.js'
+2026-08-19T22:53:05.2306874Z ##[debug]Evaluating: success()
+2026-08-19T22:53:05.2307211Z ##[debug]Evaluating success:
+2026-08-19T22:53:05.2307606Z ##[debug]=> true
+2026-08-19T22:53:05.2307937Z ##[debug]Result: true
+2026-08-19T22:53:05.2308497Z ##[debug]Starting: Setup Node.js
+2026-08-19T22:53:05.2336541Z ##[debug]Register post job cleanup for action: actions/setup-node@v6
+2026-08-19T22:53:05.2347361Z ##[debug]Loading inputs
+2026-08-19T22:53:05.2354658Z ##[debug]Evaluating: (((github.server_url == 'https://github.com') && github.token) || '')
+2026-08-19T22:53:05.2355124Z ##[debug]Evaluating Or:
+2026-08-19T22:53:05.2355394Z ##[debug]..Evaluating And:
+2026-08-19T22:53:05.2357127Z ##[debug]....Evaluating Equal:
+2026-08-19T22:53:05.2357925Z ##[debug]......Evaluating Index:
+2026-08-19T22:53:05.2358176Z ##[debug]........Evaluating github:
+2026-08-19T22:53:05.2358467Z ##[debug]........=> Object
+2026-08-19T22:53:05.2358748Z ##[debug]........Evaluating String:
+2026-08-19T22:53:05.2359001Z ##[debug]........=> 'server_url'
+2026-08-19T22:53:05.2359333Z ##[debug]......=> 'https://github.com'
+2026-08-19T22:53:05.2359597Z ##[debug]......Evaluating String:
+2026-08-19T22:53:05.2359844Z ##[debug]......=> 'https://github.com'
+2026-08-19T22:53:05.2362567Z ##[debug]....=> true
+2026-08-19T22:53:05.2362906Z ##[debug]....Evaluating Index:
+2026-08-19T22:53:05.2363190Z ##[debug]......Evaluating github:
+2026-08-19T22:53:05.2363430Z ##[debug]......=> Object
+2026-08-19T22:53:05.2363670Z ##[debug]......Evaluating String:
+2026-08-19T22:53:05.2363905Z ##[debug]......=> 'token'
+2026-08-19T22:53:05.2365961Z ##[debug]....=> '***'
+2026-08-19T22:53:05.2368088Z ##[debug]..=> '***'
+2026-08-19T22:53:05.2370416Z ##[debug]=> '***'
+2026-08-19T22:53:05.2374346Z ##[debug]Expanded: ((('https://github.com' == 'https://github.com') && '***') || '')
+2026-08-19T22:53:05.2376411Z ##[debug]Result: '***'
+2026-08-19T22:53:05.2381428Z ##[debug]Loading env
+2026-08-19T22:53:05.2385352Z ##[group]Run actions/setup-node@v6
+2026-08-19T22:53:05.2385578Z with:
+2026-08-19T22:53:05.2385766Z   node-version: 24
+2026-08-19T22:53:05.2385959Z   check-latest: false
+2026-08-19T22:53:05.2387878Z   token: ***
+2026-08-19T22:53:05.2388092Z   package-manager-cache: true
+2026-08-19T22:53:05.2388311Z env:
+2026-08-19T22:53:05.2388507Z   FTP_REMOTE_DIR: ***
+2026-08-19T22:53:05.2388708Z   FTP_PROTOCOL: ftps
+2026-08-19T22:53:05.2388911Z   FTP_PORT: 21
+2026-08-19T22:53:05.2389100Z   FTP_SECURITY: loose
+2026-08-19T22:53:05.2389299Z   COMPOSER_PROCESS_TIMEOUT: 0
+2026-08-19T22:53:05.2389524Z   COMPOSER_NO_INTERACTION: 1
+2026-08-19T22:53:05.2389740Z   COMPOSER_NO_AUDIT: 1
+2026-08-19T22:53:05.2389948Z ##[endgroup]
+2026-08-19T22:53:05.3471755Z ##[debug]isExplicit: 
+2026-08-19T22:53:05.3473134Z ##[debug]explicit? false
+2026-08-19T22:53:05.3532726Z ##[debug]isExplicit: 22.23.2
+2026-08-19T22:53:05.3533210Z ##[debug]explicit? true
+2026-08-19T22:53:05.3536587Z ##[debug]isExplicit: 24.19.0
+2026-08-19T22:53:05.3537157Z ##[debug]explicit? true
+2026-08-19T22:53:05.3544919Z ##[debug]evaluating 2 versions
+2026-08-19T22:53:05.3560621Z ##[debug]matched: 24.19.0
+2026-08-19T22:53:05.3561251Z ##[debug]checking cache: /opt/hostedtoolcache/node/24.19.0/x64
+2026-08-19T22:53:05.3561976Z ##[debug]Found tool in cache node 24.19.0 x64
+2026-08-19T22:53:05.3562446Z Found in cache @ /opt/hostedtoolcache/node/24.19.0/x64
+2026-08-19T22:53:05.3565387Z ::group::Environment details
+2026-08-19T22:53:05.3565763Z ##[group]Environment details
+2026-08-19T22:53:08.6379458Z node: v24.19.0
+2026-08-19T22:53:08.6379800Z npm: 11.17.0
+2026-08-19T22:53:08.6380240Z yarn: 1.22.22
+2026-08-19T22:53:08.6381434Z ::endgroup::
+2026-08-19T22:53:08.6381985Z ##[endgroup]
+2026-08-19T22:53:08.6406232Z ##[add-matcher]/home/runner/work/_actions/actions/setup-node/v6/.github/tsc.json
+2026-08-19T22:53:08.6426169Z ##[debug]Added matchers: 'tsc'. Problem matchers scan action output for known warning or error strings and report these inline.
+2026-08-19T22:53:08.6427245Z ##[add-matcher]/home/runner/work/_actions/actions/setup-node/v6/.github/eslint-stylish.json
+2026-08-19T22:53:08.6434475Z ##[debug]Added matchers: 'eslint-stylish'. Problem matchers scan action output for known warning or error strings and report these inline.
+2026-08-19T22:53:08.6435432Z ##[add-matcher]/home/runner/work/_actions/actions/setup-node/v6/.github/eslint-compact.json
+2026-08-19T22:53:08.6437537Z ##[debug]Added matchers: 'eslint-compact'. Problem matchers scan action output for known warning or error strings and report these inline.
+2026-08-19T22:53:08.6478401Z ##[debug]Node Action run completed with exit code 0
+2026-08-19T22:53:08.6480573Z ##[debug]Set output node-version = v24.19.0
+2026-08-19T22:53:08.6481474Z ##[debug]Finishing: Setup Node.js
+2026-08-19T22:53:08.6487595Z ##[debug]Evaluating condition for step: 'Deploy quality gates'
+2026-08-19T22:53:08.6489478Z ##[debug]Evaluating: success()
+2026-08-19T22:53:08.6489876Z ##[debug]Evaluating success:
+2026-08-19T22:53:08.6490616Z ##[debug]=> true
+2026-08-19T22:53:08.6490981Z ##[debug]Result: true
+2026-08-19T22:53:08.6491522Z ##[debug]Starting: Deploy quality gates
+2026-08-19T22:53:08.6499569Z ##[debug]Loading inputs
+2026-08-19T22:53:08.6500807Z ##[debug]Loading env
+2026-08-19T22:53:08.6514528Z ##[group]Run set -euo pipefail
+2026-08-19T22:53:08.6514833Z [36;1mset -euo pipefail[0m
+2026-08-19T22:53:08.6515075Z [36;1mwhile IFS= read -r -d '' f; do[0m
+2026-08-19T22:53:08.6515318Z [36;1m  php -l "$f"[0m
+2026-08-19T22:53:08.6515542Z [36;1mdone < <(git ls-files -z '*.php')[0m
+2026-08-19T22:53:08.6515796Z [36;1mwhile IFS= read -r -d '' f; do[0m
+2026-08-19T22:53:08.6516202Z [36;1m  node --check "$f"[0m
+2026-08-19T22:53:08.6534047Z [36;1mdone < <(git ls-files -z '*.js' '*.mjs')[0m
+2026-08-19T22:53:08.6534416Z [36;1mbash .github/scripts/quality-gate.sh[0m
+2026-08-19T22:53:08.6614837Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-08-19T22:53:08.6615141Z env:
+2026-08-19T22:53:08.6615548Z   FTP_REMOTE_DIR: ***
+2026-08-19T22:53:08.6615767Z   FTP_PROTOCOL: ftps
+2026-08-19T22:53:08.6615964Z   FTP_PORT: 21
+2026-08-19T22:53:08.6616149Z   FTP_SECURITY: loose
+2026-08-19T22:53:08.6616364Z   COMPOSER_PROCESS_TIMEOUT: 0
+2026-08-19T22:53:08.6616588Z   COMPOSER_NO_INTERACTION: 1
+2026-08-19T22:53:08.6616804Z   COMPOSER_NO_AUDIT: 1
+2026-08-19T22:53:08.6616996Z ##[endgroup]
+2026-08-19T22:53:08.6667779Z ##[debug]/usr/bin/bash --noprofile --norc -e -o pipefail /home/runner/work/_temp/3a5ae266-0603-4efc-a334-0001984ef178.sh
+2026-08-19T22:53:08.7021473Z No syntax errors detected in admin/admin_approve.php
+2026-08-19T22:53:08.7387429Z No syntax errors detected in admin/admin_export.php
+2026-08-19T22:53:08.7750766Z No syntax errors detected in admin/admin_report.php
+2026-08-19T22:53:08.8108880Z No syntax errors detected in asset.php
+2026-08-19T22:53:08.8468390Z No syntax errors detected in backup-registry.php
+2026-08-19T22:53:08.8843911Z No syntax errors detected in backup-restore-commit.php
+2026-08-19T22:53:08.9218378Z No syntax errors detected in backup-restore-dry-run.php
+2026-08-19T22:53:08.9588827Z No syntax errors detected in backup-restore-status.php
+2026-08-19T22:53:08.9956006Z No syntax errors detected in backup_download.php
+2026-08-19T22:53:09.0343124Z No syntax errors detected in core.php
+2026-08-19T22:53:09.0708545Z No syntax errors detected in document_token.php
+2026-08-19T22:53:09.1063696Z No syntax errors detected in driver/driver_change_password.php
+2026-08-19T22:53:09.1430345Z No syntax errors detected in driver/driver_common.php
+2026-08-19T22:53:09.1802636Z No syntax errors detected in driver/driver_data.php
+2026-08-19T22:53:09.2175096Z No syntax errors detected in driver/driver_event.php
+2026-08-19T22:53:09.2544041Z No syntax errors detected in driver/driver_feedback.php
+2026-08-19T22:53:09.2908184Z No syntax errors detected in driver/driver_history.php
+2026-08-19T22:53:09.3274377Z No syntax errors detected in driver/driver_login.php
+2026-08-19T22:53:09.3649295Z No syntax errors detected in driver/driver_request.php
+2026-08-19T22:53:09.4018108Z No syntax errors detected in driver/driver_save.php
+2026-08-19T22:53:09.4390145Z No syntax errors detected in full_backup.php
+2026-08-19T22:53:09.4751346Z No syntax errors detected in full_backup_restore.php
+2026-08-19T22:53:09.5114664Z No syntax errors detected in kasko-index.php
+2026-08-19T22:53:09.5482853Z No syntax errors detected in load.php
+2026-08-19T22:53:09.5869681Z No syntax errors detected in load_kasko.php
+2026-08-19T22:53:09.6241366Z No syntax errors detected in required_documents.php
+2026-08-19T22:53:09.6604227Z No syntax errors detected in restore.php
+2026-08-19T22:53:09.6969490Z No syntax errors detected in ruhsat.php
+2026-08-19T22:53:09.7331171Z No syntax errors detected in ruhsat_preview.php
+2026-08-19T22:53:09.7693999Z No syntax errors detected in save.php
+2026-08-19T22:53:09.8057157Z No syntax errors detected in save_kasko.php
+2026-08-19T22:53:09.8426621Z No syntax errors detected in scripts/generate-medisa-staging-seed.php
+2026-08-19T22:53:09.8788318Z No syntax errors detected in scripts/inspect-medisa-runtime-data-health.php
+2026-08-19T22:53:09.9153968Z No syntax errors detected in scripts/inventory-medisa-password-states.php
+2026-08-19T22:53:09.9518241Z No syntax errors detected in scripts/migrate-medisa-default-credentials.php
+2026-08-19T22:53:09.9882549Z No syntax errors detected in scripts/migrate-medisa-notification-scope-legacy.php
+2026-08-19T22:53:10.0251190Z No syntax errors detected in scripts/migrate-medisa-passwords.php
+2026-08-19T22:53:10.0622040Z No syntax errors detected in scripts/verify-medisa-default-credentials.php
+2026-08-19T22:53:10.0987367Z No syntax errors detected in scripts/verify-medisa-full-backup-invariants.php
+2026-08-19T22:53:10.1345465Z No syntax errors detected in scripts/verify-medisa-k2-branch-group-invariants.php
+2026-08-19T22:53:10.1708335Z No syntax errors detected in scripts/verify-medisa-mandatory-password-change.php
+2026-08-19T22:53:10.2069612Z No syntax errors detected in scripts/verify-medisa-notification-scope-legacy.php
+2026-08-19T22:53:10.2436021Z No syntax errors detected in scripts/verify-medisa-password-migration.php
+2026-08-19T22:53:10.2811232Z No syntax errors detected in scripts/verify-medisa-role-matrix.php
+2026-08-19T22:53:10.3175596Z No syntax errors detected in scripts/verify-medisa-runtime-data-health.php
+2026-08-19T22:53:10.3558393Z No syntax errors detected in scripts/verify-medisa-save-wire-invariants.php
+2026-08-19T22:53:10.3928397Z No syntax errors detected in scripts/verify-medisa-server-restore-invariants.php
+2026-08-19T22:53:10.4309197Z No syntax errors detected in server_restore.php
+2026-08-19T22:53:10.4681181Z No syntax errors detected in t/index.php
+2026-08-19T22:53:10.5066809Z No syntax errors detected in upload_ruhsat.php
+2026-08-19T22:53:11.7985545Z [quality-gate] Visible store
+2026-08-19T22:53:12.0033277Z 
+2026-08-19T22:53:12.0033819Z > tool:verify-visible-store
+2026-08-19T22:53:12.0034234Z > node scripts/verify-medisa-visible-store-invariants.js
+2026-08-19T22:53:12.0034459Z 
+2026-08-19T22:53:12.1227050Z PASS 1 visible cache collection bazlı slot yapısı
+2026-08-19T22:53:12.1227746Z PASS 2 vehicles cache key session + vehicles revision
+2026-08-19T22:53:12.1228306Z PASS 3 users cache key session + users revision
+2026-08-19T22:53:12.1228987Z PASS 4 branches cache key session + üç collection revision
+2026-08-19T22:53:12.1229657Z PASS 20 UI modüllerinde görünür reader owner kontratı
+2026-08-19T22:53:12.1230548Z PASS 21 UI modüllerinde visible raw collection assignment yok
+2026-08-19T22:53:12.1231388Z PASS 22 UI modüllerinde appData koleksiyon elemanı mutasyonu yok
+2026-08-19T22:53:12.1233781Z PASS 23 data-service doğrudan taşıt assignment yapmıyor
+2026-08-19T22:53:12.1235146Z PASS 31 K2 toplu sync clone/write-once owner
+2026-08-19T22:53:12.1235751Z PASS 32 Kasko toplu sync clone/write-once owner
+2026-08-19T22:53:12.1236425Z PASS 33 no-op K2 writeVehicles çağrısı guard
+2026-08-19T22:53:12.1237020Z PASS 34 no-op kasko writeVehicles çağrısı guard
+2026-08-19T22:53:12.1237567Z PASS 37 event detail business veri içermiyor
+2026-08-19T22:53:12.1238089Z PASS 39 save-wire kontratı korunuyor
+2026-08-19T22:53:12.1238522Z PASS 5 repeated vehicle read cache hit
+2026-08-19T22:53:12.1238948Z PASS 6 repeated user read cache hit
+2026-08-19T22:53:12.1239368Z PASS 7 repeated branch read cache hit
+2026-08-19T22:53:12.1239930Z PASS 8 vehicle değişikliği vehicle cache invalidate
+2026-08-19T22:53:12.1240731Z PASS 9 vehicle değişikliği branch cache invalidate
+2026-08-19T22:53:12.1241362Z PASS 10 vehicle değişikliği user cache invalidate etmiyor
+2026-08-19T22:53:12.1241996Z PASS 11 user değişikliği user cache invalidate
+2026-08-19T22:53:12.1242559Z PASS 12 user değişikliği branch cache invalidate
+2026-08-19T22:53:12.1243214Z PASS 13 user değişikliği vehicle visibility rebuild etmiyor
+2026-08-19T22:53:12.1244307Z PASS 14 branch metadata değişikliği branch cache invalidate
+2026-08-19T22:53:12.1244999Z PASS 15 branch metadata vehicle/user visibility rebuild etmiyor
+2026-08-19T22:53:12.1245734Z PASS 16 session role değişimi görünür vehicle sonucunu değiştirir
+2026-08-19T22:53:12.1246422Z PASS 17 session user değişimi görünür user sonucunu değiştirir
+2026-08-19T22:53:12.1247201Z PASS 18 session branch scope değişimi görünür vehicle sonucunu değiştirir
+2026-08-19T22:53:12.1247757Z PASS 19 array return defensive copy
+2026-08-19T22:53:12.1248274Z PASS 35 full restore üç revision artırıyor
+2026-08-19T22:53:12.1248898Z PASS 40 role/scope görünürlük parity korunuyor
+2026-08-19T22:53:12.1249471Z PASS 41 global visibleCacheVersion kaldırılmış
+2026-08-19T22:53:12.1249951Z PASS 42 PR #464 login title fit korunuyor
+2026-08-19T22:53:12.1250579Z PASS 43 unknown collection reddedilir
+2026-08-19T22:53:12.1251277Z PASS 45 user collection güvenlik alanlarını kalıcı state öncesi temizler
+2026-08-19T22:53:12.1252320Z PASS 46 legacy offline snapshot okunurken temizlenip yeniden yazılır
+2026-08-19T22:53:12.1253091Z PASS 47 manage_backups yalnız sunucu session payload true ise açılır
+2026-08-19T22:53:12.1253740Z PASS 38 synchronous çoklu mutation event coalesce
+2026-08-19T22:53:12.1254289Z PASS 44 event listener hatası akışı bozmaz
+2026-08-19T22:53:12.1254727Z PASS 27 save success state korunuyor
+2026-08-19T22:53:12.1269654Z PASS 30 409 conflict reload parity
+2026-08-19T22:53:12.1273398Z PASS 29 save exception rollback/reload
+2026-08-19T22:53:12.1276404Z PASS 25 writeBranches synchronous revision artırıyor
+2026-08-19T22:53:12.1276998Z PASS 26 writeUsers synchronous revision artırıyor
+2026-08-19T22:53:12.1277438Z PASS 28 save false rollback/reload
+2026-08-19T22:53:12.1284714Z PASS 36 version patch vehicle revision artırıyor
+2026-08-19T22:53:12.1285330Z PASS 24 writeVehicles synchronous revision artırıyor
+2026-08-19T22:53:12.1285618Z 
+2026-08-19T22:53:12.1285861Z Visible store invariants: 47 passed, 0 failed
+2026-08-19T22:53:12.1382645Z [quality-gate] Login title fit
+2026-08-19T22:53:12.2087768Z 
+2026-08-19T22:53:12.2088282Z > tool:verify-login-title-fit
+2026-08-19T22:53:12.2088813Z > node scripts/verify-driver-login-title-fit.js
+2026-08-19T22:53:12.2089012Z 
+2026-08-19T22:53:12.2334739Z [OK] login_plain_hero_h1
+2026-08-19T22:53:12.2336144Z [OK] login_loads_driver_shell
+2026-08-19T22:53:12.2338007Z [OK] login_no_blocking_features_css
+2026-08-19T22:53:12.2338431Z [OK] login_no_blocking_style_aggregator
+2026-08-19T22:53:12.2338842Z [OK] login_h1_direct_child_selector
+2026-08-19T22:53:12.2340348Z [OK] login_fit_contract_min_width_flex
+2026-08-19T22:53:12.2343003Z [OK] login_desktop_fit_contract
+2026-08-19T22:53:12.2344254Z [OK] login_mobile_fit_contract
+2026-08-19T22:53:12.2345119Z [OK] style_core_hero_h1_unchanged_ellipsis
+2026-08-19T22:53:12.2345762Z [OK] title_text_unchanged
+2026-08-19T22:53:12.2346314Z [OK] dashboard_two_rows_preserved
+2026-08-19T22:53:12.2346748Z [OK] dashboard_shell_version_aligned
+2026-08-19T22:53:12.2354432Z [OK] login_footer_height_includes_safe_area
+2026-08-19T22:53:12.2354924Z [OK] login_footer_content_no_double_safe_area
+2026-08-19T22:53:12.2355186Z 
+2026-08-19T22:53:12.2355443Z verify-driver-login-title-fit: OK
+2026-08-19T22:53:12.2429594Z [quality-gate] Roles
+2026-08-19T22:53:12.3218865Z 
+2026-08-19T22:53:12.3219396Z > tool:verify-roles
+2026-08-19T22:53:12.3219889Z > node scripts/run-medisa-role-matrix-verify.js
+2026-08-19T22:53:12.3220272Z 
+2026-08-19T22:53:12.3716127Z verify-medisa-role-invariants: OK
+2026-08-19T22:53:13.0614947Z [PASS] normalize admin (expected="genel_yonetici" actual="genel_yonetici")
+2026-08-19T22:53:13.0615808Z [PASS] normalize yonetici (expected="sube_yonetici" actual="sube_yonetici")
+2026-08-19T22:53:13.0616629Z [PASS] normalize yonetici_kullanici (expected="sube_yonetici" actual="sube_yonetici")
+2026-08-19T22:53:13.0617385Z [PASS] normalize surucu (expected="kullanici" actual="kullanici")
+2026-08-19T22:53:13.0618048Z [PASS] normalize driver (expected="kullanici" actual="kullanici")
+2026-08-19T22:53:13.0619231Z [PASS] normalize sales (expected="kullanici" actual="kullanici")
+2026-08-19T22:53:13.0619871Z [PASS] normalize empty (expected="kullanici" actual="kullanici")
+2026-08-19T22:53:13.0620703Z [PASS] resolve gm role (expected="genel_yonetici" actual="genel_yonetici")
+2026-08-19T22:53:13.0621381Z [PASS] resolve bm role (expected="sube_yonetici" actual="sube_yonetici")
+2026-08-19T22:53:13.0622087Z [PASS] resolve legacy raw (expected="sube_yonetici" actual="sube_yonetici")
+2026-08-19T22:53:13.0622889Z [PASS] resolve yonetici_kullanici (expected="sube_yonetici" actual="sube_yonetici")
+2026-08-19T22:53:13.0623590Z [PASS] resolve driver alias (expected="kullanici" actual="kullanici")
+2026-08-19T22:53:13.0624109Z [PASS] legacy yonetici_only true
+2026-08-19T22:53:13.0624541Z [PASS] canonical bm yonetici_only false
+2026-08-19T22:53:13.0625009Z [PASS] yonetici_kullanici yonetici_only false
+2026-08-19T22:53:13.0625462Z [PASS] branch manager role true
+2026-08-19T22:53:13.0626040Z [PASS] branch manager role gm false
+2026-08-19T22:53:13.0626413Z [PASS] main access gm
+2026-08-19T22:53:13.0626729Z [PASS] main access bm
+2026-08-19T22:53:13.0627048Z [PASS] main access user false
+2026-08-19T22:53:13.0627571Z [PASS] bm-a branches (expected=["branch-a"] actual=["branch-a"])
+2026-08-19T22:53:13.0628366Z [PASS] bm-ab dedupe branches (expected=["branch-a","branch-b"] actual=["branch-a","branch-b"])
+2026-08-19T22:53:13.0629057Z [PASS] empty user branches (expected=[] actual=[])
+2026-08-19T22:53:13.0629537Z [PASS] user-a has assigned vehicle
+2026-08-19T22:53:13.0629937Z [PASS] user-c zimmetli has vehicle
+2026-08-19T22:53:13.0630421Z [PASS] user-none no vehicle
+2026-08-19T22:53:13.0630792Z [PASS] gm driver dashboard true
+2026-08-19T22:53:13.0631174Z [PASS] bm driver dashboard true
+2026-08-19T22:53:13.0631560Z [PASS] legacy yonetici driver false
+2026-08-19T22:53:13.0631985Z [PASS] yonetici_kullanici driver true
+2026-08-19T22:53:13.0632399Z [PASS] user with vehicle driver true
+2026-08-19T22:53:13.0632842Z [PASS] user without vehicle driver false
+2026-08-19T22:53:13.0633248Z [PASS] empty id driver false
+2026-08-19T22:53:13.0633626Z [PASS] invalid role driver false
+2026-08-19T22:53:13.0633980Z [PASS] gm view_main_app
+2026-08-19T22:53:13.0634293Z [PASS] gm view_reports
+2026-08-19T22:53:13.0634597Z [PASS] gm manage_users
+2026-08-19T22:53:13.0634918Z [PASS] gm manage_branches
+2026-08-19T22:53:13.0635241Z [PASS] gm manage_data
+2026-08-19T22:53:13.0635563Z [PASS] gm manage_settings
+2026-08-19T22:53:13.0635889Z [PASS] gm manage_backups
+2026-08-19T22:53:13.0636218Z [PASS] bm view_main_app
+2026-08-19T22:53:13.0636571Z [PASS] bm view_reports
+2026-08-19T22:53:13.0636889Z [PASS] bm manage_users true
+2026-08-19T22:53:13.0637272Z [PASS] bm manage_branches false
+2026-08-19T22:53:13.0637625Z [PASS] bm manage_data true
+2026-08-19T22:53:13.0638004Z [PASS] bm manage_settings true
+2026-08-19T22:53:13.0638378Z [PASS] bm manage_backups false
+2026-08-19T22:53:13.0638755Z [PASS] user view_main_app false
+2026-08-19T22:53:13.0639157Z [PASS] user view_reports false
+2026-08-19T22:53:13.0639533Z [PASS] user manage_users false
+2026-08-19T22:53:13.0639929Z [PASS] user manage_branches false
+2026-08-19T22:53:13.0640418Z [PASS] user manage_data false
+2026-08-19T22:53:13.0640812Z [PASS] user manage_settings false
+2026-08-19T22:53:13.0641210Z [PASS] user manage_backups false
+2026-08-19T22:53:13.0641559Z [PASS] ctx gm role
+2026-08-19T22:53:13.0641903Z [PASS] ctx gm driver_dashboard
+2026-08-19T22:53:13.0642231Z [PASS] ctx bm role
+2026-08-19T22:53:13.0642569Z [PASS] ctx legacy yonetici_only
+2026-08-19T22:53:13.0642944Z [PASS] ctx legacy driver false
+2026-08-19T22:53:13.0643297Z [PASS] ctx yk driver true
+2026-08-19T22:53:13.0643628Z [PASS] ctx malformed null
+2026-08-19T22:53:13.0643962Z [PASS] ctx unknown user null
+2026-08-19T22:53:13.0644391Z [PASS] token role ignored for role
+2026-08-19T22:53:13.0644805Z [PASS] token role ignored for main
+2026-08-19T22:53:13.0645210Z [PASS] role downgrade uses data role
+2026-08-19T22:53:13.0645637Z [PASS] role downgrade main denied
+2026-08-19T22:53:13.0646449Z [PASS] branch removal uses data branches (expected=["branch-c"] actual=["branch-c"])
+2026-08-19T22:53:13.0647099Z [PASS] branch removal hides old branch vehicle
+2026-08-19T22:53:13.0647549Z [PASS] gm views all branches a
+2026-08-19T22:53:13.0647944Z [PASS] gm views all branches empty
+2026-08-19T22:53:13.0648323Z [PASS] gm views all vehicles
+2026-08-19T22:53:13.0648699Z [PASS] gm manages all vehicles
+2026-08-19T22:53:13.0649042Z [PASS] gm views all users
+2026-08-19T22:53:13.0649387Z [PASS] gm manages other gm
+2026-08-19T22:53:13.0649726Z [PASS] gm views report users
+2026-08-19T22:53:13.0650197Z [PASS] bm views own branch
+2026-08-19T22:53:13.0650540Z [PASS] bm hides other branch
+2026-08-19T22:53:13.0650861Z [PASS] bm-ab views a
+2026-08-19T22:53:13.0651144Z [PASS] bm-ab views b
+2026-08-19T22:53:13.0651418Z [PASS] bm-ab hides c
+2026-08-19T22:53:13.0651720Z [PASS] bm views own vehicle
+2026-08-19T22:53:13.0652052Z [PASS] bm manages own vehicle
+2026-08-19T22:53:13.0652576Z [PASS] bm denies other vehicle view
+2026-08-19T22:53:13.0652984Z [PASS] bm denies other vehicle manage
+2026-08-19T22:53:13.0653387Z [PASS] bm views own-branch user
+2026-08-19T22:53:13.0653775Z [PASS] bm manages own-branch user
+2026-08-19T22:53:13.0654170Z [PASS] bm denies other-branch user
+2026-08-19T22:53:13.0654597Z [PASS] bm denies manage other-branch user
+2026-08-19T22:53:13.0654983Z [PASS] bm denies view gm
+2026-08-19T22:53:13.0655304Z [PASS] bm denies manage gm
+2026-08-19T22:53:13.0655634Z [PASS] bm denies self manage
+2026-08-19T22:53:13.0655963Z [PASS] bm denies self view
+2026-08-19T22:53:13.0656292Z [PASS] bm denies peer bm view
+2026-08-19T22:53:13.0656646Z [PASS] bm denies peer bm manage
+2026-08-19T22:53:13.0657031Z [PASS] bm denies other-branch bm view
+2026-08-19T22:53:13.0657444Z [PASS] bm denies other-branch bm manage
+2026-08-19T22:53:13.0657913Z [PASS] bm denies unknown target role manage
+2026-08-19T22:53:13.0658356Z [PASS] bm denies unknown target role view
+2026-08-19T22:53:13.0658828Z [PASS] bm denies legacy yonetici_kullanici manage
+2026-08-19T22:53:13.0659248Z [PASS] bm report own user
+2026-08-19T22:53:13.0659606Z [PASS] bm report other user hidden
+2026-08-19T22:53:13.0660082Z [PASS] bm report gm hidden
+2026-08-19T22:53:13.0660442Z [PASS] bm report peer bm hidden
+2026-08-19T22:53:13.0660841Z [PASS] bm report other-branch bm hidden
+2026-08-19T22:53:13.0661221Z [PASS] bm report self hidden
+2026-08-19T22:53:13.0661593Z [PASS] bm report unknown role hidden
+2026-08-19T22:53:13.0662027Z [PASS] bm report partial multi-branch hidden
+2026-08-19T22:53:13.0662413Z [PASS] gm report views bm
+2026-08-19T22:53:13.0662760Z [PASS] gm report views peer bm
+2026-08-19T22:53:13.0663091Z [PASS] gm report views gm2
+2026-08-19T22:53:13.0663449Z [PASS] gm report views normal user
+2026-08-19T22:53:13.0663846Z [PASS] empty target branch deny manage
+2026-08-19T22:53:13.0664249Z [PASS] partial outside scope deny
+2026-08-19T22:53:13.0664692Z [PASS] no branch scope on bm context deny foreign
+2026-08-19T22:53:13.0665091Z [PASS] user sees self
+2026-08-19T22:53:13.0665401Z [PASS] user hides other
+2026-08-19T22:53:13.0665745Z [PASS] user sees assigned vehicle
+2026-08-19T22:53:13.0666123Z [PASS] user sees zimmet vehicle
+2026-08-19T22:53:13.0666500Z [PASS] user hides unrelated vehicle
+2026-08-19T22:53:13.0666888Z [PASS] user manage vehicle false
+2026-08-19T22:53:13.0667241Z [PASS] user manage user false
+2026-08-19T22:53:13.0667604Z [PASS] unknown role vehicle deny
+2026-08-19T22:53:13.0667951Z [PASS] gm filter all vehicles
+2026-08-19T22:53:13.0668273Z [PASS] gm filter all users
+2026-08-19T22:53:13.0668598Z [PASS] gm filter all branches
+2026-08-19T22:53:13.0668925Z [PASS] gm kasko rows emptied
+2026-08-19T22:53:13.0669280Z [PASS] bm vehicle scope only a
+2026-08-19T22:53:13.0669613Z [PASS] bm no gm user
+2026-08-19T22:53:13.0669933Z [PASS] bm has user-a
+2026-08-19T22:53:13.0670431Z [PASS] bm no user-b
+2026-08-19T22:53:13.0670775Z [PASS] bm self hidden from user list
+2026-08-19T22:53:13.0671180Z [PASS] bm peer hidden from user list
+2026-08-19T22:53:13.0671655Z [PASS] bm no branch-c
+2026-08-19T22:53:13.0671970Z [PASS] user only own user row
+2026-08-19T22:53:13.0672334Z [PASS] user only assigned vehicle
+2026-08-19T22:53:13.0672758Z [PASS] user full data not leaked vehicle count
+2026-08-19T22:53:13.0673156Z [PASS] user kayitlar empty
+2026-08-19T22:53:13.0673490Z [PASS] user sifreler empty
+2026-08-19T22:53:13.0673810Z [PASS] user kasko rows empty
+2026-08-19T22:53:13.0674133Z [PASS] report bm hides gm
+2026-08-19T22:53:13.0674462Z [PASS] report bm shows user-a
+2026-08-19T22:53:13.0674821Z [PASS] report bm hides peer bm
+2026-08-19T22:53:13.0675162Z [PASS] report bm hides self
+2026-08-19T22:53:13.0675585Z [PASS] report user only self
+2026-08-19T22:53:13.0675911Z [PASS] session no sifre
+2026-08-19T22:53:13.0676223Z [PASS] session no sifre_hash
+2026-08-19T22:53:13.0676583Z [PASS] gm user projection secretsiz
+2026-08-19T22:53:13.0676984Z [PASS] bm user projection secretsiz
+2026-08-19T22:53:13.0677388Z [PASS] user user projection secretsiz
+2026-08-19T22:53:13.0678070Z [PASS] report_bm user projection secretsiz
+2026-08-19T22:53:13.0678527Z [PASS] report_user user projection secretsiz
+2026-08-19T22:53:13.0679004Z [PASS] user projection portal_sifresi_var true
+2026-08-19T22:53:13.0679426Z [PASS] save own vehicle allowed
+2026-08-19T22:53:13.0679803Z [PASS] save other vehicle rejected
+2026-08-19T22:53:13.0680301Z [PASS] save own user allowed
+2026-08-19T22:53:13.0680657Z [PASS] save other user rejected
+2026-08-19T22:53:13.0681030Z [PASS] save gm user rejected for bm
+2026-08-19T22:53:13.0681429Z [PASS] save self user rejected for bm
+2026-08-19T22:53:13.0681825Z [PASS] save peer bm rejected for bm
+2026-08-19T22:53:13.0682213Z [PASS] user cannot save vehicle
+2026-08-19T22:53:13.0682599Z [PASS] mutation update own-scope user ok
+2026-08-19T22:53:13.0683050Z [PASS] mutation role-downgrade peer denied
+2026-08-19T22:53:13.0683474Z [PASS] mutation promote to bm denied
+2026-08-19T22:53:13.0683879Z [PASS] mutation promote to gm denied
+2026-08-19T22:53:13.0684272Z [PASS] mutation create bm denied
+2026-08-19T22:53:13.0684677Z [PASS] mutation create normal user ok
+2026-08-19T22:53:13.0685111Z [PASS] mutation steal other-branch user denied
+2026-08-19T22:53:13.0685576Z [PASS] mutation move user out of scope denied
+2026-08-19T22:53:13.0686066Z [PASS] mutation partial multi-branch create denied
+2026-08-19T22:53:13.7157138Z [PASS] save apply downgrade peer 403
+2026-08-19T22:53:13.7157710Z [PASS] save apply downgrade peer role preserved
+2026-08-19T22:53:14.3661562Z [PASS] save apply promote user 403
+2026-08-19T22:53:14.3662101Z [PASS] save apply promote user role preserved
+2026-08-19T22:53:15.0170309Z [PASS] save apply omit peer keeps peer
+2026-08-19T22:53:15.0170878Z [PASS] save apply omit peer still present
+2026-08-19T22:53:15.0171353Z [PASS] save apply omit peer role intact
+2026-08-19T22:53:15.0171803Z [PASS] save apply omit peer keeps gm
+2026-08-19T22:53:15.0172239Z [PASS] save apply omit peer fields unchanged
+2026-08-19T22:53:15.0172698Z [PASS] second omit save succeeds
+2026-08-19T22:53:15.0173077Z [PASS] second omit peer still present
+2026-08-19T22:53:15.0173477Z [PASS] second omit peer fields still unchanged
+2026-08-19T22:53:15.0173888Z [PASS] second omit user-a updated
+2026-08-19T22:53:15.0174244Z [PASS] notif gm branch scope all
+2026-08-19T22:53:15.0174584Z [PASS] notif bm includes branch-a
+2026-08-19T22:53:15.0174923Z [PASS] notif scopes differ gm vs bm
+2026-08-19T22:53:15.0175293Z [PASS] notif scopes differ bm vs user
+2026-08-19T22:53:15.0175641Z [PASS] notif user key has user id
+2026-08-19T22:53:15.0175958Z [PASS] auth no token 401
+2026-08-19T22:53:15.0176277Z [PASS] auth malformed token 401
+2026-08-19T22:53:15.0179056Z [PASS] user main app 403
+2026-08-19T22:53:15.0180222Z [PASS] bm manage_branches 403
+2026-08-19T22:53:15.0181152Z [PASS] bm main app allowed
+2026-08-19T22:53:15.0181504Z [PASS] 403 permission helper
+2026-08-19T22:53:15.0181875Z [PASS] 400 invalid payload helper
+2026-08-19T22:53:15.6684933Z [PASS] stale vehicle version 409
+2026-08-19T22:53:16.3183202Z [PASS] stale delete version 409
+2026-08-19T22:53:16.9685272Z [PASS] scope dışı vehicle save 403
+2026-08-19T22:53:17.6182916Z [PASS] invalid delta payload 400
+2026-08-19T22:53:17.6183441Z [PASS] driver bypass foreign vehicle deny
+2026-08-19T22:53:17.6183942Z [PASS] driver bypass foreign vehicle manage deny
+2026-08-19T22:53:17.6184440Z [PASS] filter never copies full kasko rows
+2026-08-19T22:53:17.6184893Z [PASS] legacy main access true
+2026-08-19T22:53:17.6185289Z [PASS] legacy branch scope kept
+2026-08-19T22:53:17.6185694Z [PASS] legacy other branch denied
+2026-08-19T22:53:17.6186075Z [PASS] yk main access true
+2026-08-19T22:53:17.6186436Z [PASS] malformed branch deny
+2026-08-19T22:53:17.6186831Z [PASS] unknown role deny manage user
+2026-08-19T22:53:17.6187269Z [PASS] active helper missing aktif true
+2026-08-19T22:53:17.6187709Z [PASS] active helper aktif false
+2026-08-19T22:53:17.6188162Z [PASS] active helper malformed fail-closed true
+2026-08-19T22:53:17.6188570Z [PASS] active gm true
+2026-08-19T22:53:17.6189464Z [PASS] count active gm fixture
+2026-08-19T22:53:17.6189866Z [PASS] p0c self delete deny
+2026-08-19T22:53:17.6190411Z [PASS] p0c self downgrade deny
+2026-08-19T22:53:17.6190803Z [PASS] p0c self bm downgrade deny
+2026-08-19T22:53:17.6191211Z [PASS] p0c self unknown role deny
+2026-08-19T22:53:17.6191604Z [PASS] p0c self deactivate deny
+2026-08-19T22:53:17.6192003Z [PASS] p0c self name/phone allow
+2026-08-19T22:53:17.6192387Z [PASS] p0c last gm delete deny
+2026-08-19T22:53:17.6194277Z [PASS] p0c last gm downgrade deny
+2026-08-19T22:53:17.6194725Z [PASS] p0c last gm deactivate deny
+2026-08-19T22:53:17.6195150Z [PASS] p0c last gm id replacement deny
+2026-08-19T22:53:17.6195641Z [PASS] p0c last active gm with passive peer delete deny
+2026-08-19T22:53:17.6196117Z [PASS] p0c peer gm delete allow when 2+
+2026-08-19T22:53:17.6196560Z [PASS] p0c peer gm downgrade allow when 2+
+2026-08-19T22:53:17.6196990Z [PASS] p0c peer gm deactivate allow when 2+
+2026-08-19T22:53:17.6197407Z [PASS] p0c both gm removed deny
+2026-08-19T22:53:17.6197777Z [PASS] p0c duplicate id deny
+2026-08-19T22:53:18.2695744Z [PASS] p0c apply self delete 403
+2026-08-19T22:53:18.2696239Z [PASS] p0c apply self delete no persist
+2026-08-19T22:53:18.9195911Z [PASS] p0c apply peer delete allow
+2026-08-19T22:53:18.9196447Z [PASS] p0c apply peer delete leaves one gm
+2026-08-19T22:53:18.9196719Z 
+2026-08-19T22:53:18.9196878Z ROLE_MATRIX_PASSED=233
+2026-08-19T22:53:18.9197199Z ROLE_MATRIX_FAILED=0
+2026-08-19T22:53:18.9197535Z verify-medisa-role-matrix: OK
+2026-08-19T22:53:18.9279696Z tool:verify-roles OK
+2026-08-19T22:53:18.9371343Z [quality-gate] Password migration and mandatory first-login
+2026-08-19T22:53:19.0112727Z 
+2026-08-19T22:53:19.0113309Z > tool:verify-password-migration
+2026-08-19T22:53:19.0113824Z > php scripts/verify-medisa-password-migration.php
+2026-08-19T22:53:19.0114045Z 
+2026-08-19T22:53:19.1011673Z [PASS] plaintext → hash oluşur
+2026-08-19T22:53:19.1012084Z [PASS] plaintext alanı silinir
+2026-08-19T22:53:19.1511146Z [PASS] plaintext login verify
+2026-08-19T22:53:19.2011310Z [PASS] plaintext wrong password reject
+2026-08-19T22:53:19.2511996Z [PASS] geçerli hash korunur
+2026-08-19T22:53:19.2512460Z [PASS] geçerli hash changed=false
+2026-08-19T22:53:19.2512822Z [PASS] both: hash korunur
+2026-08-19T22:53:19.2513186Z [PASS] both: plaintext düşer
+2026-08-19T22:53:19.2513497Z [PASS] both: changed=true
+2026-08-19T22:53:19.2513829Z [PASS] malformed fail-closed action
+2026-08-19T22:53:19.2514176Z [PASS] malformed unchanged
+2026-08-19T22:53:19.3521227Z [PASS] dry-run data unchanged
+2026-08-19T22:53:19.3521690Z [PASS] dry-run will_change count
+2026-08-19T22:53:19.3522134Z [PASS] dry-run backup plaintext inventory
+2026-08-19T22:53:19.4528401Z [PASS] apply succeeded
+2026-08-19T22:53:19.4528850Z [PASS] apply user count stable
+2026-08-19T22:53:19.4529255Z [PASS] apply plaintext remaining 0
+2026-08-19T22:53:19.4529677Z [PASS] apply rollback backup exists
+2026-08-19T22:53:19.4530294Z [PASS] applied plain user has hash
+2026-08-19T22:53:19.4530732Z [PASS] applied plain user no sifre
+2026-08-19T22:53:19.4531597Z [PASS] applied hash user preserved
+2026-08-19T22:53:19.5029372Z [PASS] login plain migrated ok
+2026-08-19T22:53:19.5529934Z [PASS] login hash kept ok
+2026-08-19T22:53:19.6030349Z [PASS] login wrong reject
+2026-08-19T22:53:19.6035041Z [PASS] second apply no changes
+2026-08-19T22:53:19.6035426Z [PASS] projection no sifre
+2026-08-19T22:53:19.6035794Z [PASS] projection no sifre_hash
+2026-08-19T22:53:19.6036184Z [PASS] portal_sifresi_var boolean
+2026-08-19T22:53:19.6036565Z [PASS] portal_sifresi_var true
+2026-08-19T22:53:19.6537130Z [PASS] p0a1 transient change success
+2026-08-19T22:53:19.7037449Z [PASS] p0a1 new hash login
+2026-08-19T22:53:19.7538112Z [PASS] p0a1 old password reject
+2026-08-19T22:53:19.7541989Z [PASS] malformed apply blocked
+2026-08-19T22:53:19.7544399Z [PASS] no-password apply blocked
+2026-08-19T22:53:19.7544824Z [PASS] backup/data URL deny rule present
+2026-08-19T22:53:19.7545071Z 
+2026-08-19T22:53:19.7545228Z PASSWORD_MIGRATION_PASSED=35
+2026-08-19T22:53:19.7545860Z PASSWORD_MIGRATION_FAILED=0
+2026-08-19T22:53:19.8456284Z 
+2026-08-19T22:53:19.8456825Z > tool:verify-default-credentials
+2026-08-19T22:53:19.8457303Z > php scripts/verify-medisa-default-credentials.php
+2026-08-19T22:53:19.8457509Z 
+2026-08-19T22:53:19.8838108Z [PASS] örnek kullanıcı adı serhanK
+2026-08-19T22:53:19.8838520Z [PASS] örnek parola Kose123
+2026-08-19T22:53:19.8838823Z [PASS] Türkçe ASCII dönüşümü
+2026-08-19T22:53:19.8839156Z [PASS] tek kelimeli servis kullanıcı adı
+2026-08-19T22:53:19.8839475Z [PASS] tek kelimeli servis parolası
+2026-08-19T22:53:20.1345876Z [PASS] dry-run veri değiştirmez
+2026-08-19T22:53:20.1346434Z [PASS] dry-run üç benzersiz kullanıcı adı
+2026-08-19T22:53:20.1347447Z [PASS] dry-run minimum parola altı
+2026-08-19T22:53:20.1347870Z [PASS] dry-run parola/hash raporlamaz
+2026-08-19T22:53:20.4356479Z [PASS] apply başarılı
+2026-08-19T22:53:20.4356932Z [PASS] rollback yedeği var
+2026-08-19T22:53:20.4357333Z [PASS] kullanıcı sayısı sabit
+2026-08-19T22:53:20.4357780Z [PASS] plaintext sıfır
+2026-08-19T22:53:20.4358146Z [PASS] hash-only üç
+2026-08-19T22:53:20.4358501Z [PASS] ilk giriş bekleyen üç
+2026-08-19T22:53:20.4358957Z [PASS] diğer kullanıcı alanı değişmedi
+2026-08-19T22:53:20.4359317Z [PASS] üç varsayılan parola doğrulandı
+2026-08-19T22:53:20.4359635Z [PASS] Serhan kullanıcı adı dönüştü
+2026-08-19T22:53:20.4359930Z [PASS] İlker kullanıcı adı dönüştü
+2026-08-19T22:53:20.4360491Z [PASS] Ali kullanıcı adı dönüştü
+2026-08-19T22:53:20.4857210Z [PASS] Serhan varsayılan parola doğrulanır
+2026-08-19T22:53:20.5357163Z [PASS] İlker varsayılan parola doğrulanır
+2026-08-19T22:53:20.5857922Z [PASS] Ali varsayılan parola doğrulanır
+2026-08-19T22:53:20.5858386Z [PASS] rol ve scope korundu
+2026-08-19T22:53:20.5858785Z [PASS] taşıt ataması korundu
+2026-08-19T22:53:20.6362567Z [PASS] kullanıcı adı çakışması bloklanır
+2026-08-19T22:53:20.6363130Z [PASS] beklenen kullanıcı sayısı kapısı
+2026-08-19T22:53:20.6363384Z 
+2026-08-19T22:53:20.6363556Z DEFAULT_CREDENTIALS_PASSED=27
+2026-08-19T22:53:20.6363974Z DEFAULT_CREDENTIALS_FAILED=0
+2026-08-19T22:53:20.7191778Z 
+2026-08-19T22:53:20.7192406Z > tool:verify-mandatory-password-change
+2026-08-19T22:53:20.7193235Z > php scripts/verify-medisa-mandatory-password-change.php && node scripts/verify-medisa-mandatory-password-change-invariants.js
+2026-08-19T22:53:20.7193682Z 
+2026-08-19T22:53:20.7572379Z [PASS] normalize true
+2026-08-19T22:53:20.7572797Z [PASS] normalize integer one
+2026-08-19T22:53:20.7573148Z [PASS] normalize string one
+2026-08-19T22:53:20.7573424Z [PASS] normalize false
+2026-08-19T22:53:20.7573653Z [PASS] normalize integer zero
+2026-08-19T22:53:20.7573895Z [PASS] normalize string zero
+2026-08-19T22:53:20.7574123Z [PASS] normalize null
+2026-08-19T22:53:20.7574375Z [PASS] normalize malformed fail closed
+2026-08-19T22:53:20.7574675Z [PASS] normalize array fail closed
+2026-08-19T22:53:20.7574943Z [PASS] missing flag is not pending
+2026-08-19T22:53:20.8074625Z [PASS] normal edit succeeds
+2026-08-19T22:53:20.8075002Z [PASS] normal edit preserves pending flag
+2026-08-19T22:53:20.8075665Z [PASS] frontend cannot enable settled flag
+2026-08-19T22:53:20.8575952Z [PASS] new user password save succeeds
+2026-08-19T22:53:20.8576468Z [PASS] new user password sets pending flag
+2026-08-19T22:53:20.9077059Z [PASS] admin password reset succeeds
+2026-08-19T22:53:20.9077576Z [PASS] admin password reset sets pending flag
+2026-08-19T22:53:21.0079500Z [PASS] required context canonical boolean
+2026-08-19T22:53:21.0080137Z [PASS] normal context canonical boolean
+2026-08-19T22:53:21.0080540Z [PASS] token claims password version exists
+2026-08-19T22:53:21.0080978Z [PASS] token claims contain no password hash
+2026-08-19T22:53:21.0081420Z [PASS] token claims contain no plaintext password
+2026-08-19T22:53:21.0081921Z [PASS] authenticated context accepts matching version
+2026-08-19T22:53:21.0082467Z [PASS] authenticated context rejects missing version
+2026-08-19T22:53:21.0082943Z [PASS] required data gate is 403
+2026-08-19T22:53:21.0083761Z [PASS] required data gate code
+2026-08-19T22:53:21.0084197Z [PASS] required session endpoint is allowed
+2026-08-19T22:53:21.0084641Z [PASS] normal session endpoint is allowed
+2026-08-19T22:53:21.0085048Z [PASS] same password denied
+2026-08-19T22:53:21.0085375Z [PASS] weak password denied
+2026-08-19T22:53:21.0085716Z [PASS] username exact denied
+2026-08-19T22:53:21.0086049Z [PASS] surname exact denied
+2026-08-19T22:53:21.0086408Z [PASS] easy exact pattern denied
+2026-08-19T22:53:21.0086799Z [PASS] strong password accepted
+2026-08-19T22:53:21.0586879Z [PASS] user count unchanged
+2026-08-19T22:53:21.0587297Z [PASS] password hash changed
+2026-08-19T22:53:21.1087209Z [PASS] old password denied
+2026-08-19T22:53:21.1587204Z [PASS] new password accepted
+2026-08-19T22:53:21.1587621Z [PASS] first login flag cleared
+2026-08-19T22:53:21.1588013Z [PASS] plaintext password absent
+2026-08-19T22:53:21.1588359Z [PASS] new hash valid
+2026-08-19T22:53:21.1588668Z [PASS] user id unchanged
+2026-08-19T22:53:21.1588990Z [PASS] user role unchanged
+2026-08-19T22:53:21.1589352Z [PASS] user scope unchanged
+2026-08-19T22:53:21.1589743Z [PASS] user active state unchanged
+2026-08-19T22:53:21.1590367Z [PASS] old token version rejected after change
+2026-08-19T22:53:21.1590851Z [PASS] new token version accepted after change
+2026-08-19T22:53:21.1591287Z [PASS] session payload flag cleared
+2026-08-19T22:53:21.1591701Z [PASS] session payload user has no hash
+2026-08-19T22:53:21.1592140Z [PASS] session payload user has no plaintext
+2026-08-19T22:53:21.2591525Z [PASS] driver required user bypass denied
+2026-08-19T22:53:21.2591958Z [PASS] driver normal user allowed
+2026-08-19T22:53:21.2592244Z RESULT 52/52
+2026-08-19T22:53:21.2897207Z PASS Canonical first-login alanı backend ve frontend boyunca tek isim kullanır
+2026-08-19T22:53:21.2899136Z PASS Flag normalization malformed değeri fail closed tutar
+2026-08-19T22:53:21.2900282Z PASS Login tokenı parola hashine bağlı sürüm taşır
+2026-08-19T22:53:21.2901116Z PASS Session context eski token sürümünü reddeder
+2026-08-19T22:53:21.2902135Z PASS Backend first-login bypassı PASSWORD_CHANGE_REQUIRED ile kapatır
+2026-08-19T22:53:21.2903572Z PASS Parola değişimi hash ve bayrağı tek owner mutationda günceller
+2026-08-19T22:53:21.2905984Z PASS Kullanıcı yönetimi first-login bayrağını yalnız sunucu owner üzerinden yönetir
+2026-08-19T22:53:21.2906831Z PASS Parola değişimi yeni token üretir
+2026-08-19T22:53:21.2907673Z PASS Server parola politikası minimum 6 ve karmaşıklık uygular
+2026-08-19T22:53:21.2909130Z PASS Tahmin edilebilir birebir kullanıcı değerleri reddedilir
+2026-08-19T22:53:21.2910718Z PASS Login first-login kullanıcısını next route yerine zorunlu ekrana yollar
+2026-08-19T22:53:21.2911781Z PASS Dashboard session doğrulamadan driver verisi istemez
+2026-08-19T22:53:21.2912878Z PASS Dashboard zorunlu modda veri bootstrapından önce döner
+2026-08-19T22:53:21.2913917Z PASS Zorunlu modal kapatma ve vazgeç düğmelerini gizler
+2026-08-19T22:53:21.2916058Z PASS Öneri ve mevcut parolayla devam bypassı kaldırılmıştır
+2026-08-19T22:53:21.2917498Z PASS Canonical parola endpointi driver base path üzerinden çağrılır
+2026-08-19T22:53:21.2918619Z PASS Zorunlu modal üç parola alanı ve minimum 6 kontratına sahiptir
+2026-08-19T22:53:21.2919757Z PASS Zorunlu ekran güvenlik mesajını eksiksiz gösterir
+2026-08-19T22:53:21.2920927Z PASS Ana shell offline snapshot öncesinde token flagini kontrol eder
+2026-08-19T22:53:21.2933531Z PASS Ana shell zorunlu durumda auth gatei açmaz
+2026-08-19T22:53:21.2934588Z PASS CACHE_VERSION tanımlı ve medisa-v2 sayısal formatında
+2026-08-19T22:53:21.2935344Z Mandatory password change invariants: 21 passed, 0 failed
+2026-08-19T22:53:21.2998234Z [quality-gate] Deploy and runtime data safety
+2026-08-19T22:53:21.3720106Z 
+2026-08-19T22:53:21.3720582Z > tool:verify-deploy
+2026-08-19T22:53:21.3721129Z > node scripts/verify-medisa-deploy-invariants.js
+2026-08-19T22:53:21.3721453Z 
+2026-08-19T22:53:21.3968304Z verify-medisa-deploy-invariants: OK
+2026-08-19T22:53:21.4768236Z 
+2026-08-19T22:53:21.4768832Z > tool:verify-runtime-data-git
+2026-08-19T22:53:21.4769836Z > node scripts/verify-medisa-runtime-data-git-invariants.js
+2026-08-19T22:53:21.4770412Z 
+2026-08-19T22:53:21.5225295Z verify-medisa-runtime-data-git-invariants: OK
+2026-08-19T22:53:21.6028092Z 
+2026-08-19T22:53:21.6028623Z > tool:verify-runtime-data-health
+2026-08-19T22:53:21.6029244Z > php scripts/verify-medisa-runtime-data-health.php
+2026-08-19T22:53:21.6029569Z 
+2026-08-19T22:53:21.6375763Z [PASS] valid fixture OK
+2026-08-19T22:53:21.6376169Z [PASS] counts only
+2026-08-19T22:53:21.6376483Z [PASS] report PII-free
+2026-08-19T22:53:21.6376804Z [PASS] sha256 present
+2026-08-19T22:53:21.6377128Z [PASS] warning threshold
+2026-08-19T22:53:21.6377414Z [PASS] critical threshold
+2026-08-19T22:53:21.6377686Z [PASS] invalid JSON fail closed
+2026-08-19T22:53:21.6377943Z [PASS] missing file fail closed
+2026-08-19T22:53:21.6379419Z RUNTIME_DATA_HEALTH_PASSED=8
+2026-08-19T22:53:21.6379740Z RUNTIME_DATA_HEALTH_FAILED=0
+2026-08-19T22:53:21.7242414Z 
+2026-08-19T22:53:21.7243065Z > tool:verify-notification-scope-cleanup
+2026-08-19T22:53:21.7243574Z > php scripts/verify-medisa-notification-scope-legacy.php
+2026-08-19T22:53:21.7243816Z 
+2026-08-19T22:53:21.7622659Z [PASS] dry-run success
+2026-08-19T22:53:21.7623051Z [PASS] dry-run legacy count
+2026-08-19T22:53:21.7623417Z [PASS] dry-run preserved count
+2026-08-19T22:53:21.7623786Z [PASS] dry-run exact no-write
+2026-08-19T22:53:21.7624132Z [PASS] dry-run PII-free
+2026-08-19T22:53:21.7624408Z [PASS] apply confirmation required
+2026-08-19T22:53:21.7624674Z [PASS] apply count gate
+2026-08-19T22:53:21.7624893Z [PASS] apply sha gate
+2026-08-19T22:53:21.7627460Z [PASS] apply success
+2026-08-19T22:53:21.7627800Z [PASS] legacy keys removed only
+2026-08-19T22:53:21.7628170Z [PASS] canonical keys preserved
+2026-08-19T22:53:21.7628549Z [PASS] other collections preserved
+2026-08-19T22:53:21.7628931Z [PASS] verified rollback backup
+2026-08-19T22:53:21.7629332Z [PASS] second dry-run no changes
+2026-08-19T22:53:21.7629726Z NOTIFICATION_SCOPE_LEGACY_PASSED=14
+2026-08-19T22:53:21.7630310Z NOTIFICATION_SCOPE_LEGACY_FAILED=0
+2026-08-19T22:53:21.8452744Z 
+2026-08-19T22:53:21.8453206Z > tool:verify-staging-isolation
+2026-08-19T22:53:21.8453614Z > node scripts/verify-medisa-staging-isolation.js
+2026-08-19T22:53:21.8453819Z 
+2026-08-19T22:53:21.8991634Z verify-medisa-staging-isolation: OK
+2026-08-19T22:53:21.8992741Z staging_host=medisa-staging.karmotors.com.tr
+2026-08-19T22:53:21.8993262Z staging_ftp_user=medisa_staging@karmotors.com.tr
+2026-08-19T22:53:21.8993634Z production_url_denied_in_staging_workflows=true
+2026-08-19T22:53:21.8993982Z fetch_url_sanitize_contract=PASS
+2026-08-19T22:53:21.9011677Z auth_preservation_fail_closed_contract=PASS
+2026-08-19T22:53:21.9856146Z 
+2026-08-19T22:53:21.9856625Z > tool:verify-staging-ftps
+2026-08-19T22:53:21.9857002Z > node scripts/verify-medisa-staging-ftps.js
+2026-08-19T22:53:21.9857199Z 
+2026-08-19T22:53:22.0116334Z verify-medisa-staging-ftps: OK
+2026-08-19T22:53:22.0117780Z ftp_530_class=NON_TRANSIENT_AUTH_FAILURE
+2026-08-19T22:53:22.0118272Z ftp_transient_retry=bounded
+2026-08-19T22:53:22.0118938Z ftp_auth_retry=none
+2026-08-19T22:53:22.0194411Z [quality-gate] Save wire
+2026-08-19T22:53:22.0950525Z 
+2026-08-19T22:53:22.0951067Z > tool:verify-save-wire
+2026-08-19T22:53:22.0951600Z > node scripts/run-medisa-save-wire-verify.js
+2026-08-19T22:53:22.0951915Z 
+2026-08-19T22:53:22.2543518Z [PASS] Unauthenticated save context 401
+2026-08-19T22:53:22.2543894Z [PASS] Kullanici role 403 gate
+2026-08-19T22:53:22.3544730Z [PASS] Legacy full success
+2026-08-19T22:53:22.3545181Z [PASS] Legacy wireMode (expected="legacy-full" actual="legacy-full")
+2026-08-19T22:53:22.3545599Z [PASS] Legacy v1 km (expected="150" actual="150")
+2026-08-19T22:53:22.3545959Z [PASS] Legacy v1 version bump (expected=4 actual=4)
+2026-08-19T22:53:22.3546312Z [PASS] Legacy v2 korunur (expected="200" actual="200")
+2026-08-19T22:53:22.3546690Z [PASS] Legacy kayitlar korunur (expected="keep" actual="keep")
+2026-08-19T22:53:22.4546243Z [PASS] Delta single vehicle success
+2026-08-19T22:53:22.4547130Z [PASS] Delta wireMode (expected="delta-v1" actual="delta-v1")
+2026-08-19T22:53:22.4547582Z [PASS] Delta appliedCollections (expected=["tasitlar"] actual=["tasitlar"])
+2026-08-19T22:53:22.4547994Z [PASS] Delta target km (expected="999" actual="999")
+2026-08-19T22:53:22.4548375Z [PASS] Delta other vehicle preserved (expected="200" actual="200")
+2026-08-19T22:53:22.4548804Z [PASS] Delta other collections preserved (expected="keep" actual="keep")
+2026-08-19T22:53:22.4549218Z [PASS] Delta aylik hareket korunur (expected="h1" actual="h1")
+2026-08-19T22:53:22.4549526Z [PASS] Delta kasko korunur
+2026-08-19T22:53:22.5547131Z [PASS] Delta new vehicle success
+2026-08-19T22:53:22.5547468Z [PASS] Delta new vehicle present
+2026-08-19T22:53:22.6548407Z [PASS] Delta delete success
+2026-08-19T22:53:22.6548882Z [PASS] Delta delete removed v2
+2026-08-19T22:53:22.6549254Z [PASS] Delta delete kept v1
+2026-08-19T22:53:22.7549945Z [PASS] Stale delete 409
+2026-08-19T22:53:22.8551263Z [PASS] Stale update 409
+2026-08-19T22:53:22.9551486Z [PASS] Missing changed vehicle payload 400
+2026-08-19T22:53:23.0552079Z [PASS] Undeclared vehicle payload 400
+2026-08-19T22:53:23.1553227Z [PASS] Duplicate vehicle ID 400
+2026-08-19T22:53:23.2554720Z [PASS] Changed/deleted overlap 400
+2026-08-19T22:53:23.3555584Z [PASS] Unknown collection 400
+2026-08-19T22:53:23.4556370Z [PASS] Collection without payload field 400
+2026-08-19T22:53:23.5557393Z [PASS] Payload field without collection 400
+2026-08-19T22:53:23.6558646Z [PASS] Unknown top-level persist key 400
+2026-08-19T22:53:23.7559126Z [PASS] Malformed _medisaWire 400
+2026-08-19T22:53:23.8561154Z [PASS] Delta without _medisaMutation 400
+2026-08-19T22:53:23.9562395Z [PASS] Missing vehicle version 400
+2026-08-19T22:53:24.0566791Z [PASS] Branch-scoped vehicle update allowed
+2026-08-19T22:53:24.0567386Z [PASS] Branch-scoped km (expected="777" actual="777")
+2026-08-19T22:53:24.0568060Z [PASS] Branch-scoped other branch preserved (expected="300" actual="300")
+2026-08-19T22:53:24.1570471Z [PASS] Out-of-scope vehicle update denied 403
+2026-08-19T22:53:24.2573662Z [PASS] Out-of-scope delete denied 403
+2026-08-19T22:53:24.3576605Z [PASS] Notification-only success
+2026-08-19T22:53:24.3577119Z [PASS] Notification-only vehicles untouched
+2026-08-19T22:53:24.3577591Z [PASS] Notification firstSeen retention
+2026-08-19T22:53:24.4578977Z [PASS] Users collection success
+2026-08-19T22:53:24.4580462Z [PASS] Users hash preserved (expected="$2y$10$XJt2KreIrdXuF4zD.j66dePoDDH0rjMOWpdbZpV8kUfQxpVrndmry" actual="$2y$10$XJt2KreIrdXuF4zD.j66dePoDDH0rjMOWpdbZpV8kUfQxpVrndmry")
+2026-08-19T22:53:24.4581773Z [PASS] Users name updated (expected="Admin Updated" actual="Admin Updated")
+2026-08-19T22:53:24.5581396Z [PASS] Ayarlar-only success
+2026-08-19T22:53:24.5582001Z [PASS] Ayarlar updated (expected="Medisa Delta" actual="Medisa Delta")
+2026-08-19T22:53:24.5582580Z [PASS] Ayarlar-only kayitlar untouched
+2026-08-19T22:53:24.6584222Z [PASS] Monthly log merge success
+2026-08-19T22:53:24.6585582Z [PASS] Monthly firstOpened retained earlier (expected="2026-01-02T10:00:00+03:00" actual="2026-01-02T10:00:00+03:00")
+2026-08-19T22:53:24.6586419Z [PASS] Monthly openedCount max (expected=2 actual=2)
+2026-08-19T22:53:24.8087561Z [PASS] Password change success
+2026-08-19T22:53:24.8587859Z [PASS] Password change hashed server-side
+2026-08-19T22:53:24.8588373Z [PASS] Password change plaintext not stored
+2026-08-19T22:53:25.0089748Z [PASS] Branch normal-user password change success
+2026-08-19T22:53:25.0590308Z [PASS] Branch normal-user password hashed
+2026-08-19T22:53:25.1592597Z [PASS] Branch manager password target denied 403
+2026-08-19T22:53:25.2593085Z [PASS] Spoofed peer-manager password target denied 403
+2026-08-19T22:53:25.4095038Z [PASS] True peer BM password denied 403
+2026-08-19T22:53:25.5597295Z [PASS] Peer BM role-downgrade save denied 403
+2026-08-19T22:53:25.6598630Z [PASS] Normal user promote to BM denied 403
+2026-08-19T22:53:25.7600341Z [PASS] Unknown password target rejected 400
+2026-08-19T22:53:25.8602912Z [PASS] Short password rejected 400
+2026-08-19T22:53:25.9604512Z [PASS] Legacy plaintext user field rejected 400
+2026-08-19T22:53:26.0605788Z [PASS] Validation failure data unchanged
+2026-08-19T22:53:26.0606269Z [PASS] save.php uses medisaSaveApplyIncomingData
+2026-08-19T22:53:26.0606688Z [PASS] data-manager buildSaveWirePayload
+2026-08-19T22:53:26.0607118Z [PASS] data-manager delta-v1 mode
+2026-08-19T22:53:26.0607508Z [PASS] data-manager excludes kaskoDegerListesi
+2026-08-19T22:53:26.0607919Z [PASS] arac_aylik not in save persist allowlist
+2026-08-19T22:53:26.0608457Z [PASS] duzeltme_talepleri not in save persist allowlist
+2026-08-19T22:53:26.0608707Z 
+2026-08-19T22:53:26.0608899Z Save wire invariants: 71 passed, 0 failed
+2026-08-19T22:53:26.0925892Z PASS buildSaveWirePayload exports
+2026-08-19T22:53:26.0943236Z PASS delta single vehicle excludes unrelated collections
+2026-08-19T22:53:26.0956392Z PASS 10 vehicle payload only 10 vehicles
+2026-08-19T22:53:26.0972087Z PASS delete payload includes deleted id/version
+2026-08-19T22:53:26.0984568Z PASS notification-only delta
+2026-08-19T22:53:26.1001105Z PASS settings-only delta
+2026-08-19T22:53:26.1012258Z PASS full appData not copied into delta
+2026-08-19T22:53:26.1028077Z PASS no-op skips network and full stringify
+2026-08-19T22:53:26.1038508Z PASS duplicate vehicle ids block save
+2026-08-19T22:53:26.1060220Z PASS sensitive and history collections excluded
+2026-08-19T22:53:26.1079927Z PASS user password stays transient and storage remains secretsiz
+2026-08-19T22:53:26.1097541Z PASS baseline advances only applied collections
+2026-08-19T22:53:26.1112598Z [Medisa] save.php hata: 500 HTTP error! status: 500
+2026-08-19T22:53:26.1113149Z [Medisa] Veri kaydedilemedi: HTTP error! status: 500
+2026-08-19T22:53:26.1113629Z PASS failed save does not advance baseline
+2026-08-19T22:53:26.1127900Z PASS conflict does not advance baseline
+2026-08-19T22:53:26.1144214Z [Medisa] Kayıt sunucuya ulaşılamadı. Lütfen bağlantıyı kontrol edip tekrar deneyin.
+2026-08-19T22:53:26.1147293Z [Medisa] Veri yüklenemedi: Failed to fetch
+2026-08-19T22:53:26.1150576Z PASS R1 writeVehicles rollback on false save
+2026-08-19T22:53:26.1168032Z PASS save mutex serializes concurrent posts
+2026-08-19T22:53:26.1172163Z PASS version map applied via replaceMedisaCollection
+2026-08-19T22:53:26.1184765Z PASS 403 authorization failure preserves session tokens
+2026-08-19T22:53:26.1198873Z PASS 401 authentication failure clears session tokens
+2026-08-19T22:53:26.1211771Z PASS save 403 allows caller rollback path
+2026-08-19T22:53:26.1230876Z PASS save 403 keeps trust and allows retry save
+2026-08-19T22:53:26.1243616Z PASS load 403 clears protected dataset without offline commit
+2026-08-19T22:53:26.1255696Z PASS load 401 logout redirect and clears session
+2026-08-19T22:53:26.1265818Z PASS assignable normal user candidate filters managers
+2026-08-19T22:53:26.1269006Z PASS central auth status helper exists
+2026-08-19T22:53:26.1279087Z PASS multi-branch BM unrelated edit preserves branch helpers
+2026-08-19T22:53:26.1279431Z 
+2026-08-19T22:53:26.1279626Z Client save wire: 26 passed, 0 failed
+2026-08-19T22:53:26.1320820Z tool:verify-save-wire OK
+2026-08-19T22:53:26.2160113Z 
+2026-08-19T22:53:26.2160642Z > tool:measure-save-wire
+2026-08-19T22:53:26.2161061Z > node scripts/measure-medisa-save-wire.js
+2026-08-19T22:53:26.2161259Z 
+2026-08-19T22:53:26.7012678Z {
+2026-08-19T22:53:26.7013118Z   "kind": "medisa-save-wire-measurement",
+2026-08-19T22:53:26.7013538Z   "warmups": 5,
+2026-08-19T22:53:26.7013831Z   "runs": 20,
+2026-08-19T22:53:26.7014104Z   "fixture": {
+2026-08-19T22:53:26.7014386Z     "vehicles": 500,
+2026-08-19T22:53:26.7014672Z     "branches": 50,
+2026-08-19T22:53:26.7014941Z     "users": 150,
+2026-08-19T22:53:26.7015227Z     "kaskoRows": 8000
+2026-08-19T22:53:26.7015506Z   },
+2026-08-19T22:53:26.7015741Z   "gates": {
+2026-08-19T22:53:26.7016075Z     "noopNetworkBytesZero": "PASS",
+2026-08-19T22:53:26.7016468Z     "singleVehicleReduction80": "PASS",
+2026-08-19T22:53:26.7016883Z     "singleVehicleAbs50KiB": "PASS",
+2026-08-19T22:53:26.7017705Z     "tenVehicleReduction60": "PASS",
+2026-08-19T22:53:26.7018082Z     "kaskoBytePayloadZero": "PASS",
+2026-08-19T22:53:26.7018424Z     "deltaStringifyP95Half": "PASS",
+2026-08-19T22:53:26.7018767Z     "builderP95Under5ms": "PASS"
+2026-08-19T22:53:26.7019047Z   },
+2026-08-19T22:53:26.7019262Z   "rows": [
+2026-08-19T22:53:26.7019480Z     {
+2026-08-19T22:53:26.7019711Z       "scenario": "noop",
+2026-08-19T22:53:26.7020257Z       "legacyBytes": 244594,
+2026-08-19T22:53:26.7020561Z       "deltaBytes": 0,
+2026-08-19T22:53:26.7020845Z       "reductionPct": 100,
+2026-08-19T22:53:26.7021160Z       "absSavingKiB": 238.86,
+2026-08-19T22:53:26.7021502Z       "legacyStringifyP95": 0.589,
+2026-08-19T22:53:26.7021840Z       "deltaStringifyP95": 0,
+2026-08-19T22:53:26.7022177Z       "builderP95": 1.289,
+2026-08-19T22:53:26.7022566Z       "uploadSavingMsFast4G": 477.72,
+2026-08-19T22:53:26.7022930Z       "networkRequest": false,
+2026-08-19T22:53:26.7023214Z       "kaskoInDelta": false,
+2026-08-19T22:53:26.7023489Z       "gzipDelta": 0
+2026-08-19T22:53:26.7023729Z     },
+2026-08-19T22:53:26.7023934Z     {
+2026-08-19T22:53:26.7024239Z measure-medisa-save-wire: OK
+2026-08-19T22:53:26.7024575Z       "scenario": "single_vehicle_update",
+2026-08-19T22:53:26.7024951Z       "legacyBytes": 244612,
+2026-08-19T22:53:26.7025290Z       "deltaBytes": 565,
+2026-08-19T22:53:26.7025599Z       "reductionPct": 99.77,
+2026-08-19T22:53:26.7025886Z       "absSavingKiB": 238.33,
+2026-08-19T22:53:26.7026194Z       "legacyStringifyP95": 0.557,
+2026-08-19T22:53:26.7026538Z       "deltaStringifyP95": 0.002,
+2026-08-19T22:53:26.7026877Z       "builderP95": 0.162,
+2026-08-19T22:53:26.7027200Z       "uploadSavingMsFast4G": 476.65,
+2026-08-19T22:53:26.7027582Z       "networkRequest": true,
+2026-08-19T22:53:26.7027941Z       "kaskoInDelta": false,
+2026-08-19T22:53:26.7028266Z       "gzipDelta": 348
+2026-08-19T22:53:26.7028547Z     },
+2026-08-19T22:53:26.7028802Z     {
+2026-08-19T22:53:26.7029117Z       "scenario": "single_vehicle_create",
+2026-08-19T22:53:26.7029501Z       "legacyBytes": 244992,
+2026-08-19T22:53:26.7029833Z       "deltaBytes": 575,
+2026-08-19T22:53:26.7030277Z       "reductionPct": 99.77,
+2026-08-19T22:53:26.7030625Z       "absSavingKiB": 238.69,
+2026-08-19T22:53:26.7030978Z       "legacyStringifyP95": 0.537,
+2026-08-19T22:53:26.7031384Z       "deltaStringifyP95": 0.003,
+2026-08-19T22:53:26.7031751Z       "builderP95": 0.249,
+2026-08-19T22:53:26.7032098Z       "uploadSavingMsFast4G": 477.38,
+2026-08-19T22:53:26.7032459Z       "networkRequest": true,
+2026-08-19T22:53:26.7032788Z       "kaskoInDelta": false,
+2026-08-19T22:53:26.7033191Z       "gzipDelta": 354
+2026-08-19T22:53:26.7033482Z     },
+2026-08-19T22:53:26.7033737Z     {
+2026-08-19T22:53:26.7034047Z       "scenario": "single_vehicle_delete",
+2026-08-19T22:53:26.7034430Z       "legacyBytes": 244252,
+2026-08-19T22:53:26.7034761Z       "deltaBytes": 206,
+2026-08-19T22:53:26.7035071Z       "reductionPct": 99.92,
+2026-08-19T22:53:26.7035399Z       "absSavingKiB": 238.33,
+2026-08-19T22:53:26.7035787Z       "legacyStringifyP95": 0.551,
+2026-08-19T22:53:26.7036390Z       "deltaStringifyP95": 0.002,
+2026-08-19T22:53:26.7036739Z       "builderP95": 0.232,
+2026-08-19T22:53:26.7037126Z       "uploadSavingMsFast4G": 476.65,
+2026-08-19T22:53:26.7037494Z       "networkRequest": true,
+2026-08-19T22:53:26.7037841Z       "kaskoInDelta": false,
+2026-08-19T22:53:26.7038166Z       "gzipDelta": 150
+2026-08-19T22:53:26.7038459Z     },
+2026-08-19T22:53:26.7038716Z     {
+2026-08-19T22:53:26.7039024Z       "scenario": "ten_vehicle_update",
+2026-08-19T22:53:26.7039412Z       "legacyBytes": 244693,
+2026-08-19T22:53:26.7039751Z       "deltaBytes": 3981,
+2026-08-19T22:53:26.7040177Z       "reductionPct": 98.37,
+2026-08-19T22:53:26.7040514Z       "absSavingKiB": 235.07,
+2026-08-19T22:53:26.7040903Z       "legacyStringifyP95": 0.527,
+2026-08-19T22:53:26.7041308Z       "deltaStringifyP95": 0.007,
+2026-08-19T22:53:26.7041649Z       "builderP95": 0.381,
+2026-08-19T22:53:26.7042013Z       "uploadSavingMsFast4G": 470.14,
+2026-08-19T22:53:26.7042577Z       "networkRequest": true,
+2026-08-19T22:53:26.7042918Z       "kaskoInDelta": false,
+2026-08-19T22:53:26.7043255Z       "gzipDelta": 734
+2026-08-19T22:53:26.7043539Z     },
+2026-08-19T22:53:26.7043792Z     {
+2026-08-19T22:53:26.7044076Z       "scenario": "branch_update",
+2026-08-19T22:53:26.7044405Z       "legacyBytes": 244606,
+2026-08-19T22:53:26.7044723Z       "deltaBytes": 2380,
+2026-08-19T22:53:26.7045031Z       "reductionPct": 99.03,
+2026-08-19T22:53:26.7045351Z       "absSavingKiB": 236.55,
+2026-08-19T22:53:26.7045698Z       "legacyStringifyP95": 0.527,
+2026-08-19T22:53:26.7046072Z       "deltaStringifyP95": 0.007,
+2026-08-19T22:53:26.7046431Z       "builderP95": 0.98,
+2026-08-19T22:53:26.7046783Z       "uploadSavingMsFast4G": 473.1,
+2026-08-19T22:53:26.7047146Z       "networkRequest": true,
+2026-08-19T22:53:26.7047527Z       "kaskoInDelta": false,
+2026-08-19T22:53:26.7047848Z       "gzipDelta": 408
+2026-08-19T22:53:26.7048143Z     },
+2026-08-19T22:53:26.7048404Z     {
+2026-08-19T22:53:26.7048702Z       "scenario": "user_update",
+2026-08-19T22:53:26.7049082Z       "legacyBytes": 291625,
+2026-08-19T22:53:26.7049405Z       "deltaBytes": 40753,
+2026-08-19T22:53:26.7049756Z       "reductionPct": 86.03,
+2026-08-19T22:53:26.7050290Z       "absSavingKiB": 244.99,
+2026-08-19T22:53:26.7050655Z       "legacyStringifyP95": 0.65,
+2026-08-19T22:53:26.7051058Z       "deltaStringifyP95": 0.092,
+2026-08-19T22:53:26.7051394Z       "builderP95": 1.793,
+2026-08-19T22:53:26.7051778Z       "uploadSavingMsFast4G": 489.98,
+2026-08-19T22:53:26.7052145Z       "networkRequest": true,
+2026-08-19T22:53:26.7052506Z       "kaskoInDelta": false,
+2026-08-19T22:53:26.7052840Z       "gzipDelta": 1648
+2026-08-19T22:53:26.7053136Z     },
+2026-08-19T22:53:26.7053390Z     {
+2026-08-19T22:53:26.7053703Z       "scenario": "notification_update",
+2026-08-19T22:53:26.7054105Z       "legacyBytes": 244625,
+2026-08-19T22:53:26.7054426Z       "deltaBytes": 400,
+2026-08-19T22:53:26.7054775Z       "reductionPct": 99.84,
+2026-08-19T22:53:26.7055113Z       "absSavingKiB": 238.5,
+2026-08-19T22:53:26.7055511Z       "legacyStringifyP95": 0.546,
+2026-08-19T22:53:26.7055896Z       "deltaStringifyP95": 0.001,
+2026-08-19T22:53:26.7056230Z       "builderP95": 0.98,
+2026-08-19T22:53:26.7056593Z       "uploadSavingMsFast4G": 477,
+2026-08-19T22:53:26.7056972Z       "networkRequest": true,
+2026-08-19T22:53:26.7057310Z       "kaskoInDelta": false,
+2026-08-19T22:53:26.7057642Z       "gzipDelta": 259
+2026-08-19T22:53:26.7057939Z     }
+2026-08-19T22:53:26.7058166Z   ]
+2026-08-19T22:53:26.7058412Z }
+2026-08-19T22:53:26.7199338Z [quality-gate] Import source-of-truth invariants
+2026-08-19T22:53:26.7939166Z 
+2026-08-19T22:53:26.7939558Z > tool:verify-import-source-of-truth
+2026-08-19T22:53:26.7940288Z > node scripts/verify-medisa-import-source-of-truth-invariants.js
+2026-08-19T22:53:26.7940553Z 
+2026-08-19T22:53:26.8177312Z PASS source: package tool:verify-import-source-of-truth tanımlı
+2026-08-19T22:53:26.8179459Z PASS source: quality gate import SoT verifier tek kez çalıştırır
+2026-08-19T22:53:26.8227710Z PASS source: runtime dosyalarda medisa_just_restored yok
+2026-08-19T22:53:26.8237033Z PASS source: applyRestoredBackup pre-save storage yazmaz
+2026-08-19T22:53:26.8248529Z PASS source: finishImportedBackupSync exact true kontratı
+2026-08-19T22:53:26.8256165Z PASS source: lock acquire snapshot/apply öncesi
+2026-08-19T22:53:26.8261935Z PASS source: data-manager normal server bootstrap + saveMutex korunur
+2026-08-19T22:53:26.8287112Z PASS behavior: save true → success + metadata + reload + lock açık kalır
+2026-08-19T22:53:26.8301867Z PASS behavior: save false → rollback + fail msg + reload + lock açık
+2026-08-19T22:53:26.8315760Z PASS behavior: reject → rollback + fail msg + reload + lock açık
+2026-08-19T22:53:26.8329674Z PASS behavior: save missing → rollback + fail msg + reload + lock açık
+2026-08-19T22:53:26.8346109Z PASS behavior: metadata storage exception after true → success korunur
+2026-08-19T22:53:26.8359078Z PASS behavior: rollback storage exception → runtime rollback + fail + reload
+2026-08-19T22:53:26.8373411Z PASS lock: ilk import save pending iken lock aktif; ikinci confirmed import reddedilir
+2026-08-19T22:53:26.8386591Z PASS lock: pending false → tek save, tek rollback, tek reload; ikinci bloke
+2026-08-19T22:53:26.8403060Z PASS lock: pending reject → tek save, tek rollback, tek reload
+2026-08-19T22:53:26.8416250Z PASS early: JSON parse error → snapshot/apply/save/metadata/reload 0; lock false
+2026-08-19T22:53:26.8429005Z PASS early: validation error → snapshot/apply/save/metadata/reload 0; lock false
+2026-08-19T22:53:26.8548873Z PASS early: confirm cancel → snapshot/apply/save/metadata/reload 0; lock false
+2026-08-19T22:53:26.8559760Z PASS source: file input her importData çağrısında yeniden oluşturulur
+2026-08-19T22:53:26.8572435Z PASS terminal: location.reload mevcut → tam bir çağrı; duplicate yok
+2026-08-19T22:53:26.8585095Z PASS terminal: location.reload missing → ikinci save yok; lock bloke; manual refresh
+2026-08-19T22:53:26.8597776Z PASS terminal: location.reload throw → ikinci save yok; lock bloke; manual refresh
+2026-08-19T22:53:26.8613545Z PASS apply/snapshot: snapshot throw → apply 0, save 0, success yok, lock açık
+2026-08-19T22:53:26.8626130Z PASS apply/snapshot: apply throw → save 0, rollback, success yok, lock açık
+2026-08-19T22:53:26.8639744Z PASS round-trip: sentetik export→import canonical identity / metadata drift
+2026-08-19T22:53:26.8640259Z 
+2026-08-19T22:53:26.8640473Z Import SoT invariants: 26 passed, 0 failed
+2026-08-19T22:53:26.8731394Z [quality-gate] Server restore contract
+2026-08-19T22:53:26.9448911Z 
+2026-08-19T22:53:26.9449482Z > tool:verify-server-restore
+2026-08-19T22:53:26.9450281Z > node scripts/verify-medisa-server-restore-invariants.js
+2026-08-19T22:53:26.9450653Z 
+2026-08-19T22:53:26.9687949Z PASS endpoint files exist
+2026-08-19T22:53:26.9692752Z PASS backup_download.php is GET-only full ZIP backup (no JSON fallback)
+2026-08-19T22:53:26.9694353Z PASS restore.php metadata prefers manual full backup label
+2026-08-19T22:53:26.9697521Z PASS feature flags default false via env helpers
+2026-08-19T22:53:26.9716038Z PASS commit is POST-only and confirmation gated
+2026-08-19T22:53:26.9719910Z PASS full content hash and user/rollback owners
+2026-08-19T22:53:26.9722249Z PASS dry-run exact sha assertion present in PHP verifier
+2026-08-19T22:53:26.9725756Z PASS dry-run POST-only and no saveData call in dry-run handler
+2026-08-19T22:53:26.9733172Z PASS permission execute_server_restore only genel_yonetici
+2026-08-19T22:53:26.9744555Z PASS maintenance write freeze in medisaMutateData and save_kasko
+2026-08-19T22:53:26.9745558Z PASS driver login bypasses restore write-freeze
+2026-08-19T22:53:26.9760359Z PASS UI wording metadata-only and disabled commit gates
+2026-08-19T22:53:26.9761614Z PASS cpanel deploys new restore endpoints and not secrets
+2026-08-19T22:53:26.9763136Z PASS quality gate and package wire server restore verifier
+2026-08-19T22:53:26.9781222Z PASS F1/F2/F4 KEEP_DEFENSIVE marker preserved
+2026-08-19T22:53:26.9799733Z PASS notification legacy medisa_just_restored remains absent
+2026-08-19T22:53:27.2496062Z PASS PHP integration invariants
+2026-08-19T22:53:27.2496637Z Server restore source invariants: 17 passed, 0 failed
+2026-08-19T22:53:27.2585248Z [quality-gate] Full backup ZIP contract
+2026-08-19T22:53:27.3298507Z 
+2026-08-19T22:53:27.3298904Z > tool:verify-full-backup
+2026-08-19T22:53:27.3299300Z > node scripts/verify-medisa-full-backup-invariants.js
+2026-08-19T22:53:27.3299509Z 
+2026-08-19T22:53:27.3549189Z PASS full backup source files exist
+2026-08-19T22:53:27.3555238Z PASS full_backup library contracts
+2026-08-19T22:53:27.3557403Z PASS endpoint auth/method/cache contracts
+2026-08-19T22:53:27.3559130Z PASS backup_download uses lock then zip after snapshot
+2026-08-19T22:53:27.3560265Z PASS full_backup_restore is POST staging-then-commit
+2026-08-19T22:53:27.3574425Z PASS UI keeps two actions and zip+json import branch
+2026-08-19T22:53:27.3575800Z PASS package + quality gate wire full-backup verifier
+2026-08-19T22:53:27.4194189Z PASS PHP full-backup fixtures
+2026-08-19T22:53:27.4194711Z Full backup source invariants: 8 passed, 0 failed
+2026-08-19T22:53:27.4287334Z [quality-gate] Kasko lookup
+2026-08-19T22:53:27.5032336Z 
+2026-08-19T22:53:27.5032903Z > tool:verify-kasko-lookup
+2026-08-19T22:53:27.5033489Z > node scripts/run-medisa-kasko-lookup-verify.js
+2026-08-19T22:53:27.5033799Z 
+2026-08-19T22:53:28.0937698Z {
+2026-08-19T22:53:28.0938027Z   "ok": true,
+2026-08-19T22:53:28.0938319Z   "canonicalBytes": 10059723,
+2026-08-19T22:53:28.0938591Z   "packedBytes": 1998537,
+2026-08-19T22:53:28.0938837Z   "ratio": 0.19866719988214387,
+2026-08-19T22:53:28.0939061Z   "rowCount": 27605,
+2026-08-19T22:53:28.0939267Z   "checked": 414075,
+2026-08-19T22:53:28.0939453Z   "mismatch": 0,
+2026-08-19T22:53:28.0939656Z   "gzipLegacy": 735455,
+2026-08-19T22:53:28.0939865Z   "gzipPacked": 558384
+2026-08-19T22:53:28.0945156Z }
+2026-08-19T22:53:28.1718133Z No syntax errors detected in kasko-index.php
+2026-08-19T22:53:28.2111760Z No syntax errors detected in load_kasko.php
+2026-08-19T22:53:28.2502487Z No syntax errors detected in save_kasko.php
+2026-08-19T22:53:28.2915414Z No syntax errors detected in core.php
+2026-08-19T22:53:28.3318834Z No syntax errors detected in save.php
+2026-08-19T22:53:28.3319245Z PHP lint PASS
+2026-08-19T22:53:28.3321034Z tool:verify-kasko-lookup PASS
+2026-08-19T22:53:28.3323838Z (node:3321) [DEP0190] DeprecationWarning: Passing args to a child process with shell option true can lead to security vulnerabilities, as the arguments are not escaped, only concatenated.
+2026-08-19T22:53:28.3324959Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-08-19T22:53:28.3412472Z [quality-gate] Vehicle render
+2026-08-19T22:53:28.4183218Z 
+2026-08-19T22:53:28.4183775Z > tool:verify-vehicle-render
+2026-08-19T22:53:28.4184398Z > node scripts/verify-medisa-vehicle-render-invariants.js
+2026-08-19T22:53:28.4184758Z 
+2026-08-19T22:53:28.4465752Z {
+2026-08-19T22:53:28.4466115Z   "ok": true,
+2026-08-19T22:53:28.4466453Z   "checks": [
+2026-08-19T22:53:28.4466750Z     "revisions",
+2026-08-19T22:53:28.4467047Z     "lookup-cache",
+2026-08-19T22:53:28.4467308Z     "metrics",
+2026-08-19T22:53:28.4467568Z     "list-brand-fit-removed",
+2026-08-19T22:53:28.4467919Z     "list-user-fit-retained",
+2026-08-19T22:53:28.4468270Z     "compact-column-balance",
+2026-08-19T22:53:28.4468555Z     "skip",
+2026-08-19T22:53:28.4468866Z     "text-fit-batched-measurement",
+2026-08-19T22:53:28.4469273Z     "text-fit-single-validation",
+2026-08-19T22:53:28.4469621Z     "artifact-owner"
+2026-08-19T22:53:28.4469943Z   ]
+2026-08-19T22:53:28.4470326Z }
+2026-08-19T22:53:28.5295322Z 
+2026-08-19T22:53:28.5295884Z > tool:measure-vehicle-render
+2026-08-19T22:53:28.5296473Z > node scripts/measure-medisa-vehicle-render.js
+2026-08-19T22:53:28.5296783Z 
+2026-08-19T22:53:28.5655065Z {
+2026-08-19T22:53:28.5655535Z   "measuredAt": "2026-08-19T22:53:28.551Z",
+2026-08-19T22:53:28.5655944Z   "sizes": {
+2026-08-19T22:53:28.5656200Z     "25": {
+2026-08-19T22:53:28.5656479Z       "firstListMs": {
+2026-08-19T22:53:28.5657073Z         "median": 0.009579500000000001,
+2026-08-19T22:53:28.5657411Z         "p95": 0.020561
+2026-08-19T22:53:28.5657693Z       },
+2026-08-19T22:53:28.5657951Z       "unchangedSkipMs": {
+2026-08-19T22:53:28.5658336Z         "median": 0.00037600000000000003,
+2026-08-19T22:53:28.5658691Z         "p95": 0.001292
+2026-08-19T22:53:28.5658977Z       },
+2026-08-19T22:53:28.5659238Z       "searchMs": {
+2026-08-19T22:53:28.5659614Z         "median": 0.008643000000000001,
+2026-08-19T22:53:28.5660205Z         "p95": 0.035835
+2026-08-19T22:53:28.5660506Z       },
+2026-08-19T22:53:28.5660787Z       "listFitInSource": true
+2026-08-19T22:53:28.5661144Z     },
+2026-08-19T22:53:28.5661405Z     "75": {
+2026-08-19T22:53:28.5661684Z       "firstListMs": {
+2026-08-19T22:53:28.5662038Z         "median": 0.014707999999999999,
+2026-08-19T22:53:28.5662439Z         "p95": 0.017766
+2026-08-19T22:53:28.5662745Z       },
+2026-08-19T22:53:28.5663031Z       "unchangedSkipMs": {
+2026-08-19T22:53:28.5663613Z         "median": 0.0003505,
+2026-08-19T22:53:28.5663983Z         "p95": 0.001953
+2026-08-19T22:53:28.5664295Z       },
+2026-08-19T22:53:28.5664570Z       "searchMs": {
+2026-08-19T22:53:28.5664896Z         "median": 0.020561000000000003,
+2026-08-19T22:53:28.5665245Z         "p95": 0.032509
+2026-08-19T22:53:28.5665533Z       },
+2026-08-19T22:53:28.5665832Z       "listFitInSource": true
+2026-08-19T22:53:28.5666186Z     },
+2026-08-19T22:53:28.5666451Z     "150": {
+2026-08-19T22:53:28.5666737Z       "firstListMs": {
+2026-08-19T22:53:28.5667078Z         "median": 0.0293145,
+2026-08-19T22:53:28.5667389Z         "p95": 0.045038
+2026-08-19T22:53:28.5667650Z       },
+2026-08-19T22:53:28.5667908Z       "unchangedSkipMs": {
+2026-08-19T22:53:28.5668250Z         "median": 0.0003755,
+2026-08-19T22:53:28.5668519Z         "p95": 0.002023
+2026-08-19T22:53:28.5668801Z       },
+2026-08-19T22:53:28.5669028Z       "searchMs": {
+2026-08-19T22:53:28.5669364Z         "median": 0.036670999999999995,
+2026-08-19T22:53:28.5669742Z         "p95": 0.03965
+2026-08-19T22:53:28.5670174Z       },
+2026-08-19T22:53:28.5670457Z       "listFitInSource": true
+2026-08-19T22:53:28.5670794Z     },
+2026-08-19T22:53:28.5671029Z     "300": {
+2026-08-19T22:53:28.5671324Z       "firstListMs": {
+2026-08-19T22:53:28.5671554Z         "median": 0.0563155,
+2026-08-19T22:53:28.5671830Z         "p95": 0.54243
+2026-08-19T22:53:28.5672063Z       },
+2026-08-19T22:53:28.5672261Z       "unchangedSkipMs": {
+2026-08-19T22:53:28.5672477Z         "median": 0.0002855,
+2026-08-19T22:53:28.5672683Z         "p95": 0.004888
+2026-08-19T22:53:28.5672871Z       },
+2026-08-19T22:53:28.5673048Z       "searchMs": {
+2026-08-19T22:53:28.5673239Z         "median": 0.0721695,
+2026-08-19T22:53:28.5673438Z         "p95": 0.223298
+2026-08-19T22:53:28.5673633Z       },
+2026-08-19T22:53:28.5673822Z       "listFitInSource": true
+2026-08-19T22:53:28.5674038Z     }
+2026-08-19T22:53:28.5674209Z   },
+2026-08-19T22:53:28.5674422Z   "sourceHasRevisionSignature": true,
+2026-08-19T22:53:28.5674701Z   "sourceListFitRemoved": true
+2026-08-19T22:53:28.5674912Z }
+2026-08-19T22:53:28.5744128Z [quality-gate] Vehicle detail / Olay Ekle DOM invariants
+2026-08-19T22:53:28.6476066Z 
+2026-08-19T22:53:28.6476613Z > tool:verify-vehicle-detail-olay
+2026-08-19T22:53:28.6477115Z > node scripts/verify-medisa-vehicle-detail-olay-invariants.js
+2026-08-19T22:53:28.6477353Z 
+2026-08-19T22:53:28.6735428Z PASS canonical hydrate: detail-plate-row tam bir kez
+2026-08-19T22:53:28.6736424Z PASS canonical hydrate: history-add-event-btn yok
+2026-08-19T22:53:28.6738644Z PASS canonical hydrate: marka satırında history/add-event yok
+2026-08-19T22:53:28.6739567Z PASS showVehicleDetail current path Olay Ekle butonunu plaka satırına sağlar
+2026-08-19T22:53:28.6755921Z PASS fixture: ilk detay render sonrası add-event sayısı 1
+2026-08-19T22:53:28.6770936Z PASS fixture: tekrar detay render sonrası add-event sayısı 1 (birikim yok)
+2026-08-19T22:53:28.6772105Z PASS ensure modeli: remove/recreate add-event yok; querySelectorAll + reuse var
+2026-08-19T22:53:28.6774696Z PASS marka satırı migration cleanup source mevcut; current path buton üretmez
+2026-08-19T22:53:28.6777074Z PASS toolbar history dual-class ve belge butonu source kontratı
+2026-08-19T22:53:28.6779045Z PASS masaüstü toolbar plaka ve sol semantik class source kontratı
+2026-08-19T22:53:28.6782419Z PASS Olay menü/form owner source dokunulmamış (window.openEventModal)
+2026-08-19T22:53:28.6783310Z PASS Belge/Ruhsat handler owner source korunur
+2026-08-19T22:53:28.6784258Z PASS Ruhsat upload picker mobil güvenli button + input.click owner
+2026-08-19T22:53:28.6786659Z PASS Sigorta/Kasko dosya seçimi açık submit bekler; diğer belgeler otomatik akışı korur
+2026-08-19T22:53:28.6787514Z PASS Poliçe tarih doğrulama hatası seçilen dosyayı korur
+2026-08-19T22:53:28.6788231Z PASS duplicate id: hydrate vehicle detail zorunlu id’ler tekil
+2026-08-19T22:53:28.6790906Z PASS F1/F2/F4 KEEP_DEFENSIVE legacy fallback source korunur (bu turda silinmez)
+2026-08-19T22:53:28.6791683Z PASS main shell vehicles requiredIds hâlâ detay/olay modallarını içerir
+2026-08-19T22:53:28.6792288Z Vehicle detail/Olay invariants: 18 passed, 0 failed
+2026-08-19T22:53:28.6872188Z [quality-gate] Vehicle history UI invariants
+2026-08-19T22:53:28.7617247Z 
+2026-08-19T22:53:28.7617816Z > tool:verify-vehicle-history-ui
+2026-08-19T22:53:28.7618344Z > node scripts/verify-medisa-vehicle-history-ui-invariants.js
+2026-08-19T22:53:28.7618585Z 
+2026-08-19T22:53:28.7906381Z PASS package tool:verify-vehicle-history-ui tanımlı
+2026-08-19T22:53:28.7907920Z PASS quality gate history UI verifier çalıştırır
+2026-08-19T22:53:28.7908976Z PASS modal markup: #vehicle-history-modal tekil
+2026-08-19T22:53:28.7909952Z PASS modal markup: başlık id + dialog semantics
+2026-08-19T22:53:28.7911341Z PASS modal markup: close aria-label ve type=button
+2026-08-19T22:53:28.7943817Z PASS modal markup: geri/home owner korunur
+2026-08-19T22:53:28.7944352Z PASS modal markup: tabs/content/identity tekil
+2026-08-19T22:53:28.7946635Z PASS sekme kontratı: dört canonical data-tab + label/count
+2026-08-19T22:53:28.7947499Z PASS sekme kontratı: onclick owner korunur; label metni bozulmaz
+2026-08-19T22:53:28.7948220Z PASS default tab source: showVehicleHistory bakim
+2026-08-19T22:53:28.7950974Z PASS Escape source unchanged: prevent/stop, close yok
+2026-08-19T22:53:28.7951622Z PASS overlay source unchanged: stopPropagation, close yok
+2026-08-19T22:53:28.7972137Z PASS owner fonksiyonları mevcut
+2026-08-19T22:53:28.7972976Z PASS close/back handler owner değişmedi
+2026-08-19T22:53:28.7974536Z PASS event ordering: unshift korunur; switchHistoryTab date-sort eklemez
+2026-08-19T22:53:28.7975884Z PASS tab count filtreleri current kategorilerle aynı
+2026-08-19T22:53:28.7978378Z PASS event card hierarchy source kontratı
+2026-08-19T22:53:28.7978956Z PASS escapeHtml / safe rendering korunur
+2026-08-19T22:53:28.7980278Z PASS empty state kontratı
+2026-08-19T22:53:28.7988166Z PASS CSS owner: history namespace + mobil ≥15px
+2026-08-19T22:53:28.8004376Z PASS fixture: tab count update idempotent, duplicate yok
+2026-08-19T22:53:28.8035531Z PASS KM effective count: synthetic approved card edge-cases
+2026-08-19T22:53:28.8041995Z PASS fixture: empty html write CTA içermez
+2026-08-19T22:53:28.8042542Z Vehicle history UI invariants: 23 passed, 0 failed
+2026-08-19T22:53:28.8130250Z [quality-gate] Satis sozlesmesi invariants
+2026-08-19T22:53:28.8840868Z 
+2026-08-19T22:53:28.8841441Z > tool:verify-satis-sozlesmesi
+2026-08-19T22:53:28.8841921Z > node scripts/verify-medisa-satis-sozlesmesi-invariants.js
+2026-08-19T22:53:28.8842169Z 
+2026-08-19T22:53:28.9126453Z PASS source: VEHICLE_DOCUMENT_TYPES satis_sozlesmesi sözlüğü
+2026-08-19T22:53:28.9134851Z PASS source: satış/pert formunda işlem türü seçimi
+2026-08-19T22:53:28.9142259Z PASS source: satış/pert sonrası soru akışı (başarılı kayıt sonrası)
+2026-08-19T22:53:28.9153194Z PASS domain: aktif / pert / satış / legacy sınıflandırma
+2026-08-19T22:53:28.9160381Z PASS source: arşiv kart/liste/detay etiketleri helper üzerinden
+2026-08-19T22:53:28.9167965Z PASS source: arşiv ve satış sözleşmesi helperları modül içinde kalır
+2026-08-19T22:53:28.9180602Z PASS source: tarihçe satis chip Satış/Pert ayrımı
+2026-08-19T22:53:28.9192581Z PASS UI keys: kart stoktan düşen satış ve pertte üretilir
+2026-08-19T22:53:28.9195779Z PASS source: belge satır yerleşimi satış tekli / ruhsat tekli / sigorta+kasko
+2026-08-19T22:53:28.9202512Z PASS source: satış sözleşmesi kırmızı ikon CSS kontratı
+2026-08-19T22:53:28.9206994Z PASS PHP: config + preserve + archive helpers + upload gate
+2026-08-19T22:53:28.9213535Z PASS notifications + history label registry
+2026-08-19T22:53:28.9214342Z PASS gitignore runtime klasörleri
+2026-08-19T22:53:28.9237084Z PASS source: kompakt onay modalı ortak owner sınıfı
+2026-08-19T22:53:28.9300261Z PASS source: openSatisSozlesmesiUploadForVehicle setTimeout yarışı yok
+2026-08-19T22:53:28.9316980Z PASS behavior: openSatisSozlesmesiUploadForVehicle sold+pert gate + doğrudan belge modalı
+2026-08-19T22:53:28.9706606Z PASS behavior: PHP sold/pert allow + aktif deny + satisSozlesmesiPath preserve
+2026-08-19T22:53:29.0081454Z PASS behavior: PHP satış sözleşmesi audit event alanları
+2026-08-19T22:53:29.0114324Z FAIL cache / modül pin parity: The input did not match the regular expression /CACHE_VERSION\s*=\s*'medisa-v2\.305'/. Input:
+2026-08-19T22:53:29.0114909Z 
+2026-08-19T22:53:29.0115238Z '// Service Worker - Medisa Taşıt Yönetim Sistemi\n' +
+2026-08-19T22:53:29.0115635Z   '// Version 2.15 - Güvenli offline okuma kabuğu\n' +
+2026-08-19T22:53:29.0115903Z   '\n' +
+2026-08-19T22:53:29.0116128Z   "const CACHE_VERSION = 'medisa-v2.306';\n" +
+2026-08-19T22:53:29.0116738Z   "// Raporlar modülü (raporlar.js / raporlar.css): ana shell cache'inden ayrı; MEDISA_MODULE_VERSIONS.raporlar ile senkron tut\n" +
+2026-08-19T22:53:29.0117282Z   "const CACHE_RAPORLAR_VERSION = 'medisa-raporlar-20260801.3';\n" +
+2026-08-19T22:53:29.0117605Z   '\n' +
+2026-08-19T22:53:29.0117840Z   'function isRaporlarModuleAssetUrl(u) {\n' +
+2026-08-19T22:53:29.0118192Z   '  return /\\/raporlar\\.(js|css)$/i.test(u.pathname);\n' +
+2026-08-19T22:53:29.0118495Z   '}\n' +
+2026-08-19T22:53:29.0118679Z   '\n' +
+2026-08-19T22:53:29.0119069Z   "// Subpath desteği: /medisa/sw.js ise base = '/medisa', kök deploy'da base = ''\n" +
+2026-08-19T22:53:29.0119433Z   'function getBase() {\n' +
+2026-08-19T22:53:29.0119812Z   "  const p = self.location.pathname.replace(/\\/sw\\.js$/i, '').replace(/\\/$/, '');\n" +
+2026-08-19T22:53:29.0120333Z   "  return p || '';\n" +
+2026-08-19T22:53:29.0120545Z   '}\n' +
+2026-08-19T22:53:29.0120845Z   '\n' +
+2026-08-19T22:53:29.0121512Z   "// Sadece kritik giriş noktaları ve manifest; CSS/JS modülleri fetch ile network-first + cache fallback ile ilk kullanımda cache'lenir\n" +
+2026-08-19T22:53:29.0132517Z   '// PERFORMANS: Sadece uygulamanın ana "Shell" dosyaları (iskelet) önden yüklenir.\n' +
+2026-08-19T22:53:29.0133597Z   '// Admin ve kullanıcı paneli gibi alt modüller ilk girişte kullanıcının kotasını harcamaz.\n' +
+2026-08-19T22:53:29.0134027Z   'const CACHE_FILES = [\n' +
+2026-08-19T22:53:29.0134270Z   "  '/',\n" +
+2026-08-19T22:53:29.0134478Z   "  '/index.html',\n" +
+2026-08-19T22:53:29.0134723Z   "  '/style-core.css?v=20260820.1',\n" +
+2026-08-19T22:53:29.0134976Z   "  '/script-core.js',\n" +
+2026-08-19T22:53:29.0135198Z   "  '/data-manager.js',\n" +
+2026-08-19T22:53:29.0135420Z   "  '/manifest.json',\n" +
+2026-08-19T22:53:29.0135668Z   "  '/icon/logo-header2.svg'\n" +
+2026-08-19T22:53:29.0135887Z   '];\n' +
+2026-08-19T22:53:29.0136067Z   '\n' +
+2026-08-19T22:53:29.0136428Z   '// Install - Cache tüm dosyaları (hata toleranslı, subpath destekli)\n' +
+2026-08-19T22:53:29.0136822Z   "self.addEventListener('install', (event) => {\n" +
+2026-08-19T22:53:29.0137158Z   '  const base = getBase();\n' +
+2026-08-19T22:53:29.0137426Z   '  const origin = self.location.origin;\n' +
+2026-08-19T22:53:29.0137682Z   '  event.waitUntil(\n' +
+2026-08-19T22:53:29.0137933Z   '    caches.open(CACHE_VERSION)\n' +
+2026-08-19T22:53:29.0138182Z   '      .then((cache) => {\n' +
+2026-08-19T22:53:29.0138477Z   '        const cachePromises = CACHE_FILES.map((path) => {\n' +
+2026-08-19T22:53:29.0139073Z   '          const fullUrl = origin + base + path;\n' +
+2026-08-19T22:53:29.0139370Z   '          return fetch(fullUrl)\n' +
+2026-08-19T22:53:29.0139635Z   '            .then((response) => {\n' +
+2026-08-19T22:53:29.0139937Z   '              if (response && response.status === 200) {\n' +
+2026-08-19T22:53:29.0140926Z   '                return cache.put(fullUrl, response);\n' +
+2026-08-19T22:53:29.0141396Z   '              }\n' +
+2026-08-19T22:53:29.0141783Z   '              return Promise.resolve();\n' +
+2026-08-19T22:53:29.0142120Z   '            })\n' +
+2026-08-19T22:53:29.0142443Z   '            .catch(() => Promise.resolve());\n' +
+2026-08-19T22:53:29.0142778Z   '        });\n' +
+2026-08-19T22:53:29.0143087Z   '        return Promise.all(cachePromises);\n' +
+2026-08-19T22:53:29.0143420Z   '      })\n' +
+2026-08-19T22:53:29.0143723Z   '      .then(() => self.skipWaiting())\n' +
+2026-08-19T22:53:29.0144115Z   '      .catch(() => self.skipWaiting())\n' +
+2026-08-19T22:53:29.0144626Z   '  );\n' +
+2026-08-19T22:53:29.0144867Z   '});\n' +
+2026-08-19T22:53:29.0145098Z   '\n' +
+2026-08-19T22:53:29.0146025Z   `// Activate - Önce eski cache'leri temizle, sonra claim (claim() sadece "active" worker'da çalışır; önce yapılırsa InvalidStateError olabiliyor)\n` +
+2026-08-19T22:53:29.0146908Z   "self.addEventListener('activate', (event) => {\n" +
+2026-08-19T22:53:29.0147285Z   '  event.waitUntil(\n' +
+2026-08-19T22:53:29.0147564Z   '    caches.keys()\n' +
+2026-08-19T22:53:29.0147881Z   '      .then((cacheNames) => {\n' +
+2026-08-19T22:53:29.0148339Z   '        const keep = new Set([CACHE_VERSION, CACHE_RAPORLAR_VERSION]);\n' +
+2026-08-19T22:53:29.0148912Z   '        const toDelete = cacheNames.filter((name) => !keep.has(name));\n' +
+2026-08-19T22:53:29.0149508Z   '        return Promise.all(toDelete.map((name) => caches.delete(name)));\n' +
+2026-08-19T22:53:29.0149943Z   '      })\n' +
+2026-08-19T22:53:29.0150431Z   '      .then(() => caches.open(CACHE_VERSION))\n' +
+2026-08-19T22:53:29.0150840Z   '      .then((cache) =>\n' +
+2026-08-19T22:53:29.0151196Z   '        cache.keys().then((keys) =>\n' +
+2026-08-19T22:53:29.0151574Z   '          Promise.all(\n' +
+2026-08-19T22:53:29.0151871Z   '            keys\n' +
+2026-08-19T22:53:29.0152323Z   '              .filter((req) => isRaporlarModuleAssetUrl(new URL(req.url)))\n' +
+2026-08-19T22:53:29.0152857Z   '              .map((req) => cache.delete(req))\n' +
+2026-08-19T22:53:29.0153224Z   '          )\n' +
+2026-08-19T22:53:29.0153489Z   '        )\n' +
+2026-08-19T22:53:29.0153746Z   '      )\n' +
+2026-08-19T22:53:29.0154074Z   '      .then(() => self.clients.claim())\n' +
+2026-08-19T22:53:29.0154464Z   '      .catch((err) => {\n' +
+2026-08-19T22:53:29.0154855Z   "        console.warn('SW activate:', err);\n" +
+2026-08-19T22:53:29.0155220Z   '      })\n' +
+2026-08-19T22:53:29.0155472Z   '  );\n' +
+2026-08-19T22:53:29.0155724Z   '});\n' +
+2026-08-19T22:53:29.0155969Z   '\n' +
+2026-08-19T22:53:29.0156248Z   '// Fetch - Strateji\n' +
+2026-08-19T22:53:29.0156645Z   "self.addEventListener('fetch', (event) => {\n" +
+2026-08-19T22:53:29.0157070Z   '  const { request } = event;\n' +
+2026-08-19T22:53:29.0157451Z   '  const url = new URL(request.url);\n' +
+2026-08-19T22:53:29.0157776Z   '  \n' +
+2026-08-19T22:53:29.0158092Z   "  // Sadece same-origin istekleri cache'le\n" +
+2026-08-19T22:53:29.0158485Z   '  if (url.origin !== location.origin) {\n' +
+2026-08-19T22:53:29.0158866Z   '    event.respondWith(\n' +
+2026-08-19T22:53:29.0159157Z   '      fetch(request)\n' +
+2026-08-19T22:53:29.0159524Z   '        .catch(() => {\n' +
+2026-08-19T22:53:29.0160129Z   "          return new Response('Network error', { status: 503 });\n" +
+2026-08-19T22:53:29.0160558Z   '        })\n' +
+2026-08-19T22:53:29.0160823Z   '    );\n' +
+2026-08-19T22:53:29.0161077Z   '    return;\n' +
+2026-08-19T22:53:29.0161359Z   '  }\n' +
+2026-08-19T22:53:29.0161603Z   '  \n' +
+2026-08-19T22:53:29.0162304Z   '  // API çağrıları ve PHP - network-first; dinamik uçlar asla cache.put / stale fallback yok\n' +
+2026-08-19T22:53:29.0163242Z   "  if (url.pathname.includes('/api/') || url.pathname.includes('.php')) {\n" +
+2026-08-19T22:53:29.0163813Z   '    const p = url.pathname;\n' +
+2026-08-19T22:53:29.0164167Z   '    const isNoCachePhp =\n' +
+2026-08-19T22:53:29.0164514Z   "      p.indexOf('load.php') !== -1 ||\n" +
+2026-08-19T22:53:29.0164903Z   "      p.indexOf('save.php') !== -1 ||\n" +
+2026-08-19T22:53:29.0165258Z   "      p.indexOf('core.php') !== -1 ||\n" +
+2026-08-19T22:53:29.0165626Z   '      /\\/driver_[^/]*\\.php$/i.test(p) ||\n' +
+2026-08-19T22:53:29.0166009Z   '      /\\/admin_[^/]*\\.php$/i.test(p) ||\n' +
+2026-08-19T22:53:29.0166435Z   "      p.indexOf('upload_ruhsat.php') !== -1 ||\n" +
+2026-08-19T22:53:29.0166833Z   "      p.indexOf('ruhsat.php') !== -1 ||\n" +
+2026-08-19T22:53:29.0167246Z   "      p.indexOf('ruhsat_preview.php') !== -1;\n" +
+2026-08-19T22:53:29.0167634Z   '    if (isNoCachePhp) {\n' +
+2026-08-19T22:53:29.0167957Z   '      event.respondWith(\n' +
+2026-08-19T22:53:29.0168629Z   "        fetch(request).catch(() => new Response('Network error', { status: 503 }))\n" +
+2026-08-19T22:53:29.0169114Z   '      );\n' +
+2026-08-19T22:53:29.0169390Z   '      return;\n' +
+2026-08-19T22:53:29.0169650Z   '    }\n' +
+2026-08-19T22:53:29.0170130Z   '    event.respondWith(\n' +
+2026-08-19T22:53:29.0170444Z   '      fetch(request)\n' +
+2026-08-19T22:53:29.0170774Z   '        .then((response) => {\n' +
+2026-08-19T22:53:29.0171298Z   "          if (request.method === 'GET' && response && response.status === 200) {\n" +
+2026-08-19T22:53:29.0171980Z   "            const cacheControl = response.headers.get('Cache-Control');\n" +
+2026-08-19T22:53:29.0172499Z   '            if (!cacheControl ||\n' +
+2026-08-19T22:53:29.0172923Z   "                (!cacheControl.includes('no-cache') &&\n" +
+2026-08-19T22:53:29.0173456Z   "                 !cacheControl.includes('no-store') &&\n" +
+2026-08-19T22:53:29.0173973Z   "                 !cacheControl.includes('must-revalidate'))) {\n" +
+2026-08-19T22:53:29.0174520Z   '              const responseClone = response.clone();\n' +
+2026-08-19T22:53:29.0175023Z   '              caches.open(CACHE_VERSION).then((cache) => {\n' +
+2026-08-19T22:53:29.0175514Z   '                cache.put(request, responseClone);\n' +
+2026-08-19T22:53:29.0175898Z   '              });\n' +
+2026-08-19T22:53:29.0176195Z   '            }\n' +
+2026-08-19T22:53:29.0176469Z   '          }\n' +
+2026-08-19T22:53:29.0176777Z   '          return response;\n' +
+2026-08-19T22:53:29.0177107Z   '        })\n' +
+2026-08-19T22:53:29.0177402Z   '        .catch(() => {\n' +
+2026-08-19T22:53:29.0177786Z   "          if (request.method === 'GET') {\n" +
+2026-08-19T22:53:29.0178524Z   "            return caches.match(request).then((cached) => cached || new Response('Network error', { status: 503 }));\n" +
+2026-08-19T22:53:29.0179146Z   '          }\n' +
+2026-08-19T22:53:29.0179547Z   "          return new Response('Network error', { status: 503 });\n" +
+2026-08-19T22:53:29.0180148Z   '        })\n' +
+2026-08-19T22:53:29.0180412Z   '    );\n' +
+2026-08-19T22:53:29.0180656Z   '    return;\n' +
+2026-08-19T22:53:29.0180908Z   '  }\n' +
+2026-08-19T22:53:29.0181139Z   '  \n' +
+2026-08-19T22:53:29.0181586Z   '  // Static dosyalar - NETWORK-FIRST (Önce internetten güncelini çek)\n' +
+2026-08-19T22:53:29.0181914Z   '  event.respondWith(\n' +
+2026-08-19T22:53:29.0182134Z   '    fetch(request)\n' +
+2026-08-19T22:53:29.0182362Z   '      .then((response) => {\n' +
+2026-08-19T22:53:29.0182886Z   "        if (!response || response.status !== 200 || response.type === 'error') {\n" +
+2026-08-19T22:53:29.0183358Z   '          return response;\n' +
+2026-08-19T22:53:29.0183656Z   '        }\n' +
+2026-08-19T22:53:29.0184171Z   "        // Başarılıysa cache'i yenile (raporlar modülü ayrı önbellek adı)\n" +
+2026-08-19T22:53:29.0184709Z   '        const responseClone = response.clone();\n' +
+2026-08-19T22:53:29.0185385Z   '        const targetCache = isRaporlarModuleAssetUrl(url) ? CACHE_RAPORLAR_VERSION : CACHE_VERSION;\n' +
+2026-08-19T22:53:29.0186315Z   '        caches.open(targetCache).then((cache) => {\n' +
+2026-08-19T22:53:29.0186819Z   '          cache.put(request, responseClone);\n' +
+2026-08-19T22:53:29.0187178Z   '        });\n' +
+2026-08-19T22:53:29.0187489Z   '        return response;\n' +
+2026-08-19T22:53:29.0187800Z   '      })\n' +
+2026-08-19T22:53:29.0188069Z   '      .catch(() => {\n' +
+2026-08-19T22:53:29.0188801Z   '        // İnternet yoksa eski önbellekten getir; hiçbir zaman undefined dönme (Response gerekli)\n' +
+2026-08-19T22:53:29.0189441Z   '        const origin = self.location.origin;\n' +
+2026-08-19T22:53:29.0189884Z   '        return caches.match(request)\n' +
+2026-08-19T22:53:29.0190569Z   '          .then((cachedResponse) => {\n' +
+2026-08-19T22:53:29.0191007Z   '            if (cachedResponse) return cachedResponse;\n' +
+2026-08-19T22:53:29.0191463Z   "            if (request.destination === 'document') {\n" +
+2026-08-19T22:53:29.0191882Z   '              const base = getBase();\n' +
+2026-08-19T22:53:29.0192533Z   "              const fallbackPath = base ? base + '/' : '/';\n" +
+2026-08-19T22:53:29.0192978Z   '              const fallbackUrl = origin + fallbackPath;\n' +
+2026-08-19T22:53:29.0193399Z   '              return caches.match(fallbackUrl);\n' +
+2026-08-19T22:53:29.0193721Z   '            }\n' +
+2026-08-19T22:53:29.0194003Z   "            return new Response('Not in cache', { status: 503 });\n" +
+2026-08-19T22:53:29.0194287Z   '          })\n' +
+2026-08-19T22:53:29.0194724Z   "          .then((res) => res || new Response('Not in cache', { status: 503 }));\n" +
+2026-08-19T22:53:29.0195168Z   '      })\n' +
+2026-08-19T22:53:29.0195434Z   '  );\n' +
+2026-08-19T22:53:29.0195671Z   '});\n' +
+2026-08-19T22:53:29.0195915Z   '\n' +
+2026-08-19T22:53:29.0196180Z   '// Push Notifications\n' +
+2026-08-19T22:53:29.0196585Z   "self.addEventListener('push', (event) => {\n" +
+2026-08-19T22:53:29.0197026Z   '  const data = event.data ? event.data.json() : {};\n' +
+2026-08-19T22:53:29.0197431Z   "  const title = data.title || 'Medisa Taşıt';\n" +
+2026-08-19T22:53:29.0197735Z   '  const base = getBase();\n' +
+2026-08-19T22:53:29.0198000Z   "  const defaultUrl = base ? base + '/' : '/';\n" +
+2026-08-19T22:53:29.0198263Z   '  const options = {\n' +
+2026-08-19T22:53:29.0198514Z   "    body: data.body || 'Yeni Bildirim',\n" +
+2026-08-19T22:53:29.0198805Z   "    icon: base + '/icon/logo-header2.svg',\n" +
+2026-08-19T22:53:29.0199096Z   "    badge: base + '/icon/logo-header2.svg',\n" +
+2026-08-19T22:53:29.0199383Z   '    data: data.url || defaultUrl\n' +
+2026-08-19T22:53:29.0199608Z   '  };\n' +
+2026-08-19T22:53:29.0199783Z   '  \n' +
+2026-08-19T22:53:29.0200125Z   '  event.waitUntil(\n' +
+2026-08-19T22:53:29.0200473Z   '    self.registration.showNotification(title, options)\n' +
+2026-08-19T22:53:29.0200762Z   '  );\n' +
+2026-08-19T22:53:29.0200938Z   '});\n' +
+2026-08-19T22:53:29.0201118Z   '\n' +
+2026-08-19T22:53:29.0201305Z   '// Notification click\n' +
+2026-08-19T22:53:29.0201600Z   "self.addEventListener('notificationclick', (event) => {\n" +
+2026-08-19T22:53:29.0201935Z   '  event.notification.close();\n' +
+2026-08-19T22:53:29.0202192Z   '  const base = getBase();\n' +
+2026-08-19T22:53:29.0202469Z   "  const defaultUrl = base ? base + '/' : '/';\n" +
+2026-08-19T22:53:29.0202727Z   '  event.waitUntil(\n' +
+2026-08-19T22:53:29.0203034Z   '    clients.openWindow(event.notification.data || defaultUrl)\n' +
+2026-08-19T22:53:29.0203327Z   '  );\n' +
+2026-08-19T22:53:29.0203498Z   '});\n'
+2026-08-19T22:53:29.0203606Z 
+2026-08-19T22:53:29.0203797Z PASS quality gate / package bağlandı
+2026-08-19T22:53:29.0204118Z PASS behavior: satış soru akışı dalları
+2026-08-19T22:53:29.0204280Z 
+2026-08-19T22:53:29.0204381Z 20 passed, 1 failed
+2026-08-19T22:53:29.0259086Z ##[error]Process completed with exit code 1.
+2026-08-19T22:53:29.0271129Z ##[debug]Finishing: Deploy quality gates
+2026-08-19T22:53:29.0287975Z ##[debug]Evaluating: secrets.FTP_SERVER
+2026-08-19T22:53:29.0288346Z ##[debug]Evaluating Index:
+2026-08-19T22:53:29.0288598Z ##[debug]..Evaluating secrets:
+2026-08-19T22:53:29.0288956Z ##[debug]..=> Object
+2026-08-19T22:53:29.0289194Z ##[debug]..Evaluating String:
+2026-08-19T22:53:29.0289464Z ##[debug]..=> 'FTP_SERVER'
+2026-08-19T22:53:29.0289828Z ##[debug]=> '***'
+2026-08-19T22:53:29.0290345Z ##[debug]Result: '***'
+2026-08-19T22:53:29.0290840Z ##[debug]Evaluating: secrets.FTP_USERNAME
+2026-08-19T22:53:29.0291106Z ##[debug]Evaluating Index:
+2026-08-19T22:53:29.0291350Z ##[debug]..Evaluating secrets:
+2026-08-19T22:53:29.0291597Z ##[debug]..=> Object
+2026-08-19T22:53:29.0291816Z ##[debug]..Evaluating String:
+2026-08-19T22:53:29.0292051Z ##[debug]..=> 'FTP_USERNAME'
+2026-08-19T22:53:29.0292345Z ##[debug]=> '***'
+2026-08-19T22:53:29.0292596Z ##[debug]Result: '***'
+2026-08-19T22:53:29.0292971Z ##[debug]Evaluating: secrets.FTP_PASSWORD
+2026-08-19T22:53:29.0293270Z ##[debug]Evaluating Index:
+2026-08-19T22:53:29.0293498Z ##[debug]..Evaluating secrets:
+2026-08-19T22:53:29.0293750Z ##[debug]..=> Object
+2026-08-19T22:53:29.0294114Z ##[debug]..Evaluating String:
+2026-08-19T22:53:29.0294356Z ##[debug]..=> 'FTP_PASSWORD'
+2026-08-19T22:53:29.0294605Z ##[debug]=> '***'
+2026-08-19T22:53:29.0294829Z ##[debug]Result: '***'
+2026-08-19T22:53:29.0295816Z ##[debug]Evaluating condition for step: 'Secrets kontrolü (boşsa FTP sunucu köküne yazar; canlıda değişiklik görünmez)'
+2026-08-19T22:53:29.0297131Z ##[debug]Evaluating: success()
+2026-08-19T22:53:29.0297476Z ##[debug]Evaluating success:
+2026-08-19T22:53:29.0297840Z ##[debug]=> false
+2026-08-19T22:53:29.0298173Z ##[debug]Result: false
+2026-08-19T22:53:29.0303233Z ##[debug]Evaluating condition for step: 'Deploy öncesi — commit ve kritik dosyalar (logda doğrulayın)'
+2026-08-19T22:53:29.0304355Z ##[debug]Evaluating: success()
+2026-08-19T22:53:29.0304694Z ##[debug]Evaluating success:
+2026-08-19T22:53:29.0305042Z ##[debug]=> false
+2026-08-19T22:53:29.0305376Z ##[debug]Result: false
+2026-08-19T22:53:29.0326378Z ##[debug]Evaluating condition for step: 'Post Setup Node.js'
+2026-08-19T22:53:29.0327485Z ##[debug]Evaluating: success()
+2026-08-19T22:53:29.0327834Z ##[debug]Evaluating success:
+2026-08-19T22:53:29.0328178Z ##[debug]=> false
+2026-08-19T22:53:29.0328525Z ##[debug]Result: false
+2026-08-19T22:53:29.0333018Z ##[debug]Evaluating condition for step: 'Post Run actions/checkout@v6'
+2026-08-19T22:53:29.0334670Z ##[debug]Evaluating: always()
+2026-08-19T22:53:29.0335035Z ##[debug]Evaluating always:
+2026-08-19T22:53:29.0335654Z ##[debug]=> true
+2026-08-19T22:53:29.0335999Z ##[debug]Result: true
+2026-08-19T22:53:29.0336472Z ##[debug]Starting: Post Run actions/checkout@v6
+2026-08-19T22:53:29.0364501Z ##[debug]Loading inputs
+2026-08-19T22:53:29.0365656Z ##[debug]Evaluating: github.repository
+2026-08-19T22:53:29.0365943Z ##[debug]Evaluating Index:
+2026-08-19T22:53:29.0366193Z ##[debug]..Evaluating github:
+2026-08-19T22:53:29.0366443Z ##[debug]..=> Object
+2026-08-19T22:53:29.0366678Z ##[debug]..Evaluating String:
+2026-08-19T22:53:29.0366917Z ##[debug]..=> 'repository'
+2026-08-19T22:53:29.0367195Z ##[debug]=> 'akelilker/tasitmedisa'
+2026-08-19T22:53:29.0367476Z ##[debug]Result: 'akelilker/tasitmedisa'
+2026-08-19T22:53:29.0368852Z ##[debug]Evaluating: github.token
+2026-08-19T22:53:29.0369123Z ##[debug]Evaluating Index:
+2026-08-19T22:53:29.0369361Z ##[debug]..Evaluating github:
+2026-08-19T22:53:29.0369595Z ##[debug]..=> Object
+2026-08-19T22:53:29.0369812Z ##[debug]..Evaluating String:
+2026-08-19T22:53:29.0370172Z ##[debug]..=> 'token'
+2026-08-19T22:53:29.0372151Z ##[debug]=> '***'
+2026-08-19T22:53:29.0374066Z ##[debug]Result: '***'
+2026-08-19T22:53:29.0384738Z ##[debug]Loading env
+2026-08-19T22:53:29.0388810Z Post job cleanup.
+2026-08-19T22:53:29.1053527Z ##[debug]Getting git version
+2026-08-19T22:53:29.1064204Z [command]/usr/bin/git version
+2026-08-19T22:53:29.1128265Z git version 2.54.0
+2026-08-19T22:53:29.1142501Z ##[debug]0
+2026-08-19T22:53:29.1143075Z ##[debug]git version 2.54.0
+2026-08-19T22:53:29.1143379Z ##[debug]
+2026-08-19T22:53:29.1146073Z ##[debug]Set git useragent to: git/2.54.0 (github-actions-checkout) actions_orchestration_id/06b8b893-4310-492b-9ca6-a8e3d5da90d1.deploy_preflight.__default
+2026-08-19T22:53:29.1147755Z ::add-mask::***
+2026-08-19T22:53:29.1159786Z Temporarily overriding HOME='/home/runner/work/_temp/36c7d12b-fd79-44f3-a655-8e390b155c72' before making global git config changes
+2026-08-19T22:53:29.1161104Z Adding repository directory to the temporary git global config as a safe directory
+2026-08-19T22:53:29.1164817Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/tasitmedisa/tasitmedisa
+2026-08-19T22:53:29.1188997Z ##[debug]0
+2026-08-19T22:53:29.1189513Z ##[debug]
+2026-08-19T22:53:29.1190078Z Removing SSH command configuration
+2026-08-19T22:53:29.1195458Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-08-19T22:53:29.1220389Z ##[debug]1
+2026-08-19T22:53:29.1221330Z ##[debug]
+2026-08-19T22:53:29.1224844Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-08-19T22:53:29.1428202Z ##[debug]0
+2026-08-19T22:53:29.1431473Z ##[debug]
+2026-08-19T22:53:29.1431908Z Removing HTTP extra header
+2026-08-19T22:53:29.1432492Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-08-19T22:53:29.1455105Z ##[debug]1
+2026-08-19T22:53:29.1455639Z ##[debug]
+2026-08-19T22:53:29.1460496Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-08-19T22:53:29.1667093Z ##[debug]0
+2026-08-19T22:53:29.1667618Z ##[debug]
+2026-08-19T22:53:29.1668233Z Removing includeIf entries pointing to credentials config files
+2026-08-19T22:53:29.1676085Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-08-19T22:53:29.1696787Z includeif.gitdir:/home/runner/work/tasitmedisa/tasitmedisa/.git.path
+2026-08-19T22:53:29.1697970Z includeif.gitdir:/home/runner/work/tasitmedisa/tasitmedisa/.git/worktrees/*.path
+2026-08-19T22:53:29.1699489Z includeif.gitdir:/github/workspace/.git.path
+2026-08-19T22:53:29.1700475Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-08-19T22:53:29.1701449Z ##[debug]0
+2026-08-19T22:53:29.1702146Z ##[debug]includeif.gitdir:/home/runner/work/tasitmedisa/tasitmedisa/.git.path
+2026-08-19T22:53:29.1702861Z ##[debug]includeif.gitdir:/home/runner/work/tasitmedisa/tasitmedisa/.git/worktrees/*.path
+2026-08-19T22:53:29.1703479Z ##[debug]includeif.gitdir:/github/workspace/.git.path
+2026-08-19T22:53:29.1703967Z ##[debug]includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-08-19T22:53:29.1704351Z ##[debug]
+2026-08-19T22:53:29.1706095Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/tasitmedisa/tasitmedisa/.git.path
+2026-08-19T22:53:29.1727288Z /home/runner/work/_temp/git-credentials-df6c3cb3-5f49-4a88-b86f-99baf47b667d.config
+2026-08-19T22:53:29.1729906Z ##[debug]0
+2026-08-19T22:53:29.1730803Z ##[debug]/home/runner/work/_temp/git-credentials-df6c3cb3-5f49-4a88-b86f-99baf47b667d.config
+2026-08-19T22:53:29.1731389Z ##[debug]
+2026-08-19T22:53:29.1737216Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/tasitmedisa/tasitmedisa/.git.path /home/runner/work/_temp/git-credentials-df6c3cb3-5f49-4a88-b86f-99baf47b667d.config
+2026-08-19T22:53:29.1764716Z ##[debug]0
+2026-08-19T22:53:29.1765399Z ##[debug]
+2026-08-19T22:53:29.1769827Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/tasitmedisa/tasitmedisa/.git/worktrees/*.path
+2026-08-19T22:53:29.1791771Z /home/runner/work/_temp/git-credentials-df6c3cb3-5f49-4a88-b86f-99baf47b667d.config
+2026-08-19T22:53:29.1794765Z ##[debug]0
+2026-08-19T22:53:29.1795484Z ##[debug]/home/runner/work/_temp/git-credentials-df6c3cb3-5f49-4a88-b86f-99baf47b667d.config
+2026-08-19T22:53:29.1796136Z ##[debug]
+2026-08-19T22:53:29.1800368Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/tasitmedisa/tasitmedisa/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-df6c3cb3-5f49-4a88-b86f-99baf47b667d.config
+2026-08-19T22:53:29.1826955Z ##[debug]0
+2026-08-19T22:53:29.1827488Z ##[debug]
+2026-08-19T22:53:29.1830553Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+2026-08-19T22:53:29.1852317Z /github/runner_temp/git-credentials-df6c3cb3-5f49-4a88-b86f-99baf47b667d.config
+2026-08-19T22:53:29.1854804Z ##[debug]0
+2026-08-19T22:53:29.1855550Z ##[debug]/github/runner_temp/git-credentials-df6c3cb3-5f49-4a88-b86f-99baf47b667d.config
+2026-08-19T22:53:29.1856173Z ##[debug]
+2026-08-19T22:53:29.1859067Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-df6c3cb3-5f49-4a88-b86f-99baf47b667d.config
+2026-08-19T22:53:29.1885245Z ##[debug]0
+2026-08-19T22:53:29.1885834Z ##[debug]
+2026-08-19T22:53:29.1888949Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-08-19T22:53:29.1911108Z /github/runner_temp/git-credentials-df6c3cb3-5f49-4a88-b86f-99baf47b667d.config
+2026-08-19T22:53:29.1914249Z ##[debug]0
+2026-08-19T22:53:29.1914822Z ##[debug]/github/runner_temp/git-credentials-df6c3cb3-5f49-4a88-b86f-99baf47b667d.config
+2026-08-19T22:53:29.1915209Z ##[debug]
+2026-08-19T22:53:29.1918829Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-df6c3cb3-5f49-4a88-b86f-99baf47b667d.config
+2026-08-19T22:53:29.1944876Z ##[debug]0
+2026-08-19T22:53:29.1945203Z ##[debug]
+2026-08-19T22:53:29.1949756Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-08-19T22:53:29.2136371Z ##[debug]0
+2026-08-19T22:53:29.2136791Z ##[debug]
+2026-08-19T22:53:29.2137367Z Removing credentials config '/home/runner/work/_temp/git-credentials-df6c3cb3-5f49-4a88-b86f-99baf47b667d.config'
+2026-08-19T22:53:29.2144358Z ##[debug]Skipping removal of credentials config '/github/runner_temp/git-credentials-df6c3cb3-5f49-4a88-b86f-99baf47b667d.config' - not under RUNNER_TEMP
+2026-08-19T22:53:29.2145308Z ##[debug]Unsetting HOME override
+2026-08-19T22:53:29.2215486Z ##[debug]Node Action run completed with exit code 0
+2026-08-19T22:53:29.2217969Z ##[debug]Finishing: Post Run actions/checkout@v6
+2026-08-19T22:53:29.2264974Z ##[debug]Starting: Complete job
+2026-08-19T22:53:29.2266773Z Uploading runner diagnostic logs
+2026-08-19T22:53:29.2277833Z ##[debug]Starting diagnostic file upload.
+2026-08-19T22:53:29.2278135Z ##[debug]Setting up diagnostic log folders.
+2026-08-19T22:53:29.2279674Z ##[debug]Creating diagnostic log files folder.
+2026-08-19T22:53:29.2286728Z ##[debug]Copying 1 worker diagnostic logs.
+2026-08-19T22:53:29.2293360Z ##[debug]Copying 1 runner diagnostic logs.
+2026-08-19T22:53:29.2294288Z ##[debug]Zipping diagnostic files.
+2026-08-19T22:53:29.2354064Z ##[debug]Uploading diagnostic metadata file.
+2026-08-19T22:53:29.2378614Z ##[debug]Diagnostic file upload complete.
+2026-08-19T22:53:29.2379100Z Completed runner diagnostic log upload
+2026-08-19T22:53:29.2379357Z Cleaning up orphan processes
+2026-08-19T22:53:29.2653390Z ##[debug]Finishing: Complete job
+2026-08-19T22:53:29.2676973Z ##[debug]Finishing: Deploy preflight

@@ -1,0 +1,8 @@
+﻿2026-08-19T22:53:36.4826581Z ##[debug]Evaluating condition for step: 'HTTP verification — canlı site erişilebilir mi'
+2026-08-19T22:53:36.4835543Z ##[debug]Evaluating: (success() && (steps.evaluate.outputs.succeeded == 'true'))
+2026-08-19T22:53:36.4837592Z ##[debug]Evaluating And:
+2026-08-19T22:53:36.4840591Z ##[debug]..Evaluating success:
+2026-08-19T22:53:36.4842076Z ##[debug]..=> false
+2026-08-19T22:53:36.4843514Z ##[debug]=> false
+2026-08-19T22:53:36.4848543Z ##[debug]Expanded: (false && (steps['evaluate']['outputs']['succeeded'] == 'true'))
+2026-08-19T22:53:36.4850535Z ##[debug]Result: false
