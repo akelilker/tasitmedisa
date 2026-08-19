@@ -391,7 +391,7 @@
     };
 
     const updateTrigger = function() {
-      triggerText.textContent = selectedUserName || 'Kullanıcı Seçiniz';
+      triggerText.textContent = selectedUserName || '';
       trigger.classList.toggle('placeholder', !selectedUserName);
       hiddenInput.value = selectedUserName;
     };
@@ -4691,7 +4691,7 @@
             '<input type="hidden" id="ceza-surucu">' +
             '<div id="ceza-user-wrap" class="ceza-user-dropdown-wrap">' +
               '<button type="button" id="ceza-user-trigger" class="form-input ceza-user-trigger placeholder" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="ceza-user-dropdown" aria-labelledby="ceza-user-label ceza-user-trigger-text">' +
-                '<span id="ceza-user-trigger-text">Kullanıcı Seçiniz</span>' +
+                '<span id="ceza-user-trigger-text"></span>' +
                 '<svg class="ceza-user-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>' +
               '</button>' +
               '<div id="ceza-user-dropdown" class="ceza-user-dropdown" role="listbox" aria-hidden="true">' +
@@ -5125,6 +5125,7 @@
             const noneOpt = document.createElement('option');
             noneOpt.value = '__none__';
             noneOpt.textContent = 'Henüz Tanımlanmadı';
+            noneOpt.hidden = true;
             targetSelect.appendChild(noneOpt);
             const users = getAssignableUsersForVehicle(targetVehicle);
             users.forEach(u => {
@@ -5140,11 +5141,8 @@
             const selected = selectedUserId != null ? String(selectedUserId) : '';
             if (selected && users.some(function(u) { return String(u.id) === selected; })) {
               targetSelect.value = selected;
-            } else if (selected && selected !== '__none__') {
-              // Eski atama artık aday değilse listeye yönetici eklenmez; seçim sıfırlanır.
-              targetSelect.value = '__none__';
             } else {
-              targetSelect.value = '__none__';
+              targetSelect.value = '';
             }
           };
           fillAssignableUserOptions(selectEl, vehicle, vehicle && vehicle.assignedUserId);

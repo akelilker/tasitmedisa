@@ -145,7 +145,7 @@
                                     <select id="vehicle-branch-select" class="form-input medisa-boxed-select-native" aria-hidden="true" tabindex="-1">
                                         <option value="">Seçiniz</option>
                                     </select>
-                                    <div id="vehicle-branch-trigger" class="vehicle-branch-trigger medisa-boxed-select-trigger form-input placeholder" tabindex="0" role="combobox" aria-expanded="false" aria-haspopup="listbox" aria-controls="vehicle-branch-list" aria-labelledby="vehicle-branch-label">Seçiniz</div>
+                                    <div id="vehicle-branch-trigger" class="vehicle-branch-trigger medisa-boxed-select-trigger form-input placeholder" tabindex="0" role="combobox" aria-expanded="false" aria-haspopup="listbox" aria-controls="vehicle-branch-list" aria-labelledby="vehicle-branch-label"></div>
                                     <div id="vehicle-branch-list" class="vehicle-branch-list medisa-boxed-select-menu" role="listbox" aria-hidden="true"></div>
                                 </div>
                             </div>
@@ -1601,7 +1601,7 @@
       trigger.removeAttribute("aria-disabled");
       trigger.tabIndex = 0;
       const opt = select.options[select.selectedIndex];
-      trigger.textContent = opt ? opt.textContent : "Seçiniz";
+      trigger.textContent = opt && select.value ? opt.textContent : '';
       if (select.value === "") trigger.classList.add("placeholder");
       else trigger.classList.remove("placeholder");
     }
@@ -1676,6 +1676,7 @@
     for (let i = 0; i < select.options.length; i++) {
       const opt = select.options[i];
       if (opt.disabled && opt.text === "Önce Şube Ekleyiniz") continue;
+      if (!opt.value || opt.hidden) continue;
       const div = document.createElement("div");
       div.className = "vehicle-branch-option medisa-boxed-select-option";
       div.textContent = opt.textContent;
