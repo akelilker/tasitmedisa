@@ -7349,9 +7349,20 @@
       syncSelectedFileBox(false);
       setRuhsatSaveBtnVisibility(saveBtn, false);
     }
+    function resolveActiveVehicleForDocumentUpload() {
+      if (typeof vehicle !== 'undefined' && vehicle) return vehicle;
+      var vehicleId = (window.currentDetailVehicleId != null ? String(window.currentDetailVehicleId) : '');
+      if (!vehicleId) return null;
+      var appTasitlar = window.appData && Array.isArray(window.appData.tasitlar) ? window.appData.tasitlar : [];
+      var found = appTasitlar.find(function(v) { return String(v.id) === vehicleId; });
+      if (found) return found;
+      var list = typeof readVehicles === 'function' ? readVehicles() : [];
+      return list.find(function(v) { return String(v.id) === vehicleId; }) || null;
+    }
     function validateSelectedDocumentBeforeUpload() {
+      const activeVehicle = resolveActiveVehicleForDocumentUpload();
       if (cfg.key === 'tasit_karti') {
-        const expiryValidation = validateTasitKartiK2SourceDate(vehicle);
+        const expiryValidation = validateTasitKartiK2SourceDate(activeVehicle);
         if (expiryValidation.valid) return true;
         alert(expiryValidation.message);
         resetSelectedUploadFile();
