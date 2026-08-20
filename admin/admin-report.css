@@ -279,12 +279,13 @@ body.admin-report-page .main-header-user-name {
   display: block;
   max-width: none;
   overflow: visible;
-  color: rgba(238, 246, 255, 0.98);
+  color: #FFFFFF;
   font-size: clamp(9px, 1.65vw, 10.5px);
   font-weight: 700;
   text-shadow: none !important;
   filter: none !important;
-  -webkit-font-smoothing: antialiased;
+  -webkit-font-smoothing: auto;
+  -moz-osx-font-smoothing: auto;
   -moz-osx-font-smoothing: grayscale;
   line-height: 1.15;
   text-align: center;

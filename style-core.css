@@ -1029,7 +1029,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
   display: -webkit-box;
   max-width: 100%;
   overflow: hidden;
-  color: rgba(238, 246, 255, 0.96);
+  color: #FFFFFF;
   font-size: clamp(calc(8px - 0.5pt), 1.55vw, calc(10px - 0.5pt));
   font-weight: 700;
   line-height: 1.1;
@@ -1042,8 +1042,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
   transform: none;
   text-shadow: none;
   filter: none;
-  -webkit-font-smoothing: antialiased;
-  text-rendering: geometricPrecision;
+  -webkit-font-smoothing: auto;
+  text-rendering: auto;
 }
 
 @media (min-width: 641px) {
