@@ -100,7 +100,8 @@ test('Login first-login kullanıcısını next route yerine zorunlu ekrana yolla
 });
 test('Dashboard session doğrulamadan driver verisi istemez', () => {
   const sessionAt = files.dashboardJs.indexOf('fetchCurrentPortalSession(token)');
-  const dataAt = files.dashboardJs.indexOf("fetch(API_BASE + 'driver_data.php");
+  const dataMatch = files.dashboardJs.match(/fetch\(\s*(?:API_BASE|runtime\.paths\.API_BASE)\s*\+\s*'driver_data\.php/);
+  const dataAt = dataMatch ? dataMatch.index : -1;
   assert.ok(sessionAt >= 0 && dataAt >= 0 && sessionAt < dataAt);
 });
 test('Dashboard zorunlu modda veri bootstrapından önce döner', () => {
