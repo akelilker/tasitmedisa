@@ -108,7 +108,12 @@ return;
 
 let blankTab = null;
 try {
-blankTab = window.open('about:blank', '_blank', 'noopener,noreferrer');
+blankTab = window.open('about:blank', '_blank');
+if (blankTab) {
+try {
+blankTab.opener = null;
+} catch (openerErr) {}
+}
 } catch (e) {}
 
 mintDriverDocumentToken(vehicleId, documentType)
@@ -129,7 +134,7 @@ blankTab.focus();
 return;
 } catch (navErr) {}
 }
-window.open(finalUrl, '_blank', 'noopener');
+window.location.href = finalUrl;
 })
 .catch(function(err) {
 if (blankTab && !blankTab.closed) {
