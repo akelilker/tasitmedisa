@@ -331,11 +331,33 @@ test('iOS PWA login class ve CSS owner kuralları', () => {
 });
 
 test('Bu görev style-core.css ownerına dokunmaz ve asset pinleri tutarlıdır', () => {
-  assert.match(files.bootstrap, /shellCss:\s*'20260820\.4'/);
-  assert.match(files.bootstrap, /bootstrap:\s*'20260731\.3'/);
-  assert.match(files.loginHtml, /driver-shell\.css\?v=20260731\.3/);
-  assert.match(files.dashboardHtml, /driver-shell\.css\?v=20260731\.3/);
-  assert.match(files.loginHtml, /driver-script\.js\?v=20260731\.3/);
+  const versionPattern = /^\d{8}\.\d+$/;
+  const bootstrapVersionMatch = files.bootstrap.match(/var VERSION = ['"]([^'"]+)['"]/);
+  const bootstrapAssetMatch = files.bootstrap.match(/bootstrap:\s*['"]([^'"]+)['"]/);
+  const shellCssAssetMatch = files.bootstrap.match(/shellCss:\s*['"]([^'"]+)['"]/);
+  assert.ok(bootstrapVersionMatch, 'bootstrap VERSION missing');
+  assert.ok(bootstrapAssetMatch, 'MEDISA_DRIVER_ASSET_VERSIONS.bootstrap missing');
+  assert.ok(shellCssAssetMatch, 'MEDISA_DRIVER_ASSET_VERSIONS.shellCss missing');
+  assert.match(bootstrapVersionMatch[1], versionPattern);
+  assert.match(bootstrapAssetMatch[1], versionPattern);
+  assert.match(shellCssAssetMatch[1], versionPattern);
+  assert.equal(
+    bootstrapAssetMatch[1],
+    bootstrapVersionMatch[1],
+    'MEDISA_DRIVER_ASSET_VERSIONS.bootstrap === VERSION'
+  );
+
+  const readQueryVersion = (html, fileName) => {
+    const match = html.match(new RegExp(fileName + '\\?v=([^"\'\\s>]+)'));
+    assert.ok(match, fileName + ' query pin missing');
+    assert.match(match[1], versionPattern, fileName + ' query pin format');
+    return match[1];
+  };
+  assert.equal(readQueryVersion(files.loginHtml, 'driver-script\\.js'), bootstrapVersionMatch[1]);
+  assert.equal(readQueryVersion(files.dashboardHtml, 'driver-script\\.js'), bootstrapVersionMatch[1]);
+  assert.equal(readQueryVersion(files.loginHtml, 'driver-shell\\.css'), shellCssAssetMatch[1]);
+  assert.equal(readQueryVersion(files.dashboardHtml, 'driver-shell\\.css'), shellCssAssetMatch[1]);
+
   // style-core dirty olabilir ama görev iOS/login kurallarını oraya taşımamalı
   assert.doesNotMatch(files.styleCore, /is-ios-pwa/);
   assert.doesNotMatch(files.styleCore, /settings-forget-device-btn/);
