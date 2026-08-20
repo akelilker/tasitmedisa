@@ -4,17 +4,19 @@
    ========================================= */
 
 /* --- Scrollbar Gizleme (html/body/modal style-core'da; sadece driver-spesifik) --- */
-.driver-scroll-area, .history-container, #history-list {
+.driver-scroll-area,
+.history-container,
+#history-list{
   scrollbar-width: none !important;
   -ms-overflow-style: none !important;
 }
 .driver-scroll-area::-webkit-scrollbar,
 .history-container::-webkit-scrollbar,
-#history-list::-webkit-scrollbar {
+#history-list::-webkit-scrollbar{
   display: none !important;
 }
 /* Modal açıkken arka plan scroll kilitlensin (sadece modal içi kayar) */
-body.driver-modal-open {
+body.driver-modal-open{
   overflow: hidden !important;
   position: fixed;
   width: 100%;
@@ -22,46 +24,46 @@ body.driver-modal-open {
 
 /* Masaüstü: Kullanıcı Paneli başlığı, driver-below-hero boşluk, çerçeve kalınlığı, logo boyutu */
 @media (min-width: 769px) {
-  .dashboard-page .driver-report-block-kaza .driver-kaporta-container .driver-kaporta-schema-wrapper svg {
+  .dashboard-page .driver-report-block-kaza .driver-kaporta-container .driver-kaporta-schema-wrapper svg{
     width: 136px !important;
     height: 190px !important;
   }
   /* Masaüstü Kaza Formu: Tutar kutusu ve Şema ana dış kutusunun alt boşluklarını 4px'e eziyoruz */
   .dashboard-page .driver-report-block-kaza .form-group:has(label[for^="kaza-tutar-"]),
-  .dashboard-page .driver-report-block-kaza .form-group:has(.driver-kaporta-container) {
+.dashboard-page .driver-report-block-kaza .form-group:has(.driver-kaporta-container){
     margin-bottom: 4px !important;
     margin-top: 0 !important;
   }
 
   /* Etiket (Boya/Değişen) ile Şemanın kendi arasındaki boşluk tam 8px (4px daha eklendi) */
-  .dashboard-page .driver-report-block-kaza .form-group .driver-kaporta-label {
+  .dashboard-page .driver-report-block-kaza .form-group .driver-kaporta-label{
     margin-bottom: 8px !important;
     margin-top: 0 !important;
   }
 
   /* Şema Taşıyıcısı: İç/dış boşluklar sıfırlandı */
-  .dashboard-page .driver-report-block-kaza .driver-kaporta-container {
+  .dashboard-page .driver-report-block-kaza .driver-kaporta-container{
     margin-top: 0 !important;
     margin-bottom: 0 !important;
   }
 
   /* Renk topları (Legend) ile Şema arasındaki boşluk tam 4px */
-  .dashboard-page .driver-report-block-kaza .driver-kaporta-container .boya-legend {
+  .dashboard-page .driver-report-block-kaza .driver-kaporta-container .boya-legend{
     margin-top: 4px !important;
   }
 
   /* SVG'nin kendi içindeki olası şeffaf boşlukları vakumlamak için negatif margin (-6px) ve tam ortalama */
-  .dashboard-page .driver-report-block-kaza .driver-kaporta-container .driver-kaporta-schema-wrapper svg {
+  .dashboard-page .driver-report-block-kaza .driver-kaporta-container .driver-kaporta-schema-wrapper svg{
     display: block !important;
     margin: -6px auto !important;
   }
   /* Sağ grid Var/Yok butonları: masaüstünde dikey yükseklik 3px az (32–29px) */
-  .dashboard-page .driver-action-area .driver-radio-btn {
+  .dashboard-page .driver-action-area .driver-radio-btn{
     height: auto !important;
     min-height: 26px !important;
   }}
 
-.driver-info-item .label {
+.driver-info-item .label{
   color: var(--form-label-color, #ffffff) !important;
   font-weight: 500;
   font-size: 11px;
@@ -69,13 +71,13 @@ body.driver-modal-open {
   flex-shrink: 0;
   text-transform: none; /* Etiketler JS'teki Title Case ile görünsün */
 }
-.driver-info-item .label::after {
+.driver-info-item .label::after{
   content: ':';
   margin-left: 2px;
   margin-right: 0.3em; /* ":" ile açıklamanın ilk harfi arasında bir boşluk */
 }
 /* Açıklamalar (değerler) gri – etiket beyaz kuralı; global --data-value-color (#f8f9fa) bypass */
-.driver-info-item .value {
+.driver-info-item .value{
   color: #a0aec0 !important;
   word-break: break-word;
   font-size: 13px;
@@ -83,26 +85,26 @@ body.driver-modal-open {
   min-width: min-content; /* Sığmazsa açıklama daralmadan tamamı alt satıra geçer, ortadan bölünmez */
 }
 /* İzole Edilmiş Tarih / KM Uyarı Renkleri ve Sızıntı Engeli — sadece değer renklenir */
-.driver-info-item.driver-warn-red .value {
+.driver-info-item.driver-warn-red .value{
   color: var(--theme-color) !important;
   font-weight: 600;
 }
-.driver-info-item .value .driver-info-missing-value {
+.driver-info-item .value .driver-info-missing-value{
   color: var(--theme-color, #e00000);
 }
-.driver-info-item.driver-warn-orange .value {
+.driver-info-item.driver-warn-orange .value{
   color: var(--orange-warn) !important;
 }
 .driver-info-item.driver-warn-red::before,
-.driver-info-item.driver-warn-orange::before {
+.driver-info-item.driver-warn-orange::before{
   display: none !important;
 }
 
 /* Kullanıcı paneli sol panel: etiket ve açıklama aynı boyut, aynı satırda hizalı */
-.driver-left-panel .driver-info-item .label { font-size: 13px; }
-.driver-left-panel .driver-info-item .value { font-size: 13px; }
+.driver-left-panel .driver-info-item .label{ font-size: 13px; }
+.driver-left-panel .driver-info-item .value{ font-size: 13px; }
 
-.driver-action-btn {
+.driver-action-btn{
   background: transparent !important;
   border: 1px solid rgba(238, 246, 255, 0.34);
   color: var(--data-value-color, #a0aec0);
@@ -117,7 +119,7 @@ body.driver-modal-open {
   text-shadow: none;
   transition: border-color 0.18s ease, color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease, text-shadow 0.18s ease;
 }
-.driver-action-btn:hover {
+.driver-action-btn:hover{
   border-color: rgba(238, 246, 255, 0.68);
   color: var(--txt-white, #fff);
   background: rgba(238, 246, 255, 0.035) !important;
@@ -126,58 +128,58 @@ body.driver-modal-open {
   transform: scale(1.012);
 }
 .driver-action-btn:active,
-.driver-action-btn:focus {
+.driver-action-btn:focus{
   border-color: var(--theme-color) !important;
   outline: none;
 }
-.driver-action-group:has(.driver-action-block.show) .driver-action-btn {
+.driver-action-group:has(.driver-action-block.show) .driver-action-btn{
   border-color: #22c55e !important;
   background: rgba(34, 197, 94, 0.15) !important;
   color: #22c55e !important;
 }
-.driver-action-btn.saved {
+.driver-action-btn.saved{
   border-color: #22c55e;
   color: #22c55e;
 }
-.driver-action-btn.saved:hover {
+.driver-action-btn.saved:hover{
   border-color: #4ade80;
   color: #4ade80;
 }
-.driver-action-btn.warning {
+.driver-action-btn.warning{
   border-color: var(--theme-color);
   color: var(--theme-color);
 }
-.driver-action-btn.warning:hover {
+.driver-action-btn.warning:hover{
   border-color: rgba(var(--theme-color-rgb), 0.9);
   color: rgba(var(--theme-color-rgb), 0.95);
 }
-.driver-action-btn.warning.warning-orange {
+.driver-action-btn.warning.warning-orange{
   border-color: var(--orange-warn);
   color: var(--orange-warn);
 }
-.driver-action-btn.warning.warning-orange:hover {
+.driver-action-btn.warning.warning-orange:hover{
   border-color: var(--orange-warn-hover);
   color: var(--orange-warn-hover);
 }
-.driver-action-btn.data-entered {
+.driver-action-btn.data-entered{
   border: 1px solid rgba(255, 255, 255, 0.25); /* Aynı ince parlak gri çerçeve */
   color: rgba(255, 255, 255, 0.9);
 }
-.driver-action-btn.data-entered:hover {
+.driver-action-btn.data-entered:hover{
   border-color: rgba(238, 246, 255, 0.68);
   color: var(--txt-white, #fff);
   background: rgba(238, 246, 255, 0.035) !important;
   box-shadow: 0 0 8px rgba(238, 246, 255, 0.14);
   text-shadow: 0 0 5px rgba(238, 246, 255, 0.32);
 }
-.driver-info-item.saved .value {
+.driver-info-item.saved .value{
   color: #22c55e;
 }
 /* Sigorta/Kasko/Muayene: sadece uyarı çerçevesi */
 
 /* Tarih alanı: takvim simgesi WebKit’te koyu kutu/çerçeve vermesin (modal + sağ panel blokları) */
 .dashboard-page .driver-modal input[type="date"].form-input::-webkit-calendar-picker-indicator,
-.dashboard-page .driver-action-area input[type="date"]::-webkit-calendar-picker-indicator {
+.dashboard-page .driver-action-area input[type="date"]::-webkit-calendar-picker-indicator{
   background-color: transparent !important;
   border: 0 !important;
   border-radius: 0 !important;
@@ -188,7 +190,7 @@ body.driver-modal-open {
 }
 
 /* Aksiyon alanı: buton + form/blok yatayda yan yana (her grup buton altında form) */
-.driver-action-area {
+.driver-action-area{
   display: flex;
   flex-direction: column;
   gap: 0;
@@ -197,38 +199,38 @@ body.driver-modal-open {
   flex: 1 1 auto;
   min-height: 0;
 }
-.driver-action-area .form-group {
+.driver-action-area .form-group{
   min-width: 0;
 }
-.driver-action-area-inner {
+.driver-action-area-inner{
   display: flex;
   flex-direction: column;
   flex: 1 1 auto;
   min-height: 0;
   gap: 0;
 }
-.driver-action-group {
+.driver-action-group{
   display: flex;
   flex-direction: column;
   gap: 6px;
   margin-bottom: 10px;
 }
-.driver-action-group:last-child { margin-bottom: 0; }
-.driver-action-group .driver-report-block {
+.driver-action-group:last-child{ margin-bottom: 0; }
+.driver-action-group .driver-report-block{
   margin-top: 4px;
   padding-left: 0;
 }
 .driver-action-group .driver-report-block.show,
-.driver-action-group .driver-action-block.show {
+.driver-action-group .driver-action-block.show{
   display: block;
 }
 .driver-action-group .driver-report-block:not(.show),
-.driver-action-group .driver-action-block:not(.show) {
+.driver-action-group .driver-action-block:not(.show){
   display: none;
 }
 
 /* Km (veya tek aksiyon) açıkken sadece o grubu göster */
-.driver-egzoz-muayene-check {
+.driver-egzoz-muayene-check{
   display: flex;
   align-items: center;
   gap: 7px;
@@ -238,38 +240,38 @@ body.driver-modal-open {
   cursor: pointer;
   user-select: none;
 }
-.driver-egzoz-muayene-check > span {
+.driver-egzoz-muayene-check > span{
   color: #a0aec0;
   font-weight: 500;
 }
-.driver-egzoz-muayene-check input[type="checkbox"] {
+.driver-egzoz-muayene-check input[type="checkbox"]{
   width: 15px;
   height: 15px;
   margin: 0;
   accent-color: var(--theme-color);
   flex: 0 0 auto;
 }
-.driver-egzoz-date-wrap {
+.driver-egzoz-date-wrap{
   display: none;
 }
-.driver-egzoz-date-wrap.driver-egzoz-date-visible {
+.driver-egzoz-date-wrap.driver-egzoz-date-visible{
   display: block;
 }
 
-.driver-action-area-inner.driver-km-open .driver-action-group {
+.driver-action-area-inner.driver-km-open .driver-action-group{
   display: none;
 }
 .driver-action-area-inner.driver-km-open .driver-action-group:has(.driver-action-block.show),
-.driver-action-area-inner.driver-km-open .driver-action-group:has(.driver-report-block.show) {
+.driver-action-area-inner.driver-km-open .driver-action-group:has(.driver-report-block.show){
   display: flex;
 }
 
 /* Modal açıkken panel butonları gizle */
-.driver-action-area-inner.driver-modal-open .driver-action-group {
+.driver-action-area-inner.driver-modal-open .driver-action-group{
   display: none;
 }
 
-.driver-success-msg {
+.driver-success-msg{
   display: none;
   margin-top: 12px;
   padding: 12px;
@@ -278,11 +280,11 @@ body.driver-modal-open {
   color: #22c55e;
   font-size: 13px;
 }
-.driver-success-msg.show {
+.driver-success-msg.show{
   display: block;
 }
 
-.driver-km-success-msg {
+.driver-km-success-msg{
   display: none;
   margin-top: 12px;
   padding: 12px;
@@ -291,22 +293,22 @@ body.driver-modal-open {
   color: #22c55e;
   font-size: 13px;
 }
-.driver-km-success-msg.show {
+.driver-km-success-msg.show{
   display: block;
 }
-.driver-km-error {
+.driver-km-error{
   display: none;
   margin-top: 8px;
   font-size: 13px;
   color: var(--theme-color);
 }
-.driver-km-error.show {
+.driver-km-error.show{
   display: block;
 }
 
 /* Input tema uyumu - koyu arka plan */
 .driver-action-area .form-group input,
-.driver-action-area .form-group textarea {
+.driver-action-area .form-group textarea{
   width: 100%;
   padding: 6px 16px;
   background: #0f1418 !important;
@@ -320,22 +322,22 @@ body.driver-modal-open {
   transition: box-shadow 0.2s;
   box-sizing: border-box;
 }
-.driver-action-area .form-group input {
+.driver-action-area .form-group input{
   padding: 0 16px;
   min-height: 26px;
 }
 .driver-action-area .form-group input:focus,
-.driver-action-area .form-group textarea:focus {
+.driver-action-area .form-group textarea:focus{
   outline: none;
   box-shadow: inset 0 0 0 0.5px var(--theme-color) !important;
 }
-.driver-action-area .form-group input.driver-km-input {
+.driver-action-area .form-group input.driver-km-input{
   box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.38) !important;
 }
-.driver-action-area .form-group input.driver-km-input:focus {
+.driver-action-area .form-group input.driver-km-input:focus{
   box-shadow: inset 0 0 0 0.5px var(--theme-color) !important;
 }
-.driver-action-area .form-group label {
+.driver-action-area .form-group label{
   display: block;
   margin-bottom: 6px;
   font-size: 13px;
@@ -343,25 +345,25 @@ body.driver-modal-open {
   font-weight: 500;
 }
 .driver-action-area .driver-report-block .form-group input,
-.driver-action-area .driver-report-block .form-group textarea {
+.driver-action-area .driver-report-block .form-group textarea{
   background: #0f1418 !important;
   background-color: #0f1418 !important;
   color: var(--data-value-color, #a0aec0);
 }
 .driver-action-area .driver-report-block .form-group input,
-.driver-action-area .driver-report-block .form-group textarea {
+.driver-action-area .driver-report-block .form-group textarea{
   box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.35) !important;
 }
 .driver-action-area .driver-report-block .form-group input:focus,
-.driver-action-area .driver-report-block .form-group textarea:focus {
+.driver-action-area .driver-report-block .form-group textarea:focus{
   box-shadow: inset 0 0 0 0.5px var(--theme-color) !important;
   outline: none !important;
 }
-.driver-action-area .driver-km-input-wrap {
+.driver-action-area .driver-km-input-wrap{
   position: relative;
   width: 100%;
 }
-.driver-action-area .driver-km-fake-placeholder {
+.driver-action-area .driver-km-fake-placeholder{
   position: absolute;
   left: 16px;
   top: 50%;
@@ -376,50 +378,50 @@ body.driver-modal-open {
 
 /* Mobil: 35/65, compact; etiket+açıklama yan yana, sadece sığmazsa açıklama tamamı alta */
 @media (max-width: 640px) {
-  .driver-two-panel {
+  .driver-two-panel{
     padding: 6px 8px 12px;
     gap: 8px;
   }
-  .driver-panels-inner { gap: 8px; }
-  .driver-left-panel {
+  .driver-panels-inner{ gap: 8px; }
+  .driver-left-panel{
     flex: 0 0 30%;
     border-right-width: 1.2px;
     border-right-color: var(--border-red-tech);
   }
-  .driver-right-panel { flex: 1; min-width: 0; }
-  .dashboard-page .driver-right-panel {
+  .driver-right-panel{ flex: 1; min-width: 0; }
+  .dashboard-page .driver-right-panel{
     padding-left: 8px !important;
     padding-right: 8px !important;
     box-sizing: border-box !important;
     overflow-x: hidden !important;
   }
-  .driver-vehicle-info {
+  .driver-vehicle-info{
     padding: 0;
     font-size: 12.5px;
   }
   /* Sol bölüm: etiketler arası 2px dikey boşluk ekle (dashboard) */
-  .dashboard-page .driver-left-panel .driver-vehicle-info {
+  .dashboard-page .driver-left-panel .driver-vehicle-info{
     gap: 6px !important; /* base 4px + 2px */
   }
-  .driver-info-item .label { font-size: 12.5px; text-transform: none; }
-  .driver-info-item .value { font-size: 12.5px; }
-  .driver-left-panel .driver-info-item .label { font-size: 13.5px; }
-  .driver-left-panel .driver-info-item .value { font-size: 13.5px; }
+  .driver-info-item .label{ font-size: 12.5px; text-transform: none; }
+  .driver-info-item .value{ font-size: 12.5px; }
+  .driver-left-panel .driver-info-item .label{ font-size: 13.5px; }
+  .driver-left-panel .driver-info-item .value{ font-size: 13.5px; }
   /* Mobil sol grid: etiket + açıklama yatayda hizalı (baseline, açıklama yukarıda görünmesin) */
-  .driver-left-panel .driver-info-item:has(.value) {
+  .driver-left-panel .driver-info-item:has(.value){
     align-items: baseline !important;
     row-gap: 0 !important;
   }
-  .driver-left-panel .driver-info-item:has(.value) .value {
+  .driver-left-panel .driver-info-item:has(.value) .value{
     margin-top: 0 !important;
     padding-top: 0 !important;
     line-height: 1.25;
   }
-  .driver-left-panel .driver-info-item:has(.value) .label::after {
+  .driver-left-panel .driver-info-item:has(.value) .label::after{
     margin-right: 0.2em;
   }
   /* Sağ grid butonları: mobilde footer'a taşmadan daha kompakt */
-  .driver-action-btn {
+  .driver-action-btn{
     padding: 9px 9px;
     font-size: 13.5px;
     display: flex;
@@ -428,48 +430,48 @@ body.driver-modal-open {
     border: 1px solid rgba(255, 255, 255, 0.25);
   }
   .driver-action-btn.saved,
-  .driver-action-btn.data-entered {
+.driver-action-btn.data-entered{
     border: 1px solid rgba(255, 255, 255, 0.25);
   }
   .driver-action-btn.saved:hover,
-  .driver-action-btn.data-entered:hover {
+.driver-action-btn.data-entered:hover{
     border-color: rgba(255, 255, 255, 0.5);
   }
-  .driver-current-plaka { font-size: 14.5px; }
-  .driver-plate-subtitle { font-size: 14.5px; }
-  .driver-user-plate-in-panel .driver-plate-subtitle { font-size: calc(15.5px + 0.67px); }
-  .driver-user-plate-in-panel { gap: 1px; margin-bottom: 3px; }
-  .driver-radio-label.driver-radio-label-multiline {
+  .driver-current-plaka{ font-size: 14.5px; }
+  .driver-plate-subtitle{ font-size: 14.5px; }
+  .driver-user-plate-in-panel .driver-plate-subtitle{ font-size: calc(15.5px + 0.67px); }
+  .driver-user-plate-in-panel{ gap: 1px; margin-bottom: 3px; }
+  .driver-radio-label.driver-radio-label-multiline{
     display: inline-flex;
     align-self: center;
     max-width: none;
     white-space: normal;
     line-height: 1.08;
   }
-  .driver-plate-chevron { font-size: 19.5px; }
-  .driver-footer-back-wrap .universal-back-label { font-size: 14.5px; }
-  .driver-btn-password { font-size: 12.5px; }
-  .driver-action-area .form-group label { font-size: 14px; }
+  .driver-plate-chevron{ font-size: 19.5px; }
+  .driver-footer-back-wrap .universal-back-label{ font-size: 14.5px; }
+  .driver-btn-password{ font-size: 12.5px; }
+  .driver-action-area .form-group label{ font-size: 14px; }
   .driver-action-area .form-group input,
-  .driver-action-area .form-group textarea { font-size: 15px; }
+.driver-action-area .form-group textarea{ font-size: 15px; }
   .driver-action-area .form-group input,
-  .driver-action-area .form-group textarea {
+.driver-action-area .form-group textarea{
     padding-left: 15px !important;
     padding-right: 15px !important;
   }
   /* Kullanıcı paneli mobil: sağ kolon tüm input/textarea sağdan taşmasın, dikey yükseklik 3–4px azaltılmış */
   .dashboard-page .driver-action-area .driver-date-wrap,
-  .dashboard-page .driver-action-area .driver-report-block .form-group { min-width: 0 !important; overflow: hidden !important; }
+.dashboard-page .driver-action-area .driver-report-block .form-group{ min-width: 0 !important; overflow: hidden !important; }
   .dashboard-page .driver-action-area .driver-report-block .form-group input,
-  .dashboard-page .driver-action-area .driver-report-block .form-group textarea {
+.dashboard-page .driver-action-area .driver-report-block .form-group textarea{
     width: 100% !important; max-width: 100% !important; min-width: 0 !important; overflow: hidden !important; box-sizing: border-box !important;
   }
-  .dashboard-page .driver-action-area .driver-report-block .form-group input {
+  .dashboard-page .driver-action-area .driver-report-block .form-group input{
     height: 26px !important; min-height: 26px !important;
   }
   .dashboard-page .driver-action-area input[type="date"],
-  .dashboard-page .driver-right-panel input[type="date"].form-input,
-  .driver-modal input[type="date"].form-input {
+.dashboard-page .driver-right-panel input[type="date"].form-input,
+.driver-modal input[type="date"].form-input{
     height: 28px !important;
     min-height: 28px !important;
     width: 100% !important;
@@ -481,75 +483,75 @@ body.driver-modal-open {
     appearance: none !important;
   }
   .driver-modal .driver-modal-content .form-group input,
-  .driver-modal .driver-modal-content .form-group textarea,
-  .driver-modal .driver-modal-content .form-group select {
+.driver-modal .driver-modal-content .form-group textarea,
+.driver-modal .driver-modal-content .form-group select{
     width: 100% !important; max-width: 100% !important; min-width: 0 !important; box-sizing: border-box !important;
   }
-  .driver-modal .driver-modal-content .form-group input {
+  .driver-modal .driver-modal-content .form-group input{
     height: 26px !important; min-height: 26px !important;
   }
 
   /* iOS Safari: flex + input taşması (WebKit bug); tüm zincirde min-width:0 + overflow */
   @supports (-webkit-touch-callout: none) {
     .dashboard-page .driver-right-panel,
-    .dashboard-page .driver-panels-inner,
-    .dashboard-page .driver-action-area-inner,
-    .dashboard-page .driver-action-area,
-    .dashboard-page .driver-report-block,
-    .dashboard-page .driver-action-area .form-group,
-    .dashboard-page .driver-action-area .driver-date-wrap {
+.dashboard-page .driver-panels-inner,
+.dashboard-page .driver-action-area-inner,
+.dashboard-page .driver-action-area,
+.dashboard-page .driver-report-block,
+.dashboard-page .driver-action-area .form-group,
+.dashboard-page .driver-action-area .driver-date-wrap{
       min-width: 0 !important;
     }
-    .dashboard-page .driver-right-panel {
+    .dashboard-page .driver-right-panel{
       overflow-x: hidden !important;
       -webkit-overflow-scrolling: touch;
     }
     .dashboard-page .driver-action-area .driver-report-block .form-group,
-    .dashboard-page .driver-action-area .driver-date-wrap {
+.dashboard-page .driver-action-area .driver-date-wrap{
       overflow: hidden !important;
       max-width: 100% !important;
     }
     .dashboard-page .driver-action-area .driver-report-block .form-group input,
-    .dashboard-page .driver-action-area .driver-report-block .form-group textarea,
-    .dashboard-page .driver-action-area input[type="date"],
-    .dashboard-page .driver-right-panel input[type="date"].form-input {
+.dashboard-page .driver-action-area .driver-report-block .form-group textarea,
+.dashboard-page .driver-action-area input[type="date"],
+.dashboard-page .driver-right-panel input[type="date"].form-input{
       min-width: 0 !important;
       max-width: 100% !important;
       width: 100% !important;
       box-sizing: border-box !important;
     }
-    .driver-modal .driver-modal-content .form-group {
+    .driver-modal .driver-modal-content .form-group{
       min-width: 0 !important;
       overflow: hidden !important;
     }
     .driver-modal .driver-modal-content .form-group input,
-    .driver-modal .driver-modal-content .form-group textarea,
-    .driver-modal .driver-modal-content .form-group select {
+.driver-modal .driver-modal-content .form-group textarea,
+.driver-modal .driver-modal-content .form-group select{
       min-width: 0 !important;
       max-width: 100% !important;
     }
   }
 
-  .driver-action-area .driver-km-fake-placeholder { font-size: 15px; }
-  .driver-km-error { font-size: 13px; }
-  .driver-success-msg { font-size: 13px; }
-  .driver-km-success-msg { font-size: 13px; }
+  .driver-action-area .driver-km-fake-placeholder{ font-size: 15px; }
+  .driver-km-error{ font-size: 13px; }
+  .driver-success-msg{ font-size: 13px; }
+  .driver-km-success-msg{ font-size: 13px; }
 
   /* Splash logosu mobilde 120x69 */
-  .driver-splash-logo {
+  .driver-splash-logo{
     width: 120px !important;
     height: 69px !important;
   }
   /* Mobil dashboard header: sadece grid + logo hizası (yeni pseudo çizgi yok; tipografi aşağıda ayrı blokta) */
-  .dashboard-page .hero.hero-two-rows {
+  .dashboard-page .hero.hero-two-rows{
     grid-template-columns: 76px minmax(0, 1fr) !important;
     column-gap: 6px !important;
     align-items: center !important;
   }
-  .dashboard-page .hero.hero-two-rows .hero-spacer {
+  .dashboard-page .hero.hero-two-rows .hero-spacer{
     display: none !important;
   }
-  .dashboard-page .hero.hero-two-rows .hero-title-block {
+  .dashboard-page .hero.hero-two-rows .hero-title-block{
     grid-column: 2 !important;
     justify-self: stretch !important;
     width: 100% !important;
@@ -560,7 +562,7 @@ body.driver-modal-open {
     box-sizing: border-box !important;
     transform: translate(-6px, 1px) !important;
   }
-  .dashboard-page .hero.hero-two-rows .hero-logo {
+  .dashboard-page .hero.hero-two-rows .hero-logo{
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
@@ -575,13 +577,13 @@ body.driver-modal-open {
     overflow: visible !important;
     transform: translateY(6px) !important;
   }
-  .dashboard-page .hero.hero-two-rows .hero-logo picture {
+  .dashboard-page .hero.hero-two-rows .hero-logo picture{
     display: block !important;
     width: 62px !important;
     max-width: 62px !important;
     margin: 0 auto !important;
   }
-  .dashboard-page .main-header-user-name {
+  .dashboard-page .main-header-user-name{
     display: block !important;
     position: relative !important;
     align-self: center !important;
@@ -601,19 +603,8 @@ body.driver-modal-open {
     transform: translate(4px, 4px) !important;
     max-height: 2.22em !important;
   }
-  .login-page .hero.hero-two-rows .hero-logo {
-    flex: 0 0 56px !important;
-    width: 56px !important;
-    align-self: center !important;
-    transform: translate(-18px, 5px) !important;
-    margin-top: 0 !important;
-  }
-  /* Mobil: login 56px sütunlar; kullanıcı paneli sol sütun isim genişliğine göre */
-  .login-page .hero.hero-two-rows {
-    grid-template-columns: 56px 1fr 56px !important;
-  }
   /* Mobil başlık metinleri 1pt küçük */
-  .dashboard-page .hero.hero-two-rows .hero-title-block .hero-title-line {
+  .dashboard-page .hero.hero-two-rows .hero-title-block .hero-title-line{
     width: 100% !important;
     max-width: 100% !important;
     min-width: 0 !important;
@@ -625,111 +616,49 @@ body.driver-modal-open {
     text-overflow: clip !important;
     text-align: center !important;
   }
-  .login-page .hero.hero-two-rows .hero-title-block .hero-title-line {
-    font-size: clamp(calc(18px - 1pt - 0.5pt), 5vw, calc(22px - 1pt - 0.5pt)) !important;
-  }
-  .dashboard-page .hero-title-block .hero-panel-subtitle,
-  .login-page .hero-title-block .hero-panel-subtitle {
+  .dashboard-page .hero-title-block .hero-panel-subtitle{
     font-size: 17px !important;
     line-height: 1.05 !important;
   }
-  /* iOS: başlık metinleri ince/bozuk görünmesin – font smoothing + hafif gölge */
-  .login-page .hero.hero-two-rows .hero-title-block .hero-title-line,
-  .login-page .hero-title-block .hero-panel-subtitle {
-    -webkit-font-smoothing: antialiased !important;
-    -moz-osx-font-smoothing: grayscale !important;
-    text-rendering: optimizeLegibility !important;
-  }
-  .login-page .hero.hero-two-rows .hero-title-block .hero-title-line {
-    text-shadow: 0 0 1px rgba(255, 255, 255, 0.25) !important;
-  }
-  .login-page .hero-title-block .hero-panel-subtitle {
-    text-shadow: 0 0 1px rgba(255, 255, 255, 0.25) !important;
-  }
-  .dashboard-page .hero-logo img {
+  .dashboard-page .hero-logo img{
     width: 100% !important;
     height: auto !important;
     transform: translateY(-3px) !important;
   }
-  /* Login mobil header: ana uygulama (index) ile aynı kutu, logo kolonu ve başlık (style-core ana ekran 640px bloğu ile eşleşir) */
-  .login-page .hero {
-    min-height: 71px !important;
-    width: calc(100% + 4px) !important;
-    max-width: calc(100% + 4px) !important;
-    margin-left: -2px !important;
-    margin-right: -2px !important;
-    padding: 12px 12px 12px 3px !important;
-    box-sizing: border-box !important;
-  }
-  .login-page .hero-logo {
-    display: flex !important;
-    align-items: center !important;
-    margin-right: 4px !important;
-    margin-left: 0 !important;
-    width: 58px !important;
-    flex: 0 0 58px !important;
-    gap: 4px !important;
-    align-self: center !important;
-    transform: translate(2px, 0) !important;
-  }
-  .login-page .hero-logo img {
-    transform: translateY(0) !important;
-  }
-  .login-page .hero h1 {
-    font-size: clamp(calc(18.5px - 0.5pt), 5.15vw, calc(23px - 0.5pt)) !important;
-    letter-spacing: clamp(0.35px, 1.05vw, 2.2px) !important;
-    line-height: 1.2 !important;
-    transform: none !important;
-    white-space: nowrap !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-    word-break: normal !important;
-    padding: 0 2px 0 0 !important;
-    -webkit-font-smoothing: antialiased !important;
-    text-rendering: optimizeLegibility !important;
-    text-shadow: 0 0 1px rgba(255, 255, 255, 0.22) !important;
-  }
-  .login-page .hero .animated-line {
-    width: 88% !important;
-    height: 2.7px !important;
-    opacity: 0.76 !important;
-    background: linear-gradient(90deg, rgba(var(--theme-color-rgb), 0.06), rgba(var(--theme-color-rgb), 0.9) 50%, rgba(var(--theme-color-rgb), 0.06)) !important;
-    box-shadow: 0 2px 12px rgba(var(--theme-color-rgb), 0.36) !important;
-  }
   /* Şifre ekranı başlık: kullanıcı paneli ile aynı (ekstra kaydırma yok) */
   /* Ortadaki dikey kırmızı çizgi – yan çizgilerle aynı */
-  .driver-left-panel {
+  .driver-left-panel{
     border-right-width: 1.2px !important;
   }
   /* Şube ve altı mobilde bir satır aşağı (3px + bir satır yüksekliği) */
-  .driver-left-panel .driver-vehicle-info {
+  .driver-left-panel .driver-vehicle-info{
     margin-top: 20px !important;
   }
 
 }
 
 /* Event modalleri: radio butonları */
-.driver-radio-row {
+.driver-radio-row{
   display: flex;
   flex-direction: row;
   align-items: center;
   gap: 8px;
 }
-.driver-radio-label {
+.driver-radio-label{
   display: inline;
   margin-bottom: 0;
   margin-right: 0;
   color: var(--form-label-color);
   font-size: 15px; /* +1 punto */
 }
-.driver-radio-group {
+.driver-radio-group{
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
   align-items: center;
 }
 /* Anahtar/Lastik Var/Yok: Bildir/Vazgeç ile aynı dikey yükseklik ve yapı (32px, 8px radius, flex ortalama) */
-.driver-radio-btn {
+.driver-radio-btn{
   background: transparent;
   border: 1px solid rgba(255, 255, 255, 0.35);
   border-radius: 8px;
@@ -751,7 +680,7 @@ body.driver-modal-open {
 .driver-radio-btn[data-group="anahtar"][data-value="var"]:hover,
 .driver-radio-btn[data-group="anahtar"].active[data-value="var"],
 .driver-radio-btn[data-group="lastik"][data-value="var"]:hover,
-.driver-radio-btn[data-group="lastik"].active[data-value="var"] {
+.driver-radio-btn[data-group="lastik"].active[data-value="var"]{
   border-color: #28a745;
   color: #28a745;
   background: rgba(40, 167, 69, 0.2);
@@ -760,17 +689,17 @@ body.driver-modal-open {
 .driver-radio-btn[data-group="anahtar"][data-value="yok"]:hover,
 .driver-radio-btn[data-group="anahtar"].active[data-value="yok"],
 .driver-radio-btn[data-group="lastik"][data-value="yok"]:hover,
-.driver-radio-btn[data-group="lastik"].active[data-value="yok"] {
+.driver-radio-btn[data-group="lastik"].active[data-value="yok"]{
   border-color: var(--theme-color, #d40000);
   color: var(--theme-color, #d40000);
   background: rgba(212, 0, 0, 0.2);
 }
 .driver-radio-btn[data-group="anahtar"].active,
-.driver-radio-btn[data-group="lastik"].active {
+.driver-radio-btn[data-group="lastik"].active{
   text-decoration: none; /* Var/Yok: border+arka plan yeterli */
 }
 
-.driver-report-block {
+.driver-report-block{
   display: none;
   margin-top: 8px;
   margin-bottom: 0;
@@ -783,19 +712,19 @@ body.driver-modal-open {
   box-sizing: border-box;
 }
 
-.driver-report-block.show {
+.driver-report-block.show{
   display: block;
 }
 
-.driver-report-block .form-group {
+.driver-report-block .form-group{
   margin-bottom: 12px;
 }
-.driver-report-block .form-group:last-child {
+.driver-report-block .form-group:last-child{
   margin-bottom: 0;
 }
 
 /* Bakım paneli: etiket ortada, içerik sola yaslı, gri çerçeve varsayılan, aktifken yeşil */
-.driver-report-block-bakim .form-group label {
+.driver-report-block-bakim .form-group label{
   text-align: center;
   display: block;
   margin-bottom: 2px;
@@ -803,7 +732,7 @@ body.driver-modal-open {
   font-weight: 500;
 }
 .driver-report-block-bakim .form-group input.driver-bakim-input,
-.driver-report-block-bakim .form-group textarea.driver-bakim-textarea {
+.driver-report-block-bakim .form-group textarea.driver-bakim-textarea{
   box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.25) !important;
   text-align: left;
   padding-left: 10px !important;
@@ -811,7 +740,7 @@ body.driver-modal-open {
 }
 
 /* Kaza paneli: etiket ortada, içerik sola yaslı, gri çerçeve varsayılan, aktifken kırmızı */
-.driver-report-block-kaza .form-group label {
+.driver-report-block-kaza .form-group label{
   text-align: center;
   display: block;
   margin-bottom: 2px;
@@ -819,77 +748,77 @@ body.driver-modal-open {
   font-weight: 500;
 }
 .driver-report-block-kaza .form-group input.driver-kaza-input,
-.driver-report-block-kaza .form-group textarea.driver-kaza-textarea {
+.driver-report-block-kaza .form-group textarea.driver-kaza-textarea{
   box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.25) !important;
   text-align: left;
   padding-left: 10px !important;
   padding-right: 10px !important;
 }
 /* Bakım/Kaza Açıklama: varsayılan 1 satır, içerik uzadıkça otomatik büyür, kesilme yok */
-.driver-report-block .form-group textarea.driver-report-textarea-auto {
+.driver-report-block .form-group textarea.driver-report-textarea-auto{
   min-height: 2em;
   height: 2em;
   resize: none;
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
-.driver-report-block .form-group textarea.driver-report-textarea-auto::-webkit-scrollbar {
+.driver-report-block .form-group textarea.driver-report-textarea-auto::-webkit-scrollbar{
   display: none;
 }
 
 /* Kaza bloku: kaporta SVG container – taşma önleme, mobil uyumlu */
-.driver-kaporta-container {
+.driver-kaporta-container{
   max-height: 200px;
   overflow: visible;
   margin-top: 8px;
   margin-bottom: 4px;
 }
-.driver-kaporta-container svg {
+.driver-kaporta-container svg{
   max-width: 100%;
   display: block;
 }
-.driver-report-block-kaza .form-group .driver-kaporta-label {
+.driver-report-block-kaza .form-group .driver-kaporta-label{
   text-align: center;
   display: block;
   margin-bottom: 3px;
   font-size: 12px;
   color: var(--muted, #888);
 }
-.driver-report-block-kaza .driver-kaporta-container {
+.driver-report-block-kaza .driver-kaporta-container{
   margin-top: 0;
   margin-bottom: 0;
 }
 /* Mobil: sağ grid – kenarlara 5px; Şema alana sığsın; legend altta yatay */
 @media (max-width: 480px) {
-  .driver-report-block-kaza .form-group:has(.driver-kaporta-container) {
+  .driver-report-block-kaza .form-group:has(.driver-kaporta-container){
     padding-left: 5px !important;
     padding-right: 5px !important;
   }
-  .driver-kaporta-container {
+  .driver-kaporta-container{
     max-height: none !important;
     overflow: visible !important;
     width: 100% !important;
     margin-left: 0 !important;
     margin-right: 0 !important;
   }
-  .driver-kaporta-container .driver-kaporta-schema-wrapper {
+  .driver-kaporta-container .driver-kaporta-schema-wrapper{
     width: 100% !important;
     max-width: 100% !important;
   }
-  .driver-kaporta-container .driver-kaporta-schema-wrapper svg {
+  .driver-kaporta-container .driver-kaporta-schema-wrapper svg{
     width: 100% !important;
     max-width: 160px !important; /* Alana sığsın, kocaman olmasın */
     height: auto !important;
     object-fit: contain !important;
   }
-  .driver-kaporta-container .boya-legend {
+  .driver-kaporta-container .boya-legend{
     font-size: 10px;
   }
 }
 
 /* Sağ grid: Bildir / Vazgeç butonları – çerçeveye dokunmadan metin 1pt büyük */
 .dashboard-page .driver-action-area .universal-btn-save,
-.dashboard-page .driver-action-area .universal-btn-cancel {
+.dashboard-page .driver-action-area .universal-btn-cancel{
   font-size: 16px !important;
 }
 
@@ -897,7 +826,7 @@ body.driver-modal-open {
    MODAL (Standart)
    ========================================= */
 /* Pozisyon/sınır: style-core .modal-overlay (--app-footer-real-height + --app-footer-gap; isolation, z-index); burada sadece görünüm */
-.driver-modal {
+.driver-modal{
   display: none;
   background: rgba(0, 0, 0, 0.85);
   align-items: center;
@@ -906,11 +835,11 @@ body.driver-modal-open {
   box-sizing: border-box;
 }
 
-.driver-modal.show {
+.driver-modal.show{
   display: flex;
 }
 
-.driver-modal-content {
+.driver-modal-content{
   background: var(--modal-bg) !important;
   background-color: var(--modal-bg) !important; /* Cam etkisini beton: ışık alttan sızmasın */
   backdrop-filter: none !important; /* Buzlu cam kırmızı ışığı vakumlamasın */
@@ -927,7 +856,7 @@ body.driver-modal-open {
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
 }
 
-.driver-modal .modal-header {
+.driver-modal .modal-header{
   padding: 16px 20px;
   border-bottom: 1px solid var(--br);
   display: flex;
@@ -936,7 +865,7 @@ body.driver-modal-open {
   flex-shrink: 0;
 }
 
-.driver-modal .modal-close {
+.driver-modal .modal-close{
   width: 36px;
   height: 36px;
   background: transparent;
@@ -951,12 +880,12 @@ body.driver-modal-open {
   transition: color 0.2s, background 0.2s;
 }
 
-.driver-modal .modal-close:hover {
+.driver-modal .modal-close:hover{
   color: var(--theme-color);
   background: rgba(255, 255, 255, 0.06);
 }
 
-.driver-modal .modal-body {
+.driver-modal .modal-body{
   flex: 1;
   max-height: 100% !important;
   overflow-y: auto;
@@ -970,7 +899,7 @@ body.driver-modal-open {
 #edit-request-modal.driver-modal,
 #driver-password-modal.driver-modal,
 #driver-feedback-modal.driver-modal,
-#driver-documents-modal.driver-modal {
+#driver-documents-modal.driver-modal{
   background: transparent !important;
   padding: max(12px, env(safe-area-inset-top)) 0 0 0 !important; /* Çentik/notch altında kalmaması için */
   z-index: 10020;
@@ -985,7 +914,7 @@ body.driver-modal-open {
 #edit-request-modal.driver-modal.show,
 #driver-password-modal.driver-modal.show,
 #driver-feedback-modal.driver-modal.show,
-#driver-documents-modal.driver-modal.show {
+#driver-documents-modal.driver-modal.show{
   display: flex !important;
   pointer-events: auto !important;
   z-index: 10020 !important;
@@ -993,45 +922,45 @@ body.driver-modal-open {
 .dashboard-page.password-change-gate-active #pwa-install-wrapper,
 .dashboard-page.password-change-gate-active .driver-header-fixed,
 .dashboard-page.password-change-gate-active .driver-content-wrap,
-.dashboard-page.password-change-gate-active #app-footer {
+.dashboard-page.password-change-gate-active #app-footer{
   visibility: hidden !important;
   pointer-events: none !important;
 }
-.dashboard-page.password-change-gate-active #driver-password-modal {
+.dashboard-page.password-change-gate-active #driver-password-modal{
   visibility: visible !important;
   pointer-events: auto !important;
 }
 #driver-password-modal #driver-password-modal-close[hidden],
-#driver-password-modal #driver-password-cancel[hidden] {
+#driver-password-modal #driver-password-cancel[hidden]{
   display: none !important;
 }
-#edit-request-modal.driver-modal.show {
+#edit-request-modal.driver-modal.show{
   z-index: 10021 !important;
 }
 /* Talep modalı tüm panel katmanlarının üstünde (scroll-area 10004, footer 10005) */
 #driver-feedback-modal.driver-modal.show,
-#driver-documents-modal.driver-modal.show {
+#driver-documents-modal.driver-modal.show{
   z-index: 10050 !important;
 }
 
 /* Düzeltme Talebi: style-core :root --data-value-color (#f8f9fa) neredeyse beyaz; bu modalda açıklama/değer metni gri kalsın */
-#edit-request-modal.driver-modal {
+#edit-request-modal.driver-modal{
   --data-value-color: #a0aec0;
 }
 
 /* Masaüstü: kayıt modalı ile aynı – overlay üst padding yok; overlay footer'ı örtmesin, footer görünsün */
 @media (min-width: 641px) {
   #history-modal.driver-modal,
-  #edit-request-modal.driver-modal,
-  #driver-password-modal.driver-modal,
-  #driver-feedback-modal.driver-modal,
-  #driver-documents-modal.driver-modal {
+#edit-request-modal.driver-modal,
+#driver-password-modal.driver-modal,
+#driver-feedback-modal.driver-modal,
+#driver-documents-modal.driver-modal{
     padding: 0 !important;
   }
   #history-modal.driver-modal,
-  #edit-request-modal.driver-modal,
-  #driver-feedback-modal.driver-modal,
-  #driver-documents-modal.driver-modal {
+#edit-request-modal.driver-modal,
+#driver-feedback-modal.driver-modal,
+#driver-documents-modal.driver-modal{
     bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
   }
 }
@@ -1039,9 +968,9 @@ body.driver-modal-open {
 /* Masaüstü (769px+): overlay alt sınırı --app-footer-real-height + --app-footer-gap (footer üstünde bitsin) */
 @media (min-width: 769px) {
   body.dashboard-page #history-modal.driver-modal,
-  body.dashboard-page #edit-request-modal.driver-modal,
-  body.dashboard-page #driver-feedback-modal.driver-modal,
-  body.dashboard-page #driver-documents-modal.driver-modal {
+body.dashboard-page #edit-request-modal.driver-modal,
+body.dashboard-page #driver-feedback-modal.driver-modal,
+body.dashboard-page #driver-documents-modal.driver-modal{
     bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
   }
 }
@@ -1052,7 +981,7 @@ body.driver-modal-open {
 */
 @media (min-width: 641px) {
   #driver-feedback-modal.driver-modal::before,
-  #driver-documents-modal.driver-modal::before {
+#driver-documents-modal.driver-modal::before{
     max-width: none !important;
     width: 100% !important;
     left: 0 !important;
@@ -1062,7 +991,7 @@ body.driver-modal-open {
   }
 
   #driver-feedback-modal .modal-header,
-  #driver-documents-modal .modal-header {
+#driver-documents-modal .modal-header{
     border-top-left-radius: var(--modal-radius, 10px) !important;
     border-top-right-radius: var(--modal-radius, 10px) !important;
     box-shadow: inset 0 1px 0 rgba(200, 208, 216, 0.46) !important;
@@ -1073,7 +1002,7 @@ body.driver-modal-open {
 #edit-request-modal.driver-modal::before,
 #driver-password-modal.driver-modal::before,
 #driver-documents-modal.driver-modal::before,
-#driver-feedback-modal.driver-modal::before {
+#driver-feedback-modal.driver-modal::before{
   content: '';
   position: absolute;
   top: 0;
@@ -1094,7 +1023,7 @@ body.driver-modal-open {
 #edit-request-modal.driver-modal.show::before,
 #driver-password-modal.driver-modal.show::before,
 #driver-feedback-modal.driver-modal.show::before,
-#driver-documents-modal.driver-modal.show::before {
+#driver-documents-modal.driver-modal.show::before{
   clip-path: inset(0 0 calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0) + 4px) 0) !important;
   -webkit-clip-path: inset(0 0 calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0) + 4px) 0) !important;
 }
@@ -1102,13 +1031,13 @@ body.driver-modal-open {
 /* Geçmiş Kayıtlar / Düzeltme Talebi açıkken footer modalın üstünde, ışıklar sabit ton */
 body.dashboard-page:has(#history-modal.driver-modal.show) #app-footer,
 body.dashboard-page:has(#edit-request-modal.driver-modal.show) #app-footer,
-body.dashboard-page.driver-history-or-edit-modal-open #app-footer {
+body.dashboard-page.driver-history-or-edit-modal-open #app-footer{
   z-index: 100020 !important;
 }
 /* Talep/şikayet modalı: footer üstte kalmamalı (iOS’ta form alanları tıklanmıyor) */
 body.dashboard-page:has(#driver-feedback-modal.driver-modal.show) #app-footer,
 body.dashboard-page:has(#driver-documents-modal.driver-modal.show) #app-footer,
-body.dashboard-page.driver-feedback-modal-open #app-footer {
+body.dashboard-page.driver-feedback-modal-open #app-footer{
   z-index: 10015 !important;
 }
 
@@ -1122,7 +1051,7 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
 #driver-feedback-modal .driver-modal-content,
 #driver-feedback-modal .modal-container,
 #driver-documents-modal .driver-modal-content,
-#driver-documents-modal .modal-container {
+#driver-documents-modal .modal-container{
   background: var(--modal-bg) !important;
   background-color: var(--modal-bg) !important;
   border-bottom: 1px solid var(--border-medium) !important;
@@ -1144,7 +1073,7 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
 }
 
 #driver-documents-modal .driver-modal-content,
-#driver-documents-modal .modal-container {
+#driver-documents-modal .modal-container{
   height: 100% !important;
   max-height: 100% !important;
   overflow: hidden;
@@ -1156,7 +1085,7 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
 /* Üst mikro-highlight: Geçmiş + Talep modalı (kayıt modalıyla aynı üst kenar birleşimi, köşede “erken kesilme” hissini düzeltir) */
 #history-modal .modal-container::before,
 #driver-feedback-modal .modal-container::before,
-#driver-documents-modal .modal-container::before {
+#driver-documents-modal .modal-container::before{
   content: '';
   position: absolute;
   top: 0;
@@ -1173,7 +1102,7 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
 #history-modal .modal-header,
 #edit-request-modal .modal-header,
 #driver-feedback-modal .modal-header,
-#driver-documents-modal .modal-header {
+#driver-documents-modal .modal-header{
   background: var(--modal-header-red-gradient) !important;
   background-size: 100% 100% !important;
   padding: 2px 20px !important;
@@ -1185,7 +1114,7 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
   flex-shrink: 0;
   position: relative;
 }
-#driver-password-modal .modal-header {
+#driver-password-modal .modal-header{
   background: var(--modal-header-red-gradient) !important;
   background-size: 100% 100% !important;
   padding: 2px 20px !important;
@@ -1205,7 +1134,7 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
 #edit-request-modal .modal-header h2,
 #driver-password-modal .modal-header h2,
 #driver-feedback-modal .modal-header h2,
-#driver-documents-modal .modal-header h2 {
+#driver-documents-modal .modal-header h2{
   color: #ffffff !important;
   text-shadow: none !important;
   opacity: 1 !important;
@@ -1221,7 +1150,7 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
 #edit-request-modal .modal-close,
 #driver-password-modal .modal-close,
 #driver-feedback-modal .modal-close,
-#driver-documents-modal .modal-close {
+#driver-documents-modal .modal-close{
   background: none !important;
   border: none !important;
   color: #aaa !important;
@@ -1241,7 +1170,7 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
 #edit-request-modal .modal-close:hover,
 #driver-password-modal .modal-close:hover,
 #driver-feedback-modal .modal-close:hover,
-#driver-documents-modal .modal-close:hover {
+#driver-documents-modal .modal-close:hover{
   color: var(--txt-white, #fff) !important;
   background: transparent !important;
 }
@@ -1250,7 +1179,7 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
 #edit-request-modal .modal-body,
 #driver-password-modal .modal-body,
 #driver-feedback-modal .modal-body,
-#driver-documents-modal .modal-body {
+#driver-documents-modal .modal-body{
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
@@ -1258,18 +1187,18 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
-#driver-feedback-modal .modal-body {
+#driver-feedback-modal .modal-body{
   padding-left: 20px !important;
   padding-right: 20px !important;
   box-sizing: border-box !important;
 }
 
-#driver-documents-modal .modal-body {
+#driver-documents-modal .modal-body{
   padding: 20px !important;
   box-sizing: border-box !important;
 }
 
-.driver-documents-list {
+.driver-documents-list{
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1279,7 +1208,7 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
   box-sizing: border-box;
 }
 
-.driver-documents-row {
+.driver-documents-row{
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
@@ -1290,23 +1219,23 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
   box-sizing: border-box;
 }
 
-.driver-documents-row-single {
+.driver-documents-row-single{
   gap: 0;
 }
 
-.driver-documents-row-pair {
+.driver-documents-row-pair{
   gap: 32px;
 }
 
-.driver-documents-row-optional {
+.driver-documents-row-optional{
   min-height: 0;
 }
 
-.driver-documents-row-one {
+.driver-documents-row-one{
   justify-content: center;
 }
 
-.driver-document-card {
+.driver-document-card{
   flex: 0 1 140px;
   min-width: 0;
   max-width: 168px;
@@ -1332,7 +1261,7 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
 }
 
 #driver-documents-modal .driver-document-card:hover,
-#driver-documents-modal .driver-document-card:focus-visible {
+#driver-documents-modal .driver-document-card:focus-visible{
   outline: none;
   background: transparent;
   border: none;
@@ -1341,20 +1270,20 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
   filter: none;
 }
 
-.driver-document-card-missing {
+.driver-document-card-missing{
   color: rgba(255, 255, 255, 0.58);
   cursor: default;
 }
 
 #driver-documents-modal .driver-document-card-missing:hover,
-#driver-documents-modal .driver-document-card-missing:focus-visible {
+#driver-documents-modal .driver-document-card-missing:focus-visible{
   background: transparent;
   border: none;
   box-shadow: none;
   filter: none;
 }
 
-.driver-document-icon-wrap {
+.driver-document-icon-wrap{
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1366,18 +1295,18 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
 }
 
 #driver-documents-modal .driver-document-card:not(.driver-document-card-missing):hover .driver-document-icon-wrap,
-#driver-documents-modal .driver-document-card:not(.driver-document-card-missing):focus-visible .driver-document-icon-wrap {
+#driver-documents-modal .driver-document-card:not(.driver-document-card-missing):focus-visible .driver-document-icon-wrap{
   color: #4ade80;
   filter: drop-shadow(0 0 6px rgba(34, 197, 94, 0.22));
   transform: scale(1.04);
 }
 
-.driver-document-icon {
+.driver-document-icon{
   width: 28px;
   height: 28px;
 }
 
-.driver-document-title {
+.driver-document-title{
   font-size: 13px;
   font-weight: 600;
   line-height: 1.25;
@@ -1386,7 +1315,7 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
   overflow-wrap: anywhere;
 }
 
-.driver-document-action {
+.driver-document-action{
   font-size: 11px;
   font-weight: 500;
   line-height: 1.3;
@@ -1395,38 +1324,38 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
   overflow-wrap: anywhere;
 }
 
-.driver-document-card-missing .driver-document-action {
+.driver-document-card-missing .driver-document-action{
   color: rgba(255, 255, 255, 0.44);
 }
 
 @media (min-width: 641px) {
-  #driver-documents-modal .modal-body {
+  #driver-documents-modal .modal-body{
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
   }
 
-  #driver-documents-modal .driver-documents-list {
+  #driver-documents-modal .driver-documents-list{
     flex: 0 0 auto;
   }
 
   #driver-documents-modal .driver-document-icon-wrap,
-  #driver-documents-modal .driver-document-title,
-  #driver-documents-modal .driver-document-action {
+#driver-documents-modal .driver-document-title,
+#driver-documents-modal .driver-document-action{
     transition: transform .18s ease, color .18s ease, filter .18s ease;
     transform-origin: center;
   }
 
   #driver-documents-modal .driver-document-card:not(.driver-document-card-missing):hover .driver-document-icon-wrap,
-  #driver-documents-modal .driver-document-card:not(.driver-document-card-missing):focus-visible .driver-document-icon-wrap,
-  #driver-documents-modal .driver-document-card:not(.driver-document-card-missing):hover .driver-document-title,
-  #driver-documents-modal .driver-document-card:not(.driver-document-card-missing):focus-visible .driver-document-title {
+#driver-documents-modal .driver-document-card:not(.driver-document-card-missing):focus-visible .driver-document-icon-wrap,
+#driver-documents-modal .driver-document-card:not(.driver-document-card-missing):hover .driver-document-title,
+#driver-documents-modal .driver-document-card:not(.driver-document-card-missing):focus-visible .driver-document-title{
     transform: scale(1.05);
   }
 }
 
-.driver-documents-message {
+.driver-documents-message{
   min-height: 18px;
   margin-top: 12px;
   font-size: 13px;
@@ -1434,18 +1363,18 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
   color: rgba(255, 255, 255, 0.68);
 }
 
-.driver-documents-message.is-error {
+.driver-documents-message.is-error{
   color: #f87171;
 }
 
 @media (max-width: 640px) {
-  #driver-documents-modal.driver-modal {
+  #driver-documents-modal.driver-modal{
     padding-top: 0 !important;
     justify-content: flex-start !important;
   }
 
   #driver-documents-modal .driver-modal-content,
-  #driver-documents-modal .modal-container {
+#driver-documents-modal .modal-container{
     height: 100% !important;
     max-height: 100% !important;
     margin-top: 0 !important;
@@ -1454,12 +1383,12 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
     border-top-right-radius: var(--modal-radius, 10px);
   }
 
-  #driver-documents-modal .modal-header {
+  #driver-documents-modal .modal-header{
     border-top-left-radius: var(--modal-radius, 10px);
     border-top-right-radius: var(--modal-radius, 10px);
   }
 
-  #driver-documents-modal .modal-body {
+  #driver-documents-modal .modal-body{
     flex: 1 1 auto !important;
     min-height: 0 !important;
     overflow-y: auto !important;
@@ -1468,19 +1397,19 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
     background: var(--modal-bg) !important;
   }
 
-  #driver-documents-modal .driver-documents-list {
+  #driver-documents-modal .driver-documents-list{
     gap: 18px;
   }
 
-  #driver-documents-modal .driver-documents-row {
+  #driver-documents-modal .driver-documents-row{
     gap: 20px;
   }
 
-  #driver-documents-modal .driver-documents-row-pair {
+  #driver-documents-modal .driver-documents-row-pair{
     gap: 22px;
   }
 
-  #driver-documents-modal .driver-document-card {
+  #driver-documents-modal .driver-document-card{
     flex: 0 1 118px;
     max-width: 148px;
     padding: 6px 4px;
@@ -1490,27 +1419,27 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
     box-shadow: none;
   }
 
-  #driver-documents-modal .driver-document-icon-wrap {
+  #driver-documents-modal .driver-document-icon-wrap{
     width: 56px;
     height: 56px;
     color: rgba(74, 222, 128, 0.82);
   }
 
   #driver-documents-modal .driver-document-card:not(.driver-document-card-missing):hover .driver-document-icon-wrap,
-  #driver-documents-modal .driver-document-card:not(.driver-document-card-missing):focus-visible .driver-document-icon-wrap {
+#driver-documents-modal .driver-document-card:not(.driver-document-card-missing):focus-visible .driver-document-icon-wrap{
     transform: scale(1.04);
   }
 
-  #driver-documents-modal .driver-document-icon {
+  #driver-documents-modal .driver-document-icon{
     width: 36px;
     height: 36px;
   }
 
-  #driver-documents-modal .driver-document-title {
+  #driver-documents-modal .driver-document-title{
     font-size: 15px;
   }
 
-  #driver-documents-modal .driver-document-action {
+  #driver-documents-modal .driver-document-action{
     font-size: 12px;
     color: rgba(160, 174, 192, 0.82);
   }
@@ -1519,24 +1448,24 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
 #driver-feedback-modal .driver-feedback-form,
 #driver-feedback-modal .form-group,
 #driver-feedback-modal .form-input,
-#driver-feedback-modal .driver-feedback-actions {
+#driver-feedback-modal .driver-feedback-actions{
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
 }
 /* Geçmiş Kayıtlar modalı: tarihçe/kayıt modalı ile aynı yapı – body flex column, scroll sadece liste alanında */
-#history-modal .modal-body {
+#history-modal .modal-body{
   display: flex !important;
   flex-direction: column !important;
   overflow: hidden !important;
   min-height: 0 !important;
   padding-top: 2px !important;
 }
-#history-modal .history-filters {
+#history-modal .history-filters{
   flex-shrink: 0 !important;
 }
 #history-modal #history-list,
-#history-modal .history-container {
+#history-modal .history-container{
   flex: 1 1 auto !important;
   min-height: 0 !important;
   overflow-y: auto !important;
@@ -1545,14 +1474,14 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
   padding-bottom: max(calc(var(--app-footer-real-height) + var(--app-footer-gap, 14px) + env(safe-area-inset-bottom, 0) + 12px), 20px) !important; /* Modal altı footer'a gelmeden kesilmesin */
 }
 /* Düzeltme Talebi modalı: İşlem Geçmişi ile aynı yapı – body flex column, scroll #edit-request-content içinde */
-#edit-request-modal .modal-body {
+#edit-request-modal .modal-body{
   display: flex !important;
   flex-direction: column !important;
   overflow: hidden !important;
   min-height: 0 !important;
 }
 #edit-request-modal #edit-request-content,
-#edit-request-modal .edit-request-scroll {
+#edit-request-modal .edit-request-scroll{
   display: flex !important;
   flex-direction: column !important;
   flex: 1 1 auto !important;
@@ -1564,7 +1493,7 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
   scrollbar-width: none !important;
   -ms-overflow-style: none !important;
 }
-#edit-request-modal .edit-request-scroll::-webkit-scrollbar {
+#edit-request-modal .edit-request-scroll::-webkit-scrollbar{
   display: none !important;
 }
 #history-modal .modal-body::-webkit-scrollbar,
@@ -1574,15 +1503,15 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
 #driver-documents-modal .modal-body::-webkit-scrollbar,
 #history-modal .modal-container::-webkit-scrollbar,
 #edit-request-modal .modal-container::-webkit-scrollbar,
-.driver-modal-content::-webkit-scrollbar {
+.driver-modal-content::-webkit-scrollbar{
   display: none !important;
 }
 
-.driver-modal .form-group {
+.driver-modal .form-group{
   margin-bottom: 16px;
 }
 
-.driver-modal .form-group label {
+.driver-modal .form-group label{
   display: block;
   margin-bottom: 6px;
   font-size: 14px; /* +1 punto (13–14) */
@@ -1592,7 +1521,7 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
 
 .driver-modal .form-group input,
 .driver-modal .form-group textarea,
-.driver-modal .form-group select {
+.driver-modal .form-group select{
   width: 100%;
   padding: 8px 16px;
   background: #0d131f !important;
@@ -1612,19 +1541,19 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
 
 .driver-modal .form-group input:focus,
 .driver-modal .form-group textarea:focus,
-.driver-modal .form-group select:focus {
+.driver-modal .form-group select:focus{
   outline: none !important;
   border-color: var(--theme-color) !important;
   box-shadow: none !important;
 }
 
 .driver-modal .form-group input::placeholder,
-.driver-modal .form-group textarea::placeholder {
+.driver-modal .form-group textarea::placeholder{
   color: #6c757d !important;
   opacity: 1;
 }
 
-.driver-modal .form-group textarea {
+.driver-modal .form-group textarea{
   resize: vertical;
   min-height: 100px;
 }
@@ -1632,7 +1561,7 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
 /* Masaüstü: Şifre ve Talep modalları, Olay Ekle form kontratını kullanır. */
 @media (min-width: 769px) {
   #driver-password-modal .driver-password-form,
-  #driver-feedback-modal .driver-feedback-form {
+#driver-feedback-modal .driver-feedback-form{
     width: 100%;
     max-width: 390px;
     margin-left: auto;
@@ -1640,7 +1569,7 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
     box-sizing: border-box;
   }
 
-  #driver-password-modal .driver-password-form .form-group input {
+  #driver-password-modal .driver-password-form .form-group input{
     height: 27px;
     min-height: 27px;
     padding-top: 0;
@@ -1650,7 +1579,7 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
     box-sizing: border-box;
   }
 
-  #driver-feedback-modal .driver-feedback-form .form-group textarea.driver-feedback-message {
+  #driver-feedback-modal .driver-feedback-form .form-group textarea.driver-feedback-message{
     padding: 5px 12px;
     border-radius: 8px;
     font-size: 12px;
@@ -1658,7 +1587,7 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
   }
 
   #driver-password-modal .driver-password-form .form-group input:focus,
-  #driver-feedback-modal .driver-feedback-form .form-group textarea.driver-feedback-message:focus {
+#driver-feedback-modal .driver-feedback-form .form-group textarea.driver-feedback-message:focus{
     outline: none;
     border-color: var(--theme-color) !important;
     box-shadow: none;
@@ -1666,7 +1595,7 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
   }
 
   #driver-password-modal .driver-password-form .universal-btn-group,
-  #driver-feedback-modal .driver-feedback-form .universal-btn-group {
+#driver-feedback-modal .driver-feedback-form .universal-btn-group{
     max-width: 390px;
     margin-left: auto;
     margin-right: auto;
@@ -1674,7 +1603,7 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
   }
 }
 
-.driver-password-actions {
+.driver-password-actions{
   display: flex;
   flex-wrap: nowrap;
   gap: 10px;
@@ -1685,27 +1614,27 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
 }
 
 .driver-password-required-notice,
-.driver-password-policy {
+.driver-password-policy{
   margin: 0 0 16px;
   color: #a0aec0;
   font-size: 14px;
   line-height: 1.55;
 }
 
-.driver-password-required-notice {
+.driver-password-required-notice{
   padding: 12px 14px;
   border: 1px solid rgba(var(--theme-color-rgb), 0.35);
   border-radius: 8px;
   background: rgba(var(--theme-color-rgb), 0.08);
 }
 
-.driver-password-policy {
+.driver-password-policy{
   margin-top: -4px;
   font-size: 12.5px;
 }
 
 
-.driver-feedback-actions {
+.driver-feedback-actions{
   display: flex;
   flex-wrap: nowrap;
   gap: 10px;
@@ -1719,7 +1648,7 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
 #driver-feedback-modal .driver-feedback-actions .universal-btn-save,
 #driver-feedback-modal .driver-feedback-actions .universal-btn-cancel,
 #driver-password-modal .driver-password-actions .universal-btn-save,
-#driver-password-modal .driver-password-actions .universal-btn-cancel {
+#driver-password-modal .driver-password-actions .universal-btn-cancel{
   flex: 1 1 0;
   min-width: 0;
   width: auto !important;
@@ -1727,7 +1656,7 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
   margin-top: 0 !important;
 }
 
-.driver-password-message {
+.driver-password-message{
   min-height: 18px;
   margin-top: -4px;
   color: var(--muted);
@@ -1735,15 +1664,15 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
   text-align: center;
 }
 
-.driver-password-message.is-error {
+.driver-password-message.is-error{
   color: #ff6b6b;
 }
 
-.driver-password-message.is-success {
+.driver-password-message.is-success{
   color: #58d68d;
 }
 
-.driver-feedback-message-status {
+.driver-feedback-message-status{
   min-height: 18px;
   margin-top: -4px;
   color: var(--muted);
@@ -1751,16 +1680,16 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
   text-align: center;
 }
 
-.driver-feedback-message-status.is-error {
+.driver-feedback-message-status.is-error{
   color: #ff6b6b;
 }
 
-.driver-feedback-message-status.is-success {
+.driver-feedback-message-status.is-success{
   color: #58d68d;
 }
 
 /* Talep türü (custom trigger): kayıt modalı şube listesi ile aynı premium-dark liste (native select OS temasından kaçınır) */
-#driver-feedback-modal #driver-feedback-type {
+#driver-feedback-modal #driver-feedback-type{
   position: absolute !important;
   width: 1px !important;
   height: 1px !important;
@@ -1772,18 +1701,18 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
   pointer-events: none !important;
   border: 0 !important;
 }
-#driver-feedback-modal .driver-feedback-type-dropdown-wrap {
+#driver-feedback-modal .driver-feedback-type-dropdown-wrap{
   position: relative;
   overflow: visible;
 }
-#driver-feedback-modal .driver-feedback-type-dropdown-wrap .vehicle-branch-trigger {
+#driver-feedback-modal .driver-feedback-type-dropdown-wrap .vehicle-branch-trigger{
   background-color: #0d131f;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23ffffff' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 8px center;
   padding-right: 28px;
 }
-#driver-feedback-modal #driver-feedback-type-list {
+#driver-feedback-modal #driver-feedback-type-list{
   display: none;
   position: absolute;
   left: 0;
@@ -1792,126 +1721,126 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
   margin-top: 4px;
   z-index: 40;
 }
-#driver-feedback-modal #driver-feedback-type-list::-webkit-scrollbar {
+#driver-feedback-modal #driver-feedback-type-list::-webkit-scrollbar{
   display: none;
 }
-#driver-feedback-modal #driver-feedback-type-list.open {
+#driver-feedback-modal #driver-feedback-type-list.open{
   display: block;
   position: fixed;
   z-index: 10060;
   margin-top: 0;
 }
-#driver-feedback-modal #driver-feedback-type-list .vehicle-branch-option {
+#driver-feedback-modal #driver-feedback-type-list .vehicle-branch-option{
   cursor: pointer;
 }
 /* Masaüstü (769px+): Talep Gönder modalı — trigger, actions ve option kartları */
 @media (min-width: 769px) {
-  #driver-feedback-modal .driver-feedback-type-dropdown-wrap .vehicle-branch-trigger {
+  #driver-feedback-modal .driver-feedback-type-dropdown-wrap .vehicle-branch-trigger{
     padding-right: 28px;
   }
-  #driver-feedback-modal .driver-feedback-actions {
+  #driver-feedback-modal .driver-feedback-actions{
     margin-top: 6px; /* taban 18px − 12px */
   }
-  #driver-feedback-modal #driver-feedback-type-list {
+  #driver-feedback-modal #driver-feedback-type-list{
     padding: 2px 10px;
   }
-  #driver-feedback-modal #driver-feedback-type-list .vehicle-branch-option {
+  #driver-feedback-modal #driver-feedback-type-list .vehicle-branch-option{
     text-align: center;
   }
 }
-#driver-feedback-modal:has(#driver-feedback-type-list.open) .driver-feedback-actions {
+#driver-feedback-modal:has(#driver-feedback-type-list.open) .driver-feedback-actions{
   pointer-events: none !important;
 }
 /* Talep modalı: tip dropdown açıkken arka plan flu (ana uygulama dropdown pattern) */
 #driver-feedback-modal:has(#driver-feedback-type-list.open) .modal-header,
 #driver-feedback-modal:has(#driver-feedback-type-list.open) .modal-body .form-group:not(:has(#driver-feedback-type-list.open)),
 #driver-feedback-modal:has(#driver-feedback-type-list.open) .driver-feedback-message-status,
-#driver-feedback-modal:has(#driver-feedback-type-list.open) .driver-feedback-actions {
+#driver-feedback-modal:has(#driver-feedback-type-list.open) .driver-feedback-actions{
   filter: blur(2px);
   opacity: 0.92;
   transition: filter 0.18s ease, opacity 0.18s ease;
 }
 #driver-feedback-modal:has(#driver-feedback-type-list.open) .driver-feedback-type-dropdown-wrap,
-#driver-feedback-modal:has(#driver-feedback-type-list.open) #driver-feedback-type-list.open {
+#driver-feedback-modal:has(#driver-feedback-type-list.open) #driver-feedback-type-list.open{
   filter: none !important;
   opacity: 1 !important;
 }
 
-#driver-feedback-modal .form-group textarea.driver-feedback-message {
+#driver-feedback-modal .form-group textarea.driver-feedback-message{
   min-height: 112px;
   resize: none;
 }
 
-#edit-request-modal .form-group textarea {
+#edit-request-modal .form-group textarea{
   min-height: 1.2em !important;
   resize: none;
 }
 
 /* Düzeltme Talebi: etiket beyaz, mevcut değer + alan içeriği gri (iOS WebKit metin rengi dahil) */
-#edit-request-modal .driver-current-km {
+#edit-request-modal .driver-current-km{
   color: #ffffff !important;
   -webkit-text-fill-color: #ffffff !important;
   margin-bottom: 13px !important;
 }
-#edit-request-modal .driver-current-km strong {
+#edit-request-modal .driver-current-km strong{
   color: #a0aec0 !important;
   -webkit-text-fill-color: #a0aec0 !important;
   font-weight: 600;
 }
-#edit-request-modal .form-group label {
+#edit-request-modal .form-group label{
   color: #ffffff !important;
   -webkit-text-fill-color: #ffffff !important;
 }
 /* Düzeltme Talebi: input iç yükseklik 3px dar, bölümler arası 3px dar, Bildir ince */
-#edit-request-modal .form-group {
+#edit-request-modal .form-group{
   margin-bottom: 13px !important;
 }
 #edit-request-modal .form-group input,
-#edit-request-modal .form-group textarea {
+#edit-request-modal .form-group textarea{
   color: #a0aec0 !important;
   -webkit-text-fill-color: #a0aec0 !important;
   padding-top: 3px !important;
   padding-bottom: 3px !important;
 }
 #edit-request-modal .form-group input:focus,
-#edit-request-modal .form-group textarea:focus {
+#edit-request-modal .form-group textarea:focus{
   color: #b8c5d0 !important;
   -webkit-text-fill-color: #b8c5d0 !important;
 }
 #edit-request-modal .form-group input:not(:focus),
-#edit-request-modal .form-group textarea:not(:focus) {
+#edit-request-modal .form-group textarea:not(:focus){
   border-color: rgba(255, 255, 255, 0.4) !important;
   box-shadow: none !important;
 }
-#edit-request-modal .btn-submit {
+#edit-request-modal .btn-submit{
   font-weight: 500 !important;
   border-width: 1px !important;
   border-color: rgba(74, 222, 128, 0.45) !important;
   color: rgba(74, 222, 128, 0.8) !important;
   padding: 7px 14px 8px !important;
 }
-#edit-request-modal .btn-submit:hover {
+#edit-request-modal .btn-submit:hover{
   border-color: rgba(74, 222, 128, 0.75) !important;
   color: rgba(74, 222, 128, 0.95) !important;
 }
 #edit-request-modal .form-group input::placeholder,
-#edit-request-modal .form-group textarea::placeholder {
+#edit-request-modal .form-group textarea::placeholder{
   color: rgba(160, 174, 192, 0.55) !important;
   -webkit-text-fill-color: rgba(160, 174, 192, 0.55) !important;
 }
 
 /* Düzeltme Talebi: KM input spinner gizli */
-.driver-modal .form-group input[type="number"] {
+.driver-modal .form-group input[type="number"]{
   -moz-appearance: textfield;
   appearance: textfield;
 }
 .driver-modal .form-group input[type="number"]::-webkit-inner-spin-button,
-.driver-modal .form-group input[type="number"]::-webkit-outer-spin-button {
+.driver-modal .form-group input[type="number"]::-webkit-outer-spin-button{
   -webkit-appearance: none;
   margin: 0;
 }
 
-.btn-submit {
+.btn-submit{
   width: 100%;
   padding: 14px;
   background: transparent;
@@ -1925,14 +1854,14 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
   margin-top: 8px;
 }
 
-.btn-submit:hover {
+.btn-submit:hover{
   background: rgba(74, 222, 128, 0.12);
   border-color: rgba(74, 222, 128, 0.7);
   color: rgba(74, 222, 128, 0.95);
 }
 
 /* Muayene teyit popover - tarih inputu altında 5px, sağ grid içinde yatay ortalı (top/left JS ile) */
-.muayene-confirm-popover {
+.muayene-confirm-popover{
   position: fixed;
   width: min(280px, calc(100vw - 32px));
   max-width: 320px;
@@ -1946,26 +1875,26 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
   color: #fff;
 }
 
-.muayene-confirm-popover p {
+.muayene-confirm-popover p{
   margin: 0 0 12px 0;
   line-height: 1.4;
 }
 
-.muayene-confirm-popover.driver-forget-device-confirm {
+.muayene-confirm-popover.driver-forget-device-confirm{
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
 }
 
 /* Mobil + masaüstü: çerçeve ikiye bölünmüş, her buton kendi alanında yatay ortalı */
-.muayene-confirm-actions {
+.muayene-confirm-actions{
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0;
 }
 
 /* Hayır: yeşil metin + yeşil çerçeve. Hover: sadece scale + arka plan (layout değişmez, modal esnemez) */
-.muayene-confirm-actions .btn-confirm-no {
+.muayene-confirm-actions .btn-confirm-no{
   background: transparent;
   color: var(--green, #4ade80);
   border: 1px solid var(--green, #4ade80);
@@ -1978,14 +1907,14 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
   transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
 }
 
-.muayene-confirm-actions .btn-confirm-no:hover {
+.muayene-confirm-actions .btn-confirm-no:hover{
   background: rgba(74, 222, 128, 0.2);
   box-shadow: 0 0 0 1px var(--green, #4ade80);
   transform: scale(1.02);
 }
 
 /* Evet: kırmızı metin + kırmızı çerçeve. Hover: sadece scale + arka plan (layout değişmez, modal esnemez) */
-.muayene-confirm-actions .btn-confirm-yes {
+.muayene-confirm-actions .btn-confirm-yes{
   background: transparent;
   color: var(--theme-color);
   border: 1px solid var(--theme-color);
@@ -1998,7 +1927,7 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
   transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
 }
 
-.muayene-confirm-actions .btn-confirm-yes:hover {
+.muayene-confirm-actions .btn-confirm-yes:hover{
   background: rgba(var(--theme-color-rgb), 0.2);
   box-shadow: 0 0 0 1px var(--theme-color);
   transform: scale(1.02);
@@ -2007,24 +1936,24 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
 /* Masaüstü: butonlar 4px daha kısa (dikey), yatayda 8px daha geniş */
 @media (min-width: 769px) {
   .muayene-confirm-actions .btn-confirm-no,
-  .muayene-confirm-actions .btn-confirm-yes {
+.muayene-confirm-actions .btn-confirm-yes{
     padding: 6px 24px;
   }
 }
 
 #history-modal .universal-back-bar .universal-back-label,
-#edit-request-modal .universal-back-bar .universal-back-label {
+#edit-request-modal .universal-back-bar .universal-back-label{
   color: var(--muted, #adb5bd) !important;
   font-weight: 500;
   font-size: 13.5px;
 }
 
 /* Geçmiş kayıtlar modal içi */
-.history-filters {
+.history-filters{
   margin-bottom: 16px;
 }
 
-.history-vehicle-dropdown-wrap {
+.history-vehicle-dropdown-wrap{
   display: flex;
   align-items: center;
   gap: 8px;
@@ -2032,7 +1961,7 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
   z-index: 2;
 }
 
-.history-filter-label {
+.history-filter-label{
   flex-shrink: 0;
   margin: 0;
   color: var(--form-label-color);
@@ -2041,12 +1970,12 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
   vertical-align: middle;
 }
 
-.history-vehicle-trigger {
+.history-vehicle-trigger{
   gap: 4px;
   cursor: pointer;
 }
 
-.history-vehicle-trigger-text {
+.history-vehicle-trigger-text{
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -2058,7 +1987,7 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
   line-height: 1.18;
 }
 
-.history-selected-plate {
+.history-selected-plate{
   display: inline-block;
   color: rgba(var(--theme-color-rgb), 0.92);
   font-size: 13px;
@@ -2069,30 +1998,30 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
   white-space: nowrap;
 }
 
-.history-selected-model {
+.history-selected-model{
   color: rgba(222, 229, 238, 0.82);
   font-size: 12px;
   font-weight: 650;
   line-height: 1.12;
 }
 
-#history-modal .history-vehicle-trigger.history-all-selected .history-vehicle-trigger-text {
+#history-modal .history-vehicle-trigger.history-all-selected .history-vehicle-trigger-text{
   color: var(--muted, #adb5bd) !important;
 }
 
-.history-vehicle-chevron {
+.history-vehicle-chevron{
   flex-shrink: 0;
   font-size: 12px;
   color: var(--muted);
   line-height: 1;
 }
 
-.history-vehicle-trigger.history-vehicle-trigger-open .history-vehicle-chevron {
+.history-vehicle-trigger.history-vehicle-trigger-open .history-vehicle-chevron{
   color: var(--txt);
 }
 
 /* Plaka listesi: tema uyumlu koyu arka plan */
-.history-vehicle-dropdown {
+.history-vehicle-dropdown{
   position: absolute;
   top: 100%;
   left: 0;
@@ -2104,22 +2033,22 @@ body.dashboard-page.driver-feedback-modal-open #app-footer {
   -ms-overflow-style: none;
 }
 
-.history-vehicle-dropdown::-webkit-scrollbar {
+.history-vehicle-dropdown::-webkit-scrollbar{
   width: 0;
   height: 0;
   display: none;
 }
 
-.history-vehicle-option {
+.history-vehicle-option{
   cursor: pointer;
   color: var(--txt);
 }
 
-#history-modal .history-vehicle-option[data-value=""] {
+#history-modal .history-vehicle-option[data-value=""]{
   color: var(--muted, #adb5bd);
 }
 body.dashboard-page.driver-history-vehicle-dropdown-open #history-modal .universal-back-bar,
-body.dashboard-page.driver-history-vehicle-dropdown-open #history-modal .history-container {
+body.dashboard-page.driver-history-vehicle-dropdown-open #history-modal .history-container{
   filter: blur(2px);
   opacity: 0.9;
   transition: filter 0.18s ease, opacity 0.18s ease;
@@ -2128,26 +2057,26 @@ body.dashboard-page.driver-history-vehicle-dropdown-open #history-modal .history
 body.dashboard-page.driver-history-vehicle-dropdown-open #history-modal .history-filters,
 body.dashboard-page.driver-history-vehicle-dropdown-open #history-modal .history-vehicle-dropdown-wrap,
 body.dashboard-page.driver-history-vehicle-dropdown-open #history-modal .history-vehicle-trigger,
-body.dashboard-page.driver-history-vehicle-dropdown-open #history-modal .history-vehicle-dropdown {
+body.dashboard-page.driver-history-vehicle-dropdown-open #history-modal .history-vehicle-dropdown{
   filter: none !important;
   opacity: 1 !important;
 }
 
-.history-empty {
+.history-empty{
   color: var(--muted);
   text-align: center;
   padding: 24px;
   font-size: 14px;
 }
 
-.history-container {
+.history-container{
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
 /* Kayıt kartı: kayıt modalı input arka planı ile aynı (#0f1418) */
-.history-card {
+.history-card{
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -2159,24 +2088,24 @@ body.dashboard-page.driver-history-vehicle-dropdown-open #history-modal .history
   padding: 8px 14px;
 }
 
-.history-card-content {
+.history-card-content{
   flex: 1;
   min-width: 0;
 }
 
-.history-details-row {
+.history-details-row{
   display: flex;
   align-items: flex-start;
   gap: 10px;
 }
 
-.history-details {
+.history-details{
   flex: 1;
   min-width: 0;
 }
 
 /* Üst satır: tarih sola, plaka sağa – aynı satırda */
-.history-header {
+.history-header{
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -2186,20 +2115,20 @@ body.dashboard-page.driver-history-vehicle-dropdown-open #history-modal .history
 }
 
 /* Etiket beyaz (tarih/dönem); açıklama .history-details p ile gri */
-.history-period {
+.history-period{
   font-weight: 400;
   color: #ffffff !important;
   font-size: 15px;
 }
 
-.history-vehicle {
+.history-vehicle{
   color: #ffffff !important;
   font-size: 14px;
   text-align: right;
 }
 
 /* Etiket beyaz, açıklama gri: değerler #a0aec0 (global --data-value-color bypass) */
-.history-details p {
+.history-details p{
   font-size: 14px;
   color: #a0aec0 !important;
   margin: 0;
@@ -2208,12 +2137,12 @@ body.dashboard-page.driver-history-vehicle-dropdown-open #history-modal .history
   overflow-wrap: anywhere;
 }
 
-.history-details strong {
+.history-details strong{
   color: #ffffff !important;
 }
 
 /* Kalem ikonu: sağda dikeyde ortalan, arka plan ve çerçeve yok */
-.history-edit-icon {
+.history-edit-icon{
   flex-shrink: 0;
   align-self: center;
   display: flex;
@@ -2230,19 +2159,19 @@ body.dashboard-page.driver-history-vehicle-dropdown-open #history-modal .history
   transition: color 0.2s;
 }
 
-.history-edit-icon:hover {
+.history-edit-icon:hover{
   color: var(--green);
 }
 
 /* Mobil: kalem touch box kart yüksekliğini şişirmesin; absolute + content reserve */
 @media (max-width: 768px) {
-  #history-modal .history-details-row {
+  #history-modal .history-details-row{
     position: relative;
   }
-  #history-modal .history-details-row:has(.history-edit-icon) .history-details {
+  #history-modal .history-details-row:has(.history-edit-icon) .history-details{
     padding-right: 40px;
   }
-  #history-modal .history-edit-icon {
+  #history-modal .history-edit-icon{
     position: absolute;
     right: 0;
     top: 50%;
@@ -2253,56 +2182,56 @@ body.dashboard-page.driver-history-vehicle-dropdown-open #history-modal .history
 }
 
 /* Modal açıkken tıklanan satırın kırmızı vurgusu korunsun (focus modal'a geçince kaybolmasın) */
-#history-modal .history-card.history-row-editing {
+#history-modal .history-card.history-row-editing{
   box-shadow: inset 0 0 0 1.5px rgba(var(--theme-color-rgb), 0.7);
   border-radius: 8px;
 }
 
 /* Masaüstü: Geçmiş modalı — ince ayarlar ve taşıt dropdown kartları */
 @media (min-width: 769px) {
-  #history-modal .history-details-row {
+  #history-modal .history-details-row{
     align-items: flex-end !important;
   }
-  #history-modal .history-period {
+  #history-modal .history-period{
     color: var(--form-label-color, #ffffff) !important;
   }
-  #history-modal .history-edit-icon {
+  #history-modal .history-edit-icon{
     transform: scale(0.85) !important;
     transform-origin: center bottom !important;
     align-self: flex-end !important;
   }
   #history-modal .universal-back-bar,
-  #edit-request-modal .universal-back-bar {
+#edit-request-modal .universal-back-bar{
     margin-top: -6px !important;
   }
-  #history-modal .history-filters {
+  #history-modal .history-filters{
     margin-top: -2px !important;
   }
-  #history-modal .history-card {
+  #history-modal .history-card{
     padding: 7px 14px !important;
     gap: 2px !important;
   }
   /* Tarih satırı ile içerik satırları arasındaki dikey boşluk masaüstünde 2px */
-  #history-modal .history-header {
+  #history-modal .history-header{
     margin-bottom: 2px !important;
   }
-  #history-modal .history-details p + p {
+  #history-modal .history-details p + p{
     margin-top: 2px !important;
   }
   /* Masaüstü: punto 0.5 küçült */
-  #history-modal .history-period {
+  #history-modal .history-period{
     font-size: 14.5px !important;
   }
-  #history-modal .history-vehicle {
+  #history-modal .history-vehicle{
     font-size: 13.5px !important;
   }
-  #history-modal .history-details p {
+  #history-modal .history-details p{
     font-size: 13.5px !important;
   }
-  .history-vehicle-dropdown {
+  .history-vehicle-dropdown{
     padding: 2px 10px;
   }
-  .history-vehicle-option {
+  .history-vehicle-option{
     color: rgba(232, 236, 241, 0.94);
     text-align: center;
   }
@@ -2310,10 +2239,10 @@ body.dashboard-page.driver-history-vehicle-dropdown-open #history-modal .history
 
 /* Yönetim Sistemi (evrensel geri düğmesi) – ortak stil (konum sayfa bazlı) */
 /* Form açıkken arka plana tıklanmasın; Yönetim Sistemi linki her zaman tıklanabilsin */
-body.driver-action-block-open .driver-footer-back-wrap {
+body.driver-action-block-open .driver-footer-back-wrap{
   pointer-events: none;
 }
-body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
+body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn{
   pointer-events: auto !important;
 }
 
@@ -2321,7 +2250,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 .driver-modal .form-group input:-webkit-autofill,
 .driver-modal .form-group input:-webkit-autofill:hover,
 .driver-modal .form-group textarea:-webkit-autofill,
-.driver-modal .form-group textarea:-webkit-autofill:hover {
+.driver-modal .form-group textarea:-webkit-autofill:hover{
   -webkit-box-shadow: 0 0 0 30px #0d131f inset, inset 0 0 0 1px rgba(255, 255, 255, 0.4) !important;
   border: 1.1px solid rgba(255, 255, 255, 0.4) !important;
   -webkit-text-fill-color: var(--data-value-color, #a0aec0) !important;
@@ -2330,7 +2259,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 }
 
 .driver-modal .form-group input:-webkit-autofill:focus,
-.driver-modal .form-group textarea:-webkit-autofill:focus {
+.driver-modal .form-group textarea:-webkit-autofill:focus{
   -webkit-box-shadow: 0 0 0 30px #0d131f inset, inset 0 0 0 1px var(--theme-color) !important;
   border-color: var(--theme-color) !important;
   -webkit-text-fill-color: var(--data-value-color, #a0aec0) !important;
@@ -2341,10 +2270,10 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 @media (max-width: 640px) {
   /* Taşıtlar modalı ile aynı: overlay alt boşluk = footer + gap (style-core değişkenleri). Üst: Çentik altında kalmaması için safe-area. */
   #history-modal.driver-modal,
-  #edit-request-modal.driver-modal,
-  #driver-password-modal.driver-modal,
-  #driver-documents-modal.driver-modal,
-  #driver-feedback-modal.driver-modal {
+#edit-request-modal.driver-modal,
+#driver-password-modal.driver-modal,
+#driver-documents-modal.driver-modal,
+#driver-feedback-modal.driver-modal{
     padding: max(12px, env(safe-area-inset-top)) 0 0 0 !important;
     align-items: stretch !important;
     justify-content: center !important;
@@ -2353,47 +2282,47 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
   /* Geçmiş Kayıtlar + Düzeltme Talebi + Talep/Şikayet: modal–footer arası 10px; koyu dolgu (box-shadow) köşeler dahil kapatsın */
   #history-modal.driver-modal,
-  #edit-request-modal.driver-modal,
-  #driver-documents-modal.driver-modal,
-  #driver-feedback-modal.driver-modal {
+#edit-request-modal.driver-modal,
+#driver-documents-modal.driver-modal,
+#driver-feedback-modal.driver-modal{
     bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
     box-shadow: none !important;
   }
   /* Mobilde modal açıkken header üstündeki kırmızı yatay çizgi görünmesin */
-  .driver-modal.show::after {
+  .driver-modal.show::after{
     display: none !important;
   }
   /* Modal açıkken footer ve footer ışıkları üstte kalsın */
-  body.driver-modal-open.dashboard-page #app-footer {
+  body.driver-modal-open.dashboard-page #app-footer{
     z-index: 10012 !important;
   }
   /* Geçmiş Kayıtlar / Düzeltme açıkken footer dimmer tonu bozulmasın. */
   body.dashboard-page:has(#history-modal.driver-modal.show) #app-footer .version,
-  body.dashboard-page:has(#edit-request-modal.driver-modal.show) #app-footer .version,
-  body.dashboard-page:has(#history-modal.driver-modal.show) #app-footer .version#version-display,
-  body.dashboard-page:has(#edit-request-modal.driver-modal.show) #app-footer .version#version-display,
-  body.dashboard-page:has(#history-modal.driver-modal.show) #app-footer .status,
-  body.dashboard-page:has(#edit-request-modal.driver-modal.show) #app-footer .status,
-  body.dashboard-page:has(#history-modal.driver-modal.show) #app-footer .status.status-ready,
-  body.dashboard-page:has(#edit-request-modal.driver-modal.show) #app-footer .status.status-ready {
+body.dashboard-page:has(#edit-request-modal.driver-modal.show) #app-footer .version,
+body.dashboard-page:has(#history-modal.driver-modal.show) #app-footer .version#version-display,
+body.dashboard-page:has(#edit-request-modal.driver-modal.show) #app-footer .version#version-display,
+body.dashboard-page:has(#history-modal.driver-modal.show) #app-footer .status,
+body.dashboard-page:has(#edit-request-modal.driver-modal.show) #app-footer .status,
+body.dashboard-page:has(#history-modal.driver-modal.show) #app-footer .status.status-ready,
+body.dashboard-page:has(#edit-request-modal.driver-modal.show) #app-footer .status.status-ready{
     opacity: 0.3 !important;
   }
   body.dashboard-page:has(#history-modal.driver-modal.show) #app-footer .brand img,
-  body.dashboard-page:has(#edit-request-modal.driver-modal.show) #app-footer .brand img {
+body.dashboard-page:has(#edit-request-modal.driver-modal.show) #app-footer .brand img{
     opacity: 0.8 !important;
   }
   /* Geçmiş Kayıtlar / Düzeltme Talebi açıkken modal–footer gap bandında kırmızı dikey parçalar kalmasın */
   @supports not selector(body:has(*)) {
     body.dashboard-page.driver-history-or-edit-modal-open #app-footer .version,
-    body.dashboard-page.driver-history-or-edit-modal-open #app-footer .version#version-display,
-    body.dashboard-page.driver-history-or-edit-modal-open #app-footer .status,
-    body.dashboard-page.driver-history-or-edit-modal-open #app-footer .status.status-ready {
+body.dashboard-page.driver-history-or-edit-modal-open #app-footer .version#version-display,
+body.dashboard-page.driver-history-or-edit-modal-open #app-footer .status,
+body.dashboard-page.driver-history-or-edit-modal-open #app-footer .status.status-ready{
       opacity: 0.3 !important;
     }
-    body.dashboard-page.driver-history-or-edit-modal-open #app-footer .brand img {
+    body.dashboard-page.driver-history-or-edit-modal-open #app-footer .brand img{
       opacity: 0.8 !important;
     }
-    body.driver-modal-open.dashboard-page::after {
+    body.driver-modal-open.dashboard-page::after{
       content: '';
       position: fixed;
       left: 0;
@@ -2406,9 +2335,9 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     }
   }
   #history-modal.driver-modal::before,
-  #edit-request-modal.driver-modal::before,
-  #driver-password-modal.driver-modal::before,
-  #driver-feedback-modal.driver-modal::before {
+#edit-request-modal.driver-modal::before,
+#driver-password-modal.driver-modal::before,
+#driver-feedback-modal.driver-modal::before{
     max-width: 100% !important;
     width: 100%;
     height: 100%;
@@ -2418,11 +2347,11 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
   /* Geçmiş Kayıtlar + Düzeltme Talebi: kayıt modalı ile aynı başlık gölgesi */
   #history-modal .modal-header h2,
-  #edit-request-modal .modal-header h2,
-  #driver-feedback-modal .modal-header h2 {
+#edit-request-modal .modal-header h2,
+#driver-feedback-modal .modal-header h2{
     text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5), 0 4px 12px rgba(0, 0, 0, 0.3), 0 0 15px rgba(255, 255, 255, 0.08) !important;
   }
-  #driver-feedback-modal #driver-feedback-type-list .vehicle-branch-option {
+  #driver-feedback-modal #driver-feedback-type-list .vehicle-branch-option{
     padding: 12px 10px;
     font-size: 14px !important;
     text-align: center;
@@ -2431,9 +2360,9 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     justify-content: center;
   }
   #driver-feedback-modal .driver-feedback-actions .universal-btn-save,
-  #driver-feedback-modal .driver-feedback-actions .universal-btn-cancel,
-  #driver-password-modal .driver-password-actions .universal-btn-save,
-  #driver-password-modal .driver-password-actions .universal-btn-cancel {
+#driver-feedback-modal .driver-feedback-actions .universal-btn-cancel,
+#driver-password-modal .driver-password-actions .universal-btn-save,
+#driver-password-modal .driver-password-actions .universal-btn-cancel{
     height: auto !important;
     min-height: 44px;
     padding: 12px 14px !important;
@@ -2446,26 +2375,26 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     text-align: center;
   }
   #driver-password-modal .driver-password-actions .universal-btn-save,
-  #driver-password-modal .driver-password-actions .universal-btn-cancel {
+#driver-password-modal .driver-password-actions .universal-btn-cancel{
     font-size: 15px !important;
     font-weight: 600 !important;
   }
   #driver-feedback-modal .driver-feedback-actions.universal-btn-group,
-  #driver-password-modal .driver-password-actions.universal-btn-group {
+#driver-password-modal .driver-password-actions.universal-btn-group{
     gap: 10px !important;
   }
 
   /* Mobil modal container: footer arkasında kalmayacak şekilde yükseklik sınırla */
   #history-modal .driver-modal-content,
-  #history-modal .modal-container,
-  #edit-request-modal .driver-modal-content,
-  #edit-request-modal .modal-container,
-  #driver-password-modal .driver-modal-content,
-  #driver-password-modal .modal-container,
-  #driver-documents-modal .driver-modal-content,
-  #driver-documents-modal .modal-container,
-  #driver-feedback-modal .driver-modal-content,
-  #driver-feedback-modal .modal-container {
+#history-modal .modal-container,
+#edit-request-modal .driver-modal-content,
+#edit-request-modal .modal-container,
+#driver-password-modal .driver-modal-content,
+#driver-password-modal .modal-container,
+#driver-documents-modal .driver-modal-content,
+#driver-documents-modal .modal-container,
+#driver-feedback-modal .driver-modal-content,
+#driver-feedback-modal .modal-container{
     max-width: 100% !important;
     width: 100% !important;
     margin: 0 !important;
@@ -2488,30 +2417,30 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
   /* Geçmiş Kayıtlar + Düzeltme Talebi: mobilde aynı gri çerçeve */
   #history-modal .driver-modal-content,
-  #history-modal .modal-container,
-  #edit-request-modal .driver-modal-content,
-  #edit-request-modal .modal-container {
+#history-modal .modal-container,
+#edit-request-modal .driver-modal-content,
+#edit-request-modal .modal-container{
     border-top: 0.8px solid rgba(200, 200, 200, 0.62) !important;
     border-left: 0.8px solid rgba(255, 255, 255, 0.28) !important;
     border-right: 0.8px solid rgba(255, 255, 255, 0.28) !important;
   }
 
   #history-modal.driver-modal,
-  #edit-request-modal.driver-modal {
+#edit-request-modal.driver-modal{
     padding-top: max(12px, env(safe-area-inset-top)) !important;
   }
   #edit-request-modal .driver-modal-content,
-  #edit-request-modal .modal-container {
+#edit-request-modal .modal-container{
     min-height: 0 !important;
     max-height: 100% !important;
   }
 
   /* Modal header: Üst köşe radius container ile aynı (10px) – kırmızı çerçeve üstü ezilmesin */
   #history-modal .modal-header,
-  #edit-request-modal .modal-header,
-  #driver-password-modal .modal-header,
-  #driver-documents-modal .modal-header,
-  #driver-feedback-modal .modal-header {
+#edit-request-modal .modal-header,
+#driver-password-modal .modal-header,
+#driver-documents-modal .modal-header,
+#driver-feedback-modal .modal-header{
     padding-top: 12px !important;
     border-top-left-radius: 10px !important;
     border-top-right-radius: 10px !important;
@@ -2519,15 +2448,15 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 
   /* Geçmiş Kayıtlar + Düzeltme Talebi: kayıt modalı ile aynı kapatma butonu boyutu */
   #history-modal .modal-close,
-  #edit-request-modal .modal-close {
+#edit-request-modal .modal-close{
     font-size: 21px !important;
   }
 
   /* modal-body: dikey scroll, alt içerik footer'a yapışmasın */
   #history-modal .modal-body,
-  #edit-request-modal .modal-body,
-  #driver-password-modal .modal-body,
-  #driver-feedback-modal .modal-body {
+#edit-request-modal .modal-body,
+#driver-password-modal .modal-body,
+#driver-feedback-modal .modal-body{
     overflow-x: hidden !important;
     touch-action: pan-y !important;
     overscroll-behavior: none !important;
@@ -2537,58 +2466,46 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
   /* Geçmiş Kayıtlar + Düzeltme Talebi: scroll kendi alanında; mobilde son satır footer üstünde kalsın */
   #history-modal .modal-body,
-  #edit-request-modal .modal-body {
+#edit-request-modal .modal-body{
     padding-top: 2px !important;
     padding-bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap, 14px) + env(safe-area-inset-bottom, 0)) !important;
   }
   /* Geçmiş Kayıtlar / Düzeltme Talebi mobil: scroll alanı footer yüksekliği kadar alt boşluk, son satır kesilmesin */
   #history-modal .modal-body,
-  #edit-request-modal .modal-body {
+#edit-request-modal .modal-body{
     padding-bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap, 14px) + env(safe-area-inset-bottom, 0)) !important;
   }
-  .dashboard-page .driver-dashboard-container::before,
-  .login-page .driver-dashboard-container::before {
-    border-top: 0.85px solid rgba(var(--theme-color-rgb), 0.74) !important;
-    border-left: 0.85px solid rgba(var(--theme-color-rgb), 0.74) !important;
-    border-right: 0.85px solid rgba(var(--theme-color-rgb), 0.74) !important;
-    box-shadow:
-      0 0 7px rgba(var(--theme-color-rgb), 0.12),
-      inset 0 0 7px rgba(var(--theme-color-rgb), 0.05) !important;
+  .dashboard-page .driver-dashboard-container::before{
     top: 0 !important;
-    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0) + 1px) !important; /* Footer'da biter, aşağı inmez */
+    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0) + 1px) !important;
+    /* Footer'da biter, aşağı inmez */;
   }
     /* Footer: mobilde de gri üst çizgi geri gelir; dashboard glow korunur */
-  .dashboard-page #app-footer {
+  .dashboard-page #app-footer{
     background: var(--bg) !important;
     border-top: 1px solid rgba(128, 128, 128, 0.52) !important;
     border-left: 0.5px solid rgba(255, 255, 255, 0.10) !important;
     border-right: 0.5px solid rgba(255, 255, 255, 0.10) !important;
   }
-  .login-page #app-footer.login-footer {
-    background: var(--bg) !important;
-    border-top: none !important;
-    border-left: 0.5px solid rgba(255, 255, 255, 0.18) !important;
-    border-right: 0.5px solid rgba(255, 255, 255, 0.18) !important;
-  }
   /* Plaka dropdown dışarı taşabilsin; panels-inner overflow: hidden kalsın ki sağ panel yüksekliği kısıtlansın ve Not+Bildir kaydırılabilir */
-  .dashboard-page .driver-panels-inner {
+  .dashboard-page .driver-panels-inner{
     overflow-x: visible !important;
     overflow-y: hidden;
     position: relative;
     isolation: isolate;
   }
-  .dashboard-page .driver-plate-dropdown-row {
+  .dashboard-page .driver-plate-dropdown-row{
     overflow: visible !important;
   }
   /* Sol bölme: uzun taşıt bilgisinde kendi içinde dikey kaydırma; yatay taşma kapalı (plaka listesi ayrı overflow ile) */
-  .dashboard-page .driver-left-panel {
+  .dashboard-page .driver-left-panel{
     position: relative;
     z-index: 3;
     min-height: 0;
     overflow: hidden;
     border-right: none !important;
   }
-  .dashboard-page .driver-right-panel {
+  .dashboard-page .driver-right-panel{
     position: relative;
     z-index: 1;
     align-self: stretch !important;
@@ -2596,14 +2513,14 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     min-height: 0 !important;
   }
   /* Sol panelin 12px'lik asimetrik sağ boşluğunu ezip satırı tam ortalar */
-  .dashboard-page .driver-plate-dropdown-row {
+  .dashboard-page .driver-plate-dropdown-row{
     margin-right: 0 !important;
     padding-left: 0 !important;
     padding-right: 0 !important;
     box-sizing: border-box !important;
   }
   /* Adım 1: Plaka yatayda ortada (kırmızı ok hesaba katılmaz); ok alanına metin girmesin diye simetrik padding */
-  .dashboard-page .driver-plate-dropdown-row .driver-current-plaka {
+  .dashboard-page .driver-plate-dropdown-row .driver-current-plaka{
     flex: 1 1 auto !important;
     display: block !important;
     width: 100% !important;
@@ -2617,7 +2534,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     padding-right: 18px !important;
     font-size: calc(14px - 1pt) !important;
   }
-  .dashboard-page .driver-plate-dropdown-row .driver-plate-trigger {
+  .dashboard-page .driver-plate-dropdown-row .driver-plate-trigger{
     right: -8px !important;
     top: 50% !important;
     transform: translateY(-50%) !important;
@@ -2625,7 +2542,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
   /* Adım 2-3: Liste mobilde sol panel hizasında kalsın (sola çivili), %80 genişlik kaplasın */
   .dashboard-page .driver-left-panel .driver-plate-dropdown,
-  body.dashboard-page #driver-plate-dropdown.driver-plate-dropdown {
+body.dashboard-page #driver-plate-dropdown.driver-plate-dropdown{
     width: 80vw !important;
     max-width: 380px !important;
     min-width: auto !important;
@@ -2639,79 +2556,55 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     flex-direction: column !important;
     gap: 4px !important;
   }
-  .dashboard-page .driver-plate-dropdown-item {
+  .dashboard-page .driver-plate-dropdown-item{
     padding: 6px 10px !important;
     box-sizing: border-box !important;
   }
 
   /* Ana başlık: yan çizgiler sadece container'da (çift border olmasın) */
-  .dashboard-page .driver-header-fixed {
+  .dashboard-page .driver-header-fixed{
     border-left: none !important;
     border-right: none !important;
   }
   /* Mobil: header ile içerik tek parça görünsün, Üstü sonradan eklenmiş hissi kalkması için gölge hafif */
-  .dashboard-page .hero {
+  .dashboard-page .hero{
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), 0 2px 12px rgba(var(--theme-color-rgb), 0.08) !important;
     padding-top: 7px !important;
     padding-bottom: 7px !important;
   }
-  /* Login header: tamamı panel (dashboard ile aynı görünüm) */
-  .login-page .hero {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), 0 2px 12px rgba(var(--theme-color-rgb), 0.08) !important;
-  }
   /* Mobil: üst durum ikonları – üç eşit slot, yatayda ortalanmış */
-  .dashboard-page .driver-below-hero-row {
+  .dashboard-page .driver-below-hero-row{
     justify-content: center !important;
     align-items: center !important;
     gap: 8px !important;
   }
-  .dashboard-page .driver-status-icon-row {
+  .dashboard-page .driver-status-icon-row{
     width: 100% !important;
     max-width: 100% !important;
     grid-template-columns: 1fr auto 1fr !important;
   }
-  .dashboard-page .driver-status-icon-slot-history {
+  .dashboard-page .driver-status-icon-slot-history{
     justify-self: start !important;
     padding-left: 6px !important;
   }
-  .dashboard-page .driver-status-icon-slot-warning {
+  .dashboard-page .driver-status-icon-slot-warning{
     justify-self: center !important;
   }
-  .dashboard-page .driver-status-icon-slot-key {
+  .dashboard-page .driver-status-icon-slot-key{
     justify-self: end !important;
     gap: 6px !important;
     padding-right: 6px !important;
   }
-  .dashboard-page .driver-below-hero-notification-slot {
+  .dashboard-page .driver-below-hero-notification-slot{
     flex: 0 0 auto !important;
     justify-content: center !important;
     margin-left: 0 !important;
     max-width: none !important;
   }
-  /* Mobil login: Kullanıcı adı etiketi ve altındakiler 8px yukarı */
-  .login-page .login-form {
-    margin-top: -8px !important;
-  }
-  /* Mobil login: yan kırmızı çizgiler footer'a kadar uzanır (position fixed = viewport'a göre) */
-  .login-page .driver-dashboard-container::before {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
-  }
-  .login-page #app-footer.login-footer {
-    bottom: 0 !important;
-  }
-
-  /* Çerçevelere yan boşluk; plaka dropdown sağa panele taşabilsin diye yatay overflow açık */
-  .dashboard-page .driver-dashboard-container {
+  .dashboard-page .content-wrap.driver-content-wrap.driver-scroll-area{
     overflow-x: visible !important;
   }
-  .dashboard-page .content-wrap.driver-content-wrap.driver-scroll-area {
-    overflow-x: visible !important;
-  }
-  .dashboard-page .driver-scroll-area {
+  .dashboard-page .driver-scroll-area{
     padding-left: 0 !important;
     padding-right: 0 !important;
     overflow-x: visible !important;
@@ -2719,48 +2612,48 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 
   /* Üst anahtar + çıkış ikonları */
   .dashboard-page .driver-btn-password .driver-btn-password-icon,
-  .dashboard-page .driver-below-hero-row .driver-btn-header-logout .driver-btn-header-logout-icon {
+.dashboard-page .driver-below-hero-row .driver-btn-header-logout .driver-btn-header-logout-icon{
     width: 24px !important;
     height: 24px !important;
     stroke-width: 1.7 !important;
   }
-  .dashboard-page .driver-btn-password .driver-btn-password-icon {
+  .dashboard-page .driver-btn-password .driver-btn-password-icon{
     width: 26px !important;
     height: 26px !important;
     stroke-width: 2 !important;
     transform: translateY(-3px) !important;
   }
 
-  .dashboard-page .driver-report-block {
+  .dashboard-page .driver-report-block{
     margin-top: 0 !important;
   }
 
   /* Gri çerçevelere parlaklık (sadece varsayılan, focus kırmızı/yeşil kalır) */
   .dashboard-page .driver-report-block .form-group input:not(:focus),
-  .dashboard-page .driver-report-block .form-group textarea:not(:focus) {
+.dashboard-page .driver-report-block .form-group textarea:not(:focus){
     box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.35) !important;
   }
 
-  .dashboard-page .driver-action-area .driver-report-block input[type="date"] {
+  .dashboard-page .driver-action-area .driver-report-block input[type="date"]{
     padding-top: 4px !important;
     padding-bottom: 4px !important;
     text-align: left !important;
     box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.35) !important;
     border: none !important;
   }
-  .dashboard-page .driver-action-area .driver-report-block input[type="date"]:focus {
+  .dashboard-page .driver-action-area .driver-report-block input[type="date"]:focus{
     box-shadow: inset 0 0 0 0.5px var(--theme-color) !important;
     border: none !important;
   }
-  .dashboard-page .driver-action-area .driver-km-form label {
+  .dashboard-page .driver-action-area .driver-km-form label{
     margin-top: 5px !important;
   }
-  .dashboard-page .driver-action-area .driver-radio-row {
+  .dashboard-page .driver-action-area .driver-radio-row{
     align-items: stretch !important;
     flex-direction: column !important;
     gap: 7px !important;
   }
-  .dashboard-page .driver-action-area .driver-radio-label {
+  .dashboard-page .driver-action-area .driver-radio-label{
     display: flex;
     align-items: center;
     justify-content: center;
@@ -2771,19 +2664,19 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     margin-bottom: 0 !important;
     text-align: center !important;
   }
-  .dashboard-page .driver-action-area .driver-radio-label.driver-radio-label-multiline {
+  .dashboard-page .driver-action-area .driver-radio-label.driver-radio-label-multiline{
     align-items: center;
     min-height: auto;
     line-height: 1.12;
   }
-  .dashboard-page .driver-action-area .driver-radio-group {
+  .dashboard-page .driver-action-area .driver-radio-group{
     align-items: center !important;
     display: grid !important;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: 6px !important;
     width: 100%;
   }
-  .dashboard-page .driver-action-area .driver-radio-btn {
+  .dashboard-page .driver-action-area .driver-radio-btn{
     min-height: 30px !important;
     font-size: 15px !important;
     width: 100% !important;
@@ -2794,41 +2687,26 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 
   /* Foto 4: Kaza/bakım tıklayınca gelen inputların dikey yükseklikleri %10 daralsın */
   .dashboard-page .driver-report-block .form-group input,
-  .dashboard-page .driver-report-block .form-group textarea {
+.dashboard-page .driver-report-block .form-group textarea{
     padding: 8px 10px !important;
   }
-  .dashboard-page .driver-report-block .form-group textarea.driver-report-textarea-auto {
+  .dashboard-page .driver-report-block .form-group textarea.driver-report-textarea-auto{
     min-height: 2em !important;
     height: 2em !important;
   }
 
   /* Mobil: h1 boyut ve harf aralığı (1pt küçük) */
-  .dashboard-page .hero.hero-two-rows .hero-title-block .hero-title-line {
+  .dashboard-page .hero.hero-two-rows .hero-title-block .hero-title-line{
     font-size: clamp(19px, 5.2vw, 22px) !important;
     letter-spacing: clamp(0.45px, 0.38vw, 1.45px) !important;
-  }
-  .login-page .hero h1 {
-    font-size: clamp(calc(17.8px - 0.5pt), 5.1vw, calc(21.8px - 0.5pt)) !important;
-    letter-spacing: 2px !important;
-    padding: 0 2px !important;
   }
 
 }
 
 /* Masaüstü (641px+): Bakım/Kaza butonları – 66px yükseklik, 2px dikey boşluk (mobil kurallardan sonra uygulanması için ayrı blok) */
 @media (min-width: 641px) {
-  /* Login başlık: mobil translate kullanılmaz, masaüstü eski hali */
-  .login-page .hero.hero-two-rows .hero-title-block {
-    transform: none;
-  }
-  .login-page .hero .hero-logo {
-    transform: translateY(-4px) !important;
-  }
-  .login-page .hero h1 {
-    transform: translateY(1px) !important;
-  }
   /* Masaüstü tarih alanı: değer gerçek merkezde, native seçici koyu tema ve gri ikon */
-  .dashboard-page .driver-action-area .driver-report-block input[type="date"] {
+  .dashboard-page .driver-action-area .driver-report-block input[type="date"]{
     color-scheme: dark !important;
     position: relative !important;
     padding-left: 32px !important;
@@ -2836,7 +2714,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     text-align: center !important;
   }
   .dashboard-page .driver-action-area .driver-report-block input[type="date"]::-webkit-datetime-edit,
-  .dashboard-page .driver-action-area .driver-report-block input[type="date"]::-webkit-datetime-edit-fields-wrapper {
+.dashboard-page .driver-action-area .driver-report-block input[type="date"]::-webkit-datetime-edit-fields-wrapper{
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
@@ -2845,7 +2723,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     margin: 0 !important;
     text-align: center !important;
   }
-  .dashboard-page .driver-action-area .driver-report-block input[type="date"]::-webkit-calendar-picker-indicator {
+  .dashboard-page .driver-action-area .driver-report-block input[type="date"]::-webkit-calendar-picker-indicator{
     position: absolute !important;
     top: 50% !important;
     right: 10px !important;
@@ -2854,7 +2732,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     cursor: pointer !important;
   }
   /* Geçmiş Kayıtlarım: kalem ikonu */
-  .dashboard-page .history-edit-icon svg {
+  .dashboard-page .history-edit-icon svg{
     width: 20px;
     height: 20px;
   }
@@ -2863,8 +2741,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 /* --- Sadece iOS/Android PWA: ana uygulama ile aynı yapı – ilk boyamada çerçeve yerinde --- */
 @media (max-width: 768px) and (display-mode: standalone) {
   /* style-core html zaten left/right/bottom safe-area veriyor; çift padding olmasını kesin engelliyoruz */
-  body.dashboard-page,
-  body.login-page {
+  body.dashboard-page{
     padding-top: 0 !important;
     padding-bottom: 0 !important;
     padding-left: 0 !important;
@@ -2874,35 +2751,25 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
 
   /* PWA: yan kırmızı çizgiler footer üst hizasında jilet gibi biter */
-  .dashboard-page .driver-dashboard-container::before,
-  .login-page .driver-dashboard-container::before {
+  .dashboard-page .driver-dashboard-container::before{
     top: 0 !important;
     bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
   }
 
   /* Container alt boşluğu: footer yüksekliği + safe-area (çift boşluk önlenir) */
-  .dashboard-page .driver-dashboard-container,
-  .login-page .driver-dashboard-container {
+  .dashboard-page .driver-dashboard-container{
     padding-bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
   }
 
   /* PWA: footer yüksekliği merkezi değişkenden; iOS safe-area ile tam görünsün; elemanlar yukarı */
-  .dashboard-page #app-footer {
+  .dashboard-page #app-footer{
     height: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
     min-height: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
     box-sizing: border-box !important;
     padding-top: 1px !important;
     padding-bottom: calc(4px + env(safe-area-inset-bottom, 0)) !important;
   }
-  .login-page #app-footer.login-footer {
-    height: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
-    min-height: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
-    box-sizing: border-box !important;
-    padding-top: 4px !important;
-    padding-bottom: calc(4px + env(safe-area-inset-bottom, 0)) !important;
-  }
-  .dashboard-page #app-footer .footer-content,
-  .login-page #app-footer.login-footer .footer-content {
+  .dashboard-page #app-footer .footer-content{
     display: flex !important;
     align-items: center !important;
     height: 100% !important;
@@ -2913,64 +2780,45 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
 
   /* 1. satıra dokunulmaz. 2. satır (subtitle) 768px'ten 1pt küçük; kullanıcı panelinde ek 0.7pt */
-  .dashboard-page .hero-title-block .hero-panel-subtitle {
+  .dashboard-page .hero-title-block .hero-panel-subtitle{
     font-size: calc(19px - 0.7pt - 0.5pt) !important; /* 20px - 1pt - 0.7pt − 0.5pt */
   }
-  .login-page .hero-title-block .hero-panel-subtitle {
-    font-size: calc(19px - 0.5pt) !important; /* 20px - 1pt − 0.5pt */
-  }
   /* PWA: üst çizgi ::before'da, 1.2px */
-  .dashboard-page .driver-header-fixed,
-  .login-page .driver-header-fixed {
+  .dashboard-page .driver-header-fixed{
     border-top: none !important;
   }
-  .dashboard-page .driver-dashboard-container::before,
-  .login-page .driver-dashboard-container::before {
-    border-top-width: 1.2px !important;
-  }
   /* PWA: kullanıcı paneli logo çerçeveyi ezmesin; login eski kaydırma korunur */
-  .dashboard-page .hero {
+  .dashboard-page .hero{
     padding-left: max(10px, env(safe-area-inset-left, 0px)) !important;
   }
-  .dashboard-page .hero.hero-two-rows .hero-logo {
+  .dashboard-page .hero.hero-two-rows .hero-logo{
     transform: translate(0, 9px) scale(0.97) !important;
   }
-  .login-page .hero.hero-two-rows .hero-logo {
-    transform: translate(-19px, 9px) scale(0.97) !important;
-  }
 }
-@media (min-width: 641px) and (max-width: 768px) and (display-mode: standalone) {
-  .login-page .hero.hero-two-rows .hero-logo {
-    transform: translate(-23px, 9.5px) scale(0.97) !important;
-  }
-}
+
 
 
 /* --- Mobil/PWA stabilizasyonu: sol panel sabit, sağ panel tek dikey scroll, çerçeve ilk boyamada zıplamaz --- */
 @media (max-width: 768px) {
-  body.dashboard-page,
-  body.login-page {
+  body.dashboard-page{
     overflow-x: visible !important;
     overflow-y: hidden !important;
     overscroll-behavior-y: none !important;
   }
 
-  .dashboard-page .driver-dashboard-container,
-  .login-page .driver-dashboard-container {
+  .dashboard-page .driver-dashboard-container{
     height: 100dvh !important;
     min-height: 100dvh !important;
     max-height: 100dvh !important;
-    overflow-x: visible !important;
-    overflow-y: hidden !important;
   }
 
-  .dashboard-page .driver-scroll-area {
+  .dashboard-page .driver-scroll-area{
     overflow-x: visible !important;
     overflow-y: hidden !important;
     isolation: isolate;
   }
 
-  .dashboard-page .driver-panels-inner {
+  .dashboard-page .driver-panels-inner{
     flex: 1 1 0 !important;
     min-height: 0 !important;
     overflow-x: visible !important;
@@ -2979,7 +2827,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
 
   /* Mobil: sol panel sabit – sağa sola hareket etmesin */
-  .dashboard-page .driver-left-panel {
+  .dashboard-page .driver-left-panel{
     position: sticky !important;
     top: 0 !important;
     left: 0 !important;
@@ -2994,7 +2842,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     background: var(--bg) !important; /* Sticky iken arkadan içerik geçmesin */
   }
 
-  .dashboard-page .driver-left-panel-content {
+  .dashboard-page .driver-left-panel-content{
     flex: 1 1 0 !important;
     min-height: 0 !important;
     max-height: 100% !important;
@@ -3006,29 +2854,29 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
 
   /* Büyük ticari/kamyon: sol panel yoğun mod (mobil, class ile) */
-  .dashboard-page .driver-dashboard-container.driver-heavy-commercial-active .driver-left-panel-content {
+  .dashboard-page .driver-dashboard-container.driver-heavy-commercial-active .driver-left-panel-content{
     gap: 4px;
     padding-bottom: 2px;
   }
-  .dashboard-page .driver-dashboard-container.driver-heavy-commercial-active .driver-user-plate-row.driver-user-plate-in-panel {
+  .dashboard-page .driver-dashboard-container.driver-heavy-commercial-active .driver-user-plate-row.driver-user-plate-in-panel{
     gap: 0;
     margin-top: -2px;
     margin-bottom: 1px;
   }
-  .dashboard-page .driver-dashboard-container.driver-heavy-commercial-active .driver-left-panel .driver-vehicle-info {
+  .dashboard-page .driver-dashboard-container.driver-heavy-commercial-active .driver-left-panel .driver-vehicle-info{
     gap: 3px !important;
     margin-top: 2px !important;
   }
   .dashboard-page .driver-dashboard-container.driver-heavy-commercial-active .driver-left-panel .driver-info-item:has(.value) .label,
-  .dashboard-page .driver-dashboard-container.driver-heavy-commercial-active .driver-left-panel .driver-info-item:has(.value) .value {
+.dashboard-page .driver-dashboard-container.driver-heavy-commercial-active .driver-left-panel .driver-info-item:has(.value) .value{
     line-height: 1.18;
   }
 
-  .dashboard-page .driver-plate-dropdown-row {
+  .dashboard-page .driver-plate-dropdown-row{
     overflow: visible !important;
   }
 
-  .dashboard-page .driver-right-panel {
+  .dashboard-page .driver-right-panel{
     flex: 1 1 0 !important;
     min-height: 0 !important;
     overflow-y: auto !important;
@@ -3041,15 +2889,13 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 }
 
 @media (max-width: 768px) and (display-mode: standalone) {
-  .dashboard-page .driver-header-fixed,
-  .login-page .driver-header-fixed {
+  .dashboard-page .driver-header-fixed{
     padding-top: max(12px, env(safe-area-inset-top)) !important;
   }
 }
 
 /* --- h1 Metalik Gradient (anasayfa ile aynı) --- */
-.login-page .hero h1,
-.dashboard-page .hero h1 {
+.dashboard-page .hero h1{
   font-size: calc(22px - 0.5pt);
   font-weight: 800;
   letter-spacing: 4px;
@@ -3076,12 +2922,12 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 
 /* Desktop plate dropdown: stays inside the dashboard frame */
 @media (min-width: 769px) {
-  .dashboard-page .driver-plate-dropdown-row {
+  .dashboard-page .driver-plate-dropdown-row{
     overflow: visible !important;
   }
 
   .dashboard-page .driver-left-panel .driver-plate-dropdown,
-  body.dashboard-page #driver-plate-dropdown.driver-plate-dropdown {
+body.dashboard-page #driver-plate-dropdown.driver-plate-dropdown{
     position: fixed !important;
     left: calc(50% - 95px) !important;
     right: auto !important;
@@ -3096,70 +2942,69 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     gap: 4px !important;
   }
 
-  .dashboard-page .driver-plate-dropdown-item {
+  .dashboard-page .driver-plate-dropdown-item{
     box-sizing: border-box;
     text-align: center;
   }
   .dashboard-page .driver-plate-dropdown-item-plate,
-  .dashboard-page .driver-plate-dropdown-item-brand {
+.dashboard-page .driver-plate-dropdown-item-brand{
     text-align: center;
   }
 
-  .dashboard-page .driver-plate-warning-dot {
+  .dashboard-page .driver-plate-warning-dot{
     align-self: center;
   }
 
-  .dashboard-page .driver-plate-warning-dot:not(.driver-plate-warning-dot-red):not(.driver-plate-warning-dot-orange) {
+  .dashboard-page .driver-plate-warning-dot:not(.driver-plate-warning-dot-red):not(.driver-plate-warning-dot-orange){
     visibility: hidden;
   }
 }
 
 /* === NOKTA ATIŞI: Kırmızı yan çizgiler footer üstünde jilet gibi biter (taşma yok) === */
 @media (max-width: 768px) {
-  .dashboard-page .driver-below-hero-row {
+  .dashboard-page .driver-below-hero-row{
     justify-content: center !important;
     align-items: center !important;
     gap: 8px !important;
   }
 
-  .dashboard-page .driver-below-hero-row .driver-btn-password {
+  .dashboard-page .driver-below-hero-row .driver-btn-password{
     display: none !important;
   }
 
-  .dashboard-page .driver-dashboard-container::before,
-  .login-page .driver-dashboard-container::before {
+  .dashboard-page .driver-dashboard-container::before{
     bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0) + 1px) !important;
   }
 
   /* Geçmiş/Düzeltme/Talep modal açıkken footer-gap üstündeki yapay koyu şerit kapanır:
      footer glow görünür, modal–footer arası boşluk net kalır. */
   body.dashboard-page:has(#history-modal.driver-modal.show)::after,
-  body.dashboard-page:has(#edit-request-modal.driver-modal.show)::after,
-  body.dashboard-page:has(#driver-documents-modal.driver-modal.show)::after,
-  body.dashboard-page:has(#driver-feedback-modal.driver-modal.show)::after {
+body.dashboard-page:has(#edit-request-modal.driver-modal.show)::after,
+body.dashboard-page:has(#driver-documents-modal.driver-modal.show)::after,
+body.dashboard-page:has(#driver-feedback-modal.driver-modal.show)::after{
     display: none !important;
   }
   @supports not selector(body:has(*)) {
     body.dashboard-page.driver-history-or-edit-modal-open::after,
-    body.dashboard-page.driver-feedback-modal-open::after {
+body.dashboard-page.driver-feedback-modal-open::after{
       display: none !important;
     }
   }
 
   /* Geçmiş/Düzeltme/Talep modalı için gap değeri show durumunda da kilitli kalsın. */
   #history-modal.driver-modal.show,
-  #edit-request-modal.driver-modal.show,
-  #driver-documents-modal.driver-modal.show,
-  #driver-feedback-modal.driver-modal.show {
+#edit-request-modal.driver-modal.show,
+#driver-documents-modal.driver-modal.show,
+#driver-feedback-modal.driver-modal.show{
     bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
   }
 
   /* Orta dikey çizgi footer glow'una değmesin; mobilde içerik yüksekliği kadar sürsün. */
-  .dashboard-page .driver-left-panel {
+  .dashboard-page .driver-left-panel{
     border-right: none !important;
     padding-right: 0 !important;
   }
-  .dashboard-page .driver-left-panel-content {
+  .dashboard-page .driver-left-panel-content{
     border-right: 1.2px solid var(--border-red-tech) !important;
     padding-right: 12px !important;
     margin-bottom: 10px !important;
@@ -3167,11 +3012,11 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
 
   /* Geçmiş Kayıtlar modalı: alt kesilme kalksın, içerik çerçeveye 6px kalana kadar kullanılsın. */
-  #history-modal .modal-body {
+  #history-modal .modal-body{
     padding-bottom: 6px !important;
   }
   #history-modal #history-list,
-  #history-modal .history-container {
+#history-modal .history-container{
     padding-bottom: 6px !important;
   }
 }
@@ -3179,19 +3024,19 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 @media (max-width: 640px) {
   /* Şifre modalı mobilde Geçmiş/Düzeltme ile aynı nötr çerçeveyi kullansın */
   #driver-password-modal .driver-modal-content,
-  #driver-password-modal .modal-container {
+#driver-password-modal .modal-container{
     border-top: 0.8px solid rgba(200, 200, 200, 0.62) !important;
     border-left: 0.8px solid rgba(255, 255, 255, 0.28) !important;
     border-right: 0.8px solid rgba(255, 255, 255, 0.28) !important;
   }
   #history-modal .modal-header,
-  #edit-request-modal .modal-header,
-  #driver-documents-modal .modal-header,
-  #driver-feedback-modal .modal-header {
+#edit-request-modal .modal-header,
+#driver-documents-modal .modal-header,
+#driver-feedback-modal .modal-header{
     background: var(--modal-header-red-gradient) !important;
     background-size: 100% 100% !important;
   }
-  #driver-password-modal .modal-header {
+  #driver-password-modal .modal-header{
     background: var(--modal-header-red-gradient) !important;
     background-size: 100% 100% !important;
     border-top-left-radius: 10px !important;
@@ -3205,22 +3050,22 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
    ========================================= */
 @media (min-width: 641px) {
     /* Sag grid: işlem satırı butonları — görsel durum/hover (shell geometrisine dokunma) */
-    .dashboard-page .driver-action-area .driver-action-group > .driver-action-btn {
+    .dashboard-page .driver-action-area .driver-action-group > .driver-action-btn{
         transition: border-color 0.2s, color 0.2s, background 0.2s, transform 0.2s !important;
     }
-    .dashboard-page .driver-action-area .driver-action-group > .driver-action-btn:not(.warning):hover {
+    .dashboard-page .driver-action-area .driver-action-group > .driver-action-btn:not(.warning):hover{
         transform: none;
         border-color: rgba(238, 246, 255, 0.72) !important;
         color: var(--txt-white, #fff) !important;
         box-shadow: 0 0 9px rgba(238, 246, 255, 0.16) !important;
         text-shadow: 0 0 5px rgba(238, 246, 255, 0.34) !important;
     }
-    .dashboard-page .driver-action-area .driver-action-group > .driver-action-btn.warning:not(.warning-orange) {
+    .dashboard-page .driver-action-area .driver-action-group > .driver-action-btn.warning:not(.warning-orange){
         color: var(--theme-color) !important;
         border-color: var(--theme-color) !important;
     }
     .dashboard-page .driver-action-area .driver-action-group > .driver-action-btn.warning:not(.warning-orange):hover,
-    .dashboard-page .driver-action-area .driver-action-group > .driver-action-btn.warning:not(.warning-orange):focus-visible {
+.dashboard-page .driver-action-area .driver-action-group > .driver-action-btn.warning:not(.warning-orange):focus-visible{
         color: var(--theme-color) !important;
         border-color: var(--theme-color) !important;
         background: transparent !important;
@@ -3229,32 +3074,32 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
         transform: scale(1.012) !important;
     }
     .dashboard-page .driver-action-area .universal-btn-save,
-    .dashboard-page .driver-action-area .universal-btn-cancel {
+.dashboard-page .driver-action-area .universal-btn-cancel{
         height: 30px !important;
     }
 }
 
 @media (min-width: 641px) {
   body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-header-fixed,
-  body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-right-panel,
-  body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-vehicle-info,
-  body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-left-quick-actions,
-  body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-footer-back-wrap {
+body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-right-panel,
+body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-vehicle-info,
+body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-left-quick-actions,
+body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-footer-back-wrap{
     filter: blur(2px) brightness(0.68);
     opacity: 0.9;
     transition: filter 0.18s ease, opacity 0.18s ease;
   }
 
   body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-user-plate-row,
-  body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-plate-dropdown-row,
-  body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-plate-trigger,
-  body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-current-plaka,
-  body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-plate-dropdown {
+body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-plate-dropdown-row,
+body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-plate-trigger,
+body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-current-plaka,
+body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-plate-dropdown{
     filter: none;
     opacity: 1;
   }
 
-  body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-plate-subtitle {
+  body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-plate-subtitle{
     filter: blur(2px) brightness(0.68);
     opacity: 0.9;
     transition: filter 0.18s ease, opacity 0.18s ease;
@@ -3263,36 +3108,36 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 
 @media (max-width: 768px) {
   body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-header-fixed,
-  body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-right-panel,
-  body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-vehicle-info,
-  body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-left-quick-actions,
-  body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-footer-back-wrap {
+body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-right-panel,
+body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-vehicle-info,
+body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-left-quick-actions,
+body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-footer-back-wrap{
     filter: blur(2px);
     opacity: 0.9;
     transition: filter 0.18s ease, opacity 0.18s ease;
   }
 
   body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel,
-  body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel-content {
+body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel-content{
     overflow: visible !important;
   }
 
   body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-user-plate-row,
-  body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-plate-dropdown-row,
-  body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-plate-trigger,
-  body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-current-plaka,
-  body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-plate-dropdown,
-  body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) #driver-plate-dropdown.driver-plate-dropdown {
+body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-plate-dropdown-row,
+body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-plate-trigger,
+body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-current-plaka,
+body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-plate-dropdown,
+body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) #driver-plate-dropdown.driver-plate-dropdown{
     filter: none !important;
     -webkit-filter: none !important;
     opacity: 1 !important;
   }
 
-  body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) #driver-plate-dropdown.driver-plate-dropdown {
+  body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) #driver-plate-dropdown.driver-plate-dropdown{
     z-index: 10060 !important;
   }
 
-  body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-plate-subtitle {
+  body.dashboard-page.driver-plate-list-open:not(.driver-modal-open) .driver-left-panel .driver-plate-subtitle{
     filter: blur(2px) !important;
     -webkit-filter: blur(2px) !important;
     opacity: 0.9 !important;
@@ -3305,13 +3150,13 @@ body.dashboard-page:has(#edit-request-modal.driver-modal.show) .driver-left-pane
 body.dashboard-page:has(#driver-documents-modal.driver-modal.show) .driver-left-panel,
 body.dashboard-page:has(#driver-feedback-modal.driver-modal.show) .driver-left-panel,
 body.dashboard-page.driver-feedback-modal-open .driver-left-panel,
-body.dashboard-page.driver-history-or-edit-modal-open .driver-left-panel {
+body.dashboard-page.driver-history-or-edit-modal-open .driver-left-panel{
     border-right: none !important;
 }
 
 body.dashboard-page:has(#driver-documents-modal.driver-modal.show) .driver-left-panel,
 body.dashboard-page:has(#driver-feedback-modal.driver-modal.show) .driver-left-panel,
-body.dashboard-page.driver-feedback-modal-open .driver-left-panel {
+body.dashboard-page.driver-feedback-modal-open .driver-left-panel{
     visibility: hidden !important;
 }
 
@@ -3320,42 +3165,42 @@ body.dashboard-page:has(#edit-request-modal.driver-modal.show) .driver-left-pane
 body.dashboard-page:has(#driver-documents-modal.driver-modal.show) .driver-left-panel::after,
 body.dashboard-page:has(#driver-feedback-modal.driver-modal.show) .driver-left-panel::after,
 body.dashboard-page.driver-feedback-modal-open .driver-left-panel::after,
-body.dashboard-page.driver-history-or-edit-modal-open .driver-left-panel::after {
+body.dashboard-page.driver-history-or-edit-modal-open .driver-left-panel::after{
     display: none !important;
 }
 
 body.dashboard-page:has(#history-modal.driver-modal.show) .driver-left-panel-content,
 body.dashboard-page:has(#edit-request-modal.driver-modal.show) .driver-left-panel-content,
-body.dashboard-page.driver-history-or-edit-modal-open .driver-left-panel-content {
+body.dashboard-page.driver-history-or-edit-modal-open .driver-left-panel-content{
     border-right: 1.2px solid var(--border-red-tech) !important;
     margin-bottom: 12px !important;
 }
 
 body.dashboard-page:has(#driver-documents-modal.driver-modal.show) .driver-left-panel-content,
 body.dashboard-page:has(#driver-feedback-modal.driver-modal.show) .driver-left-panel-content,
-body.dashboard-page.driver-feedback-modal-open .driver-left-panel-content {
+body.dashboard-page.driver-feedback-modal-open .driver-left-panel-content{
     border-right-color: transparent !important;
 }
 
 body.dashboard-page:has(#driver-documents-modal.driver-modal.show) .driver-left-panel .driver-footer-back-wrap,
 body.dashboard-page:has(#driver-feedback-modal.driver-modal.show) .driver-left-panel .driver-footer-back-wrap,
-body.dashboard-page.driver-feedback-modal-open .driver-left-panel .driver-footer-back-wrap {
+body.dashboard-page.driver-feedback-modal-open .driver-left-panel .driver-footer-back-wrap{
     visibility: hidden !important;
 }
 
-body.dashboard-page:has(.driver-modal.show) .driver-dashboard-container::before {
+body.dashboard-page:has(.driver-modal.show) .driver-dashboard-container::before{
   bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
 }
 
 /* Driver modal açıkken: yan kırmızı çizgi/glow alt köşede birikmesin (mobil + masaüstü) */
-body.dashboard-page:has(.driver-modal.show) .driver-dashboard-container::before {
+body.dashboard-page:has(.driver-modal.show) .driver-dashboard-container::before{
   border-left-color: transparent !important;
   border-right-color: transparent !important;
   box-shadow: none !important;
 }
 
 @supports not selector(body:has(*)) {
-  body.dashboard-page.driver-modal-open .driver-dashboard-container::before {
+  body.dashboard-page.driver-modal-open .driver-dashboard-container::before{
     bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
     border-left-color: transparent !important;
     border-right-color: transparent !important;

@@ -2,23 +2,6 @@
 (function() {
 'use strict';
 
-const APP_ROOT = (function() {
-var p = document.location.pathname || '/';
-var parts = String(p || '/').split('/').filter(Boolean);
-if (!parts.length) return '/';
-var lastPart = parts[parts.length - 1] || '';
-if (lastPart.indexOf('.') !== -1) parts.pop();
-var lastDir = (parts[parts.length - 1] || '').toLowerCase();
-if (lastDir === 'driver' || lastDir === 'admin') parts.pop();
-return parts.length ? ('/' + parts.join('/') + '/') : '/';
-})();
-const API_BASE = (APP_ROOT === '/' ? '/driver/' : APP_ROOT + 'driver/');
-
-const ICON_BASE = (APP_ROOT === '/' ? '/icon/' : APP_ROOT + 'icon/');
-
-const DRIVER_PAGE_BASE = API_BASE;
-const MAIN_APP_URL = (APP_ROOT === '/' ? '/index.html' : APP_ROOT + 'index.html');
-const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php');
 var runtime = window.MedisaDriverRuntime;
 if (!runtime) throw new Error('MedisaDriverRuntime eksik');
 var h = runtime.helpers;
@@ -34,40 +17,7 @@ throw new Error('MedisaDriverRuntime vehicle document helpers eksik');
 if (typeof bindDriverDashboardTitleCase !== 'function') {
 throw new Error('MedisaDriverRuntime dashboard titlecase helper eksik');
 }
-runtime.paths.APP_ROOT = APP_ROOT;
-runtime.paths.API_BASE = API_BASE;
-runtime.paths.ICON_BASE = ICON_BASE;
-runtime.paths.DRIVER_PAGE_BASE = DRIVER_PAGE_BASE;
-runtime.paths.MAIN_APP_URL = MAIN_APP_URL;
-runtime.paths.MAIN_SESSION_URL = MAIN_SESSION_URL;
 
-
-const APP_VERSION = 'v78.1';
-function showDriverOfflineReadonlyMessage() {
-alert('İnternet bağlantısı yok. Son kayıtlı veri görüntüleniyor; değişiklikler kaydedilemez.');
-}
-function ensureDriverOnlineForWrite() {
-if (typeof navigator !== 'undefined' && navigator.onLine === false) {
-showDriverOfflineReadonlyMessage();
-return false;
-}
-return true;
-}
-
-(function setDriverVersion() {
-function apply() {
-var el = document.getElementById('version-display');
-if (!el) return;
-var ua = navigator.userAgent || '';
-var isIOS = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
-var isPWA = window.matchMedia('(display-mode: standalone)').matches || (window.navigator.standalone === true);
-var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
-var suffix = isPWA ? (isIOS ? ' iOS PWA' : ' PWA') : (isMobile ? ' Mobil' : '');
-el.textContent = APP_VERSION + suffix;
-}
-if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', apply);
-else apply();
-})();
 
 function decodeDriverTokenPayload(token) {
 if (!token || typeof token !== 'string') return null;
@@ -97,57 +47,10 @@ window.medisaPortalSession.clearStoredTokens();
 }
 }
 
-function shouldForceDriverLoginView() {
-try {
-var search = window.location && window.location.search ? window.location.search : '';
-if (!search) return false;
-return new URLSearchParams(search).get('force') === 'login';
-} catch (e) {
-return false;
-}
-}
-
-function getRequestedNextUrl() {
-try {
-var search = window.location && window.location.search ? window.location.search : '';
-if (!search) return '';
-var rawNext = new URLSearchParams(search).get('next');
-if (!rawNext) return '';
-
-var resolvedUrl = new URL(rawNext, window.location.origin);
-if (resolvedUrl.origin !== window.location.origin) return '';
-
-return (resolvedUrl.pathname || '') + (resolvedUrl.search || '') + (resolvedUrl.hash || '');
-} catch (e) {
-return '';
-}
-}
-
-function persistSessionToken(token, remember) {
-if (!token) return;
-clearStoredPortalTokens();
-if (window.medisaPortalSession && typeof window.medisaPortalSession.storeToken === 'function') {
-var storedInPreferredScope = window.medisaPortalSession.storeToken(token, remember);
-if (!storedInPreferredScope) {
-console.warn('Token depolamasi sirasinda sorun olustu, oturum sekme bazli tutulacak.');
-}
-return;
-}
-console.error('Token kaydedilemedi.');
-}
-
-function isPortalSessionRemembered() {
-try {
-return !!(window.localStorage.getItem('medisa_portal_token') || window.localStorage.getItem('driver_token'));
-} catch (e) {
-return false;
-}
-}
-
 async function fetchCurrentPortalSession(token) {
 if (!token) return null;
 try {
-const response = await fetch(MAIN_SESSION_URL + '?session=1&_=' + Date.now(), {
+const response = await fetch(runtime.paths.MAIN_SESSION_URL + '?session=1&_=' + Date.now(), {
 headers: { 'Authorization': 'Bearer ' + token },
 cache: 'no-store'
 });
@@ -214,96 +117,32 @@ if (accessContext.yoneticiOnly === true) return false;
 return true;
 }
 
-function resolvePortalDefaultSurface(accessContext) {
-if (!accessContext) return null;
-
-var role = String(accessContext.role || '').trim();
-if (role === 'kullanici') {
-return canOpenDriverDashboard(accessContext) ? 'dashboard' : null;
+const APP_VERSION = 'v78.1';
+function showDriverOfflineReadonlyMessage() {
+alert('İnternet bağlantısı yok. Son kayıtlı veri görüntüleniyor; değişiklikler kaydedilemez.');
 }
-if (isPortalMainAppRole(role)) {
-return 'main';
-}
-if (canOpenDriverDashboard(accessContext)) {
-return 'dashboard';
-}
-
-return null;
-}
-
-function routeByAccessContext(accessContext, options) {
-var routeOptions = options && typeof options === 'object' ? options : {};
-if (accessContext && accessContext.passwordChangeRequired === true) {
-var mandatoryUrl = DRIVER_PAGE_BASE + 'dashboard.html?password-change=required';
-if (window.location.pathname.indexOf('/driver/dashboard.html') === -1) {
-window.location.href = mandatoryUrl;
-} else if (window.history && typeof window.history.replaceState === 'function') {
-window.history.replaceState(null, '', mandatoryUrl);
+function ensureDriverOnlineForWrite() {
+if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+showDriverOfflineReadonlyMessage();
+return false;
 }
 return true;
 }
-var surface = resolvePortalDefaultSurface(accessContext);
-var requestedNextUrl = String(routeOptions.nextUrl || '').trim();
 
-if (requestedNextUrl && (surface === 'dashboard' || surface === 'main')) {
-window.location.href = requestedNextUrl;
-return true;
+(function setDriverVersion() {
+function apply() {
+var el = document.getElementById('version-display');
+if (!el) return;
+var ua = navigator.userAgent || '';
+var isIOS = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
+var isPWA = window.matchMedia('(display-mode: standalone)').matches || (window.navigator.standalone === true);
+var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
+var suffix = isPWA ? (isIOS ? ' iOS PWA' : ' PWA') : (isMobile ? ' Mobil' : '');
+el.textContent = APP_VERSION + suffix;
 }
-
-if (surface === 'dashboard') {
-window.location.href = DRIVER_PAGE_BASE + 'dashboard.html';
-return true;
-}
-
-if (surface === 'main') {
-window.location.href = MAIN_APP_URL;
-return true;
-}
-
-if (routeOptions.stayOnLoginWhenDashboardUnavailable === true) {
-return false;
-}
-
-var r = normalizePortalRole(String((accessContext && accessContext.role) || ''));
-if (r === 'kullanici' && !canOpenDriverDashboard(accessContext)) {
-return false;
-}
-
-window.location.href = MAIN_APP_URL;
-return true;
-}
-
-function routeByToken(token, fallbackDashboard, options) {
-var routeOptions = options && typeof options === 'object' ? options : {};
-var payload = decodeDriverTokenPayload(token);
-var nowTs = Math.floor(Date.now() / 1000);
-if (!payload || !payload.exp || Number(payload.exp) < nowTs) {
-clearStoredPortalTokens();
-return false;
-}
-
-var accessContext = buildPortalAccessContext(payload, fallbackDashboard, routeOptions.sessionData);
-return routeByAccessContext(accessContext, routeOptions);
-}
-
-async function routeByCurrentSession(token, fallbackDashboard, options) {
-var routeOptions = options && typeof options === 'object' ? options : {};
-var payload = decodeDriverTokenPayload(token);
-var nowTs = Math.floor(Date.now() / 1000);
-if (!payload || !payload.exp || Number(payload.exp) < nowTs) {
-clearStoredPortalTokens();
-return false;
-}
-
-var currentSession = await fetchCurrentPortalSession(token);
-if (!currentSession) {
-clearStoredPortalTokens();
-return false;
-}
-return routeByToken(token, fallbackDashboard, Object.assign({}, routeOptions, {
-sessionData: currentSession
-}));
-}
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', apply);
+else apply();
+})();
 
 function syncDashboardHomeLinkVisibility(accessContext) {
 if (!document.body || !document.body.classList.contains('dashboard-page')) return;
@@ -838,325 +677,325 @@ driverKmActionHandled = false;
 }
 
 async function loadDashboard() {
-setDriverPlateListOpenState(false);
-try {
-const token = getStoredPortalToken();
+    setDriverPlateListOpenState(false);
+    try {
+        const token = getStoredPortalToken();
 
-if (!token) {
-window.location.href = DRIVER_PAGE_BASE + 'index.html';
-return;
-}
+        if (!token) {
+            window.location.href = runtime.paths.DRIVER_PAGE_BASE + 'index.html';
+            return;
+        }
 
-var tokenPayload = decodeDriverTokenPayload(token);
-var nowTs = Math.floor(Date.now() / 1000);
-if (!tokenPayload || !tokenPayload.exp || Number(tokenPayload.exp) < nowTs) {
-clearStoredPortalTokens();
-window.location.href = DRIVER_PAGE_BASE + 'index.html';
-return;
-}
+        var tokenPayload = decodeDriverTokenPayload(token);
+        var nowTs = Math.floor(Date.now() / 1000);
+        if (!tokenPayload || !tokenPayload.exp || Number(tokenPayload.exp) < nowTs) {
+            clearStoredPortalTokens();
+            window.location.href = runtime.paths.DRIVER_PAGE_BASE + 'index.html';
+            return;
+        }
 
-currentToken = token;
+        currentToken = token;
 
-var tokenAccessContext = buildPortalAccessContext(tokenPayload, false, null);
-if (tokenAccessContext.passwordChangeRequired === true && document.body) {
-document.body.classList.add('password-change-gate-active');
-}
+        var tokenAccessContext = buildPortalAccessContext(tokenPayload, false, null);
+        if (tokenAccessContext.passwordChangeRequired === true && document.body) {
+            document.body.classList.add('password-change-gate-active');
+        }
 
-var currentSession = await fetchCurrentPortalSession(token);
-if (!currentSession) {
-clearStoredPortalTokens();
-window.location.href = DRIVER_PAGE_BASE + 'index.html';
-return;
-}
+        var currentSession = await fetchCurrentPortalSession(token);
+        if (!currentSession) {
+            clearStoredPortalTokens();
+            window.location.href = runtime.paths.DRIVER_PAGE_BASE + 'index.html';
+            return;
+        }
 
-var accessContext = buildPortalAccessContext(tokenPayload, false, currentSession);
-if (accessContext.passwordChangeRequired === true) {
-if (document.body) document.body.classList.add('password-change-gate-active');
-currentUser = currentSession.user || null;
-syncDriverHeaderUserName();
-const mandatorySpinner = document.getElementById('loading-spinner');
-if (mandatorySpinner) mandatorySpinner.style.display = 'none';
-try {
-const passwordFeature = await runtime.loadFeature('password');
-if (!passwordFeature || typeof passwordFeature.openMandatoryDriverPasswordChange !== 'function') {
-throw new Error('Zorunlu parola özelliği hazır değil.');
-}
-passwordFeature.openMandatoryDriverPasswordChange();
-} catch (featureError) {
-console.error('Zorunlu parola ekranı yükleme hatası:', featureError);
-alert('Zorunlu parola ekranı yüklenemedi. İnternet bağlantınızı kontrol edip sayfayı yenileyin.');
-}
-return;
-}
+        var accessContext = buildPortalAccessContext(tokenPayload, false, currentSession);
+        if (accessContext.passwordChangeRequired === true) {
+            if (document.body) document.body.classList.add('password-change-gate-active');
+            currentUser = currentSession.user || null;
+            syncDriverHeaderUserName();
+            const mandatorySpinner = document.getElementById('loading-spinner');
+            if (mandatorySpinner) mandatorySpinner.style.display = 'none';
+            try {
+                const passwordFeature = await runtime.loadFeature('password');
+                if (!passwordFeature || typeof passwordFeature.openMandatoryDriverPasswordChange !== 'function') {
+                    throw new Error('Zorunlu parola özelliği hazır değil.');
+                }
+                passwordFeature.openMandatoryDriverPasswordChange();
+            } catch (featureError) {
+                console.error('Zorunlu parola ekranı yükleme hatası:', featureError);
+                alert('Zorunlu parola ekranı yüklenemedi. İnternet bağlantınızı kontrol edip sayfayı yenileyin.');
+            }
+            return;
+        }
 
-if (document.body) document.body.classList.remove('password-change-gate-active');
-if (!canOpenDriverDashboard(accessContext)) {
-window.location.href = MAIN_APP_URL;
-return;
-}
-syncDashboardHomeLinkVisibility(accessContext);
+        if (document.body) document.body.classList.remove('password-change-gate-active');
+        if (!canOpenDriverDashboard(accessContext)) {
+            window.location.href = runtime.paths.MAIN_APP_URL;
+            return;
+        }
+        syncDashboardHomeLinkVisibility(accessContext);
 
-const response = await fetch(API_BASE + 'driver_data.php?_=' + Date.now(), {
-headers: { 'Authorization': 'Bearer ' + token },
-cache: 'no-store'
-});
-var data;
-try {
-var text = await response.text();
-data = text ? JSON.parse(text) : {};
-} catch (parseErr) {
-console.error('Veri yükleme hatası (JSON parse):', parseErr);
-throw new Error('Sunucu yanıtı işlenemedi.');
-}
-if (!data || typeof data !== 'object') data = {};
-if (!Array.isArray(data.vehicles)) data.vehicles = [];
-if (!Array.isArray(data.records)) data.records = [];
+        const response = await fetch(runtime.paths.API_BASE + 'driver_data.php?_=' + Date.now(), {
+            headers: {
+                'Authorization': 'Bearer ' + token
+            },
+            cache: 'no-store'
+        });
+        var data;
+        try {
+            var text = await response.text();
+            data = text ? JSON.parse(text) : {};
+        } catch (parseErr) {
+            console.error('Veri yükleme hatası (JSON parse):', parseErr);
+            throw new Error('Sunucu yanıtı işlenemedi.');
+        }
+        if (!data || typeof data !== 'object') data = {};
+        if (!Array.isArray(data.vehicles)) data.vehicles = [];
+        if (!Array.isArray(data.records)) data.records = [];
 
-if (!data.success) {
-const spinner = document.getElementById('loading-spinner');
-if (spinner) spinner.style.display = 'none';
-if (response.status === 403) {
-window.location.href = MAIN_APP_URL;
-return;
-}
-alert('Oturum süresi doldu! Lütfen tekrar giriş yapın.');
-logout();
-return;
-}
+        if (!data.success) {
+            const spinner = document.getElementById('loading-spinner');
+            if (spinner) spinner.style.display = 'none';
+            if (response.status === 403) {
+                window.location.href = runtime.paths.MAIN_APP_URL;
+                return;
+            }
+            alert('Oturum süresi doldu! Lütfen tekrar giriş yapın.');
+            logout();
+            return;
+        }
 
-currentUser = data.user;
-syncDriverHeaderUserName();
-allHistoryRecords = data.records || [];
-allHistoryVehicles = data.vehicles || [];
-driverHistoryLoaded = false;
-driverHistoryPromise = null;
-currentPeriod = data.current_period || '';
+        currentUser = data.user;
+        syncDriverHeaderUserName();
+        allHistoryRecords = data.records || [];
+        allHistoryVehicles = data.vehicles || [];
+        driverHistoryLoaded = false;
+        driverHistoryPromise = null;
+        currentPeriod = data.current_period || '';
 
-const spinnerEl = document.getElementById('loading-spinner');
-if (spinnerEl) spinnerEl.style.display = 'none';
+        const spinnerEl = document.getElementById('loading-spinner');
+        if (spinnerEl) spinnerEl.style.display = 'none';
 
-if (!data.vehicles || data.vehicles.length === 0) {
-const emptyEl = document.getElementById('empty-state');
-if (emptyEl) emptyEl.style.display = 'block';
-return;
-}
+        if (!data.vehicles || data.vehicles.length === 0) {
+            const emptyEl = document.getElementById('empty-state');
+            if (emptyEl) emptyEl.style.display = 'block';
+            return;
+        }
 
-const twoPanel = document.getElementById('driver-two-panel');
-if (!twoPanel) return;
-twoPanel.style.display = 'flex';
-const emptyStateEl = document.getElementById('empty-state');
-if (emptyStateEl) emptyStateEl.style.display = 'none';
-const vehicles = data.vehicles;
-const records = data.records;
-selectedVehicleId = selectedVehicleId || (vehicles[0] != null && vehicles[0].id != null ? String(vehicles[0].id) : null);
-if (!getSelectedVehicle() && vehicles && vehicles.length && vehicles[0] != null) {
-selectedVehicleId = String(vehicles[0].id);
-}
+        const twoPanel = document.getElementById('driver-two-panel');
+        if (!twoPanel) return;
+        twoPanel.style.display = 'flex';
+        const emptyStateEl = document.getElementById('empty-state');
+        if (emptyStateEl) emptyStateEl.style.display = 'none';
+        const vehicles = data.vehicles;
+        const records = data.records;
+        selectedVehicleId = selectedVehicleId || (vehicles[0] != null && vehicles[0].id != null ? String(vehicles[0].id) : null);
+        if (!getSelectedVehicle() && vehicles && vehicles.length && vehicles[0] != null) {
+            selectedVehicleId = String(vehicles[0].id);
+        }
 
-renderLeftPanel(vehicles, records);
-renderRightPanel(vehicles, records);
-renderSlidingWarning(vehicles, records);
+        renderLeftPanel(vehicles, records);
+        renderRightPanel(vehicles, records);
+        renderSlidingWarning(vehicles, records);
 
-var actionArea = document.getElementById('driver-action-area');
-if (actionArea) actionArea.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        var actionArea = document.getElementById('driver-action-area');
+        if (actionArea) actionArea.scrollIntoView({
+            behavior: 'smooth',
+            block: 'nearest'
+        });
 
-if (vehicles.length > 1) {
-const trigger = document.getElementById('driver-plate-trigger');
-if (trigger) trigger.style.display = '';
-setupPlateDropdown(vehicles);
-}
+        if (vehicles.length > 1) {
+            const trigger = document.getElementById('driver-plate-trigger');
+            if (trigger) trigger.style.display = '';
+            setupPlateDropdown(vehicles);
+        }
 
-tryOpenDriverFeedbackPrefillFromQuery();
+        tryOpenDriverFeedbackPrefillFromQuery();
 
-setupEkstraNotAutoResize();
-setupKmInputs();
-tryOpenDriverKmActionFromQuery();
-bindDriverDashboardTitleCase(document.getElementById('driver-action-area'));
+        setupEkstraNotAutoResize();
+        setupKmInputs();
+        tryOpenDriverKmActionFromQuery();
+        bindDriverDashboardTitleCase(document.getElementById('driver-action-area'));
 
-placePwaWrapper();
+        placePwaWrapper();
 
-} catch (error) {
-console.error('Veri yükleme hatası:', error);
-const spinner = document.getElementById('loading-spinner');
-const emptyEl = document.getElementById('empty-state');
-if (spinner) spinner.style.display = 'none';
-if (emptyEl) {
-emptyEl.style.display = 'block';
-const h3 = emptyEl.querySelector('h3');
-const p = emptyEl.querySelector('p');
-if (h3) h3.textContent = 'Yükleme Hatası';
-if (p) p.textContent = 'Veriler yüklenemedi! Lütfen sayfayı yenileyin.';
-const icon = emptyEl.querySelector('.driver-empty-icon');
-if (icon) icon.textContent = '🚗';
-}
-} finally {
-notifyDriverSplashReady();
-}
+    } catch (error) {
+        console.error('Veri yükleme hatası:', error);
+        const spinner = document.getElementById('loading-spinner');
+        const emptyEl = document.getElementById('empty-state');
+        if (spinner) spinner.style.display = 'none';
+        if (emptyEl) {
+            emptyEl.style.display = 'block';
+            const h3 = emptyEl.querySelector('h3');
+            const p = emptyEl.querySelector('p');
+            if (h3) h3.textContent = 'Yükleme Hatası';
+            if (p) p.textContent = 'Veriler yüklenemedi! Lütfen sayfayı yenileyin.';
+            const icon = emptyEl.querySelector('.driver-empty-icon');
+            if (icon) icon.textContent = '🚗';
+        }
+    } finally {
+        notifyDriverSplashReady();
+    }
 }
 
 function getSelectedVehicle() {
-return allHistoryVehicles.find(v => String(v.id) === String(selectedVehicleId));
+    return allHistoryVehicles.find(v => String(v.id) === String(selectedVehicleId));
 }
 
 function getVehicleVersionForRequest(vehicleId) {
-var vehicle = allHistoryVehicles && allHistoryVehicles.find(function(v) { return String(v.id) === String(vehicleId); });
-var version = vehicle && vehicle.version != null ? Number(vehicle.version) : 1;
-return Number.isFinite(version) && version > 0 ? version : 1;
+    var vehicle = allHistoryVehicles && allHistoryVehicles.find(function(v) { return String(v.id) === String(vehicleId); });
+    var version = vehicle && vehicle.version != null ? Number(vehicle.version) : 1;
+    return Number.isFinite(version) && version > 0 ? version : 1;
 }
 
 function applyVehicleVersionUpdate(vehicleId, nextVersion) {
-if (!allHistoryVehicles || nextVersion == null) return;
-var normalizedVersion = Number(nextVersion);
-if (!Number.isFinite(normalizedVersion) || normalizedVersion <= 0) return;
-allHistoryVehicles.forEach(function(vehicle) {
-if (String(vehicle && vehicle.id) === String(vehicleId)) {
-vehicle.version = normalizedVersion;
-}
-});
+    if (!allHistoryVehicles || nextVersion == null) return;
+    var normalizedVersion = Number(nextVersion);
+    if (!Number.isFinite(normalizedVersion) || normalizedVersion <= 0) return;
+    allHistoryVehicles.forEach(function(vehicle) {
+        if (String(vehicle && vehicle.id) === String(vehicleId)) {
+            vehicle.version = normalizedVersion;
+        }
+    });
 }
 
 async function handleDriverConflictResponse(result, fallbackMessage) {
-if (!result || result.conflict !== true) return false;
-alert(result.message || fallbackMessage || 'Veri başka biri tarafından güncellendi. Güncel veriler yüklendi.');
-await loadDashboard();
-return true;
+    if (!result || result.conflict !== true) return false;
+    alert(result.message || fallbackMessage || 'Veri başka biri tarafından güncellendi. Güncel veriler yüklendi.');
+    await loadDashboard();
+    return true;
 }
 
 function getExistingRecord(vehicleId) {
-const period = (currentPeriod || '').toString().trim();
-const matches = (allHistoryRecords || []).filter(r =>
-String(r.arac_id) === String(vehicleId) && String(r.donem || '').trim() === period
-);
-if (matches.length === 0) return null;
-matches.sort((a, b) => (b.guncelleme_tarihi || b.kayit_tarihi || '').localeCompare(a.guncelleme_tarihi || a.kayit_tarihi || ''));
-return matches[0];
+    const period = (currentPeriod || '').toString().trim();
+    const matches = (allHistoryRecords || []).filter(r =>
+        String(r.arac_id) === String(vehicleId) && String(r.donem || '').trim() === period
+    );
+    if (matches.length === 0) return null;
+    matches.sort((a, b) => (b.guncelleme_tarihi || b.kayit_tarihi || '').localeCompare(a.guncelleme_tarihi || a.kayit_tarihi || ''));
+    return matches[0];
 }
 
 function getVehicleKmState(vehicle) {
-if (!vehicle || typeof vehicle !== 'object') return 'OK';
-const state = String(vehicle.km_state || '').trim();
-return state || 'OK';
+    if (!vehicle || typeof vehicle !== 'object') return 'OK';
+    const state = String(vehicle.km_state || '').trim();
+    return state || 'OK';
 }
 
 function isKmStateWarning(state) {
-return state === 'FIRST_ENTRY_REQUIRED' || state === 'MONTHLY_UPDATE_DUE_SOFT' || state === 'MONTHLY_UPDATE_DUE_HARD';
+    return state === 'FIRST_ENTRY_REQUIRED' || state === 'MONTHLY_UPDATE_DUE_SOFT' || state === 'MONTHLY_UPDATE_DUE_HARD';
 }
 
 function getKmInfoClassByState(state) {
-if (state === 'MONTHLY_UPDATE_DUE_SOFT') return 'driver-warn-orange';
-if (state === 'FIRST_ENTRY_REQUIRED' || state === 'MONTHLY_UPDATE_DUE_HARD') return 'driver-warn-red';
-return '';
+    if (state === 'MONTHLY_UPDATE_DUE_SOFT') return 'driver-warn-orange';
+    if (state === 'FIRST_ENTRY_REQUIRED' || state === 'MONTHLY_UPDATE_DUE_HARD') return 'driver-warn-red';
+    return '';
 }
 
 function getKmMessageByState(state) {
-if (state === 'MONTHLY_UPDATE_DUE_SOFT') return 'Kilometre bilgisi güncellensin';
-if (state === 'FIRST_ENTRY_REQUIRED' || state === 'MONTHLY_UPDATE_DUE_HARD') return 'Kilometre Bilgisi Girin';
-return '';
+    if (state === 'MONTHLY_UPDATE_DUE_SOFT') return 'Kilometre bilgisi güncellensin';
+    if (state === 'FIRST_ENTRY_REQUIRED' || state === 'MONTHLY_UPDATE_DUE_HARD') return 'Kilometre Bilgisi Girin';
+    return '';
 }
 
 function checkDateWarningsDriver(dateStr) {
-if (!dateStr) return { class: '', days: null, level: '' };
-var date = new Date(dateStr + 'T00:00:00');
-if (isNaN(date.getTime())) return { class: '', days: null, level: '' };
-var today = new Date();
-today.setHours(0, 0, 0, 0);
-date.setHours(0, 0, 0, 0);
-var diffDays = Math.ceil((date - today) / (1000 * 60 * 60 * 24));
-if (diffDays < 0) return { class: 'driver-warn-red', days: diffDays, level: 'red' };
-if (diffDays <= 3) return { class: 'driver-warn-red', days: diffDays, level: 'red' };
-if (diffDays <= 21) return { class: 'driver-warn-orange', days: diffDays, level: 'orange' };
-return { class: '', days: diffDays, level: '' };
+    if (!dateStr) return { class: '', days: null, level: '' };
+    var date = new Date(dateStr + 'T00:00:00');
+    if (isNaN(date.getTime())) return { class: '', days: null, level: '' };
+    var today = new Date();
+    today.setHours(0, 0, 0, 0);
+    date.setHours(0, 0, 0, 0);
+    var diffDays = Math.ceil((date - today) / (1000 * 60 * 60 * 24));
+    if (diffDays < 0) return { class: 'driver-warn-red', days: diffDays, level: 'red' };
+    if (diffDays <= 3) return { class: 'driver-warn-red', days: diffDays, level: 'red' };
+    if (diffDays <= 21) return { class: 'driver-warn-orange', days: diffDays, level: 'orange' };
+    return { class: '', days: diffDays, level: '' };
 }
 
 function getDriverVehicleWarningLevel(vehicle) {
-if (!vehicle || typeof vehicle !== 'object') return '';
-const kmState = getVehicleKmState(vehicle);
-if (kmState === 'FIRST_ENTRY_REQUIRED' || kmState === 'MONTHLY_UPDATE_DUE_HARD') return 'red';
-let level = kmState === 'MONTHLY_UPDATE_DUE_SOFT' ? 'orange' : '';
-[vehicle.sigortaDate, vehicle.kaskoDate, vehicle.muayeneDate, vehicle.egzozMuayeneDate].forEach(function(dateStr) {
-const w = checkDateWarningsDriver(dateStr);
-if (w.level === 'red') level = 'red';
-else if (w.level === 'orange' && level !== 'red') level = 'orange';
-});
-if (driverVehicleNeedsTakograf(vehicle)) {
-const takografW = checkDateWarningsDriver(vehicle.takografExpiryDate);
-if (takografW.level === 'red') level = 'red';
-else if (takografW.level === 'orange' && level !== 'red') level = 'orange';
-}
-if (driverVehicleNeedsK2(vehicle)) {
-const k2W = checkDateWarningsDriver(vehicle.k2BelgesiExpiryDate);
-if (k2W.level === 'red') level = 'red';
-else if (k2W.level === 'orange' && level !== 'red') level = 'orange';
-}
-return level;
+    if (!vehicle || typeof vehicle !== 'object') return '';
+    const kmState = getVehicleKmState(vehicle);
+    if (kmState === 'FIRST_ENTRY_REQUIRED' || kmState === 'MONTHLY_UPDATE_DUE_HARD') return 'red';
+    let level = kmState === 'MONTHLY_UPDATE_DUE_SOFT' ? 'orange' : '';
+    [vehicle.sigortaDate, vehicle.kaskoDate, vehicle.muayeneDate, vehicle.egzozMuayeneDate].forEach(function(dateStr) {
+        const w = checkDateWarningsDriver(dateStr);
+        if (w.level === 'red') level = 'red';
+        else if (w.level === 'orange' && level !== 'red') level = 'orange';
+    });
+    if (driverVehicleNeedsTakograf(vehicle)) {
+        const takografW = checkDateWarningsDriver(vehicle.takografExpiryDate);
+        if (takografW.level === 'red') level = 'red';
+        else if (takografW.level === 'orange' && level !== 'red') level = 'orange';
+    }
+    if (driverVehicleNeedsK2(vehicle)) {
+        const k2W = checkDateWarningsDriver(vehicle.k2BelgesiExpiryDate);
+        if (k2W.level === 'red') level = 'red';
+        else if (k2W.level === 'orange' && level !== 'red') level = 'orange';
+    }
+    return level;
 }
 
 function formatDriverBrandModel(raw) {
-const formatter = typeof window.formatBrandModel === 'function'
-? window.formatBrandModel
-: (typeof window.toTitleCase === 'function' ? window.toTitleCase : function(x) { return x; });
-return formatter(raw || '') || '';
+    const formatter = typeof window.formatBrandModel === 'function'
+    ? window.formatBrandModel
+    : (typeof window.toTitleCase === 'function' ? window.toTitleCase : function(x) { return x; });
+    return formatter(raw || '') || '';
 }
 
 function syncDriverHeaderUserName() {
-const nameEl = document.getElementById('main-header-user-name');
-if (!nameEl) return;
-const displayName = (currentUser && String(currentUser.name || currentUser.isim || currentUser.ad_soyad || '').trim()) || '';
-nameEl.textContent = displayName;
-nameEl.classList.toggle('is-empty', displayName === '');
+    const nameEl = document.getElementById('main-header-user-name');
+    if (!nameEl) return;
+    const displayName = (currentUser && String(currentUser.name || currentUser.isim || currentUser.ad_soyad || '').trim()) || '';
+    nameEl.textContent = displayName;
+    nameEl.classList.toggle('is-empty', displayName === '');
 }
 
 function renderLeftPanel(vehicles, records) {
-const vehicle = getSelectedVehicle();
-if (!vehicle) return;
+    const vehicle = getSelectedVehicle();
+    if (!vehicle) return;
 
-const plakaEl = document.getElementById('driver-current-plaka');
-if (plakaEl) plakaEl.textContent = formatDriverPlaka(vehicle.plaka);
-const subtitleEl = document.getElementById('driver-plate-subtitle');
-if (subtitleEl) subtitleEl.textContent = formatDriverBrandModel(vehicle.brandModel || [vehicle.marka, vehicle.model].filter(Boolean).join(' ') || '');
+    const plakaEl = document.getElementById('driver-current-plaka');
+    if (plakaEl) plakaEl.textContent = formatDriverPlaka(vehicle.plaka);
+    const subtitleEl = document.getElementById('driver-plate-subtitle');
+    if (subtitleEl) subtitleEl.textContent = formatDriverBrandModel(vehicle.brandModel || [vehicle.marka, vehicle.model].filter(Boolean).join(' ') || '');
 
-const existingRecord = getExistingRecord(vehicle.id);
-const kmVal = vehicle.guncelKm || (existingRecord && existingRecord.guncel_km) || '-';
-const kmFormatted = (kmVal !== '-' && kmVal != null) ? String(kmVal).replace(/\B(?=(\d{3})+(?!\d))/g, '.') : '-';
-const kmState = getVehicleKmState(vehicle);
-const kmClass = getKmInfoClassByState(kmState);
+    const existingRecord = getExistingRecord(vehicle.id);
+    const kmVal = vehicle.guncelKm || (existingRecord && existingRecord.guncel_km) || '-';
+    const kmFormatted = (kmVal !== '-' && kmVal != null) ? String(kmVal).replace(/\B(?=(\d{3})+(?!\d))/g, '.') : '-';
+    const kmState = getVehicleKmState(vehicle);
+    const kmClass = getKmInfoClassByState(kmState);
 
-const sigortaW = checkDateWarningsDriver(vehicle.sigortaDate);
-const kaskoW = checkDateWarningsDriver(vehicle.kaskoDate);
-const muayeneW = checkDateWarningsDriver(vehicle.muayeneDate);
-const egzozMuayeneDate = vehicle.egzozMuayeneDate || '';
-const hasEgzozMuayeneSaved = !!(egzozMuayeneDate && String(egzozMuayeneDate).trim());
-const egzozW = checkDateWarningsDriver(hasEgzozMuayeneSaved ? egzozMuayeneDate : '');
-const showTasitKartiInfo = driverVehicleNeedsK2(vehicle);
-const showTakografInfo = driverVehicleNeedsTakograf(vehicle);
-const tasitKartiDate = (vehicle.k2BelgesiExpiryDate && String(vehicle.k2BelgesiExpiryDate).trim()) ? String(vehicle.k2BelgesiExpiryDate).trim() : '';
-const takografDate = (vehicle.takografExpiryDate && String(vehicle.takografExpiryDate).trim())
-? String(vehicle.takografExpiryDate).trim()
-: ((vehicle.takografKalibrasyonDate && String(vehicle.takografKalibrasyonDate).trim()) ? String(vehicle.takografKalibrasyonDate).trim() : '');
-const tasitKartiW = checkDateWarningsDriver(tasitKartiDate);
-const takografW = checkDateWarningsDriver(takografDate);
+    const sigortaW = checkDateWarningsDriver(vehicle.sigortaDate);
+    const kaskoW = checkDateWarningsDriver(vehicle.kaskoDate);
+    const muayeneW = checkDateWarningsDriver(vehicle.muayeneDate);
+    const egzozMuayeneDate = vehicle.egzozMuayeneDate || '';
+    const hasEgzozMuayeneSaved = !!(egzozMuayeneDate && String(egzozMuayeneDate).trim());
+    const egzozW = checkDateWarningsDriver(hasEgzozMuayeneSaved ? egzozMuayeneDate : '');
+    const showTasitKartiInfo = driverVehicleNeedsK2(vehicle);
+    const showTakografInfo = driverVehicleNeedsTakograf(vehicle);
+    const tasitKartiDate = (vehicle.k2BelgesiExpiryDate && String(vehicle.k2BelgesiExpiryDate).trim()) ? String(vehicle.k2BelgesiExpiryDate).trim() : '';
+    const takografDate = (vehicle.takografExpiryDate && String(vehicle.takografExpiryDate).trim()) ?
+        String(vehicle.takografExpiryDate).trim() :
+        ((vehicle.takografKalibrasyonDate && String(vehicle.takografKalibrasyonDate).trim()) ? String(vehicle.takografKalibrasyonDate).trim() : '');
+    const tasitKartiW = checkDateWarningsDriver(tasitKartiDate);
+    const takografW = checkDateWarningsDriver(takografDate);
 
-const anahtarLabel = (vehicle.anahtar === 'var')
-? ((vehicle.anahtarNerede && String(vehicle.anahtarNerede).trim()) ? window.capitalizeWords(String(vehicle.anahtarNerede).trim()) : 'Var')
-: 'Yoktur.';
-const lastikLabel = (vehicle.lastikDurumu === 'var')
-? ((vehicle.lastikAdres && String(vehicle.lastikAdres).trim()) ? window.capitalizeWords(String(vehicle.lastikAdres).trim()) : 'Var')
-: 'Yoktur.';
-const uttsLabel = vehicle.uttsTanimlandi ? 'Evet' : 'Hayır';
-const sigortaSaved = !!(vehicle.sigortaDate && vehicle.sigortaDate.trim());
-const kaskoSaved = !!(vehicle.kaskoDate && vehicle.kaskoDate.trim());
-const muayeneSaved = !!(vehicle.muayeneDate && vehicle.muayeneDate.trim());
-const uttsSaved = vehicle.uttsTanimlandi === true || vehicle.uttsTanimlandi === false;
+    const anahtarLabel = (vehicle.anahtar === 'var') ?
+        ((vehicle.anahtarNerede && String(vehicle.anahtarNerede).trim()) ? window.capitalizeWords(String(vehicle.anahtarNerede).trim()) : 'Var') :
+        'Yoktur.';
+    const lastikLabel = (vehicle.lastikDurumu === 'var') ?
+        ((vehicle.lastikAdres && String(vehicle.lastikAdres).trim()) ? window.capitalizeWords(String(vehicle.lastikAdres).trim()) : 'Var') :
+        'Yoktur.';
+    const uttsLabel = vehicle.uttsTanimlandi ? 'Evet' : 'Hayır';
+    const vid = String(vehicle.id);
+    const sessionMatch = (action) => lastCompletedActionInSession && lastCompletedActionInSession.action === action && String(lastCompletedActionInSession.vehicleId) === vid;
+    const kmSavedClass = sessionMatch('km') ? 'saved' : '';
+    const anahtarSavedClass = sessionMatch('anahtar') ? 'saved' : '';
+    const lastikSavedClass = sessionMatch('lastik') ? 'saved' : '';
 
-const vid = String(vehicle.id);
-const sessionMatch = (action) => lastCompletedActionInSession && lastCompletedActionInSession.action === action && String(lastCompletedActionInSession.vehicleId) === vid;
-const kmSavedClass = sessionMatch('km') ? 'saved' : '';
-const anahtarSavedClass = sessionMatch('anahtar') ? 'saved' : '';
-const lastikSavedClass = sessionMatch('lastik') ? 'saved' : '';
-
-const infoEl = document.getElementById('driver-vehicle-info');
-if (infoEl) {
-infoEl.innerHTML = `
+    const infoEl = document.getElementById('driver-vehicle-info');
+    if (infoEl) {
+        infoEl.innerHTML = `
 <div class="driver-info-item"><span class="label">Üretim Yılı</span><span class="value">${escapeHtmlDriver(vehicle.year || '-')}</span></div>
 <div class="driver-info-item ${kmSavedClass} ${kmClass}"><span class="label">KM</span><span class="value">${escapeHtmlDriver(kmFormatted)}</span></div>
 <div class="driver-info-item ${sigortaW.class}"><span class="label">Sigorta Bitiş</span><span class="value">${formatDriverDate(vehicle.sigortaDate) || '-'}</span></div>
@@ -1169,210 +1008,220 @@ ${showTakografInfo ? `<div class="driver-info-item ${takografW.class}"><span cla
 <div class="driver-info-item ${lastikSavedClass}"><span class="label">Lastik Durumu</span><span class="value">${escapeHtmlDriver(lastikLabel)}</span></div>
 <div class="driver-info-item"><span class="label">UTTS</span><span class="value">${escapeHtmlDriver(uttsLabel)}</span></div>
 `;
-infoEl.querySelectorAll('.driver-info-item .value').forEach(function(valueEl) {
-if (valueEl.querySelector('.driver-info-missing-value')) return;
-var txt = (valueEl.textContent || '').trim();
-if (txt !== '-') return;
-valueEl.classList.add('driver-value-pending');
-valueEl.innerHTML = '<span class="driver-pending-indicator" title="Bekleniyor" aria-label="Bekleniyor"></span>';
-});
-}
+        infoEl.querySelectorAll('.driver-info-item .value').forEach(function(valueEl) {
+            if (valueEl.querySelector('.driver-info-missing-value')) return;
+            var txt = (valueEl.textContent || '').trim();
+            if (txt !== '-') return;
+            valueEl.classList.add('driver-value-pending');
+            valueEl.innerHTML = '<span class="driver-pending-indicator" title="Bekleniyor" aria-label="Bekleniyor"></span>';
+        });
+    }
 
-const dashboardContainer = document.querySelector('.driver-dashboard-container');
-if (dashboardContainer) {
-dashboardContainer.classList.toggle('driver-heavy-commercial-active', driverVehicleIsHeavyCommercial(vehicle));
-}
+    const dashboardContainer = document.querySelector('.driver-dashboard-container');
+    if (dashboardContainer) {
+        dashboardContainer.classList.toggle('driver-heavy-commercial-active', driverVehicleIsHeavyCommercial(vehicle));
+    }
 }
 
 function formatKm(value) {
-if (value == null || value === '') return '';
-var numStr = String(value).replace(/[^\d]/g, '');
-if (!numStr) return '';
-return numStr.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    if (value == null || value === '') return '';
+    var numStr = String(value).replace(/[^\d]/g, '');
+    if (!numStr) return '';
+    return numStr.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 }
 
 function escapeHtmlDriver(t) {
-if (t == null || t === '') return '';
-var d = document.createElement('div');
-d.textContent = t;
-return d.innerHTML;
+    if (t == null || t === '') return '';
+    var d = document.createElement('div');
+    d.textContent = t;
+    return d.innerHTML;
 }
 
 var _plateCloseBound = false;
 
 function setDriverPlateListOpenState(isOpen) {
-if (!document.body) return;
-document.body.classList.toggle('driver-plate-list-open', !!isOpen && document.body.classList.contains('dashboard-page'));
+    if (!document.body) return;
+    document.body.classList.toggle('driver-plate-list-open', !!isOpen && document.body.classList.contains('dashboard-page'));
 }
 
 function setDriverPlateDropdownVisibility(dropdown, isOpen) {
-if (!dropdown) return;
-dropdown.style.display = isOpen ? 'block' : 'none';
-setDriverPlateListOpenState(!!isOpen);
+    if (!dropdown) return;
+    dropdown.style.display = isOpen ? 'block' : 'none';
+    setDriverPlateListOpenState(!!isOpen);
 }
 
 function positionPlateDropdownToTrigger(dropdown, trigger) {
-if (!dropdown || !trigger) return;
-const row = trigger.closest('.driver-plate-dropdown-row');
-if (!row) return;
+    if (!dropdown || !trigger) return;
+    const row = trigger.closest('.driver-plate-dropdown-row');
+    if (!row) return;
 
-if (window.innerWidth <= 640) {
-const rowRect = row.getBoundingClientRect();
-const viewportPadding = 8;
-const desiredWidth = Math.floor(window.innerWidth * 0.8);
-const availableRightWidth = Math.floor(window.innerWidth - rowRect.left - viewportPadding);
-const targetWidth = Math.max(180, Math.min(desiredWidth, availableRightWidth));
-dropdown.style.setProperty('position', 'fixed', 'important');
-dropdown.style.setProperty('top', `${Math.round(rowRect.bottom + 2)}px`, 'important');
-dropdown.style.setProperty('left', `${Math.round(rowRect.left)}px`, 'important');
-dropdown.style.setProperty('right', 'auto', 'important');
-dropdown.style.setProperty('transform', 'none', 'important');
-dropdown.style.setProperty('width', `${targetWidth}px`, 'important');
-dropdown.style.setProperty('max-width', `${targetWidth}px`, 'important');
-} else {
-const rowRect = row.getBoundingClientRect();
-const dashboard = document.querySelector('.driver-dashboard-container');
-const dashboardRect = dashboard ? dashboard.getBoundingClientRect() : null;
-const viewportPadding = 16;
-const containerPadding = 12;
-const viewportMaxWidth = Math.max(220, Math.floor(window.innerWidth - (viewportPadding * 2)));
-const containerMaxWidth = dashboardRect
-? Math.max(220, Math.floor(dashboardRect.width - (containerPadding * 2)))
-: viewportMaxWidth;
-const halfContainerWidth = Math.max(220, Math.floor(containerMaxWidth * 0.5));
-const targetWidth = Math.min(420, viewportMaxWidth, containerMaxWidth, halfContainerWidth);
-const minLeft = dashboardRect ? Math.round(dashboardRect.left + containerPadding) : viewportPadding;
-const maxLeft = dashboardRect
-? Math.round(dashboardRect.right - targetWidth - containerPadding)
-: Math.round(window.innerWidth - targetWidth - viewportPadding);
-const targetLeft = Math.max(minLeft, Math.min(Math.round(rowRect.left), maxLeft));
+    if (window.innerWidth <= 640) {
+        const rowRect = row.getBoundingClientRect();
+        const viewportPadding = 8;
+        const desiredWidth = Math.floor(window.innerWidth * 0.8);
+        const availableRightWidth = Math.floor(window.innerWidth - rowRect.left - viewportPadding);
+        const targetWidth = Math.max(180, Math.min(desiredWidth, availableRightWidth));
+        dropdown.style.setProperty('position', 'fixed', 'important');
+        dropdown.style.setProperty('top', `${Math.round(rowRect.bottom + 2)}px`, 'important');
+        dropdown.style.setProperty('left', `${Math.round(rowRect.left)}px`, 'important');
+        dropdown.style.setProperty('right', 'auto', 'important');
+        dropdown.style.setProperty('transform', 'none', 'important');
+        dropdown.style.setProperty('width', `${targetWidth}px`, 'important');
+        dropdown.style.setProperty('max-width', `${targetWidth}px`, 'important');
+    } else {
+        const rowRect = row.getBoundingClientRect();
+        const dashboard = document.querySelector('.driver-dashboard-container');
+        const dashboardRect = dashboard ? dashboard.getBoundingClientRect() : null;
+        const viewportPadding = 16;
+        const containerPadding = 12;
+        const viewportMaxWidth = Math.max(220, Math.floor(window.innerWidth - (viewportPadding * 2)));
+        const containerMaxWidth = dashboardRect ?
+            Math.max(220, Math.floor(dashboardRect.width - (containerPadding * 2))) :
+            viewportMaxWidth;
+        const halfContainerWidth = Math.max(220, Math.floor(containerMaxWidth * 0.5));
+        const targetWidth = Math.min(420, viewportMaxWidth, containerMaxWidth, halfContainerWidth);
+        const minLeft = dashboardRect ? Math.round(dashboardRect.left + containerPadding) : viewportPadding;
+        const maxLeft = dashboardRect ?
+            Math.round(dashboardRect.right - targetWidth - containerPadding) :
+            Math.round(window.innerWidth - targetWidth - viewportPadding);
+        const targetLeft = Math.max(minLeft, Math.min(Math.round(rowRect.left), maxLeft));
 
-dropdown.style.setProperty('position', 'fixed', 'important');
-dropdown.style.setProperty('top', `${Math.round(rowRect.bottom + 4)}px`, 'important');
-dropdown.style.setProperty('left', `${targetLeft}px`, 'important');
-dropdown.style.setProperty('right', 'auto', 'important');
-dropdown.style.setProperty('transform', 'none', 'important');
-dropdown.style.setProperty('width', `${targetWidth}px`, 'important');
-dropdown.style.setProperty('max-width', `${targetWidth}px`, 'important');
-}
+        dropdown.style.setProperty('position', 'fixed', 'important');
+        dropdown.style.setProperty('top', `${Math.round(rowRect.bottom + 4)}px`, 'important');
+        dropdown.style.setProperty('left', `${targetLeft}px`, 'important');
+        dropdown.style.setProperty('right', 'auto', 'important');
+        dropdown.style.setProperty('transform', 'none', 'important');
+        dropdown.style.setProperty('width', `${targetWidth}px`, 'important');
+        dropdown.style.setProperty('max-width', `${targetWidth}px`, 'important');
+    }
 }
 
 function setupPlateDropdown(vehicles) {
-const dropdown = document.getElementById('driver-plate-dropdown');
-const currentPlakaEl = document.getElementById('driver-current-plaka');
-const trigger = document.getElementById('driver-plate-trigger');
-if (!dropdown || !currentPlakaEl || !trigger) return;
+    const dropdown = document.getElementById('driver-plate-dropdown');
+    const currentPlakaEl = document.getElementById('driver-current-plaka');
+    const trigger = document.getElementById('driver-plate-trigger');
+    if (!dropdown || !currentPlakaEl || !trigger) return;
 
-if (!_plateCloseBound) {
-_plateCloseBound = true;
-document.addEventListener('click', function(ev) {
-if (!ev.target.closest('.driver-plate-dropdown-row')) {
-const d = document.getElementById('driver-plate-dropdown');
-if (d) setDriverPlateDropdownVisibility(d, false);
-}
-});
-}
+    if (!_plateCloseBound) {
+        _plateCloseBound = true;
+        document.addEventListener('click', function(ev) {
+            if (!ev.target.closest('.driver-plate-dropdown-row')) {
+                const d = document.getElementById('driver-plate-dropdown');
+                if (d) setDriverPlateDropdownVisibility(d, false);
+            }
+        });
+    }
 
-dropdown.innerHTML = vehicles.map(v => {
-const raw = v.brandModel || [v.marka, v.model].filter(Boolean).join(' ');
-const brandModel = formatDriverBrandModel(raw || '');
-const plate = escapeHtmlDriver(formatDriverPlaka(v.plaka));
-const brandModelHtml = escapeHtmlDriver(brandModel);
-const hasBrandModel = !!brandModel;
-const warningLevel = getDriverVehicleWarningLevel(v);
-const warningClass = warningLevel ? (' driver-plate-warning-dot-' + warningLevel) : '';
-return `
+    dropdown.innerHTML = vehicles.map(v => {
+        const raw = v.brandModel || [v.marka, v.model].filter(Boolean).join(' ');
+        const brandModel = formatDriverBrandModel(raw || '');
+        const plate = escapeHtmlDriver(formatDriverPlaka(v.plaka));
+        const brandModelHtml = escapeHtmlDriver(brandModel);
+        const hasBrandModel = !!brandModel;
+        const warningLevel = getDriverVehicleWarningLevel(v);
+        const warningClass = warningLevel ? (' driver-plate-warning-dot-' + warningLevel) : '';
+        return `
 <div class="driver-plate-dropdown-item medisa-boxed-select-option" role="option" data-vehicle-id="${v.id}" tabindex="0">
 <span class="driver-plate-warning-dot${warningClass}" aria-hidden="true"></span>
 <span class="driver-plate-dropdown-item-plate">${plate}</span>
 <span class="driver-plate-dropdown-item-separator${hasBrandModel ? '' : ' is-hidden'}" aria-hidden="true">-</span>
 <span class="driver-plate-dropdown-item-brand">${brandModelHtml}</span>
 </div>`;
-}).join('');
+    }).join('');
 
-dropdown.querySelectorAll('.driver-plate-dropdown-item').forEach(item => {
-item.addEventListener('click', function(ev) {
-ev.preventDefault();
-ev.stopPropagation();
-const vid = this.getAttribute('data-vehicle-id');
-if (vid == null || vid === '') return;
-setDriverPlateDropdownVisibility(dropdown, false);
-if (!switchDriverDashboardVehicle(vid)) {
-loadDashboard();
-}
-});
-});
+    dropdown.querySelectorAll('.driver-plate-dropdown-item').forEach(item => {
+        item.addEventListener('click', function(ev) {
+            ev.preventDefault();
+            ev.stopPropagation();
+            const vid = this.getAttribute('data-vehicle-id');
+            if (vid == null || vid === '') return;
+            setDriverPlateDropdownVisibility(dropdown, false);
+            if (!switchDriverDashboardVehicle(vid)) {
+                loadDashboard();
+            }
+        });
+    });
 
-trigger.onclick = function(ev) {
-ev.stopPropagation();
-const isOpen = dropdown.style.display === 'block';
-setDriverPlateDropdownVisibility(dropdown, !isOpen);
-if (!isOpen) positionPlateDropdownToTrigger(dropdown, trigger);
-};
+    trigger.onclick = function(ev) {
+        ev.stopPropagation();
+        const isOpen = dropdown.style.display === 'block';
+        setDriverPlateDropdownVisibility(dropdown, !isOpen);
+        if (!isOpen) positionPlateDropdownToTrigger(dropdown, trigger);
+    };
 }
 
 function renderRightPanel(vehicles, records) {
-const vehicle = getSelectedVehicle();
-if (!vehicle) return;
+    const vehicle = getSelectedVehicle();
+    if (!vehicle) return;
 
-const areaEl = document.getElementById('driver-action-area');
-if (!areaEl) return;
+    const areaEl = document.getElementById('driver-action-area');
+    if (!areaEl) return;
 
-const vid = String(vehicle.id);
-const existingRecord = getExistingRecord(vehicle.id);
-const bakimVar = existingRecord && (existingRecord.bakim_durumu || (existingRecord.bakim_aciklama || '').trim());
-const kazaVar = existingRecord && (existingRecord.kaza_durumu || (existingRecord.kaza_aciklama || '').trim());
-const kmState = getVehicleKmState(vehicle);
-const hasKmSaved = !isKmStateWarning(kmState);
-const sigortaW = checkDateWarningsDriver(vehicle.sigortaDate);
-const kaskoW = checkDateWarningsDriver(vehicle.kaskoDate);
-const muayeneW = checkDateWarningsDriver(vehicle.muayeneDate);
-const sigortaSaved = !!(vehicle.sigortaDate && vehicle.sigortaDate.trim());
-const kaskoSaved = !!(vehicle.kaskoDate && vehicle.kaskoDate.trim());
-const muayeneSaved = !!(vehicle.muayeneDate && vehicle.muayeneDate.trim());
-const anahtarSaved = !!(vehicle.anahtar && String(vehicle.anahtar).trim());
-const lastikSaved = !!(vehicle.lastikDurumu && String(vehicle.lastikDurumu).trim());
-const sessionMatch = (action) => lastCompletedActionInSession && lastCompletedActionInSession.action === action && String(lastCompletedActionInSession.vehicleId) === vid;
-const kmBtnClass = sessionMatch('km') ? ' saved' : (isKmStateWarning(kmState) ? ' warning' : (hasKmSaved ? ' data-entered' : ''));
-const kazaBtnClass = sessionMatch('kaza') ? ' saved' : (kazaVar ? ' data-entered' : '');
-const bakimBtnClass = sessionMatch('bakim') ? ' saved' : (bakimVar ? ' data-entered' : '');
-const sigortaBtnClass = sessionMatch('sigorta') ? ' saved' : (sigortaW.class ? (' warning' + (sigortaW.level === 'orange' ? ' warning-orange' : '')) : (sigortaSaved ? ' data-entered' : ''));
-const kaskoBtnClass = sessionMatch('kasko') ? ' saved' : (kaskoW.class ? (' warning' + (kaskoW.level === 'orange' ? ' warning-orange' : '')) : (kaskoSaved ? ' data-entered' : ''));
-const muayeneBtnClass = sessionMatch('muayene') ? ' saved' : (muayeneW.class ? (' warning' + (muayeneW.level === 'orange' ? ' warning-orange' : '')) : (muayeneSaved ? ' data-entered' : ''));
-const anahtarBtnClass = sessionMatch('anahtar') ? ' saved' : (anahtarSaved ? ' data-entered' : '');
-const lastikBtnClass = sessionMatch('lastik') ? ' saved' : (lastikSaved ? ' data-entered' : '');
+    const vid = String(vehicle.id);
+    const existingRecord = getExistingRecord(vehicle.id);
+    const bakimVar = existingRecord && (existingRecord.bakim_durumu || (existingRecord.bakim_aciklama || '').trim());
+    const kazaVar = existingRecord && (existingRecord.kaza_durumu || (existingRecord.kaza_aciklama || '').trim());
+    const kmState = getVehicleKmState(vehicle);
+    const hasKmSaved = !isKmStateWarning(kmState);
+    const sigortaW = checkDateWarningsDriver(vehicle.sigortaDate);
+    const kaskoW = checkDateWarningsDriver(vehicle.kaskoDate);
+    const muayeneW = checkDateWarningsDriver(vehicle.muayeneDate);
+    const sigortaSaved = !!(vehicle.sigortaDate && vehicle.sigortaDate.trim());
+    const kaskoSaved = !!(vehicle.kaskoDate && vehicle.kaskoDate.trim());
+    const muayeneSaved = !!(vehicle.muayeneDate && vehicle.muayeneDate.trim());
+    const anahtarSaved = !!(vehicle.anahtar && String(vehicle.anahtar).trim());
+    const lastikSaved = !!(vehicle.lastikDurumu && String(vehicle.lastikDurumu).trim());
+    const sessionMatch = (action) => lastCompletedActionInSession && lastCompletedActionInSession.action === action && String(lastCompletedActionInSession.vehicleId) === vid;
+    const kmBtnClass = sessionMatch('km') ? ' saved' : (isKmStateWarning(kmState) ? ' warning' : (hasKmSaved ? ' data-entered' : ''));
+    const kazaBtnClass = sessionMatch('kaza') ? ' saved' : (kazaVar ? ' data-entered' : '');
+    const bakimBtnClass = sessionMatch('bakim') ? ' saved' : (bakimVar ? ' data-entered' : '');
+    const sigortaBtnClass = sessionMatch('sigorta') ? ' saved' : (sigortaW.class ? (' warning' + (sigortaW.level === 'orange' ? ' warning-orange' : '')) : (sigortaSaved ? ' data-entered' : ''));
+    const kaskoBtnClass = sessionMatch('kasko') ? ' saved' : (kaskoW.class ? (' warning' + (kaskoW.level === 'orange' ? ' warning-orange' : '')) : (kaskoSaved ? ' data-entered' : ''));
+    const muayeneBtnClass = sessionMatch('muayene') ? ' saved' : (muayeneW.class ? (' warning' + (muayeneW.level === 'orange' ? ' warning-orange' : '')) : (muayeneSaved ? ' data-entered' : ''));
+    const anahtarBtnClass = sessionMatch('anahtar') ? ' saved' : (anahtarSaved ? ' data-entered' : '');
+    const lastikBtnClass = sessionMatch('lastik') ? ' saved' : (lastikSaved ? ' data-entered' : '');
 
-areaEl.innerHTML = buildDriverActionArea(vehicle, existingRecord, bakimVar, kazaVar, {
-kmBtnClass, kazaBtnClass, bakimBtnClass, sigortaBtnClass, kaskoBtnClass, muayeneBtnClass, anahtarBtnClass, lastikBtnClass, vid
-});
-initDriverDateDisplays(areaEl);
+    areaEl.innerHTML = buildDriverActionArea(vehicle, existingRecord, bakimVar, kazaVar, {
+        kmBtnClass,
+        kazaBtnClass,
+        bakimBtnClass,
+        sigortaBtnClass,
+        kaskoBtnClass,
+        muayeneBtnClass,
+        anahtarBtnClass,
+        lastikBtnClass,
+        vid
+    });
+    initDriverDateDisplays(areaEl);
 }
 
 function buildDriverActionArea(vehicle, existingRecord, bakimVar, kazaVar, opts) {
-const vid = String(opts.vid != null ? opts.vid : (vehicle && vehicle.id != null ? vehicle.id : ''));
-const today = new Date().toISOString().split('T')[0];
-const esc = (s) => (s == null ? '' : String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'));
-var boyaliJson = '{}';
-try {
-var bp = vehicle && (vehicle.boyaliParcalar || {});
-if (bp && typeof bp === 'object' && !Array.isArray(bp)) boyaliJson = JSON.stringify(bp);
-} catch (e) { boyaliJson = '{}'; }
+    const vid = String(opts.vid != null ? opts.vid : (vehicle && vehicle.id != null ? vehicle.id : ''));
+    const today = new Date().toISOString().split('T')[0];
+    const esc = (s) => (s == null ? '' : String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'));
+    var boyaliJson = '{}';
+    try {
+        var bp = vehicle && (vehicle.boyaliParcalar || {});
+        if (bp && typeof bp === 'object' && !Array.isArray(bp)) boyaliJson = JSON.stringify(bp);
+    } catch (e) {
+        boyaliJson = '{}';
+    }
 
-const lastKm = vehicle && (vehicle.guncelKm != null ? vehicle.guncelKm : (existingRecord && existingRecord.guncel_km != null ? existingRecord.guncel_km : ''));
-const kmVal = (lastKm !== '' && lastKm != null) ? esc(formatKm(lastKm)) : '';
-const bakimTarih = existingRecord && existingRecord.bakim_tarih ? existingRecord.bakim_tarih : today;
-const kazaTarih = existingRecord && existingRecord.kaza_tarih ? existingRecord.kaza_tarih : today;
-const bakimAciklama = existingRecord ? esc(window.capitalizeWords(existingRecord.bakim_aciklama || '')) : '';
-const kazaAciklama = existingRecord ? esc(window.capitalizeWords(existingRecord.kaza_aciklama || '')) : '';
-const kmBtnClass = opts.kmBtnClass || '';
-const kazaBtnClass = opts.kazaBtnClass || '';
-const bakimBtnClass = opts.bakimBtnClass || '';
-const sigortaBtnClass = opts.sigortaBtnClass || '';
-const kaskoBtnClass = opts.kaskoBtnClass || '';
-const muayeneBtnClass = opts.muayeneBtnClass || '';
-const anahtarBtnClass = opts.anahtarBtnClass || '';
-const lastikBtnClass = opts.lastikBtnClass || '';
-return `
+    const lastKm = vehicle && (vehicle.guncelKm != null ? vehicle.guncelKm : (existingRecord && existingRecord.guncel_km != null ? existingRecord.guncel_km : ''));
+    const kmVal = (lastKm !== '' && lastKm != null) ? esc(formatKm(lastKm)) : '';
+    const bakimTarih = existingRecord && existingRecord.bakim_tarih ? existingRecord.bakim_tarih : today;
+    const kazaTarih = existingRecord && existingRecord.kaza_tarih ? existingRecord.kaza_tarih : today;
+    const bakimAciklama = existingRecord ? esc(window.capitalizeWords(existingRecord.bakim_aciklama || '')) : '';
+    const kazaAciklama = existingRecord ? esc(window.capitalizeWords(existingRecord.kaza_aciklama || '')) : '';
+    const kmBtnClass = opts.kmBtnClass || '';
+    const kazaBtnClass = opts.kazaBtnClass || '';
+    const bakimBtnClass = opts.bakimBtnClass || '';
+    const sigortaBtnClass = opts.sigortaBtnClass || '';
+    const kaskoBtnClass = opts.kaskoBtnClass || '';
+    const muayeneBtnClass = opts.muayeneBtnClass || '';
+    const anahtarBtnClass = opts.anahtarBtnClass || '';
+    const lastikBtnClass = opts.lastikBtnClass || '';
+    return `
 <div class="driver-action-area-inner" data-vehicle-id="${vid}">
 <div class="driver-action-group">
 <button type="button" class="driver-action-btn${kmBtnClass}" data-action="km" onclick="toggleDriverActionBlock('km','${vid}')">Km Bildir</button>
@@ -1512,75 +1361,96 @@ return `
 }
 
 function buildSlidingWarnings(vehicles, records) {
-const warnings = [];
-const period = (currentPeriod || new Date().toISOString().slice(0, 7)).toString().trim();
-let k2WarningAdded = false;
-const userName = (currentUser && (currentUser.name || currentUser.isim || currentUser.ad_soyad)) || 'Kullanıcı';
-
-for (const v of vehicles) {
-const vid = String(v.id);
-const plaka = formatDriverPlaka(v.plaka);
-const hasKmForPeriod = (records || []).some(function(r) {
-if (String(r.arac_id) !== vid) return false;
-if (String(r.donem || '').trim() !== period) return false;
-if (r.guncel_km == null) return false;
-const kmText = String(r.guncel_km).trim();
-if (kmText === '') return false;
-const kmNum = parseInt(kmText.replace(/\D/g, ''), 10);
-return Number.isFinite(kmNum) && kmNum > 0;
-});
-const kmState = hasKmForPeriod ? 'OK' : getVehicleKmState(v);
-const kmMessage = getKmMessageByState(kmState);
-if (kmMessage) {
-const kmWarnLevel = kmState === 'MONTHLY_UPDATE_DUE_SOFT' ? 'orange' : 'red';
-warnings.push({ text: plaka + ' Plakalı Taşıt İçin ' + kmMessage, plaka: plaka, vehicleId: vid, action: 'km', type: 'km', warnLevel: kmWarnLevel });
-}
-const checkDate = (dateStr, label, actionType) => {
-if (!dateStr) return;
-const w = checkDateWarningsDriver(dateStr);
-if (w.class && w.days != null) {
-let msg;
-if (w.days <= 0) {
-const bitmistirLabel = label === 'Sigorta' ? 'Trafik Sigortası' : label;
-msg = plaka + ' Plakalı Taşıtın ' + bitmistirLabel + ' Bitmiştir.';
-} else {
-msg = plaka + ' Plakalı Taşıtın ' + label + ' Tarihine ' + w.days + ' Gün Kalmıştır';
-}
-warnings.push({ text: msg, plaka: plaka, vehicleId: vid, action: actionType || null, type: actionType || null, warnLevel: w.level, warnClass: w.class, days: w.days });
-}
-};
-checkDate(v.muayeneDate, 'Muayene', 'muayene');
-if (v.egzozMuayeneDate && v.egzozMuayeneDate !== v.muayeneDate) {
-checkDate(v.egzozMuayeneDate, 'Egzoz Muayenesi', 'muayene');
-}
-checkDate(v.sigortaDate, 'Sigorta', 'sigorta');
-checkDate(v.kaskoDate, 'Kasko', 'kasko');
-if (!k2WarningAdded && driverVehicleNeedsK2(v) && v.k2BelgesiExpiryDate) {
-const k2Warning = checkDateWarningsDriver(v.k2BelgesiExpiryDate);
-if (k2Warning.class && k2Warning.days != null) {
-const k2Text = k2Warning.days <= 0
-? 'Taşıt Kartı / K2 Belgesi Geçerliliği Bitmiştir.'
-: 'Taşıt Kartı / K2 Belgesi Geçerliliğine ' + k2Warning.days + ' Gün Kalmıştır';
-warnings.push({ text: k2Text, plaka: '', type: null, warnLevel: k2Warning.level, warnClass: k2Warning.class, days: k2Warning.days });
-k2WarningAdded = true;
-}
-}
-if (driverVehicleNeedsTakograf(v)) {
-checkDate(v.takografExpiryDate, 'Takograf Kalibrasyon', null);
-}
-}
-return warnings;
+    const warnings = [];
+    const period = (currentPeriod || new Date().toISOString().slice(0, 7)).toString().trim();
+    let k2WarningAdded = false;
+    for (const v of vehicles) {
+        const vid = String(v.id);
+        const plaka = formatDriverPlaka(v.plaka);
+        const hasKmForPeriod = (records || []).some(function(r) {
+            if (String(r.arac_id) !== vid) return false;
+            if (String(r.donem || '').trim() !== period) return false;
+            if (r.guncel_km == null) return false;
+            const kmText = String(r.guncel_km).trim();
+            if (kmText === '') return false;
+            const kmNum = parseInt(kmText.replace(/\D/g, ''), 10);
+            return Number.isFinite(kmNum) && kmNum > 0;
+        });
+        const kmState = hasKmForPeriod ? 'OK' : getVehicleKmState(v);
+        const kmMessage = getKmMessageByState(kmState);
+        if (kmMessage) {
+            const kmWarnLevel = kmState === 'MONTHLY_UPDATE_DUE_SOFT' ? 'orange' : 'red';
+            warnings.push({
+                text: plaka + ' Plakalı Taşıt İçin ' + kmMessage,
+                plaka: plaka,
+                vehicleId: vid,
+                action: 'km',
+                type: 'km',
+                warnLevel: kmWarnLevel
+            });
+        }
+        const checkDate = (dateStr, label, actionType) => {
+            if (!dateStr) return;
+            const w = checkDateWarningsDriver(dateStr);
+            if (w.class && w.days != null) {
+                let msg;
+                if (w.days <= 0) {
+                    const bitmistirLabel = label === 'Sigorta' ? 'Trafik Sigortası' : label;
+                    msg = plaka + ' Plakalı Taşıtın ' + bitmistirLabel + ' Bitmiştir.';
+                } else {
+                    msg = plaka + ' Plakalı Taşıtın ' + label + ' Tarihine ' + w.days + ' Gün Kalmıştır';
+                }
+                warnings.push({
+                    text: msg,
+                    plaka: plaka,
+                    vehicleId: vid,
+                    action: actionType || null,
+                    type: actionType || null,
+                    warnLevel: w.level,
+                    warnClass: w.class,
+                    days: w.days
+                });
+            }
+        };
+        checkDate(v.muayeneDate, 'Muayene', 'muayene');
+        if (v.egzozMuayeneDate && v.egzozMuayeneDate !== v.muayeneDate) {
+            checkDate(v.egzozMuayeneDate, 'Egzoz Muayenesi', 'muayene');
+        }
+        checkDate(v.sigortaDate, 'Sigorta', 'sigorta');
+        checkDate(v.kaskoDate, 'Kasko', 'kasko');
+        if (!k2WarningAdded && driverVehicleNeedsK2(v) && v.k2BelgesiExpiryDate) {
+            const k2Warning = checkDateWarningsDriver(v.k2BelgesiExpiryDate);
+            if (k2Warning.class && k2Warning.days != null) {
+                const k2Text = k2Warning.days <= 0 ?
+                    'Taşıt Kartı / K2 Belgesi Geçerliliği Bitmiştir.' :
+                    'Taşıt Kartı / K2 Belgesi Geçerliliğine ' + k2Warning.days + ' Gün Kalmıştır';
+                warnings.push({
+                    text: k2Text,
+                    plaka: '',
+                    type: null,
+                    warnLevel: k2Warning.level,
+                    warnClass: k2Warning.class,
+                    days: k2Warning.days
+                });
+                k2WarningAdded = true;
+            }
+        }
+        if (driverVehicleNeedsTakograf(v)) {
+            checkDate(v.takografExpiryDate, 'Takograf Kalibrasyon', null);
+        }
+    }
+    return warnings;
 }
 
 function getDriverNotificationItemLevel(w) {
-if (!w) return 'red';
-if (typeof w.days === 'number' && !isNaN(w.days)) {
-if (w.days < 0 || w.days <= 7) return 'red';
-if (w.days <= 30) return 'orange';
-}
-if (w.warnClass === 'driver-warn-orange') return 'orange';
-if (w.warnClass === 'driver-warn-red') return 'red';
-return w.warnLevel === 'orange' ? 'orange' : 'red';
+    if (!w) return 'red';
+    if (typeof w.days === 'number' && !isNaN(w.days)) {
+        if (w.days < 0 || w.days <= 7) return 'red';
+        if (w.days <= 30) return 'orange';
+    }
+    if (w.warnClass === 'driver-warn-orange') return 'orange';
+    if (w.warnClass === 'driver-warn-red') return 'red';
+    return w.warnLevel === 'orange' ? 'orange' : 'red';
 }
 
 const DRIVER_NOTIFICATIONS_DROPDOWN_ID = 'driver-notifications-dropdown';
@@ -1590,330 +1460,334 @@ const driverNotificationEmptyStateHtml = '<div class="driver-notification-empty"
 let driverNotificationsResizeHandler = null;
 
 function removeOrphanDriverNotificationsDropdown() {
-var orphan = document.getElementById(DRIVER_NOTIFICATIONS_DROPDOWN_ID);
-if (orphan && orphan.parentNode && orphan.parentNode.id === 'driver-sliding-warning') orphan.remove();
+    var orphan = document.getElementById(DRIVER_NOTIFICATIONS_DROPDOWN_ID);
+    if (orphan && orphan.parentNode && orphan.parentNode.id === 'driver-sliding-warning') orphan.remove();
 }
 
 function ensureDriverNotificationsUi() {
-removeOrphanDriverNotificationsDropdown();
+    removeOrphanDriverNotificationsDropdown();
 
-var backdrop = document.getElementById(DRIVER_NOTIFICATIONS_BACKDROP_ID);
-if (!backdrop) {
-backdrop = document.createElement('div');
-backdrop.id = DRIVER_NOTIFICATIONS_BACKDROP_ID;
-backdrop.className = 'driver-notifications-backdrop';
-backdrop.setAttribute('aria-hidden', 'true');
-backdrop.addEventListener('click', function() {
-window.closeDriverNotifications();
-});
-document.body.appendChild(backdrop);
-}
+    var backdrop = document.getElementById(DRIVER_NOTIFICATIONS_BACKDROP_ID);
+    if (!backdrop) {
+        backdrop = document.createElement('div');
+        backdrop.id = DRIVER_NOTIFICATIONS_BACKDROP_ID;
+        backdrop.className = 'driver-notifications-backdrop';
+        backdrop.setAttribute('aria-hidden', 'true');
+        backdrop.addEventListener('click', function() {
+            window.closeDriverNotifications();
+        });
+        document.body.appendChild(backdrop);
+    }
 
-var dropdown = document.getElementById(DRIVER_NOTIFICATIONS_DROPDOWN_ID);
-if (!dropdown) {
-dropdown = document.createElement('div');
-dropdown.id = DRIVER_NOTIFICATIONS_DROPDOWN_ID;
-dropdown.className = 'driver-notifications-dropdown';
-dropdown.hidden = true;
-dropdown.setAttribute('role', 'dialog');
-dropdown.setAttribute('aria-label', 'Bildirimler');
-dropdown.addEventListener('click', function(ev) {
-ev.stopPropagation();
-});
+    var dropdown = document.getElementById(DRIVER_NOTIFICATIONS_DROPDOWN_ID);
+    if (!dropdown) {
+        dropdown = document.createElement('div');
+        dropdown.id = DRIVER_NOTIFICATIONS_DROPDOWN_ID;
+        dropdown.className = 'driver-notifications-dropdown';
+        dropdown.hidden = true;
+        dropdown.setAttribute('role', 'dialog');
+        dropdown.setAttribute('aria-label', 'Bildirimler');
+        dropdown.addEventListener('click', function(ev) {
+            ev.stopPropagation();
+        });
 
-var list = document.createElement('div');
-list.id = DRIVER_NOTIFICATIONS_LIST_ID;
-list.className = 'driver-notifications-dropdown-list';
-list.setAttribute('aria-live', 'polite');
-dropdown.appendChild(list);
-document.body.appendChild(dropdown);
-} else if (dropdown.parentNode !== document.body) {
-document.body.appendChild(dropdown);
-}
+        var list = document.createElement('div');
+        list.id = DRIVER_NOTIFICATIONS_LIST_ID;
+        list.className = 'driver-notifications-dropdown-list';
+        list.setAttribute('aria-live', 'polite');
+        dropdown.appendChild(list);
+        document.body.appendChild(dropdown);
+    } else if (dropdown.parentNode !== document.body) {
+        document.body.appendChild(dropdown);
+    }
 
-return {
-backdrop: backdrop,
-dropdown: dropdown,
-list: document.getElementById(DRIVER_NOTIFICATIONS_LIST_ID)
-};
+    return {
+        backdrop: backdrop,
+        dropdown: dropdown,
+        list: document.getElementById(DRIVER_NOTIFICATIONS_LIST_ID)
+    };
 }
 
 function positionDriverNotificationsDropdown(triggerEl) {
-var dropdown = document.getElementById(DRIVER_NOTIFICATIONS_DROPDOWN_ID);
-if (!dropdown || !triggerEl || typeof triggerEl.getBoundingClientRect !== 'function') return;
+    var dropdown = document.getElementById(DRIVER_NOTIFICATIONS_DROPDOWN_ID);
+    if (!dropdown || !triggerEl || typeof triggerEl.getBoundingClientRect !== 'function') return;
 
-var rect = triggerEl.getBoundingClientRect();
-var gap = 8;
-var pad = 12;
-dropdown.style.top = Math.round(rect.bottom + gap) + 'px';
-dropdown.style.left = Math.round(rect.left + (rect.width / 2)) + 'px';
-dropdown.style.transform = 'translateX(-50%)';
+    var rect = triggerEl.getBoundingClientRect();
+    var gap = 8;
+    var pad = 12;
+    dropdown.style.top = Math.round(rect.bottom + gap) + 'px';
+    dropdown.style.left = Math.round(rect.left + (rect.width / 2)) + 'px';
+    dropdown.style.transform = 'translateX(-50%)';
 
-requestAnimationFrame(function() {
-if (!dropdown.classList.contains('is-open')) return;
-var panelRect = dropdown.getBoundingClientRect();
-var viewportWidth = window.innerWidth || document.documentElement.clientWidth || 0;
-if (panelRect.left < pad) {
-dropdown.style.left = pad + 'px';
-dropdown.style.transform = 'none';
-} else if (panelRect.right > viewportWidth - pad) {
-dropdown.style.left = Math.round(viewportWidth - pad - panelRect.width) + 'px';
-dropdown.style.transform = 'none';
-}
-});
+    requestAnimationFrame(function() {
+        if (!dropdown.classList.contains('is-open')) return;
+        var panelRect = dropdown.getBoundingClientRect();
+        var viewportWidth = window.innerWidth || document.documentElement.clientWidth || 0;
+        if (panelRect.left < pad) {
+            dropdown.style.left = pad + 'px';
+            dropdown.style.transform = 'none';
+        } else if (panelRect.right > viewportWidth - pad) {
+            dropdown.style.left = Math.round(viewportWidth - pad - panelRect.width) + 'px';
+            dropdown.style.transform = 'none';
+        }
+    });
 }
 
 function bindDriverNotificationsGlobalHandlersOnce() {
-if (document.body.dataset.driverNotificationsGlobalBound === '1') return;
-document.body.dataset.driverNotificationsGlobalBound = '1';
+    if (document.body.dataset.driverNotificationsGlobalBound === '1') return;
+    document.body.dataset.driverNotificationsGlobalBound = '1';
 
-document.addEventListener('keydown', function(ev) {
-if (ev.key === 'Escape' && document.body.classList.contains('driver-notifications-open')) {
-window.closeDriverNotifications();
-}
-});
+    document.addEventListener('keydown', function(ev) {
+        if (ev.key === 'Escape' && document.body.classList.contains('driver-notifications-open')) {
+            window.closeDriverNotifications();
+        }
+    });
 }
 
 function buildDriverNotificationItemHtml(w) {
-const level = getDriverNotificationItemLevel(w);
-const itemIconClass = level === 'orange' ? 'driver-warning-icon-engine-orange' : 'driver-warning-icon-engine-red';
-const text = escapeHtmlDriver((w && w.text) || '');
-const icon = '<span class="driver-warning-icon driver-warning-icon-engine ' + itemIconClass + '" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"></svg></span>';
-const vehicleId = w && w.vehicleId != null && String(w.vehicleId) !== '' ? String(w.vehicleId) : '';
-if (!vehicleId) {
-return '<div class="driver-warning-panel-item driver-warning-panel-item-' + level + '">'
-+ icon
-+ '<span class="driver-warning-panel-text">' + text + '</span>'
-+ '</div>';
-}
-const action = w && w.action ? String(w.action) : '';
-const actionAttr = action ? ' data-action="' + escapeHtmlDriver(action) + '"' : '';
-return '<button type="button" class="driver-warning-panel-item driver-warning-panel-item-' + level + ' driver-warning-panel-item-action"'
-+ ' data-vehicle-id="' + escapeHtmlDriver(vehicleId) + '"' + actionAttr
-+ ' aria-label="' + text + '">'
-+ icon
-+ '<span class="driver-warning-panel-text">' + text + '</span>'
-+ '</button>';
+    const level = getDriverNotificationItemLevel(w);
+    const itemIconClass = level === 'orange' ? 'driver-warning-icon-engine-orange' : 'driver-warning-icon-engine-red';
+    const text = escapeHtmlDriver((w && w.text) || '');
+    const icon = '<span class="driver-warning-icon driver-warning-icon-engine ' + itemIconClass + '" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"></svg></span>';
+    const vehicleId = w && w.vehicleId != null && String(w.vehicleId) !== '' ? String(w.vehicleId) : '';
+    if (!vehicleId) {
+        return '<div class="driver-warning-panel-item driver-warning-panel-item-' + level + '">' +
+            icon +
+            '<span class="driver-warning-panel-text">' + text + '</span>' +
+            '</div>';
+    }
+    const action = w && w.action ? String(w.action) : '';
+    const actionAttr = action ? ' data-action="' + escapeHtmlDriver(action) + '"' : '';
+    return '<button type="button" class="driver-warning-panel-item driver-warning-panel-item-' + level + ' driver-warning-panel-item-action"' +
+        ' data-vehicle-id="' + escapeHtmlDriver(vehicleId) + '"' + actionAttr +
+        ' aria-label="' + text + '">' +
+        icon +
+        '<span class="driver-warning-panel-text">' + text + '</span>' +
+        '</button>';
 }
 
 function switchDriverDashboardVehicle(vehicleId) {
-const vid = String(vehicleId);
-const sel = allHistoryVehicles.find(function(v) { return String(v.id) === vid; });
-if (!sel) return false;
-selectedVehicleId = vid;
-const plakaEl = document.getElementById('driver-current-plaka');
-if (plakaEl) plakaEl.textContent = formatDriverPlaka(sel.plaka);
-renderLeftPanel(allHistoryVehicles, allHistoryRecords);
-renderRightPanel(allHistoryVehicles, allHistoryRecords);
-renderSlidingWarning(allHistoryVehicles, allHistoryRecords);
-setupEkstraNotAutoResize();
-setupKmInputs();
-bindDriverDashboardTitleCase(document.getElementById('driver-action-area'));
-return true;
+    const vid = String(vehicleId);
+    const sel = allHistoryVehicles.find(function(v) { return String(v.id) === vid; });
+    if (!sel) return false;
+    selectedVehicleId = vid;
+    const plakaEl = document.getElementById('driver-current-plaka');
+    if (plakaEl) plakaEl.textContent = formatDriverPlaka(sel.plaka);
+    renderLeftPanel(allHistoryVehicles, allHistoryRecords);
+    renderRightPanel(allHistoryVehicles, allHistoryRecords);
+    renderSlidingWarning(allHistoryVehicles, allHistoryRecords);
+    setupEkstraNotAutoResize();
+    setupKmInputs();
+    bindDriverDashboardTitleCase(document.getElementById('driver-action-area'));
+    return true;
 }
 
 function openDriverNotificationAction(vehicleId, action) {
-window.closeDriverNotifications();
-const vid = String(vehicleId);
-const sameVehicle = String(selectedVehicleId) === vid;
-if (!sameVehicle && !switchDriverDashboardVehicle(vid)) return;
-if (!action) return;
-setTimeout(function() {
-const inner = document.querySelector('.driver-action-area-inner[data-vehicle-id="' + vid + '"]');
-if (!inner) return;
-const blockMap = {
-km: 'km-block-' + vid,
-kaza: 'kaza-block-' + vid,
-bakim: 'bakim-block-' + vid,
-sigorta: 'sigorta-block-' + vid,
-kasko: 'kasko-block-' + vid,
-muayene: 'muayene-block-' + vid,
-anahtar: 'anahtar-block-' + vid,
-lastik: 'lastik-block-' + vid
-};
-const block = document.getElementById(blockMap[action] || '');
-if (!block) return;
-if (!block.classList.contains('show')) {
-if (typeof window.toggleDriverActionBlock === 'function') {
-window.toggleDriverActionBlock(action, vid);
-}
-return;
-}
-if (action === 'km') {
-const inp = document.getElementById('km-' + vid);
-if (inp && typeof inp.focus === 'function') {
-inp.scrollIntoView({ behavior: 'smooth', block: 'center' });
-inp.focus();
-if (typeof inp.select === 'function') inp.select();
-}
-} else {
-const group = block.closest('.driver-action-group');
-(group || block).scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-}, sameVehicle ? 0 : 80);
+    window.closeDriverNotifications();
+    const vid = String(vehicleId);
+    const sameVehicle = String(selectedVehicleId) === vid;
+    if (!sameVehicle && !switchDriverDashboardVehicle(vid)) return;
+    if (!action) return;
+    setTimeout(function() {
+        const inner = document.querySelector('.driver-action-area-inner[data-vehicle-id="' + vid + '"]');
+        if (!inner) return;
+        const blockMap = {
+            km: 'km-block-' + vid,
+            kaza: 'kaza-block-' + vid,
+            bakim: 'bakim-block-' + vid,
+            sigorta: 'sigorta-block-' + vid,
+            kasko: 'kasko-block-' + vid,
+            muayene: 'muayene-block-' + vid,
+            anahtar: 'anahtar-block-' + vid,
+            lastik: 'lastik-block-' + vid
+        };
+        const block = document.getElementById(blockMap[action] || '');
+        if (!block) return;
+        if (!block.classList.contains('show')) {
+            if (typeof window.toggleDriverActionBlock === 'function') {
+                window.toggleDriverActionBlock(action, vid);
+            }
+            return;
+        }
+        if (action === 'km') {
+            const inp = document.getElementById('km-' + vid);
+            if (inp && typeof inp.focus === 'function') {
+                inp.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                inp.focus();
+                if (typeof inp.select === 'function') inp.select();
+            }
+        } else {
+            const group = block.closest('.driver-action-group');
+            (group || block).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }, sameVehicle ? 0 : 80);
 }
 
 function bindDriverNotificationItemClicks() {
-const list = document.getElementById(DRIVER_NOTIFICATIONS_LIST_ID);
-if (!list) return;
-list.querySelectorAll('.driver-warning-panel-item-action[data-vehicle-id]').forEach(function(item) {
-if (item.dataset.driverNotificationBound === '1') return;
-item.dataset.driverNotificationBound = '1';
-item.addEventListener('click', function(ev) {
-ev.preventDefault();
-ev.stopPropagation();
-const vid = item.getAttribute('data-vehicle-id');
-const action = item.getAttribute('data-action') || '';
-if (!vid) return;
-openDriverNotificationAction(vid, action);
-});
-});
+    const list = document.getElementById(DRIVER_NOTIFICATIONS_LIST_ID);
+    if (!list) return;
+    list.querySelectorAll('.driver-warning-panel-item-action[data-vehicle-id]').forEach(function(item) {
+        if (item.dataset.driverNotificationBound === '1') return;
+        item.dataset.driverNotificationBound = '1';
+        item.addEventListener('click', function(ev) {
+            ev.preventDefault();
+            ev.stopPropagation();
+            const vid = item.getAttribute('data-vehicle-id');
+            const action = item.getAttribute('data-action') || '';
+            if (!vid) return;
+            openDriverNotificationAction(vid, action);
+        });
+    });
 }
 
 function setDriverNotificationsContent(warningItemsHtml) {
-var ui = ensureDriverNotificationsUi();
-if (!ui.list) return;
-ui.list.innerHTML = warningItemsHtml && warningItemsHtml.trim()
-? warningItemsHtml
-: driverNotificationEmptyStateHtml;
-bindDriverNotificationItemClicks();
+    var ui = ensureDriverNotificationsUi();
+    if (!ui.list) return;
+    ui.list.innerHTML = warningItemsHtml && warningItemsHtml.trim() ?
+        warningItemsHtml :
+        driverNotificationEmptyStateHtml;
+    bindDriverNotificationItemClicks();
 }
 
 window.openDriverNotifications = function(warningItemsHtml, triggerEl) {
-var ui = ensureDriverNotificationsUi();
-if (!ui.dropdown || !ui.backdrop) return;
-setDriverNotificationsContent(warningItemsHtml || '');
-document.body.classList.add('driver-notifications-open');
-ui.backdrop.setAttribute('aria-hidden', 'false');
-ui.dropdown.hidden = false;
-ui.dropdown.classList.add('is-open');
-if (triggerEl) {
-positionDriverNotificationsDropdown(triggerEl);
-triggerEl.setAttribute('aria-expanded', 'true');
-}
-bindDriverNotificationsGlobalHandlersOnce();
-if (driverNotificationsResizeHandler) {
-window.removeEventListener('resize', driverNotificationsResizeHandler);
-}
-driverNotificationsResizeHandler = function() {
-var activeTrigger = document.querySelector('#driver-sliding-warning .driver-warning-trigger');
-if (document.body.classList.contains('driver-notifications-open') && activeTrigger) {
-positionDriverNotificationsDropdown(activeTrigger);
-}
-};
-window.addEventListener('resize', driverNotificationsResizeHandler);
+    var ui = ensureDriverNotificationsUi();
+    if (!ui.dropdown || !ui.backdrop) return;
+    setDriverNotificationsContent(warningItemsHtml || '');
+    document.body.classList.add('driver-notifications-open');
+    ui.backdrop.setAttribute('aria-hidden', 'false');
+    ui.dropdown.hidden = false;
+    ui.dropdown.classList.add('is-open');
+    if (triggerEl) {
+        positionDriverNotificationsDropdown(triggerEl);
+        triggerEl.setAttribute('aria-expanded', 'true');
+    }
+    bindDriverNotificationsGlobalHandlersOnce();
+    if (driverNotificationsResizeHandler) {
+        window.removeEventListener('resize', driverNotificationsResizeHandler);
+    }
+    driverNotificationsResizeHandler = function() {
+        var activeTrigger = document.querySelector('#driver-sliding-warning .driver-warning-trigger');
+        if (document.body.classList.contains('driver-notifications-open') && activeTrigger) {
+            positionDriverNotificationsDropdown(activeTrigger);
+        }
+    };
+    window.addEventListener('resize', driverNotificationsResizeHandler);
 };
 
 window.closeDriverNotifications = function() {
-document.body.classList.remove('driver-notifications-open');
-var dropdown = document.getElementById(DRIVER_NOTIFICATIONS_DROPDOWN_ID);
-var backdrop = document.getElementById(DRIVER_NOTIFICATIONS_BACKDROP_ID);
-if (dropdown) {
-dropdown.classList.remove('is-open');
-dropdown.hidden = true;
-}
-if (backdrop) backdrop.setAttribute('aria-hidden', 'true');
-var trigger = document.querySelector('#driver-sliding-warning .driver-warning-trigger');
-if (trigger) trigger.setAttribute('aria-expanded', 'false');
-if (driverNotificationsResizeHandler) {
-window.removeEventListener('resize', driverNotificationsResizeHandler);
-driverNotificationsResizeHandler = null;
-}
+    document.body.classList.remove('driver-notifications-open');
+    var dropdown = document.getElementById(DRIVER_NOTIFICATIONS_DROPDOWN_ID);
+    var backdrop = document.getElementById(DRIVER_NOTIFICATIONS_BACKDROP_ID);
+    if (dropdown) {
+        dropdown.classList.remove('is-open');
+        dropdown.hidden = true;
+    }
+    if (backdrop) backdrop.setAttribute('aria-hidden', 'true');
+    var trigger = document.querySelector('#driver-sliding-warning .driver-warning-trigger');
+    if (trigger) trigger.setAttribute('aria-expanded', 'false');
+    if (driverNotificationsResizeHandler) {
+        window.removeEventListener('resize', driverNotificationsResizeHandler);
+        driverNotificationsResizeHandler = null;
+    }
 };
 
 function renderSlidingWarning(vehicles, records) {
-removeOrphanDriverNotificationsDropdown();
-const el = document.getElementById('driver-sliding-warning');
-if (!el) return;
+    removeOrphanDriverNotificationsDropdown();
+    const el = document.getElementById('driver-sliding-warning');
+    if (!el) return;
 
-const warnings = buildSlidingWarnings(vehicles, records);
-var belowHeroSlot = document.getElementById('driver-below-hero-notification-slot');
-if (warnings.length === 0) {
-el.innerHTML = '';
-el.className = 'driver-sliding-warning';
-window.closeDriverNotifications();
-if (belowHeroSlot && el.parentNode !== belowHeroSlot) belowHeroSlot.appendChild(el);
-return;
-}
-if (belowHeroSlot) {
-belowHeroSlot.appendChild(el);
-}
-const hasRedWarning = warnings.some(function(w) { return !w || w.warnLevel !== 'orange'; });
-const iconClass = hasRedWarning ? 'driver-warning-icon-engine-red' : 'driver-warning-icon-engine-orange';
-const warningItemsHtml = warnings.map(function(w) {
-return buildDriverNotificationItemHtml(w);
-}).join('');
-const engineIcon = '<span class="driver-warning-icon driver-warning-icon-engine ' + iconClass + '" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"></svg></span>';
+    const warnings = buildSlidingWarnings(vehicles, records);
+    var belowHeroSlot = document.getElementById('driver-below-hero-notification-slot');
+    if (warnings.length === 0) {
+        el.innerHTML = '';
+        el.className = 'driver-sliding-warning';
+        window.closeDriverNotifications();
+        if (belowHeroSlot && el.parentNode !== belowHeroSlot) belowHeroSlot.appendChild(el);
+        return;
+    }
+    if (belowHeroSlot) {
+        belowHeroSlot.appendChild(el);
+    }
+    const hasRedWarning = warnings.some(function(w) { return !w || w.warnLevel !== 'orange'; });
+    const iconClass = hasRedWarning ? 'driver-warning-icon-engine-red' : 'driver-warning-icon-engine-orange';
+    const warningItemsHtml = warnings.map(function(w) {
+        return buildDriverNotificationItemHtml(w);
+    }).join('');
+    const engineIcon = '<span class="driver-warning-icon driver-warning-icon-engine ' + iconClass + '" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"></svg></span>';
 
-window.closeDriverNotifications();
-el.className = 'driver-sliding-warning driver-warning-popover' + (hasRedWarning ? '' : ' driver-sliding-warning-orange');
-el.innerHTML = '<button type="button" class="driver-warning-trigger" aria-label="Uyarıları göster" aria-expanded="false" aria-haspopup="dialog" aria-controls="' + DRIVER_NOTIFICATIONS_DROPDOWN_ID + '">'
-+ engineIcon
-+ '</button>';
+    window.closeDriverNotifications();
+    el.className = 'driver-sliding-warning driver-warning-popover' + (hasRedWarning ? '' : ' driver-sliding-warning-orange');
+    el.innerHTML = '<button type="button" class="driver-warning-trigger" aria-label="Uyarıları göster" aria-expanded="false" aria-haspopup="dialog" aria-controls="' + DRIVER_NOTIFICATIONS_DROPDOWN_ID + '">' +
+        engineIcon +
+        '</button>';
 
-const trigger = el.querySelector('.driver-warning-trigger');
-if (trigger) {
-trigger.addEventListener('click', function(e) {
-e.preventDefault();
-e.stopPropagation();
-if (document.body.classList.contains('driver-notifications-open')) {
-window.closeDriverNotifications();
-return;
-}
-window.openDriverNotifications(warningItemsHtml, trigger);
-});
-}
+    const trigger = el.querySelector('.driver-warning-trigger');
+    if (trigger) {
+        trigger.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (document.body.classList.contains('driver-notifications-open')) {
+                window.closeDriverNotifications();
+                return;
+            }
+            window.openDriverNotifications(warningItemsHtml, trigger);
+        });
+    }
 }
 
 function formatDriverDate(val) {
-if (!val) return '-';
-if (/^\d{4}-\d{2}-\d{2}$/.test(val)) {
-const [y, m, d] = val.split('-');
-return d + '.' + m + '.' + y;
-}
-return val;
+    if (!val) return '-';
+    if (/^\d{4}-\d{2}-\d{2}$/.test(val)) {
+        const [y, m, d] = val.split('-');
+        return d + '.' + m + '.' + y;
+    }
+    return val;
 }
 
 function renderDriverRequiredExpiryValue(dateStr) {
-var trimmed = (dateStr && String(dateStr).trim()) ? String(dateStr).trim() : '';
-if (trimmed) return formatDriverDate(trimmed);
-return '<span class="driver-info-missing-value">-</span>';
+    var trimmed = (dateStr && String(dateStr).trim()) ? String(dateStr).trim() : '';
+    if (trimmed) return formatDriverDate(trimmed);
+    return '<span class="driver-info-missing-value">-</span>';
 }
 
 function setupKmInputs() {
-document.querySelectorAll('.driver-action-area input.driver-km-input').forEach(input => {
-var ph = input.parentElement && input.parentElement.querySelector('.driver-km-fake-placeholder');
-function togglePlaceholder() {
-if (ph) ph.style.visibility = (input.value || document.activeElement === input) ? 'hidden' : 'visible';
-}
-togglePlaceholder();
-input.addEventListener('input', function() {
-this.value = this.value.replace(/\D/g, '').slice(0, 8);
-togglePlaceholder();
-});
-input.addEventListener('paste', function(e) {
-e.preventDefault();
-var text = '';
-try {
-text = (e.clipboardData || window.clipboardData).getData('text');
-} catch (err) {}
-this.value = (this.value + (text || '')).replace(/\D/g, '').slice(0, 8);
-togglePlaceholder();
-});
-input.addEventListener('focus', function() { togglePlaceholder(); this.select(); });
-input.addEventListener('blur', togglePlaceholder);
-});
+    document.querySelectorAll('.driver-action-area input.driver-km-input').forEach(input => {
+        var ph = input.parentElement && input.parentElement.querySelector('.driver-km-fake-placeholder');
+
+        function togglePlaceholder() {
+            if (ph) ph.style.visibility = (input.value || document.activeElement === input) ? 'hidden' : 'visible';
+        }
+        togglePlaceholder();
+        input.addEventListener('input', function() {
+            this.value = this.value.replace(/\D/g, '').slice(0, 8);
+            togglePlaceholder();
+        });
+        input.addEventListener('paste', function(e) {
+            e.preventDefault();
+            var text = '';
+            try {
+                text = (e.clipboardData || window.clipboardData).getData('text');
+            } catch (err) {}
+            this.value = (this.value + (text || '')).replace(/\D/g, '').slice(0, 8);
+            togglePlaceholder();
+        });
+        input.addEventListener('focus', function() {
+            togglePlaceholder();
+            this.select();
+        });
+        input.addEventListener('blur', togglePlaceholder);
+    });
 }
 
 function setupEkstraNotAutoResize() {
-document.querySelectorAll('.driver-action-area textarea.driver-report-textarea-auto').forEach(ta => {
-function resize() {
-ta.style.height = 'auto';
-ta.style.height = ta.scrollHeight + 'px';
-}
-ta.addEventListener('input', resize);
-resize();
-});
+    document.querySelectorAll('.driver-action-area textarea.driver-report-textarea-auto').forEach(ta => {
+        function resize() {
+            ta.style.height = 'auto';
+            ta.style.height = ta.scrollHeight + 'px';
+        }
+        ta.addEventListener('input', resize);
+        resize();
+    });
 }
 
 
@@ -1932,7 +1806,7 @@ window.medisaPortalSession.forgetThisDevice();
 clearStoredPortalTokens();
 clearRememberCredentials();
 }
-window.location.href = DRIVER_PAGE_BASE + 'index.html?force=login';
+window.location.href = runtime.paths.DRIVER_PAGE_BASE + 'index.html?force=login';
 }
 
 function openForgetThisDeviceConfirm() {
@@ -1958,54 +1832,40 @@ forgetThisDevice();
 }
 
 function logout() {
-clearStoredPortalTokens();
-window.location.href = DRIVER_PAGE_BASE + 'index.html?force=login';
+    clearStoredPortalTokens();
+    window.location.href = runtime.paths.DRIVER_PAGE_BASE + 'index.html?force=login';
 }
 window.logout = logout;
 window.forgetThisDevice = forgetThisDevice;
 window.openForgetThisDeviceConfirm = openForgetThisDeviceConfirm;
 window.closeForgetThisDeviceConfirm = closeForgetThisDeviceConfirm;
 window.confirmForgetThisDevice = confirmForgetThisDevice;
+
 function publishDriverRuntimeHelpers() {
-var h = runtime.helpers;
-h.driverVehicleNeedsK2 = driverVehicleNeedsK2;
-h.driverVehicleNeedsTakograf = driverVehicleNeedsTakograf;
-h.driverVehicleIsHeavyCommercial = driverVehicleIsHeavyCommercial;
-h.ensureDriverOnlineForWrite = ensureDriverOnlineForWrite;
-h.showDriverOfflineReadonlyMessage = showDriverOfflineReadonlyMessage;
-h.escapeHtmlDriver = escapeHtmlDriver;
-h.formatDriverPlaka = formatDriverPlaka;
-h.formatDriverBrandModel = formatDriverBrandModel;
-h.formatKm = formatKm;
-h.formatDateDDMMYYYY = formatDateDDMMYYYY;
-h.updateDriverModalBodyClass = updateDriverModalBodyClass;
-h.syncDriverDateDisplay = syncDriverDateDisplay;
-h.initDriverDateDisplays = initDriverDateDisplays;
-h.getSelectedVehicle = getSelectedVehicle;
-h.getExistingRecord = getExistingRecord;
-h.getVehicleVersionForRequest = getVehicleVersionForRequest;
-h.applyVehicleVersionUpdate = applyVehicleVersionUpdate;
-h.handleDriverConflictResponse = handleDriverConflictResponse;
-h.loadDashboard = loadDashboard;
-h.switchDriverDashboardVehicle = switchDriverDashboardVehicle;
-h.renderSlidingWarning = renderSlidingWarning;
-h.setupPlateDropdown = setupPlateDropdown;
-h.renderLeftPanel = renderLeftPanel;
-h.renderRightPanel = renderRightPanel;
-h.calculateNextMuayeneDate = calculateNextMuayeneDate;
-h.getVehicleTypeRuleProfileDriver = getVehicleTypeRuleProfileDriver;
-h.clearStoredPortalTokens = clearStoredPortalTokens;
-h.clearRememberCredentials = clearRememberCredentials;
-h.persistSessionToken = persistSessionToken;
-h.isPortalSessionRemembered = isPortalSessionRemembered;
-h.logout = logout;
-h.forgetThisDevice = forgetThisDevice;
-h.openForgetThisDeviceConfirm = openForgetThisDeviceConfirm;
-h.closeForgetThisDeviceConfirm = closeForgetThisDeviceConfirm;
-h.confirmForgetThisDevice = confirmForgetThisDevice;
-h.openDriverNotifications = window.openDriverNotifications;
-h.closeDriverNotifications = window.closeDriverNotifications;
-if (window.__medisaDriverBootMetrics) window.__medisaDriverBootMetrics.dashboardContentReady = Date.now();
+    var h = runtime.helpers;
+    h.driverVehicleNeedsK2 = driverVehicleNeedsK2;
+    h.driverVehicleNeedsTakograf = driverVehicleNeedsTakograf;
+    h.driverVehicleIsHeavyCommercial = driverVehicleIsHeavyCommercial;
+    h.ensureDriverOnlineForWrite = ensureDriverOnlineForWrite;
+    h.escapeHtmlDriver = escapeHtmlDriver;
+    h.formatDriverPlaka = formatDriverPlaka;
+    h.formatDriverBrandModel = formatDriverBrandModel;
+    h.formatKm = formatKm;
+    h.formatDateDDMMYYYY = formatDateDDMMYYYY;
+    h.updateDriverModalBodyClass = updateDriverModalBodyClass;
+    h.syncDriverDateDisplay = syncDriverDateDisplay;
+    h.getSelectedVehicle = getSelectedVehicle;
+    h.getExistingRecord = getExistingRecord;
+    h.getVehicleVersionForRequest = getVehicleVersionForRequest;
+    h.applyVehicleVersionUpdate = applyVehicleVersionUpdate;
+    h.handleDriverConflictResponse = handleDriverConflictResponse;
+    h.loadDashboard = loadDashboard;
+    h.switchDriverDashboardVehicle = switchDriverDashboardVehicle;
+    h.renderSlidingWarning = renderSlidingWarning;
+    h.setupPlateDropdown = setupPlateDropdown;
+    h.calculateNextMuayeneDate = calculateNextMuayeneDate;
+    h.logout = logout;
+    if (window.__medisaDriverBootMetrics) window.__medisaDriverBootMetrics.dashboardContentReady = Date.now();
 }
 publishDriverRuntimeHelpers();
 

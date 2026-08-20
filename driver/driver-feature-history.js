@@ -178,11 +178,6 @@ setHistoryVehicleDropdownOpen(false);
 }
 });
 
-function normalizeDriverHistoryKm(val) {
-if (val == null || val === '') return null;
-var n = parseInt(String(val).replace(/\D/g, ''), 10);
-return isNaN(n) ? null : n;
-}
 
 function normalizeDriverHistoryText(val) {
 return String(val || '').trim().replace(/\s+/g, ' ').toLocaleLowerCase('tr-TR');
@@ -202,9 +197,15 @@ return y + '-' + m + '-' + day;
 }
 
 
+function parseDriverKmInput(val) {
+if (val == null || val === '') return null;
+var n = parseInt(String(val).replace(/\D/g, ''), 10);
+return isNaN(n) ? null : n;
+}
+
 function isRedundantKmRevizeEvent(evItem, hareketPool) {
 if (!evItem || evItem._type !== 'event' || evItem.eventType !== 'km-revize') return false;
-var yeni = normalizeDriverHistoryKm(evItem.data && evItem.data.yeniKm);
+var yeni = parseDriverKmInput(evItem.data && evItem.data.yeniKm);
 if (yeni === null) return false;
 var vid = String(evItem.arac_id != null ? evItem.arac_id : '');
 var dayEvt = '';
@@ -219,7 +220,7 @@ var pool = hareketPool || [];
 return pool.some(function (h) {
 if (!h || h._type !== 'hareket') return false;
 if (String(h.arac_id) !== vid) return false;
-if (normalizeDriverHistoryKm(h.guncel_km) !== yeni) return false;
+if (parseDriverKmInput(h.guncel_km) !== yeni) return false;
 var dayH = driverHistoryDateKey(h.guncelleme_tarihi || h.kayit_tarihi || '');
 return dayH !== '' && dayH === dayEvt;
 });

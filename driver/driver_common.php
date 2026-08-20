@@ -25,11 +25,6 @@ function medisaDriverResolveContextResult($data, $tokenData) {
     ];
 }
 
-function medisaDriverResolveContext($data, $tokenData) {
-    $result = medisaDriverResolveContextResult($data, $tokenData);
-    return ($result['success'] ?? false) === true ? $result['context'] : null;
-}
-
 function medisaDriverRequireUsableSession($tokenData) {
     $data = loadData();
     if (!is_array($data)) {
