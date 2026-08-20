@@ -3229,6 +3229,8 @@
       const saveBtn = modal.querySelector('.universal-btn-save[onclick*="saveUser"]') || modal.querySelector('.universal-btn-save');
       if (saveBtn && saveBtn.disabled) return;
       if (saveBtn) saveBtn.disabled = true;
+      let previousUsers = null;
+      let previousVehicles = null;
       try {
         if (!modal) {
           alert('Form modalı bulunamadı!');
@@ -3317,10 +3319,11 @@
           return;
         }
 
-        const previousUsers = cloneStorageState(readAllUsers());
-        const previousVehicles = cloneStorageState(readAllVehicles());
+        previousUsers = cloneStorageState(readAllUsers());
+        previousVehicles = cloneStorageState(readAllVehicles());
+        // PHASE 1 — immutable BEFORE snapshot (working kopyalar ayrı)
         const users = cloneStorageState(previousUsers);
-        const vehicles = cloneStorageState(previousVehicles);
+        const vehiclesDesired = cloneStorageState(previousVehicles);
         const existingUser = id ? users.find(function(user) { return String(user.id) === String(id); }) : null;
         const selectedVehicleSet = new Set(selectedVehicleIds.map(function(vehicleId) { return String(vehicleId); }));
 
@@ -3348,39 +3351,85 @@
 
         let savedUserId = id;
 
-        const reassignedVehicles = vehicles
-          .filter(function(v) {
+        const pendingAssignUser = {
+          id: id || 'pending-user',
+          name: name,
+          role: role,
+          aktif: true,
+          branchId: branchId,
+          branchIds: branchIds.slice()
+        };
+
+        // PHASE 2 — DESIRED PLAN (BEFORE snapshot'tan; henüz mutate yok)
+        const buildPlanFn = typeof window.buildVehicleUserAssignmentFormPlan === 'function'
+          ? window.buildVehicleUserAssignmentFormPlan
+          : null;
+        if (!buildPlanFn) {
+          alert('Atama planı hazırlanamadı. Lütfen sayfayı yenileyip tekrar deneyin.');
+          return;
+        }
+        const assignmentPlan = buildPlanFn({
+          vehiclesBefore: previousVehicles,
+          selectedVehicleIds: selectedVehicleSet,
+          targetUserId: savedUserId || '',
+          assignUser: pendingAssignUser,
+          isVehicleInScope: function(v) {
             if (scope.isBranchManager && !isWithinUserManagementBranch(v && v.branchId, scope)) return false;
-            const vehicleId = String(v && v.id != null ? v.id : '');
-            const assignedUserId = String(v && v.assignedUserId ? v.assignedUserId : '');
-            return selectedVehicleSet.has(vehicleId) && assignedUserId && assignedUserId !== String(savedUserId || '');
-          })
-          .map(function(v) {
-            const assignedUser = users.find(function(u) { return String(u.id) === String(v.assignedUserId || ''); });
-            const assignedName = formatUserFullName(
-              (assignedUser && assignedUser.name) ||
-              (typeof v.tahsisKisi === 'string' ? v.tahsisKisi : '')
-            ) || 'Bilinmeyen Kullanıcı';
-            return {
-              id: String(v.id || ''),
-              plaka: String(v.plaka || v.plate || '-'),
-              assignedName: assignedName
-            };
+            return true;
+          }
+        });
+
+        // PHASE 3 — CONFIRMATIONS (tüm kararlar mutation/persist öncesi)
+        if (assignmentPlan.reassignedFromOther.length > 0) {
+          const firstId = String(assignmentPlan.reassignedFromOther[0].vehicleId || '');
+          const firstBefore = previousVehicles.find(function(v) { return String(v && v.id) === firstId; });
+          const firstAssignedUser = users.find(function(u) {
+            return String(u.id) === String(assignmentPlan.reassignedFromOther[0].beforeAssignedUserId || '');
           });
-        if (reassignedVehicles.length > 0) {
-          const first = reassignedVehicles[0];
-          const isMultiple = reassignedVehicles.length > 1;
+          const assignedName = formatUserFullName(
+            (firstAssignedUser && firstAssignedUser.name) ||
+            (firstBefore && typeof firstBefore.tahsisKisi === 'string' ? firstBefore.tahsisKisi : '')
+          ) || 'Bilinmeyen Kullanıcı';
+          const firstPlaka = firstBefore
+            ? String(firstBefore.plaka || firstBefore.plate || '-')
+            : '-';
+          const isMultiple = assignmentPlan.reassignedFromOther.length > 1;
           const confirmMessage = isMultiple
             ? 'Seçtiğiniz taşıtlardan en az biri başka kullanıcıya tahsis edilmiş.\n\n'
-              + 'Taşıt "' + first.plaka + '" "' + first.assignedName + '" adlı kullanıcıya tahsis edilmiş.\n'
+              + 'Taşıt "' + firstPlaka + '" "' + assignedName + '" adlı kullanıcıya tahsis edilmiş.\n'
               + 'Bu tahsis silinecektir. Emin misiniz?'
-            : 'Taşıt "' + first.plaka + '" "' + first.assignedName + '" adlı kullanıcıya tahsis edilmiş.\n'
+            : 'Taşıt "' + firstPlaka + '" "' + assignedName + '" adlı kullanıcıya tahsis edilmiş.\n'
               + 'Tahsis silinecektir. Emin misiniz?';
           if (!window.confirm(confirmMessage)) {
             return;
           }
         }
 
+        const askCrossBranch = typeof window.askVehicleUserCrossBranchAssignmentConfirm === 'function'
+          ? window.askVehicleUserCrossBranchAssignmentConfirm
+          : null;
+        const crossBranchMessage = (typeof window.MEDISA_VEHICLE_USER_CROSS_BRANCH_CONFIRM_MESSAGE === 'string'
+          && window.MEDISA_VEHICLE_USER_CROSS_BRANCH_CONFIRM_MESSAGE)
+          ? window.MEDISA_VEHICLE_USER_CROSS_BRANCH_CONFIRM_MESSAGE
+          : 'Atamak İstenilen Kullanıcı, Farklı Şubeye Kayıtlıdır. Taşıtın Tahsisli Olduğu Şubeyi Güncellemeniz Gerekli. Onaylıyor Musunuz?';
+        if (assignmentPlan.crossBranchAssigned.length > 0) {
+          if (!askCrossBranch) {
+            alert(crossBranchMessage);
+            return;
+          }
+          for (let i = 0; i < assignmentPlan.crossBranchAssigned.length; i++) {
+            if (i > 0) {
+              await new Promise(function(resolveGap) { setTimeout(resolveGap, 60); });
+            }
+            const crossBranchOk = await askCrossBranch(crossBranchMessage);
+            if (crossBranchOk !== true) {
+              // ENTIRE_FORM_SAVE = ABORTED — önceki YES'ler dahil hiçbir mutate/persist yok
+              return;
+            }
+          }
+        }
+
+        // PHASE 4 — COMMIT PLAN (memory desired state; tek persist)
         if (id) {
           // güncelleME
           const idx = users.findIndex(u => String(u.id) === String(id));
@@ -3421,29 +3470,20 @@
           savedUserId = newUser.id;
         }
 
-        // atanmış Taşıtlar: tek kaynak vehicle.assignedUserId
-        vehicles.forEach(v => {
-          if (scope.isBranchManager && !isWithinUserManagementBranch(v && v.branchId, scope)) return;
-          const vid = String(v.id);
-          const wasAssigned = String(v.assignedUserId || '') === String(savedUserId);
-          const nowSelected = selectedVehicleIds.indexOf(vid) !== -1;
-          if (wasAssigned && !nowSelected) {
-            v.assignedUserId = undefined;
-            if (v.tahsisKisi !== undefined) v.tahsisKisi = '';
-          } else if (nowSelected) {
-            v.assignedUserId = savedUserId;
-            const u = users.find(u => String(u.id) === String(savedUserId));
-            if (u && v.tahsisKisi !== undefined) v.tahsisKisi = u.name || '';
-            const primarySube = (u.branchIds && u.branchIds[0]) || u.branchId;
-            if (u && !v.branchId && primarySube) v.branchId = primarySube;
-          }
-        });
+        const assignUserFinal = users.find(function(u) { return String(u.id) === String(savedUserId); }) || pendingAssignUser;
+        const applyPlanFn = typeof window.applyVehicleUserAssignmentFormPlan === 'function'
+          ? window.applyVehicleUserAssignmentFormPlan
+          : null;
+        if (!applyPlanFn || applyPlanFn(vehiclesDesired, assignmentPlan, savedUserId, assignUserFinal) !== true) {
+          alert('Taşıt atama planı uygulanamadı. Kayıt iptal edildi.');
+          return;
+        }
+
         const userPasswordChanges = Object.create(null);
         if (sifre !== '' && savedUserId) {
           userPasswordChanges[String(savedUserId)] = sifre;
         }
-        if (passwordInput) passwordInput.value = '';
-        const persisted = await persistUserManagementState(users, vehicles, {
+        const persisted = await persistUserManagementState(users, vehiclesDesired, {
           userPasswordChanges: userPasswordChanges
         });
         if (persisted !== true) {
@@ -3452,6 +3492,9 @@
           alert('Kullanıcı sunucuya kaydedilemedi. Bu nedenle portal girişi açılmaz. Lütfen tekrar deneyin.');
           return;
         }
+
+        // PHASE 5 — PERSIST SUCCESS
+        if (passwordInput) passwordInput.value = '';
 
         if (savedUserId) {
           window.dispatchEvent(new CustomEvent('userSaved', { detail: { id: savedUserId } }));
@@ -3465,13 +3508,19 @@
         alert(id ? 'Kullanıcı güncellendi.' : 'Kullanıcı Eklendi.');
       } catch (error) {
         console.error('Kullanıcı kayıt hatası:', error);
-        if (isUserManagementSaveConflict(error)) {
-          const reloadOk = await refreshUserManagementAfterSaveConflict(previousUsers, previousVehicles);
-          alert(
-            reloadOk
-              ? buildUserSaveConflictAlertMessage(error)
-              : 'Sunucu ile senkron güncellenemedi. Sayfayı yenileyip tekrar deneyin.'
-          );
+        if (previousUsers && previousVehicles) {
+          if (isUserManagementSaveConflict(error)) {
+            const reloadOk = await refreshUserManagementAfterSaveConflict(previousUsers, previousVehicles);
+            alert(
+              reloadOk
+                ? buildUserSaveConflictAlertMessage(error)
+                : 'Sunucu ile senkron güncellenemedi. Sayfayı yenileyip tekrar deneyin.'
+            );
+          } else {
+            setUserManagementLocalState(previousUsers, previousVehicles);
+            if (typeof renderUserList === 'function') renderUserList();
+            alert('Kullanıcı kaydı sırasında bir hata oluştu! Lütfen tekrar deneyin.');
+          }
         } else {
           alert('Kullanıcı kaydı sırasında bir hata oluştu! Lütfen tekrar deneyin.');
         }

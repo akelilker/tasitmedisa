@@ -640,7 +640,9 @@ function setBaseline(ctx, data) {
     assert.equal(fn({ id: 'gm1', role: 'genel_yonetici', branchIds: ['b1'], aktif: true }, 'b1'), false);
     assert.equal(fn({ id: 'u2', role: 'yonetici_kullanici', branchIds: ['b1'], aktif: true }, 'b1'), false);
     assert.equal(fn({ id: 'u3', role: 'kullanici', branchIds: ['b1'], aktif: false }, 'b1'), false);
-    assert.equal(fn({ id: 'u4', role: 'kullanici', branchIds: ['b2'], aktif: true }, 'b1'), false);
+    // Cross-branch kullanıcı aramada elenmez; branch transfer confirmation ayrı predicate
+    assert.equal(fn({ id: 'u4', role: 'kullanici', branchIds: ['b2'], aktif: true }, 'b1'), true);
+    assert.equal(fn({ id: 'u5', role: 'kullanici', branchIds: ['b2'], aktif: true }), true);
   });
 
   await run('central auth status helper exists', async function() {
