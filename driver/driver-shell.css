@@ -881,6 +881,16 @@ body.dashboard-page {
     transform: scale(1.18);
     filter: drop-shadow(0 0 3px rgba(238, 246, 255, 0.2));
   }
+  .dashboard-page .driver-left-quick-action-documents .driver-left-quick-action-icon,
+  .dashboard-page .driver-left-quick-action-feedback .driver-left-quick-action-icon,
+  .dashboard-page .driver-left-quick-action-password .driver-left-quick-action-icon {
+    color: #22c55e !important;
+  }
+  .dashboard-page .driver-left-quick-action-documents:hover .driver-left-quick-action-icon,
+  .dashboard-page .driver-left-quick-action-feedback:hover .driver-left-quick-action-icon,
+  .dashboard-page .driver-left-quick-action-password:hover .driver-left-quick-action-icon {
+      color: #22c55e !important;
+  }
   /* Sağ grid: aksiyon alanı üstten hafif boşlukla görsel dengeye alınır, satır aralığı sıfırlanır */
   .dashboard-page .driver-action-area {
     padding-top: 8px;
