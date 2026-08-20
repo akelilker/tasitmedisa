@@ -197,7 +197,7 @@
 
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20260820.2';
+  const MEDISA_TASITLAR_MODULE_VERSION = '20260820.4';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
@@ -247,49 +247,24 @@
   function readBranches() { return (typeof window.getMedisaBranches === 'function' ? window.getMedisaBranches() : null) || []; }
   function readVehicles() { return (typeof window.getMedisaVehicles === 'function' ? window.getMedisaVehicles() : null) || []; }
   function readUsers() { return (typeof window.getMedisaUsers === 'function' ? window.getMedisaUsers() : null) || []; }
-  function getUserBranchIdsForVehicleAssignment(user) {
-    if (!user || typeof user !== 'object') return [];
-
-    let branchIds = [];
-    if (Array.isArray(user.branchIds)) {
-      branchIds = user.branchIds;
-    } else if (Array.isArray(user.sube_ids)) {
-      branchIds = user.sube_ids;
-    } else if (user.branchId !== undefined && user.branchId !== null && user.branchId !== '') {
-      branchIds = [user.branchId];
-    } else if (user.sube_id !== undefined && user.sube_id !== null && user.sube_id !== '') {
-      branchIds = [user.sube_id];
-    }
-
-    const normalized = [];
-    branchIds.forEach(function(branchId) {
-      const value = String(branchId || '').trim();
-      if (value && normalized.indexOf(value) === -1) normalized.push(value);
-    });
-    return normalized;
-  }
   function getAssignableUsersForVehicle(vehicle) {
     const users = readUsers();
-    const vehicleBranchId = vehicle && vehicle.branchId !== undefined && vehicle.branchId !== null
-      ? String(vehicle.branchId).trim()
-      : '';
     const candidateFn = typeof window.isAssignableNormalUserCandidate === 'function'
       ? window.isAssignableNormalUserCandidate
       : null;
 
     return users.filter(function(user) {
       if (candidateFn) {
-        return candidateFn(user, vehicleBranchId || null);
+        return candidateFn(user);
       }
-      // Fallback: script-core rol map + aktif + şube
+      // Fallback: script-core rol map + aktif (şube arama filtresi yok)
       const roleRaw = user && (user.role || user.rol || user.tip);
       const role = typeof window.medisaMapUiRoleToRol === 'function'
         ? window.medisaMapUiRoleToRol(roleRaw)
         : String(roleRaw || 'kullanici');
       if (role !== 'kullanici') return false;
       if (user && user.aktif === false) return false;
-      if (!vehicleBranchId) return true;
-      return getUserBranchIdsForVehicleAssignment(user).indexOf(vehicleBranchId) !== -1;
+      return true;
     });
   }
 
@@ -311,8 +286,45 @@
       : plain;
   }
 
+  /**
+   * Ceza / olay kullanıcı seçimi: aktif normal kullanıcı + taşıt şubesi üyeliği.
+   * Assignment aramasından ayrıdır; cross-branch assignment genişlemesi buraya sızmaz.
+   */
+  function getSelectableUsersForVehicleEvent(vehicle) {
+    const users = readUsers();
+    const vehicleBranchId = vehicle && vehicle.branchId !== undefined && vehicle.branchId !== null
+      ? String(vehicle.branchId).trim()
+      : '';
+    const candidateFn = typeof window.isAssignableNormalUserCandidate === 'function'
+      ? window.isAssignableNormalUserCandidate
+      : null;
+    const getBranchIds = typeof window.getUserBranchIds === 'function'
+      ? window.getUserBranchIds
+      : null;
+
+    return users.filter(function(user) {
+      if (candidateFn) {
+        if (!candidateFn(user)) return false;
+      } else {
+        const roleRaw = user && (user.role || user.rol || user.tip);
+        const role = typeof window.medisaMapUiRoleToRol === 'function'
+          ? window.medisaMapUiRoleToRol(roleRaw)
+          : String(roleRaw || 'kullanici');
+        if (role !== 'kullanici') return false;
+        if (user && user.aktif === false) return false;
+      }
+      if (!vehicleBranchId) return true;
+      if (getBranchIds) {
+        const ids = getBranchIds(user) || [];
+        return ids.indexOf(vehicleBranchId) !== -1;
+      }
+      const userBranchId = user && user.branchId != null ? String(user.branchId).trim() : '';
+      return !userBranchId || userBranchId === vehicleBranchId;
+    });
+  }
+
   function getAssignableUserDisplayNamesForVehicle(vehicle) {
-    const users = getAssignableUsersForVehicle(vehicle);
+    const users = getSelectableUsersForVehicleEvent(vehicle);
     const names = [];
     const seen = Object.create(null);
     users.forEach(function(user) {
@@ -8978,6 +8990,17 @@
 
     if (!vehicle.events) vehicle.events = [];
 
+    function restoreKullaniciSelectToPrevious(previousId) {
+      const restoreValue = previousId != null && String(previousId).trim() !== ''
+        ? String(previousId)
+        : '';
+      selectEl.value = restoreValue;
+      const shell = selectEl.closest('.medisa-owner-select');
+      if (shell && window.MedisaOwnerSelect && typeof window.MedisaOwnerSelect.refresh === 'function') {
+        window.MedisaOwnerSelect.refresh(shell);
+      }
+    }
+
     // Henüz Tanımlanmadı: tahsisi kaldır
     if (yeniKullaniciId === '__none__') {
       vehicle.assignedUserId = undefined;
@@ -9002,6 +9025,9 @@
           vehicleId: vehicleId,
           message: 'Kullanıcı ataması güncellendi.'
         });
+      }).catch(function(err) {
+        if (typeof showToast === 'function') showToast((err && err.message) || 'Kayıt başarısız.', 'error');
+        else alert((err && err.message) || 'Kayıt başarısız.');
       });
     }
 
@@ -9009,36 +9035,154 @@
     const user = users.find(u => String(u.id) === String(yeniKullaniciId));
     const eskiKullaniciId = vehicle.assignedUserId || '';
     const eskiUser = users.find(u => String(u.id) === String(eskiKullaniciId));
+    const isAssignableFn = typeof window.isAssignableNormalUserCandidate === 'function'
+      ? window.isAssignableNormalUserCandidate
+      : null;
+    if (!user || (isAssignableFn && !isAssignableFn(user))) {
+      alert('Seçilen kullanıcı atamaya uygun değil.');
+      restoreKullaniciSelectToPrevious(eskiKullaniciId);
+      return;
+    }
 
-    const normalizedKullaniciId = user ? user.id : yeniKullaniciId;
+    const needsTransferFn = typeof window.needsVehicleBranchTransferForAssignment === 'function'
+      ? window.needsVehicleBranchTransferForAssignment
+      : null;
+    const needsTransfer = needsTransferFn ? !!needsTransferFn(vehicle, user) : false;
+    const confirmMessage = (typeof window.MEDISA_VEHICLE_USER_CROSS_BRANCH_CONFIRM_MESSAGE === 'string'
+      && window.MEDISA_VEHICLE_USER_CROSS_BRANCH_CONFIRM_MESSAGE)
+      ? window.MEDISA_VEHICLE_USER_CROSS_BRANCH_CONFIRM_MESSAGE
+      : 'Atamak İstenilen Kullanıcı, Farklı Şubeye Kayıtlıdır. Taşıtın Tahsisli Olduğu Şubeyi Güncellemeniz Gerekli. Onaylıyor Musunuz?';
 
-    vehicle.assignedUserId = normalizedKullaniciId;
-    vehicle.tahsisKisi = user?.name || '';
-    var userBranchId = user ? (user.branchId || '') : '';
-    if (user && !vehicle.branchId && userBranchId) vehicle.branchId = userBranchId;
-    vehicle.updatedAt = new Date().toISOString();
-
-    const event = {
-      id: Date.now().toString(),
-      type: 'kullanici-atama',
-      date: formatDateForDisplay(new Date()),
-      timestamp: new Date().toISOString(),
-      data: {
-        kullaniciId: normalizedKullaniciId,
-        kullaniciAdi: user?.name || '',
-        eskiKullaniciAdi: eskiUser?.name || (eskiKullaniciId ? 'Bilinmiyor' : ''),
-        kaydeden: getRecorderDisplayName()
+    function commitKullaniciAtama(transferConfirmed) {
+      const freshUsers = readUsers();
+      const freshUser = freshUsers.find(u => String(u.id) === String(yeniKullaniciId));
+      if (!freshUser || (isAssignableFn && !isAssignableFn(freshUser))) {
+        alert('Seçilen kullanıcı atamaya uygun değil.');
+        restoreKullaniciSelectToPrevious(eskiKullaniciId);
+        return Promise.resolve();
       }
-    };
+      if (needsTransfer && !transferConfirmed) {
+        restoreKullaniciSelectToPrevious(eskiKullaniciId);
+        return Promise.resolve();
+      }
+      if (needsTransferFn && needsTransferFn(vehicle, freshUser) && !transferConfirmed) {
+        restoreKullaniciSelectToPrevious(eskiKullaniciId);
+        return Promise.resolve();
+      }
 
-    vehicle.events.unshift(event);
-    return writeVehicles(vehicles).then(function() {
-      return completeDynamicEventSave({
-        modalType: 'kullanici',
-        vehicleId: vehicleId,
-        message: 'Kullanıcı ataması güncellendi.'
+      const preCommitSnapshot = {
+        branchId: vehicle.branchId,
+        assignedUserId: vehicle.assignedUserId,
+        tahsisKisi: vehicle.tahsisKisi,
+        updatedAt: vehicle.updatedAt,
+        tasitKartiExpiryDate: vehicle.tasitKartiExpiryDate,
+        events: Array.isArray(vehicle.events) ? vehicle.events.slice() : vehicle.events
+      };
+      function restoreVehicleAfterFailedPersist() {
+        vehicle.branchId = preCommitSnapshot.branchId;
+        vehicle.assignedUserId = preCommitSnapshot.assignedUserId;
+        vehicle.tahsisKisi = preCommitSnapshot.tahsisKisi;
+        vehicle.updatedAt = preCommitSnapshot.updatedAt;
+        vehicle.tasitKartiExpiryDate = preCommitSnapshot.tasitKartiExpiryDate;
+        if (Array.isArray(preCommitSnapshot.events)) {
+          vehicle.events = preCommitSnapshot.events.slice();
+        } else {
+          vehicle.events = preCommitSnapshot.events;
+        }
+        restoreKullaniciSelectToPrevious(eskiKullaniciId);
+      }
+
+      const normalizedKullaniciId = freshUser.id;
+      const nowIso = new Date().toISOString();
+      const dateDisp = formatDateForDisplay(new Date());
+
+      if (transferConfirmed) {
+        const branches = readBranches();
+        const eskiSubeId = vehicle.branchId || '';
+        const eskiSube = branches.find(b => String(b.id) === String(eskiSubeId));
+        const applyTransfer = typeof window.applyVehicleBranchTransferForUserAssignment === 'function'
+          ? window.applyVehicleBranchTransferForUserAssignment
+          : null;
+        const transferred = applyTransfer
+          ? applyTransfer(vehicle, freshUser)
+          : false;
+        if (!transferred) {
+          alert('Taşıt şubesi güncellenemedi. Atama iptal edildi.');
+          restoreKullaniciSelectToPrevious(eskiKullaniciId);
+          return Promise.resolve();
+        }
+        const yeniSube = branches.find(b => String(b.id) === String(vehicle.branchId));
+        vehicle.events.unshift({
+          id: Date.now().toString() + '-sube',
+          type: 'sube-degisiklik',
+          date: dateDisp,
+          timestamp: nowIso,
+          data: {
+            eskiSubeId: eskiSubeId,
+            yeniSubeId: vehicle.branchId,
+            eskiSubeAdi: eskiSube?.name || '',
+            yeniSubeAdi: yeniSube?.name || '',
+            surucu: getEventPerformerName(vehicle),
+            kaydeden: getRecorderDisplayName(),
+            kaynak: 'kullanici-atama-cross-branch'
+          }
+        });
+      } else {
+        const canonicalBranchId = typeof window.getUserCanonicalBranchId === 'function'
+          ? window.getUserCanonicalBranchId(freshUser)
+          : (freshUser.branchId || '');
+        if (!vehicle.branchId && canonicalBranchId) vehicle.branchId = canonicalBranchId;
+      }
+
+      vehicle.assignedUserId = normalizedKullaniciId;
+      vehicle.tahsisKisi = freshUser.name || '';
+      vehicle.updatedAt = nowIso;
+
+      vehicle.events.unshift({
+        id: Date.now().toString(),
+        type: 'kullanici-atama',
+        date: dateDisp,
+        timestamp: nowIso,
+        data: {
+          kullaniciId: normalizedKullaniciId,
+          kullaniciAdi: freshUser.name || '',
+          eskiKullaniciAdi: eskiUser?.name || (eskiKullaniciId ? 'Bilinmiyor' : ''),
+          kaydeden: getRecorderDisplayName()
+        }
       });
-    });
+
+      return writeVehicles(vehicles).then(function() {
+        return completeDynamicEventSave({
+          modalType: 'kullanici',
+          vehicleId: vehicleId,
+          message: 'Kullanıcı ataması güncellendi.'
+        });
+      }).catch(function(err) {
+        restoreVehicleAfterFailedPersist();
+        if (typeof showToast === 'function') showToast((err && err.message) || 'Kayıt başarısız.', 'error');
+        else alert((err && err.message) || 'Kayıt başarısız.');
+      });
+    }
+
+    if (needsTransfer) {
+      const askConfirm = typeof window.askVehicleUserCrossBranchAssignmentConfirm === 'function'
+        ? window.askVehicleUserCrossBranchAssignmentConfirm
+        : null;
+      if (!askConfirm) {
+        alert(confirmMessage);
+        restoreKullaniciSelectToPrevious(eskiKullaniciId);
+        return;
+      }
+      return askConfirm(confirmMessage).then(function(ok) {
+        if (ok !== true) {
+          restoreKullaniciSelectToPrevious(eskiKullaniciId);
+          return;
+        }
+        return commitKullaniciAtama(true);
+      });
+    }
+
+    return commitKullaniciAtama(false);
   };
 
   /**

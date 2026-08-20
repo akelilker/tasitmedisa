@@ -1986,17 +1986,289 @@ function isNormalUserSessionRole(role) {
 }
 
 /**
- * Taşıt tahsis / ceza adayları: yalnız aktif normal kullanıcı.
+ * Taşıt tahsis adayları: yalnız aktif normal kullanıcı.
  * Yönetici paneli bayrağı veya taşıt ilişkisi aday yapmaz.
+ * Şube eşitliği arama filtresi değildir; cross-branch confirmation ayrıdır.
+ * Ceza/olay kullanıcı seçimi bu helper'ı kullanabilir ama şube filtresi
+ * consumer tarafında ayrıca uygulanır (assignment ile karıştırılmaz).
+ * @param {*} user
+ * @param {*=} _branchIdIgnored Geriye dönük imza; aramada kullanılmaz.
  */
-function isAssignableNormalUserCandidate(user, branchId) {
+function isAssignableNormalUserCandidate(user, _branchIdIgnored) {
     var normalized = normalizeUser(user);
     if (!normalized || !normalized.id) return false;
     if (!isNormalUserSessionRole(normalized.role)) return false;
     if (normalized.aktif === false) return false;
-    var scopeBranchId = branchId != null ? String(branchId).trim() : '';
-    if (!scopeBranchId) return true;
-    return arrayHasId(getUserBranchIds(normalized), scopeBranchId);
+    return true;
+}
+
+/** Kullanıcının canonical / primary şube id'si (normalizeUser.branchId). */
+function getUserCanonicalBranchId(user) {
+    var normalized = normalizeUser(user);
+    return normalized && normalized.branchId ? String(normalized.branchId) : '';
+}
+
+/**
+ * Atamada taşıt şubesinin kullanıcı canonical şubesine taşınması gerekir mi?
+ * Kullanıcı zaten vehicle.branchId üyesiyse mismatch yok.
+ */
+function needsVehicleBranchTransferForAssignment(vehicle, user) {
+    if (!vehicle || !user) return false;
+    var vehicleBranchId = vehicle.branchId != null ? String(vehicle.branchId).trim() : '';
+    if (!vehicleBranchId) return false;
+    if (arrayHasId(getUserBranchIds(user), vehicleBranchId)) return false;
+    var canonical = getUserCanonicalBranchId(user);
+    if (!canonical) return false;
+    return String(canonical) !== vehicleBranchId;
+}
+
+var MEDISA_VEHICLE_USER_CROSS_BRANCH_CONFIRM_MESSAGE =
+    'Atamak İstenilen Kullanıcı, Farklı Şubeye Kayıtlıdır. Taşıtın Tahsisli Olduğu Şubeyi Güncellemeniz Gerekli. Onaylıyor Musunuz?';
+
+/**
+ * Taşıtın tahsisli şubesini kullanıcının canonical şubesine yazar (kullanıcı şubesi değişmez).
+ * @returns {boolean} branch değişti mi
+ */
+function applyVehicleBranchTransferForUserAssignment(vehicle, user) {
+    if (!vehicle || !user) return false;
+    var canonical = getUserCanonicalBranchId(user);
+    if (!canonical) return false;
+    var previous = vehicle.branchId != null ? String(vehicle.branchId).trim() : '';
+    if (previous === String(canonical)) return false;
+    vehicle.branchId = canonical;
+    try {
+        var domain = window.MedisaVehicleNotificationDomain;
+        if (domain && typeof domain.vehicleNeedsK2Belgesi === 'function') {
+            if (domain.vehicleNeedsK2Belgesi(vehicle)) {
+                var targetK2Group = typeof domain.getK2BelgeGroupForVehicle === 'function'
+                    ? domain.getK2BelgeGroupForVehicle(vehicle)
+                    : null;
+                vehicle.tasitKartiExpiryDate = String(targetK2Group && targetK2Group.expiryDate || '').trim();
+            } else {
+                vehicle.tasitKartiExpiryDate = '';
+            }
+        }
+    } catch (eK2) { /* domain yoksa yalnız branch yazılır */ }
+    return true;
+}
+
+/**
+ * User Management form-save: desired assignment plan (mutasyon yok).
+ * @param {object} options
+ * @param {Array} options.vehiclesBefore immutable BEFORE snapshot (okunur)
+ * @param {Array|Set} options.selectedVehicleIds
+ * @param {string} options.targetUserId
+ * @param {object} options.assignUser pending/canonical assign user
+ * @param {function=} options.isVehicleInScope (vehicle) => boolean
+ * @returns {{unchanged:Array, newlyAssigned:Array, unassigned:Array, sameBranchAssigned:Array, crossBranchAssigned:Array, reassignedFromOther:Array}}
+ */
+function buildVehicleUserAssignmentFormPlan(options) {
+    var opts = options || {};
+    var vehiclesBefore = Array.isArray(opts.vehiclesBefore) ? opts.vehiclesBefore : [];
+    var targetUserId = opts.targetUserId != null ? String(opts.targetUserId) : '';
+    var assignUser = opts.assignUser || null;
+    var isInScope = typeof opts.isVehicleInScope === 'function'
+        ? opts.isVehicleInScope
+        : function() { return true; };
+    var selectedSet = opts.selectedVehicleIds instanceof Set
+        ? opts.selectedVehicleIds
+        : new Set((Array.isArray(opts.selectedVehicleIds) ? opts.selectedVehicleIds : []).map(function(id) {
+            return String(id);
+        }));
+    var plan = {
+        unchanged: [],
+        newlyAssigned: [],
+        unassigned: [],
+        sameBranchAssigned: [],
+        crossBranchAssigned: [],
+        reassignedFromOther: []
+    };
+    vehiclesBefore.forEach(function(vehicle) {
+        if (!vehicle || vehicle.id == null) return;
+        var vehicleId = String(vehicle.id);
+        var beforeBranchId = vehicle.branchId != null ? String(vehicle.branchId).trim() : '';
+        var beforeAssignedUserId = vehicle.assignedUserId != null && vehicle.assignedUserId !== ''
+            ? String(vehicle.assignedUserId)
+            : '';
+        if (!isInScope(vehicle)) {
+            plan.unchanged.push({
+                vehicleId: vehicleId,
+                beforeBranchId: beforeBranchId,
+                beforeAssignedUserId: beforeAssignedUserId,
+                reason: 'out-of-scope'
+            });
+            return;
+        }
+        var wasAssigned = targetUserId !== '' && beforeAssignedUserId === targetUserId;
+        var nowSelected = selectedSet.has(vehicleId);
+        if (wasAssigned && !nowSelected) {
+            plan.unassigned.push({
+                vehicleId: vehicleId,
+                beforeBranchId: beforeBranchId,
+                beforeAssignedUserId: beforeAssignedUserId
+            });
+            return;
+        }
+        if (!nowSelected) {
+            plan.unchanged.push({
+                vehicleId: vehicleId,
+                beforeBranchId: beforeBranchId,
+                beforeAssignedUserId: beforeAssignedUserId,
+                reason: 'not-selected'
+            });
+            return;
+        }
+        var needsTransfer = needsVehicleBranchTransferForAssignment(vehicle, assignUser);
+        var entry = {
+            vehicleId: vehicleId,
+            beforeBranchId: beforeBranchId,
+            beforeAssignedUserId: beforeAssignedUserId,
+            needsBranchTransfer: !!needsTransfer,
+            targetBranchId: needsTransfer
+                ? getUserCanonicalBranchId(assignUser)
+                : beforeBranchId
+        };
+        if (beforeAssignedUserId && beforeAssignedUserId !== targetUserId) {
+            plan.reassignedFromOther.push(entry);
+        }
+        if (needsTransfer) {
+            plan.crossBranchAssigned.push(entry);
+        } else {
+            plan.sameBranchAssigned.push(entry);
+        }
+        if (!wasAssigned) {
+            plan.newlyAssigned.push(entry);
+        } else if (!needsTransfer && beforeAssignedUserId === targetUserId) {
+            plan.unchanged.push({
+                vehicleId: vehicleId,
+                beforeBranchId: beforeBranchId,
+                beforeAssignedUserId: beforeAssignedUserId,
+                reason: 'already-assigned-same-branch'
+            });
+        }
+    });
+    return plan;
+}
+
+/**
+ * Desired planı vehiclesDesired üzerinde uygular (BEFORE snapshot'a dokunmaz).
+ * branchId + assignedUserId aynı desired object'te birlikte yazılır.
+ * @returns {boolean}
+ */
+function applyVehicleUserAssignmentFormPlan(vehiclesDesired, plan, assignUserId, assignUser) {
+    if (!Array.isArray(vehiclesDesired) || !plan || !assignUser) return false;
+    var targetId = assignUserId != null ? String(assignUserId) : '';
+    if (!targetId) return false;
+    var byId = Object.create(null);
+    vehiclesDesired.forEach(function(vehicle) {
+        if (vehicle && vehicle.id != null) byId[String(vehicle.id)] = vehicle;
+    });
+    function applyAssign(entry, transfer) {
+        var vehicle = byId[String(entry.vehicleId)];
+        if (!vehicle) return;
+        vehicle.assignedUserId = targetId;
+        if (vehicle.tahsisKisi !== undefined) {
+            vehicle.tahsisKisi = assignUser.name || assignUser.isim || '';
+        }
+        if (transfer) {
+            applyVehicleBranchTransferForUserAssignment(vehicle, assignUser);
+        } else if (!vehicle.branchId) {
+            var canonical = getUserCanonicalBranchId(assignUser);
+            if (canonical) vehicle.branchId = canonical;
+        }
+    }
+    (plan.unassigned || []).forEach(function(entry) {
+        var vehicle = byId[String(entry.vehicleId)];
+        if (!vehicle) return;
+        vehicle.assignedUserId = undefined;
+        if (vehicle.tahsisKisi !== undefined) vehicle.tahsisKisi = '';
+    });
+    (plan.sameBranchAssigned || []).forEach(function(entry) {
+        applyAssign(entry, false);
+    });
+    (plan.crossBranchAssigned || []).forEach(function(entry) {
+        applyAssign(entry, true);
+    });
+    return true;
+}
+
+/**
+ * Cross-branch kullanıcı atama onayı — kompakt universal modal (window.confirm yok).
+ * Ardışık çağrılarda önceki Evet tıklamasının bir sonraki modal'a sızmaması için
+ * open/handler bağlama ertelenir; resolve de bir sonraki macrotask'e bırakılır.
+ * @returns {Promise<boolean|null>} true=Evet, false=Hayır, null=kapatıldı / modal yok
+ */
+function askVehicleUserCrossBranchAssignmentConfirm(message) {
+    return new Promise(function(resolve) {
+        var modal = document.getElementById('vehicle-user-cross-branch-confirm-modal');
+        var msgEl = document.getElementById('vehicle-user-cross-branch-confirm-message');
+        var yesBtn = document.getElementById('vehicle-user-cross-branch-confirm-yes');
+        var noBtn = document.getElementById('vehicle-user-cross-branch-confirm-no');
+        var closeBtn = document.getElementById('vehicle-user-cross-branch-confirm-close');
+        if (!modal || !msgEl || !yesBtn || !noBtn) {
+            resolve(null);
+            return;
+        }
+        var settled = false;
+        function syncModalOpenState() {
+            if (typeof window.updateFooterDim === 'function') {
+                window.updateFooterDim();
+                return;
+            }
+            var stillOpen = !!(document.querySelector('.modal-overlay.active, .modal-overlay.open'));
+            document.body.classList.toggle('modal-open', stillOpen);
+        }
+        function onYes(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            finish(true);
+        }
+        function onNo(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            finish(false);
+        }
+        function onClose(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            finish(null);
+        }
+        function detachHandlers() {
+            yesBtn.removeEventListener('click', onYes);
+            noBtn.removeEventListener('click', onNo);
+            if (closeBtn) closeBtn.removeEventListener('click', onClose);
+            yesBtn.onclick = null;
+            noBtn.onclick = null;
+            if (closeBtn) closeBtn.onclick = null;
+        }
+        function finish(result) {
+            if (settled) return;
+            settled = true;
+            detachHandlers();
+            modal.classList.remove('active', 'open');
+            modal.style.display = 'none';
+            syncModalOpenState();
+            // Önceki tıklama aynı tick'te sonraki confirm handler'ına düşmesin
+            setTimeout(function() {
+                resolve(result);
+            }, 0);
+        }
+        // Önceki Evet/Hayır pointer olayının yeni handler'a click-through olmaması için ertele
+        setTimeout(function() {
+            if (settled) return;
+            msgEl.textContent = String(message || MEDISA_VEHICLE_USER_CROSS_BRANCH_CONFIRM_MESSAGE);
+            detachHandlers();
+            yesBtn.addEventListener('click', onYes);
+            noBtn.addEventListener('click', onNo);
+            if (closeBtn) closeBtn.addEventListener('click', onClose);
+            modal.style.display = 'flex';
+            requestAnimationFrame(function() {
+                if (settled) return;
+                modal.classList.add('active');
+                syncModalOpenState();
+            });
+        }, 50);
+    });
 }
 
 function getVisibleVehicles(vehicles) {
@@ -2198,6 +2470,14 @@ window.getMedisaCollectionSnapshot = function(kind) {
 };
 window.normalizeUsers = normalizeUsers;
 window.isAssignableNormalUserCandidate = isAssignableNormalUserCandidate;
+window.getUserCanonicalBranchId = getUserCanonicalBranchId;
+window.getUserBranchIds = getUserBranchIds;
+window.needsVehicleBranchTransferForAssignment = needsVehicleBranchTransferForAssignment;
+window.applyVehicleBranchTransferForUserAssignment = applyVehicleBranchTransferForUserAssignment;
+window.buildVehicleUserAssignmentFormPlan = buildVehicleUserAssignmentFormPlan;
+window.applyVehicleUserAssignmentFormPlan = applyVehicleUserAssignmentFormPlan;
+window.askVehicleUserCrossBranchAssignmentConfirm = askVehicleUserCrossBranchAssignmentConfirm;
+window.MEDISA_VEHICLE_USER_CROSS_BRANCH_CONFIRM_MESSAGE = MEDISA_VEHICLE_USER_CROSS_BRANCH_CONFIRM_MESSAGE;
 window.getMedisaSession = function() { return window.medisaSession || getDefaultSession(); };
 window.loadDataFromServer = loadDataFromServer;
 window.saveDataToServer = saveDataToServer;

@@ -676,6 +676,27 @@
             </div>
         </div>
 
+        <div id="vehicle-user-cross-branch-confirm-modal" class="modal-overlay ayarlar-modal-overlay compact-confirm-modal" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="vehicle-user-cross-branch-confirm-title" aria-describedby="vehicle-user-cross-branch-confirm-message">
+            <div class="modal-container" onclick="event.stopPropagation();">
+                <div class="modal-header">
+                    <h2 id="vehicle-user-cross-branch-confirm-title">KULLANICI ATAMA</h2>
+                    <button type="button" class="modal-close" id="vehicle-user-cross-branch-confirm-close" aria-label="Kapat">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="modal-body" onclick="event.stopPropagation();">
+                    <p id="vehicle-user-cross-branch-confirm-message" class="compact-confirm-message"></p>
+                    <div class="universal-btn-group">
+                        <button type="button" class="universal-btn-save" id="vehicle-user-cross-branch-confirm-yes">Evet</button>
+                        <button type="button" class="universal-btn-cancel" id="vehicle-user-cross-branch-confirm-no">Hayır</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Tescil Tarihi Onay Modalı -->
 
         <!-- Tescil Tarihi Giriş Modalı -->
@@ -779,9 +800,9 @@
     </script>
 
     <script defer src="portal-session.js?v=20260731.3"></script>
-    <script defer src="data-manager.js?v=20260813.1"></script>
+    <script defer src="data-manager.js?v=20260820.3"></script>
     <script defer src="data-service.js?v=20260718.2"></script>
-    <script defer src="script-core.js?v=20260820.1"></script>
+    <script defer src="script-core.js?v=20260820.2"></script>
 </body>
 </html>
 
