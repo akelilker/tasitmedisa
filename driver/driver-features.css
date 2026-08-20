@@ -558,7 +558,7 @@ body.driver-modal-open {
     padding-left: 0 !important;
     padding-right: 8px !important;
     box-sizing: border-box !important;
-    transform: translateY(1px) !important;
+    transform: translate(-6px, 1px) !important;
   }
   .dashboard-page .hero.hero-two-rows .hero-logo {
     display: flex !important;
@@ -649,7 +649,7 @@ body.driver-modal-open {
   .dashboard-page .hero-logo img {
     width: 100% !important;
     height: auto !important;
-    transform: translateY(0) !important;
+    transform: translateY(-3px) !important;
   }
   /* Login mobil header: ana uygulama (index) ile aynı kutu, logo kolonu ve başlık (style-core ana ekran 640px bloğu ile eşleşir) */
   .login-page .hero {

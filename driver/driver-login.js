@@ -348,6 +348,59 @@ statusEl.classList.add('status-ready');
 statusEl.textContent = '● Sistem Hazır';
 }
 
+var LOGIN_HEALTH_PROBE_TIMEOUT_MS = 6000;
+var loginHealthProbeInflight = null;
+
+function getDriverLoginHealthProbeUrl() {
+return window.location.origin + API_BASE + 'driver_login.php';
+}
+
+function probeDriverLoginBackendReachable() {
+if (loginHealthProbeInflight) return loginHealthProbeInflight;
+var controller = typeof AbortController === 'function' ? new AbortController() : null;
+var timeoutId = null;
+if (controller) {
+timeoutId = setTimeout(function() {
+try { controller.abort(); } catch (eAbort) {}
+}, LOGIN_HEALTH_PROBE_TIMEOUT_MS);
+}
+loginHealthProbeInflight = fetch(getDriverLoginHealthProbeUrl(), {
+method: 'OPTIONS',
+cache: 'no-store',
+credentials: 'omit',
+signal: controller ? controller.signal : undefined
+}).then(function(response) {
+return !!(response && typeof response.status === 'number');
+}).catch(function() {
+return false;
+}).finally(function() {
+if (timeoutId) clearTimeout(timeoutId);
+loginHealthProbeInflight = null;
+});
+return loginHealthProbeInflight;
+}
+
+async function refreshLoginFooterConnectivityStatus() {
+if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+setLoginFooterStatus('error');
+return false;
+}
+var reachable = await probeDriverLoginBackendReachable();
+setLoginFooterStatus(reachable ? 'ready' : 'error');
+return reachable;
+}
+
+function bindLoginFooterConnectivityListeners() {
+if (window.__medisaLoginFooterConnectivityBound) return;
+window.__medisaLoginFooterConnectivityBound = true;
+window.addEventListener('offline', function() {
+setLoginFooterStatus('error');
+});
+window.addEventListener('online', function() {
+refreshLoginFooterConnectivityStatus();
+});
+}
+
 function revealDriverLoginView() {
 if (document.body) document.body.classList.remove('login-gate-active');
 }
@@ -366,6 +419,8 @@ nextUrl: getRequestedNextUrl()
 if (routedByExistingSession) return;
 }
 revealDriverLoginView();
+bindLoginFooterConnectivityListeners();
+refreshLoginFooterConnectivityStatus();
 
 var usernameInput = document.getElementById('username');
 var passwordInput = document.getElementById('password');
@@ -456,7 +511,6 @@ const btnText = loginBtn.querySelector('.btn-text');
 const btnLoader = loginBtn.querySelector('.btn-loader');
 
 errorDiv.classList.remove('show');
-setLoginFooterStatus('ready');
 loginBtn.disabled = true;
 btnText.style.display = 'none';
 btnLoader.style.display = 'inline';
@@ -469,7 +523,18 @@ method: 'POST',
 headers: { 'Content-Type': 'application/json' },
 body: JSON.stringify({ username, password })
 });
-const data = await response.json();
+setLoginFooterStatus('ready');
+var data;
+try {
+data = await response.json();
+} catch (parseErr) {
+errorDiv.textContent = 'Sunucu yanıtı okunamadı. Lütfen tekrar deneyin.';
+errorDiv.classList.add('show');
+loginBtn.disabled = false;
+btnText.style.display = 'inline';
+btnLoader.style.display = 'none';
+return;
+}
 
 if (data.success) {
 if (remember) {
