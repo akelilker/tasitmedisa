@@ -197,7 +197,7 @@
 
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20260820.5';
+  const MEDISA_TASITLAR_MODULE_VERSION = '20260828.1';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
@@ -6437,11 +6437,11 @@
   }
 
   function preloadIosPwaImageDocument(vehicleId, documentPath, documentType) {
-    if (!(typeof window.isMedisaIOSDevice === 'function' && window.isMedisaIOSDevice())) return;
-    if (!documentPath || !isRuhsatImagePath(documentPath)) return;
+    if (!(typeof window.isMedisaIOSDevice === 'function' && window.isMedisaIOSDevice())) return Promise.resolve();
+    if (!documentPath || !isRuhsatImagePath(documentPath)) return Promise.resolve();
     const dt = documentType || 'ruhsat';
     const preloadUrl = buildRuhsatDocumentUrl(vehicleId, dt) || toAbsoluteRuhsatUrl(documentPath);
-    fetchRuhsatDocumentObjectUrl(vehicleId, preloadUrl, dt).catch(function() {});
+    return fetchRuhsatDocumentObjectUrl(vehicleId, preloadUrl, dt).catch(function() {});
   }
 
   function buildRuhsatPreviewPageUrl(vehicleId, documentType, pageIndex, metaOnly) {
@@ -6517,23 +6517,32 @@
     }
   }
 
+  function getReadyIosPwaPdfPrintPageUrls(cacheKey) {
+    var entry = cacheKey ? ruhsatDocumentCache.get(cacheKey) : null;
+    if (!entry || !Array.isArray(entry.pdfPrintPageObjectUrls) || !entry.pdfPrintPageObjectUrls.length) return null;
+    return entry.pdfPrintPageObjectUrls;
+  }
+
   function preloadIosPwaPrintDocument(vehicleId, documentPath, documentType) {
-    if (!(typeof window.isMedisaIOSDevice === 'function' && window.isMedisaIOSDevice())) return;
-    if (!documentPath) return;
+    if (!(typeof window.isMedisaIOSDevice === 'function' && window.isMedisaIOSDevice())) return Promise.resolve();
+    if (!documentPath) return Promise.resolve();
     const dt = documentType || 'ruhsat';
     if (isRuhsatImagePath(documentPath)) {
-      preloadIosPwaImageDocument(vehicleId, documentPath, dt);
-      return;
+      return preloadIosPwaImageDocument(vehicleId, documentPath, dt);
     }
     var pdfUrl = buildRuhsatDocumentUrl(vehicleId, dt) || toAbsoluteRuhsatUrl(documentPath);
     var cacheKey = getRuhsatDocumentCacheKey(vehicleId, pdfUrl, dt);
-    if (!cacheKey) return;
+    if (!cacheKey) return Promise.resolve();
     var entry = ruhsatDocumentCache.get(cacheKey) || createRuhsatDocumentCacheEntry();
-    if (entry.pdfStagingReady || entry.pdfStagingPromise) {
+    if (entry.pdfStagingPromise) {
       ruhsatDocumentCache.set(cacheKey, entry);
-      return;
+      return entry.pdfStagingPromise;
     }
-    entry.pdfStagingPromise = fetch(buildRuhsatPreviewPageUrl(vehicleId, dt, 0, true), {
+    if (entry.pdfStagingReady || (Array.isArray(entry.pdfPrintPageObjectUrls) && entry.pdfPrintPageObjectUrls.length)) {
+      ruhsatDocumentCache.set(cacheKey, entry);
+      return Promise.resolve();
+    }
+    var stagingPromise = fetch(buildRuhsatPreviewPageUrl(vehicleId, dt, 0, true), {
       method: 'GET',
       cache: 'no-store',
       headers: buildMedisaAuthHeaders()
@@ -6578,7 +6587,9 @@
         entry.cooldownUntil = Date.now() + 30000;
         ruhsatDocumentCache.set(cacheKey, entry);
       });
+    entry.pdfStagingPromise = stagingPromise;
     ruhsatDocumentCache.set(cacheKey, entry);
+    return stagingPromise;
   }
 
   function warmRuhsatPreview(vehicleId, ruhsatUrl, documentType) {
@@ -6621,12 +6632,40 @@
   }
 
   /**
+   * Mobil "Yazdır" butonunun tek aksiyon sahibi: seri tıklamayı engeller,
+   * hazırlık sürerken butonu busy state'e alır ve modal kapanırsa stale sonucu yok sayar.
+   */
+  function runVehicleDocumentPrintAction(actionBtn, ruhsatUrl, vehicleId, documentType) {
+    if (actionBtn && actionBtn.dataset.printBusy === '1') return;
+    const labelEl = actionBtn ? actionBtn.querySelector('span') : null;
+    const originalLabel = labelEl ? labelEl.textContent : '';
+    if (actionBtn) {
+      actionBtn.dataset.printBusy = '1';
+      actionBtn.setAttribute('aria-disabled', 'true');
+      if (labelEl) labelEl.textContent = 'Hazırlanıyor...';
+    }
+    Promise.resolve(openRuhsatPrintDialog(ruhsatUrl, vehicleId, documentType, {
+      shouldContinue: function() { return !actionBtn || actionBtn.isConnected; }
+    }))
+      .catch(function() {})
+      .then(function() {
+        if (!actionBtn) return;
+        delete actionBtn.dataset.printBusy;
+        actionBtn.removeAttribute('aria-disabled');
+        if (labelEl) labelEl.textContent = originalLabel;
+      });
+  }
+
+  /**
    * Mobil / iOS PWA: ön izleme ve yeni sekme açmadan doğrudan sistem yazdırma (Seçenekler) ekranını açar.
    * Aynı sayfada gizli iframe kullanır; iOS PWA'da yeni sekme açılmadığı için geri dönüş mümkün olur.
    * Masaüstü bu fonksiyonu kullanmaz (ön izleme + inline viewer kalır).
    */
-  function openRuhsatPrintDialog(ruhsatUrl, vehicleId, documentType) {
+  function openRuhsatPrintDialog(ruhsatUrl, vehicleId, documentType, opts) {
     const dt = documentType || 'ruhsat';
+    const shouldContinuePrintAction = function() {
+      return !(opts && typeof opts.shouldContinue === 'function') || opts.shouldContinue() === true;
+    };
     const cfg = getVehicleDocumentConfig(dt);
     const url = toAbsoluteRuhsatUrl(ruhsatUrl);
     if (!url) return;
@@ -6683,23 +6722,39 @@
     }
     if (useIosManualPrintPreview && isImage) {
       const cachedIosImageUrl = getCachedRuhsatDocumentObjectUrl(vehicleId, documentUrl, dt);
-      if (!cachedIosImageUrl) {
-        alert('Belge henüz hazır değil. Lütfen tekrar deneyin.');
-        return;
+      if (cachedIosImageUrl) {
+        window.openMedisaIosPwaPrintPreview(buildImagePrintHtml(cachedIosImageUrl), cfg.label + ' Yazdır');
+        return Promise.resolve();
       }
-      window.openMedisaIosPwaPrintPreview(buildImagePrintHtml(cachedIosImageUrl), cfg.label + ' Yazdır');
-      return;
+      // Hazırlık sürüyorsa aynı in-flight preload beklenir; kullanıcı tekrar tıklamaz.
+      return preloadIosPwaPrintDocument(vehicleId, documentPath, dt).then(function() {
+        if (!shouldContinuePrintAction()) return;
+        var preparedIosImageUrl = getCachedRuhsatDocumentObjectUrl(vehicleId, documentUrl, dt);
+        if (!preparedIosImageUrl) {
+          alert(cfg.label + ' hazırlanamadı. Bağlantınızı kontrol edip tekrar deneyin.');
+          return;
+        }
+        window.openMedisaIosPwaPrintPreview(buildImagePrintHtml(preparedIosImageUrl), cfg.label + ' Yazdır');
+      });
     }
 
     if (useIosManualPrintPreview && !isImage) {
       var iosPwaPdfCacheKey = getRuhsatDocumentCacheKey(vehicleId, documentUrl, dt);
-      var iosPwaPdfEntry = iosPwaPdfCacheKey ? ruhsatDocumentCache.get(iosPwaPdfCacheKey) : null;
-      if (!iosPwaPdfEntry || !iosPwaPdfEntry.pdfStagingReady || !Array.isArray(iosPwaPdfEntry.pdfPrintPageObjectUrls) || !iosPwaPdfEntry.pdfPrintPageObjectUrls.length) {
-        alert('Belge henüz hazır değil. Lütfen tekrar deneyin.');
-        return;
+      var readyIosPwaPdfPageUrls = getReadyIosPwaPdfPrintPageUrls(iosPwaPdfCacheKey);
+      if (readyIosPwaPdfPageUrls) {
+        window.openMedisaIosPwaPrintPreview(buildIosPwaPdfPrintHtml(readyIosPwaPdfPageUrls), cfg.label + ' Yazdır');
+        return Promise.resolve();
       }
-      window.openMedisaIosPwaPrintPreview(buildIosPwaPdfPrintHtml(iosPwaPdfEntry.pdfPrintPageObjectUrls), cfg.label + ' Yazdır');
-      return;
+      // Hazırlık sürüyorsa aynı in-flight preload beklenir; kullanıcı tekrar tıklamaz.
+      return preloadIosPwaPrintDocument(vehicleId, documentPath, dt).then(function() {
+        if (!shouldContinuePrintAction()) return;
+        var preparedPdfPageUrls = getReadyIosPwaPdfPrintPageUrls(getRuhsatDocumentCacheKey(vehicleId, documentUrl, dt));
+        if (!preparedPdfPageUrls) {
+          alert(cfg.label + ' hazırlanamadı. Bağlantınızı kontrol edip tekrar deneyin.');
+          return;
+        }
+        window.openMedisaIosPwaPrintPreview(buildIosPwaPdfPrintHtml(preparedPdfPageUrls), cfg.label + ' Yazdır');
+      });
     }
 
     var printToken = 'ruhsatPrint_' + Date.now();
@@ -7238,7 +7293,7 @@
         previewBtn.onclick = function(e) {
           e.preventDefault();
           e.stopPropagation();
-          openRuhsatPrintDialog(ruhsatUrl, vid, dt);
+          runVehicleDocumentPrintAction(previewBtn, ruhsatUrl, vid, dt);
         };
       } else {
         const previewSrc = 'about:blank';

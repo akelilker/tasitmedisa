@@ -124,10 +124,10 @@ test('asset pin chain bumped for changed runtime modules', function() {
   assert.match(coreSrc, /vehicleNotificationDomain:\s*'20260817\.2'/);
   assert.match(coreSrc, /kayitJs:\s*'20260820\.1'/);
   assert.match(coreSrc, /notifications:\s*'20260817\.2'/);
-  assert.match(coreSrc, /tasitlar:\s*'20260820\.2'/);
-  assert.match(coreSrc, /kayitCss:\s*'20260820\.2'/);
-  assert.match(tasitlarSrc, /MEDISA_TASITLAR_MODULE_VERSION = '20260820\.2'/);
-  assert.match(read('index.html'), /script-core\.js\?v=20260820\.1/);
+  assert.match(coreSrc, /tasitlar:\s*'20260828\.1'/);
+  assert.match(coreSrc, /kayitCss:\s*'20260820\.3'/);
+  assert.match(tasitlarSrc, /MEDISA_TASITLAR_MODULE_VERSION = '20260828\.1'/);
+  assert.match(read('index.html'), /script-core\.js\?v=20260820\.6/);
   assert.match(read('sw.js'), /CACHE_VERSION = 'medisa-v2\.306'/);
 });
 
