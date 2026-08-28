@@ -124,6 +124,110 @@ bmContext.sandbox.__k2.selectBranch('A');
 bmContext.sandbox.__k2.renderMembers();
 assert.equal(bmContext.membersHost.innerHTML, '');
 
+const tokenStart = ayarlar.indexOf('var zorunluEvrakK2DocTokenCache');
+const tokenEnd = ayarlar.indexOf('function resolveZorunluEvraklarK2PreviewUrl', tokenStart);
+assert.ok(tokenStart !== -1 && tokenEnd > tokenStart, 'K2 belge token owner bloğu bulunmalı');
+const tokenOwner = ayarlar.slice(tokenStart, tokenEnd);
+assert.match(tokenOwner, /contextKey === contextKey|zorunluEvrakK2DocTokenCache\.contextKey === contextKey/);
+
+function createK2TokenContext() {
+  const groups = [
+    { id: 'g1', branchIds: ['A'], expiryDate: '2027-05-17', documentPath: 'a.pdf', updatedAt: '2026-08-01T00:00:00Z' },
+    { id: 'g2', branchIds: ['B'], expiryDate: '2027-05-17', documentPath: 'b.pdf', updatedAt: '2026-08-01T00:00:00Z' }
+  ];
+  const calls = [];
+  const sandbox = {
+    window: { location: { href: 'https://example.test/index.html' } },
+    URL,
+    Promise,
+    Date,
+    console,
+    fetch: function(url, options) {
+      const payload = JSON.parse(options.body);
+      calls.push(payload);
+      return Promise.resolve({
+        ok: true,
+        status: 200,
+        json: function() {
+          return Promise.resolve({
+            ok: true,
+            token: 'tok-' + payload.branchId + '-' + calls.length,
+            expiresAt: Math.floor(Date.now() / 1000) + 600
+          });
+        }
+      });
+    }
+  };
+  vm.createContext(sandbox);
+  vm.runInContext(`
+    var groups = ${JSON.stringify(groups)};
+    var selectedZorunluEvrakBranchId = '';
+    var selectedZorunluEvrakGroupId = '';
+    function getZorunluEvraklarK2Groups() { return groups; }
+    function getZorunluEvraklarK2State() {
+      var group = getZorunluEvraklarK2Groups().find(function(item) {
+        return item && item.id === selectedZorunluEvrakGroupId;
+      });
+      return group || { id: '', branchIds: [selectedZorunluEvrakBranchId], expiryDate: '', documentPath: '', updatedAt: '' };
+    }
+    function getZorunluEvraklarAuthToken() { return 'session-token'; }
+    function buildZorunluEvraklarAuthHeaders(extra) { return extra || {}; }
+    ${tokenOwner}
+    this.__tok = {
+      mint: mintZorunluEvraklarK2DocumentToken,
+      select: function(branchId, groupId) {
+        selectedZorunluEvrakBranchId = branchId;
+        selectedZorunluEvrakGroupId = groupId;
+      },
+      touchGroup: function(groupId, updatedAt) {
+        groups.forEach(function(item) { if (item.id === groupId) item.updatedAt = updatedAt; });
+      }
+    };
+  `, sandbox);
+  return { sandbox, calls };
+}
+
+const tokenCtx = createK2TokenContext();
+tokenCtx.sandbox.__tok.select('A', 'g1');
+tokenCtx.sandbox.__tok.mint()
+  .then(function(first) {
+    assert.equal(first.token, 'tok-A-1');
+    return tokenCtx.sandbox.__tok.mint().then(function(cached) {
+      assert.equal(cached.token, 'tok-A-1', 'Aynı şubede geçerli token yeniden kullanılmalı');
+      assert.equal(tokenCtx.calls.length, 1, 'Cache hit yeni istek üretmemeli');
+    });
+  })
+  .then(function() {
+    tokenCtx.sandbox.__tok.select('B', 'g2');
+    return tokenCtx.sandbox.__tok.mint().then(function(other) {
+      assert.notEqual(other.token, 'tok-A-1', 'Şube değişince önceki şube token’ı dönmemeli');
+      assert.equal(other.token, 'tok-B-2');
+      assert.equal(tokenCtx.calls.length, 2);
+      assert.equal(tokenCtx.calls[1].branchId, 'B');
+    });
+  })
+  .then(function() {
+    tokenCtx.sandbox.__tok.select('A', 'g1');
+    return tokenCtx.sandbox.__tok.mint().then(function(back) {
+      assert.equal(back.token, 'tok-A-3', 'A’ya dönüşte A için yeni token alınmalı');
+      assert.equal(tokenCtx.calls[2].branchId, 'A');
+    });
+  })
+  .then(function() {
+    tokenCtx.sandbox.__tok.touchGroup('g1', '2026-08-28T00:00:00Z');
+    return tokenCtx.sandbox.__tok.mint().then(function(revised) {
+      assert.equal(revised.token, 'tok-A-4', 'Belge revizyonu değişince eski token kullanılmamalı');
+      assert.equal(tokenCtx.calls.length, 4);
+    });
+  })
+  .then(function() {
+    console.log('PASS: K2 belge token cache şube/revizyon context invariantları');
+  })
+  .catch(function(err) {
+    console.error(err);
+    process.exit(1);
+  });
+
 assert.doesNotMatch(ayarlar, /window\.appData\s*&&\s*window\.appData\.session/);
 assert.match(ayarlar, /const session = getZorunluEvrakSession\(\);[\s\S]*?mutationPayload\.branchIds = memberIds/);
 assert.match(ayarlar, /const session = getZorunluEvrakSession\(\);[\s\S]*?const isGM = String\(session\.role/);

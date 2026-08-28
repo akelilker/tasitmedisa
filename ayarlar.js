@@ -999,10 +999,22 @@
       }
     }
 
+    function buildZorunluEvraklarK2DocTokenContext() {
+      const state = getZorunluEvraklarK2State();
+      return [
+        String(selectedZorunluEvrakBranchId || ''),
+        String(selectedZorunluEvrakGroupId || ''),
+        String((state && state.updatedAt) || ''),
+        String((state && state.documentPath) || '')
+      ].join('|');
+    }
+
     function mintZorunluEvraklarK2DocumentToken() {
       const now = Date.now();
+      const contextKey = buildZorunluEvraklarK2DocTokenContext();
       if (zorunluEvrakK2DocTokenCache
         && zorunluEvrakK2DocTokenCache.token
+        && zorunluEvrakK2DocTokenCache.contextKey === contextKey
         && zorunluEvrakK2DocTokenCache.expiresAtMs > now + ZORUNLU_EVRAK_K2_DOC_TOKEN_MARGIN_MS) {
         return Promise.resolve(zorunluEvrakK2DocTokenCache);
       }
@@ -1027,6 +1039,7 @@
             }
             zorunluEvrakK2DocTokenCache = {
               token: String(data.token),
+              contextKey: contextKey,
               expiresAtMs: Number(data.expiresAt) > 0 ? Number(data.expiresAt) * 1000 : (now + 300000)
             };
             return zorunluEvrakK2DocTokenCache;
