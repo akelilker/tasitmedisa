@@ -92,7 +92,10 @@
                         </div>
                         <div class="universal-btn-group">
                             <button type="button" class="universal-btn-save" onclick="saveBranch()">Kaydet</button>
-                            <button type="button" class="settings-btn-delete u-hidden" onclick="deleteBranch(document.getElementById('branch-id').value)" id="branch-delete-btn">Sil</button>
+                            <button type="button" class="universal-btn-cancel" onclick="closeBranchFormModal()">Vazgeç</button>
+                        </div>
+                        <div class="settings-form-danger-row u-hidden" id="branch-delete-row">
+                            <button type="button" class="settings-btn-delete" onclick="deleteBranch(document.getElementById('branch-id').value)" id="branch-delete-btn">Sil</button>
                         </div>
                     </form>
                 </div>
@@ -229,7 +232,10 @@
                         </div>
                         <div class="universal-btn-group">
                             <button type="button" class="universal-btn-save" onclick="saveUser()">Kaydet</button>
-                            <button type="button" class="settings-btn-delete u-hidden" onclick="deleteUser(document.getElementById('user-id').value)" id="user-delete-btn">Sil</button>
+                            <button type="button" class="universal-btn-cancel" onclick="closeUserFormModal()">Vazgeç</button>
+                        </div>
+                        <div class="settings-form-danger-row u-hidden" id="user-delete-row">
+                            <button type="button" class="settings-btn-delete" onclick="deleteUser(document.getElementById('user-id').value)" id="user-delete-btn">Sil</button>
                         </div>
                     </form>
                 </div>
@@ -405,6 +411,17 @@
 
     function $(sel, root = document) { return root.querySelector(sel); }
     function $all(sel, root = document) { return Array.from(root.querySelectorAll(sel)); }
+
+    function normalizeSettingsRelationId(value) {
+      return value === null || value === undefined ? '' : String(value).trim();
+    }
+
+    // Şube/Kullanıcı formundaki Sil satırının tek görünürlük sahibi.
+    function setSettingsDeleteRowVisible(rowId, visible) {
+      const row = document.getElementById(rowId);
+      if (!row) return;
+      row.classList.toggle('u-hidden', !visible);
+    }
 
     function shouldAutofocusSettingsForm() {
       const hasMatchMedia = typeof window.matchMedia === 'function';
@@ -1794,7 +1811,6 @@
       const nameInput = $('#branch-name', modal);
       const cityInput = $('#branch-city', modal);
       const title = $('.modal-header h2', modal);
-      const deleteBtn = $('#branch-delete-btn', modal);
 
       // Form temizle
       if (form) form.reset();
@@ -1810,19 +1826,11 @@
           if (cityInput) cityInput.value = branch.city || '';
           if (title) title.textContent = 'Şube Düzenle';
         }
-        // Sil butonunu göster
-        if (deleteBtn) {
-          deleteBtn.classList.remove('u-hidden');
-          deleteBtn.style.display = 'flex';
-        }
+        setSettingsDeleteRowVisible('branch-delete-row', true);
       } else {
         // Yeni EKLEME MODU
         if (title) title.textContent = 'Yeni Şube Ekle';
-        // Sil butonunu gizle
-        if (deleteBtn) {
-          deleteBtn.classList.add('u-hidden');
-          deleteBtn.style.display = 'none';
-        }
+        setSettingsDeleteRowVisible('branch-delete-row', false);
       }
 
       // Modalı aç
@@ -1844,11 +1852,7 @@
       }
       const form = $('#branch-form', modal);
       if (form) form.reset();
-      const deleteBtn = $('#branch-delete-btn', modal);
-      if (deleteBtn) {
-        deleteBtn.classList.add('u-hidden');
-        deleteBtn.style.display = 'none';
-      }
+      setSettingsDeleteRowVisible('branch-delete-row', false);
       modal.classList.remove('active');
       setTimeout(() => modal.style.display = 'none', 300);
       if (!settingsHistorySync && !(options && options.skipHistory)) {
@@ -1953,25 +1957,67 @@
       openBranchFormModal(id);
     };
 
+    // Kullanıcının canonical + legacy şube üyeliği (string-normalize, tekilleştirilmiş)
+    function collectUserBranchRelationIds(user) {
+      const ids = [];
+      const push = function (value) {
+        const normalized = normalizeSettingsRelationId(value);
+        if (normalized && ids.indexOf(normalized) === -1) ids.push(normalized);
+      };
+      if (!user || typeof user !== 'object') return ids;
+      (Array.isArray(user.branchIds) ? user.branchIds : []).forEach(push);
+      push(user.branchId);
+      (Array.isArray(user.sube_ids) ? user.sube_ids : []).forEach(push);
+      push(user.sube_id);
+      return ids;
+    }
+
+    /**
+     * Şube silme engelleri — sunucu invariantının istemci UX yansıması.
+     * Saf fonksiyon: yalnız verilen snapshot üzerinden sayar.
+     */
+    function collectBranchDeleteBlockers(branchId, snapshot) {
+      const targetId = normalizeSettingsRelationId(branchId);
+      const source = snapshot && typeof snapshot === 'object' ? snapshot : {};
+      const blockers = { vehicleCount: 0, userCount: 0, k2GroupCount: 0, total: 0 };
+      if (!targetId) return blockers;
+
+      blockers.vehicleCount = (Array.isArray(source.vehicles) ? source.vehicles : []).filter(function (vehicle) {
+        return normalizeSettingsRelationId(vehicle && vehicle.branchId) === targetId;
+      }).length;
+
+      blockers.userCount = (Array.isArray(source.users) ? source.users : []).filter(function (user) {
+        return collectUserBranchRelationIds(user).indexOf(targetId) !== -1;
+      }).length;
+
+      blockers.k2GroupCount = (Array.isArray(source.k2Groups) ? source.k2Groups : []).filter(function (group) {
+        const groupBranchIds = group && Array.isArray(group.branchIds) ? group.branchIds : [];
+        return groupBranchIds.some(function (id) { return normalizeSettingsRelationId(id) === targetId; });
+      }).length;
+
+      blockers.total = blockers.vehicleCount + blockers.userCount + blockers.k2GroupCount;
+      return blockers;
+    }
+
+    function buildBranchDeleteBlockerMessage(blockers) {
+      let message = 'Bu şubeye bağlı kayıtlar bulunduğu için şube silinemez.\n\n';
+      if (blockers.vehicleCount > 0) message += '• ' + blockers.vehicleCount + ' taşıt\n';
+      if (blockers.userCount > 0) message += '• ' + blockers.userCount + ' kullanıcı\n';
+      if (blockers.k2GroupCount > 0) message += '• ' + blockers.k2GroupCount + ' K2 belge grubu\n';
+      return message;
+    }
+
     window.deleteBranch = async function deleteBranch(id) {
       if (!id) return; // ID yoksa işlem yapma
 
-      // Taşıt kontrolü
-      const vehicles = readVehicles();
-      const vehicleCount = vehicles.filter(v => v.branchId === id).length;
+      const blockers = collectBranchDeleteBlockers(id, {
+        vehicles: readAllVehicles(),
+        users: readAllUsers(),
+        k2Groups: getZorunluEvraklarK2Groups()
+      });
 
-      // Kullanıcı kontrolü (ŞUBEye atanmış Kullanıcılar)
-      const users = readUsers();
-      const userCount = users.filter(u => {
-        const ids = (u.branchIds && u.branchIds.length) ? u.branchIds : (u.branchId ? [u.branchId] : []);
-        return ids.some(function (bid) { return String(bid) === String(id); });
-      }).length;
-
-      if (vehicleCount > 0 || userCount > 0) {
-        let msg = 'ŞUBEye ilişkin kayıtlı veri bulunduğundan silme yapılamaz!\n\n';
-        if (vehicleCount > 0) msg += `• ${vehicleCount} Adet Taşıt\n`;
-        if (userCount > 0) msg += `• ${userCount} Adet Kullanıcı\n`;
-        alert(msg);
+      if (blockers.total > 0) {
+        alert(buildBranchDeleteBlockerMessage(blockers));
         return;
       }
 
@@ -3066,7 +3112,6 @@
       const usernameInput = $('#user-username', modal);
       const passwordInput = $('#user-password', modal);
       const title = $('.modal-header h2', modal);
-      const deleteBtn = $('#user-delete-btn', modal);
 
       // Şube dropdown'ını doldur
       populateBranchDropdown(scope);
@@ -3081,10 +3126,7 @@
       if (form) form.reset();
       if (idInput) idInput.value = '';
       if (branchReadonly) branchReadonly.value = '';
-      if (deleteBtn) {
-        deleteBtn.classList.add('u-hidden');
-        deleteBtn.style.display = 'none';
-      }
+      setSettingsDeleteRowVisible('user-delete-row', false);
       setUserFormSelectedVehicleIds([]);
       populateUserVehiclesMulti();
       const managedBranch = getManagedBranchForUserManagement(scope);
@@ -3135,27 +3177,12 @@
         setUserFormSelectedVehicleIds(assignedIds);
         populateUserVehiclesMulti('');
         if (title) title.textContent = 'Kullanıcı Düzenle';
-        // Sil butonunu göster — self/son aktif GM korumalıysa gizle
-        if (deleteBtn) {
-          if (protectGm) {
-            deleteBtn.classList.add('u-hidden');
-            deleteBtn.style.display = 'none';
-            deleteBtn.title = 'Sistemde en az bir aktif genel yönetici bulunmalıdır.';
-          } else {
-            deleteBtn.classList.remove('u-hidden');
-            deleteBtn.style.display = 'flex';
-            deleteBtn.removeAttribute('title');
-          }
-        }
+        // Sil satırı yalnız korunmayan hedefte açılır (self/son aktif GM kilidi)
+        setSettingsDeleteRowVisible('user-delete-row', !protectGm);
       } else {
         // Yeni EKLEME MODU
         if (title) title.textContent = 'Yeni Kullanıcı Ekle';
-        // Sil butonunu gizle
-        if (deleteBtn) {
-          deleteBtn.classList.add('u-hidden');
-          deleteBtn.style.display = 'none';
-          deleteBtn.removeAttribute('title');
-        }
+        setSettingsDeleteRowVisible('user-delete-row', false);
       }
 
       syncUserRoleBranchUI({ scope: scope, preferredBranchId: preferredBranchId });
@@ -3188,11 +3215,7 @@
       window.MedisaOwnerSelect && window.MedisaOwnerSelect.close();
       const searchInput = document.getElementById('user-vehicles-search');
       if (searchInput) searchInput.value = '';
-      const deleteBtn = $('#user-delete-btn', modal);
-      if (deleteBtn) {
-        deleteBtn.classList.add('u-hidden');
-        deleteBtn.style.display = 'none';
-      }
+      setSettingsDeleteRowVisible('user-delete-row', false);
       modal.classList.remove('active');
       setTimeout(() => modal.style.display = 'none', 300);
       if (!settingsHistorySync && !(options && options.skipHistory)) {
@@ -3642,6 +3665,61 @@
       openUserFormModal(id);
     };
 
+    function readUserRelationCollection(key) {
+      const collection = window.appData && window.appData[key];
+      return Array.isArray(collection) ? collection : [];
+    }
+
+    /**
+     * Kullanıcı silme engelleri — sunucu invariantının istemci UX yansıması.
+     * Saf fonksiyon: canonical tahsis + legacy zimmet aynı taşıtı iki kez saymaz.
+     */
+    function collectUserDeleteBlockers(userId, snapshot) {
+      const targetId = normalizeSettingsRelationId(userId);
+      const source = snapshot && typeof snapshot === 'object' ? snapshot : {};
+      const blockers = { vehicleCount: 0, monthlyRecordCount: 0, correctionRequestCount: 0, total: 0 };
+      if (!targetId) return blockers;
+
+      const relatedVehicleIds = [];
+      const addVehicleId = function (value) {
+        const normalized = normalizeSettingsRelationId(value);
+        if (normalized && relatedVehicleIds.indexOf(normalized) === -1) relatedVehicleIds.push(normalized);
+      };
+
+      (Array.isArray(source.vehicles) ? source.vehicles : []).forEach(function (vehicle) {
+        if (normalizeSettingsRelationId(vehicle && vehicle.assignedUserId) === targetId) {
+          addVehicleId(vehicle && vehicle.id);
+        }
+      });
+
+      const targetUser = (Array.isArray(source.users) ? source.users : []).find(function (user) {
+        return normalizeSettingsRelationId(user && user.id) === targetId;
+      });
+      const legacyAssigned = targetUser && Array.isArray(targetUser.zimmetli_araclar)
+        ? targetUser.zimmetli_araclar
+        : [];
+      legacyAssigned.forEach(addVehicleId);
+
+      blockers.vehicleCount = relatedVehicleIds.length;
+      blockers.monthlyRecordCount = (Array.isArray(source.monthlyRecords) ? source.monthlyRecords : []).filter(function (record) {
+        return normalizeSettingsRelationId(record && record.surucu_id) === targetId;
+      }).length;
+      blockers.correctionRequestCount = (Array.isArray(source.correctionRequests) ? source.correctionRequests : []).filter(function (request) {
+        return normalizeSettingsRelationId(request && request.surucu_id) === targetId;
+      }).length;
+
+      blockers.total = blockers.vehicleCount + blockers.monthlyRecordCount + blockers.correctionRequestCount;
+      return blockers;
+    }
+
+    function buildUserDeleteBlockerMessage(blockers) {
+      let message = 'Bu kullanıcıya bağlı kayıtlar bulunduğu için kullanıcı silinemez.\n\n';
+      if (blockers.vehicleCount > 0) message += '• ' + blockers.vehicleCount + ' taşıt tahsisi\n';
+      if (blockers.monthlyRecordCount > 0) message += '• ' + blockers.monthlyRecordCount + ' aylık hareket kaydı\n';
+      if (blockers.correctionRequestCount > 0) message += '• ' + blockers.correctionRequestCount + ' düzeltme talebi\n';
+      return message;
+    }
+
     window.deleteUser = async function deleteUser(id) {
       if (!id) return; // ID yoksa işlem yapma
       const scope = getUserManagementSessionScope();
@@ -3657,12 +3735,16 @@
         return;
       }
 
-      // Taşıt kontrolü
       const vehicles = readAllVehicles();
-      const count = vehicles.filter(v => String(v.assignedUserId || '') === String(id)).length;
+      const blockers = collectUserDeleteBlockers(id, {
+        vehicles: vehicles,
+        users: previousUsers,
+        monthlyRecords: readUserRelationCollection('arac_aylik_hareketler'),
+        correctionRequests: readUserRelationCollection('duzeltme_talepleri')
+      });
 
-      if (count > 0) {
-        alert(`Bu Kullanıcıya ${count} adet Taşıt tahsis edilmiş. Önce Taşıtları başka Kullanıcıya aktarın.`);
+      if (blockers.total > 0) {
+        alert(buildUserDeleteBlockerMessage(blockers));
         return;
       }
 

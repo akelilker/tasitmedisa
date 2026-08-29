@@ -56,6 +56,9 @@ npm run tool:verify-satis-sozlesmesi
 echo "[quality-gate] Vehicle document delete invariants"
 npm run tool:verify-document-delete
 
+echo "[quality-gate] Settings branch/user delete invariants"
+npm run tool:verify-settings-delete
+
 echo "[quality-gate] Driver lazy module invariants"
 npm run tool:verify-driver-lazy
 

@@ -2009,6 +2009,191 @@ function medisaSaveValidateUserCollectionMutations($currentUsers, $incomingUsers
     return true;
 }
 
+function medisaSaveRelationId($value) {
+    return is_scalar($value) ? trim((string)$value) : '';
+}
+
+function medisaSaveCollectRecordIdMap($items) {
+    $ids = [];
+    foreach ((array)$items as $item) {
+        if (!is_array($item)) {
+            continue;
+        }
+        $id = medisaSaveRelationId($item['id'] ?? '');
+        if ($id !== '') {
+            $ids[$id] = true;
+        }
+    }
+    return $ids;
+}
+
+/**
+ * Current koleksiyonda olup final koleksiyonda olmayan kayıt kimlikleri = gerçek silme.
+ */
+function medisaSaveResolveDeletedIds($currentItems, $finalItems) {
+    $finalIds = medisaSaveCollectRecordIdMap($finalItems);
+    $deleted = [];
+    foreach (array_keys(medisaSaveCollectRecordIdMap($currentItems)) as $id) {
+        if (!isset($finalIds[$id])) {
+            $deleted[] = $id;
+        }
+    }
+    return $deleted;
+}
+
+/**
+ * Kullanıcının canonical + legacy şube üyeliği (branchIds / branchId / sube_ids / sube_id).
+ */
+function medisaSaveCollectUserBranchRelationIds($user) {
+    if (!is_array($user)) {
+        return [];
+    }
+    $ids = [];
+    $push = function ($value) use (&$ids) {
+        $normalized = medisaSaveRelationId($value);
+        if ($normalized !== '' && !in_array($normalized, $ids, true)) {
+            $ids[] = $normalized;
+        }
+    };
+    foreach (is_array($user['branchIds'] ?? null) ? $user['branchIds'] : [] as $value) {
+        $push($value);
+    }
+    $push($user['branchId'] ?? '');
+    foreach (is_array($user['sube_ids'] ?? null) ? $user['sube_ids'] : [] as $value) {
+        $push($value);
+    }
+    $push($user['sube_id'] ?? '');
+    return $ids;
+}
+
+/**
+ * Silinmek istenen şubenin sunucudaki gerçek ilişkileri.
+ */
+function medisaSaveSummarizeBranchDeleteRelations($branchId, array $data) {
+    $targetId = medisaSaveRelationId($branchId);
+    $summary = ['tasit' => 0, 'kullanici' => 0, 'k2' => 0, 'total' => 0];
+    if ($targetId === '') {
+        return $summary;
+    }
+
+    foreach (medisaSaveNormalizeCollection($data['tasitlar'] ?? []) as $vehicle) {
+        if (is_array($vehicle) && medisaSaveRelationId($vehicle['branchId'] ?? '') === $targetId) {
+            $summary['tasit']++;
+        }
+    }
+    foreach (medisaSaveNormalizeCollection($data['users'] ?? []) as $user) {
+        if (in_array($targetId, medisaSaveCollectUserBranchRelationIds($user), true)) {
+            $summary['kullanici']++;
+        }
+    }
+    $k2Groups = $data['ayarlar']['k2BelgeGruplari'] ?? [];
+    foreach (medisaSaveNormalizeCollection($k2Groups) as $group) {
+        $groupBranchIds = is_array($group) && is_array($group['branchIds'] ?? null) ? $group['branchIds'] : [];
+        foreach ($groupBranchIds as $groupBranchId) {
+            if (medisaSaveRelationId($groupBranchId) === $targetId) {
+                $summary['k2']++;
+                break;
+            }
+        }
+    }
+
+    $summary['total'] = $summary['tasit'] + $summary['kullanici'] + $summary['k2'];
+    return $summary;
+}
+
+/**
+ * Silinmek istenen kullanıcının sunucudaki gerçek ilişkileri.
+ * Canonical tahsis ve legacy zimmet aynı taşıtı iki kez saymaz.
+ */
+function medisaSaveSummarizeUserDeleteRelations($userId, array $data) {
+    $targetId = medisaSaveRelationId($userId);
+    $summary = ['tasit' => 0, 'aylik' => 0, 'duzeltme' => 0, 'total' => 0];
+    if ($targetId === '') {
+        return $summary;
+    }
+
+    $vehicleIds = [];
+    foreach (medisaSaveNormalizeCollection($data['tasitlar'] ?? []) as $vehicle) {
+        if (is_array($vehicle) && medisaSaveRelationId($vehicle['assignedUserId'] ?? '') === $targetId) {
+            $vehicleId = medisaSaveRelationId($vehicle['id'] ?? '');
+            if ($vehicleId !== '') {
+                $vehicleIds[$vehicleId] = true;
+            }
+        }
+    }
+    foreach (medisaSaveNormalizeCollection($data['users'] ?? []) as $user) {
+        if (!is_array($user) || medisaSaveRelationId($user['id'] ?? '') !== $targetId) {
+            continue;
+        }
+        foreach (is_array($user['zimmetli_araclar'] ?? null) ? $user['zimmetli_araclar'] : [] as $legacyVehicleId) {
+            $vehicleId = medisaSaveRelationId($legacyVehicleId);
+            if ($vehicleId !== '') {
+                $vehicleIds[$vehicleId] = true;
+            }
+        }
+    }
+    foreach (medisaSaveNormalizeCollection($data['arac_aylik_hareketler'] ?? []) as $record) {
+        if (is_array($record) && medisaSaveRelationId($record['surucu_id'] ?? '') === $targetId) {
+            $summary['aylik']++;
+        }
+    }
+    foreach (medisaSaveNormalizeCollection($data['duzeltme_talepleri'] ?? []) as $request) {
+        if (is_array($request) && medisaSaveRelationId($request['surucu_id'] ?? '') === $targetId) {
+            $summary['duzeltme']++;
+        }
+    }
+
+    $summary['tasit'] = count($vehicleIds);
+    $summary['total'] = $summary['tasit'] + $summary['aylik'] + $summary['duzeltme'];
+    return $summary;
+}
+
+function medisaSaveFormatDeleteRelationMessage($headline, array $parts) {
+    $lines = [];
+    foreach ($parts as $label => $count) {
+        if ((int)$count > 0) {
+            $lines[] = (int)$count . ' ' . $label;
+        }
+    }
+    return $lines ? ($headline . ' (' . implode(', ', $lines) . ')') : $headline;
+}
+
+/**
+ * Fail-closed silme invariantı: ilişkili şube/kullanıcı silinemez.
+ * Hiçbir $data koleksiyonu değiştirilmeden, sunucudaki gerçek current data üzerinden çalışır.
+ *
+ * @param array|null $finalBranches Mutation sonrası şube koleksiyonu (null = şube değişmiyor)
+ * @param array|null $finalUsers    Mutation sonrası kullanıcı koleksiyonu (null = kullanıcı değişmiyor)
+ * @return true|array
+ */
+function medisaSaveValidateDeleteRelationInvariants(array $data, $finalBranches, $finalUsers) {
+    if (is_array($finalBranches)) {
+        foreach (medisaSaveResolveDeletedIds($data['branches'] ?? [], $finalBranches) as $branchId) {
+            $summary = medisaSaveSummarizeBranchDeleteRelations($branchId, $data);
+            if ($summary['total'] > 0) {
+                return medisaBuildErrorResult(medisaSaveFormatDeleteRelationMessage(
+                    'Bu şubeye bağlı kayıtlar bulunduğu için şube silinemez.',
+                    ['taşıt' => $summary['tasit'], 'kullanıcı' => $summary['kullanici'], 'K2 belge grubu' => $summary['k2']]
+                ), 409);
+            }
+        }
+    }
+
+    if (is_array($finalUsers)) {
+        foreach (medisaSaveResolveDeletedIds($data['users'] ?? [], $finalUsers) as $userId) {
+            $summary = medisaSaveSummarizeUserDeleteRelations($userId, $data);
+            if ($summary['total'] > 0) {
+                return medisaBuildErrorResult(medisaSaveFormatDeleteRelationMessage(
+                    'Bu kullanıcıya bağlı kayıtlar bulunduğu için kullanıcı silinemez.',
+                    ['taşıt tahsisi' => $summary['tasit'], 'aylık hareket kaydı' => $summary['aylik'], 'düzeltme talebi' => $summary['duzeltme']]
+                ), 409);
+            }
+        }
+    }
+
+    return true;
+}
+
 function medisaSaveIndexVehiclesById($vehicles) {
     $indexed = [];
     foreach ((array)$vehicles as $vehicle) {
@@ -2554,15 +2739,33 @@ function medisaSaveApplyIncomingData(array $incomingData, array &$data, array $c
         $incomingVehicles = medisaSaveApplyVehicleMutation($currentVehicles, $incomingVehicles, $changedVehicleIds, $deletedVehicleIds);
     }
 
+    // Kullanıcı yetki/rol invariantları silme ilişki kontrolünden önce çalışır (yetkisiz mutation 403 kalır).
+    if ($usersCollectionChanged) {
+        $userMutationCheck = medisaSaveValidateUserCollectionMutations($currentUsers, $incomingUsers, $context);
+        if ($userMutationCheck !== true) {
+            return $userMutationCheck;
+        }
+    }
+
+    // Fail-closed silme invariantı: hiçbir koleksiyon değişmeden önce çalışır.
+    $deleteRelationCheck = medisaSaveValidateDeleteRelationInvariants(
+        $data,
+        (($context['role'] ?? '') === 'genel_yonetici' && $collectionChanged('branches'))
+            ? medisaSaveNormalizeCollection($incomingData['branches'] ?? [])
+            : null,
+        $usersCollectionChanged
+            ? medisaSaveProjectFinalUserCollection($currentUsers, $incomingUsers, $context)
+            : null
+    );
+    if ($deleteRelationCheck !== true) {
+        return $deleteRelationCheck;
+    }
+
     if (($context['role'] ?? '') === 'genel_yonetici') {
         if ($collectionChanged('tasitlar')) $data['tasitlar'] = $incomingVehicles;
         if ($collectionChanged('kayitlar')) $data['kayitlar'] = is_array($incomingData['kayitlar'] ?? null) ? $incomingData['kayitlar'] : ($data['kayitlar'] ?? []);
         if ($collectionChanged('branches')) $data['branches'] = medisaSaveNormalizeCollection($incomingData['branches'] ?? []);
         if ($usersCollectionChanged) {
-            $userMutationCheck = medisaSaveValidateUserCollectionMutations($currentUsers, $incomingUsers, $context);
-            if ($userMutationCheck !== true) {
-                return $userMutationCheck;
-            }
             $reconciledUsers = medisaReconcileUserCredentials($currentUsers, $incomingUsers, $passwordChanges, $context);
             if (($reconciledUsers['success'] ?? false) !== true) {
                 return $reconciledUsers;
@@ -2581,13 +2784,6 @@ function medisaSaveApplyIncomingData(array $incomingData, array &$data, array $c
         if ($collectionChanged('tasitlar') && !medisaSaveEnsureScopedVehiclesAreAllowed($vehiclesToAuthorize, $context)) {
             return medisaBuildErrorResult('Kapsam dışı veri kaydı engellendi.', 403);
         }
-        if ($usersCollectionChanged) {
-            $userMutationCheck = medisaSaveValidateUserCollectionMutations($currentUsers, $incomingUsers, $context);
-            if ($userMutationCheck !== true) {
-                return $userMutationCheck;
-            }
-        }
-
         if ($collectionChanged('tasitlar')) {
             $data['tasitlar'] = $changedVehicleIds === null
                 ? medisaSaveMergeScopedCollection(
