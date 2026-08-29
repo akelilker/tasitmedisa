@@ -866,7 +866,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 4px;
+    gap: 1px;
 }
 
 #required-documents-modal .required-k2-add-btn,
@@ -891,10 +891,15 @@
     transition: color 0.2s ease, transform 0.2s ease;
 }
 
+/* Eksi butonu dokunmatik dahil her durumda canonical destructive kırmızısında kalır */
+#required-documents-modal .required-k2-remove-btn {
+    color: var(--theme-color, #e00000);
+}
+
 #required-documents-modal .required-k2-add-btn:hover,
 #required-documents-modal .required-k2-add-btn:focus-visible,
 #required-documents-modal .required-k2-add-btn:active {
-    color: #b8c0cc;
+    color: var(--green-success, #28a745);
     outline: none;
     transform: scale(1.04);
 }
@@ -902,7 +907,7 @@
 #required-documents-modal .required-k2-remove-btn:hover,
 #required-documents-modal .required-k2-remove-btn:focus-visible,
 #required-documents-modal .required-k2-remove-btn:active {
-    color: var(--red, #ef4444);
+    color: var(--theme-color, #e00000);
     outline: none;
     transform: scale(1.04);
 }
