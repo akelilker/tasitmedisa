@@ -197,7 +197,7 @@
 
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20260828.1';
+  const MEDISA_TASITLAR_MODULE_VERSION = '20260829.1';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
@@ -5620,7 +5620,13 @@
     'kasko-policesi-yukle': 'Kasko Poliçesi',
     'takograf-belgesi-yukle': 'Takograf Belgesi',
     'tasit-karti-yukle': 'Taşıt Kartı',
-    'satis-sozlesmesi-yukle': 'Satış Sözleşmesi'
+    'satis-sozlesmesi-yukle': 'Satış Sözleşmesi',
+    'ruhsat-sil': 'Ruhsat Belgesi',
+    'sigorta-policesi-sil': 'Sigorta Poliçesi',
+    'kasko-policesi-sil': 'Kasko Poliçesi',
+    'takograf-belgesi-sil': 'Takograf Belgesi',
+    'tasit-karti-sil': 'Taşıt Kartı',
+    'satis-sozlesmesi-sil': 'Satış Sözleşmesi'
   };
 
   function getVehicleDocumentUploadEventLabel(eventType, data) {
@@ -5905,6 +5911,11 @@
     const vid = String(vehicleId || '').trim();
     if (!vid) return '';
     return vid + '::' + dt;
+  }
+
+  function invalidateMedisaDocumentTokenCache(vehicleId, documentType) {
+    const cacheKey = getMedisaDocumentTokenCacheKey(vehicleId, documentType);
+    if (cacheKey) medisaDocTokenCache.delete(cacheKey);
   }
 
   function parseMedisaDocumentUrlContext(rawUrl) {
@@ -7316,6 +7327,9 @@
       }
       btnGroup.appendChild(previewBtn);
 
+      const docActions = document.createElement('div');
+      docActions.className = 'ruhsat-doc-actions';
+
       const replaceBtn = document.createElement('button');
       replaceBtn.type = 'button';
       replaceBtn.className = 'ruhsat-add-btn';
@@ -7324,7 +7338,19 @@
       replaceBtn.onclick = function() {
         renderRuhsatUploadForm(content, saveBtn, true, dt);
       };
-      btnGroup.appendChild(replaceBtn);
+      docActions.appendChild(replaceBtn);
+
+      const removeBtn = document.createElement('button');
+      removeBtn.type = 'button';
+      removeBtn.className = 'ruhsat-remove-btn';
+      removeBtn.setAttribute('aria-label', cfg.label + ' Sil');
+      removeBtn.innerHTML = '&minus;';
+      removeBtn.onclick = function() {
+        requestVehicleDocumentDelete(vid, dt, docActions);
+      };
+      docActions.appendChild(removeBtn);
+
+      btnGroup.appendChild(docActions);
       content.appendChild(btnGroup);
     } else {
       renderRuhsatUploadForm(content, saveBtn, false, dt);
@@ -7947,6 +7973,123 @@
         alert((err && err.message) ? err.message : 'Y\u00fckleme s\u0131ras\u0131nda hata olu\u015ftu.');
       });
   };
+
+  var vehicleDocumentDeleteInFlight = false;
+
+  function setVehicleDocumentActionsDisabled(actionsHost, disabled) {
+    if (!actionsHost) return;
+    var buttons = actionsHost.querySelectorAll('.ruhsat-add-btn, .ruhsat-remove-btn');
+    Array.prototype.forEach.call(buttons, function(btn) {
+      btn.disabled = !!disabled;
+    });
+  }
+
+  function requestVehicleDocumentDelete(vehicleId, documentType, actionsHost) {
+    if (vehicleDocumentDeleteInFlight) return;
+    const cfg = getVehicleDocumentConfig(documentType);
+    const vid = String(vehicleId || '').trim();
+    const vehicle = findVehicleForDocumentUpload(vid);
+    if (!vid || !vehicle) {
+      alert('Taşıt kimliği bulunamadı. Belgeler ekranını kapatıp taşıt detayından yeniden açın.');
+      return;
+    }
+    const documentPathBefore = getVehicleDocumentPath(vehicle, cfg.key);
+    if (!documentPathBefore) return;
+    if (typeof window.medisaAskCompactConfirm !== 'function') return;
+
+    vehicleDocumentDeleteInFlight = true;
+    setVehicleDocumentActionsDisabled(actionsHost, true);
+
+    window.medisaAskCompactConfirm({
+      title: 'BELGE SİLME',
+      message: 'Belge Silinecektir. Bu İşlem Geri Alınamaz. Emin Misiniz?'
+    }).then(function(answer) {
+      if (answer !== true) {
+        vehicleDocumentDeleteInFlight = false;
+        setVehicleDocumentActionsDisabled(actionsHost, false);
+        return null;
+      }
+      return fetch('delete_document.php', {
+        method: 'POST',
+        cache: 'no-store',
+        headers: Object.assign({ 'Content-Type': 'application/json' }, buildMedisaAuthHeaders()),
+        body: JSON.stringify({
+          documentType: cfg.key,
+          vehicleId: vid,
+          vehicleVersion: Number(vehicle.version) || 1,
+          documentPathBefore: documentPathBefore
+        })
+      }).then(function(response) {
+        return response.json().catch(function() { return {}; }).then(function(data) {
+          if (!response.ok || data.success !== true) {
+            const err = new Error((data && (data.error || data.message)) || 'Belge silinemedi.');
+            err.conflict = !!(data && data.conflict);
+            throw err;
+          }
+          return data;
+        });
+      }).then(function(data) {
+        vehicleDocumentDeleteInFlight = false;
+        applyVehicleDocumentDeleteToClientState(vid, cfg, data);
+        if (typeof showToast === 'function') {
+          showToast(cfg.label + ' Silindi', 'success');
+        }
+        const modal = DOM.dinamikOlayModal;
+        const isStillOpen = !!(modal && modal.style.display !== 'none');
+        if (isStillOpen && String(window.currentDetailVehicleId || '') === String(vid)) {
+          window.openVehicleDocumentModal(vid, cfg.key);
+        }
+        if (typeof window.showVehicleDetail === 'function') {
+          try { window.showVehicleDetail(vid); } catch (e) {}
+        }
+        if (data.documentEvent) {
+          refreshOpenVehicleHistoryList(vid);
+        }
+        return data;
+      }).catch(function(err) {
+        vehicleDocumentDeleteInFlight = false;
+        setVehicleDocumentActionsDisabled(actionsHost, false);
+        console.error(err);
+        if (err && err.conflict) {
+          const afterRefresh = function() {
+            if (String(window.currentDetailVehicleId || '') === String(vid)) {
+              window.openVehicleDocumentModal(vid, cfg.key);
+            }
+          };
+          if (typeof window.loadDataFromServer === 'function') {
+            window.loadDataFromServer(false).then(afterRefresh).catch(afterRefresh);
+          } else {
+            afterRefresh();
+          }
+          alert('Belge başka biri tarafından güncellenmiş. Güncel veriler yüklendi.');
+          return;
+        }
+        alert((err && err.message) ? err.message : 'Belge silinirken hata oluştu.');
+      });
+    });
+  }
+
+  function applyVehicleDocumentDeleteToClientState(vehicleId, cfg, data) {
+    invalidateMedisaDocumentTokenCache(vehicleId, cfg.key);
+    invalidateRuhsatPreviewCache(vehicleId, cfg.key);
+    invalidateRuhsatDocumentCache(vehicleId, cfg.key);
+
+    const currentVehicles = (window.appData && window.appData.tasitlar) || [];
+    const v = currentVehicles.find(function(x) { return String(x.id) === String(vehicleId); });
+    if (!v) return;
+    v[cfg.pathField] = '';
+    if (data && data.documentEvent && typeof data.documentEvent === 'object') {
+      if (!Array.isArray(v.events)) v.events = [];
+      const documentEventId = String(data.documentEvent.id || '');
+      const hasDocumentEvent = documentEventId && v.events.some(function(ev) {
+        return String(ev && ev.id || '') === documentEventId;
+      });
+      if (!hasDocumentEvent) v.events.unshift(data.documentEvent);
+    }
+    if (data && data.vehicleVersion != null) {
+      v.version = Number(data.vehicleVersion) || v.version;
+    }
+  }
 
   /**
    * Ruhsat PDF'ini görüntüler / yazdırır
@@ -9811,7 +9954,9 @@
       if (yeniKod) pushDetail('Yeni Kod', yeniKod);
     } else if (documentUploadLabel) {
       const belgeTipi = documentUploadLabel;
-      const actionText = eventData.isReplacement === true ? 'G\u00fcncelledi' : 'Y\u00fckledi';
+      const actionText = eventData.islem === 'silme'
+        ? 'Sildi'
+        : (eventData.isReplacement === true ? 'G\u00fcncelledi' : 'Y\u00fckledi');
       summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, ' + escapeHtml(belgeTipi) + ' ' + actionText + '.</span>';
       if (eventData.fileName) pushDetail('Dosya', eventData.fileName);
       if (eventData.operationDate) {

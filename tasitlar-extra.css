@@ -734,7 +734,8 @@
   background: linear-gradient(to top, rgba(0, 0, 0, 0.58), rgba(0, 0, 0, 0));
   pointer-events: none;
 }
-#dinamik-olay-modal #ruhsat-modal-content .ruhsat-add-btn {
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-add-btn,
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-remove-btn {
   margin-left: 12px;
   font-size: 42px;
   font-weight: 300;
@@ -755,13 +756,22 @@
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03);
   transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
-#dinamik-olay-modal #ruhsat-modal-content .universal-btn-group.ruhsat-preview-row .ruhsat-add-btn,
-#dinamik-olay-modal #ruhsat-modal-content .universal-btn-group:has(.ruhsat-preview-link) .ruhsat-add-btn {
+/* Yüklü belgede [+] / [-] dikey yığın: konumlanan owner buton değil, aksiyon sarmalayıcıdır */
+#dinamik-olay-modal #ruhsat-modal-content .universal-btn-group.ruhsat-preview-row .ruhsat-doc-actions,
+#dinamik-olay-modal #ruhsat-modal-content .universal-btn-group:has(.ruhsat-preview-link) .ruhsat-doc-actions {
   position: absolute;
   left: calc(100% + 12px);
   top: 50%;
-  margin-left: 0;
   transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-doc-actions .ruhsat-add-btn,
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-doc-actions .ruhsat-remove-btn {
+  position: static;
+  margin-left: 0;
 }
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-add-btn:hover,
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-add-btn:focus-visible,
@@ -773,16 +783,24 @@
   box-shadow: inset 0 0 0 1px rgba(74, 222, 128, 0.18), 0 10px 24px rgba(0, 0, 0, 0.18);
   transform: scale(1.04);
 }
-#dinamik-olay-modal #ruhsat-modal-content .universal-btn-group.ruhsat-preview-row .ruhsat-add-btn:hover,
-#dinamik-olay-modal #ruhsat-modal-content .universal-btn-group.ruhsat-preview-row .ruhsat-add-btn:focus-visible,
-#dinamik-olay-modal #ruhsat-modal-content .universal-btn-group.ruhsat-preview-row .ruhsat-add-btn:active,
-#dinamik-olay-modal #ruhsat-modal-content .universal-btn-group:has(.ruhsat-preview-link) .ruhsat-add-btn:hover,
-#dinamik-olay-modal #ruhsat-modal-content .universal-btn-group:has(.ruhsat-preview-link) .ruhsat-add-btn:focus-visible,
-#dinamik-olay-modal #ruhsat-modal-content .universal-btn-group:has(.ruhsat-preview-link) .ruhsat-add-btn:active {
-  transform: translateY(-50%) scale(1.04);
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-remove-btn:hover,
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-remove-btn:focus-visible,
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-remove-btn:active {
+  color: var(--red, #ef4444) !important;
+  border-color: rgba(239, 68, 68, 0.58) !important;
+  background: rgba(239, 68, 68, 0.08) !important;
+  background-color: rgba(239, 68, 68, 0.08) !important;
+  box-shadow: inset 0 0 0 1px rgba(239, 68, 68, 0.18), 0 10px 24px rgba(0, 0, 0, 0.18);
+  transform: scale(1.04);
+}
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-add-btn[disabled],
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-remove-btn[disabled] {
+  opacity: 0.45;
+  pointer-events: none;
 }
 @media (min-width: 769px) {
-  #dinamik-olay-modal #ruhsat-modal-content .ruhsat-add-btn {
+  #dinamik-olay-modal #ruhsat-modal-content .ruhsat-add-btn,
+  #dinamik-olay-modal #ruhsat-modal-content .ruhsat-remove-btn {
     font-size: 32px;
     min-width: 50px;
     min-height: 50px;
@@ -1369,7 +1387,8 @@
     gap: 10px !important;
     padding: 0 !important;
   }
-  #dinamik-olay-modal #ruhsat-modal-content .ruhsat-add-btn {
+  #dinamik-olay-modal #ruhsat-modal-content .ruhsat-add-btn,
+  #dinamik-olay-modal #ruhsat-modal-content .ruhsat-remove-btn {
     font-size: 30px !important;
     min-width: 48px;
     width: 48px !important;
@@ -1381,8 +1400,18 @@
     justify-content: center !important;
     line-height: 1 !important;
   }
+  #dinamik-olay-modal #ruhsat-modal-content .universal-btn-group.ruhsat-preview-row .ruhsat-doc-actions,
+  #dinamik-olay-modal #ruhsat-modal-content .universal-btn-group:has(.ruhsat-preview-link) .ruhsat-doc-actions {
+    position: static !important;
+    left: auto !important;
+    top: auto !important;
+    transform: none !important;
+    gap: 6px !important;
+  }
   #dinamik-olay-modal #ruhsat-modal-content .universal-btn-group.ruhsat-preview-row .ruhsat-add-btn,
-  #dinamik-olay-modal #ruhsat-modal-content .universal-btn-group:has(.ruhsat-preview-link) .ruhsat-add-btn {
+  #dinamik-olay-modal #ruhsat-modal-content .universal-btn-group.ruhsat-preview-row .ruhsat-remove-btn,
+  #dinamik-olay-modal #ruhsat-modal-content .universal-btn-group:has(.ruhsat-preview-link) .ruhsat-add-btn,
+  #dinamik-olay-modal #ruhsat-modal-content .universal-btn-group:has(.ruhsat-preview-link) .ruhsat-remove-btn {
     position: static !important;
     left: auto !important;
     top: auto !important;

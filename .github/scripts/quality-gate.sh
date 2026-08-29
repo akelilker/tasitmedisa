@@ -53,6 +53,9 @@ npm run tool:verify-vehicle-history-ui
 echo "[quality-gate] Satis sozlesmesi invariants"
 npm run tool:verify-satis-sozlesmesi
 
+echo "[quality-gate] Vehicle document delete invariants"
+npm run tool:verify-document-delete
+
 echo "[quality-gate] Driver lazy module invariants"
 npm run tool:verify-driver-lazy
 

@@ -1,7 +1,7 @@
 // Service Worker - Medisa Taşıt Yönetim Sistemi
 // Version 2.15 - Güvenli offline okuma kabuğu
 
-const CACHE_VERSION = 'medisa-v2.307';
+const CACHE_VERSION = 'medisa-v2.308';
 // Raporlar modülü (raporlar.js / raporlar.css): ana shell cache'inden ayrı; MEDISA_MODULE_VERSIONS.raporlar ile senkron tut
 const CACHE_RAPORLAR_VERSION = 'medisa-raporlar-20260801.3';
 
@@ -106,7 +106,8 @@ self.addEventListener('fetch', (event) => {
       /\/admin_[^/]*\.php$/i.test(p) ||
       p.indexOf('upload_ruhsat.php') !== -1 ||
       p.indexOf('ruhsat.php') !== -1 ||
-      p.indexOf('ruhsat_preview.php') !== -1;
+      p.indexOf('ruhsat_preview.php') !== -1 ||
+      p.indexOf('delete_document.php') !== -1;
     if (isNoCachePhp) {
       event.respondWith(
         fetch(request).catch(() => new Response('Network error', { status: 503 }))

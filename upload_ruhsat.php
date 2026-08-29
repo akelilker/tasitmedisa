@@ -147,59 +147,6 @@ function medisaUploadVehicleNeedsTakograf($vehicle) {
     return $typeKey === 'kamyon';
 }
 
-function medisaUploadDocumentHistoryMeta($documentType) {
-    $type = strtolower(trim((string)$documentType));
-    $map = [
-        'ruhsat' => ['eventType' => 'ruhsat-yukle', 'label' => 'Ruhsat Belgesi'],
-        'sigorta' => ['eventType' => 'sigorta-policesi-yukle', 'label' => 'Sigorta Poliçesi'],
-        'kasko' => ['eventType' => 'kasko-policesi-yukle', 'label' => 'Kasko Poliçesi'],
-        'tasit_karti' => ['eventType' => 'tasit-karti-yukle', 'label' => 'Taşıt Kartı'],
-        'takograf' => ['eventType' => 'takograf-belgesi-yukle', 'label' => 'Takograf Belgesi'],
-        'satis_sozlesmesi' => ['eventType' => 'satis-sozlesmesi-yukle', 'label' => 'Satış Sözleşmesi'],
-    ];
-    return $map[$type] ?? null;
-}
-
-function medisaUploadDocumentRecorderName($context) {
-    $user = is_array($context['user'] ?? null) ? $context['user'] : [];
-    $name = trim((string)($user['isim'] ?? $user['name'] ?? ''));
-    if ($name !== '') {
-        return $name;
-    }
-    return 'Yönetim';
-}
-
-function medisaBuildVehicleDocumentUploadEvent($documentType, $documentPath, $previousDocumentPath, $context, $extraData = []) {
-    $meta = medisaUploadDocumentHistoryMeta($documentType);
-    if (!$meta) {
-        return null;
-    }
-    $now = date('c');
-    $recorder = medisaUploadDocumentRecorderName($context);
-    $eventData = [
-        'belgeTipi' => $meta['label'],
-        'documentType' => strtolower(trim((string)$documentType)),
-        'documentPath' => (string)$documentPath,
-        'fileName' => basename((string)$documentPath),
-        'isReplacement' => trim((string)$previousDocumentPath) !== '',
-        'previousDocumentPath' => (string)$previousDocumentPath,
-        'surucu' => $recorder,
-        'kaydeden' => $recorder,
-    ];
-    foreach ($extraData as $key => $value) {
-        if ($value !== null && $value !== '') {
-            $eventData[$key] = $value;
-        }
-    }
-    return [
-        'id' => 'doc_' . str_replace('.', '', sprintf('%.6F', microtime(true))) . '_' . substr(sha1($documentType . '|' . $documentPath . '|' . $now), 0, 8),
-        'type' => $meta['eventType'],
-        'date' => date('Y-m-d'),
-        'timestamp' => $now,
-        'data' => $eventData,
-    ];
-}
-
 function medisaCanMergeVehicleDocumentUpload($vehicle, $config, $documentType, $clientDocumentPath, $clientTasitKartiSyncDate, $hasClientDocumentPath, $hasClientTasitKartiSyncDate, $k2ExpiryDate = '') {
     if (!$hasClientDocumentPath || !is_array($vehicle) || !is_array($config)) {
         return false;
@@ -409,12 +356,13 @@ if (strpos((string)$header, '%PDF') === false) {
 }
 
 $k2GroupForUpload = $documentType === 'k2' ? medisaFindK2BelgeGroupByBranchId($preloadData, $requestedBranchId) : null;
-$safeId = $documentType === 'k2'
-    ? medisaSafeK2BelgeGroupFileIdentity($k2GroupForUpload['id'] ?? ('pending_' . $requestedBranchId))
-    : ($isSettingsDocument ? (string)($config['settingsKey'] ?? $documentType) : preg_replace('/[^a-zA-Z0-9_-]/', '', $vehicleId));
-if ($safeId === '') {
-    $safeId = 'vehicle_' . (preg_replace('/\D/', '', $vehicleId) ?: 'unknown');
-}
+$safeId = medisaResolveVehicleDocumentSafeFileId(
+    $documentType,
+    $config,
+    $vehicleId,
+    (string)($k2GroupForUpload['id'] ?? ''),
+    $requestedBranchId
+);
 
 $plate = strtoupper(preg_replace('/[^A-Z0-9]/', '', (string)medisaUploadRequestValue('plaka', '')));
 if ($plate === '') {
@@ -573,7 +521,7 @@ $result = medisaMutateData(function (&$data) use ($vehicleId, $vehicleVersion, $
     }
     $documentEventExtra['vehicleId'] = (string)$vehicleId;
     $documentEventExtra['plakaSnapshot'] = trim((string)($vehicle['plate'] ?? $vehicle['plaka'] ?? ''));
-    $documentEvent = medisaBuildVehicleDocumentUploadEvent($documentType, $documentPath, $previousDocumentPath, $context, $documentEventExtra);
+    $documentEvent = medisaBuildVehicleDocumentHistoryEvent('yukle', $documentType, $documentPath, $previousDocumentPath, $context, $documentEventExtra);
     if ($documentEvent) {
         if (!isset($vehicle['events']) || !is_array($vehicle['events'])) {
             $vehicle['events'] = [];

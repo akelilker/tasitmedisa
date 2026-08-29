@@ -340,8 +340,9 @@ test('PHP: config + preserve + archive helpers + upload gate', function() {
     'function medisaSaveApplyVehicleMutation'
   );
   assert.match(preserve, /satisSozlesmesiPath/);
-  assert.match(uploadPhp, /satis-sozlesmesi-yukle/);
-  assert.match(uploadPhp, /Satış Sözleşmesi/);
+  assert.match(corePhp, /satis-sozlesmesi/);
+  assert.match(corePhp, /'slug'\s*=>\s*'satis-sozlesmesi',\s*'label'\s*=>\s*'Satış Sözleşmesi'/);
+  assert.match(uploadPhp, /medisaBuildVehicleDocumentHistoryEvent\('yukle'/);
   assert.match(uploadPhp, /medisaVehicleAllowsSatisSozlesmesi\(\$preVehicle\)/);
   assert.match(uploadPhp, /medisaVehicleAllowsSatisSozlesmesi\(\$vehicle\)/);
   assert.match(uploadPhp, /Satış Sözleşmesi yalnızca stoktan düşen \(satış veya pert\) taşıtlara yüklenebilir/);
@@ -544,15 +545,16 @@ test('behavior: PHP sold/pert allow + aktif deny + satisSozlesmesiPath preserve'
 
 test('behavior: PHP satış sözleşmesi audit event alanları', function() {
   const eventHelpers = extractBetween(
-    uploadPhp,
-    'function medisaUploadDocumentHistoryMeta($documentType) {',
-    'function medisaCanMergeVehicleDocumentUpload'
+    corePhp,
+    'function medisaVehicleDocumentHistoryMeta($documentType) {',
+    'function medisaGetVehicleDocumentConfig'
   );
   const phpSrc = [
     '<?php',
     'error_reporting(E_ALL);',
     eventHelpers,
-    "$event = medisaBuildVehicleDocumentUploadEvent(",
+    "$event = medisaBuildVehicleDocumentHistoryEvent(",
+    "  'yukle',",
     "  'satis_sozlesmesi',",
     "  'data/satis_sozlesmesi/new.pdf',",
     "  'data/satis_sozlesmesi/old.pdf',",
@@ -691,7 +693,7 @@ test('cache / modül pin parity', function() {
   assert.match(scriptCore, /base \+ 'notifications\.css\?v=' \+ V\.notifications/);
   assert.match(scriptCore, /var AYARLAR_JS\s*=\s*base \+ 'ayarlar\.js\?v=' \+ V\.ayarlarJs;/);
   assert.match(scriptCore, /var AYARLAR_CSS\s*=\s*base \+ 'ayarlar\.css\?v=' \+ V\.ayarlarCss;/);
-  assert.match(sw, /CACHE_VERSION\s*=\s*'medisa-v2\.307'/);
+  assert.match(sw, /CACHE_VERSION\s*=\s*'medisa-v2\.308'/);
   assert.match(indexHtml, /script-core\.js\?v=\d{8}\.\d+/);
   styleCorePins.forEach(function(pin, index) {
     assert.ok(pin, 'style-core.css pin #' + (index + 1) + ' bulunmalı');

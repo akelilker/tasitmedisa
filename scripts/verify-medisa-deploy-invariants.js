@@ -81,6 +81,8 @@ assert.match(cpanel, /full_backup_restore\.php/, 'cPanel deploy full_backup_rest
 assert.match(cpanel, /backup-registry\.php/, 'cPanel deploy backup-registry.php kopyalamalı.');
 assert.match(cpanel, /backup-restore-commit\.php/, 'cPanel deploy backup-restore-commit.php kopyalamalı.');
 assert.match(cpanel, /server_restore\.php/, 'cPanel deploy server_restore.php kopyalamalı.');
+assert.match(cpanel, /\/bin\/test -f delete_document\.php/, 'cPanel deploy delete_document.php varlık kontrolü yapmalı.');
+assert.match(cpanel, /\/bin\/cp -a [^\n]*delete_document\.php/, 'cPanel deploy delete_document.php kopyalamalı.');
 assert.equal(/MEDISA_RESTORE_HMAC_SECRET\s*=/.test(cpanel), false, 'cPanel secret env yazmamalı.');
 assert.equal(/config\.local/.test(cpanel), false, 'cPanel config.local deploy etmemeli.');
 

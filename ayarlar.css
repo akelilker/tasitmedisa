@@ -857,7 +857,20 @@
     pointer-events: none;
 }
 
-#required-documents-modal .required-k2-add-btn {
+/* Yüklü K2 belgesinde [+] / [-] dikey yığın: konumlanan owner aksiyon sarmalayıcısıdır */
+#required-documents-modal .required-k2-doc-actions {
+    position: absolute;
+    left: calc(100% + 6px);
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+#required-documents-modal .required-k2-add-btn,
+#required-documents-modal .required-k2-remove-btn {
     width: 34px;
     min-width: 34px;
     height: 44px;
@@ -876,10 +889,6 @@
     cursor: pointer;
     box-shadow: none;
     transition: color 0.2s ease, transform 0.2s ease;
-    position: absolute;
-    left: calc(100% + 6px);
-    top: 50%;
-    transform: translateY(-50%);
 }
 
 #required-documents-modal .required-k2-add-btn:hover,
@@ -887,7 +896,21 @@
 #required-documents-modal .required-k2-add-btn:active {
     color: #b8c0cc;
     outline: none;
-    transform: translateY(-50%) scale(1.04);
+    transform: scale(1.04);
+}
+
+#required-documents-modal .required-k2-remove-btn:hover,
+#required-documents-modal .required-k2-remove-btn:focus-visible,
+#required-documents-modal .required-k2-remove-btn:active {
+    color: var(--red, #ef4444);
+    outline: none;
+    transform: scale(1.04);
+}
+
+#required-documents-modal .required-k2-add-btn[disabled],
+#required-documents-modal .required-k2-remove-btn[disabled] {
+    opacity: 0.45;
+    pointer-events: none;
 }
 
 #required-documents-modal .required-k2-date-picker-btn {

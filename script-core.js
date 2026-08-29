@@ -1079,6 +1079,91 @@ window.clearModalClosing = function(modal) {
   }, 260);
 };
 
+/**
+ * Ortak Evet/Hayır onay owner'ı (.compact-confirm-modal kontratı).
+ * Ayarlar ve Taşıtlar modülleri aynı modalı paylaşır; ikinci kopya açılmaz.
+ * true = Evet, false = Hayır, null = kapatıldı.
+ */
+window.medisaAskCompactConfirm = function(options) {
+  var opts = (options && typeof options === 'object') ? options : {};
+  var title = String(opts.title || 'ONAY').trim();
+  var message = String(opts.message || '').trim();
+
+  return new Promise(function(resolve) {
+    var modal = document.getElementById('medisa-compact-confirm-modal');
+    if (!modal) {
+      modal = document.createElement('div');
+      modal.id = 'medisa-compact-confirm-modal';
+      modal.className = 'modal-overlay ayarlar-modal-overlay compact-confirm-modal';
+      modal.style.display = 'none';
+      modal.setAttribute('role', 'dialog');
+      modal.setAttribute('aria-modal', 'true');
+      modal.setAttribute('aria-labelledby', 'medisa-compact-confirm-title');
+      modal.setAttribute('aria-describedby', 'medisa-compact-confirm-message');
+      modal.innerHTML =
+        '<div class="modal-container">' +
+          '<div class="modal-header">' +
+            '<h2 id="medisa-compact-confirm-title"></h2>' +
+            '<button type="button" class="modal-close" id="medisa-compact-confirm-close" aria-label="Kapat">' +
+              '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">' +
+                '<line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>' +
+              '</svg>' +
+            '</button>' +
+          '</div>' +
+          '<div class="modal-body">' +
+            '<p id="medisa-compact-confirm-message" class="compact-confirm-message"></p>' +
+            '<div class="universal-btn-group">' +
+              '<button type="button" class="universal-btn-save" id="medisa-compact-confirm-yes">Evet</button>' +
+              '<button type="button" class="universal-btn-cancel" id="medisa-compact-confirm-no">Hayır</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      document.body.appendChild(modal);
+    }
+
+    var titleEl = modal.querySelector('#medisa-compact-confirm-title');
+    var messageEl = modal.querySelector('#medisa-compact-confirm-message');
+    var yesBtn = modal.querySelector('#medisa-compact-confirm-yes');
+    var noBtn = modal.querySelector('#medisa-compact-confirm-no');
+    var closeBtn = modal.querySelector('#medisa-compact-confirm-close');
+    if (!titleEl || !messageEl || !yesBtn || !noBtn) {
+      resolve(null);
+      return;
+    }
+
+    var settled = false;
+    function finish(result) {
+      if (settled) return;
+      settled = true;
+      yesBtn.onclick = null;
+      noBtn.onclick = null;
+      if (closeBtn) closeBtn.onclick = null;
+      yesBtn.disabled = false;
+      noBtn.disabled = false;
+      modal.classList.remove('active', 'open');
+      modal.style.display = 'none';
+      if (typeof window.updateFooterDim === 'function') window.updateFooterDim();
+      resolve(result);
+    }
+
+    titleEl.textContent = title;
+    messageEl.textContent = message;
+    yesBtn.disabled = false;
+    noBtn.disabled = false;
+    yesBtn.onclick = function(e) { e.preventDefault(); e.stopPropagation(); finish(true); };
+    noBtn.onclick = function(e) { e.preventDefault(); e.stopPropagation(); finish(false); };
+    if (closeBtn) {
+      closeBtn.onclick = function(e) { e.preventDefault(); e.stopPropagation(); finish(null); };
+    }
+
+    modal.style.display = 'flex';
+    requestAnimationFrame(function() {
+      modal.classList.add('active');
+      if (typeof window.updateFooterDim === 'function') window.updateFooterDim();
+    });
+  });
+};
+
 /** Taşıt Detay'a dön - tasitlar.js override eder; yoksa modalları kapat (fallback) */
 window.backToVehicleDetail = function() {
   if (typeof window.closeEventMenuModal === 'function') {
@@ -1498,13 +1583,13 @@ document.addEventListener('DOMContentLoaded', () => {
 // style-core.css ana/paylaşılan shell HTML ile yüklenir; taşıt lazy asset sürümünden bağımsızdır.
 // tasitlar loader (bu nesne) ile MEDISA_TASITLAR_MODULE_VERSION kendi aralarında eşit kalmalıdır.
 var MEDISA_MODULE_VERSIONS = {
-  tasitlar: '20260828.1',
+  tasitlar: '20260829.1',
   notifications: '20260817.2',
   raporlar: '20260801.3',
   kayitJs: '20260820.1',
   kayitCss: '20260820.3',
-  ayarlarJs: '20260820.4',
-  ayarlarCss: '20260828.1',
+  ayarlarJs: '20260829.1',
+  ayarlarCss: '20260829.1',
   tasitlarYazici: '20260726.3',
   vehicleNotificationDomain: '20260817.2'
 };

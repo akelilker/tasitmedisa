@@ -1190,14 +1190,26 @@
       preview.appendChild(image);
       preview.appendChild(hint);
 
+      const docActions = document.createElement('div');
+      docActions.className = 'required-k2-doc-actions';
+
       const addBtn = document.createElement('button');
       addBtn.type = 'button';
       addBtn.className = 'required-k2-add-btn';
       addBtn.setAttribute('aria-label', 'K2 belgesini değiştir');
       addBtn.textContent = '+';
 
+      const removeBtn = document.createElement('button');
+      removeBtn.type = 'button';
+      removeBtn.className = 'required-k2-remove-btn';
+      removeBtn.setAttribute('aria-label', 'K2 belgesini sil');
+      removeBtn.innerHTML = '&minus;';
+
+      docActions.appendChild(addBtn);
+      docActions.appendChild(removeBtn);
+
       row.appendChild(preview);
-      row.appendChild(addBtn);
+      row.appendChild(docActions);
       area.appendChild(row);
     }
 
@@ -1212,7 +1224,12 @@
         area.addEventListener('click', function(event) {
           const picker = event.target.closest('#required-k2-document-picker');
           const addBtn = event.target.closest('.required-k2-add-btn');
+          const removeBtn = event.target.closest('.required-k2-remove-btn');
           const preview = event.target.closest('.required-k2-preview-link');
+          if (removeBtn) {
+            requestZorunluEvraklarK2DocumentDelete(event.target.closest('.required-k2-doc-actions'));
+            return;
+          }
           if (picker || addBtn) {
             fileInput.click();
             return;
@@ -1335,6 +1352,85 @@
           window.saveZorunluEvraklarK2();
         }
       });
+    }
+
+    var zorunluEvrakK2DeleteInFlight = false;
+
+    function setZorunluEvraklarK2ActionsDisabled(actionsHost, disabled) {
+      if (!actionsHost) return;
+      const buttons = actionsHost.querySelectorAll('.required-k2-add-btn, .required-k2-remove-btn');
+      Array.prototype.forEach.call(buttons, function(btn) {
+        btn.disabled = !!disabled;
+      });
+    }
+
+    async function requestZorunluEvraklarK2DocumentDelete(actionsHost) {
+      if (zorunluEvrakK2DeleteInFlight) return;
+      const state = getZorunluEvraklarK2State();
+      const documentPathBefore = String((state && state.documentPath) || '').trim();
+      const groupId = String((state && state.id) || '').trim();
+      if (!documentPathBefore || !groupId || !selectedZorunluEvrakBranchId) return;
+      if (typeof window.medisaAskCompactConfirm !== 'function') return;
+
+      zorunluEvrakK2DeleteInFlight = true;
+      setZorunluEvraklarK2ActionsDisabled(actionsHost, true);
+
+      let answer = null;
+      try {
+        answer = await window.medisaAskCompactConfirm({
+          title: 'BELGE SİLME',
+          message: 'Belge Silinecektir. Bu İşlem Geri Alınamaz. Emin Misiniz?'
+        });
+      } catch (e) {
+        answer = null;
+      }
+      if (answer !== true) {
+        zorunluEvrakK2DeleteInFlight = false;
+        setZorunluEvraklarK2ActionsDisabled(actionsHost, false);
+        return;
+      }
+
+      try {
+        const response = await fetch('delete_document.php', {
+          method: 'POST',
+          cache: 'no-store',
+          headers: buildZorunluEvraklarAuthHeaders({ 'Content-Type': 'application/json' }),
+          body: JSON.stringify({
+            documentType: 'k2',
+            branchId: selectedZorunluEvrakBranchId,
+            groupId: groupId,
+            groupUpdatedAtBefore: String((state && state.updatedAt) || ''),
+            documentPathBefore: documentPathBefore
+          })
+        });
+        const data = await response.json().catch(function() { return {}; });
+        if (!response.ok || data.success !== true) {
+          throw new Error(data.message || data.error || 'K2 belgesi silinemedi.');
+        }
+        zorunluEvrakK2DocTokenCache = null;
+        const canonicalGroup = data.group;
+        if (canonicalGroup && Array.isArray(window.appData.ayarlar.k2BelgeGruplari)) {
+          const index = window.appData.ayarlar.k2BelgeGruplari.findIndex(function(item) {
+            return item && item.id === canonicalGroup.id;
+          });
+          if (index >= 0) window.appData.ayarlar.k2BelgeGruplari[index] = canonicalGroup;
+          selectedZorunluEvrakGroupId = canonicalGroup.id;
+        }
+        zorunluEvrakK2DeleteInFlight = false;
+        refreshZorunluEvraklarK2View();
+        renderRequiredDocumentGroupMembers();
+      } catch (error) {
+        zorunluEvrakK2DeleteInFlight = false;
+        setZorunluEvraklarK2ActionsDisabled(actionsHost, false);
+        alert((error && error.message) ? error.message : 'K2 belgesi silinemedi.');
+        if (typeof window.loadDataFromServer === 'function') {
+          try {
+            await window.loadDataFromServer(false);
+            zorunluEvrakK2DocTokenCache = null;
+            refreshZorunluEvraklarK2View();
+          } catch (e) {}
+        }
+      }
     }
 
     async function uploadZorunluEvraklarK2Document(fileInput) {

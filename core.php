@@ -2781,6 +2781,76 @@ function medisaSaveApplyIncomingData(array $incomingData, array &$data, array $c
     ];
 }
 
+/**
+ * Belge geçmişi (history/audit) tek owner. Yükleme (upload_ruhsat.php) ve
+ * silme (delete_document.php) aynı etiket/olay tipi haritasını kullanır.
+ */
+function medisaVehicleDocumentHistoryMeta($documentType) {
+    $type = strtolower(trim((string)$documentType));
+    $map = [
+        'ruhsat' => ['slug' => 'ruhsat', 'label' => 'Ruhsat Belgesi'],
+        'sigorta' => ['slug' => 'sigorta-policesi', 'label' => 'Sigorta Poliçesi'],
+        'kasko' => ['slug' => 'kasko-policesi', 'label' => 'Kasko Poliçesi'],
+        'tasit_karti' => ['slug' => 'tasit-karti', 'label' => 'Taşıt Kartı'],
+        'takograf' => ['slug' => 'takograf-belgesi', 'label' => 'Takograf Belgesi'],
+        'satis_sozlesmesi' => ['slug' => 'satis-sozlesmesi', 'label' => 'Satış Sözleşmesi'],
+        'k2' => ['slug' => 'k2-belgesi', 'label' => 'K2 Belgesi'],
+    ];
+    if (!isset($map[$type])) {
+        return null;
+    }
+    return [
+        'eventType' => $map[$type]['slug'] . '-yukle',
+        'deleteEventType' => $map[$type]['slug'] . '-sil',
+        'label' => $map[$type]['label'],
+    ];
+}
+
+function medisaVehicleDocumentHistoryActorName($context) {
+    $user = is_array($context['user'] ?? null) ? $context['user'] : [];
+    $name = trim((string)($user['isim'] ?? $user['name'] ?? ''));
+    if ($name !== '') {
+        return $name;
+    }
+    return 'Yönetim';
+}
+
+function medisaBuildVehicleDocumentHistoryEvent($action, $documentType, $documentPath, $previousDocumentPath, $context, $extraData = []) {
+    $meta = medisaVehicleDocumentHistoryMeta($documentType);
+    if (!$meta) {
+        return null;
+    }
+    $isDelete = strtolower(trim((string)$action)) === 'sil';
+    $now = date('c');
+    $recorder = medisaVehicleDocumentHistoryActorName($context);
+    $fileNameSource = $isDelete ? (string)$previousDocumentPath : (string)$documentPath;
+    $eventData = [
+        'belgeTipi' => $meta['label'],
+        'documentType' => strtolower(trim((string)$documentType)),
+        'documentPath' => $isDelete ? '' : (string)$documentPath,
+        'fileName' => basename($fileNameSource),
+        'isReplacement' => !$isDelete && trim((string)$previousDocumentPath) !== '',
+        'previousDocumentPath' => (string)$previousDocumentPath,
+        'surucu' => $recorder,
+        'kaydeden' => $recorder,
+    ];
+    if ($isDelete) {
+        $eventData['islem'] = 'silme';
+    }
+    foreach ($extraData as $key => $value) {
+        if ($value !== null && $value !== '') {
+            $eventData[$key] = $value;
+        }
+    }
+    return [
+        'id' => 'doc_' . str_replace('.', '', sprintf('%.6F', microtime(true))) . '_' . substr(sha1($documentType . '|' . $fileNameSource . '|' . $now), 0, 8),
+        'type' => $isDelete ? $meta['deleteEventType'] : $meta['eventType'],
+        'date' => date('Y-m-d'),
+        'timestamp' => $now,
+        'data' => $eventData,
+    ];
+}
+
 function medisaGetVehicleDocumentConfig(string $documentType): ?array {
     $type = strtolower(trim($documentType));
     $configs = [
@@ -2878,6 +2948,86 @@ function medisaResolveVehicleDocumentCandidatePath($rawPath, array $config) {
     }
 
     return $realCandidate;
+}
+
+/**
+ * Belge dosya kimliği (safeId) tek owner: yükleme ve silme aynı adlandırmayı kullanır.
+ */
+function medisaResolveVehicleDocumentSafeFileId($documentType, array $config, $vehicleId, $k2GroupId = '', $k2BranchId = '') {
+    $type = strtolower(trim((string)$documentType));
+    if ($type === 'k2') {
+        $groupId = trim((string)$k2GroupId);
+        return medisaSafeK2BelgeGroupFileIdentity($groupId !== '' ? $groupId : ('pending_' . trim((string)$k2BranchId)));
+    }
+    if (!empty($config['settingsKey'])) {
+        return (string)$config['settingsKey'];
+    }
+    $safeId = preg_replace('/[^a-zA-Z0-9_-]/', '', (string)$vehicleId);
+    if ($safeId === '') {
+        $safeId = 'vehicle_' . (preg_replace('/\D/', '', (string)$vehicleId) ?: 'unknown');
+    }
+    return $safeId;
+}
+
+/**
+ * Belgeye ait fiziksel dosyaları siler: canonical PDF, legacy <safeId>.pdf kopyası ve
+ * yalnız o belgeye ait <safeId>.jpg / <safeId>_p*.jpg önizlemeleri.
+ * data/<dir> ve data/<dir>_preview dışına asla çıkmaz.
+ */
+function medisaDeleteVehicleDocumentFiles(array $config, $safeId, $documentPath) {
+    $result = ['deleted' => [], 'failed' => [], 'canonicalDeleted' => false, 'canonicalMissing' => true];
+    $dir = trim((string)($config['dir'] ?? ''), '/');
+    if ($dir === '') {
+        $result['failed'][] = 'config';
+        return $result;
+    }
+
+    $canonicalPath = medisaResolveVehicleDocumentCandidatePath($documentPath, $config);
+    $targets = [];
+    if ($canonicalPath !== null) {
+        $result['canonicalMissing'] = false;
+        $targets[] = $canonicalPath;
+    }
+
+    $safe = preg_replace('/[^a-zA-Z0-9_-]/', '', (string)$safeId);
+    if ($safe !== '') {
+        $legacyPath = medisaResolveVehicleDocumentCandidatePath($dir . '/' . $safe . '.pdf', $config);
+        if ($legacyPath !== null) {
+            $targets[] = $legacyPath;
+        }
+        $previewDir = realpath(getDataDirPath() . DIRECTORY_SEPARATOR . $dir . '_preview');
+        if ($previewDir !== false) {
+            $previewPrefix = rtrim($previewDir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+            foreach ([$safe . '.jpg', $safe . '_p*.jpg'] as $pattern) {
+                foreach ((array)glob($previewPrefix . $pattern) as $previewFile) {
+                    $realPreview = realpath($previewFile);
+                    if ($realPreview === false || !is_file($realPreview)) {
+                        continue;
+                    }
+                    if (strpos($realPreview, $previewPrefix) !== 0) {
+                        continue;
+                    }
+                    $targets[] = $realPreview;
+                }
+            }
+        }
+    }
+
+    foreach (array_values(array_unique($targets)) as $target) {
+        if (!is_file($target)) {
+            continue;
+        }
+        if (@unlink($target)) {
+            $result['deleted'][] = basename($target);
+            if ($canonicalPath !== null && $target === $canonicalPath) {
+                $result['canonicalDeleted'] = true;
+            }
+        } else {
+            $result['failed'][] = basename($target);
+        }
+    }
+
+    return $result;
 }
 
 function medisaResolveVehicleDocumentFilePath($vehicle, string $documentType, $data = null) {
