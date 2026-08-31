@@ -1,1 +1,4 @@
+# Cross-platform source byte gates must see canonical LF content.
+*.css text eol=lf
+*.js text eol=lf
 /script-core.js whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol

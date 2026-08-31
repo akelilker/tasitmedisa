@@ -7,10 +7,14 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+const {
+  canonicalSourceBytes,
+  canonicalSourceFileBytes
+} = require('./lib/canonical-source-bytes');
 
 const ROOT = path.join(__dirname, '..');
 const read = (relative) => fs.readFileSync(path.join(ROOT, relative), 'utf8');
-const size = (relative) => fs.statSync(path.join(ROOT, relative)).size;
+const size = (relative) => canonicalSourceFileBytes(path.join(ROOT, relative));
 const files = {
   loginHtml: read('driver/index.html'),
   dashboardHtml: read('driver/dashboard.html'),
@@ -471,6 +475,29 @@ test('Password feature kaldırılmış runtime session helper sözleşmesine dö
   assert.match(files.password, /portalSession\.storeToken\(data\.token,\s*rememberSession\)/);
   assert.match(files.password, /portalSession\.isRememberEnabled\(\)/);
   assert.match(files.password, /portalSession\.syncRememberPasswordAfterChange\(newPassword\)/);
+});
+test('Canonical source byte ölçümü LF ve CRLF için aynıdır', () => {
+  const lf = 'a {\n  color: red;\n}\n';
+  const crlf = lf.replace(/\n/g, '\r\n');
+  assert.notEqual(Buffer.byteLength(lf, 'utf8'), Buffer.byteLength(crlf, 'utf8'));
+  assert.equal(canonicalSourceBytes(lf), canonicalSourceBytes(crlf));
+  assert.equal(canonicalSourceBytes(lf), Buffer.byteLength(lf, 'utf8'));
+});
+test('Git attributes CSS ve JS için LF checkout kontratı tanımlar', () => {
+  const attributes = read('.gitattributes')
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter((line) => line && !line.startsWith('#'));
+  assert.ok(attributes.includes('*.css text eol=lf'), 'CSS eol=lf kuralı yok');
+  assert.ok(attributes.includes('*.js text eol=lf'), 'JS eol=lf kuralı yok');
+  assert.ok(
+    attributes.includes('/script-core.js whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol'),
+    'script-core.js whitespace kuralı korunmuyor'
+  );
+  assert.ok(
+    !attributes.some((line) => /^\*\s+text/.test(line)),
+    'repo genelini kapsayan text=auto kuralı kabul edilmez'
+  );
 });
 test('Loader feature kayıt doğrulamasını korur', () => {
   assert.match(files.bootstrap, /if\s*\(!runtime\.features\[name\]\)[\s\S]{0,80}Feature kaydolmadi/);

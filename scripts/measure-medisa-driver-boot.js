@@ -7,8 +7,8 @@
 'use strict';
 
 const assert = require('node:assert/strict');
-const fs = require('node:fs');
 const path = require('node:path');
+const { canonicalSourceFileBytes } = require('./lib/canonical-source-bytes');
 
 const ROOT = path.join(__dirname, '..');
 const DRIVER = path.join(ROOT, 'driver');
@@ -31,7 +31,7 @@ const CSS_FILES = {
 };
 
 function bytes(file) {
-  return fs.statSync(path.join(DRIVER, file)).size;
+  return canonicalSourceFileBytes(path.join(DRIVER, file));
 }
 
 function pctReduction(oldValue, newValue) {
