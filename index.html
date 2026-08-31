@@ -80,10 +80,6 @@
             object-fit: contain;
             filter: brightness(0.88);
         }
-        @media (max-width: 640px) {
-            #loading-screen .splash-inner { min-width: 120px; }
-            #loading-screen .splash-logo { width: 120px !important; height: 69px !important; }
-        }
         #loading-screen .splash-title {
             font-size: clamp(calc(16px - 0.5pt), 4.5vw, calc(24px - 0.5pt));
             font-weight: 800;
@@ -96,6 +92,13 @@
             background-clip: text;
             -webkit-text-fill-color: transparent;
             font-family: 'Inter', sans-serif;
+        }
+        @media (max-width: 640px) {
+            #loading-screen .splash-inner { min-width: 120px; }
+            #loading-screen .splash-logo { width: 120px !important; height: 69px !important; }
+            #loading-screen .splash-title {
+                font-size: clamp(calc(16px + 0.5pt), calc(4.5vw + 1pt), calc(24px + 0.5pt));
+            }
         }
         /* CLS azaltma: CSS gelmeden önce modal/footer yerleşimini sabitle */
         .modal-overlay,

@@ -23,6 +23,7 @@ function assert(name, cond, detail) {
 
 const indexHtml = read('driver/index.html');
 const dashHtml = read('driver/dashboard.html');
+const driverStyle = read('driver/driver-style.css');
 const driverShell = read('driver/driver-shell.css');
 const styleCore = read('style-core.css');
 
@@ -75,9 +76,22 @@ assert(
 
 assert(
   'login_mobile_fit_contract',
-  /clamp\(16\.5px,\s*4\.9vw,\s*20px\)/.test(driverShell) &&
-    /clamp\(0\.9px,\s*0\.4vw,\s*1\.8px\)/.test(driverShell),
-  'Tablet/mobile login fit clamp kontratı olmalı'
+  /@media\s*\(max-width:\s*640px\)\s*\{[\s\S]*?\.login-page\s+\.hero\s*>\s*h1\s*\{[^}]*font-size:\s*clamp\(16\.8px,\s*5\.35vw,\s*22px\)[^}]*letter-spacing:\s*clamp\(0\.2px,\s*0\.08vw,\s*0\.8px\)/.test(driverShell),
+  'Telefon login fit kontratı (16.8px / 5.35vw / 22px) olmalı'
+);
+
+assert(
+  'login_mobile_header_scale_contract',
+  /@media\s*\(max-width:\s*640px\)\s*\{[\s\S]*?\.login-page\s+\.hero\s*\{[^}]*min-height:\s*72px[^}]*padding-top:\s*12px[^}]*padding-bottom:\s*12px/.test(driverShell) &&
+    /@media\s*\(max-width:\s*640px\)\s*\{[\s\S]*?\.login-page\s+\.hero-logo\s*\{[^}]*width:\s*48px[^}]*flex:\s*0\s+0\s+48px[^}]*margin-right:\s*15px/.test(driverShell) &&
+    /@media\s*\(max-width:\s*640px\)\s*\{[\s\S]*?\.login-page\s+\.hero-logo\s+img\s*\{[^}]*height:\s*36px/.test(driverShell),
+  'Telefon login hero/logo ölçeği 72px / 12px / 48px / 36px olmalı'
+);
+
+assert(
+  'login_tablet_fit_contract_unchanged',
+  /@media\s*\(min-width:\s*641px\)\s*and\s*\(max-width:\s*768px\)\s*\{[\s\S]*?\.login-page\s+\.hero\s*>\s*h1\s*\{[^}]*font-size:\s*clamp\(16\.5px,\s*4\.9vw,\s*20px\)[^}]*letter-spacing:\s*clamp\(0\.9px,\s*0\.4vw,\s*1\.8px\)/.test(driverShell),
+  '641–768px tablet fit kontratı değişmemeli'
 );
 
 assert(
@@ -102,8 +116,14 @@ assert(
 
 assert(
   'dashboard_shell_version_aligned',
-  /href="driver-shell\.css\?v=\d{8}\.\d+"/.test(dashHtml),
-  'Dashboard driver-shell version login ile aynı olmalı'
+  (() => {
+    const loginPin = indexHtml.match(/href="driver-shell\.css\?v=(\d{8}\.\d+)"/);
+    const dashboardPin = dashHtml.match(/href="driver-shell\.css\?v=(\d{8}\.\d+)"/);
+    const aggregatorPin = driverStyle.match(/driver-shell\.css\?v=(\d{8}\.\d+)/);
+    return loginPin && dashboardPin && aggregatorPin &&
+      loginPin[1] === dashboardPin[1] && loginPin[1] === aggregatorPin[1];
+  })(),
+  'Login, dashboard ve aggregator driver-shell pinleri aynı olmalı'
 );
 
 assert(

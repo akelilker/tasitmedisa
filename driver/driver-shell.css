@@ -2941,13 +2941,41 @@ body.is-ios-pwa.login-page .form-group-checkbox label {
   .login-page .hero > h1 {
     flex: 1 1 0 !important;
     min-width: 0 !important;
-    /* Ana panel mobil hero h1 ile yakın kademe; clip ile taşma kontrollü */
-    font-size: clamp(16.5px, 4.9vw, 20px) !important;
-    letter-spacing: clamp(0.9px, 0.4vw, 1.8px) !important;
     line-height: 1.2 !important;
     white-space: nowrap !important;
     overflow: hidden !important;
     text-overflow: clip !important;
     padding: 0 2px !important;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 768px) {
+  .login-page .hero > h1 {
+    /* Tablet fit kontratı değişmez. */
+    font-size: clamp(16.5px, 4.9vw, 20px) !important;
+    letter-spacing: clamp(0.9px, 0.4vw, 1.8px) !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .login-page .hero {
+    min-height: 72px !important;
+    padding-top: 12px !important;
+    padding-bottom: 12px !important;
+  }
+
+  .login-page .hero-logo {
+    width: 48px !important;
+    flex: 0 0 48px !important;
+    margin-right: 15px !important;
+  }
+
+  .login-page .hero-logo img {
+    height: 36px !important;
+  }
+
+  .login-page .hero > h1 {
+    font-size: clamp(16.8px, 5.35vw, 22px) !important;
+    letter-spacing: clamp(0.2px, 0.08vw, 0.8px) !important;
   }
 }
