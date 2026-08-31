@@ -577,19 +577,6 @@ body::-webkit-scrollbar,
   grid-template-columns: 1fr 1fr !important;
 }
 
-/* Vazgeç: ayarlar formlarında nötr gri (kırmızı danger kimliği yalnız Sil'de) */
-#branch-form-modal .universal-btn-cancel,
-#user-form-modal .universal-btn-cancel {
-  color: #a0aec0 !important;
-  border: 1px solid rgba(160, 174, 192, 0.5) !important;
-}
-#branch-form-modal .universal-btn-cancel:hover,
-#user-form-modal .universal-btn-cancel:hover {
-  background: rgba(160, 174, 192, 0.12) !important;
-  border-color: #a0aec0 !important;
-  color: #ffffff !important;
-}
-
 /* Yıkıcı satır: birincil satırın altında, yatay merkezde tek Sil butonu */
 #branch-form-modal .settings-form-danger-row,
 #user-form-modal .settings-form-danger-row {

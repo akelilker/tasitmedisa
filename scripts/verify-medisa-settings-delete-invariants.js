@@ -180,12 +180,12 @@ run('css_danger_row_centered_and_controlled_width', function () {
   assert.match(styleCore, /#branch-form-modal \.settings-btn-delete,[\s\S]*?color: #ff4d4d !important;/);
 });
 
-run('css_cancel_is_neutral_inside_settings_forms', function () {
-  assert.match(
-    styleCore,
-    /#branch-form-modal \.universal-btn-cancel,\s*#user-form-modal \.universal-btn-cancel \{\s*color: #a0aec0 !important;/
+run('css_cancel_uses_global_red_inside_settings_forms', function () {
+  assert.ok(
+    !/#(branch|user)-form-modal \.universal-btn-cancel[^{]*\{[^}]*color: #a0aec0/.test(styleCore),
+    'ayarlar formlarında gri Vazgeç override kalmamalı'
   );
-  assert.match(styleCore, /\.universal-btn-cancel \{\s*color: #d40000 !important;/, 'ayarlar dışı Vazgeç standardı korunmalı');
+  assert.match(styleCore, /\.universal-btn-cancel \{\s*color: #d40000 !important;/, 'Vazgeç global kırmızı standardı korunmalı');
 });
 
 run('css_scope_limited_to_settings_forms', function () {
