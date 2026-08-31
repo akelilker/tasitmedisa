@@ -45,13 +45,17 @@ function count(text, pattern) {
   return (text.match(pattern) || []).length;
 }
 
+// Shell CSS pin owner'ı driver-script.js asset version registry'sidir.
+const SHELL_CSS_PIN = (files.bootstrap.match(/shellCss:\s*['"]([^'"]+)['"]/) || [])[1];
+const shellCssLinkPattern = new RegExp('driver-shell\\.css\\?v=' + String(SHELL_CSS_PIN).replace(/\./g, '\\.'));
+
 test('Login HTML compatibility aggregator yüklemiyor', () => {
   assert.doesNotMatch(files.loginHtml, /driver-style\.css/);
-  assert.match(files.loginHtml, /driver-shell\.css\?v=20260820\.4/);
+  assert.match(files.loginHtml, shellCssLinkPattern);
 });
 test('Dashboard HTML compatibility aggregator yüklemiyor', () => {
   assert.doesNotMatch(files.dashboardHtml, /driver-style\.css/);
-  assert.match(files.dashboardHtml, /driver-shell\.css\?v=20260820\.4/);
+  assert.match(files.dashboardHtml, shellCssLinkPattern);
 });
 test('Login vehicle notification domain yüklemiyor', () => {
   assert.doesNotMatch(files.loginHtml, /vehicle-notification-domain\.js/);
@@ -357,8 +361,10 @@ test('Driver asset version sistemi kendi içinde tutarlıdır', () => {
   };
   assert.equal(readBootstrapQueryVersion(files.loginHtml, 'driver-script\\.js'), bootstrapVersion);
   assert.equal(readBootstrapQueryVersion(files.dashboardHtml, 'driver-script\\.js'), bootstrapVersion);
-  assert.match(files.loginHtml, /driver-shell\.css\?v=20260820\.4/);
-  assert.match(files.dashboardHtml, /driver-shell\.css\?v=20260820\.4/);
+  readVersion('shellCss');
+  assert.match(files.loginHtml, shellCssLinkPattern);
+  assert.match(files.dashboardHtml, shellCssLinkPattern);
+  assert.match(files.compatibilityCss, shellCssLinkPattern);
 
   readVersion('featureCss');
   assert.match(files.bootstrap, /assetUrl\(['"]driver-features\.css['"],\s*['"]featureCss['"]\)/);

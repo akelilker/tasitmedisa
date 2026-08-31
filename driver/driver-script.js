@@ -35,7 +35,7 @@ documents: '20260820.1',
 feedback: '20260813.1',
 password: '20260731.1',
 actions: '20260718.1',
-shellCss: '20260820.4',
+shellCss: '20260831.1',
 featureCss: '20260820.4'
 };
 
