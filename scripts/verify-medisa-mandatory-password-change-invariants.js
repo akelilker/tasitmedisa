@@ -147,5 +147,35 @@ test('CACHE_VERSION tanımlı ve medisa-v2 sayısal formatında', () => {
   assert.match(cacheVersion, /^medisa-v2\.\d+$/);
 });
 
+test('Parola formu accessibility için gizli username alanı taşır', () => {
+  const formStart = files.dashboardHtml.indexOf('<form id="driver-password-form"');
+  assert.ok(formStart >= 0, 'driver-password-form bulunmalı');
+  const formEnd = files.dashboardHtml.indexOf('</form>', formStart);
+  const form = files.dashboardHtml.slice(formStart, formEnd);
+
+  const usernameInputs = form.match(/<input\b[^>]*id="driver-password-username"[^>]*>/g) || [];
+  assert.equal(usernameInputs.length, 1, 'username alanı form içinde tam bir kez bulunmalı');
+  const usernameInput = usernameInputs[0];
+  assert.match(usernameInput, /type="text"/);
+  assert.match(usernameInput, /name="username"/);
+  assert.match(usernameInput, /autocomplete="username"/);
+  assert.match(usernameInput, /\bhidden\b/);
+  assert.doesNotMatch(usernameInput, /\brequired\b/);
+  assert.doesNotMatch(usernameInput, /\bvalue=/);
+
+  assert.match(form, /id="driver-current-password"[^>]*autocomplete="current-password"/);
+  assert.equal((form.match(/autocomplete="new-password"/g) || []).length, 2);
+});
+test('Username alanı iki modal açılışında da form resetinden sonra doldurulur', () => {
+  assert.match(files.passwordJs, /function syncDriverPasswordUsernameField/);
+  assert.match(files.passwordJs, /s\.currentUser/);
+  assert.equal(
+    (files.passwordJs.match(/if \(form\) form\.reset\(\);\s*\n\s*syncDriverPasswordUsernameField\(\);/g) || []).length,
+    2,
+    'normal ve zorunlu modal açılışında username senkronizasyonu çağrılmalı'
+  );
+  assert.doesNotMatch(files.passwordJs, /driver-password-username'\)\.value\s*=\s*'[^']+'/);
+});
+
 console.log(`Mandatory password change invariants: ${passed} passed, ${failed} failed`);
 process.exit(failed > 0 ? 1 : 0);

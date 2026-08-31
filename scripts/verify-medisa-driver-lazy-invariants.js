@@ -429,5 +429,52 @@ test('Vehicle document helper behavioral matrix', () => {
   assert.equal(normalizeDriverVehicleTypeKey('Römork'), 'romork');
 });
 
+test('Password feature cold-load runtime kontratıyla kayıt olur', () => {
+  const vm = require('node:vm');
+  const runtime = {
+    state: {},
+    // Runtime helpers bilerek session helper içermez; password feature bunlara bağlanmamalı.
+    helpers: {
+      updateDriverModalBodyClass: function() {},
+      ensureDriverOnlineForWrite: function() { return true; },
+      logout: function() {}
+    },
+    paths: { API_BASE: '', DRIVER_PAGE_BASE: '' },
+    features: {},
+    registerFeature: function(name, api) { this.features[name] = api; }
+  };
+  const window = {
+    MedisaDriverRuntime: runtime,
+    medisaPortalSession: {
+      storeToken: function() { return true; },
+      isRememberEnabled: function() { return false; },
+      syncRememberPasswordAfterChange: function() { return false; }
+    }
+  };
+  const context = vm.createContext({
+    window: window,
+    document: { getElementById: function() { return null; }, body: null },
+    setTimeout: function() {},
+    fetch: function() { return Promise.reject(new Error('no network')); },
+    console: console
+  });
+  vm.runInContext(files.password, context, { filename: 'driver-feature-password.js' });
+
+  assert.ok(runtime.features.password, 'password feature kayıtlı olmalı');
+  ['openDriverPasswordModal', 'closeDriverPasswordModal', 'openMandatoryDriverPasswordChange', 'submitDriverPasswordChange']
+    .forEach((fn) => assert.equal(typeof runtime.features.password[fn], 'function', fn + ' function olmalı'));
+});
+test('Password feature kaldırılmış runtime session helper sözleşmesine dönmez', () => {
+  assert.doesNotMatch(files.password, /h\.persistSessionToken/);
+  assert.doesNotMatch(files.password, /h\.isPortalSessionRemembered/);
+  assert.doesNotMatch(files.password, /MedisaDriverRuntime session helper eksik/);
+  assert.match(files.password, /portalSession\.storeToken\(data\.token,\s*rememberSession\)/);
+  assert.match(files.password, /portalSession\.isRememberEnabled\(\)/);
+  assert.match(files.password, /portalSession\.syncRememberPasswordAfterChange\(newPassword\)/);
+});
+test('Loader feature kayıt doğrulamasını korur', () => {
+  assert.match(files.bootstrap, /if\s*\(!runtime\.features\[name\]\)[\s\S]{0,80}Feature kaydolmadi/);
+});
+
 console.log('\nDriver lazy invariants: ' + passed + ' passed, ' + failed + ' failed');
 process.exit(failed ? 1 : 0);

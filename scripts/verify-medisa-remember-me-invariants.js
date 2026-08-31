@@ -384,5 +384,18 @@ test('Ana uygulama data-manager asset referansı tekil ve versioned', () => {
   );
 });
 
+test('Password feature token yenilemesini canonical portal session owner üzerinden yapar', () => {
+  assert.match(files.passwordJs, /var portalSession = window\.medisaPortalSession;/);
+  assert.match(files.passwordJs, /portalSession\.isRememberEnabled\(\)\s*===\s*true/);
+  assert.match(files.passwordJs, /portalSession\.storeToken\(data\.token,\s*rememberSession\)/);
+  assert.match(files.passwordJs, /portalSession\.syncRememberPasswordAfterChange\(newPassword\)/);
+});
+test('Password feature paralel storage veya session wrapper kurmaz', () => {
+  assert.doesNotMatch(files.passwordJs, /localStorage\.setItem|sessionStorage\.setItem|clearStoredTokens/);
+  assert.doesNotMatch(files.passwordJs, /function persistSessionToken/);
+  assert.doesNotMatch(files.passwordJs, /function syncRememberPasswordAfterChange/);
+  assert.doesNotMatch(files.passwordJs, /h\.persistSessionToken|h\.isPortalSessionRemembered/);
+});
+
 console.log(`Remember-me invariants: ${passed} passed, ${failed} failed`);
 if (failed > 0) process.exit(1);

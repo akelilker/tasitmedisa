@@ -6,8 +6,12 @@ if (!runtime) throw new Error('MedisaDriverRuntime eksik');
 var s = runtime.state;
 var h = runtime.helpers;
 var p = runtime.paths;
-if (typeof h.persistSessionToken !== 'function') {
-throw new Error('MedisaDriverRuntime session helper eksik');
+var portalSession = window.medisaPortalSession;
+if (!portalSession
+|| typeof portalSession.storeToken !== 'function'
+|| typeof portalSession.isRememberEnabled !== 'function'
+|| typeof portalSession.syncRememberPasswordAfterChange !== 'function') {
+throw new Error('Medisa portal session API eksik');
 }
 function setDriverPasswordMessage(message, isError) {
 const messageEl = document.getElementById('driver-password-message');
@@ -17,11 +21,18 @@ messageEl.classList.toggle('is-error', !!isError);
 messageEl.classList.toggle('is-success', !!message && !isError);
 }
 
-function syncRememberPasswordAfterChange(newPassword) {
-if (window.medisaPortalSession && typeof window.medisaPortalSession.syncRememberPasswordAfterChange === 'function') {
-return window.medisaPortalSession.syncRememberPasswordAfterChange(newPassword);
-}
-return false;
+function syncDriverPasswordUsernameField() {
+const usernameInput = document.getElementById('driver-password-username');
+if (!usernameInput) return;
+const user = s.currentUser && typeof s.currentUser === 'object'
+? s.currentUser
+: {};
+usernameInput.value = String(
+user.kullanici_adi
+|| user.username
+|| user.login
+|| ''
+).trim();
 }
 
 function setDriverPasswordModalMode(isMandatory) {
@@ -46,6 +57,7 @@ const modal = document.getElementById('driver-password-modal');
 const form = document.getElementById('driver-password-form');
 if (!modal) return;
 if (form) form.reset();
+syncDriverPasswordUsernameField();
 setDriverPasswordMessage('', false);
 setDriverPasswordModalMode(false);
 modal.classList.add('show');
@@ -71,6 +83,7 @@ const modal = document.getElementById('driver-password-modal');
 const form = document.getElementById('driver-password-form');
 if (!modal) return;
 if (form) form.reset();
+syncDriverPasswordUsernameField();
 setDriverPasswordMessage('', false);
 setDriverPasswordModalMode(true);
 modal.classList.add('show');
@@ -142,14 +155,12 @@ setDriverPasswordMessage((data && data.message) || 'Parola değiştirilemedi. Te
 return false;
 }
 
-const rememberSession = typeof h.isPortalSessionRemembered === 'function'
-? h.isPortalSessionRemembered()
-: false;
-h.persistSessionToken(data.token, rememberSession);
+const rememberSession = portalSession.isRememberEnabled() === true;
+portalSession.storeToken(data.token, rememberSession);
 if (s.currentUser) s.currentUser.ilk_giris_parola_onerisi_bekliyor = false;
 s.driverPasswordMandatoryMode = false;
 setDriverPasswordMessage('Parolanız değiştirildi. Oturumunuz güvenli şekilde yenilendi.', false);
-syncRememberPasswordAfterChange(newPassword);
+portalSession.syncRememberPasswordAfterChange(newPassword);
 setTimeout(function() {
 window.location.href = p.DRIVER_PAGE_BASE + 'index.html';
 }, 900);
