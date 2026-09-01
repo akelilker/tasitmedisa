@@ -1541,17 +1541,17 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         gap: 0;
         min-width: 0;
         margin-top: 0 !important;
-        align-items: stretch !important;
+        align-items: start !important;
     }
     .modal-column-left {
-        padding-right: 8px;
+        padding-right: 10px;
         padding-left: 0;
         border-right: 1px solid var(--border-red-side);
         box-shadow: none;
         min-width: 0;
     }
     .modal-column-right {
-        padding-left: 8px;
+        padding-left: 10px;
         padding-right: 0;
         overflow: visible;
         min-width: 0;
@@ -1559,17 +1559,20 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-column-right { display: flex; flex-direction: column; min-height: 0; }
     .modal-column-right .form-section { margin-bottom: 8px; }
 
-    /* Mobil: sağ-sol grid alt hizası eşit */
-    #vehicle-modal .modal-columns {
-        align-items: stretch !important;
-    }
+    /* Ayırıcı, sağ kolondaki daha uzun form değil sol kolonun içeriği kadar sürer. */
     #vehicle-modal .modal-column-left,
     #vehicle-modal .modal-column-right {
         display: flex !important;
         flex-direction: column !important;
         min-height: 0;
-        align-self: stretch !important;
         width: 100%;
+        box-sizing: border-box;
+    }
+    #vehicle-modal .modal-column-left {
+        align-self: start !important;
+    }
+    #vehicle-modal .modal-column-right {
+        align-self: stretch !important;
     }
     /* Sol alt hizayı bozan gizli Tramer/Boya alanları mobilde yer kaplamasın */
     #vehicle-modal .modal-column-left .form-section:has(#tramer-records-container):not(.tramer-records-visible),
