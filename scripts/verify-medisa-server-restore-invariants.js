@@ -156,6 +156,23 @@ test('UI wording metadata-only and disabled commit gates', function() {
   assert.equal(/window\.restoreFromLastBackup/.test(settings), false);
 });
 
+test('server restore UI lifecycle wired once from openDataManagement', function() {
+  const settings = read('ayarlar.js');
+  assert.match(settings, /function bindServerRestorePanelOnce\s*\(/);
+  assert.match(settings, /window\.__medisaServerRestoreUiBound/);
+  assert.match(settings, /if\s*\(\s*window\.__medisaServerRestoreUiBound\s*\)\s*return/);
+
+  const openParts = settings.split('window.openDataManagement = function openDataManagement');
+  assert.equal(openParts.length >= 2, true, 'openDataManagement missing');
+  const openBody = openParts[1].split('window.closeDataManagement')[0];
+  assert.match(openBody, /bindServerRestorePanelOnce\s*\(\s*\)/);
+  assert.match(openBody, /refreshServerRestorePanel\s*\(\s*\)/);
+
+  const callSites = settings.match(/\bbindServerRestorePanelOnce\s*\(/g) || [];
+  assert.equal(callSites.length, 2, 'expected definition + single lifecycle call site');
+  assert.equal(/DOMContentLoaded[\s\S]{0,400}bindServerRestorePanelOnce\s*\(/.test(settings), false);
+});
+
 test('cpanel deploys new restore endpoints and not secrets', function() {
   const cpanel = read('.cpanel.yml');
   assert.match(cpanel, /backup_download\.php/);

@@ -4059,6 +4059,8 @@
       modal.style.display = 'flex';
       requestAnimationFrame(() => modal.classList.add('active'));
       pushSettingsHistoryLayer('settings-data');
+      bindServerRestorePanelOnce();
+      refreshServerRestorePanel();
       refreshDataManagementBackupMeta();
     };
 
