@@ -325,7 +325,7 @@ test('iOS PWA login class ve CSS owner kuralları', () => {
   assert.match(files.shellCss, /body\.is-ios-pwa\.login-page[\s\S]{0,280}padding-top:\s*11px/);
   assert.match(files.shellCss, /body\.is-ios-pwa\.login-page[\s\S]{0,320}padding-top:\s*15px/);
   assert.match(files.shellCss, /body:not\(\.is-ios-pwa\)\.login-page[\s\S]{0,180}clamp\(48px,\s*12dvh,\s*104px\)/);
-  assert.match(files.shellCss, /\.login-form \.form-group input \{[\s\S]{0,80}padding:\s*8px 16px/);
+  assert.match(files.shellCss, /\.login-form \.form-group input \{[\s\S]{0,80}padding:\s*7px 15px/);
   assert.match(files.shellCss, /\.btn-login \{[\s\S]{0,60}padding:\s*12px/);
   assert.doesNotMatch(files.shellCss.slice(-900), /is-ios-pwa|padding-top:\s*11px/);
 });

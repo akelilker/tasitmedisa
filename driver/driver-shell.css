@@ -2553,19 +2553,19 @@ body.is-ios-pwa.login-page .form-group-checkbox label {
   color: var(--form-label-color, #ffffff);
 }
 
-/* Şifre ekranı: varsayılan gri çerçeve, focus'ta kırmızı */
+/* Login input çerçeve: gerçek 1px border (0.5px inset box-shadow subpixel/AA artefaktı üretiyordu) */
 .login-form .form-group input {
   width: 100%;
   max-width: 100%;
-  padding: 8px 16px;
+  padding: 7px 15px;
   background: #0f1418 !important;
   background-color: #0f1418 !important;
-  border: none !important;
-  box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.35) !important;
+  border: 1px solid rgba(255, 255, 255, 0.35) !important;
+  box-shadow: none !important;
   border-radius: 8px;
   color: var(--data-value-color, #a0aec0);
   font-size: 16px;
-  transition: box-shadow 0.2s;
+  transition: border-color 0.2s;
   box-sizing: border-box;
 }
 
@@ -2577,32 +2577,48 @@ body.is-ios-pwa.login-page .form-group-checkbox label {
 .login-form .form-group input:-webkit-autofill,
 .login-form .form-group input:-webkit-autofill:hover,
 .login-form .form-group input:-webkit-autofill:focus {
-  -webkit-box-shadow: 0 0 0 30px #0f1418 inset, inset 0 0 0 0.5px rgba(255, 255, 255, 0.35) !important;
-  box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.35) !important;
+  /* Yalnızca sarı autofill dolgusunu ez; çerçeve border-color ile (beyaz 0.5px hairline yok) */
+  -webkit-box-shadow: 0 0 0 30px #0f1418 inset !important;
+  box-shadow: none !important;
   -webkit-text-fill-color: var(--data-value-color, #a0aec0) !important;
   background: #0f1418 !important;
   background-color: #0f1418 !important;
-  border: none !important;
+  border: 1px solid rgba(255, 255, 255, 0.35) !important;
   transition: background-color 5000s ease-in-out 0s;
+}
+
+.login-form .form-group input.has-value:-webkit-autofill,
+.login-form .form-group input.has-value:-webkit-autofill:hover,
+.login-form .form-group input.has-value:-webkit-autofill:focus,
+.login-form .form-group input:focus:-webkit-autofill,
+.login-form .form-group input:focus:-webkit-autofill:hover,
+.login-page .login-form .form-group input.has-value:-webkit-autofill,
+.login-page .login-form .form-group input:focus:-webkit-autofill {
+  border-color: var(--theme-color) !important;
+  -webkit-box-shadow: 0 0 0 30px #0f1418 inset !important;
+  box-shadow: none !important;
 }
 
 /* Boş / invalid: sadece focus yok ve dolu değilken gri çerçeve (yoksa focus/has-value kırmızı kazanır) */
 .login-form .form-group input:not(:focus):not(.has-value):invalid,
 .login-form .form-group input:not(:focus):not(.has-value):placeholder-shown {
-  box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.35) !important;
+  border-color: rgba(255, 255, 255, 0.35) !important;
+  box-shadow: none !important;
 }
 
 /* Tıklanınca (focus) kırmızı çerçeve */
 .login-form .form-group input:focus,
 .login-page .login-form .form-group input:focus {
   outline: none !important;
-  box-shadow: inset 0 0 0 0.5px var(--theme-color) !important;
+  border-color: var(--theme-color) !important;
+  box-shadow: none !important;
 }
 
 /* İçinde yazı varken (has-value) kırmızı çerçeve */
 .login-form .form-group input.has-value,
 .login-page .login-form .form-group input.has-value {
-  box-shadow: inset 0 0 0 0.5px var(--theme-color) !important;
+  border-color: var(--theme-color) !important;
+  box-shadow: none !important;
 }
 
 .login-form .form-group input::placeholder {
