@@ -693,7 +693,7 @@ test('cache / modül pin parity', function() {
   assert.match(scriptCore, /base \+ 'notifications\.css\?v=' \+ V\.notifications/);
   assert.match(scriptCore, /var AYARLAR_JS\s*=\s*base \+ 'ayarlar\.js\?v=' \+ V\.ayarlarJs;/);
   assert.match(scriptCore, /var AYARLAR_CSS\s*=\s*base \+ 'ayarlar\.css\?v=' \+ V\.ayarlarCss;/);
-  assert.match(sw, /CACHE_VERSION\s*=\s*'medisa-v2\.310'/);
+  assert.match(sw, /CACHE_VERSION\s*=\s*'medisa-v2\.311'/);
   assert.match(indexHtml, /script-core\.js\?v=\d{8}\.\d+/);
   styleCorePins.forEach(function(pin, index) {
     assert.ok(pin, 'style-core.css pin #' + (index + 1) + ' bulunmalı');
