@@ -3397,11 +3397,6 @@
     return rawType;
   }
 
-  function getK2BelgesiDocumentPath(vehicle) {
-    return String(window.MedisaVehicleNotificationDomain.getK2BelgesiDocumentPathForVehicle(vehicle) || '').trim();
-  }
-
-
   function getMuayeneRenewalYearsByProfile(profileKey) {
     return profileKey === 'otomobil' ? 2 : 1;
   }

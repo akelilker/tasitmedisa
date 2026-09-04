@@ -1065,18 +1065,6 @@ function medisaContextHasPermission($context, $permission) {
         && !empty($context['permissions'][$permission]);
 }
 
-function medisaContextCanAccessMainApp($context) {
-    return medisaContextHasPermission($context, 'view_main_app');
-}
-
-function medisaContextCanViewReports($context) {
-    return medisaContextHasPermission($context, 'view_reports');
-}
-
-function medisaContextCanManageGlobalData($context) {
-    return medisaContextHasPermission($context, 'manage_data');
-}
-
 function medisaBuildSessionPayload($context) {
     $user = $context['user'] ?? null;
     return [
@@ -3278,10 +3266,6 @@ function medisaResolveVehicleDocumentFilePath($vehicle, string $documentType, $d
     }
 
     return null;
-}
-
-function medisaResolveVehicleRuhsatFilePath($vehicle) {
-    return medisaResolveVehicleDocumentFilePath($vehicle, 'ruhsat');
 }
 
 /** Kısa ömürlü belge görüntüleme token süresi (saniye). */

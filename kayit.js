@@ -392,10 +392,6 @@
     return getRegistrationVehicleTypeKey(vehicleOrType) !== 'romork';
   }
 
-  function getRegistrationK2ExpiryDate() {
-    return '';
-  }
-
   function clearVehicleTakografFieldsWhenOutOfScope(vehicle) {
     if (!vehicle || registrationVehicleNeedsTakograf(vehicle)) return vehicle;
     vehicle.takografKalibrasyonDate = '';

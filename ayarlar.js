@@ -410,7 +410,6 @@
    (function () {
 
     function $(sel, root = document) { return root.querySelector(sel); }
-    function $all(sel, root = document) { return Array.from(root.querySelectorAll(sel)); }
 
     function normalizeSettingsRelationId(value) {
       return value === null || value === undefined ? '' : String(value).trim();

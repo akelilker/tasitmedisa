@@ -300,16 +300,6 @@ function invalidateMedisaCollectionCache(kind, reason) {
     clearMedisaVisibleCacheSlot('branches');
 }
 
-function invalidateAllMedisaVisibleCaches(reason) {
-    medisaCachedSessionFingerprint.quick = '';
-    medisaCachedSessionFingerprint.value = '';
-    bumpMedisaCollectionRevision('vehicles');
-    bumpMedisaCollectionRevision('branches');
-    bumpMedisaCollectionRevision('users');
-    invalidateMedisaCollectionCache('all', reason || 'invalidate-all');
-    queueMedisaCollectionsChanged(['vehicles', 'branches', 'users'], reason || 'invalidate-all');
-}
-
 function getMedisaSessionFingerprint() {
     var session = getSessionScope();
     var role = getSessionRoleValue(session);
