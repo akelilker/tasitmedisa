@@ -7,6 +7,14 @@
   RewriteRule ^(?:\.git|\.github)(?:/|$) - [F,L,NC]
   RewriteRule ^data(/|$) - [F,L,NC]
   RewriteRule ^favicon\.ico$ icon/favicon.ico [L]
+  # FilesMatch query string görmez; uzun cache yalnız ?v= pin'li JS/CSS için
+  RewriteCond %{QUERY_STRING} (?:^|&)v=
+  RewriteRule \.(?:js|css)$ - [E=MEDISA_VERSIONED_ASSET:1]
+</IfModule>
+
+# Metin tabanlı statik/dinamik yanıtlar için gzip (binary görseller hariç)
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/css text/javascript application/javascript application/json application/xml text/xml image/svg+xml
 </IfModule>
 
 # Service Worker: scope hatasını önlemek için (mod_headers gerekir)
@@ -16,8 +24,12 @@
   Header always set Referrer-Policy "strict-origin-when-cross-origin"
   Header always set Content-Security-Policy "frame-ancestors 'self'"
 
+  # Cache-busted (?v=) JS/CSS — versionsuz mutable istekler (örn. SW precache) alınmaz
+  Header set Cache-Control "public, max-age=31536000, immutable" env=MEDISA_VERSIONED_ASSET
+
   <Files "sw.js">
     Header set Service-Worker-Allowed "/"
+    Header unset Cache-Control
     Header set Cache-Control "no-cache, no-store, must-revalidate"
   </Files>
 </IfModule>

@@ -50,6 +50,10 @@ data/takograf_preview/
 data/satis_sozlesmesi/
 data/satis_sozlesmesi_preview/
 
+# Generated kasko packed index + runtime lock (rebuild: medisaBuildOrLoadKaskoPackedIndex)
+data/kasko-deger-listesi.index.json
+data/kasko-deger-listesi.index.lock
+
 # Keep intentionally versioned non-runtime data files
 !data/kasko-deger-listesi.json
 !data/data.example.json
