@@ -282,6 +282,11 @@ body::-webkit-scrollbar,
   transition: border-color 120ms ease, color 120ms ease;
 }
 
+.medisa-boxed-select-option.is-filter-hidden,
+.medisa-boxed-select-option[hidden] {
+  display: none !important;
+}
+
 .medisa-boxed-select-options {
   display: flex;
   flex-direction: column;
