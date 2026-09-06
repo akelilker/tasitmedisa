@@ -519,7 +519,10 @@
 '    body { font-family: Arial, sans-serif; margin: 24px; color: #111; }' +
 '    h1 { margin: 0 0 4px; font-size: 24px; }' +
 '    .subtitle { margin: 0 0 10px; color: #555; font-size: 13px; }' +
-'    .print-preview-toolbar { display: flex; justify-content: flex-end; gap: 8px; margin: 0 0 10px; position: sticky; top: 0; background: #fff; z-index: 10; padding: 4px 0; }' +
+'    .medisa-preview-shell-header--print-doc { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 0 0 10px; position: sticky; top: 0; background: #fff; z-index: 10; padding: 4px 0; }' +
+'    .medisa-preview-shell-header--print-doc .medisa-preview-shell-btn { border: 1px solid #cfcfcf; background: #fff; color: #222; border-radius: 7px; font-size: 12px; line-height: 1; padding: 7px 10px; cursor: pointer; box-shadow: none; font-weight: 600; }' +
+'    .medisa-preview-shell-header--print-doc .medisa-preview-shell-actions { display: flex; align-items: center; gap: 8px; }' +
+'    .print-preview-toolbar { display: none; }' +
 '    .print-preview-btn { border: 1px solid #cfcfcf; background: #fff; color: #222; border-radius: 7px; font-size: 12px; line-height: 1; padding: 7px 10px; cursor: pointer; }' +
 '    .print-preview-btn-primary { border-color: #999; }' +
 '    table { width: 100%; border-collapse: collapse; table-layout: fixed; }' +
@@ -551,13 +554,15 @@
 '    .history-print-extra { font-size: 11px; color: #444; margin-top: 1px; line-height: 1.2; }' +
 '    .history-print-empty { font-size: 12px; color: #666; }' +
 '    @media (max-width: 760px) { .history-grid { grid-template-columns: 1fr 1fr; } }' +
-'    @media print { body { margin: 8mm; -webkit-print-color-adjust: exact; print-color-adjust: exact; } .print-preview-toolbar { display: none !important; } .kaporta-print-section { page-break-inside: auto; break-inside: auto; } .print-history-block { break-inside: avoid; page-break-inside: avoid; } .history-page h3, .history-page .subtitle { page-break-after: avoid; break-after: avoid-page; } }' +
+'    @media print { body { margin: 8mm; -webkit-print-color-adjust: exact; print-color-adjust: exact; } .print-preview-toolbar, .medisa-preview-shell-header--print-doc { display: none !important; } .kaporta-print-section { page-break-inside: auto; break-inside: auto; } .print-history-block { break-inside: avoid; page-break-inside: avoid; } .history-page h3, .history-page .subtitle { page-break-after: avoid; break-after: avoid-page; } }' +
 '  </style>' +
 '</head>' +
 '<body>' +
-'  <div class="print-preview-toolbar">' +
-'    <button type="button" class="print-preview-btn" id="print-preview-back">Geri Dön</button>' +
-'    <button type="button" class="print-preview-btn print-preview-btn-primary" id="print-preview-close">Kapat</button>' +
+'  <div class="medisa-preview-shell-header medisa-preview-shell-header--print-doc">' +
+'    <button type="button" class="medisa-preview-shell-btn" id="print-preview-back">Geri Dön</button>' +
+'    <div class="medisa-preview-shell-actions">' +
+'      <button type="button" class="medisa-preview-shell-btn" id="print-preview-close">Kapat</button>' +
+'    </div>' +
 '  </div>' +
 '  <section class="summary-page print-summary">' +
 '    <h1>Taşıt Kartı</h1>' +

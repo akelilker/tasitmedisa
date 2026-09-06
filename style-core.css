@@ -444,6 +444,198 @@ body::-webkit-scrollbar,
   }
 }
 
+/* --- MEDISA CANONICAL PREVIEW SHELL (print / belge önizleme chrome) --- */
+.medisa-preview-shell {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  padding: calc(env(safe-area-inset-top, 0px) + 10px) 10px calc(env(safe-area-inset-bottom, 0px) + 10px);
+  background: radial-gradient(circle at top, #1b2438 0%, #0f1724 42%, #050810 100%);
+  color: #eef2f7;
+}
+
+.medisa-preview-shell--embedded {
+  position: relative;
+  inset: auto;
+  z-index: auto;
+  width: 100%;
+  min-height: 0;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  box-shadow: none;
+}
+
+.medisa-preview-shell-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  flex: 0 0 auto;
+  min-width: 0;
+}
+
+.medisa-preview-shell--embedded .medisa-preview-shell-header {
+  width: 100%;
+  margin: 0 auto 10px auto;
+  flex-wrap: wrap;
+}
+
+.medisa-preview-shell-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  text-align: center;
+  font: 700 16px Arial, sans-serif;
+  color: #f8fafc;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.medisa-preview-shell-subtitle {
+  font: 500 12px Arial, sans-serif;
+  color: #a0aec0;
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.medisa-preview-shell--embedded .medisa-preview-shell-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--form-label-color, #ffffff);
+}
+
+.medisa-preview-shell-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex: 0 0 auto;
+}
+
+.medisa-preview-shell-btn {
+  border: 1px solid rgba(226, 232, 240, 0.18);
+  background: rgba(15, 23, 36, 0.82);
+  color: #eef2f7;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font: 600 15px Arial, sans-serif;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.medisa-preview-shell--embedded .medisa-preview-shell-btn {
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  background: transparent;
+  color: var(--form-label-color, #ffffff);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: none;
+}
+
+.medisa-preview-shell-btn--primary {
+  border-color: #0f766e;
+  background: #0f766e;
+  color: #fff;
+  font-weight: 700;
+  box-shadow: 0 10px 24px rgba(15, 118, 110, 0.32);
+}
+
+.medisa-preview-shell--embedded .medisa-preview-shell-btn--primary {
+  border-color: rgba(255, 255, 255, 0.28);
+  background: transparent;
+  color: var(--form-label-color, #ffffff);
+  box-shadow: none;
+  font-weight: 600;
+}
+
+.medisa-preview-shell-panel {
+  flex: 1 1 auto;
+  width: 100%;
+  min-height: 0;
+  border: 1px solid rgba(226, 232, 240, 0.12);
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 22px 48px rgba(0, 0, 0, 0.42);
+}
+
+.medisa-preview-shell--embedded .medisa-preview-shell-panel {
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 10px;
+  background: #0b1220;
+  box-shadow: none;
+  overflow: hidden;
+}
+
+.medisa-preview-shell-panel iframe,
+.medisa-preview-shell > iframe.medisa-preview-shell-panel {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #fff;
+}
+
+/* Belge kartı aksiyon sırası: sol indir / orta önizleme / sağ ekle-sil */
+.medisa-doc-action-row {
+  position: relative;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: auto !important;
+  max-width: none !important;
+  margin: 0 auto !important;
+  padding: 16px 0 !important;
+  box-sizing: border-box;
+}
+
+.medisa-doc-action-row__start,
+.medisa-doc-action-row__center,
+.medisa-doc-action-row__end {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+}
+
+.medisa-doc-action-row__end,
+.medisa-doc-action-row .ruhsat-doc-actions {
+  flex-direction: column;
+  gap: 8px;
+}
+
+@media (max-width: 640px) {
+  .medisa-preview-shell--embedded .medisa-preview-shell-header {
+    margin-bottom: 8px;
+    gap: 6px;
+  }
+
+  .medisa-preview-shell--embedded .medisa-preview-shell-btn {
+    min-height: 36px;
+    padding: 7px 10px;
+    font-size: 12px;
+  }
+
+  .medisa-doc-action-row {
+    gap: 10px;
+    padding: 0 !important;
+  }
+
+  .medisa-doc-action-row__end,
+  .medisa-doc-action-row .ruhsat-doc-actions {
+    gap: 6px;
+  }
+}
+
 /* --- EVRENSEL İŞLEM BUTONLARI (Orijinal kayit.css matematiği ve zarafeti) --- */
 /* Buton Grubu (Kapsayıcı) - Aradaki Boşluğu Aç; minmax(0,1fr) taşmayı önler */
 .universal-btn-group {

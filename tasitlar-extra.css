@@ -673,13 +673,13 @@
 #dinamik-olay-modal #ruhsat-modal-content .universal-btn-group.ruhsat-preview-row,
 #dinamik-olay-modal #ruhsat-modal-content .universal-btn-group:has(.ruhsat-preview-link) {
   position: relative;
-  display: block !important;
-  width: 120px !important;
-  max-width: 120px !important;
+  display: flex !important;
+  width: auto !important;
+  max-width: none !important;
   margin: 0 auto !important;
-  justify-content: initial !important;
-  align-items: initial !important;
-  gap: 0 !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 12px !important;
   padding: 16px 0 !important;
 }
 #dinamik-olay-modal #ruhsat-modal-content .universal-btn-group.ruhsat-preview-row button,
@@ -734,9 +734,10 @@
   background: linear-gradient(to top, rgba(0, 0, 0, 0.58), rgba(0, 0, 0, 0));
   pointer-events: none;
 }
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-download-btn,
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-add-btn,
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-remove-btn {
-  margin-left: 12px;
+  margin-left: 0;
   font-size: 42px;
   font-weight: 300;
   line-height: 0.9;
@@ -756,13 +757,21 @@
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03);
   transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-download-btn {
+  font-size: 0;
+}
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-download-btn svg {
+  display: block;
+  width: 22px;
+  height: 22px;
+}
 /* Yüklü belgede [+] / [-] dikey yığın: konumlanan owner buton değil, aksiyon sarmalayıcıdır */
 #dinamik-olay-modal #ruhsat-modal-content .universal-btn-group.ruhsat-preview-row .ruhsat-doc-actions,
 #dinamik-olay-modal #ruhsat-modal-content .universal-btn-group:has(.ruhsat-preview-link) .ruhsat-doc-actions {
-  position: absolute;
-  left: calc(100% + 12px);
-  top: 50%;
-  transform: translateY(-50%);
+  position: static;
+  left: auto;
+  top: auto;
+  transform: none;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -772,6 +781,16 @@
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-doc-actions .ruhsat-remove-btn {
   position: static;
   margin-left: 0;
+}
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-download-btn:hover,
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-download-btn:focus-visible,
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-download-btn:active {
+  color: #93c5fd !important;
+  border-color: rgba(147, 197, 253, 0.58) !important;
+  background: rgba(147, 197, 253, 0.08) !important;
+  background-color: rgba(147, 197, 253, 0.08) !important;
+  box-shadow: inset 0 0 0 1px rgba(147, 197, 253, 0.18), 0 10px 24px rgba(0, 0, 0, 0.18);
+  transform: scale(1.04);
 }
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-add-btn:hover,
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-add-btn:focus-visible,
@@ -799,11 +818,19 @@
   pointer-events: none;
 }
 @media (min-width: 769px) {
+  #dinamik-olay-modal #ruhsat-modal-content .ruhsat-download-btn,
   #dinamik-olay-modal #ruhsat-modal-content .ruhsat-add-btn,
   #dinamik-olay-modal #ruhsat-modal-content .ruhsat-remove-btn {
     font-size: 32px;
     min-width: 50px;
     min-height: 50px;
+  }
+  #dinamik-olay-modal #ruhsat-modal-content .ruhsat-download-btn {
+    font-size: 0;
+  }
+  #dinamik-olay-modal #ruhsat-modal-content .ruhsat-download-btn svg {
+    width: 20px;
+    height: 20px;
   }
 }
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack {
@@ -1284,50 +1311,9 @@
 #dinamik-olay-modal #ruhsat-modal-content.ruhsat-inline-view-mode {
   max-width: 100% !important;
 }
-#dinamik-olay-modal #ruhsat-modal-content .ruhsat-inline-back-btn {
-  width: auto !important;
-  margin: 0 auto 10px auto;
-  display: inline-flex !important;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid rgba(255, 255, 255, 0.28) !important;
-  border-radius: 8px;
-  background: transparent !important;
-  color: var(--form-label-color, #ffffff) !important;
-  font-size: 13px;
-  padding: 8px 12px;
-  cursor: pointer;
-}
-#dinamik-olay-modal #ruhsat-modal-content .ruhsat-inline-actions {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin: 0 auto 10px auto;
-}
-#dinamik-olay-modal #ruhsat-modal-content .ruhsat-inline-print-btn {
-  width: auto !important;
-  margin: 0;
-  display: inline-flex !important;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid rgba(255, 255, 255, 0.28) !important;
-  border-radius: 8px;
-  background: transparent !important;
-  color: var(--form-label-color, #ffffff) !important;
-  font-size: 13px;
-  padding: 8px 12px;
-  cursor: pointer;
-}
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-inline-frame-wrap {
   width: 100%;
   height: min(62vh, 560px);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  border-radius: 10px;
-  overflow: hidden;
-  background: #0b1220;
 }
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-inline-frame {
   width: 100%;
@@ -1387,6 +1373,7 @@
     gap: 10px !important;
     padding: 0 !important;
   }
+  #dinamik-olay-modal #ruhsat-modal-content .ruhsat-download-btn,
   #dinamik-olay-modal #ruhsat-modal-content .ruhsat-add-btn,
   #dinamik-olay-modal #ruhsat-modal-content .ruhsat-remove-btn {
     font-size: 30px !important;
@@ -1400,6 +1387,9 @@
     justify-content: center !important;
     line-height: 1 !important;
   }
+  #dinamik-olay-modal #ruhsat-modal-content .ruhsat-download-btn {
+    font-size: 0 !important;
+  }
   #dinamik-olay-modal #ruhsat-modal-content .universal-btn-group.ruhsat-preview-row .ruhsat-doc-actions,
   #dinamik-olay-modal #ruhsat-modal-content .universal-btn-group:has(.ruhsat-preview-link) .ruhsat-doc-actions {
     position: static !important;
@@ -1408,8 +1398,10 @@
     transform: none !important;
     gap: 6px !important;
   }
+  #dinamik-olay-modal #ruhsat-modal-content .universal-btn-group.ruhsat-preview-row .ruhsat-download-btn,
   #dinamik-olay-modal #ruhsat-modal-content .universal-btn-group.ruhsat-preview-row .ruhsat-add-btn,
   #dinamik-olay-modal #ruhsat-modal-content .universal-btn-group.ruhsat-preview-row .ruhsat-remove-btn,
+  #dinamik-olay-modal #ruhsat-modal-content .universal-btn-group:has(.ruhsat-preview-link) .ruhsat-download-btn,
   #dinamik-olay-modal #ruhsat-modal-content .universal-btn-group:has(.ruhsat-preview-link) .ruhsat-add-btn,
   #dinamik-olay-modal #ruhsat-modal-content .universal-btn-group:has(.ruhsat-preview-link) .ruhsat-remove-btn {
     position: static !important;
@@ -1429,17 +1421,6 @@
   }
   #dinamik-olay-modal #ruhsat-modal-content .ruhsat-inline-frame-wrap {
     height: min(66vh, 620px);
-  }
-  #dinamik-olay-modal #ruhsat-modal-content .ruhsat-inline-actions {
-    margin-bottom: 8px;
-    gap: 6px;
-  }
-  #dinamik-olay-modal #ruhsat-modal-content .ruhsat-inline-back-btn,
-  #dinamik-olay-modal #ruhsat-modal-content .ruhsat-inline-print-btn {
-    margin: 0;
-    min-height: 36px;
-    padding: 7px 10px;
-    font-size: 12px;
   }
 }
 

@@ -197,7 +197,7 @@
 
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20260905.1';
+  const MEDISA_TASITLAR_MODULE_VERSION = '20260906.1';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
@@ -6442,6 +6442,67 @@
     return entry && entry.objectUrl ? entry.objectUrl : '';
   }
 
+  /** Orijinal belge indirme dosya adı (preview JPG değil; ruhsat.php yolu / path uzantısı). */
+  function buildVehicleDocumentDownloadFileName(vehicle, documentType, pathVal) {
+    const cfg = getVehicleDocumentConfig(documentType);
+    const rawPath = String(pathVal || '').trim();
+    const baseName = rawPath.split(/[\\/]/).pop().split('?')[0];
+    if (baseName && /\.[a-z0-9]+$/i.test(baseName)) return baseName;
+    const plate = vehicle && vehicle.plate
+      ? String(vehicle.plate).replace(/\s+/g, '').toLocaleUpperCase('tr-TR')
+      : 'belge';
+    var ext = '.pdf';
+    var m = rawPath.match(/\.(jpe?g|png|gif|webp)$/i);
+    if (m) ext = '.' + m[1].toLowerCase();
+    else if (isRuhsatImagePath(rawPath)) ext = '.jpg';
+    return plate + '-' + cfg.key + ext;
+  }
+
+  /** Orijinal belgeyi indir (ruhsat.php + mevcut auth/blob zinciri; preview endpoint yok). */
+  function downloadVehicleDocumentOriginal(vehicleId, documentType) {
+    const dt = documentType || 'ruhsat';
+    const cfg = getVehicleDocumentConfig(dt);
+    const vid = String(vehicleId || window.currentDetailVehicleId || '').trim();
+    if (!vid) return Promise.reject(new Error('vehicle-id-missing'));
+
+    var appTasitlar = window.appData && Array.isArray(window.appData.tasitlar) ? window.appData.tasitlar : [];
+    var vehicle = appTasitlar.find(function(v) { return String(v.id) === vid; });
+    if (!vehicle) {
+      vehicle = readVehicles().find(function(v) { return String(v.id) === vid; });
+    }
+    const pathVal = vehicle ? getVehicleDocumentPath(vehicle, dt) : '';
+    if (!vehicle || !pathVal) {
+      return Promise.reject(new Error('document-missing'));
+    }
+
+    const documentUrl = buildRuhsatDocumentUrl(vid, dt) || resolveRuhsatUrl(pathVal, vid, dt);
+    const fileName = buildVehicleDocumentDownloadFileName(vehicle, dt, pathVal);
+
+    return fetchRuhsatDocumentObjectUrl(vid, documentUrl, dt)
+      .then(function(objectUrl) {
+        const link = document.createElement('a');
+        link.href = objectUrl;
+        link.download = fileName;
+        link.rel = 'noopener';
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+        if (link.parentNode) link.parentNode.removeChild(link);
+      })
+      .catch(function(err) {
+        console.error(cfg.label + ' indirilemedi', err);
+        var st = err && err.httpStatus;
+        var msg = cfg.label + ' indirilemedi.';
+        if (st === 404) {
+          msg = cfg.label + ' veya taşıt kaydı sunucuda bulunamadı. Sayfayı yenileyip tekrar deneyin.';
+        } else if (st === 401 || st === 403) {
+          msg = 'Bu belge için oturum veya yetki yetersiz. Tekrar giriş yapmayı deneyin.';
+        }
+        alert(msg);
+        throw err;
+      });
+  }
+
   function preloadIosPwaImageDocument(vehicleId, documentPath, documentType) {
     if (!(typeof window.isMedisaIOSDevice === 'function' && window.isMedisaIOSDevice())) return Promise.resolve();
     if (!documentPath || !isRuhsatImagePath(documentPath)) return Promise.resolve();
@@ -7006,34 +7067,49 @@
     setRuhsatSaveBtnVisibility(saveBtn, false);
     content.innerHTML = '';
 
-    const frameWrap = document.createElement('div');
-    frameWrap.className = 'ruhsat-inline-frame-wrap';
-    const frame = document.createElement('iframe');
-    frame.className = 'ruhsat-inline-frame';
-    frame.src = 'about:blank';
-    frame.setAttribute('title', viewerTitle);
-    frameWrap.appendChild(frame);
+    const shell = document.createElement('div');
+    shell.className = 'medisa-preview-shell medisa-preview-shell--embedded';
 
-    const actionsWrap = document.createElement('div');
-    actionsWrap.className = 'ruhsat-inline-actions';
+    const header = document.createElement('div');
+    header.className = 'medisa-preview-shell-header';
 
     const backBtn = document.createElement('button');
     backBtn.type = 'button';
-    backBtn.className = 'ruhsat-inline-back-btn';
-    backBtn.textContent = '\u2190 Geri D\u00F6n';
+    backBtn.className = 'medisa-preview-shell-btn';
+    backBtn.textContent = 'Geri Dön';
     backBtn.onclick = function() {
       setRuhsatInlineViewerMode(false);
       if (typeof window.openVehicleDocumentModal === 'function') {
         window.openVehicleDocumentModal(vehicleId, dt);
       }
     };
-    actionsWrap.appendChild(backBtn);
+    header.appendChild(backBtn);
+
+    const titleEl = document.createElement('div');
+    titleEl.className = 'medisa-preview-shell-title';
+    titleEl.textContent = viewerTitle;
+    header.appendChild(titleEl);
+
+    const actionsWrap = document.createElement('div');
+    actionsWrap.className = 'medisa-preview-shell-actions';
+
+    const downloadBtn = document.createElement('button');
+    downloadBtn.type = 'button';
+    downloadBtn.className = 'medisa-preview-shell-btn';
+    downloadBtn.textContent = 'İndir';
+    downloadBtn.setAttribute('aria-label', cfg.label + ' İndir');
+    downloadBtn.onclick = function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      downloadVehicleDocumentOriginal(vehicleId, dt);
+    };
+    actionsWrap.appendChild(downloadBtn);
 
     if (viewerOptions.showPrintButton) {
       const printBtn = document.createElement('button');
       printBtn.type = 'button';
-      printBtn.className = 'ruhsat-inline-print-btn';
-      printBtn.textContent = isIosPwaViewer ? '\u2399 Paylaş / Yazdır' : '\u2399 Yazdır / Paylaş';
+      printBtn.className = 'medisa-preview-shell-btn medisa-preview-shell-btn--primary';
+      printBtn.textContent = isIosPwaViewer ? 'Paylaş / Yazdır' : 'Yazdır / Paylaş';
       printBtn.onclick = function() {
         const fallbackUrl = loadedPrintUrl || '';
         if (viewerOptions.forceExternalPrint) {
@@ -7118,8 +7194,19 @@
       actionsWrap.appendChild(printBtn);
     }
 
-    content.appendChild(actionsWrap);
-    content.appendChild(frameWrap);
+    header.appendChild(actionsWrap);
+
+    const frameWrap = document.createElement('div');
+    frameWrap.className = 'medisa-preview-shell-panel ruhsat-inline-frame-wrap';
+    const frame = document.createElement('iframe');
+    frame.className = 'ruhsat-inline-frame';
+    frame.src = 'about:blank';
+    frame.setAttribute('title', viewerTitle);
+    frameWrap.appendChild(frame);
+
+    shell.appendChild(header);
+    shell.appendChild(frameWrap);
+    content.appendChild(shell);
 
     function loadInlineViewerTarget(targetUrl) {
       loadedPrintUrl = targetUrl || '';
@@ -7278,7 +7365,31 @@
         }
       }
       const btnGroup = document.createElement('div');
-      btnGroup.className = 'universal-btn-group ruhsat-preview-row';
+      btnGroup.className = 'universal-btn-group ruhsat-preview-row medisa-doc-action-row';
+
+      const startActions = document.createElement('div');
+      startActions.className = 'medisa-doc-action-row__start';
+      const downloadBtn = document.createElement('button');
+      downloadBtn.type = 'button';
+      downloadBtn.className = 'ruhsat-download-btn';
+      downloadBtn.setAttribute('aria-label', cfg.label + ' İndir');
+      downloadBtn.title = 'İndir';
+      downloadBtn.innerHTML =
+        '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+        '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>' +
+        '<polyline points="7 10 12 15 17 10"></polyline>' +
+        '<line x1="12" y1="15" x2="12" y2="3"></line>' +
+        '</svg>';
+      downloadBtn.onclick = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        downloadVehicleDocumentOriginal(vid, dt);
+      };
+      startActions.appendChild(downloadBtn);
+      btnGroup.appendChild(startActions);
+
+      const centerPreview = document.createElement('div');
+      centerPreview.className = 'medisa-doc-action-row__center';
 
       const previewBtn = document.createElement('button');
       previewBtn.type = 'button';
@@ -7320,10 +7431,11 @@
       if (!isMobileViewport) {
         hydrateRuhsatPreviewButton(previewBtn, vid, ruhsatUrl, ruhsatIsImage, dt);
       }
-      btnGroup.appendChild(previewBtn);
+      centerPreview.appendChild(previewBtn);
+      btnGroup.appendChild(centerPreview);
 
       const docActions = document.createElement('div');
-      docActions.className = 'ruhsat-doc-actions';
+      docActions.className = 'ruhsat-doc-actions medisa-doc-action-row__end';
 
       const replaceBtn = document.createElement('button');
       replaceBtn.type = 'button';

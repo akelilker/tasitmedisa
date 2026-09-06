@@ -21,6 +21,7 @@ const deletePhp = read('delete_document.php');
 const uploadPhp = read('upload_ruhsat.php');
 const tasitlar = read('tasitlar.js');
 const tasitlarExtraCss = read('tasitlar-extra.css');
+const styleCoreCss = read('style-core.css');
 const ayarlarJs = read('ayarlar.js');
 const ayarlarCss = read('ayarlar.css');
 const scriptCore = read('script-core.js');
@@ -73,19 +74,42 @@ test('UI: yüklü belgede [+] altında [-] var, boş belgede aksiyon yığını 
     'function renderRuhsatUploadForm('
   );
   const hasDocBranch = extractBetween(modalSrc, 'if (hasDoc) {', 'content.appendChild(btnGroup);');
-  assert.match(hasDocBranch, /className = 'ruhsat-doc-actions'/, 'yüklü belgede aksiyon sarmalayıcı kurulmalı');
+  assert.match(hasDocBranch, /medisa-doc-action-row/, 'yüklü belgede canonical action row kurulmalı');
+  assert.match(hasDocBranch, /className = 'ruhsat-download-btn'/, 'İndir butonu solda kurulmalı');
+  assert.match(hasDocBranch, /downloadVehicleDocumentOriginal\(vid, dt\)/, 'İndir orijinal belge zincirini çağırmalı');
+  assert.match(hasDocBranch, /ruhsat-doc-actions/, 'yüklü belgede aksiyon sarmalayıcı kurulmalı');
   assert.match(hasDocBranch, /className = 'ruhsat-add-btn'/, '"+" butonu korunmalı');
   assert.match(hasDocBranch, /className = 'ruhsat-remove-btn'/, '"-" butonu yüklü belgede olmalı');
   assert.match(hasDocBranch, /renderRuhsatUploadForm\(content, saveBtn, true, dt\)/, '"+" mevcut değiştirme davranışını korumalı');
   assert.match(hasDocBranch, /requestVehicleDocumentDelete\(vid, dt, docActions\)/, '"-" silme akışını çağırmalı');
+  assert.doesNotMatch(hasDocBranch, /ruhsat_preview\.php/, 'İndir preview endpoint kullanmamalı');
 
   const emptyBranch = modalSrc.slice(modalSrc.indexOf('content.appendChild(btnGroup);'));
   assert.match(emptyBranch, /renderRuhsatUploadForm\(content, saveBtn, false, dt\)/, 'belge yokken yükleme formu render edilmeli');
   assert.doesNotMatch(emptyBranch, /ruhsat-remove-btn/, 'belge yokken "-" render edilmemeli');
+  assert.doesNotMatch(emptyBranch, /ruhsat-download-btn/, 'belge yokken İndir render edilmemeli');
 
+  const downloadIndex = hasDocBranch.indexOf("className = 'ruhsat-download-btn'");
+  const previewIndex = hasDocBranch.indexOf("className = 'ruhsat-preview-link'");
   const addIndex = hasDocBranch.indexOf("className = 'ruhsat-add-btn'");
   const removeIndex = hasDocBranch.indexOf("className = 'ruhsat-remove-btn'");
+  assert.ok(downloadIndex !== -1 && previewIndex !== -1 && downloadIndex < previewIndex, 'İndir preview’dan önce (solda) eklenmeli');
+  assert.ok(previewIndex < addIndex, 'preview Ekle’den önce (ortada) eklenmeli');
   assert.ok(addIndex < removeIndex, '"-" butonu "+" butonundan sonra (altında) eklenmeli');
+});
+
+test('Download: orijinal belge owner fetchRuhsatDocumentObjectUrl / ruhsat.php', function() {
+  assert.match(tasitlar, /function downloadVehicleDocumentOriginal\(/);
+  assert.match(tasitlar, /function buildVehicleDocumentDownloadFileName\(/);
+  const downloadSrc = extractBetween(
+    tasitlar,
+    'function downloadVehicleDocumentOriginal(vehicleId, documentType) {',
+    'function preloadIosPwaImageDocument('
+  );
+  assert.match(downloadSrc, /buildRuhsatDocumentUrl\(vid, dt\)/);
+  assert.match(downloadSrc, /fetchRuhsatDocumentObjectUrl\(vid, documentUrl, dt\)/);
+  assert.match(downloadSrc, /\.download\s*=\s*fileName/);
+  assert.doesNotMatch(downloadSrc, /ruhsat_preview\.php|buildRuhsatPreviewUrl|fetchRuhsatPreviewObjectUrl/);
 });
 
 test('UI: K2 önizlemesinde aynı [+]/[-] kontratı var', function() {
@@ -106,17 +130,29 @@ test('UI: K2 önizlemesinde aynı [+]/[-] kontratı var', function() {
 });
 
 test('CSS: [+]/[-] dikey hizalı, masaüstü ve mobil owner blokları güncel', function() {
+  assert.match(styleCoreCss, /\.medisa-doc-action-row\s*\{/);
+  assert.match(styleCoreCss, /\.medisa-doc-action-row__start/);
+  assert.match(styleCoreCss, /\.medisa-doc-action-row__center/);
+  assert.match(styleCoreCss, /\.medisa-doc-action-row__end/);
+  assert.match(styleCoreCss, /\.medisa-doc-action-row \.ruhsat-doc-actions \{[\s\S]*?flex-direction:\s*column;/);
   assert.match(tasitlarExtraCss, /\.ruhsat-doc-actions \{[\s\S]*?flex-direction: column;/);
   assert.match(tasitlarExtraCss, /\.ruhsat-doc-actions \.ruhsat-remove-btn/);
+  assert.match(tasitlarExtraCss, /\.ruhsat-download-btn/);
   assert.match(ayarlarCss, /\.required-k2-doc-actions \{[\s\S]*?flex-direction: column;/);
   assert.doesNotMatch(
     tasitlarExtraCss,
     /:has\(\.ruhsat-preview-link\) \.ruhsat-add-btn \{\s*position: absolute;/,
     'buton üzerindeki eski absolute owner kuralı kalmamalı'
   );
+  assert.doesNotMatch(
+    tasitlarExtraCss,
+    /\.ruhsat-doc-actions \{[\s\S]*?left:\s*calc\(100%\s*\+\s*12px\)/,
+    'eski absolute sağ yığın owner kuralı kalmamalı'
+  );
   const mobileBlock = tasitlarExtraCss.slice(tasitlarExtraCss.indexOf('@media (max-width: 640px)'));
   assert.match(mobileBlock, /\.ruhsat-doc-actions \{/, 'mobil blokta aksiyon yığını owner kuralı olmalı');
   assert.match(mobileBlock, /\.ruhsat-remove-btn/, 'mobil blokta "-" butonu boyut kontratını paylaşmalı');
+  assert.match(mobileBlock, /\.ruhsat-download-btn/, 'mobil blokta İndir boyut kontratını paylaşmalı');
 });
 
 /* ---------- 3-5: onay akışı, payload ve çift istek koruması ---------- */

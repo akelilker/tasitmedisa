@@ -400,35 +400,52 @@ window.getUserRoleLabelAnalytics = function(user) {
 /** Gizli yazdırma iframe (ekran dışına taşıma) — tasitlar / tasitlar-yazici */
 window.MEDISA_PRINT_IFRAME_CSS_TEXT = 'position:fixed;left:0;top:0;width:100vw;height:100vh;border:0;opacity:0.01;pointer-events:none;visibility:visible;transform:translateX(-200vw);background:#fff;z-index:-1;';
 
-/** iOS Safari + PWA: otomatik print yerine kapanabilir ön izleme; native print yalnız toolbar Yazdır tıklamasında. */
-window.openMedisaIosPwaPrintPreview = function openMedisaIosPwaPrintPreview(printHtml, title) {
+/** iOS Safari + PWA: otomatik print yerine kapanabilir ön izleme; native print yalnız toolbar Yazdır tıklamasında.
+ *  Canonical chrome: .medisa-preview-shell* (style-core.css). İmza: (printHtml, title[, options]). */
+window.openMedisaIosPwaPrintPreview = function openMedisaIosPwaPrintPreview(printHtml, title, options) {
   if (!printHtml) return false;
+  var opts = options && typeof options === 'object' ? options : {};
   var oldOverlay = document.getElementById('medisa-ios-print-preview-overlay');
   if (oldOverlay && oldOverlay.parentNode) {
     oldOverlay.parentNode.removeChild(oldOverlay);
   }
 
-  var safeTitle = window.escapeHtml ? window.escapeHtml(title || 'Yazdırma Ön İzleme') : String(title || 'Yazdırma Ön İzleme');
+  var rawTitle = title || 'Yazdırma Ön İzleme';
+  var safeTitle = window.escapeHtml ? window.escapeHtml(rawTitle) : String(rawTitle);
+  var rawSubtitle = opts.subtitle ? String(opts.subtitle) : '';
+  var safeSubtitle = rawSubtitle
+    ? (window.escapeHtml ? window.escapeHtml(rawSubtitle) : rawSubtitle)
+    : '';
   var frameHtml = String(printHtml);
   if (frameHtml.indexOf('</head>') !== -1) {
-    frameHtml = frameHtml.replace('</head>', '<style>@media screen{.print-preview-toolbar{display:none!important;}}</style></head>');
+    frameHtml = frameHtml.replace(
+      '</head>',
+      '<style>@media screen{.print-preview-toolbar,.medisa-preview-shell-header--print-doc{display:none!important;}}</style></head>'
+    );
   }
 
   var overlay = document.createElement('div');
   overlay.id = 'medisa-ios-print-preview-overlay';
-  overlay.style.cssText = 'position:fixed;inset:0;z-index:2147483647;background:radial-gradient(circle at top,#1b2438 0%,#0f1724 42%,#050810 100%);color:#eef2f7;display:flex;flex-direction:column;padding:calc(env(safe-area-inset-top,0px) + 10px) 10px calc(env(safe-area-inset-bottom,0px) + 10px);box-sizing:border-box;';
+  overlay.className = 'medisa-preview-shell';
 
   var toolbar = document.createElement('div');
-  toolbar.style.cssText = 'display:flex;align-items:center;gap:8px;margin-bottom:10px;flex:0 0 auto;';
+  toolbar.className = 'medisa-preview-shell-header';
+  var actionsHtml =
+    (opts.showDownload
+      ? '<button type="button" class="medisa-preview-shell-btn" data-print-preview-action="download">İndir</button>'
+      : '') +
+    '<button type="button" class="medisa-preview-shell-btn medisa-preview-shell-btn--primary" data-print-preview-action="print">Yazdır</button>' +
+    '<button type="button" class="medisa-preview-shell-btn" data-print-preview-action="close">Kapat</button>';
   toolbar.innerHTML =
-    '<button type="button" data-print-preview-action="back" style="border:1px solid rgba(226,232,240,.18);background:rgba(15,23,36,.82);color:#eef2f7;border-radius:10px;padding:10px 12px;font:600 15px Arial,sans-serif;box-shadow:inset 0 0 0 1px rgba(255,255,255,.04);">Geri D&#246;n</button>' +
-    '<div style="flex:1;text-align:center;font:700 16px Arial,sans-serif;color:#f8fafc;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + safeTitle + '</div>' +
-    '<button type="button" data-print-preview-action="print" style="border:1px solid #0f766e;background:#0f766e;color:#fff;border-radius:10px;padding:10px 12px;font:700 15px Arial,sans-serif;box-shadow:0 10px 24px rgba(15,118,110,.32);">Yazd&#305;r</button>' +
-    '<button type="button" data-print-preview-action="close" style="border:1px solid rgba(226,232,240,.18);background:rgba(15,23,36,.82);color:#eef2f7;border-radius:10px;padding:10px 12px;font:600 15px Arial,sans-serif;box-shadow:inset 0 0 0 1px rgba(255,255,255,.04);">Kapat</button>';
+    '<button type="button" class="medisa-preview-shell-btn" data-print-preview-action="back">Geri Dön</button>' +
+    '<div class="medisa-preview-shell-title">' + safeTitle +
+      (safeSubtitle ? '<div class="medisa-preview-shell-subtitle">' + safeSubtitle + '</div>' : '') +
+    '</div>' +
+    '<div class="medisa-preview-shell-actions">' + actionsHtml + '</div>';
 
   var frame = document.createElement('iframe');
-  frame.setAttribute('title', title || 'Yazdırma Ön İzleme');
-  frame.style.cssText = 'flex:1 1 auto;width:100%;min-height:0;border:1px solid rgba(226,232,240,.12);border-radius:12px;background:#fff;box-shadow:0 22px 48px rgba(0,0,0,.42);';
+  frame.className = 'medisa-preview-shell-panel';
+  frame.setAttribute('title', rawTitle);
 
   function closeOverlay() {
     try { frame.srcdoc = ''; } catch (eClear) {}
@@ -441,6 +458,12 @@ window.openMedisaIosPwaPrintPreview = function openMedisaIosPwaPrintPreview(prin
     var action = btn.getAttribute('data-print-preview-action');
     if (action === 'back' || action === 'close') {
       closeOverlay();
+      return;
+    }
+    if (action === 'download') {
+      if (typeof opts.onDownload === 'function') {
+        try { opts.onDownload(); } catch (dlErr) {}
+      }
       return;
     }
     if (action === 'print') {
@@ -1583,14 +1606,14 @@ document.addEventListener('DOMContentLoaded', () => {
 // style-core.css ana/paylaşılan shell HTML ile yüklenir; taşıt lazy asset sürümünden bağımsızdır.
 // tasitlar loader (bu nesne) ile MEDISA_TASITLAR_MODULE_VERSION kendi aralarında eşit kalmalıdır.
 var MEDISA_MODULE_VERSIONS = {
-  tasitlar: '20260905.1',
+  tasitlar: '20260906.1',
   notifications: '20260817.2',
   raporlar: '20260801.3',
   kayitJs: '20260905.1',
   kayitCss: '20260820.3',
   ayarlarJs: '20260905.1',
   ayarlarCss: '20260830.1',
-  tasitlarYazici: '20260726.3',
+  tasitlarYazici: '20260906.1',
   vehicleNotificationDomain: '20260817.2'
 };
 window.MEDISA_MODULE_VERSIONS = MEDISA_MODULE_VERSIONS;

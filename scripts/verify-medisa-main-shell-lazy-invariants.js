@@ -553,9 +553,30 @@ if (implementationPresent) {
     assert.match(previewSlice, /frameWindow\.print\(\)/);
     assert.ok(previewSlice.indexOf("action === 'print'") < previewSlice.indexOf('frameWindow.print()'), 'print toolbar action içinde olmalı');
     assert.doesNotMatch(previewSlice, /setTimeout\([^)]*print/);
+    assert.match(previewSlice, /medisa-preview-shell/);
+    assert.match(previewSlice, /medisa-preview-shell-header/);
+    assert.match(previewSlice, /medisa-preview-shell-panel/);
+    assert.match(previewSlice, /function openMedisaIosPwaPrintPreview\(printHtml, title/);
+    assert.match(style, /\.medisa-preview-shell\s*\{/);
+    assert.match(style, /\.medisa-preview-shell-header\s*\{/);
+    assert.match(style, /\.medisa-preview-shell-panel\s*\{/);
+    assert.match(style, /env\(safe-area-inset-top/);
+  });
+  test('inline belge viewer shared chrome class kullanır', function() {
+    assert.match(owners.vehicles, /medisa-preview-shell medisa-preview-shell--embedded/);
+    assert.match(owners.vehicles, /medisa-preview-shell-header/);
+    assert.match(owners.vehicles, /medisa-preview-shell-actions/);
+    assert.match(owners.vehicles, /downloadVehicleDocumentOriginal\(vehicleId, dt\)/);
+    assert.doesNotMatch(owners.vehicles, /ruhsat-inline-back-btn|ruhsat-inline-print-btn|ruhsat-inline-actions/);
+  });
+  test('taşıt kartı print-doc chrome canonical class kullanır', function() {
+    assert.match(vehiclesYazici, /medisa-preview-shell-header--print-doc/);
+    assert.match(vehiclesYazici, /medisa-preview-shell-btn/);
+    assert.match(vehiclesYazici, /id="print-preview-back"/);
+    assert.match(vehiclesYazici, /id="print-preview-close"/);
   });
   test('tasitlarYazici sürüm registry paritesi', function() {
-    assert.match(core, /tasitlarYazici:\s*'20260726\.3'/);
+    assert.match(core, /tasitlarYazici:\s*'20260906\.1'/);
   });
 }
 
