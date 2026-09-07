@@ -94,8 +94,11 @@ if ($extension !== '') {
     $downloadName .= '.' . $extension;
 }
 
+$forceDownload = isset($_GET['download']) && (string)$_GET['download'] === '1';
+$dispositionType = $forceDownload ? 'attachment' : 'inline';
+
 header('Content-Type: ' . $mimeType);
 header('Content-Length: ' . filesize($filePath));
-header('Content-Disposition: inline; filename="' . $downloadName . '"');
+header('Content-Disposition: ' . $dispositionType . '; filename="' . $downloadName . '"');
 readfile($filePath);
 exit;

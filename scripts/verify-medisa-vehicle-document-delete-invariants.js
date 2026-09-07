@@ -101,15 +101,30 @@ test('UI: yüklü belgede [+] altında [-] var, boş belgede aksiyon yığını 
 test('Download: orijinal belge owner fetchRuhsatDocumentObjectUrl / ruhsat.php', function() {
   assert.match(tasitlar, /function downloadVehicleDocumentOriginal\(/);
   assert.match(tasitlar, /function buildVehicleDocumentDownloadFileName\(/);
+  assert.match(tasitlar, /function appendOriginalDocumentDownloadMode\(/);
   const downloadSrc = extractBetween(
     tasitlar,
     'function downloadVehicleDocumentOriginal(vehicleId, documentType) {',
     'function preloadIosPwaImageDocument('
   );
   assert.match(downloadSrc, /buildRuhsatDocumentUrl\(vid, dt\)/);
+  assert.match(downloadSrc, /isIOSPWA\(\)/);
+  assert.match(downloadSrc, /openBlankDocumentTab\(\)/);
+  assert.match(downloadSrc, /resolveMedisaDocumentAccessUrl\(documentUrl, vid, dt\)/);
+  assert.match(downloadSrc, /appendOriginalDocumentDownloadMode\(authed\)/);
   assert.match(downloadSrc, /fetchRuhsatDocumentObjectUrl\(vid, documentUrl, dt\)/);
   assert.match(downloadSrc, /\.download\s*=\s*fileName/);
   assert.doesNotMatch(downloadSrc, /ruhsat_preview\.php|buildRuhsatPreviewUrl|fetchRuhsatPreviewObjectUrl/);
+});
+
+test('Download: ruhsat.php default inline; explicit download=1 attachment; auth owner korunur', function() {
+  const ruhsatPhp = read('ruhsat.php');
+  assert.match(ruhsatPhp, /\$forceDownload\s*=\s*isset\(\$_GET\['download'\]\)\s*&&\s*\(string\)\$_GET\['download'\]\s*===\s*'1'/);
+  assert.match(ruhsatPhp, /\$dispositionType\s*=\s*\$forceDownload\s*\?\s*'attachment'\s*:\s*'inline'/);
+  assert.match(ruhsatPhp, /Content-Disposition:\s*'\s*\.\s*\$dispositionType/);
+  assert.match(ruhsatPhp, /medisaResolveDocumentAccessContext\(/);
+  assert.match(ruhsatPhp, /medisaResolveVehicleDocumentFilePath\(/);
+  assert.doesNotMatch(ruhsatPhp, /header\('Content-Disposition:\s*inline;/);
 });
 
 test('UI: K2 önizlemesinde aynı [+]/[-] kontratı var', function() {

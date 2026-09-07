@@ -197,7 +197,7 @@
 
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20260906.1';
+  const MEDISA_TASITLAR_MODULE_VERSION = '20260907.1';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
@@ -5942,6 +5942,19 @@
     }
   }
 
+  /** iOS PWA original download: authorize edilmiş ruhsat.php URL'sine attachment modu ekler (auth/path owner aynı). */
+  function appendOriginalDocumentDownloadMode(rawUrl) {
+    const base = String(rawUrl || '').trim();
+    if (!base) return '';
+    try {
+      const u = new URL(base, window.location.href);
+      u.searchParams.set('download', '1');
+      return u.toString();
+    } catch (e) {
+      return base + (base.indexOf('?') === -1 ? '?' : '&') + 'download=1';
+    }
+  }
+
   function mintMedisaDocumentToken(vehicleId, documentType) {
     const dt = String(documentType || 'ruhsat').trim() || 'ruhsat';
     const cfg = getVehicleDocumentConfig(dt);
@@ -6458,7 +6471,7 @@
     return plate + '-' + cfg.key + ext;
   }
 
-  /** Orijinal belgeyi indir (ruhsat.php + mevcut auth/blob zinciri; preview endpoint yok). */
+  /** Orijinal belgeyi indir (ruhsat.php; preview endpoint yok). Desktop: fetch+blob. iOS PWA: doc-token + download=1 navigation. */
   function downloadVehicleDocumentOriginal(vehicleId, documentType) {
     const dt = documentType || 'ruhsat';
     const cfg = getVehicleDocumentConfig(dt);
@@ -6478,6 +6491,45 @@
     const documentUrl = buildRuhsatDocumentUrl(vid, dt) || resolveRuhsatUrl(pathVal, vid, dt);
     const fileName = buildVehicleDocumentDownloadFileName(vehicle, dt, pathVal);
 
+    function rejectOriginalDocumentDownload(err) {
+      console.error(cfg.label + ' indirilemedi', err);
+      var st = err && err.httpStatus;
+      var msg = cfg.label + ' indirilemedi.';
+      if (st === 404) {
+        msg = cfg.label + ' veya taşıt kaydı sunucuda bulunamadı. Sayfayı yenileyip tekrar deneyin.';
+      } else if (st === 401 || st === 403) {
+        msg = 'Bu belge için oturum veya yetki yetersiz. Tekrar giriş yapmayı deneyin.';
+      }
+      alert(msg);
+      throw err;
+    }
+
+    // iOS standalone: async blob + synthetic <a download> güvenilir değil; mevcut doc-token + about:blank owner'ını reuse et.
+    if (typeof window.isIOSPWA === 'function' && window.isIOSPWA() && getMedisaPortalToken()) {
+      const blankTab = openBlankDocumentTab();
+      return resolveMedisaDocumentAccessUrl(documentUrl, vid, dt)
+        .then(function(authed) {
+          const target = appendOriginalDocumentDownloadMode(authed);
+          if (blankTab && !blankTab.closed) {
+            try {
+              blankTab.location.href = target;
+              blankTab.focus();
+              return;
+            } catch (navErr) {
+              openUrlInNewTab(target, blankTab);
+              return;
+            }
+          }
+          openUrlInNewTab(target);
+        })
+        .catch(function(err) {
+          if (blankTab && !blankTab.closed) {
+            try { blankTab.close(); } catch (closeErr) {}
+          }
+          return rejectOriginalDocumentDownload(err);
+        });
+    }
+
     return fetchRuhsatDocumentObjectUrl(vid, documentUrl, dt)
       .then(function(objectUrl) {
         const link = document.createElement('a');
@@ -6489,18 +6541,7 @@
         link.click();
         if (link.parentNode) link.parentNode.removeChild(link);
       })
-      .catch(function(err) {
-        console.error(cfg.label + ' indirilemedi', err);
-        var st = err && err.httpStatus;
-        var msg = cfg.label + ' indirilemedi.';
-        if (st === 404) {
-          msg = cfg.label + ' veya taşıt kaydı sunucuda bulunamadı. Sayfayı yenileyip tekrar deneyin.';
-        } else if (st === 401 || st === 403) {
-          msg = 'Bu belge için oturum veya yetki yetersiz. Tekrar giriş yapmayı deneyin.';
-        }
-        alert(msg);
-        throw err;
-      });
+      .catch(rejectOriginalDocumentDownload);
   }
 
   function preloadIosPwaImageDocument(vehicleId, documentPath, documentType) {
