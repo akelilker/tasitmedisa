@@ -1,0 +1,6 @@
+﻿pdfjs-dist@3.11.174
+source=npm pdfjs-dist@3.11.174
+runtime=pdf.min.js + pdf.worker.min.js
+optional=standard_fonts/*
+worker=pdf.worker.min.js (same version)
+mime=.js only (no .mjs; IIS/Plesk default JS MIME OK)

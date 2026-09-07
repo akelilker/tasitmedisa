@@ -108,10 +108,10 @@ test('Download: orijinal belge owner fetchRuhsatDocumentObjectUrl / ruhsat.php',
     'function preloadIosPwaImageDocument('
   );
   assert.match(downloadSrc, /buildRuhsatDocumentUrl\(vid, dt\)/);
-  assert.match(downloadSrc, /isIOSPWA\(\)/);
-  assert.match(downloadSrc, /openBlankDocumentTab\(\)/);
-  assert.match(downloadSrc, /resolveMedisaDocumentAccessUrl\(documentUrl, vid, dt\)/);
-  assert.match(downloadSrc, /appendOriginalDocumentDownloadMode\(authed\)/);
+  assert.match(downloadSrc, /isIosCanonicalDocumentViewerHost\(\)/);
+  assert.match(downloadSrc, /openIosCanonicalDocumentViewer\(vid, dt/);
+  assert.doesNotMatch(downloadSrc, /appendOriginalDocumentDownloadMode\(authed\)/);
+  assert.doesNotMatch(downloadSrc, /blankTab\.location\.href\s*=\s*target/);
   assert.match(downloadSrc, /fetchRuhsatDocumentObjectUrl\(vid, documentUrl, dt\)/);
   assert.match(downloadSrc, /\.download\s*=\s*fileName/);
   assert.doesNotMatch(downloadSrc, /ruhsat_preview\.php|buildRuhsatPreviewUrl|fetchRuhsatPreviewObjectUrl/);

@@ -576,12 +576,87 @@ body::-webkit-scrollbar,
 }
 
 .medisa-preview-shell-panel iframe,
-.medisa-preview-shell > iframe.medisa-preview-shell-panel {
+.medisa-preview-shell > iframe.medisa-preview-shell-panel,
+.medisa-preview-shell-panel--iframe-host > iframe.medisa-preview-shell-frame {
   display: block;
   width: 100%;
   height: 100%;
   border: 0;
   background: #fff;
+}
+
+.medisa-preview-shell-panel--iframe-host {
+  padding: 0;
+  overflow: hidden;
+}
+
+.medisa-preview-shell-panel--document-viewer {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #0b1220;
+  padding: 0;
+}
+
+.medisa-doc-viewer-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  padding: 12px;
+  box-sizing: border-box;
+}
+
+.medisa-doc-viewer-status {
+  margin: auto;
+  padding: 24px 16px;
+  text-align: center;
+  color: #a0aec0;
+  font: 500 14px Arial, sans-serif;
+}
+
+.medisa-doc-viewer-status--error {
+  color: #feb2b2;
+}
+
+.medisa-doc-viewer-image {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+  object-fit: contain;
+  background: #fff;
+  border-radius: 8px;
+}
+
+.medisa-doc-viewer-page {
+  position: relative;
+  width: 100%;
+  margin: 0 auto 12px;
+  background: #1a2332;
+  border-radius: 8px;
+  overflow: hidden;
+  min-height: 120px;
+}
+
+.medisa-doc-viewer-page:last-child {
+  margin-bottom: 0;
+}
+
+.medisa-doc-viewer-page canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: #fff;
+}
+
+.medisa-doc-viewer-fallback-note {
+  margin-top: 10px;
+  color: #a0aec0;
+  font: 500 12px Arial, sans-serif;
+  text-align: center;
 }
 
 /* Belge kartı aksiyon sırası: sol indir / orta önizleme / sağ ekle-sil */

@@ -544,23 +544,28 @@ if (implementationPresent) {
     assert.match(owners.reports, /runIframePrint\(\);/);
   });
   test('preview helper native print yalnız toolbar print action içinde', function() {
+    var shellStart = core.indexOf('window.openMedisaPreviewShell = function');
+    assert.ok(shellStart !== -1, 'openMedisaPreviewShell owner bulunmalı');
     var previewStart = core.indexOf('window.openMedisaIosPwaPrintPreview = function');
     assert.ok(previewStart !== -1, 'openMedisaIosPwaPrintPreview owner bulunmalı');
     var previewEnd = core.indexOf('\nwindow.formatPlaka', previewStart);
     if (previewEnd === -1) previewEnd = previewStart + 6000;
     var previewSlice = core.slice(previewStart, previewEnd);
-    assert.match(previewSlice, /action === 'print'/);
+    assert.match(previewSlice, /openMedisaPreviewShell\(/);
+    assert.match(previewSlice, /actionId === 'print'/);
     assert.match(previewSlice, /frameWindow\.print\(\)/);
-    assert.ok(previewSlice.indexOf("action === 'print'") < previewSlice.indexOf('frameWindow.print()'), 'print toolbar action içinde olmalı');
+    assert.ok(previewSlice.indexOf("actionId === 'print'") < previewSlice.indexOf('frameWindow.print()'), 'print toolbar action içinde olmalı');
     assert.doesNotMatch(previewSlice, /setTimeout\([^)]*print/);
     assert.match(previewSlice, /medisa-preview-shell/);
-    assert.match(previewSlice, /medisa-preview-shell-header/);
-    assert.match(previewSlice, /medisa-preview-shell-panel/);
     assert.match(previewSlice, /function openMedisaIosPwaPrintPreview\(printHtml, title/);
     assert.match(style, /\.medisa-preview-shell\s*\{/);
     assert.match(style, /\.medisa-preview-shell-header\s*\{/);
     assert.match(style, /\.medisa-preview-shell-panel\s*\{/);
     assert.match(style, /env\(safe-area-inset-top/);
+    var shellSlice = core.slice(shellStart, previewStart);
+    assert.match(shellSlice, /data-preview-shell-action/);
+    assert.match(shellSlice, /Geri Dön/);
+    assert.match(shellSlice, /Kapat/);
   });
   test('inline belge viewer shared chrome class kullanır', function() {
     assert.match(owners.vehicles, /medisa-preview-shell medisa-preview-shell--embedded/);

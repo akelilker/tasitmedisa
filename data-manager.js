@@ -518,6 +518,9 @@ function getStoredPortalToken() {
 }
 
 function clearStoredPortalTokens() {
+    if (typeof window.purgeMedisaVehicleDocumentCaches === 'function') {
+        try { window.purgeMedisaVehicleDocumentCaches(); } catch (purgeErr) {}
+    }
     if (window.medisaPortalSession && typeof window.medisaPortalSession.clearStoredTokens === 'function') {
         window.medisaPortalSession.clearStoredTokens();
     }

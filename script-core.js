@@ -400,22 +400,182 @@ window.getUserRoleLabelAnalytics = function(user) {
 /** Gizli yazdırma iframe (ekran dışına taşıma) — tasitlar / tasitlar-yazici */
 window.MEDISA_PRINT_IFRAME_CSS_TEXT = 'position:fixed;left:0;top:0;width:100vw;height:100vh;border:0;opacity:0.01;pointer-events:none;visibility:visible;transform:translateX(-200vw);background:#fff;z-index:-1;';
 
-/** iOS Safari + PWA: otomatik print yerine kapanabilir ön izleme; native print yalnız toolbar Yazdır tıklamasında.
- *  Canonical chrome: .medisa-preview-shell* (style-core.css). İmza: (printHtml, title[, options]). */
-window.openMedisaIosPwaPrintPreview = function openMedisaIosPwaPrintPreview(printHtml, title, options) {
-  if (!printHtml) return false;
+/**
+ * Canonical overlay shell — .medisa-preview-shell* (style-core.css).
+ * options: {
+ *   id?, title, subtitle?,
+ *   backLabel?, closeLabel?,
+ *   showBack?=true, showClose?=true,
+ *   actions?: [{ id, label, primary?, disabled?, className? }],
+ *   panelClassName?,
+ *   mountPanel?(panelEl, api),
+ *   onAction?(actionId, api),
+ *   onClose?(reason),
+ *   escapeToClose?=true
+ * }
+ * returns api: { close, overlay, header, panel, setTitle, setSubtitle, setActionState, getActionButton }
+ */
+window.openMedisaPreviewShell = function openMedisaPreviewShell(options) {
   var opts = options && typeof options === 'object' ? options : {};
-  var oldOverlay = document.getElementById('medisa-ios-print-preview-overlay');
+  var shellId = String(opts.id || 'medisa-preview-shell-overlay');
+  var oldOverlay = document.getElementById(shellId);
   if (oldOverlay && oldOverlay.parentNode) {
     oldOverlay.parentNode.removeChild(oldOverlay);
   }
 
-  var rawTitle = title || 'Yazdırma Ön İzleme';
-  var safeTitle = window.escapeHtml ? window.escapeHtml(rawTitle) : String(rawTitle);
-  var rawSubtitle = opts.subtitle ? String(opts.subtitle) : '';
+  var rawTitle = opts.title != null ? String(opts.title) : 'Ön İzleme';
+  var safeTitle = window.escapeHtml ? window.escapeHtml(rawTitle) : rawTitle;
+  var rawSubtitle = opts.subtitle != null ? String(opts.subtitle) : '';
   var safeSubtitle = rawSubtitle
     ? (window.escapeHtml ? window.escapeHtml(rawSubtitle) : rawSubtitle)
     : '';
+  var showBack = opts.showBack !== false;
+  var showClose = opts.showClose !== false;
+  var backLabel = opts.backLabel != null ? String(opts.backLabel) : 'Geri Dön';
+  var closeLabel = opts.closeLabel != null ? String(opts.closeLabel) : 'Kapat';
+  var escapeToClose = opts.escapeToClose !== false;
+
+  var overlay = document.createElement('div');
+  overlay.id = shellId;
+  overlay.className = 'medisa-preview-shell';
+  overlay.setAttribute('role', 'dialog');
+  overlay.setAttribute('aria-modal', 'true');
+
+  var header = document.createElement('div');
+  header.className = 'medisa-preview-shell-header';
+
+  if (showBack) {
+    var backBtn = document.createElement('button');
+    backBtn.type = 'button';
+    backBtn.className = 'medisa-preview-shell-btn';
+    backBtn.setAttribute('data-preview-shell-action', 'back');
+    backBtn.textContent = backLabel;
+    header.appendChild(backBtn);
+  }
+
+  var titleEl = document.createElement('div');
+  titleEl.className = 'medisa-preview-shell-title';
+  titleEl.innerHTML = safeTitle +
+    (safeSubtitle ? '<div class="medisa-preview-shell-subtitle">' + safeSubtitle + '</div>' : '');
+  header.appendChild(titleEl);
+
+  var actionsWrap = document.createElement('div');
+  actionsWrap.className = 'medisa-preview-shell-actions';
+  var actionList = Array.isArray(opts.actions) ? opts.actions : [];
+  actionList.forEach(function(action) {
+    if (!action || !action.id) return;
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'medisa-preview-shell-btn' +
+      (action.primary ? ' medisa-preview-shell-btn--primary' : '') +
+      (action.className ? ' ' + action.className : '');
+    btn.setAttribute('data-preview-shell-action', String(action.id));
+    btn.textContent = action.label != null ? String(action.label) : String(action.id);
+    if (action.disabled) {
+      btn.disabled = true;
+      btn.setAttribute('aria-disabled', 'true');
+    }
+    actionsWrap.appendChild(btn);
+  });
+  if (showClose) {
+    var closeBtn = document.createElement('button');
+    closeBtn.type = 'button';
+    closeBtn.className = 'medisa-preview-shell-btn';
+    closeBtn.setAttribute('data-preview-shell-action', 'close');
+    closeBtn.textContent = closeLabel;
+    actionsWrap.appendChild(closeBtn);
+  }
+  header.appendChild(actionsWrap);
+
+  var panel = document.createElement('div');
+  panel.className = 'medisa-preview-shell-panel' +
+    (opts.panelClassName ? ' ' + String(opts.panelClassName) : '');
+
+  var closed = false;
+  var api = {
+    overlay: overlay,
+    header: header,
+    panel: panel,
+    close: function(reason) {
+      if (closed) return;
+      closed = true;
+      if (escapeToClose) {
+        document.removeEventListener('keydown', onKeyDown, true);
+      }
+      if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
+      if (typeof opts.onClose === 'function') {
+        try { opts.onClose(reason || 'close'); } catch (closeErr) {}
+      }
+    },
+    setTitle: function(nextTitle, nextSubtitle) {
+      var t = nextTitle != null ? String(nextTitle) : rawTitle;
+      var s = nextSubtitle != null ? String(nextSubtitle) : rawSubtitle;
+      titleEl.innerHTML =
+        (window.escapeHtml ? window.escapeHtml(t) : t) +
+        (s
+          ? '<div class="medisa-preview-shell-subtitle">' +
+            (window.escapeHtml ? window.escapeHtml(s) : s) +
+            '</div>'
+          : '');
+    },
+    setSubtitle: function(nextSubtitle) {
+      api.setTitle(rawTitle, nextSubtitle);
+    },
+    getActionButton: function(actionId) {
+      return actionsWrap.querySelector('[data-preview-shell-action="' + String(actionId) + '"]');
+    },
+    setActionState: function(actionId, state) {
+      var btn = api.getActionButton(actionId);
+      if (!btn || !state) return;
+      if (state.label != null) btn.textContent = String(state.label);
+      if (Object.prototype.hasOwnProperty.call(state, 'disabled')) {
+        btn.disabled = !!state.disabled;
+        if (state.disabled) btn.setAttribute('aria-disabled', 'true');
+        else btn.removeAttribute('aria-disabled');
+      }
+      if (Object.prototype.hasOwnProperty.call(state, 'primary')) {
+        btn.classList.toggle('medisa-preview-shell-btn--primary', !!state.primary);
+      }
+    }
+  };
+
+  function onKeyDown(ev) {
+    if (!ev || ev.key !== 'Escape') return;
+    if (!overlay.isConnected) return;
+    ev.preventDefault();
+    api.close('escape');
+  }
+
+  header.addEventListener('click', function(e) {
+    var btn = e.target && e.target.closest ? e.target.closest('[data-preview-shell-action]') : null;
+    if (!btn || btn.disabled) return;
+    var action = btn.getAttribute('data-preview-shell-action');
+    if (action === 'back' || action === 'close') {
+      api.close(action);
+      return;
+    }
+    if (typeof opts.onAction === 'function') {
+      try { opts.onAction(action, api); } catch (actionErr) {}
+    }
+  });
+
+  overlay.appendChild(header);
+  overlay.appendChild(panel);
+  document.body.appendChild(overlay);
+  if (escapeToClose) {
+    document.addEventListener('keydown', onKeyDown, true);
+  }
+  if (typeof opts.mountPanel === 'function') {
+    try { opts.mountPanel(panel, api); } catch (mountErr) {}
+  }
+  return api;
+};
+
+/** iOS Safari + PWA: otomatik print yerine kapanabilir ön izleme; native print yalnız toolbar Yazdır tıklamasında.
+ *  Canonical chrome: openMedisaPreviewShell → .medisa-preview-shell*. İmza: (printHtml, title[, options]). */
+window.openMedisaIosPwaPrintPreview = function openMedisaIosPwaPrintPreview(printHtml, title, options) {
+  if (!printHtml) return false;
+  var opts = options && typeof options === 'object' ? options : {};
   var frameHtml = String(printHtml);
   if (frameHtml.indexOf('</head>') !== -1) {
     frameHtml = frameHtml.replace(
@@ -424,69 +584,55 @@ window.openMedisaIosPwaPrintPreview = function openMedisaIosPwaPrintPreview(prin
     );
   }
 
-  var overlay = document.createElement('div');
-  overlay.id = 'medisa-ios-print-preview-overlay';
-  overlay.className = 'medisa-preview-shell';
-
-  var toolbar = document.createElement('div');
-  toolbar.className = 'medisa-preview-shell-header';
-  var actionsHtml =
-    (opts.showDownload
-      ? '<button type="button" class="medisa-preview-shell-btn" data-print-preview-action="download">İndir</button>'
-      : '') +
-    '<button type="button" class="medisa-preview-shell-btn medisa-preview-shell-btn--primary" data-print-preview-action="print">Yazdır</button>' +
-    '<button type="button" class="medisa-preview-shell-btn" data-print-preview-action="close">Kapat</button>';
-  toolbar.innerHTML =
-    '<button type="button" class="medisa-preview-shell-btn" data-print-preview-action="back">Geri Dön</button>' +
-    '<div class="medisa-preview-shell-title">' + safeTitle +
-      (safeSubtitle ? '<div class="medisa-preview-shell-subtitle">' + safeSubtitle + '</div>' : '') +
-    '</div>' +
-    '<div class="medisa-preview-shell-actions">' + actionsHtml + '</div>';
-
-  var frame = document.createElement('iframe');
-  frame.className = 'medisa-preview-shell-panel';
-  frame.setAttribute('title', rawTitle);
-
-  function closeOverlay() {
-    try { frame.srcdoc = ''; } catch (eClear) {}
-    if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
+  var actions = [];
+  if (opts.showDownload) {
+    actions.push({ id: 'download', label: 'İndir' });
   }
+  actions.push({ id: 'print', label: 'Yazdır', primary: true });
 
-  toolbar.addEventListener('click', function(e) {
-    var btn = e.target && e.target.closest ? e.target.closest('[data-print-preview-action]') : null;
-    if (!btn) return;
-    var action = btn.getAttribute('data-print-preview-action');
-    if (action === 'back' || action === 'close') {
-      closeOverlay();
-      return;
-    }
-    if (action === 'download') {
-      if (typeof opts.onDownload === 'function') {
-        try { opts.onDownload(); } catch (dlErr) {}
+  var frame = null;
+  window.openMedisaPreviewShell({
+    id: 'medisa-ios-print-preview-overlay',
+    title: title || 'Yazdırma Ön İzleme',
+    subtitle: opts.subtitle || '',
+    actions: actions,
+    panelClassName: 'medisa-preview-shell-panel--iframe-host',
+    mountPanel: function(panel) {
+      frame = document.createElement('iframe');
+      frame.className = 'medisa-preview-shell-frame';
+      frame.setAttribute('title', title || 'Yazdırma Ön İzleme');
+      panel.appendChild(frame);
+      frame.srcdoc = frameHtml;
+    },
+    onAction: function(actionId) {
+      if (actionId === 'download') {
+        if (typeof opts.onDownload === 'function') {
+          try { opts.onDownload(); } catch (dlErr) {}
+        }
+        return;
       }
-      return;
-    }
-    if (action === 'print') {
-      try {
-        var frameWindow = frame.contentWindow;
-        if (!frameWindow || typeof frameWindow.print !== 'function') throw new Error('print_unavailable');
+      if (actionId === 'print') {
         try {
-          if (typeof frameWindow.__medisaPreparePrintLayout === 'function') {
-            frameWindow.__medisaPreparePrintLayout();
-          }
-        } catch (prepareErr) {}
-        frameWindow.focus();
-        frameWindow.print();
-      } catch (printErr) {
-        alert('Yazdırma başlatılamadı. Lütfen tekrar deneyin.');
+          var frameWindow = frame && frame.contentWindow;
+          if (!frameWindow || typeof frameWindow.print !== 'function') throw new Error('print_unavailable');
+          try {
+            if (typeof frameWindow.__medisaPreparePrintLayout === 'function') {
+              frameWindow.__medisaPreparePrintLayout();
+            }
+          } catch (prepareErr) {}
+          frameWindow.focus();
+          frameWindow.print();
+        } catch (printErr) {
+          alert('Yazdırma başlatılamadı. Lütfen tekrar deneyin.');
+        }
+      }
+    },
+    onClose: function() {
+      if (frame) {
+        try { frame.srcdoc = ''; } catch (eClear) {}
       }
     }
   });
-
-  overlay.appendChild(toolbar);
-  overlay.appendChild(frame);
-  document.body.appendChild(overlay);
-  frame.srcdoc = frameHtml;
   return true;
 };
 
@@ -1606,7 +1752,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // style-core.css ana/paylaşılan shell HTML ile yüklenir; taşıt lazy asset sürümünden bağımsızdır.
 // tasitlar loader (bu nesne) ile MEDISA_TASITLAR_MODULE_VERSION kendi aralarında eşit kalmalıdır.
 var MEDISA_MODULE_VERSIONS = {
-  tasitlar: '20260907.1',
+  tasitlar: '20260907.2',
   notifications: '20260817.2',
   raporlar: '20260801.3',
   kayitJs: '20260905.1',
