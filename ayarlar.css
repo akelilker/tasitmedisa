@@ -1349,7 +1349,13 @@
     max-height: min(42vh, 320px);
     overflow-x: hidden;
     overflow-y: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
     -webkit-overflow-scrolling: touch;
+}
+#data-management-modal .server-restore-list::-webkit-scrollbar {
+    width: 0;
+    height: 0;
 }
 #data-management-modal .server-restore-item {
     display: flex;
@@ -1442,8 +1448,13 @@
     padding: 8px 10px;
     border-radius: 8px;
     border: 1px solid rgba(160, 174, 192, 0.35);
-    background: rgba(0, 0, 0, 0.25);
-    color: #fff;
+    background: rgba(160, 174, 192, 0.1);
+    color: #a0aec0;
+    text-align: left;
+}
+#data-management-modal .server-restore-confirmation::placeholder {
+    color: #a0aec0;
+    opacity: 1;
 }
 #data-management-modal .server-restore-actions {
     display: flex;

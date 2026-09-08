@@ -152,6 +152,9 @@ test('UI wording metadata-only and disabled commit gates', function() {
   assert.match(settings, /backup-restore-commit\.php/);
   assert.match(settings, /serverRestoreUi\.restoreEnabled === true/);
   assert.match(settings, /serverRestoreUi\.maintenanceMode === true/);
+  assert.match(settings, /id="server-restore-technical-controls" hidden/);
+  assert.match(settings, /function syncServerRestoreTechnicalControls\s*\(/);
+  assert.match(settings, /if \(controls\) controls\.hidden = !visible/);
   assert.match(settings, /importInFlight/);
   assert.equal(/window\.restoreFromLastBackup/.test(settings), false);
 });
@@ -186,6 +189,9 @@ test('backup history layout keeps actions in flow and has one history scroll own
   assert.match(settings, /id="server-restore-list"[\s\S]*?<\/div>\s*<p id="server-restore-status"/);
   assert.match(css, /#data-management-modal \.server-restore-panel\s*\{[\s\S]*?overflow:\s*visible;/);
   assert.match(css, /#data-management-modal \.server-restore-list\s*\{[\s\S]*?max-height:\s*min\(42vh, 320px\);[\s\S]*?overflow-y:\s*auto;/);
+  assert.match(css, /#data-management-modal \.server-restore-list\s*\{[\s\S]*?scrollbar-width:\s*none;/);
+  assert.match(css, /#data-management-modal \.server-restore-list::\-webkit-scrollbar\s*\{[\s\S]*?width:\s*0;/);
+  assert.match(css, /#data-management-modal \.server-restore-confirmation\s*\{[\s\S]*?background:\s*rgba\(160, 174, 192, 0\.1\);[\s\S]*?color:\s*#a0aec0;[\s\S]*?text-align:\s*left;/);
   assert.equal(/#data-management-modal \.data-management-actions,\s*#dis-veri-panel \.data-management-actions/.test(css), false);
 });
 

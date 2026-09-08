@@ -336,16 +336,18 @@
                         <h3 id="server-restore-title" class="server-restore-title">Yedekleme Geçmişi</h3>
                         <div id="server-restore-list" class="server-restore-list" role="list"></div>
                         <p id="server-restore-status" class="server-restore-status" role="status">Yedek listesi kapalı.</p>
-                        <div id="server-restore-dryrun" class="server-restore-dryrun" hidden></div>
-                        <label class="server-restore-confirm-label" for="server-restore-confirmation">Onay metni</label>
-                        <input id="server-restore-confirmation" class="server-restore-confirmation" type="text" autocomplete="off" aria-describedby="server-restore-confirm-hint" disabled>
-                        <p id="server-restore-confirm-hint" class="server-restore-hint">Commit için exact onay metnini yazın. Tek tık restore yoktur.</p>
-                        <div class="server-restore-actions">
-                            <button type="button" id="server-restore-refresh-btn" class="server-restore-btn">Yedek listesini yenile</button>
-                            <button type="button" id="server-restore-dryrun-btn" class="server-restore-btn" disabled>Dry-run</button>
-                            <button type="button" id="server-restore-commit-btn" class="server-restore-btn server-restore-btn--danger" disabled aria-busy="false">Restore commit</button>
+                        <div id="server-restore-technical-controls" hidden>
+                            <div id="server-restore-dryrun" class="server-restore-dryrun" hidden></div>
+                            <label class="server-restore-confirm-label" for="server-restore-confirmation">Onay metni</label>
+                            <input id="server-restore-confirmation" class="server-restore-confirmation" type="text" autocomplete="off" aria-describedby="server-restore-confirm-hint" disabled>
+                            <p id="server-restore-confirm-hint" class="server-restore-hint">Commit için exact onay metnini yazın. Tek tık restore yoktur.</p>
+                            <div class="server-restore-actions">
+                                <button type="button" id="server-restore-refresh-btn" class="server-restore-btn">Yedek listesini yenile</button>
+                                <button type="button" id="server-restore-dryrun-btn" class="server-restore-btn" disabled>Dry-run</button>
+                                <button type="button" id="server-restore-commit-btn" class="server-restore-btn server-restore-btn--danger" disabled aria-busy="false">Restore commit</button>
+                            </div>
+                            <div id="server-restore-error" class="server-restore-error" role="alert" hidden></div>
                         </div>
-                        <div id="server-restore-error" class="server-restore-error" role="alert" hidden></div>
                     </section>
                 </div>
             </div>
@@ -4919,6 +4921,19 @@
       btn.disabled = !ok;
     }
 
+    function syncServerRestoreTechnicalControls() {
+      var controls = document.getElementById('server-restore-technical-controls');
+      var input = document.getElementById('server-restore-confirmation');
+      var visible = (
+        serverRestoreUi.restoreEnabled === true
+        && serverRestoreUi.maintenanceMode === true
+        && serverRestoreUi.canExecute === true
+      );
+      if (controls) controls.hidden = !visible;
+      if (input) input.disabled = !visible;
+      return visible;
+    }
+
     async function fetchBackupRegistry() {
       var requestOptions = { cache: 'no-store' };
       if (typeof buildAuthHeaders === 'function') {
@@ -5012,13 +5027,11 @@
         if (!serverRestoreUi.canExecute) parts.push('Commit izni yok veya oturum yetersiz.');
         status.textContent = parts.join(' ');
         renderServerRestoreList(payload.backups || []);
+        var technicalControlsVisible = syncServerRestoreTechnicalControls();
         var confirmInput = document.getElementById('server-restore-confirmation');
-        if (confirmInput) {
-          confirmInput.disabled = false;
-          confirmInput.placeholder = serverRestoreUi.confirmationText;
-        }
+        if (confirmInput) confirmInput.placeholder = serverRestoreUi.confirmationText;
         var dryBtn = document.getElementById('server-restore-dryrun-btn');
-        if (dryBtn) dryBtn.disabled = !serverRestoreUi.selectedBackupId || serverRestoreUi.inFlight;
+        if (dryBtn) dryBtn.disabled = !technicalControlsVisible || !serverRestoreUi.selectedBackupId || serverRestoreUi.inFlight;
         updateServerRestoreCommitEnabled();
       } catch (err) {
         status.textContent = 'Yedek listesi alınamadı.';
