@@ -197,7 +197,7 @@
 
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20260907.2';
+  const MEDISA_TASITLAR_MODULE_VERSION = '20260907.3';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
@@ -6748,11 +6748,39 @@
   }
 
   function buildIosPwaPdfPrintHtml(pageUrls) {
-    var pagesHtml = pageUrls.map(function(pageUrl) {
-      return '<section class="ruhsat-pdf-print-page"><img src="' + escapeHtml(pageUrl) + '" alt="Belge sayfası"></section>';
+    var urls = Array.isArray(pageUrls) ? pageUrls.filter(Boolean) : [];
+    var pageCount = urls.length;
+    var pagesHtml = urls.map(function(pageUrl, index) {
+      var isLast = index === pageCount - 1;
+      // break class: multi-page'de yalnız son olmayan sayfalara page break.
+      // Tek sayfada break-after:always / exact 297mm iOS'ta boş 2. sayfa üretir (CASE A).
+      var breakClass = (!isLast && pageCount > 1) ? ' ruhsat-pdf-print-page--break' : '';
+      return '<section class="ruhsat-pdf-print-page' + breakClass + '">' +
+        '<img src="' + escapeHtml(pageUrl) + '" alt="Belge sayfası">' +
+        '</section>';
     }).join('');
-    var printCss = '<style>html,body{margin:0;padding:0;background:#e5e7eb;}.ruhsat-pdf-print-page{width:min(100vw - 24px,210mm);aspect-ratio:210/297;margin:12px auto;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#fff;box-shadow:0 8px 24px rgba(0,0,0,.18);page-break-after:always;break-after:page;}.ruhsat-pdf-print-page:last-child{page-break-after:auto;break-after:auto;}.ruhsat-pdf-print-page img{display:block;width:auto;height:auto;max-width:100%;max-height:100%;object-fit:contain;}@media print{@page{size:A4 portrait;margin:0;}html,body{width:210mm !important;height:auto !important;margin:0 !important;padding:0 !important;background:#fff !important;overflow:visible !important;}.ruhsat-pdf-print-page{width:210mm !important;height:297mm !important;margin:0 !important;box-shadow:none !important;overflow:hidden !important;page-break-inside:avoid !important;break-inside:avoid !important;}.ruhsat-pdf-print-page img{width:auto !important;height:auto !important;max-width:210mm !important;max-height:297mm !important;object-fit:contain !important;}}</style>';
-    return '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">' + printCss + '<title>Belge Yazdır</title></head><body>' + pagesHtml + '</body></html>';
+    var printCss = [
+      '<style>',
+      '*,*::before,*::after{box-sizing:border-box;}',
+      'html,body{margin:0;padding:0;background:#e5e7eb;}',
+      '.ruhsat-pdf-print-page{width:min(100vw - 24px,210mm);aspect-ratio:210/297;margin:12px auto;padding:0;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#fff;box-shadow:0 8px 24px rgba(0,0,0,.18);page-break-after:auto;break-after:auto;}',
+      '.ruhsat-pdf-print-page--break{page-break-after:always;break-after:page;}',
+      '.ruhsat-pdf-print-page:last-child{page-break-after:auto;break-after:auto;}',
+      '.ruhsat-pdf-print-page img{display:block;width:auto;height:auto;max-width:100%;max-height:100%;object-fit:contain;margin:0;padding:0;border:0;}',
+      '@media print{',
+      '@page{size:A4 portrait;margin:0;}',
+      'html,body{width:210mm !important;height:auto !important;min-height:0 !important;margin:0 !important;padding:0 !important;background:#fff !important;overflow:hidden !important;}',
+      /* 297mm exact + rounding overflow = iOS blank trailing page; printable alanı güvenli küçült */
+      '.ruhsat-pdf-print-page{width:210mm !important;height:296mm !important;max-height:296mm !important;min-height:0 !important;margin:0 !important;padding:0 !important;box-shadow:none !important;overflow:hidden !important;page-break-inside:avoid !important;break-inside:avoid !important;page-break-after:avoid !important;break-after:avoid-page !important;}',
+      '.ruhsat-pdf-print-page--break{page-break-after:always !important;break-after:page !important;}',
+      '.ruhsat-pdf-print-page:last-child,.ruhsat-pdf-print-page--break:last-child{page-break-after:avoid !important;break-after:avoid-page !important;}',
+      '.ruhsat-pdf-print-page img{width:auto !important;height:auto !important;max-width:210mm !important;max-height:296mm !important;object-fit:contain !important;margin:0 !important;padding:0 !important;border:0 !important;}',
+      '}',
+      '</style>'
+    ].join('');
+    return '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">' +
+      printCss +
+      '<title>Belge Yazdır</title></head><body>' + pagesHtml + '</body></html>';
   }
 
   function canvasToPrintObjectUrl(canvas) {
@@ -6782,9 +6810,18 @@
           standardFontDataUrl: MEDISA_PDFJS_STANDARD_FONTS
         });
         return loadingTask.promise.then(function(pdfDoc) {
-          var pageCount = Math.max(1, Math.min(24, pdfDoc.numPages || 1));
+          var sourcePageCount = Math.max(0, Number(pdfDoc.numPages) || 0);
+          var pageCount = Math.max(1, Math.min(24, sourcePageCount || 1));
           var pageUrls = [];
           var pageIndex = 1;
+          try {
+            if (typeof console !== 'undefined' && console.info) {
+              console.info('[medisa-print-audit]', {
+                sourcePdfPages: sourcePageCount,
+                preparedCap: pageCount
+              });
+            }
+          } catch (auditLogErr) {}
 
           function releaseCanvas(canvas) {
             if (!canvas) return;
@@ -6838,6 +6875,15 @@
       detachIosPwaPdfStagingFrame(entry);
       entry.printPageObjectUrls = pageUrls;
       entry.pdfPrintPageObjectUrls = pageUrls;
+      entry.printSourcePageCount = Array.isArray(pageUrls) ? pageUrls.length : 0;
+      try {
+        if (typeof console !== 'undefined' && console.info) {
+          console.info('[medisa-print-audit]', {
+            printAssetCount: entry.printSourcePageCount,
+            printDomPageSelector: '.ruhsat-pdf-print-page'
+          });
+        }
+      } catch (auditReadyErr) {}
       entry.printPromise = null;
       entry.pdfStagingPromise = null;
       entry.printCooldownUntil = 0;
@@ -8101,24 +8147,27 @@
 
       const startActions = document.createElement('div');
       startActions.className = 'medisa-doc-action-row__start';
-      const downloadBtn = document.createElement('button');
-      downloadBtn.type = 'button';
-      downloadBtn.className = 'ruhsat-download-btn';
-      downloadBtn.setAttribute('aria-label', cfg.label + ' İndir');
-      downloadBtn.title = 'İndir';
-      downloadBtn.innerHTML =
-        '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
-        '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>' +
-        '<polyline points="7 10 12 15 17 10"></polyline>' +
-        '<line x1="12" y1="15" x2="12" y2="3"></line>' +
-        '</svg>';
-      downloadBtn.onclick = function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        downloadVehicleDocumentOriginal(vid, dt);
-      };
-      startActions.appendChild(downloadBtn);
-      btnGroup.appendChild(startActions);
+      // iOS: karttaki ayrı İndir, viewer Kaydet/Paylaş ile redundant; desktop İndir korunur.
+      if (!iosCanonical) {
+        const downloadBtn = document.createElement('button');
+        downloadBtn.type = 'button';
+        downloadBtn.className = 'ruhsat-download-btn';
+        downloadBtn.setAttribute('aria-label', cfg.label + ' İndir');
+        downloadBtn.title = 'İndir';
+        downloadBtn.innerHTML =
+          '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+          '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>' +
+          '<polyline points="7 10 12 15 17 10"></polyline>' +
+          '<line x1="12" y1="15" x2="12" y2="3"></line>' +
+          '</svg>';
+        downloadBtn.onclick = function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          downloadVehicleDocumentOriginal(vid, dt);
+        };
+        startActions.appendChild(downloadBtn);
+        btnGroup.appendChild(startActions);
+      }
 
       const centerPreview = document.createElement('div');
       centerPreview.className = 'medisa-doc-action-row__center';

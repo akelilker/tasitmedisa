@@ -277,6 +277,22 @@ function createRecordHarness(opts) {
     assert.match(adminHtml, /admin-report\.js\?v=20260813\.1/);
   });
 
+  await run('source: monthly todo tarih metni warning class severity hizası', function() {
+    assert.match(notif, /function buildMonthlyTodoDescriptionHtml\([^)]*warningClass\)/);
+    assert.match(notif, /buildMonthlyTodoDescriptionHtml\([^;]*warningClass\)/);
+    assert.match(notif, /wc === 'date-warning-red' \|\| wc === 'date-warning-orange'/);
+    assert.doesNotMatch(notif, /monthly-todo-description-meta--past/);
+    assert.match(
+      notifCss,
+      /#monthly-todo-modal[\s\S]*\.monthly-todo-description-meta\.date-warning-red[\s\S]*var\(--notif-red/
+    );
+    assert.match(
+      notifCss,
+      /#monthly-todo-modal[\s\S]*\.monthly-todo-description-meta\.date-warning-orange[\s\S]*var\(--notif-amber/
+    );
+    assert.doesNotMatch(notifCss, /monthly-todo-description-meta--past/);
+  });
+
   await run('role: sunucu ve UI genel yönetici audit kapısı', function() {
     assert.match(adminPhp, /\$canViewWhatsAppAudit = \(\$context\['role'\] \?\? ''\) === 'genel_yonetici'/);
     assert.match(adminPhp, /'whatsapp_logs' => \$canViewWhatsAppAudit/);

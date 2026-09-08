@@ -1622,7 +1622,7 @@
     return html;
   }
 
-  function buildMonthlyTodoDescriptionHtml(descriptionPrefix, daysVal, dateRaw, dateShown, isPast, dateLabel) {
+  function buildMonthlyTodoDescriptionHtml(descriptionPrefix, daysVal, dateRaw, dateShown, isPast, dateLabel, warningClass) {
     var kindHtml = '<span class="monthly-todo-type-kind">' + escapeHtml(descriptionPrefix) + '</span>';
     if (!dateRaw || daysVal === null) {
       return '<span class="monthly-todo-type">' + kindHtml + '<span class="monthly-todo-type-detail"> Geçerlilik Süresi Eksiktir.</span></span>';
@@ -1635,11 +1635,18 @@
     } else {
       detailText = ' Geçerlilik Süresi ' + daysVal + ' Gün Sonra Bitecektir.';
     }
-    var metaPastClass = isPast ? ' monthly-todo-description-meta--past' : '';
+    // Satır border severity ile aynı engine class: date-warning-red | date-warning-orange
+    var wc = String(warningClass || '');
+    var metaWarnClass = '';
+    if (wc === 'date-warning-red' || wc === 'date-warning-orange') {
+      metaWarnClass = ' ' + wc;
+    } else if (isPast) {
+      metaWarnClass = ' date-warning-red';
+    }
     var metaLabel = String(dateLabel || 'Bitiş Tarihi').trim() || 'Bitiş Tarihi';
     return '<span class="monthly-todo-type">' + kindHtml +
       '<span class="monthly-todo-type-detail">' + escapeHtml(detailText) + '</span>' +
-      '<br><span class="monthly-todo-description-meta' + metaPastClass + '">' + escapeHtml(metaLabel) + ': <span class="monthly-todo-description-date">' + dateShown + '</span></span></span>';
+      '<br><span class="monthly-todo-description-meta' + metaWarnClass + '">' + escapeHtml(metaLabel) + ': <span class="monthly-todo-description-date">' + dateShown + '</span></span></span>';
   }
 
   function buildMonthlyTodoTaskRowHtml(t, userMap, typeDescriptionMap, branchNameMap) {
@@ -1696,7 +1703,7 @@
     rowHtml += '</span>';
     rowHtml += '<span class="monthly-todo-cell monthly-todo-desc-col">';
     var descriptionDateLabel = (typeText === 'Sigorta' || typeText === 'Kasko' || typeText === 'Sigorta + Kasko') ? 'Yenileme Tarihi' : 'Bitiş Tarihi';
-    rowHtml += buildMonthlyTodoDescriptionHtml(descriptionPrefix, daysVal, dateRaw, dateShown, past, descriptionDateLabel);
+    rowHtml += buildMonthlyTodoDescriptionHtml(descriptionPrefix, daysVal, dateRaw, dateShown, past, descriptionDateLabel, warningClass);
     rowHtml += '</span>';
     rowHtml += '</div>';
     return rowHtml;

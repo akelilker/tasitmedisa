@@ -76,6 +76,7 @@ test('UI: yüklü belgede [+] altında [-] var, boş belgede aksiyon yığını 
   const hasDocBranch = extractBetween(modalSrc, 'if (hasDoc) {', 'content.appendChild(btnGroup);');
   assert.match(hasDocBranch, /medisa-doc-action-row/, 'yüklü belgede canonical action row kurulmalı');
   assert.match(hasDocBranch, /className = 'ruhsat-download-btn'/, 'İndir butonu solda kurulmalı');
+  assert.match(hasDocBranch, /if \(!iosCanonical\)/, 'iOS kartında ayrı İndir gizlenmeli');
   assert.match(hasDocBranch, /downloadVehicleDocumentOriginal\(vid, dt\)/, 'İndir orijinal belge zincirini çağırmalı');
   assert.match(hasDocBranch, /ruhsat-doc-actions/, 'yüklü belgede aksiyon sarmalayıcı kurulmalı');
   assert.match(hasDocBranch, /className = 'ruhsat-add-btn'/, '"+" butonu korunmalı');

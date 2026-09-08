@@ -199,11 +199,41 @@ test('22. no public raw token log', function() {
   assert.doesNotMatch(tasitlar, /cacheKey[^\n]*getMedisaPortalToken\(\)/);
 });
 
+test('print pagination: CASE A overflow guards + 1:1 page DOM', function() {
+  const printHtmlFn = extractBetween(
+    tasitlar,
+    'function buildIosPwaPdfPrintHtml(pageUrls) {',
+    'function canvasToPrintObjectUrl(canvas) {'
+  );
+  assert.match(printHtmlFn, /ruhsat-pdf-print-page--break/);
+  assert.match(printHtmlFn, /height:296mm/);
+  assert.match(printHtmlFn, /max-height:296mm/);
+  assert.match(printHtmlFn, /box-sizing:border-box/);
+  assert.match(printHtmlFn, /overflow:hidden !important/);
+  assert.match(printHtmlFn, /page-break-after:avoid !important/);
+  assert.match(printHtmlFn, /break-after:avoid-page !important/);
+  assert.doesNotMatch(printHtmlFn, /height:297mm/);
+  assert.match(printHtmlFn, /pageCount > 1/);
+  // Tek sayfada break class eklenmemeli
+  assert.match(printHtmlFn, /isLast = index === pageCount - 1/);
+});
+
+test('iOS kart İndir gizlenir; desktop download owner korunur', function() {
+  const modalSrc = extractBetween(
+    tasitlar,
+    'window.openVehicleDocumentModal = function(vehicleId, documentType) {',
+    'function renderRuhsatUploadForm('
+  );
+  assert.match(modalSrc, /if \(!iosCanonical\) \{[\s\S]*?ruhsat-download-btn/);
+  assert.match(tasitlar, /function downloadVehicleDocumentOriginal\(/);
+  assert.match(tasitlar, /Kaydet \/ Paylaş/);
+});
+
 test('pin/SW chain', function() {
-  assert.match(tasitlar, /MEDISA_TASITLAR_MODULE_VERSION = '20260907\.2'/);
-  assert.match(scriptCore, /tasitlar:\s*'20260907\.2'/);
-  assert.match(sw, /CACHE_VERSION = 'medisa-v2\.314'/);
-  assert.match(read('index.html'), /script-core\.js\?v=20260907\.2/);
+  assert.match(tasitlar, /MEDISA_TASITLAR_MODULE_VERSION = '20260907\.3'/);
+  assert.match(scriptCore, /tasitlar:\s*'20260907\.3'/);
+  assert.match(sw, /CACHE_VERSION = 'medisa-v2\.316'/);
+  assert.match(read('index.html'), /script-core\.js\?v=20260907\.4/);
   assert.match(read('index.html'), /style-core\.css\?v=20260907\.2/);
 });
 

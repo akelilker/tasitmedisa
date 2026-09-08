@@ -2309,9 +2309,15 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
   color: #a0aec0;
 }
 
-#monthly-todo-modal .monthly-todo-type .monthly-todo-description-meta.monthly-todo-description-meta--past,
-#monthly-todo-modal .monthly-todo-type .monthly-todo-description-meta.monthly-todo-description-meta--past .monthly-todo-description-date {
-  color: var(--theme-color, #ff4d5f);
+/* Tarih label/value: satır border severity ile aynı semantic class + notif token */
+#monthly-todo-modal .monthly-todo-type .monthly-todo-description-meta.date-warning-red,
+#monthly-todo-modal .monthly-todo-type .monthly-todo-description-meta.date-warning-red .monthly-todo-description-date {
+  color: var(--notif-red, #c40016);
+}
+
+#monthly-todo-modal .monthly-todo-type .monthly-todo-description-meta.date-warning-orange,
+#monthly-todo-modal .monthly-todo-type .monthly-todo-description-meta.date-warning-orange .monthly-todo-description-date {
+  color: var(--notif-amber, var(--orange-warn));
 }
 
 /* Ay özeti şube filtresi: açık menüyü okunur tut, listeyi flu göster; düşük opacity beyaz parlamaya yol açıyordu. */
