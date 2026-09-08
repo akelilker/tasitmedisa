@@ -207,7 +207,7 @@ test('backup history layout keeps actions in flow and has one history scroll own
   assert.match(css, /#data-management-modal \.server-restore-item > \.server-restore-item-title,[\s\S]*?display:\s*block;[\s\S]*?flex:\s*0 0 auto;/);
   assert.match(css, /#data-management-modal \.server-restore-item-title\s*\{[\s\S]*?white-space:\s*normal;/);
   assert.match(css, /#data-management-modal \.server-restore-item-meta\s*\{[\s\S]*?overflow-wrap:\s*anywhere;/);
-  assert.match(css, /#data-management-modal \.server-restore-item\.is-selected,[\s\S]*?border-color:\s*rgba\(var\(--theme-color-rgb\), 0\.72\);/);
+  assert.match(css, /#data-management-modal \.server-restore-item\.is-selected,[\s\S]*?border-color:\s*rgba\(var\(--theme-color-rgb\), 0\.72\);[\s\S]*?background:\s*rgba\(255, 255, 255, 0\.06\);/);
   assert.match(css, /#data-management-modal \.server-restore-item--ok \.server-restore-item-status\s*\{[\s\S]*?color:\s*var\(--green-success\);/);
   assert.match(css, /#data-management-modal \.server-restore-item--bad \.server-restore-item-status\s*\{[\s\S]*?color:\s*var\(--theme-color\);/);
   assert.equal(/#data-management-modal \.data-management-actions,\s*#dis-veri-panel \.data-management-actions/.test(css), false);

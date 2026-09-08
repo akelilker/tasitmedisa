@@ -1300,14 +1300,14 @@
 #data-management-modal .data-management-history-toggle:hover,
 #data-management-modal .data-management-history-toggle:focus-visible {
     border-color: rgba(var(--theme-color-rgb), 0.72);
-    background: rgba(var(--theme-color-rgb), 0.08);
+    background: rgba(255, 255, 255, 0.04);
 }
 #data-management-modal .data-management-history-toggle.is-open {
     margin-bottom: 0;
     border-color: rgba(var(--theme-color-rgb), 0.72);
     border-bottom-color: transparent;
     border-radius: 10px 10px 0 0;
-    background: rgba(var(--theme-color-rgb), 0.08);
+    background: rgba(255, 255, 255, 0.04);
 }
 #data-management-modal .data-management-history-toggle-chevron {
     color: #a0aec0;
@@ -1325,7 +1325,7 @@
     border: 1px solid rgba(var(--theme-color-rgb), 0.72);
     border-top: 0;
     border-radius: 0 0 10px 10px;
-    background: rgba(var(--theme-color-rgb), 0.03);
+    background: rgba(255, 255, 255, 0.03);
     box-sizing: border-box;
     max-width: 100%;
     overflow: visible;
@@ -1390,7 +1390,7 @@
 #data-management-modal .server-restore-item.is-selected,
 #data-management-modal .server-restore-item[aria-pressed="true"] {
     border-color: rgba(var(--theme-color-rgb), 0.72);
-    background: rgba(var(--theme-color-rgb), 0.12);
+    background: rgba(255, 255, 255, 0.06);
 }
 #data-management-modal .server-restore-item.is-ineligible,
 #data-management-modal .server-restore-item:disabled {
