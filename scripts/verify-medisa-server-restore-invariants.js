@@ -138,7 +138,7 @@ test('driver login bypasses restore write-freeze', function() {
   assert.match(loginPhp, /medisaMutateData/);
 });
 
-test('UI wording metadata-only and disabled commit gates', function() {
+test('data backup UI keeps client import/export and omits server history controls', function() {
   const settings = read('ayarlar.js');
   assert.match(settings, /Yedekten Geri Yükle/);
   assert.match(settings, /Sunucudaki Son Yedekleme Dosyası/);
@@ -149,67 +149,40 @@ test('UI wording metadata-only and disabled commit gates', function() {
   assert.match(settings, /Yedek alınamadı\. Sunucu verisi indirilemedi\./);
   assert.equal(/Son Sunucu Yedeği Bilgisi/.test(settings), false);
   assert.equal(/window\.exportData[\s\S]{0,800}buildFullBackupPayload\s*\(/.test(settings), false);
-  assert.match(settings, /medisa-server-restore-ui:begin/);
-  assert.match(settings, /backup-registry\.php/);
-  assert.match(settings, /backup-restore-dry-run\.php/);
-  assert.match(settings, /backup-restore-commit\.php/);
-  assert.match(settings, /serverRestoreUi\.restoreEnabled === true/);
-  assert.match(settings, /serverRestoreUi\.maintenanceMode === true/);
-  assert.match(settings, /id="server-restore-technical-controls" hidden/);
-  assert.match(settings, /function syncServerRestoreTechnicalControls\s*\(/);
-  assert.match(settings, /if \(controls\) controls\.hidden = !visible/);
+  assert.equal(/id="data-management-history-toggle"/.test(settings), false);
+  assert.equal(/id="server-restore-panel"/.test(settings), false);
+  assert.equal(/id="server-restore-technical-controls"/.test(settings), false);
+  assert.equal(/medisa-server-restore-ui:begin/.test(settings), false);
+  assert.equal(/backup-registry\.php/.test(settings), false);
+  assert.equal(/backup-restore-dry-run\.php/.test(settings), false);
+  assert.equal(/backup-restore-commit\.php/.test(settings), false);
   assert.match(settings, /importInFlight/);
   assert.equal(/window\.restoreFromLastBackup/.test(settings), false);
 });
 
-test('server restore UI lifecycle wired once from openDataManagement', function() {
+test('data backup modal does not bind or open server history UI', function() {
   const settings = read('ayarlar.js');
-  assert.match(settings, /function bindServerRestorePanelOnce\s*\(/);
-  assert.match(settings, /window\.__medisaServerRestoreUiBound/);
-  assert.match(settings, /if\s*\(\s*window\.__medisaServerRestoreUiBound\s*\)\s*return/);
-
   const openParts = settings.split('window.openDataManagement = function openDataManagement');
   assert.equal(openParts.length >= 2, true, 'openDataManagement missing');
   const openBody = openParts[1].split('window.closeDataManagement')[0];
-  assert.match(openBody, /bindServerRestorePanelOnce\s*\(\s*\)/);
-  assert.match(openBody, /setDataManagementHistoryOpen\s*\(\s*false\s*\)/);
+  assert.match(openBody, /refreshDataManagementBackupMeta\s*\(\s*\)/);
+  assert.equal(/bindServerRestorePanelOnce\s*\(\s*\)/.test(openBody), false);
+  assert.equal(/setDataManagementHistoryOpen\s*\(/.test(openBody), false);
   assert.equal(/refreshServerRestorePanel\s*\(\s*\)/.test(openBody), false);
-  assert.match(settings, /data-management-history-toggle/);
-  assert.match(settings, /describeBackupRestoreStatus/);
-  assert.match(settings, /Geri yüklenemez/);
-  assert.match(settings, /Yedekleme Geçmişi/);
-
-  const callSites = settings.match(/\bbindServerRestorePanelOnce\s*\(/g) || [];
-  assert.equal(callSites.length, 2, 'expected definition + single lifecycle call site');
-  assert.equal(/DOMContentLoaded[\s\S]{0,400}bindServerRestorePanelOnce\s*\(/.test(settings), false);
+  assert.equal(/id="data-management-history-toggle"/.test(settings), false);
+  assert.equal(/id="server-restore-panel"/.test(settings), false);
 });
 
-test('backup history layout keeps actions in flow and has one history scroll owner', function() {
+test('data backup layout keeps actions in flow and omits history presentation', function() {
   const settings = read('ayarlar.js');
   const css = read('ayarlar.css');
   assert.match(css, /#data-management-modal \.data-management-actions\s*\{[\s\S]*?display:\s*grid;[\s\S]*?grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\);/);
   assert.match(css, /#data-management-modal \.data-management-actions \.data-management-text-btn\s*\{[\s\S]*?width:\s*100%;[\s\S]*?margin:\s*0;/);
   assert.match(settings, /<h2 class="premium-title">VERİ YEDEKLEME<\/h2>/);
-  assert.match(settings, /id="server-restore-panel"[\s\S]*?aria-label="Yedekleme Geçmişi"/);
-  assert.equal(/id="server-restore-title"/.test(settings), false);
-  assert.equal((settings.match(/>Yedekleme Geçmişi</g) || []).length, 1);
-  assert.match(settings, /id="server-restore-list"[\s\S]*?<\/div>\s*<p id="server-restore-status"/);
+  assert.equal(/id="data-management-history-toggle"/.test(settings), false);
+  assert.equal(/id="server-restore-panel"/.test(settings), false);
+  assert.equal(/id="server-restore-list"/.test(settings), false);
   assert.match(css, /\.ayarlar-modal-overlay:not\(\.compact-confirm-modal\):not\(#tescil-tarih-confirm-modal\):not\(#tescil-tarih-input-modal\) \.modal-header h2:not\(\.premium-title\)/);
-  assert.equal(/#data-management-modal \.server-restore-title/.test(css), false);
-  assert.match(css, /#data-management-modal \.data-management-history-toggle\.is-open\s*\{[\s\S]*?border-color:\s*rgba\(var\(--theme-color-rgb\), 0\.72\);/);
-  assert.match(css, /#data-management-modal \.server-restore-panel\s*\{[\s\S]*?border-top:\s*0;[\s\S]*?border-radius:\s*0 0 10px 10px;/);
-  assert.match(css, /#data-management-modal \.server-restore-panel\s*\{[\s\S]*?overflow:\s*visible;/);
-  assert.match(css, /#data-management-modal \.server-restore-list\s*\{[\s\S]*?max-height:\s*min\(42vh, 320px\);[\s\S]*?overflow-y:\s*auto;/);
-  assert.match(css, /#data-management-modal \.server-restore-list\s*\{[\s\S]*?scrollbar-width:\s*none;/);
-  assert.match(css, /#data-management-modal \.server-restore-list::\-webkit-scrollbar\s*\{[\s\S]*?width:\s*0;/);
-  assert.match(css, /#data-management-modal \.server-restore-confirmation\s*\{[\s\S]*?background:\s*rgba\(160, 174, 192, 0\.1\);[\s\S]*?color:\s*#a0aec0;[\s\S]*?text-align:\s*left;/);
-  assert.match(css, /#data-management-modal \.server-restore-item\s*\{[\s\S]*?min-height:\s*78px;/);
-  assert.match(css, /#data-management-modal \.server-restore-item > \.server-restore-item-title,[\s\S]*?display:\s*block;[\s\S]*?flex:\s*0 0 auto;/);
-  assert.match(css, /#data-management-modal \.server-restore-item-title\s*\{[\s\S]*?white-space:\s*normal;/);
-  assert.match(css, /#data-management-modal \.server-restore-item-meta\s*\{[\s\S]*?overflow-wrap:\s*anywhere;/);
-  assert.match(css, /#data-management-modal \.server-restore-item\.is-selected,[\s\S]*?border-color:\s*rgba\(var\(--theme-color-rgb\), 0\.72\);[\s\S]*?background:\s*rgba\(255, 255, 255, 0\.06\);/);
-  assert.match(css, /#data-management-modal \.server-restore-item--ok \.server-restore-item-status\s*\{[\s\S]*?color:\s*var\(--green-success\);/);
-  assert.match(css, /#data-management-modal \.server-restore-item--bad \.server-restore-item-status\s*\{[\s\S]*?color:\s*var\(--theme-color\);/);
   assert.equal(/#data-management-modal \.data-management-actions,\s*#dis-veri-panel \.data-management-actions/.test(css), false);
 });
 
