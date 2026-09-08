@@ -606,7 +606,7 @@ function medisaRestoreCanonicalNormalize(array $raw) {
     $known = [
         'vehicles', 'tasitlar', 'branches', 'users', 'kayitlar', 'ayarlar', 'sifreler',
         'arac_aylik_hareketler', 'duzeltme_talepleri', 'notificationReadState',
-        'monthlyTodoWhatsAppLogs',
+        'monthlyTodoWhatsAppLogs', 'audit_events',
     ];
     $knownAll = array_merge($known, $metadataKeys);
     $unknown = [];
@@ -639,6 +639,9 @@ function medisaRestoreCanonicalNormalize(array $raw) {
     if (isset($raw['monthlyTodoWhatsAppLogs']) && is_array($raw['monthlyTodoWhatsAppLogs'])) {
         $out['monthlyTodoWhatsAppLogs'] = $raw['monthlyTodoWhatsAppLogs'];
     }
+    if (isset($raw['audit_events']) && is_array($raw['audit_events'])) {
+        $out['audit_events'] = $raw['audit_events'];
+    }
     unset($out['kaskoDegerListesi']);
 
     // Normalization data-loss: known non-metadata collections in raw must survive in out.
@@ -655,6 +658,7 @@ function medisaRestoreCanonicalNormalize(array $raw) {
         'duzeltme_talepleri' => 'duzeltme_talepleri',
         'notificationReadState' => 'notificationReadState',
         'monthlyTodoWhatsAppLogs' => 'monthlyTodoWhatsAppLogs',
+        'audit_events' => 'audit_events',
     ];
     foreach (array_keys($raw) as $k) {
         $ks = (string)$k;

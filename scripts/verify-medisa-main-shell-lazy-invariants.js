@@ -73,13 +73,15 @@ test('splash minimum süresi 2000 ms kalır', function() {
   assert.match(index, /MIN_SPLASH_MS\s*=\s*2000/);
 });
 
-test('modal premium başlığı menü metalik kontratından bağımsızdır', function() {
-  assert.match(style, /--modal-premium-title-gradient:\s*linear-gradient/);
-  assert.match(style, /--modal-premium-title-shadow:\s*[^;]+;/);
-  assert.match(style, /\.modal-overlay \.modal-header h2\.premium-title\s*\{[\s\S]*?background:\s*var\(--modal-premium-title-gradient\)/);
-  assert.match(style, /\.modal-overlay \.modal-header h2\.premium-title\s*\{[\s\S]*?text-shadow:\s*var\(--modal-premium-title-shadow\)/);
+test('modal premium başlığı ana menü .ttl canonical metalik kontratını reuse eder', function() {
+  assert.match(style, /--premium-title-gradient:\s*linear-gradient/);
+  assert.match(style, /--premium-title-shadow:\s*[^;]+;/);
+  assert.match(style, /\.modal-overlay \.modal-header h2\.premium-title\s*\{[\s\S]*?background:\s*var\(--premium-title-gradient\)/);
+  assert.match(style, /\.modal-overlay \.modal-header h2\.premium-title\s*\{[\s\S]*?text-shadow:\s*var\(--premium-title-shadow\)/);
   assert.match(style, /#main-menu \.menu-btn \.ttl\s*\{[\s\S]*?background:\s*var\(--premium-title-gradient\)/);
-  assert.doesNotMatch(style, /--modal-premium-title-shadow:[^;]*7px/);
+  assert.match(style, /\/\* Mobil modal başlıkları: premium gradient yerine net beyaz metin \*\//);
+  assert.match(style, /\.modal-overlay \.modal-header h2\.premium-title\s*\{[\s\S]*?-webkit-text-fill-color:\s*#ffffff\s*!important/);
+  assert.match(style, /#monthly-todo-modal\) \.modal-header h2\.premium-title\s*\{[\s\S]*?-webkit-text-fill-color:\s*#ffffff\s*!important/);
 });
 
 test('modal header ortak clear-coat ve kırmızı taban ownerını korur', function() {

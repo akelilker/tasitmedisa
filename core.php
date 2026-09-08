@@ -80,6 +80,7 @@ function medisaDefaultData() {
         'duzeltme_talepleri' => [],
         'notificationReadState' => [],
         'monthlyTodoWhatsAppLogs' => [],
+        'audit_events' => [],
     ];
 }
 

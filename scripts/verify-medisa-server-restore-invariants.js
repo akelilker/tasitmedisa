@@ -166,11 +166,25 @@ test('server restore UI lifecycle wired once from openDataManagement', function(
   assert.equal(openParts.length >= 2, true, 'openDataManagement missing');
   const openBody = openParts[1].split('window.closeDataManagement')[0];
   assert.match(openBody, /bindServerRestorePanelOnce\s*\(\s*\)/);
-  assert.match(openBody, /refreshServerRestorePanel\s*\(\s*\)/);
+  assert.match(openBody, /setDataManagementHistoryOpen\s*\(\s*false\s*\)/);
+  assert.equal(/refreshServerRestorePanel\s*\(\s*\)/.test(openBody), false);
+  assert.match(settings, /data-management-history-toggle/);
+  assert.match(settings, /describeBackupRestoreStatus/);
+  assert.match(settings, /Geri yüklenemez/);
+  assert.match(settings, /Yedekleme Geçmişi/);
 
   const callSites = settings.match(/\bbindServerRestorePanelOnce\s*\(/g) || [];
   assert.equal(callSites.length, 2, 'expected definition + single lifecycle call site');
   assert.equal(/DOMContentLoaded[\s\S]{0,400}bindServerRestorePanelOnce\s*\(/.test(settings), false);
+});
+
+test('backup history layout keeps actions in flow and has one history scroll owner', function() {
+  const css = read('ayarlar.css');
+  assert.match(css, /#data-management-modal \.data-management-actions\s*\{[\s\S]*?display:\s*grid;[\s\S]*?grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\);/);
+  assert.match(css, /#data-management-modal \.data-management-actions \.data-management-text-btn\s*\{[\s\S]*?width:\s*100%;[\s\S]*?margin:\s*0;/);
+  assert.match(css, /#data-management-modal \.server-restore-panel\s*\{[\s\S]*?max-height:\s*min\(42vh, 320px\);[\s\S]*?overflow-y:\s*auto;/);
+  assert.match(css, /#data-management-modal \.server-restore-list\s*\{[\s\S]*?overflow:\s*visible;/);
+  assert.equal(/#data-management-modal \.data-management-actions,\s*#dis-veri-panel \.data-management-actions/.test(css), false);
 });
 
 test('cpanel deploys new restore endpoints and not secrets', function() {

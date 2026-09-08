@@ -257,9 +257,9 @@
                     </button>
                 </div>
                 <div class="universal-back-bar universal-back-bar--standalone">
-                    <button type="button" class="universal-back-btn" aria-label="Şubeler" onclick="backToZorunluEvrakBranchList(event)">
+                    <button type="button" class="universal-back-btn" aria-label="Ayarlar" onclick="medisaSettingsHistoryBack(event)">
                         <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-                        <span class="universal-back-label">Şubeler</span>
+                        <span class="universal-back-label">Ayarlar</span>
                     </button>
                 </div>
                 <div class="modal-body">
@@ -328,9 +328,13 @@
                         <p class="data-management-backup-meta-line">Sunucudaki Son Yedekleme Dosyası: Yükleniyor…</p>
                         <p class="data-management-backup-meta-hint">Yedek Almak İçin “Yedek Al” Butonunu Kullanınız.</p>
                     </div>
+                    <button type="button" id="data-management-history-toggle" class="data-management-history-toggle" aria-expanded="false" aria-controls="server-restore-panel">
+                        <span class="data-management-history-toggle-label">Yedekleme Geçmişi</span>
+                        <span class="data-management-history-toggle-chevron" aria-hidden="true">›</span>
+                    </button>
                     <section id="server-restore-panel" class="server-restore-panel" aria-labelledby="server-restore-title" aria-describedby="server-restore-status" hidden>
-                        <h3 id="server-restore-title" class="server-restore-title">Sunucu Geri Yükleme</h3>
-                        <p id="server-restore-status" class="server-restore-status" role="status">Sunucu geri yükleme kapalı.</p>
+                        <h3 id="server-restore-title" class="server-restore-title">Yedekleme Geçmişi</h3>
+                        <p id="server-restore-status" class="server-restore-status" role="status">Yedek listesi kapalı.</p>
                         <div id="server-restore-list" class="server-restore-list" role="list"></div>
                         <div id="server-restore-dryrun" class="server-restore-dryrun" hidden></div>
                         <label class="server-restore-confirm-label" for="server-restore-confirmation">Onay metni</label>
@@ -463,6 +467,8 @@
         medisaSettingsLayers.push('settings-branch', 'settings-branch-form');
       } else if (layer === 'settings-user-form') {
         medisaSettingsLayers.push('settings-user', 'settings-user-form');
+      } else if (layer === 'settings-required-docs-detail') {
+        medisaSettingsLayers.push('settings-required-docs', 'settings-required-docs-detail');
       } else {
         medisaSettingsLayers.push(layer);
       }
@@ -549,6 +555,16 @@
           setupZorunluEvraklarK2DatePicker();
           setupZorunluEvraklarK2DocumentPicker();
           showAyarlarModal('required-documents-modal');
+        } else if (layer === 'settings-required-docs-detail') {
+          showAyarlarModal('required-documents-modal');
+          const listView = document.getElementById('required-documents-branch-list-view');
+          const detailView = document.getElementById('required-documents-detail-view');
+          if (listView) listView.hidden = true;
+          if (detailView) detailView.hidden = false;
+          refreshZorunluEvraklarK2View();
+          setupZorunluEvraklarK2DatePicker();
+          setupZorunluEvraklarK2DocumentPicker();
+          renderRequiredDocumentGroupMembers();
         } else if (layer === 'settings-data') {
           showAyarlarModal('data-management-modal');
         } else if (layer === 'settings-dis-veri') {
@@ -1507,7 +1523,9 @@
     window.backToZorunluEvrakBranchList = function backToZorunluEvrakBranchList(event) {
       if (event) event.preventDefault();
       showRequiredDocumentBranchList();
-      pushSettingsHistoryLayer('settings-required-docs');
+      if (!settingsHistorySync) {
+        try { history.back(); } catch (err) {}
+      }
     };
 
     window.closeZorunluEvraklar = function closeZorunluEvraklar(options) {
@@ -4059,7 +4077,7 @@
       requestAnimationFrame(() => modal.classList.add('active'));
       pushSettingsHistoryLayer('settings-data');
       bindServerRestorePanelOnce();
-      refreshServerRestorePanel();
+      setDataManagementHistoryOpen(false);
       refreshDataManagementBackupMeta();
     };
 
@@ -4801,7 +4819,9 @@
       restoreEnabled: false,
       maintenanceMode: false,
       canExecute: false,
-      lastDryRun: null
+      lastDryRun: null,
+      historyOpen: false,
+      lastBackups: []
     };
 
     function canExecuteServerRestore() {
@@ -4824,6 +4844,61 @@
       }
       el.hidden = false;
       el.textContent = String(msg);
+    }
+
+    function describeBackupRestoreStatus(b) {
+      if (b && b.restore_eligible === true) {
+        return { label: 'Uygun', kind: 'ok', detail: '' };
+      }
+      var code = b && b.eligibility_error_code ? String(b.eligibility_error_code) : '';
+      if (code === 'SCHEMA_UNSUPPORTED') {
+        return {
+          label: 'Eski sürüm',
+          kind: 'legacy',
+          detail: code + (b.schema_version ? (' · schema ' + String(b.schema_version)) : '')
+        };
+      }
+      return {
+        label: 'Geri yüklenemez',
+        kind: 'bad',
+        detail: [
+          code || (b && b.validation_status ? String(b.validation_status) : ''),
+          b && b.schema_version ? ('schema ' + String(b.schema_version)) : '',
+          (function() {
+            var counts = b && b.record_counts && typeof b.record_counts === 'object' ? b.record_counts : {};
+            return 'v' + String(counts.vehicles != null ? counts.vehicles : '—') +
+              '/u' + String(counts.users != null ? counts.users : '—');
+          })()
+        ].filter(Boolean).join(' · ')
+      };
+    }
+
+    function syncDataManagementHistoryToggleUi() {
+      var toggle = document.getElementById('data-management-history-toggle');
+      var panel = document.getElementById('server-restore-panel');
+      var modal = document.getElementById('data-management-modal');
+      if (toggle) {
+        toggle.setAttribute('aria-expanded', serverRestoreUi.historyOpen ? 'true' : 'false');
+        toggle.classList.toggle('is-open', serverRestoreUi.historyOpen === true);
+      }
+      if (panel) panel.hidden = !serverRestoreUi.historyOpen;
+      if (modal) modal.classList.toggle('data-management-history-open', serverRestoreUi.historyOpen === true);
+    }
+
+    function setDataManagementHistoryOpen(open) {
+      serverRestoreUi.historyOpen = open === true;
+      syncDataManagementHistoryToggleUi();
+      if (serverRestoreUi.historyOpen) {
+        refreshServerRestorePanel();
+      } else {
+        serverRestoreUi.selectedBackupId = null;
+        serverRestoreUi.intentToken = null;
+        serverRestoreUi.lastDryRun = null;
+        var dry = document.getElementById('server-restore-dryrun');
+        if (dry) { dry.hidden = true; dry.textContent = ''; }
+        setServerRestoreError('');
+        updateServerRestoreCommitEnabled();
+      }
     }
 
     function updateServerRestoreCommitEnabled() {
@@ -4861,6 +4936,7 @@
       var list = document.getElementById('server-restore-list');
       if (!list) return;
       list.innerHTML = '';
+      serverRestoreUi.lastBackups = Array.isArray(backups) ? backups : [];
       if (!Array.isArray(backups) || backups.length === 0) {
         list.textContent = 'Kayıtlı sunucu yedeği yok.';
         return;
@@ -4868,35 +4944,47 @@
       backups.forEach(function(b) {
         var id = b && b.backup_id ? String(b.backup_id) : '';
         if (!id) return;
-        var row = document.createElement('button');
-        row.type = 'button';
-        row.className = 'server-restore-item';
+        var status = describeBackupRestoreStatus(b);
+        var eligible = b && b.restore_eligible === true;
+        var row = document.createElement(eligible ? 'button' : 'div');
+        if (eligible) row.type = 'button';
+        row.className = 'server-restore-item server-restore-item--' + status.kind;
         row.setAttribute('role', 'listitem');
         row.setAttribute('aria-pressed', serverRestoreUi.selectedBackupId === id ? 'true' : 'false');
         if (serverRestoreUi.selectedBackupId === id) row.classList.add('is-selected');
+        if (!eligible) {
+          row.classList.add('is-ineligible');
+          row.setAttribute('aria-disabled', 'true');
+          row.title = 'Bu yedek geri yüklenemez';
+        }
         var when = b.created_at ? new Date(b.created_at).toLocaleString('tr-TR') : '—';
-        var counts = b.record_counts && typeof b.record_counts === 'object' ? b.record_counts : {};
+        var source = b.source ? String(b.source) : '';
         row.innerHTML =
           '<span class="server-restore-item-title">' + when + '</span>' +
+          '<span class="server-restore-item-status">' + status.label + '</span>' +
           '<span class="server-restore-item-meta">' +
-          String(b.source || '') + ' · ' + String(b.size_bytes || 0) + ' B · schema ' + String(b.schema_version || '—') +
-          ' · ' + (b.restore_eligible ? 'uygun' : 'uygun değil') +
-          ' · ' + String(b.validation_status || '') +
-          ' · v' + String(counts.vehicles != null ? counts.vehicles : '—') +
-          '/u' + String(counts.users != null ? counts.users : '—') +
-          '</span>';
-        row.addEventListener('click', function() {
-          if (serverRestoreUi.inFlight) return;
-          serverRestoreUi.selectedBackupId = id;
-          serverRestoreUi.intentToken = null;
-          serverRestoreUi.lastDryRun = null;
-          var dry = document.getElementById('server-restore-dryrun');
-          if (dry) { dry.hidden = true; dry.textContent = ''; }
-          renderServerRestoreList(backups);
-          var dryBtn = document.getElementById('server-restore-dryrun-btn');
-          if (dryBtn) dryBtn.disabled = serverRestoreUi.inFlight;
-          updateServerRestoreCommitEnabled();
-        });
+          (source ? (source + ' · ') : '') +
+          (eligible ? 'Seçilebilir' : 'Seçilemez') +
+          '</span>' +
+          (status.detail
+            ? ('<details class="server-restore-item-details"><summary>Teknik ayrıntı</summary><span class="server-restore-item-detail-text">' +
+              status.detail +
+              '</span></details>')
+            : '');
+        if (eligible) {
+          row.addEventListener('click', function() {
+            if (serverRestoreUi.inFlight) return;
+            serverRestoreUi.selectedBackupId = id;
+            serverRestoreUi.intentToken = null;
+            serverRestoreUi.lastDryRun = null;
+            var dry = document.getElementById('server-restore-dryrun');
+            if (dry) { dry.hidden = true; dry.textContent = ''; }
+            renderServerRestoreList(backups);
+            var dryBtn = document.getElementById('server-restore-dryrun-btn');
+            if (dryBtn) dryBtn.disabled = serverRestoreUi.inFlight;
+            updateServerRestoreCommitEnabled();
+          });
+        }
         list.appendChild(row);
       });
     }
@@ -4906,6 +4994,10 @@
       var panel = document.getElementById('server-restore-panel');
       var status = document.getElementById('server-restore-status');
       if (!panel || !status) return;
+      if (!serverRestoreUi.historyOpen) {
+        panel.hidden = true;
+        return;
+      }
       panel.hidden = false;
       serverRestoreUi.canExecute = canExecuteServerRestore();
       setServerRestoreError('');
@@ -5068,10 +5160,17 @@
       var dry = document.getElementById('server-restore-dryrun-btn');
       var commit = document.getElementById('server-restore-commit-btn');
       var confirmInput = document.getElementById('server-restore-confirmation');
+      var historyToggle = document.getElementById('data-management-history-toggle');
       if (refresh) refresh.addEventListener('click', function() { refreshServerRestorePanel(); });
       if (dry) dry.addEventListener('click', function() { runServerRestoreDryRun(); });
       if (commit) commit.addEventListener('click', function() { runServerRestoreCommit(); });
       if (confirmInput) confirmInput.addEventListener('input', updateServerRestoreCommitEnabled);
+      if (historyToggle) {
+        historyToggle.addEventListener('click', function() {
+          setDataManagementHistoryOpen(!serverRestoreUi.historyOpen);
+        });
+      }
+      syncDataManagementHistoryToggleUi();
     }
     /* medisa-server-restore-ui:end */
 

@@ -264,6 +264,23 @@ $parseLike = [
 $elig = medisaRestoreEvaluateEligibility($parseLike, 'admin1');
 srAssert('unknown collection not eligible', empty($elig['eligible']) && ($elig['error_code'] ?? '') === 'RESTORE_UNKNOWN_COLLECTIONS');
 
+$withAudit = $fixture;
+$withAudit['audit_events'] = [['id' => 'ae-1', 'type' => 'test']];
+$normAudit = medisaRestoreCanonicalNormalize($withAudit);
+srAssert('audit_events is known collection', ($normAudit['success'] ?? false) === true);
+srAssert('audit_events not unknown', !in_array('audit_events', $normAudit['unknown_collections'] ?? [], true));
+srAssert('audit_events preserved', isset($normAudit['data']['audit_events']) && is_array($normAudit['data']['audit_events']));
+$parseAudit = [
+    'success' => true,
+    'normalized' => $normAudit['data'],
+    'unknown_collections' => $normAudit['unknown_collections'] ?? [],
+    'normalization_data_loss' => !empty($normAudit['normalization_data_loss']),
+    'lost_collections' => $normAudit['lost_collections'] ?? [],
+    'warnings' => $normAudit['warnings'] ?? [],
+];
+$eligAudit = medisaRestoreEvaluateEligibility($parseAudit, 'admin1');
+srAssert('audit_events snapshot eligible', !empty($eligAudit['eligible']));
+
 // --- D. restore.php / defaults ---
 $restoreSrc = file_get_contents($root . '/restore.php');
 srAssert('restore.php GET-only gate', strpos($restoreSrc, "REQUEST_METHOD'] !== 'GET'") !== false);

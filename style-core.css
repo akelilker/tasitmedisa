@@ -2056,11 +2056,11 @@ body.modal-open:has(.compact-confirm-modal.active) .app-container::after {
   text-align: center;
 }
 
-/* Premium başlık — ana menü .ttl ile aynı metalik gradient (Kayıt, Taşıtlar, Detay, Raporlar) */
+/* Premium başlık — ana menü .ttl canonical metalik kontratı (Kayıt, Taşıtlar, Detay, Raporlar, Ay Özeti) */
 .modal-overlay .modal-header h2.premium-title {
   font-weight: var(--premium-title-weight);
   letter-spacing: var(--premium-title-letter-spacing);
-  background: var(--modal-premium-title-gradient);
+  background: var(--premium-title-gradient);
   background-size: 100% 180%;
   background-position: 50% 54%;
   -webkit-background-clip: text;
@@ -2068,22 +2068,22 @@ body.modal-open:has(.compact-confirm-modal.active) .app-container::after {
   -webkit-text-fill-color: transparent;
   color: transparent;
   filter: brightness(1.01);
-  text-shadow: var(--modal-premium-title-shadow);
+  text-shadow: var(--premium-title-shadow);
 }
 
-/* Ana modallar — modal için ayrılmış temiz metalik başlık (ID + !important: düz renk fallback ezilmesin) */
+/* Ana modallar — .ttl token reuse (ID + !important: düz renk fallback ezilmesin) */
 :is(#vehicle-modal, #vehicles-modal, #vehicle-detail-modal, #reports-modal, #monthly-todo-modal) .modal-header h2.premium-title {
   font-weight: var(--premium-title-weight);
   letter-spacing: var(--premium-title-letter-spacing);
-  background: var(--modal-premium-title-gradient) !important;
+  background: var(--premium-title-gradient) !important;
   background-size: 100% 180% !important;
   background-position: 50% 54% !important;
   -webkit-background-clip: text !important;
   background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
-  color: transparent !important;
+  color: #d1dbe4 !important;
   filter: brightness(1.01);
-  text-shadow: var(--modal-premium-title-shadow) !important;
+  text-shadow: var(--premium-title-shadow) !important;
   transform: translate(-50%, -5px) !important;
 }
 
@@ -2471,13 +2471,14 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
 /* Ayarlar listesi / formlar (şube, kullanıcı, veri): masaüstünde üstte açık gri border + inset ile kırmızı header çakışmasın */
 @media (min-width: 641px) {
     :root {
+        /* Nested/legacy modal token; ana premium-title artık --premium-title-* kullanır */
         --modal-premium-title-gradient: linear-gradient(to bottom, #ffffff 0%, #ffffff 42%, #f6fbff 58%, #ffffff 100%);
         --modal-premium-title-shadow: 0 1px 1px rgba(0, 0, 0, 0.46), 0 0 6px rgba(255, 255, 255, 0.42), 0 0 12px rgba(255, 255, 255, 0.14);
         --premium-title-shadow: 0 1px 1px rgba(0, 0, 0, 0.26), 0 0 7px rgba(214, 224, 232, 0.26);
     }
 
-    :is(#vehicle-modal, #vehicles-modal, #vehicle-detail-modal, #reports-modal) .modal-header h2.premium-title {
-        filter: brightness(1.08);
+    :is(#vehicle-modal, #vehicles-modal, #vehicle-detail-modal, #reports-modal, #monthly-todo-modal) .modal-header h2.premium-title {
+        filter: brightness(1.01);
     }
 
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicle-modal.modal-overlay .modal-container,
@@ -3105,7 +3106,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     }
 
     /* Mobil modal başlıkları: premium gradient yerine net beyaz metin */
-    .modal-overlay .modal-header h2.premium-title {
+    .modal-overlay .modal-header h2.premium-title,
+    :is(#vehicle-modal, #vehicles-modal, #vehicle-detail-modal, #reports-modal, #monthly-todo-modal) .modal-header h2.premium-title {
         background: none !important;
         -webkit-background-clip: border-box !important;
         background-clip: border-box !important;
