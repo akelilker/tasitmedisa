@@ -192,6 +192,10 @@ test('backup history layout keeps actions in flow and has one history scroll own
   assert.match(css, /#data-management-modal \.server-restore-list\s*\{[\s\S]*?scrollbar-width:\s*none;/);
   assert.match(css, /#data-management-modal \.server-restore-list::\-webkit-scrollbar\s*\{[\s\S]*?width:\s*0;/);
   assert.match(css, /#data-management-modal \.server-restore-confirmation\s*\{[\s\S]*?background:\s*rgba\(160, 174, 192, 0\.1\);[\s\S]*?color:\s*#a0aec0;[\s\S]*?text-align:\s*left;/);
+  assert.match(css, /#data-management-modal \.server-restore-item\s*\{[\s\S]*?min-height:\s*78px;/);
+  assert.match(css, /#data-management-modal \.server-restore-item > \.server-restore-item-title,[\s\S]*?display:\s*block;[\s\S]*?flex:\s*0 0 auto;/);
+  assert.match(css, /#data-management-modal \.server-restore-item-title\s*\{[\s\S]*?white-space:\s*normal;/);
+  assert.match(css, /#data-management-modal \.server-restore-item-meta\s*\{[\s\S]*?overflow-wrap:\s*anywhere;/);
   assert.equal(/#data-management-modal \.data-management-actions,\s*#dis-veri-panel \.data-management-actions/.test(css), false);
 });
 
