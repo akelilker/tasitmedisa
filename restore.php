@@ -41,59 +41,24 @@ if (($auth['success'] ?? false) !== true) {
     exit;
 }
 
-// Öncelik: son manuel tam (ZIP) yedek meta
+// Manuel ZIP metadata'sı ile otomatik veri yedeklerini aynı zaman ekseninde değerlendir.
+$candidates = [];
 $manualMeta = medisaFullBackupReadLastMeta();
-if (is_array($manualMeta) && !empty($manualMeta['created_at'])) {
-    echo json_encode([
-        'success' => true,
-        'available' => true,
-        'restore_enabled' => false,
-        'source' => 'manual_full_backup',
-        'source_label' => 'Manuel tam yedek',
-        'modified_at' => $manualMeta['created_at'],
-        'size_bytes' => isset($manualMeta['total_bytes']) ? (int)$manualMeta['total_bytes'] : null,
-        'file_count' => isset($manualMeta['file_count']) ? (int)$manualMeta['file_count'] : null,
-        'message' => 'Son oluşturulan manuel tam yedek bilgisi.',
-    ], JSON_UNESCAPED_UNICODE);
-    exit;
+if (($manualCandidate = medisaBuildManualBackupMetadataCandidate($manualMeta)) !== null) {
+    $candidates[] = $manualCandidate;
 }
 
-$candidates = [];
 $mainBackup = getMainBackupFilePath();
-if (is_string($mainBackup) && $mainBackup !== '' && file_exists($mainBackup) && is_readable($mainBackup)) {
-    $mtime = filemtime($mainBackup);
-    if ($mtime !== false) {
-        $candidates[] = [
-            'path' => $mainBackup,
-            'source' => 'main_backup',
-            'mtime' => (int)$mtime,
-        ];
-    }
+if (($mainCandidate = medisaBuildAutomaticBackupMetadataCandidate($mainBackup, 'main_backup')) !== null) {
+    $candidates[] = $mainCandidate;
 }
 
 $latestSnapshot = findLatestSnapshotPath();
-if (
-    is_string($latestSnapshot)
-    && $latestSnapshot !== ''
-    && file_exists($latestSnapshot)
-    && is_readable($latestSnapshot)
-) {
-    $mtime = filemtime($latestSnapshot);
-    if ($mtime !== false) {
-        $candidates[] = [
-            'path' => $latestSnapshot,
-            'source' => 'latest_snapshot',
-            'mtime' => (int)$mtime,
-        ];
-    }
+if (($snapshotCandidate = medisaBuildAutomaticBackupMetadataCandidate($latestSnapshot, 'latest_snapshot')) !== null) {
+    $candidates[] = $snapshotCandidate;
 }
 
-$selected = null;
-foreach ($candidates as $candidate) {
-    if ($selected === null || $candidate['mtime'] > $selected['mtime']) {
-        $selected = $candidate;
-    }
-}
+$selected = medisaSelectLatestBackupMetadataCandidate($candidates);
 
 if ($selected === null) {
     http_response_code(404);
@@ -106,18 +71,14 @@ if ($selected === null) {
     exit;
 }
 
-$backupFile = $selected['path'];
-$sourceTag = $selected['source'];
-$modifiedAt = $selected['mtime'];
-$sizeBytes = filesize($backupFile);
-
 echo json_encode([
     'success' => true,
     'available' => true,
     'restore_enabled' => false,
-    'source' => $sourceTag,
-    'source_label' => 'Otomatik sunucu yedeği',
-    'modified_at' => date('c', $modifiedAt),
-    'size_bytes' => $sizeBytes !== false ? (int)$sizeBytes : null,
-    'message' => 'Bu endpoint yalnız son yedek bilgisini gösterir; veri geri yüklemez. Güvenli sunucu geri yükleme varsayılan olarak kapalıdır.',
+    'source' => $selected['source'],
+    'source_label' => $selected['source_label'],
+    'modified_at' => $selected['modified_at'],
+    'size_bytes' => $selected['size_bytes'],
+    'file_count' => $selected['file_count'],
+    'message' => $selected['message'],
 ], JSON_UNESCAPED_UNICODE);

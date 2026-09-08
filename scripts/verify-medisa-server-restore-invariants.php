@@ -103,6 +103,26 @@ $GLOBALS['MEDISA_RESTORE_FAIL_INJECT'] = null;
 
 require_once $root . '/core.php';
 
+// Son yedek metadata'sı, manuel ZIP ile otomatik anlık yedekleri aynı zaman çizelgesinde seçer.
+$oldManualCandidate = medisaBuildManualBackupMetadataCandidate([
+    'created_at' => '2026-01-01T10:00:00+00:00',
+    'total_bytes' => 111,
+    'file_count' => 2,
+]);
+touch($snapPath, strtotime('2026-01-02T10:00:00+00:00'));
+$newSnapshotCandidate = medisaBuildAutomaticBackupMetadataCandidate($snapPath, 'latest_snapshot');
+$selectedMetadata = medisaSelectLatestBackupMetadataCandidate([$oldManualCandidate, $newSnapshotCandidate]);
+srAssertSame('metadata selects newer automatic snapshot over old manual backup', 'latest_snapshot', $selectedMetadata['source'] ?? null);
+
+$newManualCandidate = medisaBuildManualBackupMetadataCandidate([
+    'created_at' => '2026-01-03T10:00:00+00:00',
+    'total_bytes' => 222,
+    'file_count' => 3,
+]);
+$selectedMetadata = medisaSelectLatestBackupMetadataCandidate([$newManualCandidate, $newSnapshotCandidate]);
+srAssertSame('metadata selects newer manual backup over old automatic snapshot', 'manual_full_backup', $selectedMetadata['source'] ?? null);
+srAssertSame('metadata with no candidates does not fabricate a backup date', null, medisaSelectLatestBackupMetadataCandidate([]));
+
 function srAuthAdmin() {
     global $VALID_HASH;
     $token = medisaCreateSignedToken([

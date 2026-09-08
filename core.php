@@ -364,6 +364,68 @@ function findLatestSnapshotPath() {
 }
 
 /**
+ * Son yedek bilgisinde kullanılacak manuel ZIP metadata adayını oluşturur.
+ * Geçersiz veya tarihsiz metadata, son yedek gibi gösterilmez.
+ */
+function medisaBuildManualBackupMetadataCandidate($meta) {
+    if (!is_array($meta) || empty($meta['created_at'])) {
+        return null;
+    }
+    $modifiedAt = strtotime((string)$meta['created_at']);
+    if ($modifiedAt === false) {
+        return null;
+    }
+    return [
+        'source' => 'manual_full_backup',
+        'source_label' => 'Manuel tam yedek',
+        'modified_at' => date('c', $modifiedAt),
+        'modified_ts' => (int)$modifiedAt,
+        'size_bytes' => isset($meta['total_bytes']) ? (int)$meta['total_bytes'] : null,
+        'file_count' => isset($meta['file_count']) ? (int)$meta['file_count'] : null,
+        'message' => 'Son oluşturulan manuel tam yedek bilgisi.',
+    ];
+}
+
+/**
+ * data.json.backup veya snapshot dosyasından son yedek metadata adayını oluşturur.
+ */
+function medisaBuildAutomaticBackupMetadataCandidate($path, $source) {
+    if (!is_string($path) || $path === '' || !is_file($path) || !is_readable($path)) {
+        return null;
+    }
+    $modifiedAt = filemtime($path);
+    if ($modifiedAt === false) {
+        return null;
+    }
+    $sizeBytes = filesize($path);
+    return [
+        'source' => (string)$source,
+        'source_label' => 'Otomatik sunucu yedeği',
+        'modified_at' => date('c', (int)$modifiedAt),
+        'modified_ts' => (int)$modifiedAt,
+        'size_bytes' => $sizeBytes !== false ? (int)$sizeBytes : null,
+        'file_count' => null,
+        'message' => 'Bu endpoint yalnız son yedek bilgisini gösterir; veri geri yüklemez. Güvenli sunucu geri yükleme varsayılan olarak kapalıdır.',
+    ];
+}
+
+/**
+ * Geçerli manuel ve otomatik adaylar arasından zaman damgası en yeni olanı seçer.
+ */
+function medisaSelectLatestBackupMetadataCandidate(array $candidates) {
+    $selected = null;
+    foreach ($candidates as $candidate) {
+        if (!is_array($candidate) || !isset($candidate['modified_ts']) || !is_numeric($candidate['modified_ts'])) {
+            continue;
+        }
+        if ($selected === null || (int)$candidate['modified_ts'] > (int)$selected['modified_ts']) {
+            $selected = $candidate;
+        }
+    }
+    return $selected;
+}
+
+/**
  * Geçici dosyaya yazar, sonra hedefe taşır (yarım kalmış yazım riskini azaltır).
  */
 function medisaAtomicWriteFile($path, $content) {

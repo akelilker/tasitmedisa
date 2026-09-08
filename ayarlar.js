@@ -299,7 +299,7 @@
                     <button type="button" class="modal-home" onclick="medisaSettingsGoHome(event)" aria-label="Ana sayfaya dön" title="Ana sayfa">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 10v10h14V10"/></svg>
                     </button>
-                    <h2>VERİ YEDEKLEME</h2>
+                    <h2 class="premium-title">VERİ YEDEKLEME</h2>
                     <button class="modal-close" onclick="closeDataManagement()">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -332,8 +332,7 @@
                         <span class="data-management-history-toggle-label">Yedekleme Geçmişi</span>
                         <span class="data-management-history-toggle-chevron" aria-hidden="true">›</span>
                     </button>
-                    <section id="server-restore-panel" class="server-restore-panel" aria-labelledby="server-restore-title" aria-describedby="server-restore-status" hidden>
-                        <h3 id="server-restore-title" class="server-restore-title">Yedekleme Geçmişi</h3>
+                    <section id="server-restore-panel" class="server-restore-panel" aria-label="Yedekleme Geçmişi" aria-describedby="server-restore-status" hidden>
                         <div id="server-restore-list" class="server-restore-list" role="list"></div>
                         <p id="server-restore-status" class="server-restore-status" role="status">Yedek listesi kapalı.</p>
                         <div id="server-restore-technical-controls" hidden>

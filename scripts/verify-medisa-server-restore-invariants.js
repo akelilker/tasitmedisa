@@ -51,16 +51,19 @@ test('backup_download.php is GET-only full ZIP backup (no JSON fallback)', funct
   assert.equal(/window\.appData/.test(src), false);
 });
 
-test('restore.php metadata prefers manual full backup label', function() {
+test('restore.php metadata selects the newest manual or automatic backup candidate', function() {
   const src = read('restore.php');
   assert.match(src, /REQUEST_METHOD'\] !== 'GET'/);
   assert.match(src, /'restore_enabled'\s*=>\s*false/);
   assert.match(src, /medisaFullBackupReadLastMeta/);
-  assert.match(src, /Manuel tam yedek/);
-  assert.match(src, /Otomatik sunucu yedeği/);
   assert.match(src, /getMainBackupFilePath\s*\(/);
   assert.match(src, /findLatestSnapshotPath\s*\(/);
-  assert.match(src, /filemtime/);
+  assert.match(src, /medisaBuildManualBackupMetadataCandidate/);
+  assert.match(src, /medisaBuildAutomaticBackupMetadataCandidate/);
+  assert.match(src, /medisaSelectLatestBackupMetadataCandidate/);
+  const core = read('core.php');
+  assert.match(core, /Manuel tam yedek/);
+  assert.match(core, /Otomatik sunucu yedeği/);
 });
 
 test('feature flags default false via env helpers', function() {
@@ -186,7 +189,15 @@ test('backup history layout keeps actions in flow and has one history scroll own
   const css = read('ayarlar.css');
   assert.match(css, /#data-management-modal \.data-management-actions\s*\{[\s\S]*?display:\s*grid;[\s\S]*?grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\);/);
   assert.match(css, /#data-management-modal \.data-management-actions \.data-management-text-btn\s*\{[\s\S]*?width:\s*100%;[\s\S]*?margin:\s*0;/);
+  assert.match(settings, /<h2 class="premium-title">VERİ YEDEKLEME<\/h2>/);
+  assert.match(settings, /id="server-restore-panel"[\s\S]*?aria-label="Yedekleme Geçmişi"/);
+  assert.equal(/id="server-restore-title"/.test(settings), false);
+  assert.equal((settings.match(/>Yedekleme Geçmişi</g) || []).length, 1);
   assert.match(settings, /id="server-restore-list"[\s\S]*?<\/div>\s*<p id="server-restore-status"/);
+  assert.match(css, /\.ayarlar-modal-overlay:not\(\.compact-confirm-modal\):not\(#tescil-tarih-confirm-modal\):not\(#tescil-tarih-input-modal\) \.modal-header h2:not\(\.premium-title\)/);
+  assert.equal(/#data-management-modal \.server-restore-title/.test(css), false);
+  assert.match(css, /#data-management-modal \.data-management-history-toggle\.is-open\s*\{[\s\S]*?border-color:\s*rgba\(var\(--theme-color-rgb\), 0\.72\);/);
+  assert.match(css, /#data-management-modal \.server-restore-panel\s*\{[\s\S]*?border-top:\s*0;[\s\S]*?border-radius:\s*0 0 10px 10px;/);
   assert.match(css, /#data-management-modal \.server-restore-panel\s*\{[\s\S]*?overflow:\s*visible;/);
   assert.match(css, /#data-management-modal \.server-restore-list\s*\{[\s\S]*?max-height:\s*min\(42vh, 320px\);[\s\S]*?overflow-y:\s*auto;/);
   assert.match(css, /#data-management-modal \.server-restore-list\s*\{[\s\S]*?scrollbar-width:\s*none;/);
@@ -196,6 +207,9 @@ test('backup history layout keeps actions in flow and has one history scroll own
   assert.match(css, /#data-management-modal \.server-restore-item > \.server-restore-item-title,[\s\S]*?display:\s*block;[\s\S]*?flex:\s*0 0 auto;/);
   assert.match(css, /#data-management-modal \.server-restore-item-title\s*\{[\s\S]*?white-space:\s*normal;/);
   assert.match(css, /#data-management-modal \.server-restore-item-meta\s*\{[\s\S]*?overflow-wrap:\s*anywhere;/);
+  assert.match(css, /#data-management-modal \.server-restore-item\.is-selected,[\s\S]*?border-color:\s*rgba\(var\(--theme-color-rgb\), 0\.72\);/);
+  assert.match(css, /#data-management-modal \.server-restore-item--ok \.server-restore-item-status\s*\{[\s\S]*?color:\s*var\(--green-success\);/);
+  assert.match(css, /#data-management-modal \.server-restore-item--bad \.server-restore-item-status\s*\{[\s\S]*?color:\s*var\(--theme-color\);/);
   assert.equal(/#data-management-modal \.data-management-actions,\s*#dis-veri-panel \.data-management-actions/.test(css), false);
 });
 
