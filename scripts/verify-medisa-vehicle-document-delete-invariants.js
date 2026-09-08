@@ -81,6 +81,7 @@ test('UI: yüklü belgede [+] altında [-] var, boş belgede aksiyon yığını 
   assert.match(hasDocBranch, /ruhsat-doc-actions/, 'yüklü belgede aksiyon sarmalayıcı kurulmalı');
   assert.match(hasDocBranch, /className = 'ruhsat-add-btn'/, '"+" butonu korunmalı');
   assert.match(hasDocBranch, /className = 'ruhsat-remove-btn'/, '"-" butonu yüklü belgede olmalı');
+  assert.match(hasDocBranch, /document-presence--present/, 'yüklü belgede orta ikon varlık state class almalı');
   assert.match(hasDocBranch, /renderRuhsatUploadForm\(content, saveBtn, true, dt\)/, '"+" mevcut değiştirme davranışını korumalı');
   assert.match(hasDocBranch, /requestVehicleDocumentDelete\(vid, dt, docActions\)/, '"-" silme akışını çağırmalı');
   assert.doesNotMatch(hasDocBranch, /ruhsat_preview\.php/, 'İndir preview endpoint kullanmamalı');
@@ -89,6 +90,7 @@ test('UI: yüklü belgede [+] altında [-] var, boş belgede aksiyon yığını 
   assert.match(emptyBranch, /renderRuhsatUploadForm\(content, saveBtn, false, dt\)/, 'belge yokken yükleme formu render edilmeli');
   assert.doesNotMatch(emptyBranch, /ruhsat-remove-btn/, 'belge yokken "-" render edilmemeli');
   assert.doesNotMatch(emptyBranch, /ruhsat-download-btn/, 'belge yokken İndir render edilmemeli');
+  assert.doesNotMatch(emptyBranch, /document-presence--present/, 'belge yokken varlık state class basılmamalı');
 
   const downloadIndex = hasDocBranch.indexOf("className = 'ruhsat-download-btn'");
   const previewIndex = hasDocBranch.indexOf("className = 'ruhsat-preview-link'");
@@ -154,6 +156,11 @@ test('CSS: [+]/[-] dikey hizalı, masaüstü ve mobil owner blokları güncel', 
   assert.match(tasitlarExtraCss, /\.ruhsat-doc-actions \{[\s\S]*?flex-direction: column;/);
   assert.match(tasitlarExtraCss, /\.ruhsat-doc-actions \.ruhsat-remove-btn/);
   assert.match(tasitlarExtraCss, /\.ruhsat-download-btn/);
+  assert.match(
+    tasitlarExtraCss,
+    /\.ruhsat-preview-link\.ruhsat-preview-mobile-btn\.document-presence--present\s+svg[\s\S]*?color:\s*#22c55e\s*!important/,
+    'yüklü belgede mobil orta ikon yeşil olmalı'
+  );
   assert.match(ayarlarCss, /\.required-k2-doc-actions \{[\s\S]*?flex-direction: column;/);
   assert.doesNotMatch(
     tasitlarExtraCss,

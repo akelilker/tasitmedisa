@@ -734,6 +734,11 @@
   background: linear-gradient(to top, rgba(0, 0, 0, 0.58), rgba(0, 0, 0, 0));
   pointer-events: none;
 }
+/* Yüklü belge varlık ikonu (iOS/PWA SVG); desktop iframe/img yoluna dokunmaz */
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-preview-link.document-presence--present > svg,
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-preview-link.document-presence--present .ruhsat-preview-pdf-icon {
+  color: #22c55e;
+}
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-download-btn,
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-add-btn,
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-remove-btn {
@@ -1344,6 +1349,11 @@
   #dinamik-olay-modal #ruhsat-modal-content .ruhsat-preview-link.ruhsat-preview-mobile-btn svg {
     flex: 0 0 auto !important;
     color: var(--theme-color, #d40000) !important;
+  }
+  /* Yüklü belge: orta önizleme/belge ikonu yeşil (metin/layout aynı) */
+  #dinamik-olay-modal #ruhsat-modal-content .ruhsat-preview-link.ruhsat-preview-mobile-btn.document-presence--present svg,
+  #dinamik-olay-modal #ruhsat-modal-content .ruhsat-preview-link.ruhsat-preview-mobile-btn.document-presence--present .ruhsat-preview-pdf-icon {
+    color: #22c55e !important;
   }
   #dinamik-olay-modal #ruhsat-modal-content .ruhsat-preview-link.ruhsat-preview-mobile-btn span {
     font-size: 15px !important;

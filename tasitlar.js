@@ -8175,6 +8175,7 @@
       const previewBtn = document.createElement('button');
       previewBtn.type = 'button';
       previewBtn.className = 'ruhsat-preview-link';
+      previewBtn.classList.add('document-presence--present');
       previewBtn.setAttribute('aria-label', cfg.label + (iosCanonical ? ' Ön İzleme' : ' Yazdır'));
       if (iosCanonical) {
         previewBtn.classList.add('ruhsat-preview-mobile-btn');
