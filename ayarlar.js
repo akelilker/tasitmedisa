@@ -334,8 +334,8 @@
                     </button>
                     <section id="server-restore-panel" class="server-restore-panel" aria-labelledby="server-restore-title" aria-describedby="server-restore-status" hidden>
                         <h3 id="server-restore-title" class="server-restore-title">Yedekleme Geçmişi</h3>
-                        <p id="server-restore-status" class="server-restore-status" role="status">Yedek listesi kapalı.</p>
                         <div id="server-restore-list" class="server-restore-list" role="list"></div>
+                        <p id="server-restore-status" class="server-restore-status" role="status">Yedek listesi kapalı.</p>
                         <div id="server-restore-dryrun" class="server-restore-dryrun" hidden></div>
                         <label class="server-restore-confirm-label" for="server-restore-confirmation">Onay metni</label>
                         <input id="server-restore-confirmation" class="server-restore-confirmation" type="text" autocomplete="off" aria-describedby="server-restore-confirm-hint" disabled>

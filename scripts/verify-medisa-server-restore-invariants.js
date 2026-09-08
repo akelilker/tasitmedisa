@@ -179,11 +179,13 @@ test('server restore UI lifecycle wired once from openDataManagement', function(
 });
 
 test('backup history layout keeps actions in flow and has one history scroll owner', function() {
+  const settings = read('ayarlar.js');
   const css = read('ayarlar.css');
   assert.match(css, /#data-management-modal \.data-management-actions\s*\{[\s\S]*?display:\s*grid;[\s\S]*?grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\);/);
   assert.match(css, /#data-management-modal \.data-management-actions \.data-management-text-btn\s*\{[\s\S]*?width:\s*100%;[\s\S]*?margin:\s*0;/);
-  assert.match(css, /#data-management-modal \.server-restore-panel\s*\{[\s\S]*?max-height:\s*min\(42vh, 320px\);[\s\S]*?overflow-y:\s*auto;/);
-  assert.match(css, /#data-management-modal \.server-restore-list\s*\{[\s\S]*?overflow:\s*visible;/);
+  assert.match(settings, /id="server-restore-list"[\s\S]*?<\/div>\s*<p id="server-restore-status"/);
+  assert.match(css, /#data-management-modal \.server-restore-panel\s*\{[\s\S]*?overflow:\s*visible;/);
+  assert.match(css, /#data-management-modal \.server-restore-list\s*\{[\s\S]*?max-height:\s*min\(42vh, 320px\);[\s\S]*?overflow-y:\s*auto;/);
   assert.equal(/#data-management-modal \.data-management-actions,\s*#dis-veri-panel \.data-management-actions/.test(css), false);
 });
 

@@ -1314,35 +1314,42 @@
 #data-management-modal .server-restore-panel {
     flex: 1 1 auto;
     min-height: 0;
-    max-height: min(42vh, 320px);
     margin: 0 12px 16px;
     padding: 12px;
     border: 1px solid rgba(160, 174, 192, 0.35);
     border-radius: 10px;
     box-sizing: border-box;
     max-width: 100%;
-    overflow-x: hidden;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
+    overflow: visible;
 }
 #data-management-modal .server-restore-title {
     margin: 0 0 8px;
     font-size: 16px;
     color: #e2e8f0;
 }
-#data-management-modal .server-restore-status,
 #data-management-modal .server-restore-hint {
     margin: 0 0 10px;
     font-size: 13px;
     color: #a0aec0;
     line-height: 1.35;
 }
+#data-management-modal .server-restore-status {
+    width: 100%;
+    margin: 10px 0 0;
+    color: #a0aec0;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.35;
+    text-align: center;
+}
 #data-management-modal .server-restore-list {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    margin-bottom: 10px;
-    overflow: visible;
+    max-height: min(42vh, 320px);
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 #data-management-modal .server-restore-item {
     display: flex;
@@ -2916,7 +2923,7 @@
         width: calc(100% - 20px);
         margin: 4px 10px 12px;
     }
-    #data-management-modal .server-restore-panel {
+    #data-management-modal .server-restore-list {
         max-height: min(36vh, 260px);
     }
     #data-management-modal .data-management-text-btn {
