@@ -2484,7 +2484,11 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicle-modal.modal-overlay .modal-container,
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicles-modal.modal-overlay .modal-container,
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #reports-modal.modal-overlay .modal-container,
-    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #monthly-todo-modal.modal-overlay .modal-container {
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #monthly-todo-modal.modal-overlay .modal-container,
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicle-detail-modal.modal-overlay .modal-container,
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #dinamik-olay-modal.modal-overlay .modal-container,
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #event-menu-modal.modal-overlay .modal-container,
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicle-history-modal.modal-overlay .modal-container {
         border-top-width: 1px !important;
         border-color: transparent !important;
         outline-color: transparent !important;
@@ -2493,7 +2497,11 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicle-modal.modal-overlay .modal-container::before,
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicles-modal.modal-overlay .modal-container::before,
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #reports-modal.modal-overlay .modal-container::before,
-    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #monthly-todo-modal.modal-overlay .modal-container::before {
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #monthly-todo-modal.modal-overlay .modal-container::before,
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicle-detail-modal.modal-overlay .modal-container::before,
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #dinamik-olay-modal.modal-overlay .modal-container::before,
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #event-menu-modal.modal-overlay .modal-container::before,
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicle-history-modal.modal-overlay .modal-container::before {
         content: '';
         position: absolute;
         inset: 0;

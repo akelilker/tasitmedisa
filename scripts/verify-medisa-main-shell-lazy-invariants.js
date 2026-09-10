@@ -443,15 +443,40 @@ if (implementationPresent) {
     assert.match(style, /body:not\(\.dashboard-page\):not\(\.login-page\):not\(\.admin-report-page\)\.modal-open \.app-container::before\s*\{[\s\S]*?var\(--app-footer-real-height\)\s*\+\s*var\(--app-footer-gap\)/);
   });
   test('masaüstü ana modal üst çerçevesi header kırmızısından ayrılır', function() {
-    // Shared desktop single-inset ::before frame owner (lifecycle-independent).
-    // Native border/outline transparent; desktop frame is one opaque neutral color.
+    // Canonical desktop single-frame owner: aynı full-size modal ailesinin tamamı
+    // native border/outline katmanını şeffaflaştırıp tek opak nötr ::before çerçeveyi kullanır.
+    // Kapsam selector sırasına bağlı değildir; her modal bağımsız doğrulanır.
+    var fullSizeModalIds = [
+      'vehicle-modal',
+      'vehicles-modal',
+      'reports-modal',
+      'monthly-todo-modal',
+      'vehicle-detail-modal',
+      'dinamik-olay-modal',
+      'event-menu-modal',
+      'vehicle-history-modal'
+    ];
+    fullSizeModalIds.forEach(function(id) {
+      assert.match(
+        style,
+        new RegExp('#' + id + '\\.modal-overlay \\.modal-container\\s*[,{]'),
+        id + ' canonical border/outline-transparent selector eksik'
+      );
+      assert.match(
+        style,
+        new RegExp('#' + id + '\\.modal-overlay \\.modal-container::before\\s*[,{]'),
+        id + ' canonical ::before frame selector eksik'
+      );
+    });
+    // Native border/outline katmanı görünmez: aynı modalda ikinci aktif frame yok.
     assert.match(
       style,
-      /@media \(min-width:\s*641px\)[\s\S]*?#vehicle-modal\.modal-overlay \.modal-container,[\s\S]*?#vehicles-modal\.modal-overlay \.modal-container,[\s\S]*?#reports-modal\.modal-overlay \.modal-container,[\s\S]*?#monthly-todo-modal\.modal-overlay \.modal-container\s*\{[\s\S]*?border-color:\s*transparent\s*!important;[\s\S]*?outline-color:\s*transparent\s*!important;/
+      /border-top-width:\s*1px\s*!important;[\s\S]*?border-color:\s*transparent\s*!important;[\s\S]*?outline-color:\s*transparent\s*!important;/
     );
+    // Tek opak nötr ::before frame özellikleri.
     assert.match(
       style,
-      /@media \(min-width:\s*641px\)[\s\S]*?#vehicle-modal\.modal-overlay \.modal-container::before,[\s\S]*?#vehicles-modal\.modal-overlay \.modal-container::before,[\s\S]*?#reports-modal\.modal-overlay \.modal-container::before,[\s\S]*?#monthly-todo-modal\.modal-overlay \.modal-container::before\s*\{[\s\S]*?inset:\s*0;[\s\S]*?border:\s*1px solid #9ca4ac;/
+      /\.modal-container::before\s*\{[\s\S]*?inset:\s*0;[\s\S]*?border:\s*1px solid #9ca4ac;[\s\S]*?pointer-events:\s*none;[\s\S]*?z-index:\s*21;/
     );
     assert.match(
       style,
