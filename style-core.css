@@ -2488,7 +2488,14 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicle-detail-modal.modal-overlay .modal-container,
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #dinamik-olay-modal.modal-overlay .modal-container,
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #event-menu-modal.modal-overlay .modal-container,
-    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicle-history-modal.modal-overlay .modal-container {
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicle-history-modal.modal-overlay .modal-container,
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #branch-modal.modal-overlay .modal-container,
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #branch-form-modal.modal-overlay .modal-container,
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #user-modal.modal-overlay .modal-container,
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #user-form-modal.modal-overlay .modal-container,
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #data-management-modal.modal-overlay .modal-container,
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #dis-veri-panel.modal-overlay .modal-container,
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #required-documents-modal.modal-overlay .modal-container {
         border-top-width: 1px !important;
         border-color: transparent !important;
         outline-color: transparent !important;
@@ -2501,7 +2508,14 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicle-detail-modal.modal-overlay .modal-container::before,
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #dinamik-olay-modal.modal-overlay .modal-container::before,
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #event-menu-modal.modal-overlay .modal-container::before,
-    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicle-history-modal.modal-overlay .modal-container::before {
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicle-history-modal.modal-overlay .modal-container::before,
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #branch-modal.modal-overlay .modal-container::before,
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #branch-form-modal.modal-overlay .modal-container::before,
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #user-modal.modal-overlay .modal-container::before,
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #user-form-modal.modal-overlay .modal-container::before,
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #data-management-modal.modal-overlay .modal-container::before,
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #dis-veri-panel.modal-overlay .modal-container::before,
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #required-documents-modal.modal-overlay .modal-container::before {
         content: '';
         position: absolute;
         inset: 0;
@@ -2515,20 +2529,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay .modal-container {
         background: #0b111b !important;
         background-color: #0b111b !important;
-    }
-
-    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #branch-modal.modal-overlay .modal-container,
-    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #branch-form-modal.modal-overlay .modal-container,
-    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #user-modal.modal-overlay .modal-container,
-    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #user-form-modal.modal-overlay .modal-container,
-    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #data-management-modal.modal-overlay .modal-container,
-    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #dis-veri-panel.modal-overlay .modal-container,
-    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #required-documents-modal.modal-overlay .modal-container {
-        border: 0.5px solid var(--border-medium) !important;
-        border-bottom: 1px solid var(--border-medium) !important;
-        box-shadow: none !important;
-        outline: 1px solid rgba(214, 222, 232, 0.34) !important;
-        outline-offset: -1px !important;
     }
 }
 

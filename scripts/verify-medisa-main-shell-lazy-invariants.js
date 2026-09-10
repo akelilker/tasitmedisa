@@ -454,7 +454,14 @@ if (implementationPresent) {
       'vehicle-detail-modal',
       'dinamik-olay-modal',
       'event-menu-modal',
-      'vehicle-history-modal'
+      'vehicle-history-modal',
+      'branch-modal',
+      'branch-form-modal',
+      'user-modal',
+      'user-form-modal',
+      'data-management-modal',
+      'dis-veri-panel',
+      'required-documents-modal'
     ];
     fullSizeModalIds.forEach(function(id) {
       assert.match(
@@ -472,6 +479,12 @@ if (implementationPresent) {
     assert.match(
       style,
       /border-top-width:\s*1px\s*!important;[\s\S]*?border-color:\s*transparent\s*!important;[\s\S]*?outline-color:\s*transparent\s*!important;/
+    );
+    // Ayarlar ailesinde legacy desktop native frame declaration kalmamalı (tek owner canonical).
+    assert.doesNotMatch(
+      style,
+      /border:\s*0\.5px solid var\(--border-medium\)\s*!important;/,
+      'legacy ayarlar native frame declaration kalmamalı'
     );
     // Tek opak nötr ::before frame özellikleri.
     assert.match(
