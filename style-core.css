@@ -2893,14 +2893,14 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     }
 
     /* Mobil full-screen modal opt-in: küçük/ayarlar owner'larını genel rejimle ezme */
-    :is(#vehicle-modal, #reports-modal, #vehicles-modal, #vehicle-detail-modal, #dinamik-olay-modal, #event-menu-modal, #vehicle-history-modal).modal-overlay {
+    :is(#vehicle-modal, #reports-modal, #vehicles-modal, #vehicle-detail-modal, #dinamik-olay-modal, #event-menu-modal, #vehicle-history-modal, #required-documents-modal, #branch-modal, #branch-form-modal, #user-modal, #user-form-modal, #data-management-modal, #dis-veri-panel).modal-overlay {
         padding: 0 !important;
         align-items: stretch !important;
         justify-content: center !important;
     }
 
     /* Modal container mobil: opt-in modallar üst sıfır, overlay'ı doldur, 10px köşe, ince çerçeve */
-    :is(#vehicle-modal, #reports-modal, #vehicles-modal, #vehicle-detail-modal, #dinamik-olay-modal, #event-menu-modal, #vehicle-history-modal).modal-overlay .modal-container {
+    :is(#vehicle-modal, #reports-modal, #vehicles-modal, #vehicle-detail-modal, #dinamik-olay-modal, #event-menu-modal, #vehicle-history-modal, #required-documents-modal, #branch-modal, #branch-form-modal, #user-modal, #user-form-modal, #data-management-modal, #dis-veri-panel).modal-overlay .modal-container {
         position: relative !important;
         max-width: 100% !important;
         width: 100% !important;
@@ -2937,7 +2937,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     #user-modal.modal-overlay .modal-container,
     #user-form-modal.modal-overlay .modal-container,
     #data-management-modal.modal-overlay .modal-container,
-    #dis-veri-panel.modal-overlay .modal-container {
+    #dis-veri-panel.modal-overlay .modal-container,
+    #required-documents-modal.modal-overlay .modal-container {
         border-top-width: 1px !important;
         border-top-color: rgba(255, 255, 255, 0.24) !important;
         border-left-width: 1px !important;
@@ -2953,7 +2954,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
 
     /* Ana yüzey modalları: Kayıt / Taşıtlar / Raporlar için tek dış-krom ownerı.
        Native border çocuk header katmanının altında kaybolmaz; pseudo-element telafisi gerekmez. */
-    :is(#vehicle-modal, #vehicles-modal, #reports-modal).modal-overlay .modal-container {
+    :is(#vehicle-modal, #vehicles-modal, #reports-modal, #required-documents-modal, #branch-modal, #branch-form-modal, #user-modal, #user-form-modal, #data-management-modal, #dis-veri-panel).modal-overlay .modal-container {
         border-width: 1px !important;
         border-style: solid !important;
         border-color: rgba(184, 192, 201, 0.42) !important;
@@ -2994,7 +2995,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     }
 
     /* Mobil: opt-in full-screen modal body – dikey scroll, alt butonlar için fazladan kaydırma boşluğu */
-    :is(#vehicle-modal, #reports-modal, #vehicles-modal, #vehicle-detail-modal, #dinamik-olay-modal, #event-menu-modal, #vehicle-history-modal).modal-overlay .modal-body {
+    :is(#vehicle-modal, #reports-modal, #vehicles-modal, #vehicle-detail-modal, #dinamik-olay-modal, #event-menu-modal, #vehicle-history-modal, #required-documents-modal, #branch-modal, #branch-form-modal, #user-modal, #user-form-modal, #data-management-modal, #dis-veri-panel).modal-overlay .modal-body {
         padding-bottom: 24px !important;
         overflow-x: hidden !important;
         overscroll-behavior-x: none !important;
@@ -3113,17 +3114,18 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
             0 0 9px rgba(214, 188, 132, 0.12);
     }
 
-    /* Mobil modal başlıkları: premium gradient yerine net beyaz metin */
+    /* Mobil modal başlıkları: premium gradient */
     .modal-overlay .modal-header h2.premium-title,
     :is(#vehicle-modal, #vehicles-modal, #vehicle-detail-modal, #reports-modal, #monthly-todo-modal) .modal-header h2.premium-title {
-        background: none !important;
-        -webkit-background-clip: border-box !important;
-        background-clip: border-box !important;
-        -webkit-text-fill-color: #ffffff !important;
-        color: #ffffff !important;
+        background: var(--premium-title-gradient) !important;
+        background-size: 100% 180% !important;
+        background-position: 50% 54% !important;
+        -webkit-background-clip: text !important;
+        background-clip: text !important;
+        -webkit-text-fill-color: transparent !important;
+        color: transparent !important;
+        text-shadow: var(--premium-title-shadow) !important;
         letter-spacing: 1.5px !important;
-        text-shadow: 0 1px 1px rgba(0, 0, 0, 0.62), 0 0 5px rgba(255, 255, 255, 0.26) !important;
-        filter: brightness(1.04) !important;
     }
     
     /* Mobil: Kullanıcı paneli giriş butonu 2px aşağı */
@@ -3168,7 +3170,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         padding-top: env(safe-area-inset-top) !important;
     }
     /* ≤768 padding:0 !important ezmesin: kayıt/rapor + taşıt zinciri çentik altında kalmasın */
-    :is(#vehicle-modal, #reports-modal).modal-overlay {
+    :is(#vehicle-modal, #reports-modal, #required-documents-modal, #branch-modal, #branch-form-modal, #user-modal, #user-form-modal, #data-management-modal, #dis-veri-panel).modal-overlay {
         padding-top: env(safe-area-inset-top) !important;
         padding-right: 0 !important;
         padding-bottom: 0 !important;
@@ -3455,7 +3457,7 @@ body.modal-open .app-container {
 /* iOS PWA: ana panel footer ve header dengesi (safe-area tek katman) */
 @media (max-width: 768px) and (display-mode: standalone) {
   /* Kayıt/Raporlar + taşıt zinciri: ≤768 padding:0 ezmesine karşı çentik boşluğu (641–768 PWA) */
-  :is(#vehicle-modal, #reports-modal).modal-overlay {
+  :is(#vehicle-modal, #reports-modal, #required-documents-modal, #branch-modal, #branch-form-modal, #user-modal, #user-form-modal, #data-management-modal, #dis-veri-panel).modal-overlay {
     padding-top: env(safe-area-inset-top) !important;
     padding-right: 0 !important;
     padding-bottom: 0 !important;

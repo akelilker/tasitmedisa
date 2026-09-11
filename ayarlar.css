@@ -973,22 +973,6 @@
         padding-top: 0 !important;
     }
 
-    #required-documents-modal .modal-container {
-        width: 100% !important;
-        max-width: 100% !important;
-        margin-top: 0 !important;
-        margin-left: 0 !important;
-        margin-right: 0 !important;
-        border-top-width: 1px !important;
-        border-top-color: rgba(255, 255, 255, 0.38) !important;
-        border-left-width: 1px !important;
-        border-right-width: 1px !important;
-        border-left-color: rgba(255, 255, 255, 0.35) !important;
-        border-right-color: rgba(255, 255, 255, 0.35) !important;
-        border-bottom-width: 1px !important;
-        border-bottom-color: rgba(255, 255, 255, 0.32) !important;
-    }
-
     #required-documents-modal .modal-header {
         border-bottom: 0 !important;
         box-shadow: inset 0 1px 0 rgba(236, 242, 250, 0.22) !important;
@@ -2316,8 +2300,8 @@
         border-top-right-radius: 12px;
         border-bottom: none !important;
     }
-    #branch-form-modal .modal-header h2,
-    #user-form-modal .modal-header h2 {
+    #branch-form-modal .modal-header h2:not(.premium-title),
+    #user-form-modal .modal-header h2:not(.premium-title) {
         color: var(--modal-title-color) !important;
         background: none !important;
         -webkit-background-clip: border-box !important;
@@ -2690,7 +2674,7 @@
     #user-modal.modal-overlay,
     #data-management-modal.modal-overlay,
     #dis-veri-panel.modal-overlay {
-        bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0) - 2px) !important;
+        bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
         padding-left: 0 !important;
         padding-right: 0 !important;
         padding-bottom: 0 !important;
@@ -2731,7 +2715,7 @@
     }
     #branch-form-modal.modal-overlay,
     #user-form-modal.modal-overlay {
-        bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0) - 2px) !important;
+        bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
         padding-left: 0 !important;
         padding-right: 0 !important;
         padding-bottom: 0 !important;
@@ -3174,15 +3158,8 @@
     }
 }
 
-/* iOS/Android PWA: ayar full-screen modalları çentik altında kalmasın */
+/* iOS/Android PWA: ayar full-screen modal çerçevesi ve güvenli alan canonical style-core sahibinde */
 @media (max-width: 768px) and (display-mode: standalone) {
-    :is(#required-documents-modal, #branch-modal, #user-modal, #data-management-modal, #dis-veri-panel, #branch-form-modal, #user-form-modal).ayarlar-modal-overlay.modal-overlay {
-        padding-top: env(safe-area-inset-top) !important;
-        padding-right: 0 !important;
-        padding-bottom: 0 !important;
-        padding-left: 0 !important;
-    }
-
     /* Cache confirm: PWA'da sabit 210px yerine safe-area ile sınırlı auto */
     body.modal-open #cache-confirm-modal.compact-confirm-modal .modal-container {
         height: auto !important;

@@ -13,7 +13,7 @@
                     <button type="button" class="modal-home" onclick="medisaSettingsGoHome(event)" aria-label="Ana sayfaya dön" title="Ana sayfa">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 10v10h14V10"/></svg>
                     </button>
-                    <h2>ŞUBE YÖNETİMİ</h2>
+                    <h2 class="premium-title">ŞUBE YÖNETİMİ</h2>
                     <button class="modal-close" onclick="closeBranchManagement()">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -65,7 +65,7 @@
                     <button type="button" class="modal-home" onclick="medisaSettingsGoHome(event)" aria-label="Ana sayfaya dön" title="Ana sayfa">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 10v10h14V10"/></svg>
                     </button>
-                    <h2>YENİ ŞUBE EKLE</h2>
+                    <h2 class="premium-title">YENİ ŞUBE EKLE</h2>
                     <button class="modal-close" onclick="closeBranchFormModal()">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -108,7 +108,7 @@
                     <button type="button" class="modal-home" onclick="medisaSettingsGoHome(event)" aria-label="Ana sayfaya dön" title="Ana sayfa">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 10v10h14V10"/></svg>
                     </button>
-                    <h2>KULLANICI YÖNETİMİ</h2>
+                    <h2 class="premium-title">KULLANICI YÖNETİMİ</h2>
                     <button class="modal-close" onclick="closeUserManagement()">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -160,7 +160,7 @@
                     <button type="button" class="modal-home" onclick="medisaSettingsGoHome(event)" aria-label="Ana sayfaya dön" title="Ana sayfa">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 10v10h14V10"/></svg>
                     </button>
-                    <h2>YENİ KULLANICI EKLE</h2>
+                    <h2 class="premium-title">YENİ KULLANICI EKLE</h2>
                     <button class="modal-close" onclick="closeUserFormModal()">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -248,7 +248,7 @@
                     <button type="button" class="modal-home" onclick="medisaSettingsGoHome(event)" aria-label="Ana sayfaya dön" title="Ana sayfa">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 10v10h14V10"/></svg>
                     </button>
-                    <h2>ZORUNLU EVRAKLAR</h2>
+                    <h2 class="premium-title">ZORUNLU EVRAKLAR</h2>
                     <button class="modal-close" onclick="closeZorunluEvraklar()">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -338,7 +338,7 @@
                     <button type="button" class="modal-home" onclick="medisaSettingsGoHome(event)" aria-label="Ana sayfaya dön" title="Ana sayfa">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 10v10h14V10"/></svg>
                     </button>
-                    <h2>Dış Veri Yönetimi</h2>
+                    <h2 class="premium-title">Dış Veri Yönetimi</h2>
                     <button class="modal-close" onclick="closeDisVeriPanel()">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <line x1="18" y1="6" x2="6" y2="18"></line>

@@ -79,9 +79,28 @@ test('modal premium başlığı ana menü .ttl canonical metalik kontratını re
   assert.match(style, /\.modal-overlay \.modal-header h2\.premium-title\s*\{[\s\S]*?background:\s*var\(--premium-title-gradient\)/);
   assert.match(style, /\.modal-overlay \.modal-header h2\.premium-title\s*\{[\s\S]*?text-shadow:\s*var\(--premium-title-shadow\)/);
   assert.match(style, /#main-menu \.menu-btn \.ttl\s*\{[\s\S]*?background:\s*var\(--premium-title-gradient\)/);
-  assert.match(style, /\/\* Mobil modal başlıkları: premium gradient yerine net beyaz metin \*\//);
-  assert.match(style, /\.modal-overlay \.modal-header h2\.premium-title\s*\{[\s\S]*?-webkit-text-fill-color:\s*#ffffff\s*!important/);
-  assert.match(style, /#monthly-todo-modal\) \.modal-header h2\.premium-title\s*\{[\s\S]*?-webkit-text-fill-color:\s*#ffffff\s*!important/);
+  // Mobil premium başlık: yalnız ≤640 media bloğundaki owner'ı doğrula; masaüstü premium kuralını doğrulama.
+  const mobilePremiumMarker = '/* Mobil modal başlıkları: premium gradient */';
+  const mobilePremiumAt = style.indexOf(mobilePremiumMarker);
+  assert.ok(mobilePremiumAt !== -1, 'mobil premium başlık ownerı eksik');
+  const mobileMediaStart = style.lastIndexOf('@media (max-width: 640px)', mobilePremiumAt);
+  const nextMediaAt = style.indexOf('@media', mobilePremiumAt);
+  assert.ok(
+    mobileMediaStart !== -1 && mobileMediaStart < mobilePremiumAt && nextMediaAt > mobilePremiumAt,
+    'mobil premium başlık kuralı ≤640 media bloğu içinde değil'
+  );
+  const mobilePremiumRule = style.slice(mobileMediaStart, nextMediaAt).match(
+    /\/\* Mobil modal başlıkları: premium gradient \*\/\s*\.modal-overlay \.modal-header h2\.premium-title,\s*:is\(#vehicle-modal, #vehicles-modal, #vehicle-detail-modal, #reports-modal, #monthly-todo-modal\) \.modal-header h2\.premium-title\s*\{([\s\S]*?)\n\s*\}/
+  );
+  assert.ok(mobilePremiumRule, 'mobil premium başlık bloğu bulunamadı');
+  const mobilePremiumBody = mobilePremiumRule[1];
+  assert.match(mobilePremiumBody, /background:\s*var\(--premium-title-gradient\)\s*!important/);
+  assert.match(mobilePremiumBody, /-webkit-background-clip:\s*text\s*!important/);
+  assert.match(mobilePremiumBody, /background-clip:\s*text\s*!important/);
+  assert.match(mobilePremiumBody, /-webkit-text-fill-color:\s*transparent\s*!important/);
+  assert.match(mobilePremiumBody, /color:\s*transparent\s*!important/);
+  assert.match(mobilePremiumBody, /text-shadow:\s*var\(--premium-title-shadow\)\s*!important/);
+  assert.doesNotMatch(mobilePremiumBody, /-webkit-text-fill-color:\s*#ffffff/);
 });
 
 test('modal header ortak clear-coat ve kırmızı taban ownerını korur', function() {
