@@ -1170,9 +1170,6 @@ async function loadKaskoListIntoAppData() {
 }
 
 window.loadKaskoListFromServer = loadKaskoListIntoAppData;
-window.clearMedisaKaskoLookupIndex = function() {
-    try { window.__medisaKaskoLookupIndex = null; } catch (e) {}
-};
 
 async function loadDataFromServer(forceRefresh) {
     if (forceRefresh !== true && serverDatasetTrusted === true && hasUsableAppData(window.appData)) {

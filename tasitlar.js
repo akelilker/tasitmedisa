@@ -6615,10 +6615,6 @@
     return entry && entry.objectUrl ? entry.objectUrl : '';
   }
 
-  function getCachedRuhsatDocumentEntry(vehicleId, ruhsatUrl, documentType) {
-    const cacheKey = getRuhsatDocumentCacheKey(vehicleId, ruhsatUrl, documentType || 'ruhsat');
-    return cacheKey ? (ruhsatDocumentCache.get(cacheKey) || null) : null;
-  }
 
   function ensureMedisaPdfJs() {
     if (window.pdfjsLib && typeof window.pdfjsLib.getDocument === 'function') {

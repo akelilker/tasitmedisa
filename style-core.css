@@ -319,13 +319,6 @@ body::-webkit-scrollbar,
   color: rgba(148, 163, 184, 0.82);
 }
 
-.medisa-boxed-select-search-wrap {
-  position: sticky;
-  top: 0;
-  z-index: 1;
-  padding: 0 0 6px;
-  background: transparent;
-}
 
 @media (max-width: 640px) {
   .medisa-boxed-select-option {
