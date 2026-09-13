@@ -107,11 +107,11 @@ test('Dashboard session doğrulamadan driver verisi istemez', () => {
 test('Dashboard zorunlu modda veri bootstrapından önce döner', () => {
   assert.match(files.dashboardJs, /passwordChangeRequired\s*===\s*true[\s\S]{0,1500}openMandatoryDriverPasswordChange[\s\S]{0,500}return;/);
 });
-test('Zorunlu modal kapatma ve vazgeç düğmelerini gizler', () => {
+test('Zorunlu modal kapatmayı gizler, vazgeçle login ekranına döner', () => {
   assert.match(files.passwordJs, /driverPasswordMandatoryMode/);
   assert.match(files.passwordJs, /closeBtn\.hidden\s*=\s*isMandatory/);
-  assert.match(files.passwordJs, /cancelBtn\.hidden\s*=\s*isMandatory/);
-  assert.match(files.passwordJs, /if\s*\(s\.driverPasswordMandatoryMode\)\s*return/);
+  assert.match(files.passwordJs, /cancelBtn\.hidden\s*=\s*false/);
+  assert.match(files.passwordJs, /if\s*\(s\.driverPasswordMandatoryMode\)\s*\{\s*h\.logout\(\);\s*return;/);
   assert.match(files.featureCss, /driver-password-modal-close\[hidden\][\s\S]{0,180}display:\s*none\s*!important/);
 });
 test('Öneri ve mevcut parolayla devam bypassı kaldırılmıştır', () => {

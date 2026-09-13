@@ -45,7 +45,7 @@ if (title) {
 title.textContent = isMandatory ? 'Parola Değişikliği Zorunlu' : 'Şifre Değiştir';
 }
 if (closeBtn) closeBtn.hidden = isMandatory;
-if (cancelBtn) cancelBtn.hidden = isMandatory;
+if (cancelBtn) cancelBtn.hidden = false;
 if (notice) notice.hidden = !isMandatory;
 if (document.body) {
 document.body.classList.toggle('password-change-gate-active', isMandatory);
@@ -69,7 +69,10 @@ if (currentInput) currentInput.focus();
 };
 
 function closeDriverPasswordModal() {
-if (s.driverPasswordMandatoryMode) return;
+if (s.driverPasswordMandatoryMode) {
+h.logout();
+return;
+}
 const modal = document.getElementById('driver-password-modal');
 const form = document.getElementById('driver-password-form');
 if (modal) modal.classList.remove('show');
