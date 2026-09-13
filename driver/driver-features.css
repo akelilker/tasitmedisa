@@ -921,8 +921,7 @@ body.driver-modal-open{
 }
 .dashboard-page.password-change-gate-active #pwa-install-wrapper,
 .dashboard-page.password-change-gate-active .driver-header-fixed,
-.dashboard-page.password-change-gate-active .driver-content-wrap,
-.dashboard-page.password-change-gate-active #app-footer{
+.dashboard-page.password-change-gate-active .driver-content-wrap{
   visibility: hidden !important;
   pointer-events: none !important;
 }
