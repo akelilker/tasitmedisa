@@ -130,7 +130,7 @@ test('asset pin chain bumped for changed runtime modules', function() {
   assert.match(tasitlarSrc, /MEDISA_TASITLAR_MODULE_VERSION = '20260907\.3'/);
   assert.match(read('index.html'), /data-manager\.js\?v=20260905\.1/);
   assert.match(read('index.html'), /script-core\.js\?v=20260908\.7/);
-  assert.match(read('sw.js'), /CACHE_VERSION = 'medisa-v2\.323'/);
+  assert.match(read('sw.js'), /CACHE_VERSION = 'medisa-v2\.324'/);
 });
 
 test('notification merge simulation: romork excludes sigorta/egzoz merges', function() {
