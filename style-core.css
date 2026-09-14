@@ -125,6 +125,13 @@ body::-webkit-scrollbar,
   }
 }
 
+/* Telefon yatayda genişlik eşiğini geçse de modal çerçevesi footer'a yakın kalır. */
+@media (max-height: 500px) and (orientation: landscape) and (pointer: coarse) {
+  :root {
+    --app-footer-gap: 2px;
+  }
+}
+
 /* Mobil (640px ve altı): kontrast artırma, kırmızılar daha net */
 @media (max-width: 640px) {
   :root {
