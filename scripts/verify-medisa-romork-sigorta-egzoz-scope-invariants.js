@@ -120,17 +120,34 @@ test('domain runtime: missing egzoz still red for non-romork', function() {
   assert.equal(domain.isEgzozMuayeneCritical({ vehicleType: 'otomobil', egzozMuayeneDate: '' }), true);
 });
 
+test('notifications: kasko-kodu-guncelle activity message local formatter + fallback', function() {
+  const start = notifSrc.indexOf("type === 'kasko-kodu-guncelle'");
+  assert.ok(start !== -1, 'kasko-kodu-guncelle dalı bulunmalı');
+  const end = notifSrc.indexOf("type === 'kullanici-atama'", start);
+  assert.ok(end > start, 'kasko-kodu-guncelle dalı sınırı bulunmalı');
+  const kaskoBlock = notifSrc.slice(start, end);
+  // tasitlar.js IIFE scope helper'ına bağımlılık yok; bare çağrı kalmamalı.
+  assert.doesNotMatch(notifSrc, /formatHistoryPerformerUpper/);
+  // notifications.js kendi erişilebilir formatter'ı ile davranışı üretir.
+  assert.match(kaskoBlock, /String\(formatAdSoyad\(String\(who\)\)\)\.trim\(\)/);
+  assert.match(kaskoBlock, /formatter|formatAdSoyad/);
+  // Boş sonuçta mevcut BİLİNMİYOR fallback'i korunur.
+  assert.match(kaskoBlock, /whoName\s*\|\|\s*'B\\u0130L\\u0130NM\\u0130YOR'/);
+  assert.match(kaskoBlock, /Kasko Kodunu G\\u00FCncelledi\./);
+});
+
 test('asset pin chain bumped for changed runtime modules', function() {
   assert.match(coreSrc, /vehicleNotificationDomain:\s*'20260817\.2'/);
   assert.match(coreSrc, /kayitJs:\s*'20260905\.1'/);
-  assert.match(coreSrc, /notifications:\s*'20260907\.4'/);
+  assert.match(coreSrc, /notifications:\s*'20260916\.3'/);
   assert.match(coreSrc, /tasitlar:\s*'20260916\.2'/);
   assert.match(coreSrc, /ayarlarJs:\s*'20260908\.6'/);
   assert.match(coreSrc, /kayitCss:\s*'20260820\.3'/);
   assert.match(tasitlarSrc, /MEDISA_TASITLAR_MODULE_VERSION = '20260916\.2'/);
   assert.match(read('index.html'), /data-manager\.js\?v=20260905\.1/);
-  assert.match(read('index.html'), /script-core\.js\?v=20260916\.2/);
-  assert.match(read('sw.js'), /CACHE_VERSION = 'medisa-v2\.326'/);
+  assert.match(read('index.html'), /script-core\.js\?v=20260916\.3/);
+  assert.match(read('sw.js'), /CACHE_VERSION = 'medisa-v2\.327'/);
+  assert.match(read('sw.js'), /'\/script-core\.js\?v=20260916\.3'/);
 });
 
 test('notification merge simulation: romork excludes sigorta/egzoz merges', function() {

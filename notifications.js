@@ -2123,8 +2123,9 @@
       return whoLStr + ', ' + plateStr + ' Plakal\u0131 Ta\u015F\u0131t \u0130\u00E7in Yazl\u0131k/ K\u0131\u015Fl\u0131k Lastik Durumunu ' + durumTxt + ' olarak Bildirdi.';
     }
     if (type === 'kasko-kodu-guncelle') {
-      const who = evData.kaydeden || evData.surucu || evData.kisi || evData.kullaniciAdi;
-      const whoU = who ? formatHistoryPerformerUpper(who) : 'B\u0130L\u0130NM\u0130YOR';
+      const who = (evData.kaydeden || evData.surucu || evData.kisi || evData.kullaniciAdi || '').toString().trim();
+      const whoName = who ? String(formatAdSoyad(String(who))).trim() : '';
+      const whoU = whoName || 'B\u0130L\u0130NM\u0130YOR';
       return whoU + ', ' + plateStr + ' Plakal\u0131 Ta\u015F\u0131t \u0130\u00E7in Kasko Kodunu G\u00FCncelledi.';
     }
     if (type === 'kullanici-atama') {
