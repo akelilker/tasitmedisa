@@ -1105,8 +1105,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     }
 
     #event-menu-modal #event-menu-list.event-menu-list--categories {
-        /* 76px bağlam çubuğunun yarısını telafi eder; model-alt ile modal-alt arasında ortalar. */
-        transform: translateY(-26px);
+        /* Sıkı kategori gridini model-alt ile modal-alt arasında dengeler. */
+        transform: translateY(-18px);
     }
 
     #event-menu-modal .event-menu-card {
@@ -1375,6 +1375,26 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 }
 
 @media (min-width: 641px) {
+    #event-menu-modal .modal-body:has(#event-menu-list.event-menu-list--categories) {
+        padding-top: 12px !important;
+        padding-bottom: 12px !important;
+    }
+
+    #event-menu-modal #event-menu-list.event-menu-list--categories .event-menu-picker {
+        gap: 14px;
+    }
+
+    #event-menu-modal #event-menu-list.event-menu-list--categories .event-menu-category-card {
+        min-height: 80px;
+        padding: 6px;
+        gap: 6px;
+    }
+
+    #event-menu-modal #event-menu-list.event-menu-list--categories .event-menu-category-icon {
+        width: 46px;
+        height: 46px;
+    }
+
     #event-menu-modal .event-menu-row-single .event-menu-card,
     #event-menu-modal .event-menu-row-one .event-menu-card {
         flex-basis: 160px;
