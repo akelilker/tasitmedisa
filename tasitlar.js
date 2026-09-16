@@ -197,7 +197,7 @@
 
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20260916.2';
+  const MEDISA_TASITLAR_MODULE_VERSION = '20260916.3';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
@@ -3676,12 +3676,10 @@
   }
 
   // Kaporta Durumu (Legend eklendi; açıklama metni 1.5pt küçük – CSS .detail-row-kaporta)
-  const boyaliParcalar = (vehicle && vehicle.boyaliParcalar && typeof vehicle.boyaliParcalar === 'object')
-    ? vehicle.boyaliParcalar
-    : null;
-  const hasKaportaIsaretleri = !!(boyaliParcalar && Object.keys(boyaliParcalar).some(function(partId) {
+  const boyaliParcalar = getVehicleKaportaParcalari(vehicle);
+  const hasKaportaIsaretleri = Object.keys(boyaliParcalar).some(function(partId) {
     return !!boyaliParcalar[partId];
-  }));
+  });
   html += `<div class="detail-row detail-row-inline detail-row-kaporta"><div class="detail-row-header"><span class="detail-row-label">Kaporta Durumu</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> `;
   if (hasKaportaIsaretleri) {
       html += 'Aşağıdaki şemada belirtilmiştir.';
@@ -4033,6 +4031,46 @@
   }
 
   /**
+   * Kaporta durumunun kalıcı kaynağını çöz.
+   *
+   * Güncel taşıtlarda vehicle.boyaliParcalar hızlı görünüm alanıdır. Eski veya
+   * eksik kayıt akışlarında aynı kalıcı bilgi yalnız kaza olayının içinde
+   * (event.data.hasarParcalari) bulunabilir. Detay ve Kaza formu bu iki
+   * temsilin ayrışmasıyla farklı görünmemelidir; araç alanı varsa önceliklidir.
+   */
+  function getVehicleKaportaParcalari(vehicle) {
+    const resolved = {};
+    const events = vehicle && Array.isArray(vehicle.events) ? vehicle.events : [];
+
+    events.forEach(function(event) {
+      const eventParts = event && event.type === 'kaza' && event.data && typeof event.data.hasarParcalari === 'object'
+        ? event.data.hasarParcalari
+        : null;
+      if (!eventParts) return;
+
+      Object.keys(eventParts).forEach(function(partId) {
+        const state = eventParts[partId];
+        if (state === 'boyali' || state === 'degisen') {
+          resolved[partId] = state;
+        }
+      });
+    });
+
+    const vehicleParts = vehicle && vehicle.boyaliParcalar && typeof vehicle.boyaliParcalar === 'object'
+      ? vehicle.boyaliParcalar
+      : null;
+    if (!vehicleParts) return resolved;
+
+    Object.keys(vehicleParts).forEach(function(partId) {
+      const state = vehicleParts[partId];
+      if (state === 'boyali' || state === 'degisen') {
+        resolved[partId] = state;
+      }
+    });
+    return resolved;
+  }
+
+  /**
    * Boya şemasını detay ekranında render et (readonly)
    */
   function renderBoyaSchemaDetail(vehicle) {
@@ -4091,7 +4129,7 @@
           part.style.fill = defaultGray;
         });
 
-        const boyaliParcalar = vehicle.boyaliParcalar || {};
+        const boyaliParcalar = getVehicleKaportaParcalari(vehicle);
         Object.keys(boyaliParcalar).forEach(partId => {
           const state = boyaliParcalar[partId];
           const part = svgClone.querySelector(`#${partId}`);
@@ -9088,7 +9126,7 @@
         });
 
         // Mevcut durumları uygula (readonly)
-        const boyaliParcalar = vehicle.boyaliParcalar || {};
+        const boyaliParcalar = getVehicleKaportaParcalari(vehicle);
         Object.keys(boyaliParcalar).forEach(partId => {
           const state = boyaliParcalar[partId];
           const part = svgClone.querySelector(`#${partId}`);

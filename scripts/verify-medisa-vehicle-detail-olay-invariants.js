@@ -71,6 +71,17 @@ function extractRuhsatUploadForm() {
   return tasitlar.slice(start, end);
 }
 
+function resolveKaportaParts(vehicle) {
+  const start = tasitlar.indexOf('function getVehicleKaportaParcalari(vehicle) {');
+  assert.ok(start >= 0, 'getVehicleKaportaParcalari bulunmalı');
+  const end = tasitlar.indexOf('\n  /**\n   * Boya şemasını detay ekranında render et', start);
+  assert.ok(end > start, 'getVehicleKaportaParcalari bitiş sınırı bulunmalı');
+  const sandbox = { vehicle: vehicle };
+  vm.createContext(sandbox);
+  vm.runInContext(tasitlar.slice(start, end) + '\nresult = getVehicleKaportaParcalari(vehicle);', sandbox);
+  return JSON.parse(JSON.stringify(sandbox.result));
+}
+
 /** Minimal element for plate-row ensure fixture (no jsdom). */
 function createMiniDom() {
   let seq = 0;
@@ -291,6 +302,28 @@ test('Olay menü/form owner source dokunulmamış (window.openEventModal)', func
   assert.match(tasitlar, /EVENT_MENU_GROUPS/);
   assert.match(tasitlar, /id="event-menu-modal"/);
   assert.match(tasitlar, /id="dinamik-olay-modal"/);
+});
+
+test('Kaporta şeması, event-only kaza kayıtlarını sert yenileme sonrası çözer', function() {
+  assert.deepEqual(
+    resolveKaportaParts({
+      events: [{
+        type: 'kaza',
+        data: { hasarParcalari: { kaput: 'boyali', 'sol-on-camurluk': 'degisen', tavan: 'boyasiz' } }
+      }]
+    }),
+    { kaput: 'boyali', 'sol-on-camurluk': 'degisen' }
+  );
+  assert.deepEqual(
+    resolveKaportaParts({
+      boyaliParcalar: { kaput: 'degisen' },
+      events: [{ type: 'kaza', data: { hasarParcalari: { kaput: 'boyali', bagaj: 'boyali' } } }]
+    }),
+    { kaput: 'degisen', bagaj: 'boyali' },
+    'araçtaki güncel kaporta alanı, aynı parçanın olay geçmişine öncelikli kalmalı'
+  );
+  assert.match(detailSrc, /const boyaliParcalar = getVehicleKaportaParcalari\(vehicle\);/);
+  assert.match(tasitlar, /function renderBoyaSchemaKaza[\s\S]*?const boyaliParcalar = getVehicleKaportaParcalari\(vehicle\);/);
 });
 
 test('Belge/Ruhsat handler owner source korunur', function() {
