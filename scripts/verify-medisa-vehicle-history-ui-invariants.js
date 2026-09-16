@@ -362,6 +362,7 @@ test('empty state kontratı', function() {
 });
 
 test('CSS owner: history namespace + mobil ≥15px', function() {
+  assert.match(baseCss, /#vehicle-history-modal\s+\.history-back-nav\s*\{[^}]*z-index:\s*10\s*!important/);
   assert.match(baseCss, /#vehicle-history-modal[^{]*\.history-tab-count/);
   assert.match(baseCss, /#vehicle-history-modal\s+\.history-item-header/);
   assert.match(baseCss, /#vehicle-history-modal\s+\.history-item-date/);

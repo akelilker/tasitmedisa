@@ -2393,7 +2393,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 /* Tarihçe modalı UX prototipi: geri navigasyon → taşıt kimliği → sekmeler → içerik */
 #vehicle-history-modal .history-back-nav {
     position: relative !important;
-    z-index: 22 !important;
+    z-index: 10 !important;
     display: flex !important;
     flex-direction: column !important;
     align-items: stretch !important;
