@@ -61,8 +61,9 @@ $result = medisaMutateData(function (&$data) use ($requestId, $action, $adminNot
     $data['duzeltme_talepleri'][$talepIndex]['admin_id'] = (string)($context['user_id'] ?? '');
 
     $isGeneralRequest = ($talep['talep_tipi'] ?? '') === 'genel';
+    $isPasswordResetRequest = ($talep['talep_tipi'] ?? '') === 'sifre_sifirlama';
 
-    if ($action === 'approve' && !$isGeneralRequest) {
+    if ($action === 'approve' && !$isGeneralRequest && !$isPasswordResetRequest) {
         $kayitIndex = medisaFindMonthlyRecordIndex($data, $talep['kayit_id'] ?? '');
         if ($kayitIndex >= 0) {
             $kayit = &$data['arac_aylik_hareketler'][$kayitIndex];
@@ -111,7 +112,7 @@ $result = medisaMutateData(function (&$data) use ($requestId, $action, $adminNot
     return [
         'success' => true,
         'message' => $action === 'approve'
-            ? ($isGeneralRequest ? 'Talep kapatıldı!' : 'Talep onaylandı, veri güncellendi!')
+            ? (($isGeneralRequest || $isPasswordResetRequest) ? 'Talep kapatıldı!' : 'Talep onaylandı, veri güncellendi!')
             : 'Talep reddedildi!',
     ];
 });

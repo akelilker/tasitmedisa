@@ -915,11 +915,15 @@
           var card = document.createElement('div');
           card.className = 'pending-card';
           var isGeneralRequest = req.talep_tipi === 'genel';
+          var isPasswordResetRequest = req.talep_tipi === 'sifre_sifirlama';
           var plateText = (req.plaka || '').toString().trim().toLocaleUpperCase('tr-TR');
           var vehicleText = plateText + (req.donem ? ' (' + req.donem + ')' : '');
           var pendingDriverShown = escapeHtml(getDriverDisplayName(req.surucu_adi || '', '') || req.surucu_adi || '–');
-          var parts = ['<strong><span class="pending-name">' + pendingDriverShown + '</span><span class="pending-muted"> – ' + escapeHtml(vehicleText) + '</span></strong>'];
-          if (isGeneralRequest) {
+          var parts = ['<strong><span class="pending-name">' + pendingDriverShown + '</span><span class="pending-muted"> – ' + escapeHtml(isPasswordResetRequest ? 'Şifre Talebi' : vehicleText) + '</span></strong>'];
+          if (isPasswordResetRequest) {
+            if (req.kullanici_adi) parts.push('<div class="pending-general-line"><span class="pending-sebep-label">Kullanıcı Adı: </span><span class="pending-muted">' + escapeHtml(req.kullanici_adi) + '</span></div>');
+            parts.push('<div class="pending-general-line"><span class="pending-muted">Kimlik doğrulamasından sonra Kullanıcı Yönetimi ekranından geçici şifre verin.</span></div>');
+          } else if (isGeneralRequest) {
             var topicMap = { talep: 'Talep', sikayet: 'Şikayet', oneri: 'Öneri', diger: 'Diğer' };
             var topic = topicMap[req.konu_turu] || 'Talep';
             parts.push('<div class="pending-general-line"><span class="pending-sebep-label">Konu: </span><span class="pending-muted">' + escapeHtml(topic) + '</span></div>');
@@ -933,7 +937,7 @@
           card.innerHTML =
             '<div class="info">' + parts.join(' ') + '</div>' +
             '<div class="actions">' +
-              '<button type="button" class="approve-btn" data-id="' + escapeAttr(String(req.id)) + '">' + (isGeneralRequest ? 'Kapat' : 'Onayla') + '</button>' +
+              '<button type="button" class="approve-btn" data-id="' + escapeAttr(String(req.id)) + '">' + ((isGeneralRequest || isPasswordResetRequest) ? 'Tamamlandı' : 'Onayla') + '</button>' +
               '<button type="button" class="reject-btn" data-id="' + escapeAttr(String(req.id)) + '">Reddet</button>' +
             '</div>';
           card.querySelector('.approve-btn').addEventListener('click', function () { approveRequest(req.id); });

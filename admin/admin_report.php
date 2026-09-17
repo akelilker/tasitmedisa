@@ -112,6 +112,7 @@ if ($action === 'pending_requests') {
             'arac_id' => $aracId,
             'surucu_id' => $talep['surucu_id'] ?? '',
             'surucu_adi' => $surucu ? ($surucu['isim'] ?? $surucu['name'] ?? 'Bilinmiyor') : 'Bilinmiyor',
+            'kullanici_adi' => $talep['kullanici_adi'] ?? '',
             'plaka' => $arac ? ($arac['plaka'] ?? $arac['plate'] ?? 'Bilinmiyor') : 'Bilinmiyor',
             'donem' => $kayit['donem'] ?? '',
             'konu_turu' => $talep['konu_turu'] ?? '',

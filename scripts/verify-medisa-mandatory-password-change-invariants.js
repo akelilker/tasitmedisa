@@ -12,14 +12,22 @@ const read = (relative) => fs.readFileSync(path.join(ROOT, relative), 'utf8');
 const files = {
   core: read('core.php'),
   loginPhp: read('driver/driver_login.php'),
+  resetRequestPhp: read('driver/driver_password_reset_request.php'),
   changePhp: read('driver/driver_change_password.php'),
   commonPhp: read('driver/driver_common.php'),
   loginJs: read('driver/driver-login.js'),
+  loginHtml: read('driver/index.html'),
+  driverScript: read('driver/driver-script.js'),
+  driverShellCss: read('driver/driver-shell.css'),
   dashboardJs: read('driver/driver-dashboard-core.js'),
   passwordJs: read('driver/driver-feature-password.js'),
   dashboardHtml: read('driver/dashboard.html'),
   featureCss: read('driver/driver-features.css'),
   dataManager: read('data-manager.js'),
+  notifications: read('notifications.js'),
+  adminReportPhp: read('admin/admin_report.php'),
+  adminReportJs: read('admin/admin-report.js'),
+  adminApprovePhp: read('admin/admin_approve.php'),
   cpanel: read('.cpanel.yml'),
   sw: read('sw.js')
 };
@@ -113,6 +121,56 @@ test('Zorunlu modal kapatmayı gizler, vazgeçle login ekranına döner', () => 
   assert.match(files.passwordJs, /cancelBtn\.hidden\s*=\s*false/);
   assert.match(files.passwordJs, /if\s*\(s\.driverPasswordMandatoryMode\)\s*\{\s*h\.logout\(\);\s*return;/);
   assert.match(files.featureCss, /driver-password-modal-close\[hidden\][\s\S]{0,180}display:\s*none\s*!important/);
+});
+test('Şifre talebi, mevcut portal kullanıcı adı normalizer ownerını kullanır', () => {
+  assert.match(files.core, /function medisaNormalizePortalUsername/);
+  assert.match(files.core, /function medisaPortalUsernamesEqual/);
+  assert.match(files.core, /function medisaExtractPortalUsername/);
+  assert.match(files.loginPhp, /return medisaNormalizePortalUsername\(\$s\);/);
+  assert.match(files.loginPhp, /return medisaPortalUsernamesEqual\(\$stored, \$input\);/);
+});
+test('Şifre talebi public endpointi hesap varlığını açığa çıkarmaz ve tekrarları sınırlar', () => {
+  assert.doesNotMatch(files.resetRequestPhp, /validateToken\s*\(/);
+  assert.match(files.resetRequestPhp, /medisaPortalUsernamesEqual/);
+  assert.match(files.resetRequestPhp, /medisaIsUserActive/);
+  assert.match(files.resetRequestPhp, /medisaUserHasPortalPassword/);
+  assert.match(files.resetRequestPhp, /\$acceptedMessage/);
+  assert.match(files.resetRequestPhp, /'save'\s*=>\s*false/);
+  assert.match(files.resetRequestPhp, /\$now\s*-\s*900/);
+  assert.match(files.resetRequestPhp, /'talep_tipi'\s*=>\s*'sifre_sifirlama'/);
+  assert.doesNotMatch(files.resetRequestPhp, /newPassword|yeni_sifre|sifre_hash|\$_POST/);
+});
+test('Login ekranı görünür şifre talebi akışını taşır; başarısız giriş sayacı oluşturmaz', () => {
+  assert.match(files.loginHtml, /id="forgot-password-btn"/);
+  assert.match(files.loginHtml, /type="button" class="forgot-password-btn"/);
+  assert.match(files.loginJs, /driver_password_reset_request\.php/);
+  assert.match(files.loginJs, /usernameInput\.value\.trim\(\)/);
+  assert.match(files.loginJs, /showLoginFeedback\(payload\.message, true\)/);
+  assert.doesNotMatch(files.loginJs, /failedLoginAttempts|loginAttemptCount/);
+  assert.match(files.driverShellCss, /\.forgot-password-btn/);
+  assert.match(files.driverShellCss, /\.error-message\.success/);
+  assert.match(files.loginPhp, /Kullanıcı adı hatalı!/);
+  assert.match(files.loginPhp, /Şifre hatalı!/);
+});
+test('Şifre talepleri yalnız kullanıcıyı yönetebilen yöneticiye görünür ve bildirim üretir', () => {
+  assert.match(files.core, /\$manageableUserIds\s*=\s*\[\]/);
+  assert.match(files.core, /medisaCanManageUserRecord\(\$user, \$context\)/);
+  assert.match(files.core, /\(\$request\['talep_tipi'\] \?\? ''\) === 'sifre_sifirlama'/);
+  assert.match(files.notifications, /pendingPasswordResetRequests/);
+  assert.match(files.notifications, /request\|password-reset\|/);
+  assert.match(files.notifications, /şifre talebi oluşturdu/);
+  assert.match(files.adminReportPhp, /'kullanici_adi'\s*=>\s*\$talep\['kullanici_adi'\]/);
+  assert.match(files.adminReportJs, /isPasswordResetRequest/);
+  assert.match(files.adminApprovePhp, /\$isPasswordResetRequest/);
+  assert.match(files.adminApprovePhp, /!\$isGeneralRequest\s*&&\s*!\$isPasswordResetRequest/);
+});
+test('Şifre talebi endpointi ve yenilenen driver assetleri deploy zincirindedir', () => {
+  assert.match(files.cpanel, /driver\/driver_password_reset_request\.php/);
+  assert.match(files.driverScript, /bootstrap:\s*'20260917\.1'/);
+  assert.match(files.driverScript, /login:\s*'20260917\.1'/);
+  assert.match(files.driverScript, /shellCss:\s*'20260917\.1'/);
+  assert.match(files.loginHtml, /driver-shell\.css\?v=20260917\.1/);
+  assert.match(files.loginHtml, /driver-script\.js\?v=20260917\.1/);
 });
 test('Öneri ve mevcut parolayla devam bypassı kaldırılmıştır', () => {
   const joined = files.passwordJs + files.dashboardHtml;

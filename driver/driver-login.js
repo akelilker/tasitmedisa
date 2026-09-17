@@ -425,6 +425,47 @@ refreshLoginFooterConnectivityStatus();
 var usernameInput = document.getElementById('username');
 var passwordInput = document.getElementById('password');
 var rememberCheckbox = document.getElementById('remember');
+var forgotPasswordBtn = document.getElementById('forgot-password-btn');
+
+function showLoginFeedback(message, isSuccess) {
+var errorDiv = document.getElementById('error-message');
+if (!errorDiv) return;
+errorDiv.textContent = String(message || '');
+errorDiv.classList.toggle('success', isSuccess === true);
+errorDiv.classList.add('show');
+}
+
+if (forgotPasswordBtn) {
+forgotPasswordBtn.addEventListener('click', async function() {
+var username = usernameInput ? usernameInput.value.trim() : '';
+if (!username) {
+showLoginFeedback('Önce kullanıcı adınızı girin, sonra şifre talebi oluşturun.', false);
+if (usernameInput) usernameInput.focus();
+return;
+}
+
+var originalLabel = forgotPasswordBtn.textContent;
+forgotPasswordBtn.disabled = true;
+forgotPasswordBtn.textContent = 'Talep gönderiliyor...';
+try {
+var response = await fetch(window.location.origin + API_BASE + 'driver_password_reset_request.php', {
+method: 'POST',
+headers: { 'Content-Type': 'application/json' },
+body: JSON.stringify({ username: username })
+});
+var payload = await response.json();
+if (!response.ok || !payload || payload.success !== true) {
+throw new Error((payload && payload.message) || 'Talep gönderilemedi.');
+}
+showLoginFeedback(payload.message, true);
+} catch (error) {
+showLoginFeedback((error && error.message) || 'Talep gönderilemedi. Lütfen tekrar deneyin.', false);
+} finally {
+forgotPasswordBtn.disabled = false;
+forgotPasswordBtn.textContent = originalLabel;
+}
+});
+}
 
 restoreRememberedLoginForm();
 // iOS autofill / pageshow bfcache: ilk restore silinirse tekrar uygula
@@ -511,6 +552,7 @@ const btnText = loginBtn.querySelector('.btn-text');
 const btnLoader = loginBtn.querySelector('.btn-loader');
 
 errorDiv.classList.remove('show');
+errorDiv.classList.remove('success');
 loginBtn.disabled = true;
 btnText.style.display = 'none';
 btnLoader.style.display = 'inline';

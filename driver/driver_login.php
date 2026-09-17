@@ -3,15 +3,7 @@ require_once __DIR__ . '/../core.php';
 
 /** Görünmez Unicode + trim; NFC birleşik form (kopyala-yapıştır uyumu). */
 function medisaLoginNormalizeUsernameInput($s) {
-    $s = trim((string) $s);
-    if ($s !== '' && class_exists('Normalizer', false)) {
-        $n = Normalizer::normalize($s, Normalizer::FORM_C);
-        if (is_string($n) && $n !== '') {
-            $s = $n;
-        }
-    }
-    $s = preg_replace('/[\x{200B}-\x{200D}\x{FEFF}\x{00A0}]/u', '', $s);
-    return trim($s);
+    return medisaNormalizePortalUsername($s);
 }
 
 /** Kayıttaki giriş adı: önce Türkçe anahtar, sonra yaygın İngilizce yedekler. */
@@ -19,27 +11,11 @@ function medisaLoginExtractStoredUsername($candidate) {
     if (!is_array($candidate)) {
         return '';
     }
-    foreach (['kullanici_adi', 'username', 'login', 'userName', 'user_name'] as $key) {
-        if (isset($candidate[$key]) && trim((string) $candidate[$key]) !== '') {
-            return medisaLoginNormalizeUsernameInput($candidate[$key]);
-        }
-    }
-    return '';
+    return medisaExtractPortalUsername($candidate);
 }
 
 function medisaLoginUsernamesEqual($stored, $input) {
-    if ($stored === '' || $input === '') {
-        return false;
-    }
-    if ($stored === $input) {
-        return true;
-    }
-    if (function_exists('mb_strtolower')) {
-        if (mb_strtolower($stored, 'UTF-8') === mb_strtolower($input, 'UTF-8')) {
-            return true;
-        }
-    }
-    return strcasecmp($stored, $input) === 0;
+    return medisaPortalUsernamesEqual($stored, $input);
 }
 
 header('Content-Type: application/json; charset=utf-8');

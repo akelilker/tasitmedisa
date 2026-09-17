@@ -2214,6 +2214,7 @@
     const vehicles = readVehicles();
     const notifications = [];
     const pendingGeneralRequests = [];
+    const pendingPasswordResetRequests = [];
     const viewedKeys = getViewedNotificationKeys();
     const dismissedKeys = getDismissedNotificationKeys();
     const feedKeys = {};
@@ -2271,6 +2272,18 @@
       });
     });
     pendingGeneralRequests.sort(function(a, b) {
+      return new Date(b.date || 0).getTime() - new Date(a.date || 0).getTime();
+    });
+
+    requests.forEach(function(request) {
+      if (!request || request.talep_tipi !== 'sifre_sifirlama' || request.durum !== 'beklemede') return;
+      pendingPasswordResetRequests.push({
+        id: request.id,
+        date: request.talep_tarihi || '',
+        userName: resolveRequestUserName(request)
+      });
+    });
+    pendingPasswordResetRequests.sort(function(a, b) {
       return new Date(b.date || 0).getTime() - new Date(a.date || 0).getTime();
     });
 
@@ -2388,7 +2401,7 @@
     const notifDropdown = DOM.notificationsDropdown;
     const notifIcon = DOM.notificationsToggleBtn || document.getElementById('notifications-toggle-btn');
 
-    if (notifications.length === 0 && recentSlice.length === 0 && pendingGeneralRequests.length === 0 && pendingDuzeltmeRequests.length === 0 && !mtvHtml && !kaskoExcelHtml) {
+    if (notifications.length === 0 && recentSlice.length === 0 && pendingGeneralRequests.length === 0 && pendingPasswordResetRequests.length === 0 && pendingDuzeltmeRequests.length === 0 && !mtvHtml && !kaskoExcelHtml) {
       if (notifDropdown) {
         notifDropdown.innerHTML = '<button disabled>Bildirim Yok</button>';
         if (notifDropdown.classList.contains('open') && typeof window.syncMobileNotificationsDropdownHeight === 'function') {
@@ -2471,6 +2484,28 @@
           } else if (!isRead) {
             hasOrange = true;
           }
+        });
+      }
+
+      if (pendingPasswordResetRequests.length > 0) {
+        pendingPasswordResetRequests.forEach(function(request, reqIdx) {
+          var notifKey = 'request|password-reset|' + String(request.id || reqIdx);
+          var dateDisplay = getOrCreateNotificationFirstSeen(notifKey);
+          var isRead = viewedKeys.indexOf(notifKey) !== -1;
+          var stateClass = isRead ? ' notification-read' : ' notification-unread';
+          var borderClass = isRead ? '' : ' date-warning-orange-border';
+          var titleClass = isRead ? 'notif-read-text' : 'date-warning-orange';
+          var messageText = request.userName + ', şifre talebi oluşturdu.';
+          var h = '<button type="button" data-action="open-driver-report" data-notif-key="' + escapeHtml(notifKey) + '" class="notification-item notification-item-feedback is-driver-request' + stateClass + borderClass + '">' +
+            '<div class="notif-line1 notif-title"><span class="' + titleClass + '">' + escapeHtml(messageText) + '</span></div>' +
+            '<div class="notif-line2 notif-meta-date">' + escapeHtml(dateDisplay) + '</div>' +
+          '</button>';
+          var baseMs = medisaNotificationTalepSortMs(request.date);
+          if (baseMs <= 0) baseMs = parseNotificationDisplayDateMs(dateDisplay);
+          if (baseMs <= 0) baseMs = tStart;
+          pushNotifFeedOnce(notifKey, baseMs - reqIdx * 1e-6, h);
+          if (!isRead) hasUnreadMarkableNotification = true;
+          if (!isRead) hasOrange = true;
         });
       }
 

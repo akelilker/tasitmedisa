@@ -2675,6 +2675,41 @@ body.is-ios-pwa.login-page .form-group-checkbox label {
   display: block;
 }
 
+.error-message.success {
+  background: rgba(74, 222, 128, 0.12);
+  border-left-color: var(--green, #4ade80);
+  color: var(--green, #4ade80);
+}
+
+.login-password-help {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -8px;
+}
+
+.forgot-password-btn {
+  appearance: none;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--data-value-color, #a0aec0);
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.forgot-password-btn:hover:not(:disabled),
+.forgot-password-btn:focus-visible:not(:disabled) {
+  color: var(--green, #4ade80);
+}
+
+.forgot-password-btn:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
 .btn-login {
   width: 100%;
   padding: 12px;

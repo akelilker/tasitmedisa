@@ -931,6 +931,46 @@ function medisaUserHasPortalPassword($user) {
     return $plainPassword !== '' || $passwordHash !== '';
 }
 
+/** Portal giriş adı: görünmez karakterleri temizler ve NFC'ye normalleştirir. */
+function medisaNormalizePortalUsername($value) {
+    $value = trim((string)$value);
+    if ($value !== '' && class_exists('Normalizer', false)) {
+        $normalized = Normalizer::normalize($value, Normalizer::FORM_C);
+        if (is_string($normalized) && $normalized !== '') {
+            $value = $normalized;
+        }
+    }
+    $value = preg_replace('/[\x{200B}-\x{200D}\x{FEFF}\x{00A0}]/u', '', $value);
+    return trim((string)$value);
+}
+
+function medisaPortalUsernamesEqual($stored, $input) {
+    $stored = medisaNormalizePortalUsername($stored);
+    $input = medisaNormalizePortalUsername($input);
+    if ($stored === '' || $input === '') {
+        return false;
+    }
+    if ($stored === $input) {
+        return true;
+    }
+    if (function_exists('mb_strtolower')) {
+        return mb_strtolower($stored, 'UTF-8') === mb_strtolower($input, 'UTF-8');
+    }
+    return strcasecmp($stored, $input) === 0;
+}
+
+function medisaExtractPortalUsername($user) {
+    if (!is_array($user)) {
+        return '';
+    }
+    foreach (['kullanici_adi', 'username', 'login', 'userName', 'user_name'] as $key) {
+        if (isset($user[$key]) && trim((string)$user[$key]) !== '') {
+            return medisaNormalizePortalUsername($user[$key]);
+        }
+    }
+    return '';
+}
+
 function medisaVerifyUserPassword($user, $password) {
     if (!is_array($user)) {
         return false;
@@ -1884,7 +1924,20 @@ function medisaFilterDataForContextWithUserPredicate($data, $context, $userPredi
         }
     }
 
-    $visibleTalepler = array_values(array_filter($data['duzeltme_talepleri'] ?? [], function ($request) use ($visibleAylikKayitIds, $visibleVehicleIds) {
+    $manageableUserIds = [];
+    foreach (($data['users'] ?? []) as $user) {
+        if (medisaCanManageUserRecord($user, $context)) {
+            $userId = (string)($user['id'] ?? '');
+            if ($userId !== '') {
+                $manageableUserIds[$userId] = true;
+            }
+        }
+    }
+
+    $visibleTalepler = array_values(array_filter($data['duzeltme_talepleri'] ?? [], function ($request) use ($visibleAylikKayitIds, $visibleVehicleIds, $manageableUserIds) {
+        if (($request['talep_tipi'] ?? '') === 'sifre_sifirlama') {
+            return isset($manageableUserIds[(string)($request['surucu_id'] ?? '')]);
+        }
         $requestVehicleId = (string)($request['arac_id'] ?? '');
         if ($requestVehicleId !== '' && isset($visibleVehicleIds[$requestVehicleId])) {
             return true;
