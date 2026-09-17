@@ -893,7 +893,7 @@ body.dashboard-page {
   .dashboard-page .driver-left-quick-action-password:hover .driver-left-quick-action-icon {
       color: #22c55e !important;
   }
-  /* Sağ grid: aksiyon alanı üstten hafif boşlukla görsel dengeye alınır, satır aralığı sıfırlanır */
+  /* Masaüstü sağ grid: dengeli dikey yerleşim */
   .dashboard-page .driver-action-area {
     padding-top: 8px;
   }
@@ -901,8 +901,8 @@ body.dashboard-page {
     gap: 0 !important;
     justify-content: space-between;
   }
-  /* İç dikey padding: aşağıdaki 641 + 769 bloklarında birleştirilir */
-  /* Sağ grid: alt boşluk sıfır – çerçeveye tam yanaşsın */
+  .dashboard-page .driver-action-area-inner:not(.driver-km-open){padding-bottom:18px}
+  /* Panel iç boşlukları */
   .dashboard-page .driver-two-panel {
     padding-top: 3px !important;
     padding-bottom: 0 !important;
