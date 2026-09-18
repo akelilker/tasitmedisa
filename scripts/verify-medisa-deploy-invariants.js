@@ -85,6 +85,8 @@ assert.match(cpanel, /\/bin\/test -f delete_document\.php/, 'cPanel deploy delet
 assert.match(cpanel, /\/bin\/cp -a [^\n]*delete_document\.php/, 'cPanel deploy delete_document.php kopyalamalı.');
 assert.match(cpanel, /\/bin\/test -f required_documents\.php/, 'cPanel deploy required_documents.php varlık kontrolü yapmalı.');
 assert.match(cpanel, /\/bin\/cp -a [^\n]*required_documents\.php/, 'cPanel deploy required_documents.php kopyalamalı.');
+assert.equal(fs.existsSync(path.join(root, 'asset.php')), false, 'Legacy asset.php source olmamalı.');
+assert.doesNotMatch(cpanel, /asset\.php/, 'cPanel legacy asset.php deploy etmemeli.');
 assert.equal(/MEDISA_RESTORE_HMAC_SECRET\s*=/.test(cpanel), false, 'cPanel secret env yazmamalı.');
 assert.equal(/config\.local/.test(cpanel), false, 'cPanel config.local deploy etmemeli.');
 
