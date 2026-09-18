@@ -61,6 +61,7 @@ data/kasko-deger-listesi.index.lock
 # Patch / merge leftovers
 *.tmp
 .tmp/
+.tmp-deploy-logs/
 .tmp-playwright/
 .tmp-chrome-k2-profile/
 **/* - Kopya.*
