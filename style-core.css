@@ -1919,8 +1919,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu .m
   max-width: var(--modal-max-width);
   margin: max(12px, env(safe-area-inset-top)) auto 0 auto !important;
   margin-bottom: 0 !important;
-  height: 100% !important;
-  max-height: 100% !important;
   border-radius: var(--modal-radius);
   border: 0.5px solid var(--border-medium);
   border-bottom: 1px solid var(--border-medium) !important;

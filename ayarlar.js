@@ -846,13 +846,10 @@
       return parts.length === 3 ? (parts[2] + '/' + parts[1] + '/' + parts[0]) : String(isoDate);
     }
 
+    /** Tek kaynak: window.parseVehicleDateRawToIso (data-manager.js) */
     function parseZorunluEvrakDate(rawDate) {
-      const value = String(rawDate || '').trim();
-      if (!value) return '';
-      if (typeof window.parseVehicleDateRawToIso === 'function') return window.parseVehicleDateRawToIso(value) || '';
-      const digits = value.replace(/\D/g, '');
-      if (digits.length === 8) return digits.slice(4, 8) + '-' + digits.slice(2, 4) + '-' + digits.slice(0, 2);
-      return /^\d{4}-\d{2}-\d{2}$/.test(value) ? value : '';
+      if (typeof window.parseVehicleDateRawToIso !== 'function') return '';
+      return window.parseVehicleDateRawToIso(rawDate) || '';
     }
 
     function getZorunluEvraklarAuthToken() {

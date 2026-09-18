@@ -1026,6 +1026,31 @@
   function formatDateForDisplay(date) { return (typeof window.formatDateShort === 'function' ? window.formatDateShort(date) : (date ? (date instanceof Date ? (String(date.getDate()).padStart(2, '0') + '/' + String(date.getMonth() + 1).padStart(2, '0') + '/' + date.getFullYear()) : String(date)) : '')); }
 
   /**
+   * Tek kaynak: gg/aa/yyyy strict parse + gerçek takvim tarihi kontrolü.
+   * Policy (boş tarih / gelecek tarih) çağıran validator'larda kalır.
+   *
+   * @param {string} dateStr - gg/aa/yyyy formatında tarih metni
+   * @returns {{formatValid: boolean, calendarValid: boolean, date: (Date|null)}}
+   */
+  function parseGgAaYyyyStrict(dateStr) {
+    const match = dateStr.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+
+    if (!match) {
+      return { formatValid: false, calendarValid: false, date: null };
+    }
+
+    const day = parseInt(match[1], 10);
+    const month = parseInt(match[2], 10);
+    const year = parseInt(match[3], 10);
+
+    // Tarih geçerliliği kontrolü
+    const date = new Date(year, month - 1, day);
+    const calendarValid = date.getDate() === day && date.getMonth() === month - 1 && date.getFullYear() === year;
+
+    return { formatValid: true, calendarValid: calendarValid, date: date };
+  }
+
+  /**
    * gg/aa/yyyy formatını validate eder
    *
    * @param {string} dateStr - Validasyon yapılacak tarih (gg/aa/yyyy formatında)
@@ -1036,20 +1061,13 @@
       return { valid: false, message: 'Tarih boş olamaz!' };
     }
 
-    const datePattern = /^(\d{2})\/(\d{2})\/(\d{4})$/;
-    const match = dateStr.match(datePattern);
+    const parsed = parseGgAaYyyyStrict(dateStr);
 
-    if (!match) {
+    if (!parsed.formatValid) {
       return { valid: false, message: 'Geçersiz tarih formatı! (gg/aa/yyyy)' };
     }
 
-    const day = parseInt(match[1], 10);
-    const month = parseInt(match[2], 10);
-    const year = parseInt(match[3], 10);
-
-    // Tarih geçerliliği kontrolü
-    const date = new Date(year, month - 1, day);
-    if (date.getDate() !== day || date.getMonth() !== month - 1 || date.getFullYear() !== year) {
+    if (!parsed.calendarValid) {
       return { valid: false, message: 'Geçersiz tarih!' };
     }
 
@@ -1137,21 +1155,13 @@
       return { valid: true, message: '' }; // Boş tarih geçerli (opsiyonel)
     }
 
-    // Format kontrolü (gg/aa/yyyy)
-    const datePattern = /^(\d{2})\/(\d{2})\/(\d{4})$/;
-    const match = dateStr.match(datePattern);
+    const parsed = parseGgAaYyyyStrict(dateStr);
 
-    if (!match) {
+    if (!parsed.formatValid) {
       return { valid: false, message: 'Geçersiz tarih formatı! (gg/aa/yyyy)' };
     }
 
-    const day = parseInt(match[1], 10);
-    const month = parseInt(match[2], 10);
-    const year = parseInt(match[3], 10);
-
-    // Tarih geçerliliği kontrolü
-    const date = new Date(year, month - 1, day);
-    if (date.getDate() !== day || date.getMonth() !== month - 1 || date.getFullYear() !== year) {
+    if (!parsed.calendarValid) {
       return { valid: false, message: 'Geçersiz tarih!' };
     }
 
@@ -1159,7 +1169,7 @@
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    if (date > today) {
+    if (parsed.date > today) {
       return { valid: false, message: 'Gelecek bir tarih girilemez!' };
     }
 

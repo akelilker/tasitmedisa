@@ -535,9 +535,6 @@ body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-
 #notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request:not(.date-warning-red-border):not(.date-warning-orange-border) .notif-line1 .date-warning-orange {
   color: #22c55e !important;
 }
-#notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request.notification-read:not(.date-warning-red-border):not(.date-warning-orange-border) .notif-line1 .notif-read-text {
-  color: rgba(34, 197, 94, 0.78) !important;
-}
 
 #notifications-dropdown.settings-dropdown > button.notification-item .notif-line1 .notif-read-text {
   color: var(--notif-fg, #9a9a9a) !important;

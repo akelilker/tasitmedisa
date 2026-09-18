@@ -1459,10 +1459,6 @@
 
 /* Ruhsat icerigi dinamik-olay-modal icinde: hizalama ve dropzone kutusu */
 #dinamik-olay-modal #ruhsat-modal-content {
-  max-width: 390px;
-  width: 100%;
-  margin-left: auto;
-  margin-right: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
