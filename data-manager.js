@@ -1980,6 +1980,17 @@ function isAssignableNormalUserCandidate(user, _branchIdIgnored) {
     return true;
 }
 
+/**
+ * Taşıt tahsis adayları: rolünden bağımsız, yalnız aktif ve kimliği olan kullanıcı.
+ * Ceza/olay sürücü seçimi normal-kullanıcı helper'ını kullanmaya devam eder.
+ * @param {*} user
+ */
+function isAssignableVehicleUserCandidate(user) {
+    var normalized = normalizeUser(user);
+    if (!normalized || !normalized.id) return false;
+    return normalized.aktif !== false;
+}
+
 /** Kullanıcının canonical / primary şube id'si (normalizeUser.branchId). */
 function getUserCanonicalBranchId(user) {
     var normalized = normalizeUser(user);
@@ -2448,6 +2459,7 @@ window.getMedisaCollectionSnapshot = function(kind) {
 };
 window.normalizeUsers = normalizeUsers;
 window.isAssignableNormalUserCandidate = isAssignableNormalUserCandidate;
+window.isAssignableVehicleUserCandidate = isAssignableVehicleUserCandidate;
 window.getUserCanonicalBranchId = getUserCanonicalBranchId;
 window.getUserBranchIds = getUserBranchIds;
 window.needsVehicleBranchTransferForAssignment = needsVehicleBranchTransferForAssignment;

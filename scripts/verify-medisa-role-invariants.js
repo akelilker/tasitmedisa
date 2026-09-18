@@ -192,18 +192,21 @@ assert(
   'Report projection BM için yalnız kullanici + scope + self hariç olmalı'
 );
 assert(
-  'assignable_normal_user_candidate_helper',
+  'assignable_user_candidate_helpers',
   /function isAssignableNormalUserCandidate/.test(dm)
-    && /window\.isAssignableNormalUserCandidate/.test(dm),
-  'Taşıt/ceza adayları merkezi normal-kullanıcı helper kullanmalı'
+    && /window\.isAssignableNormalUserCandidate/.test(dm)
+    && /function isAssignableVehicleUserCandidate/.test(dm)
+    && /window\.isAssignableVehicleUserCandidate/.test(dm),
+  'Ceza/olay ve taşıt tahsisi için ayrı merkezi aday helperları olmalı'
 );
 
 const tasitlar = read('tasitlar.js');
 assert(
   'vehicle_assign_uses_assignable_helper',
   /getAssignableUsersForVehicle/.test(tasitlar)
+    && /isAssignableVehicleUserCandidate/.test(tasitlar)
     && /isAssignableNormalUserCandidate/.test(tasitlar),
-  'Tahsis ve ceza listeleri yönetici adaylarını elemiş olmalı'
+  'Tahsis aktif tüm kullanıcıları, ceza listesi yalnız normal kullanıcıları kullanmalı'
 );
 
 assert(

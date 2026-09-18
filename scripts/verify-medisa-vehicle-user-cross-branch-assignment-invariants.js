@@ -129,6 +129,7 @@ function createCtx() {
   await run('source_exports_cross_branch_helpers', async function() {
     const dm = read('data-manager.js');
     assert.match(dm, /function isAssignableNormalUserCandidate/);
+    assert.match(dm, /function isAssignableVehicleUserCandidate/);
     assert.match(dm, /function getUserCanonicalBranchId/);
     assert.match(dm, /function needsVehicleBranchTransferForAssignment/);
     assert.match(dm, /function applyVehicleBranchTransferForUserAssignment/);
@@ -142,7 +143,7 @@ function createCtx() {
       dm,
       /Atamak İstenilen Kullanıcı, Farklı Şubeye Kayıtlıdır\. Taşıtın Tahsisli Olduğu Şubeyi Güncellemeniz Gerekli\. Onaylıyor Musunuz\?/
     );
-    const start = dm.indexOf('function isAssignableNormalUserCandidate');
+    const start = dm.indexOf('function isAssignableVehicleUserCandidate');
     const end = dm.indexOf('function getUserCanonicalBranchId');
     assert.ok(start >= 0 && end > start);
     assert.doesNotMatch(dm.slice(start, end), /arrayHasId\(getUserBranchIds/);
@@ -167,6 +168,7 @@ function createCtx() {
     assert.ok(start >= 0 && end > start);
     const block = tasitlar.slice(start, end);
     assert.doesNotMatch(block, /vehicleBranchId/);
+    assert.match(block, /isAssignableVehicleUserCandidate/);
     assert.match(block, /candidateFn\(user\)/);
   });
 
@@ -443,6 +445,7 @@ function createCtx() {
     assert.ok(assignStart >= 0 && assignEnd > assignStart);
     const assignBlock = tasitlar.slice(assignStart, assignEnd);
     assert.doesNotMatch(assignBlock, /vehicleBranchId/);
+    assert.match(assignBlock, /isAssignableVehicleUserCandidate/);
     assert.match(assignBlock, /candidateFn\(user\)/);
 
     const eventStart = tasitlar.indexOf('function getSelectableUsersForVehicleEvent');
@@ -450,6 +453,7 @@ function createCtx() {
     assert.ok(eventStart >= 0 && eventEnd > eventStart);
     const eventBlock = tasitlar.slice(eventStart, eventEnd);
     assert.match(eventBlock, /vehicleBranchId/);
+    assert.match(eventBlock, /isAssignableNormalUserCandidate/);
     assert.match(eventBlock, /getUserBranchIds/);
     assert.match(eventBlock, /ids\.indexOf\(vehicleBranchId\) !== -1/);
 
@@ -466,7 +470,7 @@ function createCtx() {
     const w = ctx.window;
     const vehicle = { id: 'v1', branchId: 'medisa', assignedUserId: '' };
     const user = { id: 'u1', role: 'kullanici', branchId: 'medisa', branchIds: ['medisa'], aktif: true };
-    assert.equal(w.isAssignableNormalUserCandidate(user), true);
+    assert.equal(w.isAssignableVehicleUserCandidate(user), true);
     assert.equal(w.needsVehicleBranchTransferForAssignment(vehicle, user), false);
   });
 
@@ -475,7 +479,7 @@ function createCtx() {
     const w = ctx.window;
     const vehicle = { id: 'v1', branchId: 'karyapi', assignedUserId: 'old' };
     const user = { id: 'u1', role: 'kullanici', branchId: 'medisa', branchIds: ['medisa'], aktif: true };
-    assert.equal(w.isAssignableNormalUserCandidate(user, 'karyapi'), true);
+    assert.equal(w.isAssignableVehicleUserCandidate(user), true);
     assert.equal(w.needsVehicleBranchTransferForAssignment(vehicle, user), true);
     assert.equal(vehicle.branchId, 'karyapi');
     assert.equal(vehicle.assignedUserId, 'old');
@@ -507,14 +511,16 @@ function createCtx() {
 
   await run('CASE5_inactive_user_not_assignable', async function() {
     const ctx = createCtx();
-    assert.equal(ctx.window.isAssignableNormalUserCandidate({
+    assert.equal(ctx.window.isAssignableVehicleUserCandidate({
       id: 'u1', role: 'kullanici', branchIds: ['medisa'], aktif: false
     }), false);
   });
 
-  await run('CASE6_non_normal_role_not_assignable', async function() {
+  await run('CASE6_active_manager_is_vehicle_assignable_but_not_event_driver', async function() {
     const ctx = createCtx();
     const w = ctx.window;
+    assert.equal(w.isAssignableVehicleUserCandidate({ id: 'bm', role: 'sube_yonetici', aktif: true }), true);
+    assert.equal(w.isAssignableVehicleUserCandidate({ id: 'gm', role: 'genel_yonetici', aktif: true }), true);
     assert.equal(w.isAssignableNormalUserCandidate({ id: 'bm', role: 'sube_yonetici', aktif: true }), false);
     assert.equal(w.isAssignableNormalUserCandidate({ id: 'gm', role: 'genel_yonetici', aktif: true }), false);
   });

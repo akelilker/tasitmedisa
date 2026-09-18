@@ -645,6 +645,17 @@ function setBaseline(ctx, data) {
     assert.equal(fn({ id: 'u5', role: 'kullanici', branchIds: ['b2'], aktif: true }), true);
   });
 
+  await run('assignable vehicle user candidate includes active managers', async function() {
+    const ctx = createCtx();
+    const fn = ctx.window.isAssignableVehicleUserCandidate;
+    assert.equal(typeof fn, 'function');
+    assert.equal(fn({ id: 'u1', role: 'kullanici', aktif: true }), true);
+    assert.equal(fn({ id: 'bm1', role: 'sube_yonetici', aktif: true }), true);
+    assert.equal(fn({ id: 'gm1', role: 'genel_yonetici', aktif: true }), true);
+    assert.equal(fn({ id: 'inactive', role: 'genel_yonetici', aktif: false }), false);
+    assert.equal(fn({ role: 'genel_yonetici', aktif: true }), false);
+  });
+
   await run('central auth status helper exists', async function() {
     const src = read('data-manager.js');
     assert.match(src, /function handleMedisaHttpAuthStatus/);

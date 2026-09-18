@@ -249,20 +249,16 @@
   function readUsers() { return (typeof window.getMedisaUsers === 'function' ? window.getMedisaUsers() : null) || []; }
   function getAssignableUsersForVehicle(vehicle) {
     const users = readUsers();
-    const candidateFn = typeof window.isAssignableNormalUserCandidate === 'function'
-      ? window.isAssignableNormalUserCandidate
+    const candidateFn = typeof window.isAssignableVehicleUserCandidate === 'function'
+      ? window.isAssignableVehicleUserCandidate
       : null;
 
     return users.filter(function(user) {
       if (candidateFn) {
         return candidateFn(user);
       }
-      // Fallback: script-core rol map + aktif (şube arama filtresi yok)
-      const roleRaw = user && (user.role || user.rol || user.tip);
-      const role = typeof window.medisaMapUiRoleToRol === 'function'
-        ? window.medisaMapUiRoleToRol(roleRaw)
-        : String(roleRaw || 'kullanici');
-      if (role !== 'kullanici') return false;
+      // Fallback: tahsis rol bağımsızdır; yalnız kimlikli aktif kullanıcılar gösterilir.
+      if (!user || !String(user.id || '').trim()) return false;
       if (user && user.aktif === false) return false;
       return true;
     });
@@ -10147,8 +10143,8 @@
     const user = users.find(u => String(u.id) === String(yeniKullaniciId));
     const eskiKullaniciId = vehicle.assignedUserId || '';
     const eskiUser = users.find(u => String(u.id) === String(eskiKullaniciId));
-    const isAssignableFn = typeof window.isAssignableNormalUserCandidate === 'function'
-      ? window.isAssignableNormalUserCandidate
+    const isAssignableFn = typeof window.isAssignableVehicleUserCandidate === 'function'
+      ? window.isAssignableVehicleUserCandidate
       : null;
     if (!user || (isAssignableFn && !isAssignableFn(user))) {
       alert('Seçilen kullanıcı atamaya uygun değil.');
