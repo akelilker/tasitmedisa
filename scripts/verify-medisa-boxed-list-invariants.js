@@ -90,7 +90,7 @@ check(
   /max-height:\s*36px\s*!important/.test(mobileUserEditGeometryBlock) &&
   /box-sizing:\s*border-box/.test(mobileUserEditGeometryBlock) &&
   /\.medisa-boxed-select-menu[\s\S]*?max-height:\s*260px[\s\S]*?padding:\s*2px 10px/.test(styleCore) &&
-  /\.medisa-boxed-select-option[\s\S]*?min-height:\s*38px[\s\S]*?border-radius:\s*6px/.test(styleCore),
+  /\.medisa-boxed-select-option[\s\S]*?min-height:\s*27px[\s\S]*?border-radius:\s*6px/.test(styleCore),
   'canonical trigger geometry is natural globally and fixed only for mobile user edit'
 );
 
