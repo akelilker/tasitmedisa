@@ -21,6 +21,7 @@ assert.match(ayarlar, /id="required-documents-modal"[\s\S]*?aria-label="Ayarlar"
 assert.match(ayarlar, /id="required-documents-modal"[\s\S]*?universal-back-label">Ayarlar</);
 assert.doesNotMatch(ayarlar, /universal-back-label">Şubeler</);
 assert.doesNotMatch(ayarlar, /onclick="backToZorunluEvrakBranchList\(event\)"/);
+assert.doesNotMatch(ayarlar, /window\.backToZorunluEvrakBranchList\s*=/);
 assert.doesNotMatch(ayarlar, /select.*VKN|vergiNo/i);
 assert.match(ayarlar, /window\.open\('about:blank', '_blank'\)/);
 assert.match(ayarlar, /blankTab\.location\.href = targetUrl/);

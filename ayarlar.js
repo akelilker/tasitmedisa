@@ -1471,14 +1471,6 @@
       pushSettingsHistoryLayer('settings-required-docs');
     };
 
-    window.backToZorunluEvrakBranchList = function backToZorunluEvrakBranchList(event) {
-      if (event) event.preventDefault();
-      showRequiredDocumentBranchList();
-      if (!settingsHistorySync) {
-        try { history.back(); } catch (err) {}
-      }
-    };
-
     window.closeZorunluEvraklar = function closeZorunluEvraklar(options) {
       const modal = document.getElementById('required-documents-modal');
       if (!modal) return;
