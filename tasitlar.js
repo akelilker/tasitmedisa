@@ -6205,7 +6205,7 @@
 
   var ruhsatPreviewCache = new Map();
 
-  function getRuhsatPreviewCacheKey(vehicleId, ruhsatUrl, documentType) {
+  function buildRuhsatCacheKey(vehicleId, ruhsatUrl, documentType) {
     const rawId = String(vehicleId || window.currentDetailVehicleId || '').trim();
     const absoluteUrl = toAbsoluteRuhsatUrl(ruhsatUrl);
     const dt = String(documentType || 'ruhsat').trim() || 'ruhsat';
@@ -6251,7 +6251,7 @@
 
   function fetchRuhsatPreviewObjectUrl(vehicleId, ruhsatUrl, documentType) {
     const dt = documentType || 'ruhsat';
-    const cacheKey = getRuhsatPreviewCacheKey(vehicleId, ruhsatUrl, dt);
+    const cacheKey = buildRuhsatCacheKey(vehicleId, ruhsatUrl, dt);
     const previewUrl = buildRuhsatPreviewUrl(vehicleId, dt);
     if (!cacheKey || !previewUrl) {
       return Promise.reject(new Error('preview-key-missing'));
@@ -6353,17 +6353,6 @@
       pdfStagingPromise: null,
       pdfPrintPageObjectUrls: []
     };
-  }
-
-  function getRuhsatDocumentCacheKey(vehicleId, ruhsatUrl, documentType) {
-    const rawId = String(vehicleId || window.currentDetailVehicleId || '').trim();
-    const absoluteUrl = toAbsoluteRuhsatUrl(ruhsatUrl);
-    const dt = String(documentType || 'ruhsat').trim() || 'ruhsat';
-    if (!rawId || !absoluteUrl) return '';
-    var appTasitlar = window.appData && Array.isArray(window.appData.tasitlar) ? window.appData.tasitlar : [];
-    var fv = appTasitlar.find(function(x) { return String(x.id) === rawId; });
-    var verSeg = fv && fv.version != null ? String(Number(fv.version) || 1) : '1';
-    return rawId + '::' + dt + '::' + verSeg + '::' + absoluteUrl;
   }
 
   function classifyVehicleDocumentMime(contentType, blobType) {
@@ -6521,7 +6510,7 @@
   function fetchRuhsatDocumentEntry(vehicleId, ruhsatUrl, documentType, opts) {
     syncMedisaDocumentAuthCacheContext();
     const dt = documentType || 'ruhsat';
-    const cacheKey = getRuhsatDocumentCacheKey(vehicleId, ruhsatUrl, dt);
+    const cacheKey = buildRuhsatCacheKey(vehicleId, ruhsatUrl, dt);
     const documentUrl = buildRuhsatDocumentUrl(vehicleId, dt);
     if (!cacheKey || !documentUrl) {
       return Promise.reject(new Error('document-key-missing'));
@@ -6628,7 +6617,7 @@
   }
 
   function getCachedRuhsatDocumentObjectUrl(vehicleId, ruhsatUrl, documentType) {
-    const cacheKey = getRuhsatDocumentCacheKey(vehicleId, ruhsatUrl, documentType || 'ruhsat');
+    const cacheKey = buildRuhsatCacheKey(vehicleId, ruhsatUrl, documentType || 'ruhsat');
     const entry = cacheKey ? ruhsatDocumentCache.get(cacheKey) : null;
     return entry && entry.objectUrl ? entry.objectUrl : '';
   }
@@ -6937,7 +6926,7 @@
       return preloadIosPwaImageDocument(vehicleId, documentPath, dt);
     }
     var pdfUrl = buildRuhsatDocumentUrl(vehicleId, dt) || toAbsoluteRuhsatUrl(documentPath);
-    var cacheKey = getRuhsatDocumentCacheKey(vehicleId, pdfUrl, dt);
+    var cacheKey = buildRuhsatCacheKey(vehicleId, pdfUrl, dt);
     if (!cacheKey) return Promise.resolve();
     var entry = ruhsatDocumentCache.get(cacheKey) || createRuhsatDocumentCacheEntry();
     if (entry.printPromise || entry.pdfStagingPromise) {
@@ -7323,7 +7312,7 @@
 
     function runPrintAction() {
       if (printBusy || isStale()) return;
-      var cacheKey = getRuhsatDocumentCacheKey(vid, documentUrl, dt);
+      var cacheKey = buildRuhsatCacheKey(vid, documentUrl, dt);
       if (printReady) {
         var pages = getReadyIosPwaPdfPrintPageUrls(cacheKey);
         if (cachedEntry && cachedEntry.kind === 'image' && cachedEntry.objectUrl) {
@@ -7576,7 +7565,7 @@
     }
 
     if (useIosManualPrintPreview && !isImage) {
-      var iosPwaPdfCacheKey = getRuhsatDocumentCacheKey(vehicleId, documentUrl, dt);
+      var iosPwaPdfCacheKey = buildRuhsatCacheKey(vehicleId, documentUrl, dt);
       var readyIosPwaPdfPageUrls = getReadyIosPwaPdfPrintPageUrls(iosPwaPdfCacheKey);
       if (readyIosPwaPdfPageUrls) {
         window.openMedisaIosPwaPrintPreview(buildIosPwaPdfPrintHtml(readyIosPwaPdfPageUrls), cfg.label + ' Yazdır');
@@ -7585,7 +7574,7 @@
       // Hazırlık sürüyorsa aynı in-flight preload beklenir; kullanıcı tekrar tıklamaz.
       return preloadIosPwaPrintDocument(vehicleId, documentPath, dt).then(function() {
         if (!shouldContinuePrintAction()) return;
-        var preparedPdfPageUrls = getReadyIosPwaPdfPrintPageUrls(getRuhsatDocumentCacheKey(vehicleId, documentUrl, dt));
+        var preparedPdfPageUrls = getReadyIosPwaPdfPrintPageUrls(buildRuhsatCacheKey(vehicleId, documentUrl, dt));
         if (!preparedPdfPageUrls) {
           alert(cfg.label + ' hazırlanamadı. Bağlantınızı kontrol edip tekrar deneyin.');
           return;
