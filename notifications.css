@@ -391,16 +391,6 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
  * (ikon satırı dahil) flu gösterir — çocuk z-index ile kurtulmaz.
  * Flu yalnızca .hero ve #main-menu üzerinde (ikon satırıyla kardeş).
  */
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page)::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0;
-  z-index: 10040;
-  transition: opacity 0.18s ease;
-}
-
 body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-page)::before{
   opacity: 0 !important;
   background: transparent !important;

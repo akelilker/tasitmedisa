@@ -848,10 +848,6 @@
   align-items: stretch;
 }
 
-#dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack > div {
-  width: 100%;
-}
-
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack .form-label {
   display: block;
   width: 100%;

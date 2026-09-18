@@ -1153,13 +1153,6 @@
     scrollbar-width: none;
 }
 
-/* Şube Düzenle / Kullanıcı Düzenle: sağdan soldan belirgin boşluk (sarı kutu gibi) */
-#branch-form-modal .modal-body,
-#user-form-modal .modal-body {
-    padding-left: 16px !important;
-    padding-right: 16px !important;
-}
-
 /* Ayarlar içi bölümler: sola kaymayı önle, sol/sağ eşit; üstte çift padding birikimini kıs */
 #branch-modal .modal-body > div {
     box-sizing: border-box;
