@@ -228,38 +228,42 @@ test('source: arşiv ve satış sözleşmesi helperları modül içinde kalır',
   );
 });
 
-test('source: tarihçe satis chip Satış/Pert ayrımı', function() {
-  assert.match(tasitlar, /function getHistoryEventTypeLabel\(eventType,\s*event\)/);
-  assert.match(tasitlar, /getHistoryEventTypeLabel\(eventType,\s*event\)/);
-  const labelFn = extractBetween(
+test('behavior: tarihçe satış/pert ayrımı canonical Diğer renderer ownerında', function() {
+  assert.doesNotMatch(tasitlar, /function getHistoryEventTypeLabel\(/);
+  const renderer = extractBetween(
     tasitlar,
-    'function getHistoryEventTypeLabel(eventType, event) {',
-    'window.showVehicleHistory = function'
-  );
-  const documentLabelOwner = extractBetween(
-    tasitlar,
-    'const VEHICLE_DOCUMENT_UPLOAD_EVENT_LABELS = {',
-    'function getVehicleDocumentConfig(documentType) {'
+    'function renderHistoryDigerEventHtml(event, vehicle, branches) {',
+    'function refreshOpenVehicleHistoryList'
   );
   const sandbox = {
-    toTitleCase: function(s) { return String(s || ''); }
+    Date,
+    String,
+    escapeHtml: (value) => String(value == null ? '' : value),
+    formatDateForDisplay: (value) => String(value || ''),
+    formatHistoryPerformerUpper: (value) => String(value || '').toUpperCase(),
+    getRecorderDisplayName: () => 'TEST USER',
+    getVehicleDocumentUploadEventLabel: () => '',
+    historyDetailPartsHtml: () => '',
+    historyEventDatetimeAttr: () => '',
+    toTitleCase: (value) => String(value || ''),
+    window: { formatPlaka: (value) => String(value || '') }
   };
   vm.createContext(sandbox);
-  vm.runInContext(documentLabelOwner + labelFn + '\n;this.getHistoryEventTypeLabel = getHistoryEventTypeLabel;', sandbox);
-  assert.equal(
-    sandbox.getHistoryEventTypeLabel('satis', { data: { arsivNedeni: 'satis' } }),
-    'Satış'
+  vm.runInContext(renderer + '\n;this.renderHistoryDigerEventHtml = renderHistoryDigerEventHtml;', sandbox);
+
+  const vehicle = { plate: '78 TEST 001' };
+  const pertHtml = sandbox.renderHistoryDigerEventHtml(
+    { type: 'satis', date: '2026-09-18', data: { arsivNedeni: 'pert', kaydeden: 'Tester' } },
+    vehicle,
+    []
   );
-  assert.equal(
-    sandbox.getHistoryEventTypeLabel('satis', { data: { arsivNedeni: 'pert' } }),
-    'Pert'
+  const soldHtml = sandbox.renderHistoryDigerEventHtml(
+    { type: 'satis', date: '2026-09-18', data: { arsivNedeni: 'satis', kaydeden: 'Tester' } },
+    vehicle,
+    []
   );
-  assert.equal(
-    sandbox.getHistoryEventTypeLabel('satis', { data: { pertIsaret: true } }),
-    'Pert'
-  );
-  assert.equal(sandbox.getHistoryEventTypeLabel('satis', { data: {} }), 'Satış');
-  assert.equal(sandbox.getHistoryEventTypeLabel('satis-sozlesmesi-yukle'), 'Satış Sözleşmesi');
+  assert.match(pertHtml, /Pert Olduğunu Sisteme Kaydetti/);
+  assert.match(soldHtml, /Satıldığını Bildirdi/);
 });
 
 test('UI keys: kart stoktan düşen satış ve pertte üretilir', function() {

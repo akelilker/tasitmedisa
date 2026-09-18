@@ -855,33 +855,6 @@
       return /^\d{4}-\d{2}-\d{2}$/.test(value) ? value : '';
     }
 
-    function zorunluEvrakVehicleNeedsK2(vehicle) {
-      const typeKey = String((vehicle && (vehicle.vehicleType || vehicle.tip)) || '').trim().toLowerCase();
-      return typeKey === 'minivan' || typeKey === 'kamyon' || typeKey === 'romork';
-    }
-
-    function isZorunluEvrakVehicleActive(vehicle) {
-      if (!vehicle || typeof vehicle !== 'object') return false;
-      return vehicle.satildiMi !== true
-        && vehicle.arsiv !== true
-        && vehicle.pasif !== true
-        && vehicle.aktif !== false
-        && vehicle.aktifMi !== false
-        && String(vehicle.durum || '').trim().toLowerCase() !== 'pasif';
-    }
-
-    function syncActiveVehicleTasitKartiExpiryWithK2(isoDate) {
-      if (!window.appData || !Array.isArray(window.appData.tasitlar)) return 0;
-      let syncedCount = 0;
-      window.appData.tasitlar.forEach(function(vehicle) {
-        if (!isZorunluEvrakVehicleActive(vehicle) || !zorunluEvrakVehicleNeedsK2(vehicle)) return;
-        if (String(vehicle.tasitKartiExpiryDate || '') === isoDate) return;
-        vehicle.tasitKartiExpiryDate = isoDate;
-        syncedCount += 1;
-      });
-      return syncedCount;
-    }
-
     function getZorunluEvraklarAuthToken() {
       if (typeof window.getStoredPortalToken === 'function') {
         const token = window.getStoredPortalToken();
@@ -4481,10 +4454,6 @@
     /* medisa-import-sot:begin */
     // Aynı sayfa/browser context — ikinci tab / diğer kullanıcı korunmaz.
     var importInFlight = false;
-
-    function isImportTransactionInFlight() {
-      return importInFlight === true;
-    }
 
     function tryBeginImportTransaction() {
       if (importInFlight) return false;

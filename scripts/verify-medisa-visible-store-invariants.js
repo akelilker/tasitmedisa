@@ -437,15 +437,12 @@ function runStaticTests() {
     assert.match(dataServiceSource, /async function saveVehiclesList/);
   });
 
-  test('31 K2 toplu sync clone/write-once owner', function() {
-    // K2 sync bu recovery kapsamı dışı; current main'de fonksiyon yoksa veya farklı owner varsa geç.
+  test('31 K2 toplu sync canonical backend owner', function() {
+    const core = read('core.php');
     const ayarlar = read('ayarlar.js');
-    if (!/function\s+syncActiveVehicleTasitKartiExpiryWithK2\s*\(/.test(ayarlar)) {
-      assert.ok(true);
-      return;
-    }
-    const fn = extractFunctionSource(ayarlar, 'syncActiveVehicleTasitKartiExpiryWithK2');
-    assert.ok(typeof fn === 'string' && fn.length > 20);
+    assert.match(core, /function\s+medisaSyncTasitKartiExpiryForK2Branches\s*\(/);
+    assert.match(core, /function\s+medisaApplyK2BelgeGroupMutation[\s\S]{0,7000}medisaSyncTasitKartiExpiryForK2Branches\(/);
+    assert.doesNotMatch(ayarlar, /function\s+syncActiveVehicleTasitKartiExpiryWithK2\s*\(/);
   });
 
   test('32 Kasko toplu sync clone/write-once owner', function() {
@@ -457,14 +454,11 @@ function runStaticTests() {
     assert.match(fn, /getMedisaVehicles|writeVehicles|saveVehiclesList/);
   });
 
-  test('33 no-op K2 writeVehicles çağrısı guard', function() {
+  test('33 K2 kayıt akışı canonical server mutation owner kullanır', function() {
     const ayarlar = read('ayarlar.js');
-    if (!/function\s+syncActiveVehicleTasitKartiExpiryWithK2\s*\(/.test(ayarlar)) {
-      assert.ok(true);
-      return;
-    }
-    const fn = extractFunctionSource(ayarlar, 'syncActiveVehicleTasitKartiExpiryWithK2');
-    assert.ok(fn.length > 0);
+    const endpoint = read('required_documents.php');
+    assert.match(ayarlar, /fetch\('required_documents\.php'/);
+    assert.match(endpoint, /medisaApplyK2BelgeGroupMutation\(/);
   });
 
   test('34 no-op kasko writeVehicles çağrısı guard', function() {

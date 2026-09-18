@@ -1329,19 +1329,6 @@ function medisaUserBranchesWithinScope($user, $allowedBranchIds) {
     return true;
 }
 
-function medisaCanViewBranchRecord($branch, $context) {
-    $role = $context['role'] ?? 'kullanici';
-    if ($role === 'genel_yonetici') {
-        return true;
-    }
-
-    if (!is_array($branch) || !isset($branch['id'])) {
-        return false;
-    }
-
-    return medisaArrayHasId($context['branch_ids'] ?? [], $branch['id']);
-}
-
 function medisaCanViewVehicleRecord($vehicle, $context) {
     $role = $context['role'] ?? 'kullanici';
     if ($role === 'genel_yonetici') {
@@ -2049,10 +2036,6 @@ function medisaSaveEnsureScopedRecordsAreAllowed($incomingItems, $context, $canM
 
 function medisaSaveEnsureScopedVehiclesAreAllowed($incomingVehicles, $context) {
     return medisaSaveEnsureScopedRecordsAreAllowed($incomingVehicles, $context, 'medisaCanManageVehicleRecord');
-}
-
-function medisaSaveEnsureScopedUsersAreAllowed($incomingUsers, $context) {
-    return medisaSaveEnsureScopedRecordsAreAllowed($incomingUsers, $context, 'medisaCanManageUserRecord');
 }
 
 function medisaSaveIndexUsersById($users) {

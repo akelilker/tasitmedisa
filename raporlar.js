@@ -569,7 +569,6 @@
 
         // Bugünün tarihini formatla (gg/aa/yyyy)
         const today = new Date();
-        const todayStr = `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear()}`;
         const todayInputValue = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
         const hasDetailColumns = Object.values(stokActiveColumns).some(Boolean);
         const hasMuayeneEgzozSplit = !!stokActiveColumns.muayene;
@@ -1355,7 +1354,6 @@
 
     // Detay sütun ekleme/çıkarma
     window.toggleStokDetailColumn = function(columnKey) {
-        const wasActive = stokActiveColumns[columnKey];
         stokActiveColumns[columnKey] = !stokActiveColumns[columnKey];
 
         if (stokActiveColumns[columnKey] && !stokColumnOrder.includes(columnKey)) {

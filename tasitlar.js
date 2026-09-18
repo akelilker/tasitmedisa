@@ -5982,19 +5982,6 @@
     }
   }
 
-  /** iOS PWA original download: authorize edilmiş ruhsat.php URL'sine attachment modu ekler (auth/path owner aynı). */
-  function appendOriginalDocumentDownloadMode(rawUrl) {
-    const base = String(rawUrl || '').trim();
-    if (!base) return '';
-    try {
-      const u = new URL(base, window.location.href);
-      u.searchParams.set('download', '1');
-      return u.toString();
-    } catch (e) {
-      return base + (base.indexOf('?') === -1 ? '?' : '&') + 'download=1';
-    }
-  }
-
   function mintMedisaDocumentToken(vehicleId, documentType) {
     const dt = String(documentType || 'ruhsat').trim() || 'ruhsat';
     const cfg = getVehicleDocumentConfig(dt);
@@ -6758,27 +6745,6 @@
     const dt = documentType || 'ruhsat';
     const preloadUrl = buildRuhsatDocumentUrl(vehicleId, dt) || toAbsoluteRuhsatUrl(documentPath);
     return fetchRuhsatDocumentObjectUrl(vehicleId, preloadUrl, dt).catch(function() {});
-  }
-
-  function buildRuhsatPreviewPageUrl(vehicleId, documentType, pageIndex, metaOnly) {
-    var baseUrl = buildRuhsatPreviewUrl(vehicleId, documentType || 'ruhsat');
-    if (!baseUrl) return '';
-    try {
-      var previewUrl = new URL(baseUrl, window.location.href);
-      if (metaOnly) {
-        previewUrl.searchParams.set('meta', '1');
-        previewUrl.searchParams.delete('page');
-      } else {
-        previewUrl.searchParams.delete('meta');
-        previewUrl.searchParams.set('page', String(Math.max(0, Number(pageIndex) || 0)));
-      }
-      return previewUrl.toString();
-    } catch (previewUrlErr) {
-      if (metaOnly) {
-        return baseUrl + (baseUrl.indexOf('?') === -1 ? '?' : '&') + 'meta=1';
-      }
-      return baseUrl + (baseUrl.indexOf('?') === -1 ? '?' : '&') + 'page=' + encodeURIComponent(String(Math.max(0, Number(pageIndex) || 0)));
-    }
   }
 
   function buildIosPwaPdfPrintHtml(pageUrls) {
@@ -10629,46 +10595,6 @@
       }
     }
     return '';
-  }
-
-  function getHistoryEventTypeLabel(eventType, event) {
-    const map = {
-      bakim: 'Bakım',
-      kaza: 'Kaza',
-      'km-revize': 'KM',
-      'anahtar-guncelle': 'Yedek Anahtar',
-      'lastik-guncelle': 'Lastik',
-      'kasko-guncelle': 'Kasko',
-      'sigorta-guncelle': 'Sigorta',
-      'takograf-kalibrasyon-guncelle': 'Takograf',
-      'tasit-karti-guncelle': 'Taşıt Kartı',
-      'muayene-guncelle': 'Muayene',
-      muayene: 'Muayene',
-      'muayene-yenileme': 'Muayene',
-      'kullanici-atama': 'Kullanıcı Atama',
-      'sube-degisiklik': 'Şube',
-      'kredi-guncelle': 'Hak Mahrumiyeti',
-      'utts-guncelle': 'UTTS',
-      'takip-cihaz-guncelle': 'Arvento',
-      ceza: 'Trafik Cezası',
-      'driver-feedback': 'Kullanıcı Talebi',
-      'not-guncelle': 'Not',
-      satis: 'Satış',
-      'kasko-kodu-guncelle': 'Kasko Kodu'
-    };
-    const key = String(eventType || '').trim();
-    if (key === 'satis') {
-      const data = (event && event.data && typeof event.data === 'object') ? event.data : {};
-      const eventNeden = String(data.arsivNedeni || '').trim().toLowerCase();
-      if (eventNeden === 'pert'
-        || (eventNeden !== 'satis' && data.pertIsaret === true)) {
-        return 'Pert';
-      }
-      return 'Satış';
-    }
-    if (VEHICLE_DOCUMENT_UPLOAD_EVENT_LABELS[key]) return VEHICLE_DOCUMENT_UPLOAD_EVENT_LABELS[key];
-    if (map[key]) return map[key];
-    return toTitleCase(key || 'Diğer');
   }
 
   /**

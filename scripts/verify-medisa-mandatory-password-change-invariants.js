@@ -190,9 +190,13 @@ test('Zorunlu ekran güvenlik mesajını eksiksiz gösterir', () => {
   assert.match(files.dashboardHtml, /Güvenliğiniz için geçici parolanızı değiştirmeniz gerekiyor\./);
   assert.match(files.dashboardHtml, /Yeni parolanızı belirlemeden uygulamayı kullanamazsınız\./);
 });
-test('Ana shell offline snapshot öncesinde token flagini kontrol eder', () => {
+test('Ana shell server bootstrap öncesinde token flagini canonical auth gate ile kontrol eder', () => {
   assert.match(files.dataManager, /function ensureMainAppSession[\s\S]{0,700}ilk_giris_parola_degistirme_zorunlu[\s\S]{0,250}redirectToMandatoryPasswordChange/);
-  assert.match(files.dataManager, /function loadDataFromLocalStorage\(\)\s*\{\s*if\s*\(!ensureMainAppSession\(\)\)/);
+  assert.doesNotMatch(files.dataManager, /function loadDataFromLocalStorage\(/);
+  const bootStart = files.dataManager.indexOf("document.addEventListener('DOMContentLoaded', async function()");
+  assert.ok(bootStart >= 0, 'DOMContentLoaded bootstrap bulunmalı');
+  const boot = files.dataManager.slice(bootStart);
+  assert.match(boot, /if \(!ensureMainAppSession\(\)\) return;[\s\S]{0,300}await loadDataFromServer\(true\)/);
 });
 test('Ana shell zorunlu durumda auth gatei açmaz', () => {
   const requiredAt = files.dataManager.indexOf('session.ilk_giris_parola_degistirme_zorunlu === true');

@@ -191,6 +191,7 @@ test('19-21. print ayrı; Imagick iOS print zorunlu değil', function() {
     'function warmRuhsatPreview(vehicleId, ruhsatUrl, documentType) {'
   );
   assert.doesNotMatch(preload, /buildRuhsatPreviewPageUrl|ruhsat_preview\.php/);
+  assert.doesNotMatch(tasitlar, /function buildRuhsatPreviewPageUrl\(/);
   assert.match(preload, /prepareIosPdfPrintPagesFromEntry|ensureMedisaPdfJs|fetchRuhsatDocumentEntry/);
 });
 

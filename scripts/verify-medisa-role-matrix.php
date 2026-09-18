@@ -387,8 +387,6 @@ rmAssertSame('branch removal uses data branches', ['branch-c'], $branchRemovedCt
 rmAssert('branch removal hides old branch vehicle', medisaCanViewVehicleRecord(rmVehicleById($data, 'veh-a1'), $branchRemovedCtx) === false);
 
 // Branch / vehicle / user visibility — genel
-rmAssert('gm views all branches a', medisaCanViewBranchRecord(rmBranchById($data, 'branch-a'), $ctxGm) === true);
-rmAssert('gm views all branches empty', medisaCanViewBranchRecord(rmBranchById($data, 'branch-empty'), $ctxGm) === true);
 rmAssert('gm views all vehicles', medisaCanViewVehicleRecord(rmVehicleById($data, 'veh-c1'), $ctxGm) === true);
 rmAssert('gm manages all vehicles', medisaCanManageVehicleRecord(rmVehicleById($data, 'veh-c1'), $ctxGm) === true);
 rmAssert('gm views all users', medisaCanViewUserRecord($gm2, $ctxGm) === true);
@@ -396,11 +394,6 @@ rmAssert('gm manages other gm', medisaCanManageUserRecord($gm2, $ctxGm) === true
 rmAssert('gm views report users', medisaCanViewReportUserRecord($userB, $ctxGm) === true);
 
 // Branch manager scope
-rmAssert('bm views own branch', medisaCanViewBranchRecord(rmBranchById($data, 'branch-a'), $ctxBmA) === true);
-rmAssert('bm hides other branch', medisaCanViewBranchRecord(rmBranchById($data, 'branch-b'), $ctxBmA) === false);
-rmAssert('bm-ab views a', medisaCanViewBranchRecord(rmBranchById($data, 'branch-a'), $ctxBmAb) === true);
-rmAssert('bm-ab views b', medisaCanViewBranchRecord(rmBranchById($data, 'branch-b'), $ctxBmAb) === true);
-rmAssert('bm-ab hides c', medisaCanViewBranchRecord(rmBranchById($data, 'branch-c'), $ctxBmAb) === false);
 rmAssert('bm views own vehicle', medisaCanViewVehicleRecord(rmVehicleById($data, 'veh-a1'), $ctxBmA) === true);
 rmAssert('bm manages own vehicle', medisaCanManageVehicleRecord(rmVehicleById($data, 'veh-a1'), $ctxBmA) === true);
 rmAssert('bm denies other vehicle view', medisaCanViewVehicleRecord(rmVehicleById($data, 'veh-b1'), $ctxBmA) === false);
@@ -452,6 +445,8 @@ rmAssert('unknown role vehicle deny', medisaCanViewVehicleRecord(rmVehicleById($
 // Filter projections
 $filtGm = medisaFilterDataForContext($data, $ctxGm);
 $filtBm = medisaFilterDataForContext($data, $ctxBmA);
+$filtBmAb = medisaFilterDataForContext($data, $ctxBmAb);
+$filtNoBranch = medisaFilterDataForContext($data, ['role' => 'sube_yonetici', 'branch_ids' => [], 'user_id' => 'bm-a', 'user' => $bmA]);
 $filtUser = medisaFilterDataForContext($data, $ctxUserA);
 $filtReportBm = medisaFilterReportDataForContext($data, $ctxBmA);
 $filtReportUser = medisaFilterReportDataForContext($data, $ctxUserA);
@@ -467,6 +462,12 @@ rmAssert('bm no user-b', rmHasId($filtBm['users'] ?? [], 'user-b') === false);
 rmAssert('bm self hidden from user list', rmHasId($filtBm['users'] ?? [], 'bm-a') === false);
 rmAssert('bm peer hidden from user list', rmHasId($filtBm['users'] ?? [], 'bm-a2') === false);
 rmAssert('bm no branch-c', rmHasId($filtBm['branches'] ?? [], 'branch-c') === false);
+rmAssert('bm filter has own branch-a', rmHasId($filtBm['branches'] ?? [], 'branch-a') === true);
+rmAssert('bm filter hides branch-b', rmHasId($filtBm['branches'] ?? [], 'branch-b') === false);
+rmAssert('bm-ab filter has branch-a', rmHasId($filtBmAb['branches'] ?? [], 'branch-a') === true);
+rmAssert('bm-ab filter has branch-b', rmHasId($filtBmAb['branches'] ?? [], 'branch-b') === true);
+rmAssert('bm-ab filter hides branch-c', rmHasId($filtBmAb['branches'] ?? [], 'branch-c') === false);
+rmAssert('empty branch scope filter fail-closed', ($filtNoBranch['branches'] ?? null) === []);
 rmAssert('user only own user row', rmIds($filtUser['users'] ?? []) === ['user-a']);
 rmAssert('user only assigned vehicle', rmIds($filtUser['tasitlar'] ?? []) === ['veh-a1']);
 rmAssert('user full data not leaked vehicle count', count($filtUser['tasitlar'] ?? []) < count($data['tasitlar']));
@@ -525,11 +526,6 @@ rmAssert('user projection portal_sifresi_var true', ($projectedUserA['portal_sif
 // Save scoped ensure
 rmAssert('save own vehicle allowed', medisaSaveEnsureScopedVehiclesAreAllowed([rmVehicleById($data, 'veh-a1')], $ctxBmA) === true);
 rmAssert('save other vehicle rejected', medisaSaveEnsureScopedVehiclesAreAllowed([rmVehicleById($data, 'veh-b1')], $ctxBmA) === false);
-rmAssert('save own user allowed', medisaSaveEnsureScopedUsersAreAllowed([$userA], $ctxBmA) === true);
-rmAssert('save other user rejected', medisaSaveEnsureScopedUsersAreAllowed([$userB], $ctxBmA) === false);
-rmAssert('save gm user rejected for bm', medisaSaveEnsureScopedUsersAreAllowed([$gm], $ctxBmA) === false);
-rmAssert('save self user rejected for bm', medisaSaveEnsureScopedUsersAreAllowed([$bmA], $ctxBmA) === false);
-rmAssert('save peer bm rejected for bm', medisaSaveEnsureScopedUsersAreAllowed([$bmA2], $ctxBmA) === false);
 rmAssert('user cannot save vehicle', medisaSaveEnsureScopedVehiclesAreAllowed([rmVehicleById($data, 'veh-a1')], $ctxUserA) === false);
 
 // P0-B: current+incoming mutation validation
@@ -757,7 +753,6 @@ rmAssert('legacy other branch denied', medisaCanViewVehicleRecord(rmVehicleById(
 rmAssert('yk main access true', medisaHasMainAppAccessRole($ctxYk['role'] ?? '') === true);
 
 // Malformed context deny for branch view
-rmAssert('malformed branch deny', medisaCanViewBranchRecord(['id' => 'branch-a'], ['role' => 'sube_yonetici', 'branch_ids' => []]) === false);
 rmAssert('unknown role deny manage user', medisaCanManageUserRecord($userA, ['role' => 'hacker', 'user_id' => 'bm-a', 'branch_ids' => ['branch-a']]) === false);
 
 // --- P0-C: self + last active GM invariants ---

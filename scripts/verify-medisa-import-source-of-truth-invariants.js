@@ -216,7 +216,6 @@ function createHarness(opts) {
   vm.createContext(ctx);
   vm.runInContext(
     block + '\nthis.__helpers = {' +
-      'isImportTransactionInFlight: isImportTransactionInFlight,' +
       'tryBeginImportTransaction: tryBeginImportTransaction,' +
       'notifyImportInFlightBlocked: notifyImportInFlightBlocked,' +
       'scheduleImportTerminalReload: scheduleImportTerminalReload,' +
@@ -435,7 +434,7 @@ async function main() {
     assert.equal(h.reloads.length, 1);
     assert.ok(h.localStorage.getItem('medisa_data_v1').includes('NEW'));
     assert.equal(h.window.appData.tasitlar[0].id, 99);
-    assert.equal(h.helpers.isImportTransactionInFlight(), true);
+    assert.equal(h.helpers.getImportInFlight(), true);
     assert.equal(h.getSaveCalls(), 1);
   });
 
@@ -448,7 +447,7 @@ async function main() {
     assert.equal(h.window.appData.tasitlar[0].id, 1);
     assert.ok(h.localStorage.getItem('medisa_data_v1').includes('OLD'));
     assert.ok(h.commits.some(function(c) { return c.reason === 'import-rollback'; }));
-    assert.equal(h.helpers.isImportTransactionInFlight(), true);
+    assert.equal(h.helpers.getImportInFlight(), true);
     assert.equal(h.getSaveCalls(), 1);
   });
 
@@ -459,7 +458,7 @@ async function main() {
     assert.equal(h.alerts.some(function(a) { return a.indexOf('Sunucuya Kaydedildi') !== -1; }), false);
     assert.equal(h.reloads.length, 1);
     assert.equal(h.window.appData.tasitlar[0].id, 1);
-    assert.equal(h.helpers.isImportTransactionInFlight(), true);
+    assert.equal(h.helpers.getImportInFlight(), true);
   });
 
   await run('behavior: save missing → rollback + fail msg + reload + lock açık', async function() {
@@ -469,7 +468,7 @@ async function main() {
     assert.equal(h.alerts.some(function(a) { return a.indexOf('Sunucuya Kaydedildi') !== -1; }), false);
     assert.equal(h.reloads.length, 1);
     assert.equal(h.window.appData.tasitlar[0].id, 1);
-    assert.equal(h.helpers.isImportTransactionInFlight(), true);
+    assert.equal(h.helpers.getImportInFlight(), true);
     assert.equal(h.getSaveCalls(), 0);
   });
 
@@ -495,7 +494,7 @@ async function main() {
     const h = createHarness({ saveMode: 'pending' });
     const firstPromise = h.helpers.runConfirmedImportTransaction(sampleBackup());
     await Promise.resolve();
-    assert.equal(h.helpers.isImportTransactionInFlight(), true);
+    assert.equal(h.helpers.getImportInFlight(), true);
     assert.equal(h.getSaveCalls(), 1);
 
     const commitsBefore = h.commits.length;
@@ -524,7 +523,7 @@ async function main() {
     assert.equal(h.getSaveCalls(), 1);
     assert.equal(h.reloads.length, 1);
     assert.equal(h.window.appData.tasitlar[0].id, 99);
-    assert.equal(h.helpers.isImportTransactionInFlight(), true);
+    assert.equal(h.helpers.getImportInFlight(), true);
   });
 
   await run('lock: pending false → tek save, tek rollback, tek reload; ikinci bloke', async function() {
@@ -558,7 +557,7 @@ async function main() {
     const h = createHarness({ saveMode: 'true' });
     const out = await h.helpers.processImportedBackupText('{not-json', { confirm: function() { return true; } });
     assert.equal(out.outcome, 'parse_error');
-    assert.equal(h.helpers.isImportTransactionInFlight(), false);
+    assert.equal(h.helpers.getImportInFlight(), false);
     assert.equal(h.getSaveCalls(), 0);
     assert.equal(h.reloads.length, 0);
     assert.equal(h.commits.length, 0);
@@ -570,7 +569,7 @@ async function main() {
     const h = createHarness({ saveMode: 'true' });
     const out = await h.helpers.processImportedBackupText(JSON.stringify({ foo: 1 }), { confirm: function() { return true; } });
     assert.equal(out.outcome, 'validation_error');
-    assert.equal(h.helpers.isImportTransactionInFlight(), false);
+    assert.equal(h.helpers.getImportInFlight(), false);
     assert.equal(h.getSaveCalls(), 0);
     assert.equal(h.reloads.length, 0);
     assert.equal(h.commits.length, 0);
@@ -582,7 +581,7 @@ async function main() {
     const payload = JSON.stringify(sampleBackup());
     const out = await h.helpers.processImportedBackupText(payload, { confirm: function() { return false; } });
     assert.equal(out.outcome, 'cancelled');
-    assert.equal(h.helpers.isImportTransactionInFlight(), false);
+    assert.equal(h.helpers.getImportInFlight(), false);
     assert.equal(h.getSaveCalls(), 0);
     assert.equal(h.reloads.length, 0);
     assert.equal(h.commits.length, 0);
@@ -610,7 +609,7 @@ async function main() {
     assert.equal(h.getSaveCalls(), 1);
     assert.equal(h.reloads.length, 0);
     assert.ok(h.alerts.some(function(a) { return a.indexOf('manuel yenileyin') !== -1; }));
-    assert.equal(h.helpers.isImportTransactionInFlight(), true);
+    assert.equal(h.helpers.getImportInFlight(), true);
     const second = await h.helpers.runConfirmedImportTransaction(sampleBackup());
     assert.equal(second.blocked, true);
     assert.equal(h.getSaveCalls(), 1);
@@ -622,7 +621,7 @@ async function main() {
     assert.equal(first.ok, true);
     assert.equal(h.getSaveCalls(), 1);
     assert.ok(h.alerts.some(function(a) { return a.indexOf('manuel yenileyin') !== -1; }));
-    assert.equal(h.helpers.isImportTransactionInFlight(), true);
+    assert.equal(h.helpers.getImportInFlight(), true);
     const second = await h.helpers.runConfirmedImportTransaction(sampleBackup());
     assert.equal(second.blocked, true);
     assert.equal(h.getSaveCalls(), 1);
@@ -637,7 +636,7 @@ async function main() {
     assert.equal(h.commits.length, 0);
     assert.equal(h.reloads.length, 0);
     assert.equal(h.alerts.some(function(a) { return a.indexOf('Sunucuya Kaydedildi') !== -1; }), false);
-    assert.equal(h.helpers.isImportTransactionInFlight(), true);
+    assert.equal(h.helpers.getImportInFlight(), true);
   });
 
   await run('apply/snapshot: apply throw → save 0, rollback, success yok, lock açık', async function() {
@@ -649,7 +648,7 @@ async function main() {
     assert.equal(h.alerts.some(function(a) { return a.indexOf('Sunucuya Kaydedildi') !== -1; }), false);
     assert.ok(h.commits.some(function(c) { return c.reason === 'import-rollback'; }));
     assert.equal(h.window.appData.tasitlar[0].id, 1);
-    assert.equal(h.helpers.isImportTransactionInFlight(), true);
+    assert.equal(h.helpers.getImportInFlight(), true);
     assert.equal(h.reloads.length, 1);
   });
 

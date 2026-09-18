@@ -1093,18 +1093,6 @@ function persistOfflineAppDataSnapshot(data) {
     } catch (e) {}
 }
 
-function loadDataFromLocalStorage() {
-    if (!ensureMainAppSession()) {
-        return getDefaultAppData();
-    }
-    var offlineSnapshot = readOfflineAppDataSnapshot();
-    commitMedisaAppDataSnapshot(offlineSnapshot || getDefaultAppData(), { reason: 'offline-local-load' });
-    setMedisaSession(getSessionFromToken());
-    serverDatasetTrusted = false;
-    syncDataLoadState();
-    return window.appData;
-}
-
 /**
  * Compact kasko index yükler (load_kasko.php?mode=index).
  * Tam rows appData'ya yazılmaz; runtime Map window.__medisaKaskoLookupIndex üzerindedir.

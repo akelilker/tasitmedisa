@@ -3132,8 +3132,6 @@
       priceInput.addEventListener('input', function(e) {
         const cursorPos = this.selectionStart;
         const oldLength = this.value.length;
-        // " TL" kısmını koru
-        const hasTL = this.value.includes(' TL');
         let value = this.value.replace(/ TL/g, '').trim();
         value = formatNumberWithSeparator(value);
         if (value) value += ' TL';

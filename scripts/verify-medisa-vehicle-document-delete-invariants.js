@@ -104,7 +104,7 @@ test('UI: yüklü belgede [+] altında [-] var, boş belgede aksiyon yığını 
 test('Download: orijinal belge owner fetchRuhsatDocumentObjectUrl / ruhsat.php', function() {
   assert.match(tasitlar, /function downloadVehicleDocumentOriginal\(/);
   assert.match(tasitlar, /function buildVehicleDocumentDownloadFileName\(/);
-  assert.match(tasitlar, /function appendOriginalDocumentDownloadMode\(/);
+  assert.doesNotMatch(tasitlar, /function appendOriginalDocumentDownloadMode\(/);
   const downloadSrc = extractBetween(
     tasitlar,
     'function downloadVehicleDocumentOriginal(vehicleId, documentType) {',
