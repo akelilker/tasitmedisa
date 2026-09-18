@@ -16,6 +16,18 @@ npm run tool:verify-password-migration
 npm run tool:verify-default-credentials
 npm run tool:verify-mandatory-password-change
 
+echo "[quality-gate] Remember-me storage and device-forget invariants"
+npm run tool:verify-remember-me
+
+echo "[quality-gate] K2 runtime scope and document token invariants"
+npm run tool:verify-k2-runtime
+
+echo "[quality-gate] Vehicle/user cross-branch assignment invariants"
+npm run tool:verify-cross-branch-assignment
+
+echo "[quality-gate] Romork sigorta/egzoz scope invariants"
+npm run tool:verify-romork-scope
+
 echo "[quality-gate] Deploy and runtime data safety"
 npm run tool:verify-deploy
 npm run tool:verify-runtime-data-git
