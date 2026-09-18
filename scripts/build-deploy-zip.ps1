@@ -50,7 +50,8 @@ New-Item -ItemType Directory -Force -Path $outputDir | Out-Null
 New-Item -ItemType Directory -Force -Path $stagingDir | Out-Null
 
 try {
-    $trackedFiles = git ls-files
+    # Git'in C-style quote çıktısı Türkçe karakterli izlenen yolları Windows path'i olarak çözülemez yapar.
+    $trackedFiles = git -c core.quotepath=false ls-files
     foreach ($relativePath in $trackedFiles) {
         if (Test-ExcludedPath $relativePath) {
             continue
