@@ -2032,7 +2032,7 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
     margin-left: 0 !important;
   }
 }
-
+@media(max-width:768px){.login-options-row{display:flex;align-items:center;justify-content:space-between}.login-options-row>*{margin:0}}
 /* Mobil: PWA sol panelde (plaka/marka-model ile şube arası slot) */
 @media (max-width: 768px) {
   .dashboard-page #driver-mobile-notification-slot #pwa-install-wrapper {
@@ -2686,30 +2686,7 @@ body.is-ios-pwa.login-page .form-group-checkbox label {
 .login-password-help {
   display: flex;
   justify-content: flex-end;
-}
-
-.login-page #login-form .login-options-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  width: 100%;
-  min-width: 0;
-}
-
-.login-page #login-form .login-options-row .form-group-checkbox {
-  order: 1;
-  width: auto;
-  margin-bottom: 0;
-  flex: 0 1 auto;
-  min-width: 0;
-}
-
-.login-page #login-form .login-options-row .login-password-help {
-  order: 2;
-  margin-top: 0;
-  flex: 0 1 auto;
-  min-width: 0;
+  margin-top: -8px;
 }
 
 .forgot-password-btn {
