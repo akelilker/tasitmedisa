@@ -1842,9 +1842,6 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
   color: var(--txt);
 }
 
-/* =========================================
-   LOGIN SAYFASI (Değişiklik yok)
-   ========================================= */
 .login-page {
   overflow-x: hidden !important;
   display: flex !important;
@@ -1862,7 +1859,6 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
   padding-bottom: 10px !important;
 }
 
-/* Login (masaüstü): PWA kurulum çubuğu header alt çerçevesinin 4px altında; sadece buton yatayda ortada (X hesaba katılmaz) */
 @media (min-width: 769px) {
   .login-page .content-wrap.driver-content-wrap.driver-scroll-area {
     display: flex !important;
@@ -1871,7 +1867,6 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
     justify-content: center !important;
   }
 
-  /* Login (masaüstü): form dikey kolon; style-core .login-container için touch-action */
   .login-page .login-container {
     width: 100%;
     max-width: min(380px, 100%);
@@ -1919,6 +1914,10 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
     max-width: none;
     box-sizing: border-box;
   }
+
+  .login-page #login-form .login-options-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .login-page #login-form .login-options-row .form-group-checkbox { order: 1; width: auto; }
+  .login-page #login-form .login-options-row .login-password-help { order: 2; margin-top: 0; }
 
   .login-page #login-form .form-group-checkbox {
     display: flex;
@@ -2689,6 +2688,8 @@ body.is-ios-pwa.login-page .form-group-checkbox label {
   justify-content: flex-end;
   margin-top: -8px;
 }
+
+.login-options-row { display: contents; }
 
 .forgot-password-btn {
   appearance: none;
