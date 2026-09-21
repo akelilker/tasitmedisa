@@ -2032,7 +2032,7 @@ body.dashboard-page.driver-notifications-open .driver-scroll-area {
     margin-left: 0 !important;
   }
 }
-
+@media(max-width:768px){.login-options-row{display:flex;align-items:center;justify-content:space-between}.login-options-row>*{margin:0}}
 /* Mobil: PWA sol panelde (plaka/marka-model ile şube arası slot) */
 @media (max-width: 768px) {
   .dashboard-page #driver-mobile-notification-slot #pwa-install-wrapper {
@@ -2688,8 +2688,6 @@ body.is-ios-pwa.login-page .form-group-checkbox label {
   justify-content: flex-end;
   margin-top: -8px;
 }
-
-.login-options-row { display: contents; }
 
 .forgot-password-btn {
   appearance: none;
