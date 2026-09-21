@@ -405,6 +405,29 @@ function revealDriverLoginView() {
 if (document.body) document.body.classList.remove('login-gate-active');
 }
 
+function resetDriverLoginSubmitState() {
+var loginBtn = document.getElementById('login-btn');
+if (!loginBtn) return;
+var btnText = loginBtn.querySelector('.btn-text');
+var btnLoader = loginBtn.querySelector('.btn-loader');
+loginBtn.disabled = false;
+if (btnText) btnText.style.display = 'inline';
+if (btnLoader) btnLoader.style.display = 'none';
+}
+
+async function reconcileDriverLoginAfterHistoryRestore(event) {
+if (!event || event.persisted !== true) return;
+var savedToken = getStoredPortalToken();
+if (!shouldForceDriverLoginView() && savedToken) {
+var routedByExistingSession = await routeByCurrentSession(savedToken, false, {
+nextUrl: getRequestedNextUrl()
+});
+if (routedByExistingSession) return;
+}
+revealDriverLoginView();
+resetDriverLoginSubmitState();
+}
+
 async function initDriverLoginPage() {
 var loginForm = document.getElementById('login-form');
 if (!loginForm || loginForm.getAttribute('data-medisa-login-init') === '1') return;
@@ -472,8 +495,9 @@ restoreRememberedLoginForm();
 [0, 50, 300].forEach(function(delayMs) {
 setTimeout(function() { restoreRememberedLoginForm(); }, delayMs);
 });
-window.addEventListener('pageshow', function() {
+window.addEventListener('pageshow', function(event) {
 restoreRememberedLoginForm();
+reconcileDriverLoginAfterHistoryRestore(event);
 });
 
 function toggleLoginInputHasValue(el) {
