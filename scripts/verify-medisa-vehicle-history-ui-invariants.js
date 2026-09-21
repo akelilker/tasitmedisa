@@ -347,6 +347,18 @@ test('event card hierarchy source kontratı', function() {
   assert.doesNotMatch(historyFns.diger, /Olay Ekle|openEventModal/);
 });
 
+test('muayene tarihçesi yalnız kullanıcının bildirdiği yapılma tarihlerini gösterir', function() {
+  const start = historyFns.diger.indexOf("} else if (eventType === 'muayene-guncelle'");
+  const end = historyFns.diger.indexOf("} else if (eventType === 'kullanici-atama')", start);
+  assert.ok(start >= 0 && end > start, 'muayene tarihçe owner sınırı bulunmalı');
+  const muayeneHistory = historyFns.diger.slice(start, end);
+  assert.match(muayeneHistory, /formatDateForDisplay\(event\.date \|\| ''\)/);
+  assert.match(muayeneHistory, /Genel Muayenenin/);
+  assert.match(muayeneHistory, /egzozMuayeneYapilmaDate/);
+  assert.match(muayeneHistory, /Egzoz Muayenesini/);
+  assert.doesNotMatch(muayeneHistory, /bitisTarihi|egzozMuayeneDate/);
+});
+
 test('escapeHtml / safe rendering korunur', function() {
   assert.match(historyFns.switchTab, /escapeHtml\(/);
   assert.match(historyFns.diger, /escapeHtml\(/);
