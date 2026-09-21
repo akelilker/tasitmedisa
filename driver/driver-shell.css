@@ -2686,10 +2686,31 @@ body.is-ios-pwa.login-page .form-group-checkbox label {
 .login-password-help {
   display: flex;
   justify-content: flex-end;
-  margin-top: -8px;
 }
 
-.login-options-row { display: contents; }
+.login-page #login-form .login-options-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+}
+
+.login-page #login-form .login-options-row .form-group-checkbox {
+  order: 1;
+  width: auto;
+  margin-bottom: 0;
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+.login-page #login-form .login-options-row .login-password-help {
+  order: 2;
+  margin-top: 0;
+  flex: 0 1 auto;
+  min-width: 0;
+}
 
 .forgot-password-btn {
   appearance: none;
