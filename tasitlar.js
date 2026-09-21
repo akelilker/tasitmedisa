@@ -197,7 +197,7 @@
 
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20260916.3';
+  const MEDISA_TASITLAR_MODULE_VERSION = '20260921.1';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
@@ -10709,23 +10709,16 @@
       }
       if (yapilma) pushDetail('Yapılma Tarihi', yapilma);
     } else if (eventType === 'muayene-guncelle' || eventType === 'muayene' || eventType === 'muayene-yenileme') {
-      let bitis = formatDateForDisplay(eventData.bitisTarihi || '');
-      if (!bitis && legacyAciklama) {
-        const m = legacyAciklama.match(/(\d{2}[./-]\d{2}[./-]\d{4})/);
-        if (m && m[1]) {
-          const raw = m[1].replace(/\./g, '/').replace(/-/g, '/');
-          bitis = raw;
-        }
-      }
-      if (bitis) {
-        summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Muayene Biti\u015F Tarihini </span><span class="history-detail-inline">' + escapeHtml(bitis) + '</span><span class="history-action-text"> Olarak G\u00FCncelledi.</span>';
+      const genelMuayeneYapilma = formatDateForDisplay(event.date || '');
+      const egzozMuayeneYapilma = formatDateForDisplay(eventData.egzozMuayeneYapilmaDate || '');
+      if (genelMuayeneYapilma) {
+        summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Genel Muayenenin </span><span class="history-detail-inline">' + escapeHtml(genelMuayeneYapilma) + '</span><span class="history-action-text"> Tarihinde Yapıldığını Bildirdi.</span>';
       } else {
-        summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Muayene Biti\u015F Tarihini G\u00FCncelledi.</span>';
+        summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Genel Muayene Bilgisini Bildirdi.</span>';
       }
-      const egzozYapForm = formatDateForDisplay(eventData.egzozMuayeneYapilmaDate || '');
-      if (egzozYapForm) pushDetail('Egzoz Muayene — Yapt\u0131r\u0131lan', egzozYapForm);
-      const egzozBitis = formatDateForDisplay(eventData.egzozMuayeneDate || '');
-      if (egzozBitis) pushDetail('Egzoz Muayene — Biti\u015F', egzozBitis);
+      if (egzozMuayeneYapilma) {
+        summaryInner += '<br><span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Egzoz Muayenesini </span><span class="history-detail-inline">' + escapeHtml(egzozMuayeneYapilma) + '</span><span class="history-action-text"> Tarihinde Yapıldığını Bildirdi.</span>';
+      }
     } else if (eventType === 'kullanici-atama') {
       const yeni = (eventData.kullaniciAdi || '').trim();
       const eski = (eventData.eskiKullaniciAdi || '').trim();
