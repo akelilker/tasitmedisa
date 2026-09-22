@@ -1352,7 +1352,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
   font-weight: 600 !important;
 }
 
-.modal-column-left { padding-right: 10px; padding-left: 0; border-right: 1px solid var(--border-red-side); box-shadow: 10px 0 18px -18px rgba(var(--theme-color-rgb), 0.45); }
+.modal-column-left { padding-right: 10px; padding-left: 0; border-right: 1px solid rgba(var(--theme-color-rgb), 0.66); box-shadow: 10px 0 18px -18px rgba(var(--theme-color-rgb), 0.45); }
 .modal-column-right { padding-left: 10px; padding-right: 0; }
 
 /* === MOBİL ÖZEL === */
@@ -2115,7 +2115,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         min-height: 0;
         align-items: stretch;
         margin-top: -5px !important;
-        margin-bottom: 16px !important;
+        margin-bottom: 8px !important;
         overflow: visible !important; /* İç scroll iptal */
     }
     #vehicle-modal .modal-body .modal-columns::-webkit-scrollbar {
@@ -2145,6 +2145,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     }
     #vehicle-modal .modal-body .modal-column-right {
         min-width: 0;
+        padding-bottom: 8px;
     }
     /* Sağ kolon: Notlar hariç bölümler küçülmesin */
     #vehicle-modal .modal-body .modal-column-right .form-section:not(:has(#vehicle-notes)),

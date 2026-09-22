@@ -231,10 +231,10 @@ test('iOS kart İndir gizlenir; desktop download owner korunur', function() {
 });
 
 test('pin/SW chain', function() {
-  assert.match(tasitlar, /MEDISA_TASITLAR_MODULE_VERSION = '20260923\.1'/);
-  assert.match(scriptCore, /tasitlar:\s*'20260923\.1'/);
-  assert.match(sw, /CACHE_VERSION = 'medisa-v2\.331'/);
-  assert.match(read('index.html'), /script-core\.js\?v=20260923\.1/);
+  assert.match(tasitlar, /MEDISA_TASITLAR_MODULE_VERSION = '20260923\.2'/);
+  assert.match(scriptCore, /tasitlar:\s*'20260923\.2'/);
+  assert.match(sw, /CACHE_VERSION = 'medisa-v2\.332'/);
+  assert.match(read('index.html'), /script-core\.js\?v=20260923\.2/);
   assert.match(read('index.html'), /style-core\.css\?v=20260914\.1/);
 });
 

@@ -2078,7 +2078,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     flex-direction: column;
     gap: 0; /* Bölümler arası boşluk padding ile kontrol edilecek (12px – 0) */
     padding-right: 2px; /* Kırmızı çizgi ile arasındaki boşluk (toplam 4px için: 2px) */
-    border-right: 1px solid var(--border-red-side);
+    border-right: 1px solid rgba(var(--theme-color-rgb), 0.66);
     box-shadow: 10px 0 18px -18px rgba(var(--theme-color-rgb), 0.45);
     min-width: 0; /* Flex item'in küçülmesine izin ver */
     box-sizing: border-box; /* Border'ı genişlişe dahil et */
