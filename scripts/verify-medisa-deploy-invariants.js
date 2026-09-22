@@ -115,4 +115,42 @@ if (fs.existsSync(cssSmokePath)) {
   );
 }
 
+// PDF.js runtime asset parity: sürüm tasitlar.js owner pininden okunur, .cpanel.yml contract'ı ölçülür.
+const tasitlarSource = fs.readFileSync(path.join(root, 'tasitlar.js'), 'utf8');
+const pdfjsVersionMatch = tasitlarSource.match(/MEDISA_PDFJS_VERSION\s*=\s*'([^']+)'/);
+assert.ok(pdfjsVersionMatch, 'tasitlar.js canonical PDF.js sürüm pinini tanımlamalı.');
+const pdfjsDir = 'vendor/pdfjs/' + pdfjsVersionMatch[1];
+const pdfjsDirRe = pdfjsDir.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+for (const pdfjsAsset of ['pdf.min.js', 'pdf.worker.min.js']) {
+  const rel = pdfjsDir + '/' + pdfjsAsset;
+  const assetRe = pdfjsAsset.replace(/\./g, '\\.');
+  assert.equal(fs.existsSync(path.join(root, pdfjsDir, pdfjsAsset)), true, 'Canonical PDF.js runtime asseti kaynakta bulunmalı: ' + rel);
+  assert.match(cpanel, new RegExp('/bin/test -f ' + pdfjsDirRe + '/' + assetRe), 'cPanel deploy kaynak PDF.js assetini doğrulamalı: ' + rel);
+  assert.match(cpanel, new RegExp('/bin/cp -a [^\\n]*' + pdfjsDirRe + '/' + assetRe), 'cPanel deploy PDF.js assetini kopyalamalı: ' + rel);
+  assert.match(cpanel, new RegExp('/bin/test -f "\\$DEPLOYPATH/' + pdfjsDirRe + '/' + assetRe + '"'), 'cPanel deploy post-copy PDF.js assetini doğrulamalı: ' + rel);
+}
+
+assert.equal(fs.existsSync(path.join(root, pdfjsDir, 'standard_fonts')), true, 'Canonical PDF.js standard_fonts dizini kaynakta bulunmalı.');
+assert.match(cpanel, new RegExp('/bin/test -d ' + pdfjsDirRe + '/standard_fonts'), 'cPanel deploy standard_fonts kaynağını doğrulamalı.');
+assert.match(cpanel, new RegExp('/bin/mkdir -p "\\$DEPLOYPATH/' + pdfjsDirRe + '/standard_fonts"'), 'cPanel deploy hedef PDF.js dizinini güvenli oluşturmalı.');
+assert.match(
+  cpanel,
+  new RegExp('/bin/cp -a [^\\n]*' + pdfjsDirRe + '/standard_fonts/\\.[^\\n]*"\\$DEPLOYPATH/' + pdfjsDirRe + '/standard_fonts/"'),
+  'cPanel deploy standard_fonts içeriğini aynı relative path ile kopyalamalı.'
+);
+assert.match(cpanel, new RegExp('/bin/test -d "\\$DEPLOYPATH/' + pdfjsDirRe + '/standard_fonts"'), 'cPanel deploy post-copy standard_fonts dizinini doğrulamalı.');
+assert.equal(/^\s*vendor\/\*\*\s*$/m.test(deployWorkflow), false, 'FTP deploy vendor ağacını dışlamamalı; cPanel PDF.js parity precondition korunmalı.');
+
+// Runtime data preservation contract'ı bozulmamış olmalı.
+assert.match(cpanel, /\/bin\/test -f "\$DEPLOYPATH\/data\/data\.json"/, 'cPanel deploy canlı runtime data dosyasını preflight etmeli.');
+assert.equal(/mkdir -p "\$DEPLOYPATH\/data/.test(cpanel), false, 'cPanel deploy canlı data klasörünü oluşturmamalı.');
+assert.equal(/cp -a[^\n]*\bdata\//.test(cpanel), false, 'cPanel deploy canlı data klasörünü kopyalamamalı.');
+
+// Canlı icon kontratı server-local kalır; PDF.js ile birlikte deploy edilmemeli.
+assert.match(cpanel, /\/bin\/test -d "\$DEPLOYPATH\/icon"/, 'cPanel deploy canlı icon klasörünü preflight etmeli.');
+assert.match(cpanel, /\/bin\/test -f "\$DEPLOYPATH\/icon\/logo-header2\.svg"/, 'cPanel deploy canlı logo kontratını korumalı.');
+assert.equal(/mkdir -p "\$DEPLOYPATH\/icon/.test(cpanel), false, 'cPanel deploy canlı icon klasörünü oluşturmamalı.');
+assert.equal(/cp -a[^\n]*\bicon\//.test(cpanel), false, 'cPanel deploy canlı icon klasörünü kopyalamamalı.');
+
 console.log('verify-medisa-deploy-invariants: OK');

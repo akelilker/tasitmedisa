@@ -92,6 +92,9 @@ deployment:
     - /bin/test -f t/.htaccess
     - /bin/test -f t/index.php
     - /bin/test -f sw.js
+    - /bin/test -f vendor/pdfjs/3.11.174/pdf.min.js
+    - /bin/test -f vendor/pdfjs/3.11.174/pdf.worker.min.js
+    - /bin/test -d vendor/pdfjs/3.11.174/standard_fonts
     - /bin/mkdir -p "$DEPLOYPATH/admin"
     - /bin/mkdir -p "$DEPLOYPATH/driver"
     - /bin/mkdir -p "$DEPLOYPATH/t"
@@ -102,3 +105,9 @@ deployment:
     - /bin/cp -a driver/dashboard.html driver/driver-dashboard-core.js driver/driver-feature-actions.js driver/driver-feature-documents.js driver/driver-feature-feedback.js driver/driver-feature-history.js driver/driver-feature-password.js driver/driver-features.css driver/driver-login.js driver/driver-script.js driver/driver-shell.css driver/driver-style.css driver/driver_change_password.php driver/driver_common.php driver/driver_data.php driver/driver_event.php driver/driver_feedback.php driver/driver_history.php driver/driver_login.php driver/driver_password_reset_request.php driver/driver_request.php driver/driver_save.php driver/index.html driver/manifest.json "$DEPLOYPATH/driver/"
     - /bin/cp -a t/.htaccess t/index.php "$DEPLOYPATH/t/"
     - /bin/cp -a sw.js "$DEPLOYPATH/"
+    - /bin/mkdir -p "$DEPLOYPATH/vendor/pdfjs/3.11.174/standard_fonts"
+    - /bin/cp -a vendor/pdfjs/3.11.174/pdf.min.js vendor/pdfjs/3.11.174/pdf.worker.min.js "$DEPLOYPATH/vendor/pdfjs/3.11.174/"
+    - /bin/cp -a vendor/pdfjs/3.11.174/standard_fonts/. "$DEPLOYPATH/vendor/pdfjs/3.11.174/standard_fonts/"
+    - /bin/test -f "$DEPLOYPATH/vendor/pdfjs/3.11.174/pdf.min.js"
+    - /bin/test -f "$DEPLOYPATH/vendor/pdfjs/3.11.174/pdf.worker.min.js"
+    - /bin/test -d "$DEPLOYPATH/vendor/pdfjs/3.11.174/standard_fonts"

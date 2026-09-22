@@ -6,7 +6,7 @@ Bu projede **Docker / GitHub Container Registry / SSH ile container** akışı k
 
 Desteklenen iki ana deploy yolu vardır:
 
-- **cPanel Git Version Control + `.cpanel.yml`**: Mevcut canlı `data/` ve `icon/` varlığını preflight ile doğrular; yalnız uygulama dosyalarını hedef dizine kopyalar.
+- **cPanel Git Version Control + `.cpanel.yml`**: Mevcut canlı `data/` ve `icon/` varlığını preflight ile doğrular; yalnız uygulama dosyalarını hedef dizine kopyalar. PDF.js runtime asset'leri (`vendor/pdfjs/<sürüm>/` → `pdf.min.js`, `pdf.worker.min.js`, `standard_fonts/`) hedef relative path'e deterministik kopyalanır ve post-copy fail-closed doğrulanır; temiz kurulumda hedefte önceden bulunmalarına bağımlı değildir.
 - **GitHub Actions FTP deploy** (`.github/workflows/deploy-cpanel.yml`): Uygulama dosyalarını FTP ile senkronlar; **`data/**` exclude** ile tüm `data/` ağacı gönderilmez.
 
 ## Runtime `data/` klasörü ve deploy politikası
