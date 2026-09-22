@@ -302,9 +302,28 @@ test('Ana uygulama normal çıkış hatırlamayı korur', () => {
     files.dataManager.indexOf('function medisaMainAppLogout'),
     files.dataManager.indexOf('window.medisaMainAppLogout')
   );
-  assert.match(logoutFn, /clearStoredPortalTokens\(\)/);
+  assert.match(logoutFn, /clearPortalSessionAndDocumentCaches\(\)/);
   assert.match(logoutFn, /index\.html\?force=login/);
   assert.doesNotMatch(logoutFn, /forgetThisDevice|clearRememberCredentials|driver_saved_/);
+});
+
+test('Ana shell cleanup wrapper canonical token alias ile çakışmaz', () => {
+  // data-manager.js canonical/global clearStoredPortalTokens adını artık tanımlamaz ve çağırmaz
+  assert.doesNotMatch(files.dataManager, /function\s+clearStoredPortalTokens\s*\(/);
+  assert.doesNotMatch(files.dataManager, /\bclearStoredPortalTokens\s*\(/);
+  // portal-session.js canonical compatibility alias korunur
+  assert.match(files.portalSession, /window\.clearStoredPortalTokens\s*=\s*api\.clearStoredTokens;/);
+  // main shell wrapper gövdesi: document cache purge + canonical token clear korunur ve sırası değişmez
+  const wrapperFn = files.dataManager.slice(
+    files.dataManager.indexOf('function clearPortalSessionAndDocumentCaches'),
+    files.dataManager.indexOf('function closeMainAppSettingsMenus')
+  );
+  assert.match(wrapperFn, /purgeMedisaVehicleDocumentCaches\(\)/);
+  assert.match(wrapperFn, /medisaPortalSession\.clearStoredTokens\(\)/);
+  assert.ok(
+    wrapperFn.indexOf('medisaPortalSession.clearStoredTokens()') > wrapperFn.indexOf('purgeMedisaVehicleDocumentCaches()'),
+    'wrapper sırası: document cache purge ardından canonical token clear'
+  );
 });
 
 test('Ana uygulama Vazgeç kayıt silmez', () => {
@@ -312,7 +331,7 @@ test('Ana uygulama Vazgeç kayıt silmez', () => {
     files.dataManager.indexOf('function closeMedisaMainAppForgetThisDeviceConfirm'),
     files.dataManager.indexOf('window.closeMedisaMainAppForgetThisDeviceConfirm')
   );
-  assert.doesNotMatch(closeFn, /forgetThisDevice|clearRememberCredentials|clearStoredPortalTokens|removeItem/);
+  assert.doesNotMatch(closeFn, /forgetThisDevice|clearRememberCredentials|clearPortalSessionAndDocumentCaches|removeItem/);
 });
 
 test('iOS PWA login class ve CSS owner kuralları', () => {

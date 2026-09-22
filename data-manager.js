@@ -517,7 +517,7 @@ function getStoredPortalToken() {
         : '';
 }
 
-function clearStoredPortalTokens() {
+function clearPortalSessionAndDocumentCaches() {
     if (typeof window.purgeMedisaVehicleDocumentCaches === 'function') {
         try { window.purgeMedisaVehicleDocumentCaches(); } catch (purgeErr) {}
     }
@@ -539,7 +539,7 @@ function closeMainAppSettingsMenus() {
 /** Ana uygulama ayarlar menüsü: oturumu kapat, portal girişine yönlendir */
 function medisaMainAppLogout() {
     try {
-        clearStoredPortalTokens();
+        clearPortalSessionAndDocumentCaches();
         setMedisaSession(getDefaultSession());
         if (typeof document !== 'undefined' && document.body) {
             document.body.removeAttribute('data-medisa-role');
@@ -557,7 +557,7 @@ function medisaMainAppForgetThisDevice() {
         if (window.medisaPortalSession && typeof window.medisaPortalSession.forgetThisDevice === 'function') {
             window.medisaPortalSession.forgetThisDevice();
         } else {
-            clearStoredPortalTokens();
+            clearPortalSessionAndDocumentCaches();
             if (window.medisaPortalSession && typeof window.medisaPortalSession.clearRememberCredentials === 'function') {
                 window.medisaPortalSession.clearRememberCredentials();
             }
@@ -800,7 +800,7 @@ function handleMedisaHttpAuthStatus(status, options) {
     var opts = options && typeof options === 'object' ? options : {};
     var code = Number(status) || 0;
     if (code === 401) {
-        clearStoredPortalTokens();
+        clearPortalSessionAndDocumentCaches();
         setMedisaSession(getDefaultSession());
         serverDatasetTrusted = false;
         if (opts.commitEmptyDataset === true) {
