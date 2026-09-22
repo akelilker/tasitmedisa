@@ -316,6 +316,25 @@ if (implementationPresent) {
     assert.match(cacheBlock, new RegExp("'/style-core\\.css\\?v=" + stylePin.replace(/\./g, '\\.') + "'"));
     assert.doesNotMatch(cacheBlock, /'\/style-core\.css'/);
   });
+  test('data-manager ve manifest HTML pinleri SW precache ile birebir', function() {
+    var dmMatch = index.match(/data-manager\.js\?v=([^"'\s>]+)/);
+    assert.ok(dmMatch && dmMatch[1], 'index.html data-manager.js?v=<pin> bulunmalı');
+    var manifestMatch = index.match(/manifest\.json\?v=([^"'\s>]+)/);
+    assert.ok(manifestMatch && manifestMatch[1], 'index.html manifest.json?v=<pin> bulunmalı');
+
+    var cacheFiles = sw.match(/const CACHE_FILES\s*=\s*\[([\s\S]*?)\];/);
+    assert.ok(cacheFiles, 'CACHE_FILES bulunmalı');
+    var cacheBlock = cacheFiles[1];
+
+    var expectedDm = "'/data-manager.js?v=" + dmMatch[1] + "'";
+    var expectedManifest = "'/manifest.json?v=" + manifestMatch[1] + "'";
+    assert.ok(cacheBlock.indexOf(expectedDm) !== -1, 'SW CACHE_FILES data-manager URL index pin ile eşit olmalı');
+    assert.ok(cacheBlock.indexOf(expectedManifest) !== -1, 'SW CACHE_FILES manifest URL index pin ile eşit olmalı');
+    assert.doesNotMatch(cacheBlock, /'\/data-manager\.js'/);
+    assert.doesNotMatch(cacheBlock, /'\/manifest\.json'/);
+    assert.match(cacheBlock, /'\/icon\/logo-header2\.svg'/);
+    assert.doesNotMatch(cacheBlock, /logo-header2\.svg\?/);
+  });
   test('paylaşılan shell style-core pin parity', function() {
     var shells = {
       'index.html': index,
