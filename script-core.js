@@ -2353,7 +2353,6 @@ window.ensureMedisaVehicleNotificationDomainReady = function() {
       var args = arguments;
       showModuleSpinner();
       return window.MedisaMainSurfaceRegistry.ensure('settings').then(function() {
-        window._ayarlarLoaded = true;
         if (typeof window[fnName] !== 'function') {
           throw new Error('Ayarlar hedef API hazir degil: ' + fnName);
         }

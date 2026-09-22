@@ -1432,15 +1432,13 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal [data-section="boya"] .radio-btn.active[data-value="var"],
     #vehicle-modal [data-section="boya"] .radio-btn.active[data-value="var"]:hover,
     #vehicle-modal [data-section="kredi"] .radio-btn.active[data-value="var"],
-    #vehicle-modal [data-section="kredi"] .radio-btn.active[data-value="var"]:hover,
-    #vehicle-modal [data-section="kredi"] .radio-btn.active[data-value="var"] {
+    #vehicle-modal [data-section="kredi"] .radio-btn.active[data-value="var"]:hover {
         border-color: rgba(var(--theme-color-rgb), 0.72) !important;
         color: var(--theme-color, #d40000) !important;
         background: rgba(var(--theme-color-rgb), 0.075) !important;
     }
     #vehicle-modal [data-section="tramer"] .radio-btn.active[data-value="yok"],
     #vehicle-modal [data-section="boya"] .radio-btn.active[data-value="yok"],
-    #vehicle-modal [data-section="kredi"] .radio-btn.active[data-value="yok"],
     #vehicle-modal [data-section="kredi"] .radio-btn.active[data-value="yok"] {
         border-color: rgba(var(--green-success-rgb), 0.72) !important;
         color: var(--green-success, #28a745) !important;

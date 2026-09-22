@@ -500,9 +500,6 @@
     pointer-events: auto;
 }
 
-#required-documents-modal .required-k2-members-trigger {
-}
-
 #required-documents-modal .required-k2-members-trigger:hover,
 #required-documents-modal .required-k2-members-trigger:focus-visible,
 #required-documents-modal .required-k2-members-select.is-open .required-k2-members-trigger {

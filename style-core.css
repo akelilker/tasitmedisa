@@ -749,7 +749,6 @@ body::-webkit-scrollbar,
   text-transform: none !important;
   line-height: 1 !important;
   box-shadow: none !important;
-  transition: all 0.2s ease-in-out !important;
 }
 
 /* Kaydet (Yeşil) - Kontrast Artırıldı */

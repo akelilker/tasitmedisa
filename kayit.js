@@ -2220,7 +2220,6 @@
 
     if (window.MedisaMainSurfaceRegistry && typeof window.MedisaMainSurfaceRegistry.ensure === 'function') {
       window.MedisaMainSurfaceRegistry.ensure('settings').then(function() {
-        window._ayarlarLoaded = true;
         ensureAyarlarAndOpen();
       }).catch(function() {
         alert('Ayarlar modülü yüklenemedi.');
