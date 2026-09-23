@@ -147,6 +147,101 @@ test('UI: K2 önizlemesinde aynı [+]/[-] kontratı var', function() {
   assert.doesNotMatch(pickerSrc, /required-k2-remove-btn/, 'belge yokken K2 "-" butonu render edilmemeli');
 });
 
+/* ---------- PDF drag-drop parity: taşıt ve K2 yüzeyleri ---------- */
+
+function extractRuhsatUploadFormBlock() {
+  return extractBetween(
+    tasitlar,
+    'function renderRuhsatUploadForm(',
+    'function setRuhsatUploadProgressVisible('
+  );
+}
+
+function extractK2DocumentPickerBlock() {
+  return extractBetween(
+    ayarlarJs,
+    'function setupZorunluEvraklarK2DocumentPicker(',
+    'function setZorunluEvraklarK2ActionsDisabled('
+  );
+}
+
+/**
+ * İki PDF drag/drop yüzeyinde bugün eşit olan kritik davranış kontratları.
+ * Surface-specific alanlar (drag-over class adı, depth değişkeni, clear fn adı, element id,
+ * lifecycle/rebind guard, downstream change handler) kasten burada assert edilmez.
+ */
+function assertPdfDropParityContract(block, label) {
+  // A) desktop breakpoint
+  assert.match(block, /window\.matchMedia\('\(min-width: 641px\)'\)/, label + ': desktop breakpoint');
+  // B) multi-file message
+  assert.ok(block.includes("'Yalnızca tek dosya bırakılabilir.'"), label + ': multi-file mesajı');
+  // C) non-PDF message
+  assert.ok(block.includes("'Yalnızca PDF dosyası yüklenebilir.'"), label + ': non-PDF mesajı');
+  // D) PDF predicate: MIME veya lowercase .pdf uzantısı
+  assert.match(block, /\.type\s*===\s*'application\/pdf'/, label + ': PDF MIME kontrolü');
+  assert.match(block, /\.endsWith\('\.pdf'\)/, label + ': PDF uzantı kontrolü');
+  // E) DataTransfer destek guard'ı + birebir fallback mesajı
+  assert.match(block, /typeof DataTransfer !== 'function'/, label + ': DataTransfer guard');
+  assert.ok(
+    block.includes('Bu tarayıcı sürükle-bırak dosya atamasını desteklemiyor. Dosya Seç ile yükleyin.'),
+    label + ': DataTransfer fallback mesajı'
+  );
+  // F) DataTransfer -> input.files köprüsü
+  assert.match(block, /new DataTransfer\(\)/, label + ': DataTransfer örnekleme');
+  assert.match(block, /\.items\.add\(/, label + ': DataTransfer item ekleme');
+  assert.match(block, /\.files = dt\.files/, label + ': input.files ataması');
+  // G) change event dispatch
+  assert.match(block, /new Event\('change',\s*\{\s*bubbles:\s*true\s*\}\)/, label + ': change event dispatch');
+  // H) event set
+  ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(function(eventName) {
+    assert.match(
+      block,
+      new RegExp("addEventListener\\('" + eventName + "'"),
+      label + ': ' + eventName + ' binding'
+    );
+  });
+  // I) dragover ve drop üzerinde preventDefault/stopPropagation
+  assert.ok((block.match(/preventDefault\(\)/g) || []).length >= 2, label + ': preventDefault kontratı');
+  assert.ok((block.match(/stopPropagation\(\)/g) || []).length >= 2, label + ': stopPropagation kontratı');
+  // J) handler tarafında desktop context guard
+  assert.match(block, /if \(!isDesktopDragDropContext\(\)\)/, label + ': mobile guard');
+}
+
+test('PDF drag-drop kritik davranışları taşıt ve K2 yüzeylerinde parity korumalı', function() {
+  assertPdfDropParityContract(extractRuhsatUploadFormBlock(), 'taşıt yüzeyi');
+  assertPdfDropParityContract(extractK2DocumentPickerBlock(), 'K2 yüzeyi');
+});
+
+test('PDF drag-drop lifecycle farkı bilinçli: taşıt taze DOM, K2 kalıcı DOM guard', function() {
+  const tasitlarBlock = extractRuhsatUploadFormBlock();
+  const k2Block = extractK2DocumentPickerBlock();
+  assert.doesNotMatch(tasitlarBlock, /k2DragBound/, 'taşıt yüzeyi her render taze DOM üretir; kalıcı rebind guard taşımaz');
+  assert.match(k2Block, /dataset\.k2DragBound !== '1'/, 'K2 kalıcı DOM için rebind guard bulunmalı');
+  assert.match(k2Block, /dataset\.k2DragBound = '1'/, 'K2 rebind guard bind sonrası set edilmeli');
+});
+
+test('PDF drag-drop parity helper mutasyonla fail eder (negative check)', function() {
+  const base = extractK2DocumentPickerBlock();
+  assert.doesNotThrow(function() {
+    assertPdfDropParityContract(base, 'orijinal K2');
+  });
+  const mutants = [
+    ['desktop breakpoint', base.replace('(min-width: 641px)', '(min-width: 768px)')],
+    ['multi-file mesajı', base.replace('Yalnızca tek dosya bırakılabilir.', 'Yalnızca bir dosya bırakılabilir.')],
+    ['DataTransfer guard', base.replace("typeof DataTransfer !== 'function'", "typeof DataTransfer === 'undefined'")]
+  ];
+  mutants.forEach(function(entry) {
+    const mutantLabel = entry[0];
+    const mutated = entry[1];
+    assert.notEqual(mutated, base, mutantLabel + ' mutasyonu kaynağı değiştirmeli');
+    assert.throws(
+      function() { assertPdfDropParityContract(mutated, 'mutant'); },
+      /.*/,
+      mutantLabel + ' bozulduğunda parity helper fail etmeli'
+    );
+  });
+});
+
 test('CSS: [+]/[-] dikey hizalı, masaüstü ve mobil owner blokları güncel', function() {
   assert.match(styleCoreCss, /\.medisa-doc-action-row\s*\{/);
   assert.match(styleCoreCss, /\.medisa-doc-action-row__start/);
