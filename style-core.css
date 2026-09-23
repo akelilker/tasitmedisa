@@ -1178,6 +1178,26 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
     }
 }
 
+/* ≤768px: yan kırmızı çerçeve glow — yalnızca masaüstü (≥769) bloğunda olan ::before/content-wrap
+   box-shadow burada yoktu; 641–768 arası zayıf border, ≤640’ta da glow eksik kalıyordu. */
+@media (max-width: 768px) {
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-container::before {
+        border-left-width: 0.7px;
+        border-right-width: 0.7px;
+        border-top-color: rgba(var(--theme-color-rgb), 0.78);
+        border-left-color: rgba(var(--theme-color-rgb), 0.78);
+        border-right-color: rgba(var(--theme-color-rgb), 0.78);
+        box-shadow:
+            0 0 16px rgba(var(--theme-color-rgb), 0.24),
+            inset 0 0 18px rgba(var(--theme-color-rgb), 0.10);
+    }
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap {
+        box-shadow:
+            0 0 28px rgba(var(--theme-color-rgb), 0.16),
+            inset 0 0 18px rgba(var(--theme-color-rgb), 0.05);
+    }
+}
+
 /* HERO ALANI - Havada durma + kırmızı uyum, taşma yok */
 .hero {
   position: relative;
