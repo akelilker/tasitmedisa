@@ -87,47 +87,6 @@
     }
   }
 
-  function formatDateForDisplay(dateStr) {
-    if (!dateStr) return '';
-    const raw = String(dateStr).trim();
-    if (/\d{4}-\d{2}-\d{2}[T ]\d{2}/.test(raw)) {
-      const parsedIso = new Date(raw);
-      if (!isNaN(parsedIso.getTime())) {
-        const d = String(parsedIso.getDate()).padStart(2, '0');
-        const m = String(parsedIso.getMonth() + 1).padStart(2, '0');
-        const y = String(parsedIso.getFullYear());
-        const hh = String(parsedIso.getHours()).padStart(2, '0');
-        const min = String(parsedIso.getMinutes()).padStart(2, '0');
-        return d + '/' + m + '/' + y + ' ' + hh + ':' + min;
-      }
-    }
-    if (typeof window.formatDateShort === 'function') {
-      const formatted = window.formatDateShort(dateStr);
-      if (formatted) {
-        const formattedStr = String(formatted).trim();
-        if (formattedStr && (formattedStr !== raw || /[./-]/.test(formattedStr))) {
-          return formattedStr;
-        }
-      }
-    }
-    const iso = raw.match(/^(\d{4})-(\d{2})-(\d{2})$/);
-    if (iso) return iso[3] + '/' + iso[2] + '/' + iso[1];
-    const compactIso = raw.match(/^(\d{4})(\d{2})(\d{2})$/);
-    if (compactIso) return compactIso[3] + '/' + compactIso[2] + '/' + compactIso[1];
-    const compactTr = raw.match(/^(\d{2})(\d{2})(\d{4})$/);
-    if (compactTr) return compactTr[1] + '/' + compactTr[2] + '/' + compactTr[3];
-    const dot = raw.match(/^(\d{2})[./-](\d{2})[./-](\d{4})$/);
-    if (dot) return dot[1] + '/' + dot[2] + '/' + dot[3];
-    const parsed = new Date(raw);
-    if (!isNaN(parsed.getTime())) {
-      const d = String(parsed.getDate()).padStart(2, '0');
-      const m = String(parsed.getMonth() + 1).padStart(2, '0');
-      const y = String(parsed.getFullYear());
-      return d + '/' + m + '/' + y;
-    }
-    return raw;
-  }
-
   function medisaNotificationTalepSortMs(str) {
     const t = Date.parse(String(str || '').trim());
     if (!isNaN(t)) return t;
