@@ -317,7 +317,7 @@ return isNaN(d.getTime()) ? null : d;
 }
 
 function formatHistoryPeriod(item) {
-function formatDateDDMMYYYY(d) {
+function formatHistoryDateDDMMYYYY(d) {
 if (!d || isNaN(d.getTime())) return '';
 const dd = String(d.getDate()).padStart(2, '0');
 const mm = String(d.getMonth() + 1).padStart(2, '0');
@@ -331,19 +331,19 @@ const reportedDate = item.kaza_durumu && item.kaza_tarih
 : (item.bakim_durumu && item.bakim_tarih ? item.bakim_tarih : '');
 const dateValue = reportedDate || item.guncelleme_tarihi || item.kayit_tarihi || '';
 const d = dateValue ? parseHistoryDate(dateValue) : null;
-const f = formatDateDDMMYYYY(d);
+const f = formatHistoryDateDDMMYYYY(d);
 return f || (item.donem ? formatPeriod(item.donem) : '');
 }
 
 if (item.date) {
 const d = parseHistoryDate(item.date);
-const f = formatDateDDMMYYYY(d);
+const f = formatHistoryDateDDMMYYYY(d);
 return f || item.date;
 }
 
 if (item.timestamp) {
 const d = parseHistoryDate(item.timestamp);
-return formatDateDDMMYYYY(d);
+return formatHistoryDateDDMMYYYY(d);
 }
 
 return '';
