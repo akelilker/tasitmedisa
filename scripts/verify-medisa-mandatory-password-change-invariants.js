@@ -166,11 +166,11 @@ test('Şifre talepleri yalnız kullanıcıyı yönetebilen yöneticiye görünü
 });
 test('Şifre talebi endpointi ve yenilenen driver assetleri deploy zincirindedir', () => {
   assert.match(files.cpanel, /driver\/driver_password_reset_request\.php/);
-  assert.match(files.driverScript, /bootstrap:\s*'20260921\.1'/);
+  assert.match(files.driverScript, /bootstrap:\s*'20260923\.1'/);
   assert.match(files.driverScript, /login:\s*'20260921\.1'/);
   assert.match(files.driverScript, /shellCss:\s*'20260921\.2'/);
   assert.match(files.loginHtml, /driver-shell\.css\?v=20260921\.2/);
-  assert.match(files.loginHtml, /driver-script\.js\?v=20260921\.1/);
+  assert.match(files.loginHtml, /driver-script\.js\?v=20260923\.1/);
 });
 test('Öneri ve mevcut parolayla devam bypassı kaldırılmıştır', () => {
   const joined = files.passwordJs + files.dashboardHtml;
