@@ -4903,24 +4903,21 @@
       if (type === 'sube' || type === 'kullanici') {
         const lockedVehicle = readVehicles().find(v => String(v.id) === String(effectiveVid));
         if (isArchivedVehicleAssignmentLocked(lockedVehicle)) {
-          if (typeof showToast === 'function') showToast('Arşivdeki taşıtlarda kullanıcı/şube ataması yapılamaz.', 'error');
-          else alert('Arşivdeki taşıtlarda kullanıcı/şube ataması yapılamaz.');
+          alert('Arşivdeki taşıtlarda kullanıcı/şube ataması yapılamaz.');
           return;
         }
       }
       if (type === 'tasitkarti') {
         const k2ScopeVehicle = readVehicles().find(v => String(v.id) === String(effectiveVid));
         if (!window.MedisaVehicleNotificationDomain.vehicleNeedsK2Belgesi(k2ScopeVehicle)) {
-          if (typeof showToast === 'function') showToast('Taşıt Kartı güncellemesi sadece K2 belgesi kapsamındaki taşıtlarda kullanılır.', 'error');
-          else alert('Taşıt Kartı güncellemesi sadece K2 belgesi kapsamındaki taşıtlarda kullanılır.');
+          alert('Taşıt Kartı güncellemesi sadece K2 belgesi kapsamındaki taşıtlarda kullanılır.');
           return;
         }
       }
       if (type === 'sigorta') {
         const sigortaScopeVehicle = readVehicles().find(v => String(v.id) === String(effectiveVid));
         if (!window.MedisaVehicleNotificationDomain.vehicleNeedsTrafikSigortasi(sigortaScopeVehicle)) {
-          if (typeof showToast === 'function') showToast('Trafik sigortası güncellemesi römork/yarı römork taşıtlarda kullanılmaz.', 'error');
-          else alert('Trafik sigortası güncellemesi römork/yarı römork taşıtlarda kullanılmaz.');
+          alert('Trafik sigortası güncellemesi römork/yarı römork taşıtlarda kullanılmaz.');
           return;
         }
       }
@@ -8076,11 +8073,7 @@
     pinRuhsatUploadVehicleContext(vid);
     var vehicle = findVehicleForDocumentUpload(vid);
     if (dt === 'satis_sozlesmesi' && !vehicleAllowsSatisSozlesmesi(vehicle)) {
-      if (typeof showToast === 'function') {
-        showToast('Satış Sözleşmesi yalnızca stoktan düşen (satış veya pert) taşıtlarda kullanılabilir.', 'error');
-      } else {
-        alert('Satış Sözleşmesi yalnızca stoktan düşen (satış veya pert) taşıtlarda kullanılabilir.');
-      }
+      alert('Satış Sözleşmesi yalnızca stoktan düşen (satış veya pert) taşıtlarda kullanılabilir.');
       return;
     }
     const modal = DOM.dinamikOlayModal;
@@ -9778,8 +9771,7 @@
     const yeniKaskoKodu = inputElement ? inputElement.value.trim() : '';
 
     if (!yeniKaskoKodu) {
-      if (typeof showToast === 'function') showToast('Lütfen Kasko Kodunu giriniz.', 'error');
-      else alert('Lütfen Kasko Kodunu giriniz.');
+      alert('Lütfen Kasko Kodunu giriniz.');
       return;
     }
 
@@ -10013,8 +10005,7 @@
     const vehicle = svc.vehicle;
     const vehicles = svc.vehicles;
     if (isArchivedVehicleAssignmentLocked(vehicle)) {
-      if (typeof showToast === 'function') showToast('Arşivdeki taşıtlarda kullanıcı/şube ataması yapılamaz.', 'error');
-      else alert('Arşivdeki taşıtlarda kullanıcı/şube ataması yapılamaz.');
+      alert('Arşivdeki taşıtlarda kullanıcı/şube ataması yapılamaz.');
       return;
     }
 
@@ -10077,8 +10068,7 @@
     const vehicle = svc.vehicle;
     const vehicles = svc.vehicles;
     if (isArchivedVehicleAssignmentLocked(vehicle)) {
-      if (typeof showToast === 'function') showToast('Arşivdeki taşıtlarda kullanıcı/şube ataması yapılamaz.', 'error');
-      else alert('Arşivdeki taşıtlarda kullanıcı/şube ataması yapılamaz.');
+      alert('Arşivdeki taşıtlarda kullanıcı/şube ataması yapılamaz.');
       return;
     }
 
@@ -10120,8 +10110,7 @@
           message: 'Kullanıcı ataması güncellendi.'
         });
       }).catch(function(err) {
-        if (typeof showToast === 'function') showToast((err && err.message) || 'Kayıt başarısız.', 'error');
-        else alert((err && err.message) || 'Kayıt başarısız.');
+        alert((err && err.message) || 'Kayıt başarısız.');
       });
     }
 
@@ -10253,8 +10242,7 @@
         });
       }).catch(function(err) {
         restoreVehicleAfterFailedPersist();
-        if (typeof showToast === 'function') showToast((err && err.message) || 'Kayıt başarısız.', 'error');
-        else alert((err && err.message) || 'Kayıt başarısız.');
+        alert((err && err.message) || 'Kayıt başarısız.');
       });
     }
 
