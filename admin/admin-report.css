@@ -1889,10 +1889,6 @@ body.admin-report-page #app-footer.admin-footer .footer-content,
     flex-direction: column;
     align-items: center;
   }
-
-  .user-analytics-detail-grid {
-    grid-template-columns: 1fr;
-  }
 }
 
 .admin-tabs-container {
