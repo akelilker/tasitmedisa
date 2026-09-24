@@ -592,8 +592,7 @@ select option:active {
 #vehicle-modal:has(#vehicle-branch-list.open) .modal-body .universal-btn-group .universal-btn-cancel {
     pointer-events: none !important;
 }
-/* Kayıt: tahsis şube dropdown açıkken arka plan flu (Kullanıcı Düzenle ile aynı) */
-#vehicle-modal:has(#vehicle-branch-list.open) .modal-header,
+/* Kayıt: tahsis şube dropdown açıkken yalnız form arka planı flu; header net kalır. */
 #vehicle-modal:has(#vehicle-branch-list.open) .modal-body .modal-column-left,
 #vehicle-modal:has(#vehicle-branch-list.open) .modal-body .modal-column-right > *:not(:has(#vehicle-branch-list.open)),
 #vehicle-modal:has(#vehicle-branch-list.open) .modal-body .universal-btn-group {

@@ -3256,6 +3256,20 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         min-height: calc(100vh - env(safe-area-inset-bottom)) !important;
         min-height: calc(100dvh - env(safe-area-inset-bottom)) !important;
     }
+    /* iOS PWA tam ekran modalları app-container dışında body'ye mount edilir.
+       Ana çerçeve altında kalmasın diye aynı üst/yan kırmızı krom modalın kendi
+       container'ında üretilir; kompakt onaylar ayrı yüzey olarak kalır. */
+    :is(#vehicle-modal, #reports-modal, #monthly-todo-modal, #vehicles-modal, #vehicle-detail-modal, #dinamik-olay-modal, #event-menu-modal, #vehicle-history-modal, #required-documents-modal, #branch-modal, #branch-form-modal, #user-modal, #user-form-modal, #data-management-modal, #dis-veri-panel).modal-overlay .modal-container {
+        border-color: rgba(var(--theme-color-rgb), 0.82) !important;
+        border-top-color: rgba(var(--theme-color-rgb), 0.88) !important;
+        outline: 1px solid rgba(var(--theme-color-rgb), 0.72) !important;
+        outline-offset: -1px !important;
+    }
+    /* Metalik başlık korunur; iOS rasterleştirmesinde yumuşayan geniş glow yok. */
+    :is(#vehicle-modal, #reports-modal, #monthly-todo-modal, #vehicles-modal, #vehicle-detail-modal).modal-overlay .modal-header h2.premium-title {
+        filter: none !important;
+        text-shadow: 0 1px 1px rgba(0, 0, 0, 0.26), 0 0 2px rgba(214, 224, 232, 0.18) !important;
+    }
     /* Admin rapor sayfası: kavislere uyumlu çerçeve (anasayfa ile aynı) */
     .admin-app-container {
         border-radius: 20px !important;
