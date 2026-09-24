@@ -73,12 +73,21 @@ test('splash minimum süresi 2000 ms kalır', function() {
   assert.match(index, /MIN_SPLASH_MS\s*=\s*2000/);
 });
 
-test('modal premium başlığı ana menü .ttl canonical net beyaz kontratını reuse eder', function() {
+test('premium başlık: mobil düz beyaz + masaüstü metalik split kontratı', function() {
   assert.match(style, /--premium-title-color:\s*#ffffff/);
-  assert.match(style, /--premium-title-shadow:\s*[^;]+;/);
+  assert.match(style, /--premium-title-gradient:\s*linear-gradient/);
+  assert.match(style, /--premium-title-shadow-metallic:\s*[^;]+;/);
   assert.match(style, /\.modal-overlay \.modal-header h2\.premium-title\s*\{[\s\S]*?color:\s*var\(--premium-title-color\)/);
   assert.match(style, /\.modal-overlay \.modal-header h2\.premium-title\s*\{[\s\S]*?text-shadow:\s*var\(--premium-title-shadow\)/);
   assert.match(style, /#main-menu \.menu-btn \.ttl\s*\{[\s\S]*?color:\s*var\(--premium-title-color\)/);
+  assert.match(
+    style,
+    /@media \(min-width: 641px\)\s*\{[\s\S]*?#main-menu \.menu-btn \.ttl\s*\{[\s\S]*?background:\s*var\(--premium-title-gradient\)/
+  );
+  assert.match(
+    style,
+    /@media \(min-width: 641px\)\s*\{[\s\S]*?\.modal-overlay \.modal-header h2\.premium-title\s*\{[\s\S]*?background:\s*var\(--premium-title-gradient\)/
+  );
   const mobilePremiumMarker = '/* Mobil modal başlıkları: net beyaz (ana menü ile aynı kontrat) */';
   const mobilePremiumAt = style.indexOf(mobilePremiumMarker);
   assert.ok(mobilePremiumAt !== -1, 'mobil premium başlık ownerı eksik');
