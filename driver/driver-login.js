@@ -321,16 +321,6 @@ return false;
 }
 
 
-(function initLoginFooterDim() {
-const footer = document.getElementById('app-footer');
-if (!footer) return;
-footer.classList.add('dimmed');
-footer.classList.remove('delayed');
-setTimeout(function() {
-if (footer) footer.classList.add('delayed');
-}, 4000);
-})();
-
 function getLoginFooterStatusEl() {
 return document.querySelector('#app-footer .status');
 }
