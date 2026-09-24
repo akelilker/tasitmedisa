@@ -1184,32 +1184,20 @@ function scheduleNotificationsDropdownSync() {
 }
 window.scheduleNotificationsDropdownSync = scheduleNotificationsDropdownSync;
 
-// Sayfa yüklendiğinde footer animasyonunu başlat
+// Sayfa yüklendiğinde footer dim state'ini temizle (kalıcı solukluk yok)
 function startFooterAnimation() {
   const footer = getFooter();
   if (!footer) {
-    // Footer bulunamadı
     return;
   }
-  
-  // Önceki timeout'u temizle
+
   if (dimTimeout) {
     clearTimeout(dimTimeout);
     dimTimeout = null;
   }
-  
-  // Başta dimmed ekle (versiyon ve durum normal, MEDISA soluk)
-  footer.classList.add('dimmed');
+
+  footer.classList.remove('dimmed');
   footer.classList.remove('delayed');
-  // Footer animasyonu başladı
-  
-  // 4 saniye sonra delayed class'ını ekle (versiyon ve durum soluk, MEDISA normal)
-  dimTimeout = setTimeout(() => {
-    if (footer) {
-      footer.classList.add('delayed');
-      // Footer animasyonu tamamlandı
-    }
-  }, 4000);
 }
 
 // Modal kontrolü için ayrı fonksiyon

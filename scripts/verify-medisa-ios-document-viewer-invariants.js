@@ -235,7 +235,7 @@ test('pin/SW chain', function() {
   assert.match(scriptCore, /tasitlar:\s*'20260923\.3'/);
   assert.match(sw, /CACHE_VERSION = 'medisa-v2\.337'/);
   assert.match(read('index.html'), /script-core\.js\?v=20260923\.4/);
-  assert.match(read('index.html'), /style-core\.css\?v=20260924\.1/);
+  assert.match(read('index.html'), /style-core\.css\?v=20260924\.2/);
 });
 
 console.log('');
