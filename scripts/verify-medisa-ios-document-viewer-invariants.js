@@ -41,7 +41,7 @@ function extractBetween(source, startMarker, endMarker) {
 test('1. iOS PDF view ruhsat_preview.php gerektirmez', function() {
   const viewer = extractBetween(
     tasitlar,
-    'function openIosCanonicalDocumentViewer(vehicleId, documentType, viewerOpts) {',
+    'function openMedisaCanonicalDocumentViewer(vehicleId, documentType, viewerOpts) {',
     'function runVehicleDocumentPrintAction(actionBtn, ruhsatUrl, vehicleId, documentType) {'
   );
   assert.doesNotMatch(viewer, /ruhsat_preview\.php|buildRuhsatPreviewUrl|fetchRuhsatPreviewObjectUrl/);
@@ -49,17 +49,51 @@ test('1. iOS PDF view ruhsat_preview.php gerektirmez', function() {
   assert.match(viewer, /ensureMedisaPdfJs\(/);
 });
 
-test('2. iOS thumbnail auto-hydration server PDF preview çağırmaz', function() {
+test('2. PDF thumbnail auto-hydration server PDF preview çağırmaz', function() {
   const hydrate = extractBetween(
     tasitlar,
     'function hydrateRuhsatPreviewButton(previewBtn, vehicleId, ruhsatUrl, isImage, documentType) {',
-    'function openIosCanonicalDocumentViewer(vehicleId, documentType, viewerOpts) {'
+    'function openMedisaCanonicalDocumentViewer(vehicleId, documentType, viewerOpts) {'
   );
-  assert.match(hydrate, /isIosCanonicalDocumentViewerHost\(\)/);
+  assert.match(hydrate, /if \(!isImage\)/);
   assert.match(hydrate, /ruhsat-preview-pdf-icon|Ön İzleme/);
-  const iosBranch = hydrate.slice(hydrate.indexOf('if (!isImage && isIosCanonicalDocumentViewerHost())'));
-  assert.doesNotMatch(iosBranch.slice(0, 500), /fetchRuhsatPreviewObjectUrl/);
-  assert.match(tasitlar, /function warmRuhsatPreview[\s\S]*?isIosCanonicalDocumentViewerHost\(\)[\s\S]*?return Promise\.resolve\(''\)/);
+  const pdfBranch = hydrate.slice(hydrate.indexOf('if (!isImage)'));
+  assert.doesNotMatch(pdfBranch.slice(0, 500), /fetchRuhsatPreviewObjectUrl/);
+  assert.match(hydrate, /fetchRuhsatDocumentObjectUrl\(vehicleId, ruhsatUrl, dt\)/);
+  // PDF için client tarafında Imagick preview endpoint consumer'ı kalmamalı.
+  assert.doesNotMatch(tasitlar, /ruhsat_preview\.php|buildRuhsatPreviewUrl|fetchRuhsatPreviewObjectUrl/);
+});
+
+test('2b. Desktop PDF Ön İzleme canonical viewer kullanır', function() {
+  const modalSrc = extractBetween(
+    tasitlar,
+    'window.openVehicleDocumentModal = function(vehicleId, documentType) {',
+    'function renderRuhsatUploadForm('
+  );
+  const desktopBranch = modalSrc.slice(modalSrc.indexOf('const previewSrc'));
+  assert.match(desktopBranch, /if \(!ruhsatIsImage\)[\s\S]*?openMedisaCanonicalDocumentViewer\(vid, dt\)/);
+  assert.match(desktopBranch, /shouldUseInlineRuhsatViewer\(\)[\s\S]*?renderInlineRuhsatViewer\(/);
+  assert.match(desktopBranch, /window\.viewRuhsatPdf\(vid, dt\)/);
+  assert.doesNotMatch(modalSrc, /warmRuhsatPreview|fetchRuhsatPreviewObjectUrl/);
+});
+
+test('2c. Canonical viewer platform-neutral: zoom + desktop print delegation', function() {
+  const viewer = extractBetween(
+    tasitlar,
+    'function openMedisaCanonicalDocumentViewer(vehicleId, documentType, viewerOpts) {',
+    'function runVehicleDocumentPrintAction(actionBtn, ruhsatUrl, vehicleId, documentType) {'
+  );
+  assert.match(viewer, /hostIsIos = isIosCanonicalDocumentViewerHost\(\)/);
+  assert.match(viewer, /id: 'zoom-out'/);
+  assert.match(viewer, /id: 'zoom-in'/);
+  assert.match(viewer, /function changeZoom\(/);
+  assert.match(viewer, /function applyZoomLevel\(/);
+  assert.match(viewer, /if \(!hostIsIos\)[\s\S]*?openVehicleDocumentInNewTab\(/);
+  assert.match(tasitlar, /window\.openMedisaCanonicalDocumentViewer = openMedisaCanonicalDocumentViewer;/);
+  assert.match(
+    tasitlar,
+    /function openIosCanonicalDocumentViewer\(vehicleId, documentType, viewerOpts\) \{\s*return openMedisaCanonicalDocumentViewer\(vehicleId, documentType, viewerOpts\);/
+  );
 });
 
 test('3-4. preview/print failure original cooldown set etmez; state ayrık', function() {
@@ -68,7 +102,7 @@ test('3-4. preview/print failure original cooldown set etmez; state ayrık', fun
   const preload = extractBetween(
     tasitlar,
     'function preloadIosPwaPrintDocument(vehicleId, documentPath, documentType) {',
-    'function warmRuhsatPreview(vehicleId, ruhsatUrl, documentType) {'
+    'function hydrateRuhsatPreviewButton(previewBtn, vehicleId, ruhsatUrl, isImage, documentType) {'
   );
   assert.match(preload, /printCooldownUntil\s*=\s*Date\.now\(\)\s*\+\s*30000/);
   assert.doesNotMatch(preload, /originalCooldownUntil\s*=\s*Date\.now/);
@@ -130,7 +164,7 @@ test('9-10. PDF.js lazy-load + worker version paired', function() {
 test('11-12. share cached File; AbortError hata değil', function() {
   const viewer = extractBetween(
     tasitlar,
-    'function openIosCanonicalDocumentViewer(vehicleId, documentType, viewerOpts) {',
+    'function openMedisaCanonicalDocumentViewer(vehicleId, documentType, viewerOpts) {',
     'function runVehicleDocumentPrintAction(actionBtn, ruhsatUrl, vehicleId, documentType) {'
   );
   assert.match(viewer, /function shareCachedFile\(/);
@@ -179,7 +213,7 @@ test('18. logout/auth purge owner', function() {
 test('19-21. print ayrı; Imagick iOS print zorunlu değil', function() {
   const viewer = extractBetween(
     tasitlar,
-    'function openIosCanonicalDocumentViewer(vehicleId, documentType, viewerOpts) {',
+    'function openMedisaCanonicalDocumentViewer(vehicleId, documentType, viewerOpts) {',
     'function runVehicleDocumentPrintAction(actionBtn, ruhsatUrl, vehicleId, documentType) {'
   );
   assert.match(viewer, /id: 'share'/);
@@ -188,7 +222,7 @@ test('19-21. print ayrı; Imagick iOS print zorunlu değil', function() {
   const preload = extractBetween(
     tasitlar,
     'function preloadIosPwaPrintDocument(vehicleId, documentPath, documentType) {',
-    'function warmRuhsatPreview(vehicleId, ruhsatUrl, documentType) {'
+    'function hydrateRuhsatPreviewButton(previewBtn, vehicleId, ruhsatUrl, isImage, documentType) {'
   );
   assert.doesNotMatch(preload, /buildRuhsatPreviewPageUrl|ruhsat_preview\.php/);
   assert.doesNotMatch(tasitlar, /function buildRuhsatPreviewPageUrl\(/);

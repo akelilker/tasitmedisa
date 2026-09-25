@@ -369,7 +369,6 @@ test('Akış: Hayır istek göndermez, Evet doğru payload gönderir, çift tık
       },
       buildMedisaAuthHeaders: function() { return { Authorization: 'Bearer test' }; },
       invalidateMedisaDocumentTokenCache: function(id, dt) { invalidations.push('token:' + id + ':' + dt); },
-      invalidateRuhsatPreviewCache: function(id, dt) { invalidations.push('preview:' + id + ':' + dt); },
       invalidateRuhsatDocumentCache: function(id, dt) { invalidations.push('document:' + id + ':' + dt); },
       refreshOpenVehicleHistoryList: function() { rerenders.push('history'); },
       fetch: function(url, options) {
@@ -434,7 +433,6 @@ test('Akış: Hayır istek göndermez, Evet doğru payload gönderir, çift tık
       // 15: client cache/token invalidation + state
       assert.deepEqual(yesSandbox.invalidations, [
         'token:v1:ruhsat',
-        'preview:v1:ruhsat',
         'document:v1:ruhsat'
       ]);
       assert.equal(yesSandbox.vehicleRef.ruhsatPath, '');
