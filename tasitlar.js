@@ -8233,6 +8233,10 @@
     requestAnimationFrame(function() { modal.classList.add('active'); });
   };
 
+  // Sunucu tarafı upload_max_filesize ile aynı olmalıdır (owner: upload_ruhsat.php).
+  // Bu kontrol yalnızca kullanıcıya anında geri bildirim içindir; nihai sınır sunucudadır.
+  var MEDISA_VEHICLE_DOCUMENT_MAX_UPLOAD_MB = 8;
+
   function renderRuhsatUploadForm(content, saveBtn, hasExistingRuhsat, documentType) {
     const cfg = getVehicleDocumentConfig(documentType);
     const waitsForPolicyUploadSubmit = cfg.key === 'sigorta' || cfg.key === 'kasko';
@@ -8336,6 +8340,12 @@
       return list.find(function(v) { return String(v.id) === vehicleId; }) || null;
     }
     function validateSelectedDocumentBeforeUpload() {
+      const selectedUploadFile = input && input.files && input.files[0] ? input.files[0] : null;
+      if (selectedUploadFile && selectedUploadFile.size > MEDISA_VEHICLE_DOCUMENT_MAX_UPLOAD_MB * 1024 * 1024) {
+        alert('Seçilen PDF ' + MEDISA_VEHICLE_DOCUMENT_MAX_UPLOAD_MB + ' MB sınırını aşıyor. Daha küçük bir PDF yükleyin.');
+        resetSelectedUploadFile();
+        return false;
+      }
       const activeVehicle = resolveActiveVehicleForDocumentUpload();
       if (cfg.key === 'tasit_karti') {
         const expiryValidation = validateTasitKartiK2SourceDate(activeVehicle);

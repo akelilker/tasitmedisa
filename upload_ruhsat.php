@@ -307,7 +307,10 @@ if (!isset($_FILES[$fileKey]) || $_FILES[$fileKey]['error'] !== UPLOAD_ERR_OK) {
     switch ($err) {
         case UPLOAD_ERR_INI_SIZE:
         case UPLOAD_ERR_FORM_SIZE:
-            $msg = 'Dosya boyutu tarayıcı veya sunucu limitini aşıyor. Mobilde limit genelde daha düşüktür; daha küçük bir PDF deneyin veya masaüstünden yükleyin.';
+            $uploadMaxFilesize = trim((string)ini_get('upload_max_filesize'));
+            $msg = $uploadMaxFilesize !== ''
+                ? 'Dosya boyutu sunucu limitini aşıyor (en fazla ' . $uploadMaxFilesize . '). Daha küçük bir PDF yükleyin.'
+                : 'Dosya boyutu sunucu limitini aşıyor. Daha küçük bir PDF yükleyin.';
             break;
         case UPLOAD_ERR_PARTIAL:
             $msg = 'PDF sunucuya eksik ulaştı. Wi-Fi veya daha güçlü mobil sinyal ile tekrar deneyin.';
