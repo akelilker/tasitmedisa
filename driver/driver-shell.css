@@ -2781,9 +2781,7 @@ body.is-ios-pwa.login-page .form-group-checkbox label {
     border-top: 0.5px solid rgba(var(--theme-color-rgb), 0.82) !important;
     border-left: 0.7px solid rgba(var(--theme-color-rgb), 0.80) !important;
     border-right: 0.7px solid rgba(var(--theme-color-rgb), 0.80) !important;
-    box-shadow:
-      0 2px 14px rgba(var(--theme-color-rgb), 0.125),
-      inset 0 0 26px rgba(var(--theme-color-rgb), 0.21) !important;
+    box-shadow: 0 2px 14px rgba(var(--theme-color-rgb), 0.125), inset 0 0 26px rgba(var(--theme-color-rgb), 0.21) !important;
   }
 
   .dashboard-page #app-footer,
