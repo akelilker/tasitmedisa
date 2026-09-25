@@ -1701,6 +1701,11 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu .m
     filter: brightness(1.01);
     text-shadow: var(--premium-title-shadow-metallic) !important;
   }
+
+  /* Footer MEDISA - Masaüstünde hafif soldur (0.7 -> 0.5) */
+  #app-footer.dimmed.delayed .brand img {
+    opacity: 0.5 !important;
+  }
 }
 
 /* DROPDOWN - Her buton ayrı çerçeve */
@@ -2674,24 +2679,32 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
   transition: opacity 1s ease !important;
 }
 
-/* Footer dim animasyonu kaldırıldı: versiyon, durum ve marka her zaman okunaklı */
+/* Sayfa açıldığında: Versiyon ve durum normal, MEDISA soluk */
 #app-footer.dimmed .version,
-#app-footer.dimmed .version#version-display,
-#app-footer.dimmed.delayed .version,
-#app-footer.dimmed.delayed .version#version-display {
+#app-footer.dimmed .version#version-display {
   opacity: 1 !important;
 }
 #app-footer.dimmed .status,
 #app-footer.dimmed .status.status-ready,
-#app-footer.dimmed .status.status-error,
+#app-footer.dimmed .status.status-error {
+  opacity: 1 !important;
+}
+#app-footer.dimmed .brand img {
+  opacity: 0.3 !important;
+}
+
+/* 4 saniye sonra: Versiyon ve durum soluk, MEDISA normal */
+#app-footer.dimmed.delayed .version,
+#app-footer.dimmed.delayed .version#version-display {
+  opacity: 0.3 !important;
+}
 #app-footer.dimmed.delayed .status,
 #app-footer.dimmed.delayed .status.status-ready,
 #app-footer.dimmed.delayed .status.status-error {
-  opacity: 1 !important;
+  opacity: 0.3 !important;
 }
-#app-footer.dimmed .brand img,
 #app-footer.dimmed.delayed .brand img {
-  opacity: 1 !important;
+  opacity: 0.8 !important;
 }
 .status-ready {
   color: var(--green) !important; /* Zorla yeşil */
@@ -3224,9 +3237,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         top: 0 !important;
         height: 100% !important;
     }
-    :is(#vehicle-modal, #reports-modal, #monthly-todo-modal, #vehicles-modal, #vehicle-detail-modal, #dinamik-olay-modal, #event-menu-modal, #vehicle-history-modal, #required-documents-modal, #branch-modal, #branch-form-modal, #user-modal, #user-form-modal, #data-management-modal, #dis-veri-panel).modal-overlay:not(.compact-confirm-modal) .modal-header {
-        padding-top: calc(12px + env(safe-area-inset-top)) !important;
-    }
     .modal-overlay .modal-container {
         margin-top: 0 !important;
         margin-bottom: 0 !important;
@@ -3257,14 +3267,14 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         min-height: 100dvh !important;
         box-sizing: border-box !important;
     }
-    /* iOS PWA: safe-area yalnızca app-container üst padding; content-wrap ek çentik padding'i üst vignette bandı üretmesin */
+    /* iOS PWA: safe-area içerik offset'inde; dış krom (çerçeve) top:0'dan başlar */
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap {
-        padding-top: 12px !important;
+        padding-top: max(12px, env(safe-area-inset-top)) !important;
     }
     /* Ana uygulama container – çerçeve kuralları */
     body:not(.dashboard-page):not(.login-page) .app-container {
         margin-top: 0 !important;
-        padding-top: env(safe-area-inset-top) !important;
+        padding-top: 0 !important;
         border-radius: 20px !important;
         border-bottom-left-radius: 0 !important;
         border-bottom-right-radius: 0 !important;
@@ -3276,27 +3286,27 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         min-height: calc(100vh - env(safe-area-inset-bottom)) !important;
         min-height: calc(100dvh - env(safe-area-inset-bottom)) !important;
     }
-    /* Üst çentik bandında inset vignette solukluk üretmesin (yan/dış glow korunur) */
-    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-container {
-        box-shadow: 0 2px 14px rgba(var(--theme-color-rgb), 0.125) !important;
-    }
-    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-container::after {
-        display: none !important;
-    }
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-container::before {
-        top: env(safe-area-inset-top) !important;
-        box-shadow: 0 0 16px rgba(var(--theme-color-rgb), 0.24) !important;
+        top: 0 !important;
     }
-    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap {
-        box-shadow: none !important;
+    /* Tam ekran modal safe-area tek owner: kırmızı header yüksekliği 60px + inset (içerik ~60px kalır) */
+    :is(#vehicle-modal, #reports-modal, #monthly-todo-modal, #vehicles-modal, #vehicle-detail-modal, #dinamik-olay-modal, #event-menu-modal, #vehicle-history-modal, #required-documents-modal, #branch-modal, #branch-form-modal, #user-modal, #user-form-modal, #data-management-modal, #dis-veri-panel).modal-overlay:not(.compact-confirm-modal) .modal-header {
+        height: calc(60px + env(safe-area-inset-top, 0px)) !important;
+        min-height: calc(60px + env(safe-area-inset-top, 0px)) !important;
+        max-height: calc(60px + env(safe-area-inset-top, 0px)) !important;
+        padding-top: env(safe-area-inset-top, 0px) !important;
+        padding-right: 20px !important;
+        padding-bottom: 0 !important;
+        padding-left: 20px !important;
+        box-sizing: border-box !important;
     }
     /* iOS PWA tam ekran modalları app-container dışında body'ye mount edilir.
        Ana çerçeve altında kalmasın diye aynı üst/yan kırmızı krom modalın kendi
        container'ında üretilir; kompakt onaylar ayrı yüzey olarak kalır. */
     :is(#vehicle-modal, #reports-modal, #monthly-todo-modal, #vehicles-modal, #vehicle-detail-modal, #dinamik-olay-modal, #event-menu-modal, #vehicle-history-modal, #required-documents-modal, #branch-modal, #branch-form-modal, #user-modal, #user-form-modal, #data-management-modal, #dis-veri-panel).modal-overlay .modal-container {
-        border-color: rgba(184, 192, 201, 0.42) !important;
-        border-top-color: rgba(200, 208, 216, 0.48) !important;
-        outline: 1px solid rgba(214, 222, 232, 0.34) !important;
+        border-color: rgba(var(--theme-color-rgb), 0.82) !important;
+        border-top-color: rgba(var(--theme-color-rgb), 0.88) !important;
+        outline: 1px solid rgba(var(--theme-color-rgb), 0.72) !important;
         outline-offset: -1px !important;
     }
     :is(#vehicle-modal, #reports-modal, #monthly-todo-modal, #vehicles-modal, #vehicle-detail-modal, #dinamik-olay-modal, #event-menu-modal, #vehicle-history-modal).modal-overlay .modal-header h2.premium-title {

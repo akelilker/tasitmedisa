@@ -2954,7 +2954,7 @@
     height: auto !important;
     padding-bottom: 0 !important;
   }
-  /* iOS PWA: safe-area üst bandı style-core modal-header padding owner'ında; overlay üst padding yok */
+  /* iOS PWA: safe-area üst bandı style-core modal-header height owner'ında; overlay üst padding yok */
   @media (display-mode: standalone) {
     .tasitlar-modal-overlay {
       padding-top: 0 !important;

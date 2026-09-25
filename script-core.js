@@ -1184,7 +1184,7 @@ function scheduleNotificationsDropdownSync() {
 }
 window.scheduleNotificationsDropdownSync = scheduleNotificationsDropdownSync;
 
-// Sayfa yüklendiğinde footer dim state'ini temizle (kalıcı solukluk yok)
+// Sayfa yüklendiğinde footer animasyonunu başlat
 function startFooterAnimation() {
   const footer = getFooter();
   if (!footer) {
@@ -1196,8 +1196,16 @@ function startFooterAnimation() {
     dimTimeout = null;
   }
 
-  footer.classList.remove('dimmed');
+  // Başta dimmed ekle (versiyon ve durum normal, MEDISA soluk)
+  footer.classList.add('dimmed');
   footer.classList.remove('delayed');
+
+  // 4 saniye sonra delayed class'ını ekle (versiyon ve durum soluk, MEDISA normal)
+  dimTimeout = setTimeout(function() {
+    if (footer) {
+      footer.classList.add('delayed');
+    }
+  }, 4000);
 }
 
 // Modal kontrolü için ayrı fonksiyon
@@ -1741,7 +1749,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // tasitlar loader (bu nesne) ile MEDISA_TASITLAR_MODULE_VERSION kendi aralarında eşit kalmalıdır.
 var MEDISA_MODULE_VERSIONS = {
   tasitlar: '20260925.1',
-  notifications: '20260923.1',
+  notifications: '20260925.2',
   raporlar: '20260801.3',
   kayitJs: '20260905.1',
   kayitCss: '20260923.2',

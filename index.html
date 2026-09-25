@@ -40,8 +40,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <!-- iOS PWA -->
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <!-- black-translucent: iOS PWA üstte sistem karartma bandı (header/modal soluk). black: opak bar, içerik safe-area ile hizalanır. -->
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Taşıt Yönetim Sistemi">
 
     <!-- Critical CSS: FOUC/CLS için minimal kurallar; tam footer/modal token ve kurallar style-core.css (pin bu shell HTML owner'ında; tasitlar lazy sürümünden bağımsız) -->
@@ -161,9 +160,9 @@
     </style>
 
     <!-- CSS Preload + Async Load -->
-    <link rel="preload" href="style-core.css?v=20260925.1" as="style">
-    <link rel="stylesheet" href="style-core.css?v=20260925.1">
-    <noscript><link rel="stylesheet" href="style-core.css?v=20260925.1"></noscript>
+    <link rel="preload" href="style-core.css?v=20260925.2" as="style">
+    <link rel="stylesheet" href="style-core.css?v=20260925.2">
+    <noscript><link rel="stylesheet" href="style-core.css?v=20260925.2"></noscript>
     <script>
         (function() {
             function getMainAppBasePath() {
@@ -806,7 +805,7 @@
     <script defer src="portal-session.js?v=20260731.3"></script>
     <script defer src="data-manager.js?v=20260923.1"></script>
     <script defer src="data-service.js?v=20260718.2"></script>
-    <script defer src="script-core.js?v=20260923.4"></script>
+    <script defer src="script-core.js?v=20260925.2"></script>
 </body>
 </html>
 

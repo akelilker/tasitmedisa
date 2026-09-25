@@ -4101,7 +4101,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     box-shadow: none !important;
 }
 
-/* iOS PWA standalone: üst safe-area style-core modal-header padding owner'ında */
+/* iOS PWA standalone: üst safe-area style-core modal-header height owner'ında */
 @media (display-mode: standalone) {
     .tasitlar-modal-overlay {
         padding-top: 0 !important;
