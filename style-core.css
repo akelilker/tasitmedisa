@@ -680,6 +680,11 @@ body::-webkit-scrollbar,
   flex: 0 0 auto;
 }
 
+/* Belge VAR: indirme aksiyonunu durum ikonundan hafif ayır (yok durumuna dokunmaz) */
+.medisa-doc-action-row__start {
+  margin-right: 10px;
+}
+
 .medisa-doc-action-row__end,
 .medisa-doc-action-row .ruhsat-doc-actions {
   flex-direction: column;
@@ -701,6 +706,10 @@ body::-webkit-scrollbar,
   .medisa-doc-action-row {
     gap: 10px;
     padding: 0 !important;
+  }
+
+  .medisa-doc-action-row__start {
+    margin-right: 6px;
   }
 
   .medisa-doc-action-row__end,
