@@ -2954,10 +2954,10 @@
     height: auto !important;
     padding-bottom: 0 !important;
   }
-  /* iOS PWA: safe-area üst bandı style-core modal-header height owner'ında; overlay üst padding yok */
+  /* iOS PWA: çentik (notch) alanı için üst padding (base kuralındaki padding-top:0'ı ezer); alt padding 0 = dişer modallarla aynı */
   @media (display-mode: standalone) {
     .tasitlar-modal-overlay {
-      padding-top: 0 !important;
+      padding-top: env(safe-area-inset-top) !important;
       padding-bottom: 0 !important;
     }
     #vehicles-modal .vt-right {

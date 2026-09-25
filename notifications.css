@@ -1345,7 +1345,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
     justify-content: flex-start !important;
     align-items: center !important;
     pointer-events: none !important;
-    padding-top: 0 !important;
+    padding-top: env(safe-area-inset-top, 0px) !important;
     padding-bottom: env(safe-area-inset-bottom, 0px) !important;
     padding-left: 0 !important;
     padding-right: 0 !important;
@@ -1432,7 +1432,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #m
   }
   @media (display-mode: standalone) {
     .monthly-todo-modal-overlay {
-      padding-top: 0 !important;
+      padding-top: env(safe-area-inset-top) !important;
       padding-bottom: 0 !important;
     }
   }

@@ -3210,32 +3210,29 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
 /* PWA display-mode:standalone — ana kurallar burada; ek/özel: tasitlar-extra.css, ayarlar.css, kayit.css, raporlar.css, driver/driver-style.css, admin/admin-report.css */
 /* PWA (≤640px): iç içe @media yerine tek blok — bazı tarayıcılarda üstteki mobil blok sonrası CSS’in tamamının yok sayılmasına yol açabiliyordu */
 @media (max-width: 640px) and (display-mode: standalone) {
-    .modal-overlay:not(.compact-confirm-modal) {
-        padding-top: 0 !important;
-    }
-    .compact-confirm-modal.modal-overlay {
+    .modal-overlay {
         padding-top: env(safe-area-inset-top) !important;
     }
-    /* ≤768 padding:0 !important ezmesin; safe-area tam ekran modallarda header padding ile */
-    :is(#vehicle-modal, #reports-modal, #required-documents-modal, #branch-modal, #branch-form-modal, #user-modal, #user-form-modal, #data-management-modal, #dis-veri-panel).modal-overlay:not(.compact-confirm-modal) {
-        padding-top: 0 !important;
+    /* ≤768 padding:0 !important ezmesin: kayıt/rapor + taşıt zinciri çentik altında kalmasın */
+    :is(#vehicle-modal, #reports-modal, #required-documents-modal, #branch-modal, #branch-form-modal, #user-modal, #user-form-modal, #data-management-modal, #dis-veri-panel).modal-overlay {
+        padding-top: env(safe-area-inset-top) !important;
         padding-right: 0 !important;
         padding-bottom: 0 !important;
         padding-left: 0 !important;
     }
-    :is(#vehicles-modal, #vehicle-detail-modal, #dinamik-olay-modal, #event-menu-modal, #vehicle-history-modal).tasitlar-modal-overlay.modal-overlay:not(.compact-confirm-modal) {
-        padding-top: 0 !important;
+    :is(#vehicles-modal, #vehicle-detail-modal, #dinamik-olay-modal, #event-menu-modal, #vehicle-history-modal).tasitlar-modal-overlay.modal-overlay {
+        padding-top: env(safe-area-inset-top) !important;
         padding-right: 0 !important;
         padding-bottom: 0 !important;
         padding-left: 0 !important;
     }
-    .tasitlar-modal-overlay:not(.compact-confirm-modal) {
-        padding-top: 0 !important;
+    .tasitlar-modal-overlay {
+        padding-top: env(safe-area-inset-top) !important;
         padding-bottom: 0 !important;
     }
     .tasitlar-modal-overlay::before {
-        top: 0 !important;
-        height: 100% !important;
+        top: env(safe-area-inset-top) !important;
+        height: calc(100% - env(safe-area-inset-top)) !important;
     }
     .modal-overlay .modal-container {
         margin-top: 0 !important;
@@ -3259,7 +3256,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     html {
         padding: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left) !important;
         box-sizing: border-box !important;
-        min-height: 100dvh !important;
+        min-height: calc(100% + env(safe-area-inset-top)) !important; /* iOS PWA position:fixed workaround */
     }
     body {
         padding: 0 !important;
@@ -3267,8 +3264,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         min-height: 100dvh !important;
         box-sizing: border-box !important;
     }
-    /* iOS PWA: safe-area içerik offset'inde; dış krom (çerçeve) top:0'dan başlar */
-    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap {
+    /* iOS PWA: anabaşlık kulaklık/sensör arkasında kalmasın - content-wrap üst padding */
+    .content-wrap {
         padding-top: max(12px, env(safe-area-inset-top)) !important;
     }
     /* Ana uygulama container – çerçeve kuralları */
@@ -3285,20 +3282,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         box-shadow: 0 2px 14px rgba(var(--theme-color-rgb), 0.125) !important;
         min-height: calc(100vh - env(safe-area-inset-bottom)) !important;
         min-height: calc(100dvh - env(safe-area-inset-bottom)) !important;
-    }
-    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-container::before {
-        top: 0 !important;
-    }
-    /* Tam ekran modal safe-area tek owner: kırmızı header yüksekliği 60px + inset (içerik ~60px kalır) */
-    :is(#vehicle-modal, #reports-modal, #monthly-todo-modal, #vehicles-modal, #vehicle-detail-modal, #dinamik-olay-modal, #event-menu-modal, #vehicle-history-modal, #required-documents-modal, #branch-modal, #branch-form-modal, #user-modal, #user-form-modal, #data-management-modal, #dis-veri-panel).modal-overlay:not(.compact-confirm-modal) .modal-header {
-        height: calc(60px + env(safe-area-inset-top, 0px)) !important;
-        min-height: calc(60px + env(safe-area-inset-top, 0px)) !important;
-        max-height: calc(60px + env(safe-area-inset-top, 0px)) !important;
-        padding-top: env(safe-area-inset-top, 0px) !important;
-        padding-right: 20px !important;
-        padding-bottom: 0 !important;
-        padding-left: 20px !important;
-        box-sizing: border-box !important;
     }
     /* iOS PWA tam ekran modalları app-container dışında body'ye mount edilir.
        Ana çerçeve altında kalmasın diye aynı üst/yan kırmızı krom modalın kendi
@@ -3529,15 +3512,15 @@ body.modal-open .app-container {
 
 /* iOS PWA: ana panel footer ve header dengesi (safe-area tek katman) */
 @media (max-width: 768px) and (display-mode: standalone) {
-  /* Kayıt/Raporlar + taşıt zinciri: tam ekran modallarda safe-area kırmızı header içinde (overlay üst bandı yok) */
-  :is(#vehicle-modal, #reports-modal, #required-documents-modal, #branch-modal, #branch-form-modal, #user-modal, #user-form-modal, #data-management-modal, #dis-veri-panel).modal-overlay:not(.compact-confirm-modal) {
-    padding-top: 0 !important;
+  /* Kayıt/Raporlar + taşıt zinciri: ≤768 padding:0 ezmesine karşı çentik boşluğu (641–768 PWA) */
+  :is(#vehicle-modal, #reports-modal, #required-documents-modal, #branch-modal, #branch-form-modal, #user-modal, #user-form-modal, #data-management-modal, #dis-veri-panel).modal-overlay {
+    padding-top: env(safe-area-inset-top) !important;
     padding-right: 0 !important;
     padding-bottom: 0 !important;
     padding-left: 0 !important;
   }
-  :is(#vehicles-modal, #vehicle-detail-modal, #dinamik-olay-modal, #event-menu-modal, #vehicle-history-modal).tasitlar-modal-overlay.modal-overlay:not(.compact-confirm-modal) {
-    padding-top: 0 !important;
+  :is(#vehicles-modal, #vehicle-detail-modal, #dinamik-olay-modal, #event-menu-modal, #vehicle-history-modal).tasitlar-modal-overlay.modal-overlay {
+    padding-top: env(safe-area-inset-top) !important;
     padding-right: 0 !important;
     padding-bottom: 0 !important;
     padding-left: 0 !important;
