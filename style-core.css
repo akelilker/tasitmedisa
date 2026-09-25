@@ -1094,13 +1094,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .a
     bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0));
 }
 
-/* Modal açık: ana çerçeve pseudo katmanları gap bandında ince kırmızı çizgi üretmesin */
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .app-container::before,
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .app-container::after {
-    opacity: 0 !important;
-    visibility: hidden !important;
-}
-
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-returning .app-container::after {
     opacity: 0;
 }
@@ -2161,16 +2154,7 @@ body.modal-open:has(.compact-confirm-modal.active) .app-container::after {
   box-sizing: border-box !important;
   border-top-left-radius: var(--modal-radius, 10px) !important;
   border-top-right-radius: var(--modal-radius, 10px) !important;
-  box-shadow: inset 0 1px 0 rgba(236, 242, 250, 0.10) !important;
-}
-
-/* Kırmızı header → koyu gövde: alt kenarda ince kırmızı dikiş çizgisi kalmasın */
-.modal-overlay .modal-header {
-  border-bottom: none !important;
-}
-.tasitlar-modal-overlay .modal-header,
-:is(#vehicle-modal, #reports-modal, #monthly-todo-modal, #vehicles-modal, #vehicle-detail-modal, #dinamik-olay-modal, #event-menu-modal, #vehicle-history-modal) .modal-header {
-  box-shadow: none !important;
+  box-shadow: inset 0 1px 0 rgba(236, 242, 250, 0.12), inset 0 -1px 0 rgba(0, 0, 0, 0.05) !important;
 }
 
 /* Küçük bilgi/onay modalları: genel 60px kilidinin üstünde kompakt başlık */
@@ -3041,7 +3025,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     #reports-modal .modal-header,
     .tasitlar-modal-overlay .modal-header {
         background: var(--modal-header-red-gradient) !important;
-        box-shadow: none !important;
+        box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.12) !important;
     }
 
     /* Mobil: opt-in full-screen modal body – dikey scroll, alt butonlar için fazladan kaydırma boşluğu */
@@ -3282,18 +3266,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         box-shadow: 0 2px 14px rgba(var(--theme-color-rgb), 0.125) !important;
         min-height: calc(100vh - env(safe-area-inset-bottom)) !important;
         min-height: calc(100dvh - env(safe-area-inset-bottom)) !important;
-    }
-    /* iOS PWA tam ekran modalları app-container dışında body'ye mount edilir.
-       Ana çerçeve altında kalmasın diye aynı üst/yan kırmızı krom modalın kendi
-       container'ında üretilir; kompakt onaylar ayrı yüzey olarak kalır. */
-    :is(#vehicle-modal, #reports-modal, #monthly-todo-modal, #vehicles-modal, #vehicle-detail-modal, #dinamik-olay-modal, #event-menu-modal, #vehicle-history-modal, #required-documents-modal, #branch-modal, #branch-form-modal, #user-modal, #user-form-modal, #data-management-modal, #dis-veri-panel).modal-overlay .modal-container {
-        border-color: rgba(var(--theme-color-rgb), 0.82) !important;
-        border-top-color: rgba(var(--theme-color-rgb), 0.88) !important;
-        outline: 1px solid rgba(var(--theme-color-rgb), 0.72) !important;
-        outline-offset: -1px !important;
-    }
-    :is(#vehicle-modal, #reports-modal, #monthly-todo-modal, #vehicles-modal, #vehicle-detail-modal, #dinamik-olay-modal, #event-menu-modal, #vehicle-history-modal).modal-overlay .modal-header h2.premium-title {
-        text-shadow: var(--premium-title-shadow) !important;
     }
     /* Admin rapor sayfası: kavislere uyumlu çerçeve (anasayfa ile aynı) */
     .admin-app-container {

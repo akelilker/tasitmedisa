@@ -2775,13 +2775,15 @@ body.is-ios-pwa.login-page .form-group-checkbox label {
   .login-page .driver-header-fixed {
     border-top: none !important;
   }
-  /* Mobil driver yüzeyleri: dış frame/glow; üst inset vignette status bar altında soluklatmasın */
+  /* Mobil driver yüzeyleri: ana uygulamayla aynı frame ve glow */
   .dashboard-page .driver-dashboard-container::before,
   .login-page .driver-dashboard-container::before {
     border-top: 0.5px solid rgba(var(--theme-color-rgb), 0.82) !important;
     border-left: 0.7px solid rgba(var(--theme-color-rgb), 0.80) !important;
     border-right: 0.7px solid rgba(var(--theme-color-rgb), 0.80) !important;
-    box-shadow: 0 2px 14px rgba(var(--theme-color-rgb), 0.125) !important;
+    box-shadow:
+      0 2px 14px rgba(var(--theme-color-rgb), 0.125),
+      inset 0 0 26px rgba(var(--theme-color-rgb), 0.21) !important;
   }
 
   .dashboard-page #app-footer,
