@@ -231,8 +231,8 @@ test('iOS kart İndir gizlenir; desktop download owner korunur', function() {
 });
 
 test('pin/SW chain', function() {
-  assert.match(tasitlar, /MEDISA_TASITLAR_MODULE_VERSION = '20260925\.4'/);
-  assert.match(scriptCore, /tasitlar:\s*'20260925\.4'/);
+  assert.match(tasitlar, /MEDISA_TASITLAR_MODULE_VERSION = '20260925\.5'/);
+  assert.match(scriptCore, /tasitlar:\s*'20260925\.5'/);
   assert.match(sw, /CACHE_VERSION = 'medisa-v2\.343'/);
   assert.match(read('index.html'), /script-core\.js\?v=20260925\.4/);
   assert.match(read('index.html'), /style-core\.css\?v=20260925\.6/);
