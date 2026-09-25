@@ -146,7 +146,7 @@ test('asset pin chain bumped for changed runtime modules', function() {
   assert.match(tasitlarSrc, /MEDISA_TASITLAR_MODULE_VERSION = '20260926\.2'/);
   assert.match(read('index.html'), /data-manager\.js\?v=20260923\.1/);
   assert.match(read('index.html'), /script-core\.js\?v=20260926\.1/);
-  assert.match(read('sw.js'), /CACHE_VERSION = 'medisa-v2\.344'/);
+  assert.match(read('sw.js'), /CACHE_VERSION = 'medisa-v2\.345'/);
   assert.match(read('sw.js'), /'\/script-core\.js\?v=20260926\.1'/);
 });
 
