@@ -952,13 +952,6 @@
     var zorunluEvrakK2DocTokenCache = null;
     var ZORUNLU_EVRAK_K2_DOC_TOKEN_MARGIN_MS = 30000;
 
-    function buildZorunluEvraklarK2BasePreviewUrl() {
-      const url = new URL('ruhsat_preview.php', window.location.href);
-      url.searchParams.set('documentType', 'k2');
-      url.searchParams.set('page', '0');
-      return url;
-    }
-
     function buildZorunluEvraklarK2BaseViewUrl() {
       const url = new URL('ruhsat.php', window.location.href);
       url.searchParams.set('documentType', 'k2');
@@ -1030,17 +1023,6 @@
         });
     }
 
-    function resolveZorunluEvraklarK2PreviewUrl() {
-      const baseUrl = buildZorunluEvraklarK2BasePreviewUrl();
-      if (!getZorunluEvraklarAuthToken()) {
-        return Promise.resolve(baseUrl.toString());
-      }
-      return mintZorunluEvraklarK2DocumentToken()
-        .then(function(entry) {
-          return appendDocTokenToZorunluEvrakUrl(baseUrl, entry.token);
-        });
-    }
-
     function resolveZorunluEvraklarK2ViewUrl() {
       const baseUrl = buildZorunluEvraklarK2BaseViewUrl();
       if (!getZorunluEvraklarAuthToken()) {
@@ -1072,24 +1054,19 @@
       } catch (e) {}
     }
 
-    function loadZorunluEvraklarK2PreviewImage(image) {
-      if (!image) return;
-      image.removeAttribute('src');
-      resolveZorunluEvraklarK2PreviewUrl()
-        .then(function(previewUrl) {
-          if (!image.isConnected) return;
-          image.src = previewUrl;
-        })
-        .catch(function() {
-          if (!image.isConnected) return;
-          image.remove();
-        });
-    }
-
     function renderZorunluEvraklarK2Picker(fileName) {
       const area = document.getElementById('required-k2-document-area');
       if (!area) return;
       area.innerHTML = '';
+
+      // Belge yok: pasif kırmızı ikon; Dosya Seç picker'ı altında kalır.
+      if (!fileName) {
+        const statusIcon = document.createElement('span');
+        statusIcon.className = 'required-k2-status-missing';
+        statusIcon.setAttribute('aria-hidden', 'true');
+        statusIcon.innerHTML = getZorunluEvraklarK2StatusIconSvg(false);
+        area.appendChild(statusIcon);
+      }
 
       const picker = document.createElement('button');
       picker.type = 'button';
@@ -1144,6 +1121,20 @@
       return '';
     }
 
+    /**
+     * K2 belge durum ikonu (belge var: yeşil belge, yok: kırmızı çarpılı belge).
+     * Yalnız markup üretir; ağ isteği atmaz.
+     */
+    function getZorunluEvraklarK2StatusIconSvg(hasDocument) {
+      var iconClass = hasDocument ? 'required-k2-preview-icon' : 'required-k2-preview-missing-icon';
+      var svgOpen = '<svg class="' + iconClass + '" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">';
+      var documentPath = '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline>';
+      var detail = hasDocument
+        ? '<line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line>'
+        : '<line x1="9.6" y1="12.6" x2="14.4" y2="17.4"></line><line x1="14.4" y1="12.6" x2="9.6" y2="17.4"></line>';
+      return svgOpen + documentPath + detail + '</svg>';
+    }
+
     function renderZorunluEvraklarK2Preview() {
       const area = document.getElementById('required-k2-document-area');
       if (!area) return;
@@ -1155,23 +1146,8 @@
       const preview = document.createElement('button');
       preview.type = 'button';
       preview.className = 'required-k2-preview-link';
-      preview.setAttribute('aria-label', 'K2 belgesini ön izle');
-
-      const image = document.createElement('img');
-      image.className = 'required-k2-preview-image';
-      image.alt = '';
-      image.loading = 'lazy';
-      image.addEventListener('error', function() {
-        image.remove();
-      }, { once: true });
-      loadZorunluEvraklarK2PreviewImage(image);
-
-      const hint = document.createElement('span');
-      hint.className = 'required-k2-preview-hint';
-      hint.textContent = 'Ön İzleme';
-
-      preview.appendChild(image);
-      preview.appendChild(hint);
+      preview.setAttribute('aria-label', 'K2 belgesini görüntüle');
+      preview.innerHTML = getZorunluEvraklarK2StatusIconSvg(true);
 
       const docActions = document.createElement('div');
       docActions.className = 'required-k2-doc-actions';

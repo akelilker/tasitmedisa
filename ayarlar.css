@@ -687,7 +687,8 @@
 #required-documents-modal .required-k2-document-area {
     width: 100%;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
     margin: 0 auto 4px auto;
 }
 
@@ -809,48 +810,54 @@
 
 #required-documents-modal .required-k2-preview-row {
     position: relative;
-    width: 120px;
+    width: 64px;
     margin: 0 auto 4px auto;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-#required-documents-modal .required-k2-preview-link {
-    width: 120px;
-    height: 72px;
-    border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.28);
-    overflow: hidden;
-    display: block;
+/* K2 belge durum ikonu: çerçevesiz, arka plansız — yalnız ikon */
+#required-documents-modal .required-k2-preview-link,
+#required-documents-modal .required-k2-status-missing {
+    width: 64px;
+    height: 64px;
+    border: 0;
+    border-radius: 0;
+    overflow: visible;
+    align-items: center;
+    justify-content: center;
     position: relative;
     padding: 0;
+    box-shadow: none;
+    background: transparent;
+}
+
+#required-documents-modal .required-k2-preview-link {
+    display: inline-flex;
     cursor: pointer;
-    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25) inset;
-    background: var(--bg, #0d131f);
 }
 
-#required-documents-modal .required-k2-preview-image {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    pointer-events: none;
+/* Belge yok: pasif kırmızı ikon; picker altında kalır */
+#required-documents-modal .required-k2-status-missing {
+    display: flex;
+    margin: 0 auto 4px auto;
+    cursor: default;
 }
 
-#required-documents-modal .required-k2-preview-hint {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
+#required-documents-modal .required-k2-preview-link svg,
+#required-documents-modal .required-k2-status-missing svg {
     display: block;
-    padding: 3px 0;
-    font-size: 11px;
-    line-height: 1.2;
-    text-align: center;
-    color: #ffffff;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.58), rgba(0, 0, 0, 0));
-    pointer-events: none;
+    width: 28px;
+    height: 28px;
+}
+
+#required-documents-modal .required-k2-preview-icon {
+    color: #22c55e;
+}
+
+#required-documents-modal .required-k2-preview-missing-icon {
+    color: #ef4444;
 }
 
 /* Yüklü K2 belgesinde [+] / [-] dikey yığın: konumlanan owner aksiyon sarmalayıcısıdır */

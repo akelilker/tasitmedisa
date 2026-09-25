@@ -49,28 +49,26 @@ test('1. iOS PDF view ruhsat_preview.php gerektirmez', function() {
   assert.match(viewer, /ensureMedisaPdfJs\(/);
 });
 
-test('2. PDF thumbnail auto-hydration server PDF preview çağırmaz', function() {
+test('2. Belge durum ikonu icon-only; sunucu PDF preview çağrılmaz', function() {
   const hydrate = extractBetween(
     tasitlar,
     'function hydrateRuhsatPreviewButton(previewBtn, vehicleId, ruhsatUrl, isImage, documentType) {',
     'function openMedisaCanonicalDocumentViewer(vehicleId, documentType, viewerOpts) {'
   );
-  assert.match(hydrate, /if \(!isImage\)/);
-  assert.match(hydrate, /ruhsat-preview-pdf-icon|Ön İzleme/);
-  const pdfBranch = hydrate.slice(hydrate.indexOf('if (!isImage)'));
-  assert.doesNotMatch(pdfBranch.slice(0, 500), /fetchRuhsatPreviewObjectUrl/);
-  assert.match(hydrate, /fetchRuhsatDocumentObjectUrl\(vehicleId, ruhsatUrl, dt\)/);
-  // PDF için client tarafında Imagick preview endpoint consumer'ı kalmamalı.
+  assert.match(hydrate, /getMedisaDocumentStatusIconSvg\(true\)/);
+  assert.doesNotMatch(hydrate, /fetchRuhsatPreviewObjectUrl|ruhsat_preview\.php|new Image\(|\.src\s*=/);
+  // Belge durum alanında çerçeve/kutu/dolgu grid'i ve sunucu preview zinciri kalmamalı.
   assert.doesNotMatch(tasitlar, /ruhsat_preview\.php|buildRuhsatPreviewUrl|fetchRuhsatPreviewObjectUrl/);
+  assert.doesNotMatch(tasitlar, /ruhsat-preview-hint|Ön İzleme/);
 });
 
-test('2b. Desktop PDF Ön İzleme canonical viewer kullanır', function() {
+test('2b. Desktop PDF Görüntüle canonical viewer kullanır', function() {
   const modalSrc = extractBetween(
     tasitlar,
     'window.openVehicleDocumentModal = function(vehicleId, documentType) {',
     'function renderRuhsatUploadForm('
   );
-  const desktopBranch = modalSrc.slice(modalSrc.indexOf('const previewSrc'));
+  const desktopBranch = modalSrc.slice(modalSrc.indexOf('const centerPreview'));
   assert.match(desktopBranch, /if \(!ruhsatIsImage\)[\s\S]*?openMedisaCanonicalDocumentViewer\(vid, dt\)/);
   assert.match(desktopBranch, /shouldUseInlineRuhsatViewer\(\)[\s\S]*?renderInlineRuhsatViewer\(/);
   assert.match(desktopBranch, /window\.viewRuhsatPdf\(vid, dt\)/);

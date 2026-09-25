@@ -273,6 +273,38 @@ test('CSS: [+]/[-] dikey hizalı, masaüstü ve mobil owner blokları güncel', 
   assert.match(mobileBlock, /\.ruhsat-download-btn/, 'mobil blokta İndir boyut kontratını paylaşmalı');
 });
 
+test('Görsel: belge durum ikonu çerçevesiz, ikon-only ve ağ isteksiz', function() {
+  assert.match(tasitlar, /function getMedisaDocumentStatusIconSvg\(hasDocument\)/);
+
+  const hydrate = extractBetween(
+    tasitlar,
+    'function hydrateRuhsatPreviewButton(previewBtn, vehicleId, ruhsatUrl, isImage, documentType) {',
+    'function openMedisaCanonicalDocumentViewer(vehicleId, documentType, viewerOpts) {'
+  );
+  assert.match(hydrate, /getMedisaDocumentStatusIconSvg\(true\)/, 'belge varsa yeşil ikon basılmalı');
+  assert.doesNotMatch(hydrate, /ruhsat_preview\.php|fetch\(|new Image\(|XMLHttpRequest/);
+
+  const modalSrc = extractBetween(
+    tasitlar,
+    'window.openVehicleDocumentModal = function(vehicleId, documentType) {',
+    'function renderRuhsatUploadForm('
+  );
+  const emptyBranch = modalSrc.slice(modalSrc.indexOf('content.appendChild(btnGroup);'));
+  assert.match(emptyBranch, /className = 'medisa-doc-action-row medisa-doc-status-row'/, 'boş durum durum satırı kurulmalı');
+  assert.match(emptyBranch, /className = 'ruhsat-preview-link document-presence--missing'/, 'boş durumda pasif kırmızı ikon olmalı');
+  assert.match(emptyBranch, /getMedisaDocumentStatusIconSvg\(false\)/);
+  assert.doesNotMatch(emptyBranch.slice(emptyBranch.indexOf('medisa-doc-status-row')), /onclick|addEventListener/, 'boş durumda ikon pasif olmalı');
+
+  assert.doesNotMatch(tasitlar, /Ön İzleme|ruhsat-preview-hint/, '"Ön İzleme" metni ve hint kalıntısı kalmamalı');
+  assert.match(
+    tasitlarExtraCss,
+    /#dinamik-olay-modal #ruhsat-modal-content \.ruhsat-preview-link \{[\s\S]*?border:\s*0;[\s\S]*?background:\s*transparent !important;/,
+    'durum ikonu çerçevesiz ve arka plansız olmalı'
+  );
+  assert.match(tasitlarExtraCss, /\.ruhsat-preview-link\.document-presence--missing[\s\S]*?color:\s*#ef4444/, 'belge yok ikonu kırmızı olmalı');
+  assert.doesNotMatch(tasitlarExtraCss, /ruhsat-preview-hint/);
+});
+
 /* ---------- 3-5: onay akışı, payload ve çift istek koruması ---------- */
 
 test('Onay: tek generic compact confirm owner script-core.js içinde', function() {

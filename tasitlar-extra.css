@@ -688,56 +688,40 @@
   max-width: none !important;
   min-width: 0 !important;
 }
-/* Ruhsat ön izleme çerçevesi ve ekle butonu: beyaz kalmaması için tema rengi zorunlu */
+/* Ruhsat belge durum ikonu: çerçevesiz, arka plansız — yalnız ikon */
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-preview-link {
-  width: 120px;
-  height: 72px;
-  border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.28);
-  overflow: hidden;
-  display: block;
-  position: relative;
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25) inset;
-  background: var(--bg, #0d131f) !important;
-  background-color: var(--bg, #0d131f) !important;
-}
-#dinamik-olay-modal #ruhsat-modal-content .ruhsat-preview-link iframe {
-  display: block;
-  width: calc(100% + 16px);
-  height: 100%;
-  margin-right: -16px;
+  width: 64px;
+  height: 64px;
   border: 0;
-  overflow: hidden;
-  scrollbar-width: none;
-  pointer-events: none;
+  border-radius: 0;
+  overflow: visible;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 0;
+  cursor: pointer;
+  box-shadow: none;
+  background: transparent !important;
+  background-color: transparent !important;
 }
-#dinamik-olay-modal #ruhsat-modal-content .ruhsat-preview-link iframe::-webkit-scrollbar {
-  display: none;
-}
-#dinamik-olay-modal #ruhsat-modal-content .ruhsat-preview-link .ruhsat-preview-image {
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-preview-link svg {
   display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  pointer-events: none;
+  width: 28px;
+  height: 28px;
 }
-#dinamik-olay-modal #ruhsat-modal-content .ruhsat-preview-link .ruhsat-preview-hint {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: block;
-  padding: 3px 0;
-  font-size: 11px;
-  text-align: center;
-  color: #ffffff;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.58), rgba(0, 0, 0, 0));
-  pointer-events: none;
-}
-/* Yüklü belge varlık ikonu (iOS/PWA SVG); desktop iframe/img yoluna dokunmaz */
-#dinamik-olay-modal #ruhsat-modal-content .ruhsat-preview-link.document-presence--present > svg,
+/* Belge var: yeşil belge ikonu */
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-preview-link.document-presence--present svg,
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-preview-link.document-presence--present .ruhsat-preview-pdf-icon {
   color: #22c55e;
+}
+/* Belge yok: pasif kırmızı çarpılı belge ikonu */
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-preview-link.document-presence--missing {
+  cursor: default;
+}
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-preview-link.document-presence--missing svg,
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-preview-link.document-presence--missing .ruhsat-preview-missing-icon {
+  color: #ef4444;
 }
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-download-btn,
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-add-btn,
@@ -1323,45 +1307,35 @@
   display: block;
 }
 @media (max-width: 640px) {
-  /* Mobilde ön izleme yok: sadece Yazdır butonu (ruhsat simgesi + metin) */
-  #dinamik-olay-modal #ruhsat-modal-content .ruhsat-preview-link.ruhsat-preview-mobile-btn {
-    width: auto !important;
-    min-width: 128px !important;
+  /* Mobilde belge durum ikonu: yalnız ikon, çerçevesiz (mobil aksiyon butonlarıyla aynı ölçü) */
+  #dinamik-olay-modal #ruhsat-modal-content .universal-btn-group .ruhsat-preview-link.ruhsat-preview-mobile-btn {
+    width: 48px !important;
+    min-width: 48px !important;
     height: 48px !important;
     min-height: 48px !important;
-    padding: 0 14px !important;
-    display: flex !important;
+    padding: 0 !important;
+    display: inline-flex !important;
     flex-direction: row !important;
     justify-content: center !important;
     align-items: center !important;
-    gap: 8px !important;
+    gap: 0 !important;
     border: 0 !important;
     border-radius: 0 !important;
     background: transparent !important;
     background-color: transparent !important;
     box-shadow: none !important;
-    overflow: hidden !important;
+    overflow: visible !important;
   }
   #dinamik-olay-modal #ruhsat-modal-content .ruhsat-preview-link.ruhsat-preview-mobile-btn svg {
     flex: 0 0 auto !important;
+    width: 22px !important;
+    height: 22px !important;
     color: var(--theme-color, #d40000) !important;
   }
-  /* Yüklü belge: orta önizleme/belge ikonu yeşil (metin/layout aynı) */
+  /* Belge var: durum ikonu yeşil */
   #dinamik-olay-modal #ruhsat-modal-content .ruhsat-preview-link.ruhsat-preview-mobile-btn.document-presence--present svg,
   #dinamik-olay-modal #ruhsat-modal-content .ruhsat-preview-link.ruhsat-preview-mobile-btn.document-presence--present .ruhsat-preview-pdf-icon {
     color: #22c55e !important;
-  }
-  #dinamik-olay-modal #ruhsat-modal-content .ruhsat-preview-link.ruhsat-preview-mobile-btn span {
-    font-size: 15px !important;
-    font-weight: 600 !important;
-    letter-spacing: 0.02em !important;
-    color: #ffffff !important;
-  }
-  #dinamik-olay-modal #ruhsat-modal-content .ruhsat-preview-link.ruhsat-preview-mobile-btn iframe,
-  #dinamik-olay-modal #ruhsat-modal-content .ruhsat-preview-link.ruhsat-preview-mobile-btn .ruhsat-preview-image,
-  #dinamik-olay-modal #ruhsat-modal-content .ruhsat-preview-link.ruhsat-preview-mobile-btn .ruhsat-preview-hint {
-    display: none !important;
-    pointer-events: none !important;
   }
   #dinamik-olay-modal #ruhsat-modal-content .ruhsat-preview-link.ruhsat-preview-mobile-btn::after,
   #dinamik-olay-modal #ruhsat-modal-content .ruhsat-preview-link.ruhsat-preview-mobile-btn::before {

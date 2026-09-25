@@ -129,7 +129,7 @@ bmContext.sandbox.__k2.renderMembers();
 assert.equal(bmContext.membersHost.innerHTML, '');
 
 const tokenStart = ayarlar.indexOf('var zorunluEvrakK2DocTokenCache');
-const tokenEnd = ayarlar.indexOf('function resolveZorunluEvraklarK2PreviewUrl', tokenStart);
+const tokenEnd = ayarlar.indexOf('function resolveZorunluEvraklarK2ViewUrl', tokenStart);
 assert.ok(tokenStart !== -1 && tokenEnd > tokenStart, 'K2 belge token owner bloğu bulunmalı');
 const tokenOwner = ayarlar.slice(tokenStart, tokenEnd);
 assert.match(tokenOwner, /contextKey === contextKey|zorunluEvrakK2DocTokenCache\.contextKey === contextKey/);
@@ -236,5 +236,18 @@ assert.doesNotMatch(ayarlar, /window\.appData\s*&&\s*window\.appData\.session/);
 assert.match(ayarlar, /const session = getZorunluEvrakSession\(\);[\s\S]*?mutationPayload\.branchIds = memberIds/);
 assert.match(ayarlar, /const session = getZorunluEvrakSession\(\);[\s\S]*?const isGM = String\(session\.role/);
 assert.match(ayarlar, /settings-empty-state.*Görüntülenecek şube bulunamadı/);
+
+// K2 belge durum alanı: çerçevesiz, ağ isteksiz ikon-only kontrat
+assert.doesNotMatch(ayarlar, /ruhsat_preview\.php/);
+assert.doesNotMatch(ayarlar, /Ön İzleme/);
+assert.doesNotMatch(ayarlar, /required-k2-preview-image|required-k2-preview-hint/);
+assert.match(ayarlar, /function getZorunluEvraklarK2StatusIconSvg\(hasDocument\)/);
+assert.match(ayarlar, /required-k2-preview-icon/);
+assert.match(ayarlar, /required-k2-preview-missing-icon/);
+assert.match(ayarlar, /statusIcon\.className = 'required-k2-status-missing'/);
+assert.match(ayarlarCss, /\.required-k2-preview-icon\s*\{[\s\S]*?color:\s*#22c55e/);
+assert.match(ayarlarCss, /\.required-k2-preview-missing-icon\s*\{[\s\S]*?color:\s*#ef4444/);
+assert.match(ayarlarCss, /#required-documents-modal \.required-k2-preview-link,[\s\S]*?#required-documents-modal \.required-k2-status-missing \{[\s\S]*?border:\s*0;[\s\S]*?background:\s*transparent;/);
+assert.doesNotMatch(ayarlarCss, /required-k2-preview-image|required-k2-preview-hint/);
 
 console.log('PASS: K2 notification, monthly filter and driver/UI scope invariants');

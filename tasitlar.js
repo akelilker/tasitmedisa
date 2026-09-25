@@ -6845,36 +6845,25 @@
     return stagingPromise;
   }
 
+  /**
+   * Belge durum ikonu: belge varsa yeşil belge, yoksa kırmızı çarpılı belge.
+   * Yalnız markup üretir; ağ isteği atmaz.
+   */
+  function getMedisaDocumentStatusIconSvg(hasDocument) {
+    const iconClass = hasDocument ? 'ruhsat-preview-pdf-icon' : 'ruhsat-preview-missing-icon';
+    const svgOpen = '<svg class="' + iconClass + '" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">';
+    const documentPath = '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline>';
+    const svgClose = '</svg>';
+    const detail = hasDocument
+      ? '<line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line>'
+      : '<line x1="9.6" y1="12.6" x2="14.4" y2="17.4"></line><line x1="14.4" y1="12.6" x2="9.6" y2="17.4"></line>';
+    return svgOpen + documentPath + detail + svgClose;
+  }
+
   function hydrateRuhsatPreviewButton(previewBtn, vehicleId, ruhsatUrl, isImage, documentType) {
     if (!previewBtn) return;
-    const cfg = getVehicleDocumentConfig(documentType);
-    const altPreview = cfg.label + ' ön izleme';
-    const dt = documentType || 'ruhsat';
-
-    // PDF: sunucu/Imagick thumbnail yolu yok — canonical PDF viewer ikonu; ağ isteği atılmaz.
-    if (!isImage) {
-      previewBtn.innerHTML =
-        '<svg class="ruhsat-preview-pdf-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
-        '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>' +
-        '<polyline points="14 2 14 8 20 8"></polyline>' +
-        '<line x1="16" y1="13" x2="8" y2="13"></line>' +
-        '<line x1="16" y1="17" x2="8" y2="17"></line>' +
-        '</svg>' +
-        '<span class="ruhsat-preview-hint">Ön İzleme</span>';
-      return;
-    }
-
-    previewBtn.innerHTML = '<span class="ruhsat-preview-hint">Ön İzleme</span>';
-
-    fetchRuhsatDocumentObjectUrl(vehicleId, ruhsatUrl, dt)
-      .then(function(objectUrl) {
-        if (!previewBtn.isConnected) return;
-        previewBtn.innerHTML = `<img src="${escapeHtml(objectUrl)}" alt="${escapeHtml(altPreview)}" class="ruhsat-preview-image" loading="lazy"><span class="ruhsat-preview-hint">Ön İzleme</span>`;
-      })
-      .catch(function() {
-        if (!previewBtn.isConnected) return;
-        previewBtn.innerHTML = '<span class="ruhsat-preview-hint">Ön İzleme</span>';
-      });
+    // Belge varsa yalnız yeşil belge ikonu; thumbnail/çerçeve/ağ isteği yok.
+    previewBtn.innerHTML = getMedisaDocumentStatusIconSvg(true);
   }
 
   /**
@@ -8083,10 +8072,10 @@
       previewBtn.type = 'button';
       previewBtn.className = 'ruhsat-preview-link';
       previewBtn.classList.add('document-presence--present');
-      previewBtn.setAttribute('aria-label', cfg.label + (iosCanonical ? ' Ön İzleme' : ' Yazdır'));
+      previewBtn.setAttribute('aria-label', cfg.label + ((isMobileViewport && !iosCanonical) ? ' Yazdır' : ' Belgesini Görüntüle'));
+      hydrateRuhsatPreviewButton(previewBtn, vid, ruhsatUrl, ruhsatIsImage, dt);
       if (iosCanonical) {
         previewBtn.classList.add('ruhsat-preview-mobile-btn');
-        hydrateRuhsatPreviewButton(previewBtn, vid, ruhsatUrl, ruhsatIsImage, dt);
         previewBtn.onclick = function(e) {
           e.preventDefault();
           e.stopPropagation();
@@ -8096,27 +8085,12 @@
         };
       } else if (isMobileViewport) {
         previewBtn.classList.add('ruhsat-preview-mobile-btn');
-        previewBtn.innerHTML = `
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-            <polyline points="14 2 14 8 20 8"></polyline>
-            <line x1="16" y1="13" x2="8" y2="13"></line>
-            <line x1="16" y1="17" x2="8" y2="17"></line>
-            <polyline points="10 9 9 9 8 9"></polyline>
-          </svg>
-          <span>Yazdır</span>
-        `;
         previewBtn.onclick = function(e) {
           e.preventDefault();
           e.stopPropagation();
           runVehicleDocumentPrintAction(previewBtn, ruhsatUrl, vid, dt);
         };
       } else {
-        const previewSrc = 'about:blank';
-        const prevAlt = cfg.label + ' Ön İzleme';
-        previewBtn.innerHTML = ruhsatIsImage
-          ? `<img src="${escapeHtml(previewSrc)}" alt="${escapeHtml(prevAlt)}" class="ruhsat-preview-image" loading="lazy"><span class="ruhsat-preview-hint">Ön İzleme</span>`
-          : `<iframe src="${escapeHtml(previewSrc)}" title="${escapeHtml(prevAlt)}" loading="lazy" tabindex="-1" aria-hidden="true"></iframe><span class="ruhsat-preview-hint">Ön İzleme</span>`;
         previewBtn.onclick = function(e) {
           e.preventDefault();
           e.stopPropagation();
@@ -8133,9 +8107,6 @@
             window.viewRuhsatPdf(vid, dt);
           }
         };
-      }
-      if (!isMobileViewport && !iosCanonical) {
-        hydrateRuhsatPreviewButton(previewBtn, vid, ruhsatUrl, ruhsatIsImage, dt);
       }
       centerPreview.appendChild(previewBtn);
       btnGroup.appendChild(centerPreview);
@@ -8167,6 +8138,15 @@
       content.appendChild(btnGroup);
     } else {
       renderRuhsatUploadForm(content, saveBtn, false, dt);
+      // Belge yok: aynı durum alanında pasif kırmızı ikon; yükleme formu altında kalır.
+      const statusRow = document.createElement('div');
+      statusRow.className = 'medisa-doc-action-row medisa-doc-status-row';
+      const statusIcon = document.createElement('span');
+      statusIcon.className = 'ruhsat-preview-link document-presence--missing';
+      statusIcon.setAttribute('aria-hidden', 'true');
+      statusIcon.innerHTML = getMedisaDocumentStatusIconSvg(false);
+      statusRow.appendChild(statusIcon);
+      content.insertBefore(statusRow, content.firstChild);
     }
     modal.style.display = 'flex';
     requestAnimationFrame(function() { modal.classList.add('active'); });
