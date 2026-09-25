@@ -47,10 +47,8 @@ body::-webkit-scrollbar,
     linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 5%, rgba(255, 255, 255, 0) 12%),
     linear-gradient(180deg, rgba(212, 0, 0, 0.36) 0%, rgba(212, 0, 0, 0.22) 18%, rgba(212, 0, 0, 0.08) 34%, rgba(212, 0, 0, 0) 48%),
     linear-gradient(180deg, #790000 0%, #700000 30%, #580000 52%, #420205 72%, #32050a 82%, #20080f 90%, var(--modal-bg) 100%);
-  --premium-title-color: #ffffff;
-  --premium-title-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
   --premium-title-gradient: linear-gradient(to bottom, #ccd7e1 0%, #f4f8fb 38%, #adbdca 56%, #e2ebf2 100%);
-  --premium-title-shadow-metallic: 0 1px 1px rgba(0, 0, 0, 0.26), 0 0 7px rgba(214, 224, 232, 0.22);
+  --premium-title-shadow: 0 1px 1px rgba(0, 0, 0, 0.26), 0 0 7px rgba(214, 224, 232, 0.22);
   --premium-title-weight: 700;
   --premium-title-letter-spacing: 0.085em;
   --back-bar-standalone-padding: 8px 16px 4px 16px;
@@ -1605,7 +1603,7 @@ body.modal-open:has(#info-modal.active) .app-container::after {
     background-position: 50% 52%;
     filter: brightness(1);
     -webkit-text-fill-color: transparent;
-    text-shadow: var(--premium-title-shadow-metallic);
+    text-shadow: var(--premium-title-shadow);
   }
 }
 
@@ -1631,7 +1629,7 @@ body.modal-open:has(#info-modal.active) .app-container::after {
     background-position: 50% 52%;
     filter: brightness(1);
     -webkit-text-fill-color: transparent;
-    text-shadow: var(--premium-title-shadow-metallic);
+    text-shadow: var(--premium-title-shadow);
   }
 }
 
@@ -1639,13 +1637,16 @@ body.modal-open:has(#info-modal.active) .app-container::after {
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu .menu-btn .ttl {
   font-size: clamp(13px, 2.8vw, 15px);
   font-weight: var(--premium-title-weight);
-  color: var(--premium-title-color);
+  color: #d1dbe4;
   letter-spacing: var(--premium-title-letter-spacing);
-  transition: color 0.2s, transform 0.2s, text-shadow 0.24s ease;
-  background: none;
-  -webkit-background-clip: border-box;
-  background-clip: border-box;
-  -webkit-text-fill-color: var(--premium-title-color);
+  transition: color 0.2s, transform 0.2s, text-shadow 0.24s ease, background-position 0.32s ease, filter 0.32s ease;
+  background: var(--premium-title-gradient);
+  background-size: 100% 180%;
+  background-position: 50% 54%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: brightness(1.01);
   text-shadow: var(--premium-title-shadow);
   transform-origin: center;
   max-width: 100%;
@@ -1656,46 +1657,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu .m
   padding: 0 6px;
 }
 
-/* Masaüstü (641px+): ana menü + modal premium başlık — metalik gradient (mobil ≤640 düz beyaz) */
+/* Masaüstü: footer MEDISA hafif soldur */
 @media (min-width: 641px) {
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu .menu-btn .ttl {
-    color: #d1dbe4;
-    transition: color 0.2s, transform 0.2s, text-shadow 0.24s ease, background-position 0.32s ease, filter 0.32s ease;
-    background: var(--premium-title-gradient);
-    background-size: 100% 180%;
-    background-position: 50% 54%;
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    filter: brightness(1.01);
-    text-shadow: var(--premium-title-shadow-metallic);
-  }
-
-  .modal-overlay .modal-header h2.premium-title {
-    background: var(--premium-title-gradient);
-    background-size: 100% 180%;
-    background-position: 50% 54%;
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    color: transparent;
-    filter: brightness(1.01);
-    text-shadow: var(--premium-title-shadow-metallic);
-  }
-
-  :is(#vehicle-modal, #vehicles-modal, #vehicle-detail-modal, #reports-modal, #monthly-todo-modal) .modal-header h2.premium-title {
-    background: var(--premium-title-gradient) !important;
-    background-size: 100% 180% !important;
-    background-position: 50% 54% !important;
-    -webkit-background-clip: text !important;
-    background-clip: text !important;
-    -webkit-text-fill-color: transparent !important;
-    color: #d1dbe4 !important;
-    filter: brightness(1.01);
-    text-shadow: var(--premium-title-shadow-metallic) !important;
-  }
-
-  /* Footer MEDISA - Masaüstünde hafif soldur (0.7 -> 0.5) */
   #app-footer.dimmed.delayed .brand img {
     opacity: 0.5 !important;
   }
@@ -2107,15 +2070,18 @@ body.modal-open:has(.compact-confirm-modal.active) .app-container::after {
   text-align: center;
 }
 
-/* Premium başlık — mobil düz beyaz; masaüstü metalik (641px+ owner) */
+/* Premium başlık — ana menü .ttl canonical metalik kontratı */
 .modal-overlay .modal-header h2.premium-title {
   font-weight: var(--premium-title-weight);
   letter-spacing: var(--premium-title-letter-spacing);
-  background: none;
-  -webkit-background-clip: border-box;
-  background-clip: border-box;
-  -webkit-text-fill-color: var(--premium-title-color);
-  color: var(--premium-title-color);
+  background: var(--premium-title-gradient);
+  background-size: 100% 180%;
+  background-position: 50% 54%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  filter: brightness(1.01);
   text-shadow: var(--premium-title-shadow);
 }
 
@@ -2123,11 +2089,14 @@ body.modal-open:has(.compact-confirm-modal.active) .app-container::after {
 :is(#vehicle-modal, #vehicles-modal, #vehicle-detail-modal, #reports-modal, #monthly-todo-modal) .modal-header h2.premium-title {
   font-weight: var(--premium-title-weight);
   letter-spacing: var(--premium-title-letter-spacing);
-  background: none !important;
-  -webkit-background-clip: border-box !important;
-  background-clip: border-box !important;
-  -webkit-text-fill-color: var(--premium-title-color) !important;
-  color: var(--premium-title-color) !important;
+  background: var(--premium-title-gradient) !important;
+  background-size: 100% 180% !important;
+  background-position: 50% 54% !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  color: #d1dbe4 !important;
+  filter: brightness(1.01);
   text-shadow: var(--premium-title-shadow) !important;
   transform: translate(-50%, -5px) !important;
 }
@@ -3139,19 +3108,18 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu .menu-btn .ttl {
         font-size: clamp(16.5px, 3.35vw, 18.5px) !important;
         letter-spacing: 1.5px;
-        color: var(--premium-title-color);
-        -webkit-text-fill-color: var(--premium-title-color);
-        text-shadow: var(--premium-title-shadow);
     }
 
-    /* Mobil modal başlıkları: net beyaz (ana menü ile aynı kontrat) */
+    /* Mobil modal başlıkları: canonical premium gradient */
     .modal-overlay .modal-header h2.premium-title,
     :is(#vehicle-modal, #vehicles-modal, #vehicle-detail-modal, #reports-modal, #monthly-todo-modal) .modal-header h2.premium-title {
-        background: none !important;
-        -webkit-background-clip: border-box !important;
-        background-clip: border-box !important;
-        -webkit-text-fill-color: var(--premium-title-color) !important;
-        color: var(--premium-title-color) !important;
+        background: var(--premium-title-gradient) !important;
+        background-size: 100% 180% !important;
+        background-position: 50% 54% !important;
+        -webkit-background-clip: text !important;
+        background-clip: text !important;
+        -webkit-text-fill-color: transparent !important;
+        color: transparent !important;
         text-shadow: var(--premium-title-shadow) !important;
         letter-spacing: 1.5px !important;
     }
