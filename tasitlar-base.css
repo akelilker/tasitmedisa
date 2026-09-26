@@ -338,10 +338,13 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
   box-sizing: border-box !important;
 }
 
-/* Belge upload (sigorta/kasko/takograf): tarih stack + etiket — base ile ilk çizimde ortada (extra.css FOUC önlenir) */
+/* Belge upload (sigorta/kasko/takograf): tarih stack = Vazgeç single-control genişliği (FOUC) */
+#dinamik-olay-modal {
+  --ruhsat-single-control-width: 168px;
+}
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack {
-  width: 100%;
-  max-width: 280px;
+  width: min(var(--ruhsat-single-control-width), 100%);
+  max-width: var(--ruhsat-single-control-width);
   margin: 0 auto 10px auto;
   box-sizing: border-box;
   display: flex;

@@ -8178,7 +8178,7 @@
     selectBox.type = 'button';
     selectBox.className = 'ruhsat-select-box';
     selectBox.setAttribute('aria-label', cfg.label + ' dosyası seç');
-    selectBox.innerHTML = '<span class="ruhsat-select-box-icon" aria-hidden="true">+</span><span class="ruhsat-select-box-label">Dosya Seç</span>';
+    selectBox.innerHTML = '<span class="ruhsat-select-box-icon" aria-hidden="true">+</span>';
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = 'application/pdf,.pdf,application/octet-stream';
@@ -8234,7 +8234,7 @@
         selectBox.innerHTML = '<span class="ruhsat-select-box-icon" aria-hidden="true">\u2713</span><span class="ruhsat-select-box-label">' + (input.files[0].name || 'Seçildi') + '</span>';
       } else {
         selectBox.classList.remove('upload-success');
-        selectBox.innerHTML = '<span class="ruhsat-select-box-icon" aria-hidden="true">+</span><span class="ruhsat-select-box-label">Dosya Seç</span>';
+        selectBox.innerHTML = '<span class="ruhsat-select-box-icon" aria-hidden="true">+</span>';
       }
     }
     function hideReplaceConfirm() {

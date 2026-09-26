@@ -823,9 +823,9 @@
   }
 }
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack {
-  width: 100%;
-  max-width: 280px;
-  margin: 0 auto 12px auto;
+  width: min(var(--ruhsat-single-control-width, 168px), 100%);
+  max-width: var(--ruhsat-single-control-width, 168px);
+  margin: 0 auto 14px auto;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -869,8 +869,20 @@
 }
 
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack .olay-date-mobile-picker-slot {
-  height: 34px !important;
-  flex: 0 0 34px !important;
+  height: 36px !important;
+  width: 36px !important;
+  flex: 0 0 36px !important;
+}
+
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack .olay-date-mobile-btn {
+  width: 36px !important;
+  height: 36px !important;
+}
+
+/* Policy upload: date → + → Vazgeç aynı center axis, dengeli dikey aralık */
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack + .ruhsat-upload-box {
+  margin-top: 2px;
+  margin-bottom: 10px;
 }
 
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack .form-input::placeholder {
@@ -1286,9 +1298,9 @@
   width: 100% !important;
 }
 #dinamik-olay-modal #ruhsat-btn-group.ruhsat-single-visible .universal-btn-cancel {
-  width: min(168px, 100%) !important;
-  max-width: 168px !important;
-  min-width: 168px !important;
+  width: min(var(--ruhsat-single-control-width, 168px), 100%) !important;
+  max-width: var(--ruhsat-single-control-width, 168px) !important;
+  min-width: var(--ruhsat-single-control-width, 168px) !important;
 }
 #dinamik-olay-modal #ruhsat-btn-group.ruhsat-inline-view-mode {
   display: none !important;
@@ -2381,7 +2393,8 @@
   }
 
   #dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack .olay-date-mobile-wrap {
-    width: min(100%, 280px) !important;
+    width: min(100%, var(--ruhsat-single-control-width, 168px)) !important;
+    max-width: var(--ruhsat-single-control-width, 168px) !important;
     margin-left: auto !important;
     margin-right: auto !important;
     height: 36px !important;
