@@ -258,18 +258,18 @@ test('iOS kart İndir ikonu görünür; tıklama canonical viewer Kaydet/Paylaş
     'function renderRuhsatUploadForm('
   );
   assert.doesNotMatch(modalSrc, /if \(!iosCanonical\)/, 'İndir ikonu iOS/PWA dahil her kartta görünmeli');
-  assert.match(modalSrc, /className = 'ruhsat-download-btn'/);
+  assert.match(modalSrc, /className = 'ruhsat-download-btn icon-btn'/);
   assert.match(modalSrc, /downloadVehicleDocumentOriginal\(vid, dt\)/);
   assert.match(tasitlar, /function downloadVehicleDocumentOriginal\(/);
   assert.match(tasitlar, /Kaydet \/ Paylaş/);
 });
 
 test('pin/SW chain', function() {
-  assert.match(tasitlar, /MEDISA_TASITLAR_MODULE_VERSION = '20260926\.10'/);
-  assert.match(scriptCore, /tasitlar:\s*'20260926\.10'/);
-  assert.match(sw, /CACHE_VERSION = 'medisa-v2\.352'/);
-  assert.match(read('index.html'), /script-core\.js\?v=20260926\.8/);
-  assert.match(read('index.html'), /style-core\.css\?v=20260926\.2/);
+  assert.match(tasitlar, /MEDISA_TASITLAR_MODULE_VERSION = '20260926\.11'/);
+  assert.match(scriptCore, /tasitlar:\s*'20260926\.11'/);
+  assert.match(sw, /CACHE_VERSION = 'medisa-v2\.353'/);
+  assert.match(read('index.html'), /script-core\.js\?v=20260926\.9/);
+  assert.match(read('index.html'), /style-core\.css\?v=20260926\.3/);
 });
 
 console.log('');

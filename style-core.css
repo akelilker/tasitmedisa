@@ -718,6 +718,97 @@ body::-webkit-scrollbar,
   }
 }
 
+/* Belge aksiyon satırı: ortak icon-btn kontratı — çerçevesiz; hover yalnızca scale */
+.medisa-doc-action-row .icon-btn,
+.medisa-doc-action-row .ruhsat-preview-link {
+  padding: 0;
+  background: transparent !important;
+  background-color: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  filter: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 160ms ease, scale 160ms ease;
+}
+
+.medisa-doc-action-row .icon-btn:focus:not(:focus-visible),
+.medisa-doc-action-row .ruhsat-preview-link:focus:not(:focus-visible) {
+  outline: none;
+  box-shadow: none !important;
+}
+
+.medisa-doc-action-row .icon-btn:focus-visible,
+.medisa-doc-action-row .ruhsat-preview-link.document-presence--present:focus-visible {
+  outline: 2px solid rgba(212, 0, 0, 0.45);
+  outline-offset: 2px;
+}
+
+.medisa-doc-action-row .icon-btn:hover {
+  filter: none !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .medisa-doc-action-row .medisa-doc-action-row__start .icon-btn:hover,
+  .medisa-doc-action-row .medisa-doc-action-row__center .ruhsat-preview-link.document-presence--present:hover,
+  .medisa-doc-action-row.medisa-doc-status-row .ruhsat-select-box:hover {
+    transform: scale(1.18);
+    scale: 1.18;
+    filter: none;
+    background: transparent !important;
+    background-color: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .medisa-doc-action-row .medisa-doc-action-row__end .icon-btn:hover {
+    transform: scale(1.22);
+    scale: 1.22;
+    filter: none;
+    background: transparent !important;
+    background-color: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .medisa-doc-action-row .ruhsat-download-btn:hover,
+  .medisa-doc-action-row .ruhsat-add-btn:hover {
+    color: rgba(255, 255, 255, 0.48) !important;
+  }
+
+  .medisa-doc-action-row .ruhsat-remove-btn:hover {
+    color: var(--red, #ef4444) !important;
+  }
+
+  .medisa-doc-action-row.medisa-doc-status-row .ruhsat-select-box:hover {
+    color: var(--form-label-color, #ffffff) !important;
+  }
+
+  .medisa-doc-action-row.medisa-doc-status-row .ruhsat-select-box.upload-success:hover {
+    color: #7dffae !important;
+  }
+}
+
+@media (hover: none), (pointer: coarse) {
+  .medisa-doc-action-row .icon-btn:active,
+  .medisa-doc-action-row .ruhsat-preview-link.document-presence--present:active,
+  .medisa-doc-action-row.medisa-doc-status-row .ruhsat-select-box:active:not(:disabled):not(.ruhsat-select-box--uploading) {
+    transform: scale(0.95);
+    scale: 0.95;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .medisa-doc-action-row .icon-btn:hover,
+  .medisa-doc-action-row .icon-btn:active,
+  .medisa-doc-action-row .ruhsat-preview-link.document-presence--present:hover,
+  .medisa-doc-action-row .ruhsat-preview-link.document-presence--present:active,
+  .medisa-doc-action-row.medisa-doc-status-row .ruhsat-select-box:hover,
+  .medisa-doc-action-row.medisa-doc-status-row .ruhsat-select-box:active {
+    transform: none !important;
+    scale: 1 !important;
+  }
+}
+
 /* --- EVRENSEL İŞLEM BUTONLARI (Orijinal kayit.css matematiği ve zarafeti) --- */
 /* Buton Grubu (Kapsayıcı) - Aradaki Boşluğu Aç; minmax(0,1fr) taşmayı önler */
 .universal-btn-group {
@@ -782,6 +873,14 @@ body::-webkit-scrollbar,
   font-weight: 700 !important;
   border-color: #d40000 !important;
   -webkit-text-stroke: 0.3px currentColor;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .universal-btn-save:hover,
+  .universal-btn-cancel:hover {
+    transform: scale(1.04);
+    scale: 1.04;
+  }
 }
 
 /* Mobil/iOS PWA: Önbellek temizleme onayındaki Evet/Hayır metinleri +1pt */

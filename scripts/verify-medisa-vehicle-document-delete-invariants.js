@@ -75,12 +75,12 @@ test('UI: yüklü belgede [+] altında [-] var, boş belgede aksiyon yığını 
   );
   const hasDocBranch = extractBetween(modalSrc, 'if (hasDoc) {', 'content.appendChild(btnGroup);');
   assert.match(hasDocBranch, /medisa-doc-action-row/, 'yüklü belgede canonical action row kurulmalı');
-  assert.match(hasDocBranch, /className = 'ruhsat-download-btn'/, 'İndir butonu solda kurulmalı');
+  assert.match(hasDocBranch, /className = 'ruhsat-download-btn icon-btn'/, 'İndir butonu solda kurulmalı');
   assert.doesNotMatch(hasDocBranch, /if \(!iosCanonical\)\s*\{/, 'İndir ikonu iOS/PWA dahil her kartta render edilmeli');
   assert.match(hasDocBranch, /downloadVehicleDocumentOriginal\(vid, dt\)/, 'İndir orijinal belge zincirini çağırmalı');
   assert.match(hasDocBranch, /ruhsat-doc-actions/, 'yüklü belgede aksiyon sarmalayıcı kurulmalı');
-  assert.match(hasDocBranch, /className = 'ruhsat-add-btn'/, '"+" butonu korunmalı');
-  assert.match(hasDocBranch, /className = 'ruhsat-remove-btn'/, '"-" butonu yüklü belgede olmalı');
+  assert.match(hasDocBranch, /className = 'ruhsat-add-btn icon-btn'/, '"+" butonu korunmalı');
+  assert.match(hasDocBranch, /className = 'ruhsat-remove-btn icon-btn'/, '"-" butonu yüklü belgede olmalı');
   assert.match(hasDocBranch, /document-presence--present/, 'yüklü belgede orta ikon varlık state class almalı');
   assert.match(hasDocBranch, /renderRuhsatUploadForm\(content, saveBtn, true, dt\)/, '"+" mevcut değiştirme davranışını korumalı');
   assert.match(hasDocBranch, /requestVehicleDocumentDelete\(vid, dt, docActions\)/, '"-" silme akışını çağırmalı');
@@ -92,10 +92,10 @@ test('UI: yüklü belgede [+] altında [-] var, boş belgede aksiyon yığını 
   assert.doesNotMatch(emptyBranch, /ruhsat-download-btn/, 'belge yokken İndir render edilmemeli');
   assert.doesNotMatch(emptyBranch, /document-presence--present/, 'belge yokken varlık state class basılmamalı');
 
-  const downloadIndex = hasDocBranch.indexOf("className = 'ruhsat-download-btn'");
+  const downloadIndex = hasDocBranch.indexOf("className = 'ruhsat-download-btn icon-btn'");
   const previewIndex = hasDocBranch.indexOf("className = 'ruhsat-preview-link'");
-  const addIndex = hasDocBranch.indexOf("className = 'ruhsat-add-btn'");
-  const removeIndex = hasDocBranch.indexOf("className = 'ruhsat-remove-btn'");
+  const addIndex = hasDocBranch.indexOf("className = 'ruhsat-add-btn icon-btn'");
+  const removeIndex = hasDocBranch.indexOf("className = 'ruhsat-remove-btn icon-btn'");
   assert.ok(downloadIndex !== -1 && previewIndex !== -1 && downloadIndex < previewIndex, 'İndir preview’dan önce (solda) eklenmeli');
   assert.ok(previewIndex < addIndex, 'preview Ekle’den önce (ortada) eklenmeli');
   assert.ok(addIndex < removeIndex, '"-" butonu "+" butonundan sonra (altında) eklenmeli');
@@ -303,6 +303,23 @@ test('Görsel: belge durum ikonu çerçevesiz, ikon-only ve ağ isteksiz', funct
   );
   assert.match(tasitlarExtraCss, /\.ruhsat-preview-link\.document-presence--missing[\s\S]*?color:\s*#ef4444/, 'belge yok ikonu kırmızı olmalı');
   assert.doesNotMatch(tasitlarExtraCss, /ruhsat-preview-hint/);
+});
+
+test('CSS: belge aksiyon hover ortak icon-btn kontratı; yeşil çerçeve override yok', function() {
+  assert.match(styleCoreCss, /\.medisa-doc-action-row \.icon-btn,/);
+  assert.match(styleCoreCss, /\.medisa-doc-action-row \.medisa-doc-action-row__end \.icon-btn:hover[\s\S]*?scale:\s*1\.22/);
+  assert.match(tasitlar, /className = 'ruhsat-download-btn icon-btn'/);
+  assert.match(tasitlar, /className = 'ruhsat-add-btn icon-btn'/);
+  assert.doesNotMatch(
+    tasitlarExtraCss,
+    /\.ruhsat-add-btn:hover[\s\S]*?#4ade80/,
+    'belge modalında yeşil hover çerçevesi override kalmamalı'
+  );
+  assert.doesNotMatch(
+    tasitlarExtraCss,
+    /\.ruhsat-add-btn:hover[\s\S]*?border-color:\s*rgba\(74,\s*222,\s*128/,
+    'belge modalında yeşil hover border override kalmamalı'
+  );
 });
 
 /* ---------- 3-5: onay akışı, payload ve çift istek koruması ---------- */
