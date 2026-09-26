@@ -1285,6 +1285,9 @@
   width: min(var(--ruhsat-single-control-width, 168px), 100%) !important;
   max-width: var(--ruhsat-single-control-width, 168px) !important;
   min-width: var(--ruhsat-single-control-width, 168px) !important;
+  background: transparent !important;
+  border: 1px solid rgba(var(--theme-color-rgb), 0.5) !important;
+  color: var(--theme-color, #d40000) !important;
 }
 #dinamik-olay-modal #ruhsat-btn-group.ruhsat-inline-view-mode {
   display: none !important;
