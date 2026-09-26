@@ -3581,6 +3581,31 @@ body.modal-open .app-container {
   }
 }
 
+/* --- iOS 27 PWA Safe-Area Scoped İzolasyon (Yalnız html.medisa-ios27-pwa) --- */
+html.medisa-ios27-pwa {
+  background-color: var(--bg, #080d16) !important;
+  background: var(--bg, #080d16) !important;
+  min-height: 100% !important;
+}
+
+html.medisa-ios27-pwa body {
+  background-color: var(--bg, #080d16) !important;
+  background: var(--bg, #080d16) !important;
+}
+
+html.medisa-ios27-pwa .app-container {
+  background-color: var(--bg, #080d16) !important;
+}
+
+/* iOS 27 PWA: Üst safe-area overlay düzeyinde tek sefer uygulanır, container margin-top sıfırlanır */
+html.medisa-ios27-pwa .modal-overlay .modal-container {
+  margin-top: 0 !important;
+}
+
+html.medisa-ios27-pwa .olay-ekle-modal .modal-container {
+  margin-top: 0 !important;
+}
+
 /* ========== LAZY LOAD – Modül yüklenirken spinner ========== */
 .module-load-spinner {
   position: fixed;

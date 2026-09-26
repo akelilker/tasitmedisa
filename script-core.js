@@ -162,6 +162,26 @@ window.isMedisaIOSDevice = function isMedisaIOSDevice() {
     (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 };
 
+/** iOS / iPadOS major version tespiti (sayı veya null döner) */
+window.getMedisaIOSMajorVersion = function getMedisaIOSMajorVersion() {
+  if (typeof window.isMedisaIOSDevice !== 'function' || !window.isMedisaIOSDevice()) {
+    return null;
+  }
+  var ua = navigator.userAgent || '';
+  var m = ua.match(/OS\s+(\d+)[_.]/i);
+  if (m && m[1]) {
+    var v = parseInt(m[1], 10);
+    if (!isNaN(v)) return v;
+  }
+  // iPadOS touch Mac (navigator.platform === 'MacIntel') userAgent Safari token fallback
+  var vMatch = ua.match(/Version\/(\d+)\./i);
+  if (vMatch && vMatch[1]) {
+    var ver = parseInt(vMatch[1], 10);
+    if (!isNaN(ver)) return ver;
+  }
+  return null;
+};
+
 /** iOS ana ekran PWA (Safari dışı tam ekran); belge linkleri aynı webview'da kilitlenmesin diye tespit */
 window.isIOSPWA = function isIOSPWA() {
   if (typeof window.isMedisaIOSDevice !== 'function' || !window.isMedisaIOSDevice()) {
@@ -172,6 +192,24 @@ window.isIOSPWA = function isIOSPWA() {
     window.navigator.standalone === true;
   return !!isStandalone;
 };
+
+/** iOS 27+ standalone PWA tespiti */
+window.isMedisaIOS27PWA = function isMedisaIOS27PWA() {
+  if (typeof window.isIOSPWA !== 'function' || !window.isIOSPWA()) return false;
+  var major = typeof window.getMedisaIOSMajorVersion === 'function' ? window.getMedisaIOSMajorVersion() : null;
+  return typeof major === 'number' && major >= 27;
+};
+
+/** iOS 27+ PWA runtime class initializer — tek owner */
+(function initMedisaIOS27PWAClass() {
+  try {
+    if (typeof window !== 'undefined' && document && document.documentElement) {
+      if (typeof window.isMedisaIOS27PWA === 'function' && window.isMedisaIOS27PWA()) {
+        document.documentElement.classList.add('medisa-ios27-pwa');
+      }
+    }
+  } catch (e) {}
+})();
 
 /** KM gösterimi: rakam + binlik nokta; boşta '–' (rapor/admin ile uyumlu) */
 window.formatKm = function(value) {
