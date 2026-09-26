@@ -707,8 +707,8 @@
 }
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-preview-link svg {
   display: block;
-  width: 28px;
-  height: 28px;
+  width: 40px;
+  height: 40px;
 }
 /* Belge var: yeşil belge ikonu */
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-preview-link.document-presence--present {
@@ -735,7 +735,7 @@
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-add-btn,
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-remove-btn {
   margin-left: 0;
-  font-size: 42px;
+  font-size: 46px;
   font-weight: 300;
   line-height: 0.9;
   padding: 0;
@@ -759,8 +759,8 @@
 }
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-download-btn svg {
   display: block;
-  width: 22px;
-  height: 22px;
+  width: 28px;
+  height: 28px;
 }
 /* Yüklü belgede [+] / [-] dikey yığın: konumlanan owner buton değil, aksiyon sarmalayıcıdır */
 #dinamik-olay-modal #ruhsat-modal-content .universal-btn-group.ruhsat-preview-row .ruhsat-doc-actions,
@@ -809,7 +809,7 @@
   #dinamik-olay-modal #ruhsat-modal-content .ruhsat-download-btn,
   #dinamik-olay-modal #ruhsat-modal-content .ruhsat-add-btn,
   #dinamik-olay-modal #ruhsat-modal-content .ruhsat-remove-btn {
-    font-size: 32px;
+    font-size: 44px;
     min-width: 50px;
     min-height: 50px;
   }
@@ -817,8 +817,8 @@
     font-size: 0;
   }
   #dinamik-olay-modal #ruhsat-modal-content .ruhsat-download-btn svg {
-    width: 20px;
-    height: 20px;
+    width: 28px;
+    height: 28px;
   }
 }
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack {
@@ -1341,8 +1341,8 @@
   }
   #dinamik-olay-modal #ruhsat-modal-content .ruhsat-preview-link.ruhsat-preview-mobile-btn svg {
     flex: 0 0 auto !important;
-    width: 22px !important;
-    height: 22px !important;
+    width: 30px !important;
+    height: 30px !important;
     color: var(--theme-color, #d40000) !important;
   }
   /* Belge var: durum ikonu yeşil */
@@ -1369,7 +1369,7 @@
   #dinamik-olay-modal #ruhsat-modal-content .ruhsat-download-btn,
   #dinamik-olay-modal #ruhsat-modal-content .ruhsat-add-btn,
   #dinamik-olay-modal #ruhsat-modal-content .ruhsat-remove-btn {
-    font-size: 30px !important;
+    font-size: 38px !important;
     min-width: 48px;
     width: 48px !important;
     min-height: 48px;
@@ -1506,7 +1506,7 @@
   box-shadow: none;
 }
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-select-box-icon {
-  font-size: 20px;
+  font-size: 28px;
   line-height: 1;
   font-weight: 400;
   opacity: 0.9;
