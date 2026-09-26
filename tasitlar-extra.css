@@ -829,33 +829,60 @@
 }
 
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack .olay-date-mobile-wrap {
-  height: 36px;
-  min-height: 36px;
-  max-height: 36px;
-  align-items: center;
+  gap: 0 !important;
+  height: 30px;
+  min-height: 30px;
+  max-height: 30px;
+  padding: 0;
+  align-items: stretch;
+  background: #0d131f;
+  border: 1.1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 8px;
+  box-sizing: border-box;
+  overflow: visible;
+}
+
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack .olay-date-mobile-wrap:focus-within {
+  border: 1px solid var(--theme-color) !important;
+  outline: none;
+  box-shadow: none;
 }
 
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack .form-input,
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack .olay-date-mobile-text {
-  height: 36px !important;
-  min-height: 36px !important;
-  max-height: 36px !important;
-  padding: 0 8px !important;
-  line-height: 36px !important;
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 100% !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  padding: 0 6px 0 8px !important;
+  line-height: 28px !important;
   text-align: center !important;
-  border-radius: 8px !important;
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
   box-sizing: border-box;
 }
 
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack .olay-date-mobile-text:focus,
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack .form-input:focus {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack .olay-date-mobile-picker-slot {
-  height: 36px !important;
-  width: 36px !important;
-  flex: 0 0 36px !important;
+  position: relative;
+  height: 100% !important;
+  width: 30px !important;
+  flex: 0 0 30px !important;
+  align-self: center;
 }
 
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack .olay-date-mobile-btn {
-  width: 36px !important;
-  height: 36px !important;
+  width: 30px !important;
+  height: 30px !important;
   border: 0 !important;
   border-radius: 0 !important;
   background: transparent !important;
@@ -875,22 +902,9 @@
 
 @media (min-width: 769px) {
   #dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack--takograf .olay-date-mobile-wrap {
-    height: 33px;
-    min-height: 33px;
-    max-height: 33px;
-  }
-
-  #dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack--takograf .form-input,
-  #dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack--takograf .olay-date-mobile-text {
-    height: 33px !important;
-    min-height: 33px !important;
-    max-height: 33px !important;
-    line-height: 33px !important;
-  }
-
-  #dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack--takograf .olay-date-mobile-picker-slot {
-    height: 31px !important;
-    flex-basis: 31px !important;
+    height: 30px;
+    min-height: 30px;
+    max-height: 30px;
   }
 }
 
@@ -2392,18 +2406,20 @@
     text-align: center !important;
   }
 
-  /* Belge upload: mobil Olay Ekle 17px input override'ından muaf — 36px kutu + 12px metin */
+  /* Belge upload: mobil Olay Ekle 17px input override'ından muaf — ortak tarih çerçevesi + 12px metin */
   #dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack .form-input,
   #dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack .olay-date-mobile-text {
-    width: 100% !important;
-    max-width: 100% !important;
+    width: auto !important;
+    max-width: none !important;
     font-size: 12px !important;
-    height: 36px !important;
-    min-height: 36px !important;
-    max-height: 36px !important;
-    line-height: 36px !important;
-    border-radius: 8px !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    line-height: 28px !important;
+    border: none !important;
+    border-radius: 0 !important;
     text-align: center !important;
+    background: transparent !important;
   }
 
   #dinamik-olay-modal #ruhsat-modal-content .ruhsat-policy-date-stack .olay-date-mobile-wrap {
@@ -2411,9 +2427,10 @@
     max-width: var(--ruhsat-single-control-width, 168px) !important;
     margin-left: auto !important;
     margin-right: auto !important;
-    height: 36px !important;
-    min-height: 36px !important;
-    max-height: 36px !important;
+    gap: 0 !important;
+    height: 30px !important;
+    min-height: 30px !important;
+    max-height: 30px !important;
   }
 
   /* Mobil Olay Ekle: Var/Yok, Evet/Hayır satırları sola yaslı ve 3px dikey boşluklu */
