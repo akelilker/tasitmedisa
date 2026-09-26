@@ -8043,27 +8043,26 @@
 
       const startActions = document.createElement('div');
       startActions.className = 'medisa-doc-action-row__start';
-      // iOS: karttaki ayrı İndir, viewer Kaydet/Paylaş ile redundant; desktop İndir korunur.
-      if (!iosCanonical) {
-        const downloadBtn = document.createElement('button');
-        downloadBtn.type = 'button';
-        downloadBtn.className = 'ruhsat-download-btn';
-        downloadBtn.setAttribute('aria-label', cfg.label + ' İndir');
-        downloadBtn.title = 'İndir';
-        downloadBtn.innerHTML =
-          '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
-          '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>' +
-          '<polyline points="7 10 12 15 17 10"></polyline>' +
-          '<line x1="12" y1="15" x2="12" y2="3"></line>' +
-          '</svg>';
-        downloadBtn.onclick = function(e) {
-          e.preventDefault();
-          e.stopPropagation();
-          downloadVehicleDocumentOriginal(vid, dt);
-        };
-        startActions.appendChild(downloadBtn);
-        btnGroup.appendChild(startActions);
-      }
+      // İndir ikonu mobil/PWA (iOS canonical dahil) her kartta görünür kalır.
+      // iOS'ta tıklama mevcut owner zincirini izler: downloadVehicleDocumentOriginal → canonical viewer + Kaydet/Paylaş.
+      const downloadBtn = document.createElement('button');
+      downloadBtn.type = 'button';
+      downloadBtn.className = 'ruhsat-download-btn';
+      downloadBtn.setAttribute('aria-label', cfg.label + ' İndir');
+      downloadBtn.title = 'İndir';
+      downloadBtn.innerHTML =
+        '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+        '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>' +
+        '<polyline points="7 10 12 15 17 10"></polyline>' +
+        '<line x1="12" y1="15" x2="12" y2="3"></line>' +
+        '</svg>';
+      downloadBtn.onclick = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        downloadVehicleDocumentOriginal(vid, dt);
+      };
+      startActions.appendChild(downloadBtn);
+      btnGroup.appendChild(startActions);
 
       const centerPreview = document.createElement('div');
       centerPreview.className = 'medisa-doc-action-row__center';

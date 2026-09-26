@@ -251,13 +251,15 @@ test('print pagination: CASE A overflow guards + 1:1 page DOM', function() {
   assert.match(printHtmlFn, /isLast = index === pageCount - 1/);
 });
 
-test('iOS kart İndir gizlenir; desktop download owner korunur', function() {
+test('iOS kart İndir ikonu görünür; tıklama canonical viewer Kaydet/Paylaş zincirini izler', function() {
   const modalSrc = extractBetween(
     tasitlar,
     'window.openVehicleDocumentModal = function(vehicleId, documentType) {',
     'function renderRuhsatUploadForm('
   );
-  assert.match(modalSrc, /if \(!iosCanonical\) \{[\s\S]*?ruhsat-download-btn/);
+  assert.doesNotMatch(modalSrc, /if \(!iosCanonical\)/, 'İndir ikonu iOS/PWA dahil her kartta görünmeli');
+  assert.match(modalSrc, /className = 'ruhsat-download-btn'/);
+  assert.match(modalSrc, /downloadVehicleDocumentOriginal\(vid, dt\)/);
   assert.match(tasitlar, /function downloadVehicleDocumentOriginal\(/);
   assert.match(tasitlar, /Kaydet \/ Paylaş/);
 });

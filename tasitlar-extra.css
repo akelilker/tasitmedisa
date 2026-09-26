@@ -1447,60 +1447,64 @@
   position: relative;
 }
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-select-box {
-  width: 100%;
-  max-width: 280px;
-  height: 80px;
-  min-height: 80px;
-  margin: 0 auto 8px auto;
-  display: flex;
-  flex-direction: column;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  min-height: 0;
+  margin: 0 auto;
+  display: inline-flex;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  padding: 0;
-  border: 1px dashed rgba(255, 255, 255, 0.35) !important;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.03) !important;
+  gap: 8px;
+  padding: 4px 2px;
+  border: 0 !important;
+  border-radius: 0;
+  background: transparent !important;
+  background-color: transparent !important;
   color: var(--form-label-color, #ffffff) !important;
   font-size: 14px;
   font-family: inherit;
   line-height: 1.2;
   cursor: pointer;
   box-sizing: border-box;
-  overflow: hidden;
-  text-overflow: ellipsis;
   white-space: nowrap;
   -webkit-tap-highlight-color: transparent;
-  transition: border-color 0.2s, background 0.2s;
+  box-shadow: none;
+  transition: color 0.2s ease;
 }
-#dinamik-olay-modal #ruhsat-modal-content .ruhsat-select-box:focus-visible {
-  outline: none;
-  border-color: rgba(255, 255, 255, 0.5) !important;
-  background: rgba(255, 255, 255, 0.06) !important;
-}
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-select-box:focus-visible,
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-select-box:hover {
-  border-color: rgba(255, 255, 255, 0.5) !important;
-  background: rgba(255, 255, 255, 0.06) !important;
+  outline: none;
+  color: #93c5fd !important;
+  background: transparent !important;
+  background-color: transparent !important;
 }
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-select-box.upload-success {
-  border-color: rgba(40, 167, 69, 0.85) !important;
-  background: rgba(40, 167, 69, 0.18) !important;
+  border: 0 !important;
+  background: transparent !important;
+  background-color: transparent !important;
   color: #7dffae !important;
-  box-shadow: 0 0 12px rgba(40, 167, 69, 0.22);
+  box-shadow: none;
 }
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-upload-box--drag-over .ruhsat-select-box {
-  border-color: rgba(40, 167, 69, 0.85) !important;
-  background: rgba(40, 167, 69, 0.14) !important;
+  border: 0 !important;
+  background: transparent !important;
+  background-color: transparent !important;
   color: #7dffae !important;
-  box-shadow: 0 0 12px rgba(40, 167, 69, 0.18);
+  box-shadow: none;
 }
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-select-box-icon {
-  font-size: 28px;
+  font-size: 20px;
   line-height: 1;
-  font-weight: 300;
+  font-weight: 400;
   opacity: 0.9;
 }
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-select-box-label {
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   font-size: 13px;
   font-weight: 500;
 }
@@ -1575,6 +1579,10 @@
   align-items: stretch;
   gap: 6px;
   box-sizing: border-box;
+}
+
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-upload-progress[hidden] {
+  display: none !important;
 }
 
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-upload-progress-label {
