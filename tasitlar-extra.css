@@ -949,10 +949,11 @@
 }
 #dinamik-olay-modal #ruhsat-btn-group.olay-form-buttons .universal-btn-cancel:hover,
 #dinamik-olay-modal #ruhsat-btn-group.olay-form-buttons .universal-btn-cancel:active {
-  background: rgba(var(--theme-color-rgb), 0.08) !important;
-  border-color: rgba(var(--theme-color-rgb), 0.72) !important;
+  background: rgba(var(--theme-color-rgb), 0.15) !important;
+  border-color: #d40000 !important;
   color: var(--theme-color, #d40000) !important;
-  -webkit-text-stroke: 0 !important;
+  font-weight: 700 !important;
+  -webkit-text-stroke: 0.3px currentColor;
 }
 #dinamik-olay-modal #ruhsat-btn-group #dinamik-olay-kaydet-btn:hover {
   background: rgba(74, 222, 128, 0.08) !important;
@@ -1302,6 +1303,15 @@
   background: transparent !important;
   border: 1px solid rgba(var(--theme-color-rgb), 0.5) !important;
   color: var(--theme-color, #d40000) !important;
+}
+#dinamik-olay-modal #ruhsat-btn-group.ruhsat-single-visible .universal-btn-cancel:hover,
+#dinamik-olay-modal #ruhsat-btn-group.ruhsat-single-visible .universal-btn-cancel:focus-visible,
+#dinamik-olay-modal #ruhsat-btn-group.ruhsat-single-visible .universal-btn-cancel:active {
+  background: rgba(var(--theme-color-rgb), 0.15) !important;
+  border-color: #d40000 !important;
+  color: var(--theme-color, #d40000) !important;
+  font-weight: 700 !important;
+  -webkit-text-stroke: 0.3px currentColor;
 }
 #dinamik-olay-modal #ruhsat-btn-group.ruhsat-inline-view-mode {
   display: none !important;

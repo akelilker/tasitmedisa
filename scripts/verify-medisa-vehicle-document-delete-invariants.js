@@ -305,6 +305,19 @@ test('Görsel: belge durum ikonu çerçevesiz, ikon-only ve ağ isteksiz', funct
   assert.doesNotMatch(tasitlarExtraCss, /ruhsat-preview-hint/);
 });
 
+test('CSS: belge modal Vazgeç metin butonu hover universal-btn-cancel kontratı', function() {
+  assert.match(
+    tasitlarExtraCss,
+    /#dinamik-olay-modal #ruhsat-btn-group\.ruhsat-single-visible \.universal-btn-cancel:hover[\s\S]*?background: rgba\(var\(--theme-color-rgb\), 0\.15\) !important;/,
+    'ruhsat-single-visible Vazgeç hover arka planı global kontratla aynı olmalı'
+  );
+  assert.match(
+    tasitlarExtraCss,
+    /#dinamik-olay-modal #ruhsat-btn-group\.olay-form-buttons \.universal-btn-cancel:hover[\s\S]*?background: rgba\(var\(--theme-color-rgb\), 0\.15\) !important;/,
+    'olay-form-buttons Vazgeç hover 0.15 olmalı'
+  );
+});
+
 test('CSS: belge aksiyon hover ortak icon-btn kontratı; yeşil çerçeve override yok', function() {
   assert.match(styleCoreCss, /\.medisa-doc-action-row \.icon-btn,/);
   assert.match(styleCoreCss, /\.medisa-doc-action-row \.medisa-doc-action-row__end \.icon-btn:hover[\s\S]*?scale:\s*1\.22/);
