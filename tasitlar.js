@@ -197,7 +197,7 @@
 
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20260926.10';
+  const MEDISA_TASITLAR_MODULE_VERSION = '20260926.11';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
@@ -8047,7 +8047,7 @@
       // iOS'ta tıklama mevcut owner zincirini izler: downloadVehicleDocumentOriginal → canonical viewer + Kaydet/Paylaş.
       const downloadBtn = document.createElement('button');
       downloadBtn.type = 'button';
-      downloadBtn.className = 'ruhsat-download-btn';
+      downloadBtn.className = 'ruhsat-download-btn icon-btn';
       downloadBtn.setAttribute('aria-label', cfg.label + ' İndir');
       downloadBtn.title = 'İndir';
       downloadBtn.innerHTML =
@@ -8115,7 +8115,7 @@
 
       const replaceBtn = document.createElement('button');
       replaceBtn.type = 'button';
-      replaceBtn.className = 'ruhsat-add-btn';
+      replaceBtn.className = 'ruhsat-add-btn icon-btn';
       replaceBtn.setAttribute('aria-label', cfg.changeLabel);
       replaceBtn.innerHTML = '+';
       replaceBtn.onclick = function() {
@@ -8125,7 +8125,7 @@
 
       const removeBtn = document.createElement('button');
       removeBtn.type = 'button';
-      removeBtn.className = 'ruhsat-remove-btn';
+      removeBtn.className = 'ruhsat-remove-btn icon-btn';
       removeBtn.setAttribute('aria-label', cfg.label + ' Sil');
       removeBtn.innerHTML = '&minus;';
       removeBtn.onclick = function() {
@@ -8186,7 +8186,7 @@
     uploadBox.className = 'ruhsat-upload-box';
     const selectBox = document.createElement('button');
     selectBox.type = 'button';
-    selectBox.className = 'ruhsat-select-box';
+    selectBox.className = 'ruhsat-select-box icon-btn';
     selectBox.setAttribute('aria-label', cfg.label + ' dosyası seç');
     selectBox.innerHTML = '<span class="ruhsat-select-box-icon" aria-hidden="true">+</span>';
     const input = document.createElement('input');
