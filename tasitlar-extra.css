@@ -1458,6 +1458,12 @@
   margin: 0 auto;
   position: relative;
 }
+/* Belge yok: "+" yükleme tetikleyicisi kırmızı durum ikonuyla aynı satırda kalır, genişlik kaplamaz */
+#dinamik-olay-modal #ruhsat-modal-content .medisa-doc-status-row .ruhsat-upload-box {
+  width: auto;
+  max-width: none;
+  margin: 0;
+}
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-select-box {
   width: auto;
   max-width: 100%;

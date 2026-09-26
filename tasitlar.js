@@ -8137,14 +8137,24 @@
       content.appendChild(btnGroup);
     } else {
       renderRuhsatUploadForm(content, saveBtn, false, dt);
-      // Belge yok: aynı durum alanında pasif kırmızı ikon; yükleme formu altında kalır.
+      // Belge yok: pasif kırmızı ikon aksiyon satırının ortasında kalır,
+      // mevcut yükleme tetikleyicisi (+ / .ruhsat-upload-box) aynı satırda sağında durur.
+      // Tarih alanı bu aksiyon satırının altında render edilir.
       const statusRow = document.createElement('div');
       statusRow.className = 'medisa-doc-action-row medisa-doc-status-row';
+      const statusCenter = document.createElement('div');
+      statusCenter.className = 'medisa-doc-action-row__center';
       const statusIcon = document.createElement('span');
       statusIcon.className = 'ruhsat-preview-link document-presence--missing';
       statusIcon.setAttribute('aria-hidden', 'true');
       statusIcon.innerHTML = getMedisaDocumentStatusIconSvg(false);
-      statusRow.appendChild(statusIcon);
+      statusCenter.appendChild(statusIcon);
+      statusRow.appendChild(statusCenter);
+      const statusActions = document.createElement('div');
+      statusActions.className = 'ruhsat-doc-actions medisa-doc-action-row__end';
+      const missingUploadBox = content.querySelector('.ruhsat-upload-box');
+      if (missingUploadBox) statusActions.appendChild(missingUploadBox);
+      statusRow.appendChild(statusActions);
       content.insertBefore(statusRow, content.firstChild);
     }
     modal.style.display = 'flex';
