@@ -899,60 +899,20 @@
     color: var(--theme-color, #e00000);
 }
 
+#required-documents-modal .required-k2-add-btn:hover,
 #required-documents-modal .required-k2-add-btn:focus-visible,
-#required-documents-modal .required-k2-remove-btn:focus-visible {
-    outline: 2px solid rgba(212, 0, 0, 0.45);
-    outline-offset: 2px;
+#required-documents-modal .required-k2-add-btn:active {
+    color: var(--green-success, #28a745);
+    outline: none;
+    transform: scale(1.04);
 }
 
-@media (hover: hover) and (pointer: fine) {
-    #required-documents-modal .required-k2-add-btn:hover {
-        color: #8f98a6;
-        transform: scale(1.22);
-        scale: 1.22;
-        background: transparent;
-        border: 0;
-        box-shadow: none;
-        filter: none;
-    }
-
-    #required-documents-modal .required-k2-remove-btn:hover {
-        color: var(--theme-color, #e00000);
-        transform: scale(1.22);
-        scale: 1.22;
-        background: transparent;
-        border: 0;
-        box-shadow: none;
-        filter: none;
-    }
-
-    #required-documents-modal .required-k2-preview-link:hover {
-        transform: scale(1.18);
-        scale: 1.18;
-        filter: none;
-        background: transparent;
-        border: 0;
-        box-shadow: none;
-    }
-
-    #required-documents-modal .required-k2-date-picker-btn:hover {
-        color: #8f98a6;
-        transform: scale(1.18);
-        scale: 1.18;
-        background: transparent;
-        border: 0;
-        box-shadow: none;
-        filter: none;
-    }
-}
-
-@media (hover: none), (pointer: coarse) {
-    #required-documents-modal .required-k2-add-btn:active,
-    #required-documents-modal .required-k2-remove-btn:active,
-    #required-documents-modal .required-k2-preview-link:active {
-        transform: scale(0.95);
-        scale: 0.95;
-    }
+#required-documents-modal .required-k2-remove-btn:hover,
+#required-documents-modal .required-k2-remove-btn:focus-visible,
+#required-documents-modal .required-k2-remove-btn:active {
+    color: var(--theme-color, #e00000);
+    outline: none;
+    transform: scale(1.04);
 }
 
 #required-documents-modal .required-k2-add-btn[disabled],
@@ -978,9 +938,10 @@
     top: 0;
 }
 
+#required-documents-modal .required-k2-date-picker-btn:hover,
 #required-documents-modal .required-k2-date-picker-btn:focus-visible {
-    outline: 2px solid rgba(212, 0, 0, 0.45);
-    outline-offset: 2px;
+    color: #b8c0cc;
+    outline: none;
 }
 
 #required-documents-modal .required-k2-date-picker-btn svg {

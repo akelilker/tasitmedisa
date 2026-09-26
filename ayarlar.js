@@ -1154,13 +1154,13 @@
 
       const addBtn = document.createElement('button');
       addBtn.type = 'button';
-      addBtn.className = 'required-k2-add-btn icon-btn';
+      addBtn.className = 'required-k2-add-btn';
       addBtn.setAttribute('aria-label', 'K2 belgesini değiştir');
       addBtn.textContent = '+';
 
       const removeBtn = document.createElement('button');
       removeBtn.type = 'button';
-      removeBtn.className = 'required-k2-remove-btn icon-btn';
+      removeBtn.className = 'required-k2-remove-btn';
       removeBtn.setAttribute('aria-label', 'K2 belgesini sil');
       removeBtn.innerHTML = '&minus;';
 
