@@ -437,11 +437,9 @@ detailsHtml += buildHistoryBitisDetailHtml(d.bitisTarihi);
 if (d.egzozMuayeneYapilmaDate) detailsHtml += '<p>Egzoz muayene — yaptırılan: ' + h.escapeHtmlDriver(formatHistoryBitisDisplay(d.egzozMuayeneYapilmaDate) || d.egzozMuayeneYapilmaDate) + '.</p>';
 if (d.egzozMuayeneDate) detailsHtml += '<p>Egzoz muayene — bitiş: ' + h.escapeHtmlDriver(formatHistoryBitisDisplay(d.egzozMuayeneDate) || d.egzozMuayeneDate) + '.</p>';
 } else if (item.eventType === 'kasko-guncelle') {
-detailsHtml = '<p>Kaskosunun yenilendiğini bildirdi.</p>';
-detailsHtml += buildHistoryBitisDetailHtml(d.bitisTarihi);
+detailsHtml = '<p>Kasko Poliçesinin Yenilendiğini Bildirdi.</p>';
 } else if (item.eventType === 'sigorta-guncelle') {
-detailsHtml = '<p>Trafik Sigortasının Yenilendiğini Bildirdi.</p>';
-detailsHtml += buildHistoryBitisDetailHtml(d.bitisTarihi);
+detailsHtml = '<p>Sigorta Poliçesinin Yenilendiğini Bildirdi.</p>';
 } else if (item.eventType === 'kasko-kodu-guncelle') {
 detailsHtml = '<p>Kasko kodu güncellendi.</p>';
 if (d.kaskoKodu) detailsHtml += '<p>Yeni kod: ' + h.escapeHtmlDriver(d.kaskoKodu) + '.</p>';

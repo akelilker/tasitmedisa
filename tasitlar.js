@@ -10579,28 +10579,18 @@
       const adres = (eventData.adres || '').trim();
       if (adres) pushDetail('Konum', toTitleCase(adres));
     } else if (eventType === 'kasko-guncelle') {
-      const bitis = policyExpiryDisplay;
       const firma = (eventData.firma || '').trim();
       const acente = (eventData.acente || '').trim();
       const iletisim = (eventData.iletisim || '').trim();
-      if (bitis) {
-        summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Kasko Poli\u00e7esi Biti\u015F Tarihini </span><span class="history-detail-inline">' + escapeHtml(bitis) + '</span><span class="history-action-text"> Olarak G\u00FCncelledi.</span>';
-      } else {
-        summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Kasko Poli\u00e7esi Biti\u015F Tarihini G\u00FCncelledi.</span>';
-      }
+      summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Kasko Poliçesinin Yenilendiğini Bildirdi.</span>';
       if (firma) pushDetail('Firma', toTitleCase(firma));
       if (acente) pushDetail('Acente', toTitleCase(acente));
       if (iletisim) pushDetail('\u0130leti\u015Fim', iletisim);
     } else if (eventType === 'sigorta-guncelle') {
-      const bitis = policyExpiryDisplay;
       const firma = (eventData.firma || '').trim();
       const acente = (eventData.acente || '').trim();
       const iletisim = (eventData.iletisim || '').trim();
-      if (bitis) {
-        summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Sigorta Poli\u00e7esi Biti\u015F Tarihini </span><span class="history-detail-inline">' + escapeHtml(bitis) + '</span><span class="history-action-text"> Olarak G\u00FCncelledi.</span>';
-      } else {
-        summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Sigorta Poli\u00e7esi Biti\u015F Tarihini G\u00FCncelledi.</span>';
-      }
+      summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Sigorta Poliçesinin Yenilendiğini Bildirdi.</span>';
       if (firma) pushDetail('Firma', toTitleCase(firma));
       if (acente) pushDetail('Acente', toTitleCase(acente));
       if (iletisim) pushDetail('\u0130leti\u015Fim', iletisim);
