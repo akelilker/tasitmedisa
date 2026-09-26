@@ -265,10 +265,10 @@ test('iOS kart İndir ikonu görünür; tıklama canonical viewer Kaydet/Paylaş
 });
 
 test('pin/SW chain', function() {
-  assert.match(tasitlar, /MEDISA_TASITLAR_MODULE_VERSION = '20260926\.4'/);
-  assert.match(scriptCore, /tasitlar:\s*'20260926\.4'/);
-  assert.match(sw, /CACHE_VERSION = 'medisa-v2\.346'/);
-  assert.match(read('index.html'), /script-core\.js\?v=20260926\.2/);
+  assert.match(tasitlar, /MEDISA_TASITLAR_MODULE_VERSION = '20260926\.5'/);
+  assert.match(scriptCore, /tasitlar:\s*'20260926\.5'/);
+  assert.match(sw, /CACHE_VERSION = 'medisa-v2\.347'/);
+  assert.match(read('index.html'), /script-core\.js\?v=20260926\.3/);
   assert.match(read('index.html'), /style-core\.css\?v=20260926\.1/);
 });
 
