@@ -2413,7 +2413,7 @@ body.modal-open:has(.compact-confirm-modal.active) .app-container::after {
   display: none !important;
 }
 
-/* Kullanıcı Paneli linki - footer üstünde, sağa yaslı; tam kontrast */
+/* Kullanıcı Paneli linki - footer üstünde, sağa yaslı; yarı saydam */
 .user-panel-link {
   position: fixed;
   bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap));
@@ -2427,16 +2427,16 @@ body.modal-open:has(.compact-confirm-modal.active) .app-container::after {
   justify-content: flex-end;
   padding: 6px 16px;
   box-sizing: border-box;
-  color: var(--theme-color);
+  color: rgba(var(--theme-color-rgb), 0.55);
   text-decoration: none;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: 0.5px;
   user-select: none;
   -webkit-user-select: none;
   z-index: 9999;
   transition: color 0.2s, opacity 0.2s;
-  opacity: 1;
+  opacity: 0.7;
 }
 @media (min-width: 769px) {
   .user-panel-link:hover {
