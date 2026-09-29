@@ -3693,6 +3693,22 @@ html.medisa-ios27-pwa .olay-ekle-modal .modal-container {
   margin-top: 0 !important;
 }
 
+.medisa-ios27-blur-edge {
+  display: none;
+}
+
+html.medisa-ios27-pwa .medisa-ios27-blur-edge {
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 6px;
+  background: var(--bg, #080d16);
+  pointer-events: none;
+  z-index: 2147483647;
+}
+
 /* ========== LAZY LOAD – Modül yüklenirken spinner ========== */
 .module-load-spinner {
   position: fixed;
