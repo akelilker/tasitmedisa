@@ -2154,15 +2154,30 @@ function applyVehicleUserAssignmentFormPlan(vehiclesDesired, plan, assignUserId,
  * Şube uyumsuzluğu hatırlatması — kompakt universal modal (window.confirm yok).
  * Ardışık çağrılarda önceki Evet tıklamasının bir sonraki modal'a sızmaması için
  * open/handler bağlama ertelenir; resolve de bir sonraki macrotask'e bırakılır.
+ * @param {{message?:string, vehicleBranchName?:string, assignedUserName?:string, userBranchNames?:Array<string>}|string} payload
  * @returns {Promise<boolean|null>} true=Evet, false=Hayır, null=kapatıldı / modal yok
  */
-function askVehicleBranchMismatchReminder(message) {
+function askVehicleBranchMismatchReminder(payload) {
+    var info = (payload && typeof payload === 'object') ? payload : { message: payload };
+    var messageText = info.message != null ? String(info.message) : '';
+    var vehicleBranchName = String(info.vehicleBranchName || '').trim();
+    var assignedUserName = String(info.assignedUserName || '').trim();
+    var userBranchNames = Array.isArray(info.userBranchNames)
+        ? info.userBranchNames.map(function(name) { return String(name || '').trim(); }).filter(Boolean)
+        : (info.userBranchNames != null && String(info.userBranchNames).trim() !== ''
+            ? [String(info.userBranchNames).trim()]
+            : []);
     return new Promise(function(resolve) {
         var modal = document.getElementById('vehicle-user-cross-branch-confirm-modal');
         var msgEl = document.getElementById('vehicle-user-cross-branch-confirm-message');
+        var infoEl = document.getElementById('vehicle-user-cross-branch-confirm-info');
+        var vehicleBranchEl = document.getElementById('vehicle-user-cross-branch-confirm-vehicle-branch');
+        var userNameEl = document.getElementById('vehicle-user-cross-branch-confirm-user-name');
+        var userBranchesEl = document.getElementById('vehicle-user-cross-branch-confirm-user-branches');
         var yesBtn = document.getElementById('vehicle-user-cross-branch-confirm-yes');
         var noBtn = document.getElementById('vehicle-user-cross-branch-confirm-no');
         var closeBtn = document.getElementById('vehicle-user-cross-branch-confirm-close');
+        var hasStructuredInfo = !!(vehicleBranchName || assignedUserName || userBranchNames.length);
         if (!modal || !msgEl || !yesBtn || !noBtn) {
             resolve(null);
             return;
@@ -2214,7 +2229,14 @@ function askVehicleBranchMismatchReminder(message) {
         // Önceki Evet/Hayır pointer olayının yeni handler'a click-through olmaması için ertele
         setTimeout(function() {
             if (settled) return;
-            msgEl.textContent = String(message || '');
+            msgEl.textContent = messageText;
+            if (vehicleBranchEl) vehicleBranchEl.textContent = vehicleBranchName || '-';
+            if (userNameEl) userNameEl.textContent = assignedUserName || '-';
+            if (userBranchesEl) userBranchesEl.textContent = userBranchNames.length ? userBranchNames.join(', ') : '-';
+            if (infoEl) {
+                if (hasStructuredInfo) infoEl.removeAttribute('hidden');
+                else infoEl.setAttribute('hidden', '');
+            }
             detachHandlers();
             yesBtn.addEventListener('click', onYes);
             noBtn.addEventListener('click', onNo);

@@ -2082,6 +2082,41 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu .m
     overflow-wrap: break-word;
 }
 
+/* Branch mismatch info rows: label (white) / value (grey) - compact-confirm owner */
+.compact-confirm-modal .compact-confirm-info-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 0 0 16px 0;
+}
+.compact-confirm-modal .compact-confirm-info-list[hidden] {
+    display: none;
+}
+.compact-confirm-modal .compact-confirm-info-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+}
+.compact-confirm-modal .compact-confirm-info-label {
+    flex: 0 0 auto;
+    color: var(--form-label-color);
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.4;
+}
+.compact-confirm-modal .compact-confirm-info-value {
+    flex: 1 1 auto;
+    min-width: 0;
+    text-align: right;
+    color: var(--txt-gray-dark);
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.4;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
 .compact-confirm-modal .modal-header {
     height: 48px !important;
     min-height: 48px !important;
@@ -2226,7 +2261,8 @@ body.modal-open:has(.compact-confirm-modal.active) .app-container::after {
 #cache-confirm-modal .modal-header,
 #info-modal .modal-header,
 #tescil-tarih-confirm-modal .modal-header,
-#tescil-tarih-input-modal .modal-header {
+#tescil-tarih-input-modal .modal-header,
+#vehicle-user-cross-branch-confirm-modal .modal-header {
   height: 48px !important;
   min-height: 48px !important;
   max-height: 48px !important;
@@ -3396,7 +3432,8 @@ body.modal-open .app-container {
 #cache-confirm-modal .modal-header,
 #info-modal .modal-header,
 #tescil-tarih-confirm-modal .modal-header,
-#tescil-tarih-input-modal .modal-header {
+#tescil-tarih-input-modal .modal-header,
+#vehicle-user-cross-branch-confirm-modal .modal-header {
     background: var(--modal-header-red-gradient);
     padding: 0 16px;
     height: 48px;
@@ -3413,7 +3450,8 @@ body.modal-open .app-container {
 #cache-confirm-modal .modal-header h2,
 #info-modal .modal-header h2,
 #tescil-tarih-confirm-modal .modal-header h2,
-#tescil-tarih-input-modal .modal-header h2 {
+#tescil-tarih-input-modal .modal-header h2,
+#vehicle-user-cross-branch-confirm-modal .modal-header h2 {
     color: var(--txt) !important;
     background: none !important;
     -webkit-background-clip: border-box !important;

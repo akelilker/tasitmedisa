@@ -9963,7 +9963,15 @@
       })
       : 'Taşıtın yeni şubesi atanmış kullanıcının şubeleriyle eşleşmiyor. Kullanıcının şube bilgisini kontrol etmek ister misiniz?';
 
-    return askFn(message).then(function(answer) {
+    // UI bilgi satırları structured payload ile beslenir; tek paragraf string parse edilmez.
+    const reminderPayload = {
+      message: message,
+      vehicleBranchName: (yeniSube && yeniSube.name) || String(yeniSubeId || ''),
+      assignedUserName: assignedUser.name || assignedUser.isim || '',
+      userBranchNames: userBranchNames
+    };
+
+    return askFn(reminderPayload).then(function(answer) {
       return { remind: answer === true, assignedUserId: assignedUserId };
     });
   }

@@ -29,6 +29,7 @@
     "tool:verify-thin-shell": "node scripts/verify-medisa-thin-shell-interaction-invariants.js",
     "tool:verify-k2-runtime": "node scripts/verify-medisa-k2-runtime-invariants.js",
     "tool:verify-cross-branch-assignment": "node scripts/verify-medisa-vehicle-user-cross-branch-assignment-invariants.js",
+    "tool:verify-branch-mismatch-modal-ui": "node scripts/verify-medisa-branch-mismatch-modal-ui-invariants.js",
     "tool:verify-romork-scope": "node scripts/verify-medisa-romork-sigorta-egzoz-scope-invariants.js",
     "tool:verify-remember-me": "node scripts/verify-medisa-remember-me-invariants.js",
     "tool:verify-boxed-list": "node scripts/verify-medisa-boxed-list-invariants.js",
