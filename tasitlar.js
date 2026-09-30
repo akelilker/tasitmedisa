@@ -197,7 +197,7 @@
 
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20260926.13';
+  const MEDISA_TASITLAR_MODULE_VERSION = '20260930.1';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
@@ -10067,10 +10067,19 @@
       ? window.needsVehicleBranchTransferForAssignment
       : null;
     const needsTransfer = needsTransferFn ? !!needsTransferFn(vehicle, user) : false;
-    const confirmMessage = (typeof window.MEDISA_VEHICLE_USER_CROSS_BRANCH_CONFIRM_MESSAGE === 'string'
-      && window.MEDISA_VEHICLE_USER_CROSS_BRANCH_CONFIRM_MESSAGE)
-      ? window.MEDISA_VEHICLE_USER_CROSS_BRANCH_CONFIRM_MESSAGE
-      : 'Atamak İstenilen Kullanıcı, Farklı Şubeye Kayıtlıdır. Taşıtın Tahsisli Olduğu Şubeyi Güncellemeniz Gerekli. Onaylıyor Musunuz?';
+    const buildConfirmViewModel = typeof window.buildVehicleUserCrossBranchConfirmViewModel === 'function'
+      ? window.buildVehicleUserCrossBranchConfirmViewModel
+      : null;
+    const confirmPayload = buildConfirmViewModel
+      ? buildConfirmViewModel(vehicle, user)
+      : (typeof window.buildVehicleBranchMismatchConfirmDescription === 'function'
+        ? {
+          newBranchLabel: '—',
+          assignedUserLabel: '—',
+          userBranchLabel: '—',
+          description: window.buildVehicleBranchMismatchConfirmDescription('—', '—')
+        }
+        : '');
 
     function commitKullaniciAtama(transferConfirmed) {
       const freshUsers = readUsers();
@@ -10187,11 +10196,14 @@
         ? window.askVehicleUserCrossBranchAssignmentConfirm
         : null;
       if (!askConfirm) {
-        alert(confirmMessage);
+        const fallbackText = confirmPayload && typeof confirmPayload === 'object'
+          ? String(confirmPayload.description || '')
+          : String(confirmPayload || '');
+        alert(fallbackText);
         restoreKullaniciSelectToPrevious(eskiKullaniciId);
         return;
       }
-      return askConfirm(confirmMessage).then(function(ok) {
+      return askConfirm(confirmPayload).then(function(ok) {
         if (ok !== true) {
           restoreKullaniciSelectToPrevious(eskiKullaniciId);
           return;

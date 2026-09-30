@@ -267,7 +267,7 @@ test('iOS kart İndir ikonu görünür; tıklama canonical viewer Kaydet/Paylaş
 test('pin/SW chain', function() {
   assert.match(tasitlar, /MEDISA_TASITLAR_MODULE_VERSION = '20260926\.13'/);
   assert.match(scriptCore, /tasitlar:\s*'20260926\.13'/);
-  assert.match(sw, /CACHE_VERSION = 'medisa-v2\.356'/);
+  assert.match(sw, /CACHE_VERSION = 'medisa-v2\.357'/);
   assert.match(read('index.html'), /script-core\.js\?v=20260926\.9/);
   assert.match(read('index.html'), /style-core\.css\?v=20260928\.1/);
 });
