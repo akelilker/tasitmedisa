@@ -682,7 +682,7 @@
         <div id="vehicle-user-cross-branch-confirm-modal" class="modal-overlay ayarlar-modal-overlay compact-confirm-modal" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="vehicle-user-cross-branch-confirm-title" aria-describedby="vehicle-user-cross-branch-confirm-message">
             <div class="modal-container" onclick="event.stopPropagation();">
                 <div class="modal-header">
-                    <h2 id="vehicle-user-cross-branch-confirm-title">KULLANICI ATAMA</h2>
+                    <h2 id="vehicle-user-cross-branch-confirm-title">ŞUBE UYUMSUZLUĞU</h2>
                     <button type="button" class="modal-close" id="vehicle-user-cross-branch-confirm-close" aria-label="Kapat">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                             <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -691,6 +691,11 @@
                     </button>
                 </div>
                 <div class="modal-body" onclick="event.stopPropagation();">
+                    <div id="vehicle-user-cross-branch-confirm-facts" aria-label="Şube uyumsuzluğu bilgileri">
+                        <div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Taşıtın Yeni Şubesi</span><span class="detail-row-colon">:</span></div><span class="detail-row-value" id="vehicle-user-cross-branch-confirm-new-branch"></span></div>
+                        <div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Atanmış Kullanıcı</span><span class="detail-row-colon">:</span></div><span class="detail-row-value" id="vehicle-user-cross-branch-confirm-assigned-user"></span></div>
+                        <div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Kullanıcı Şubesi</span><span class="detail-row-colon">:</span></div><span class="detail-row-value" id="vehicle-user-cross-branch-confirm-user-branch"></span></div>
+                    </div>
                     <p id="vehicle-user-cross-branch-confirm-message" class="compact-confirm-message"></p>
                     <div class="universal-btn-group">
                         <button type="button" class="universal-btn-save" id="vehicle-user-cross-branch-confirm-yes">Evet</button>
@@ -803,9 +808,9 @@
     </script>
 
     <script defer src="portal-session.js?v=20260731.3"></script>
-    <script defer src="data-manager.js?v=20260923.1"></script>
+    <script defer src="data-manager.js?v=20260930.1"></script>
     <script defer src="data-service.js?v=20260718.2"></script>
-    <script defer src="script-core.js?v=20260926.9"></script>
+    <script defer src="script-core.js?v=20260930.1"></script>
 </body>
 </html>
 

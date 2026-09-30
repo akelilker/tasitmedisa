@@ -3476,20 +3476,36 @@
         const askCrossBranch = typeof window.askVehicleUserCrossBranchAssignmentConfirm === 'function'
           ? window.askVehicleUserCrossBranchAssignmentConfirm
           : null;
-        const crossBranchMessage = (typeof window.MEDISA_VEHICLE_USER_CROSS_BRANCH_CONFIRM_MESSAGE === 'string'
-          && window.MEDISA_VEHICLE_USER_CROSS_BRANCH_CONFIRM_MESSAGE)
-          ? window.MEDISA_VEHICLE_USER_CROSS_BRANCH_CONFIRM_MESSAGE
-          : 'Atamak İstenilen Kullanıcı, Farklı Şubeye Kayıtlıdır. Taşıtın Tahsisli Olduğu Şubeyi Güncellemeniz Gerekli. Onaylıyor Musunuz?';
+        const buildCrossBranchViewModel = typeof window.buildVehicleUserCrossBranchConfirmViewModel === 'function'
+          ? window.buildVehicleUserCrossBranchConfirmViewModel
+          : null;
         if (assignmentPlan.crossBranchAssigned.length > 0) {
           if (!askCrossBranch) {
-            alert(crossBranchMessage);
+            const fallbackDesc = typeof window.buildVehicleBranchMismatchConfirmDescription === 'function'
+              ? window.buildVehicleBranchMismatchConfirmDescription('—', '—')
+              : '';
+            alert(fallbackDesc);
             return;
           }
           for (let i = 0; i < assignmentPlan.crossBranchAssigned.length; i++) {
             if (i > 0) {
               await new Promise(function(resolveGap) { setTimeout(resolveGap, 60); });
             }
-            const crossBranchOk = await askCrossBranch(crossBranchMessage);
+            const crossEntry = assignmentPlan.crossBranchAssigned[i];
+            const crossVehicleBefore = previousVehicles.find(function(v) {
+              return String(v && v.id) === String(crossEntry && crossEntry.vehicleId);
+            });
+            const crossBranchPayload = buildCrossBranchViewModel && crossVehicleBefore
+              ? buildCrossBranchViewModel(crossVehicleBefore, pendingAssignUser)
+              : (typeof window.buildVehicleBranchMismatchConfirmDescription === 'function'
+                ? {
+                  newBranchLabel: '—',
+                  assignedUserLabel: '—',
+                  userBranchLabel: '—',
+                  description: window.buildVehicleBranchMismatchConfirmDescription('—', '—')
+                }
+                : '');
+            const crossBranchOk = await askCrossBranch(crossBranchPayload);
             if (crossBranchOk !== true) {
               // ENTIRE_FORM_SAVE = ABORTED — önceki YES'ler dahil hiçbir mutate/persist yok
               return;

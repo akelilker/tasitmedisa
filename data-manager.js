@@ -2011,8 +2011,63 @@ function needsVehicleBranchTransferForAssignment(vehicle, user) {
     return String(canonical) !== vehicleBranchId;
 }
 
-var MEDISA_VEHICLE_USER_CROSS_BRANCH_CONFIRM_MESSAGE =
-    'Atamak İstenilen Kullanıcı, Farklı Şubeye Kayıtlıdır. Taşıtın Tahsisli Olduğu Şubeyi Güncellemeniz Gerekli. Onaylıyor Musunuz?';
+function resolveMedisaBranchDisplayName(branchId) {
+    var id = branchId != null ? String(branchId).trim() : '';
+    if (!id) return '';
+    var branches = [];
+    try {
+        if (window.appData && Array.isArray(window.appData.branches)) {
+            branches = window.appData.branches;
+        } else if (typeof window.getMedisaBranches === 'function') {
+            var loaded = window.getMedisaBranches();
+            if (Array.isArray(loaded)) branches = loaded;
+        }
+    } catch (eBranches) { /* ignore */ }
+    for (var i = 0; i < branches.length; i++) {
+        var branch = branches[i];
+        if (branch && String(branch.id) === id) {
+            return String(branch.name || '').trim();
+        }
+    }
+    return '';
+}
+
+/**
+ * Şube uyumsuzluğu / cross-branch onay modalı alt açıklama metni (şube adları runtime).
+ * @param {string} newBranchLabel Taşıtın geçeceği şube görünen adı
+ * @param {string} userBranchLabel Kullanıcının kayıtlı şube görünen adı
+ */
+function buildVehicleBranchMismatchConfirmDescription(newBranchLabel, userBranchLabel) {
+    var yeniSube = String(newBranchLabel == null ? '' : newBranchLabel).trim();
+    var kullaniciSube = String(userBranchLabel == null ? '' : userBranchLabel).trim();
+    if (!yeniSube) yeniSube = '—';
+    if (!kullaniciSube) kullaniciSube = '—';
+    return 'Bu Taşıt ' + yeniSube + ' Şubesine Geçiriliyor Ancak Atanmış Kullanıcı Halen '
+        + kullaniciSube + ' Şubesine Kayıtlı. Kullanıcının Şube Bilgisini Kontrol Etmek İster Misiniz?';
+}
+
+/**
+ * Cross-branch atama onay modalı satır + açıklama görünüm modeli (mutasyon yok).
+ * @param {object} vehicle
+ * @param {object} user atanacak kullanıcı
+ * @returns {{newBranchLabel:string, assignedUserLabel:string, userBranchLabel:string, description:string}}
+ */
+function buildVehicleUserCrossBranchConfirmViewModel(vehicle, user) {
+    var canonicalId = getUserCanonicalBranchId(user);
+    var userBranchLabel = resolveMedisaBranchDisplayName(canonicalId) || canonicalId || '—';
+    var newBranchLabel = userBranchLabel;
+    var assignedUserLabel = String((user && (user.name || user.isim)) || '').trim();
+    if (!assignedUserLabel) assignedUserLabel = '—';
+    return {
+        newBranchLabel: newBranchLabel,
+        assignedUserLabel: assignedUserLabel,
+        userBranchLabel: userBranchLabel,
+        description: buildVehicleBranchMismatchConfirmDescription(newBranchLabel, userBranchLabel)
+    };
+}
+
+/** @deprecated Eski tek parça mesaj; yalnızca geriye dönük alert fallback. */
+var MEDISA_VEHICLE_USER_CROSS_BRANCH_CONFIRM_MESSAGE = buildVehicleBranchMismatchConfirmDescription('—', '—');
 
 /**
  * Taşıtın tahsisli şubesini kullanıcının canonical şubesine yazar (kullanıcı şubesi değişmez).
@@ -2187,16 +2242,43 @@ function applyVehicleUserAssignmentFormPlan(vehiclesDesired, plan, assignUserId,
  * open/handler bağlama ertelenir; resolve de bir sonraki macrotask'e bırakılır.
  * @returns {Promise<boolean|null>} true=Evet, false=Hayır, null=kapatıldı / modal yok
  */
-function askVehicleUserCrossBranchAssignmentConfirm(message) {
+function askVehicleUserCrossBranchAssignmentConfirm(messageOrViewModel) {
     return new Promise(function(resolve) {
         var modal = document.getElementById('vehicle-user-cross-branch-confirm-modal');
         var msgEl = document.getElementById('vehicle-user-cross-branch-confirm-message');
+        var newBranchEl = document.getElementById('vehicle-user-cross-branch-confirm-new-branch');
+        var assignedUserEl = document.getElementById('vehicle-user-cross-branch-confirm-assigned-user');
+        var userBranchEl = document.getElementById('vehicle-user-cross-branch-confirm-user-branch');
         var yesBtn = document.getElementById('vehicle-user-cross-branch-confirm-yes');
         var noBtn = document.getElementById('vehicle-user-cross-branch-confirm-no');
         var closeBtn = document.getElementById('vehicle-user-cross-branch-confirm-close');
         if (!modal || !msgEl || !yesBtn || !noBtn) {
             resolve(null);
             return;
+        }
+        function applyConfirmPayload(payload) {
+            var description = '';
+            if (payload && typeof payload === 'object' && !Array.isArray(payload)) {
+                if (newBranchEl) {
+                    newBranchEl.textContent = String(payload.newBranchLabel != null ? payload.newBranchLabel : '—');
+                }
+                if (assignedUserEl) {
+                    assignedUserEl.textContent = String(payload.assignedUserLabel != null ? payload.assignedUserLabel : '—');
+                }
+                if (userBranchEl) {
+                    userBranchEl.textContent = String(payload.userBranchLabel != null ? payload.userBranchLabel : '—');
+                }
+                description = String(payload.description || '');
+            } else {
+                if (newBranchEl) newBranchEl.textContent = '—';
+                if (assignedUserEl) assignedUserEl.textContent = '—';
+                if (userBranchEl) userBranchEl.textContent = '—';
+                description = String(payload || '');
+            }
+            if (!description) {
+                description = buildVehicleBranchMismatchConfirmDescription('—', '—');
+            }
+            msgEl.textContent = description;
         }
         var settled = false;
         function syncModalOpenState() {
@@ -2245,7 +2327,7 @@ function askVehicleUserCrossBranchAssignmentConfirm(message) {
         // Önceki Evet/Hayır pointer olayının yeni handler'a click-through olmaması için ertele
         setTimeout(function() {
             if (settled) return;
-            msgEl.textContent = String(message || MEDISA_VEHICLE_USER_CROSS_BRANCH_CONFIRM_MESSAGE);
+            applyConfirmPayload(messageOrViewModel);
             detachHandlers();
             yesBtn.addEventListener('click', onYes);
             noBtn.addEventListener('click', onNo);
@@ -2467,6 +2549,9 @@ window.applyVehicleBranchTransferForUserAssignment = applyVehicleBranchTransferF
 window.buildVehicleUserAssignmentFormPlan = buildVehicleUserAssignmentFormPlan;
 window.applyVehicleUserAssignmentFormPlan = applyVehicleUserAssignmentFormPlan;
 window.askVehicleUserCrossBranchAssignmentConfirm = askVehicleUserCrossBranchAssignmentConfirm;
+window.buildVehicleBranchMismatchConfirmDescription = buildVehicleBranchMismatchConfirmDescription;
+window.buildVehicleUserCrossBranchConfirmViewModel = buildVehicleUserCrossBranchConfirmViewModel;
+window.resolveMedisaBranchDisplayName = resolveMedisaBranchDisplayName;
 window.MEDISA_VEHICLE_USER_CROSS_BRANCH_CONFIRM_MESSAGE = MEDISA_VEHICLE_USER_CROSS_BRANCH_CONFIRM_MESSAGE;
 window.getMedisaSession = function() { return window.medisaSession || getDefaultSession(); };
 window.loadDataFromServer = loadDataFromServer;

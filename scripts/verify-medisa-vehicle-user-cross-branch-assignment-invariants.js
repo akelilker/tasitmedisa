@@ -138,11 +138,10 @@ function createCtx() {
     assert.match(dm, /function askVehicleUserCrossBranchAssignmentConfirm/);
     assert.match(dm, /setTimeout\(function\(\) \{\s*resolve\(result\);/);
     assert.match(dm, /Önceki Evet\/Hayır pointer/);
-    assert.match(dm, /MEDISA_VEHICLE_USER_CROSS_BRANCH_CONFIRM_MESSAGE/);
-    assert.match(
-      dm,
-      /Atamak İstenilen Kullanıcı, Farklı Şubeye Kayıtlıdır\. Taşıtın Tahsisli Olduğu Şubeyi Güncellemeniz Gerekli\. Onaylıyor Musunuz\?/
-    );
+    assert.match(dm, /function buildVehicleBranchMismatchConfirmDescription/);
+    assert.match(dm, /function buildVehicleUserCrossBranchConfirmViewModel/);
+    assert.match(dm, /Bu Taşıt ' \+ yeniSube \+ ' Şubesine Geçiriliyor Ancak Atanmış Kullanıcı Halen '/);
+    assert.match(dm, /Kullanıcının Şube Bilgisini Kontrol Etmek İster Misiniz\?/);
     const start = dm.indexOf('function isAssignableVehicleUserCandidate');
     const end = dm.indexOf('function getUserCanonicalBranchId');
     assert.ok(start >= 0 && end > start);
@@ -154,6 +153,11 @@ function createCtx() {
     assert.match(html, /id="vehicle-user-cross-branch-confirm-modal"/);
     assert.match(html, /id="vehicle-user-cross-branch-confirm-yes"/);
     assert.match(html, /id="vehicle-user-cross-branch-confirm-no"/);
+    assert.match(html, /ŞUBE UYUMSUZLUĞU/);
+    assert.match(html, /Taşıtın Yeni Şubesi/);
+    assert.match(html, /id="vehicle-user-cross-branch-confirm-new-branch"/);
+    assert.match(html, /id="vehicle-user-cross-branch-confirm-assigned-user"/);
+    assert.match(html, /id="vehicle-user-cross-branch-confirm-user-branch"/);
     assert.match(html, /compact-confirm-modal/);
   });
 
@@ -210,7 +214,7 @@ function createCtx() {
     assert.match(block, /PHASE 2 — DESIRED PLAN/);
     assert.match(block, /PHASE 3 — CONFIRMATIONS/);
     assert.match(block, /PHASE 4 — COMMIT PLAN/);
-    const askPos = block.indexOf('await askCrossBranch(crossBranchMessage)');
+    const askPos = block.indexOf('await askCrossBranch(crossBranchPayload)');
     const applyPos = block.indexOf('applyPlanFn(vehiclesDesired');
     assert.ok(askPos >= 0 && applyPos > askPos);
   });
@@ -551,11 +555,29 @@ function createCtx() {
     assert.equal(vehicle.branchId, 'karyapi');
   });
 
-  await run('CASE10_confirm_message_exact_constant', async function() {
+  await run('CASE10_confirm_description_template_runtime_branches', async function() {
     const ctx = createCtx();
+    ctx.window.appData = {
+      branches: [
+        { id: 'medisa', name: 'MEDİSA' },
+        { id: 'karyapi', name: 'KARYAPI' }
+      ]
+    };
+    const w = ctx.window;
     assert.equal(
-      ctx.window.MEDISA_VEHICLE_USER_CROSS_BRANCH_CONFIRM_MESSAGE,
-      'Atamak İstenilen Kullanıcı, Farklı Şubeye Kayıtlıdır. Taşıtın Tahsisli Olduğu Şubeyi Güncellemeniz Gerekli. Onaylıyor Musunuz?'
+      w.buildVehicleBranchMismatchConfirmDescription('MEDİSA', 'KARYAPI'),
+      'Bu Taşıt MEDİSA Şubesine Geçiriliyor Ancak Atanmış Kullanıcı Halen KARYAPI Şubesine Kayıtlı. Kullanıcının Şube Bilgisini Kontrol Etmek İster Misiniz?'
+    );
+    const vm = w.buildVehicleUserCrossBranchConfirmViewModel(
+      { id: 'v1', branchId: 'karyapi' },
+      { id: 'u1', name: 'Ali Veli', branchId: 'medisa', branchIds: ['medisa'], aktif: true }
+    );
+    assert.equal(vm.newBranchLabel, 'MEDİSA');
+    assert.equal(vm.userBranchLabel, 'MEDİSA');
+    assert.equal(vm.assignedUserLabel, 'Ali Veli');
+    assert.equal(
+      vm.description,
+      'Bu Taşıt MEDİSA Şubesine Geçiriliyor Ancak Atanmış Kullanıcı Halen MEDİSA Şubesine Kayıtlı. Kullanıcının Şube Bilgisini Kontrol Etmek İster Misiniz?'
     );
   });
 
