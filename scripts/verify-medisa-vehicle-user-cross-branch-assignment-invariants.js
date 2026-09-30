@@ -187,6 +187,52 @@ function createCtx() {
     assert.match(block, /if \(reminder\.remind && reminder\.assignedUserId/);
   });
 
+  // K) Gerçek şube değişikliği mevcut sube-degisiklik (tarihçe/audit) event'ini korur.
+  await run('K_sube_change_flow_still_emits_branch_change_event', async function() {
+    const tasitlar = read('tasitlar.js');
+    const start = tasitlar.indexOf('window.updateSubeDegisiklik = function()');
+    const end = tasitlar.indexOf('window.updateKullaniciAtama = function()', start);
+    assert.ok(start >= 0 && end > start, 'updateSubeDegisiklik bloğu bulunamadı');
+    const block = tasitlar.slice(start, end);
+    assert.match(block, /type: 'sube-degisiklik'/);
+    assert.match(block, /eskiSubeId: eskiSubeId/);
+    assert.match(block, /yeniSubeId: normalizedSubeId/);
+    // Hatırlatma sonucu ne olursa olsun şube değişikliği hard-block edilmez:
+    // .then callback'i koşulsuz vehicle.branchId'yi güncellemeye devam eder.
+    assert.match(block, /\.then\(function\(reminder\) \{\s*vehicle\.branchId = normalizedSubeId;/);
+  });
+
+  // D/E/F) Yalnız Evet (answer === true) kullanıcı formunu açar; Hayır (false) ve X (null) açmaz.
+  await run('reminder_result_maps_only_evet_to_user_form', async function() {
+    const tasitlar = read('tasitlar.js');
+    const start = tasitlar.indexOf('function resolveSubeDegisiklikUserReminder');
+    const end = tasitlar.indexOf('window.updateSubeDegisiklik = function()', start);
+    assert.ok(start >= 0 && end > start, 'sube reminder helper bloğu bulunamadı');
+    const block = tasitlar.slice(start, end);
+    assert.match(block, /remind: answer === true/);
+    // Hatırlatma helper'ı kullanıcı formu açmaz ve kullanıcı/kalıcı veri mutation'ı yapmaz.
+    assert.doesNotMatch(block, /openUserFormModal/);
+    assert.doesNotMatch(block, /writeUsers/);
+    assert.doesNotMatch(block, /persistUserManagementState/);
+  });
+
+  // D/E/F) Şube değişikliği akışı atanmış kullanıcının şubesini otomatik değiştirmez.
+  await run('D_E_F_sube_change_does_not_mutate_assigned_user_branch', async function() {
+    const tasitlar = read('tasitlar.js');
+    const start = tasitlar.indexOf('window.updateSubeDegisiklik = function()');
+    const end = tasitlar.indexOf('window.updateKullaniciAtama = function()', start);
+    assert.ok(start >= 0 && end > start, 'updateSubeDegisiklik bloğu bulunamadı');
+    const block = tasitlar.slice(start, end);
+    assert.doesNotMatch(block, /writeUsers\(/);
+    assert.doesNotMatch(block, /assignedUser\.[A-Za-z_$]+ =/, 'kullanıcı şube alanı otomatik yazılmamalı');
+    assert.doesNotMatch(block, /\.branchIds\s*=/);
+    // Kullanıcı formu yalnız persist başarısından sonra açılır.
+    assert.match(
+      block,
+      /if \(reminder\.remind && reminder\.assignedUserId[\s\S]*?openUserFormModal\(reminder\.assignedUserId\)/
+    );
+  });
+
   await run('tasitlar_assignment_never_transfers_vehicle_branch', async function() {
     const tasitlar = read('tasitlar.js');
     assert.doesNotMatch(tasitlar, /needsVehicleBranchTransferForAssignment/);
