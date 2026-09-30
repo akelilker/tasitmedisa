@@ -95,7 +95,8 @@ function loadMonthlyTodoOwners(sandbox) {
   vm.createContext(sandbox);
   assert.equal(typeof sandbox.countOpenCall, 'function', 'countOpenCall enjekte edilmeli');
   vm.runInContext(
-    parts.join('\n') +
+    'var monthlyTodoRowVehicleOpenInflight = false;\n' +
+      parts.join('\n') +
       '\nthis.__owners = {' +
       'openRow: openMonthlyTodoRowVehicleDetail,' +
       'bindModal: bindMonthlyTodoModalDelegatedInteraction,' +

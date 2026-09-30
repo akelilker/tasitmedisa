@@ -464,6 +464,15 @@ if (implementationPresent) {
     assert.match(notifications, /wireMonthlyTodoModalCloseUiOnce[\s\S]*?data-action="monthly-todo-home"[\s\S]*?closeMonthlyTodoModal\s*\(/);
     assert.doesNotMatch(notifications, /window\.closeMonthlyTodoModal\s*=/);
   });
+  test('aylık yapılacaklar satır tıklaması tek delegated owner; çift listener yok', function() {
+    var notifications = read('notifications.js');
+    assert.doesNotMatch(notifications, /wireMonthlyTodoModalBodyInteraction/);
+    assert.match(notifications, /bindMonthlyTodoModalDelegatedInteraction[\s\S]*?monthly-todo-task-row[\s\S]*?openMonthlyTodoRowVehicleDetail/);
+    assert.match(notifications, /monthlyTodoRowVehicleOpenInflight/);
+  });
+  test('module spinner rAF hide sonrası active geri basmaz', function() {
+    assert.match(core, /requestAnimationFrame\(function\(\) \{[\s\S]*?_moduleSpinnerDepth <= 0[\s\S]*?_moduleSpinnerEl !== scheduledEl[\s\S]*?scheduledEl\.classList\.add\('active'\)/);
+  });
   test('taşıt dışı lazy markup onclick closeAllModals taşımaz', function() {
     assert.doesNotMatch(owners.kayit, /onclick="closeAllModals\(\)"/);
     assert.doesNotMatch(owners.reports, /onclick="closeAllModals\(\)"/);

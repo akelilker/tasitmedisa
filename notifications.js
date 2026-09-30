@@ -33,7 +33,8 @@
   var DOM = {};
   var monthlyTodoCloseTimer = null;
   var monthlyTodoBranchFilterId = 'all';
-  var MONTHLY_TODO_INTERACTION_REV = 5;
+  var MONTHLY_TODO_INTERACTION_REV = 6;
+  var monthlyTodoRowVehicleOpenInflight = false;
   var MONTHLY_TODO_HEADER_REV = 3;
 
   DOM.notificationsDropdown = document.getElementById('notifications-dropdown');
@@ -1755,17 +1756,30 @@
   }
 
   function openMonthlyTodoRowVehicleDetail(row, modalRoot) {
-    if (!row) return;
+    if (!row || monthlyTodoRowVehicleOpenInflight) return;
     var root = modalRoot || document.getElementById('monthly-todo-modal');
     if (!root || !root.contains(row)) return;
     var vid = row.getAttribute('data-vehicle-id');
     if (!vid) return;
+    monthlyTodoRowVehicleOpenInflight = true;
     closeMonthlyTodoModal(true);
     var openDetail = function() {
-      if (typeof window.medisaOpenVehicleDetailFromNotification !== 'function') {
-        throw new Error('Aylik yapilacaklar detay koprusu hazir degil');
+      try {
+        if (typeof window.medisaOpenVehicleDetailFromNotification !== 'function') {
+          throw new Error('Aylik yapilacaklar detay koprusu hazir degil');
+        }
+        var openPromise = window.medisaOpenVehicleDetailFromNotification(vid, { returnToMonthlyTodo: true });
+        if (openPromise && typeof openPromise.finally === 'function') {
+          openPromise.finally(function() {
+            monthlyTodoRowVehicleOpenInflight = false;
+          });
+        } else {
+          monthlyTodoRowVehicleOpenInflight = false;
+        }
+      } catch (openErr) {
+        monthlyTodoRowVehicleOpenInflight = false;
+        throw openErr;
       }
-      window.medisaOpenVehicleDetailFromNotification(vid, { returnToMonthlyTodo: true });
     };
     if (typeof window.requestAnimationFrame === 'function') {
       window.requestAnimationFrame(function() {

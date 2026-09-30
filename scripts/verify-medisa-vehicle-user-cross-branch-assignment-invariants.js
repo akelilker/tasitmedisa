@@ -157,6 +157,11 @@ function createCtx() {
     assert.match(html, /id="vehicle-user-cross-branch-confirm-modal"/);
     assert.match(html, /id="vehicle-user-cross-branch-confirm-yes"/);
     assert.match(html, /id="vehicle-user-cross-branch-confirm-no"/);
+    assert.match(html, /ŞUBE UYUMSUZLUĞU/);
+    assert.match(html, /Taşıtın Yeni Şubesi/);
+    assert.match(html, /id="vehicle-user-cross-branch-confirm-vehicle-branch"/);
+    assert.match(html, /id="vehicle-user-cross-branch-confirm-user-name"/);
+    assert.match(html, /id="vehicle-user-cross-branch-confirm-user-branches"/);
     assert.match(html, /compact-confirm-modal/);
     assert.match(html, /id="vehicle-user-cross-branch-confirm-title">ŞUBE UYUMSUZLUĞU</);
     assert.doesNotMatch(html, /confirm-title">KULLANICI ATAMA</);
