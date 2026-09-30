@@ -2014,18 +2014,20 @@ function isVehicleBranchOutsideUserBranches(vehicleBranchId, user) {
 
 /**
  * Şube uyumsuzluğu hatırlatma metni. Şube adları çağıran owner'dan (branches datası) gelir.
+ * Şube adları sabit metne gömülmez; yalnız şablon + runtime adları kullanılır.
+ * Görünür metin başlık düzenindedir (her kelimenin ilk harfi büyük).
  * @param {{vehicleBranchName?:string, userBranchNames?:Array<string>}} options
  * @returns {string}
  */
 function buildVehicleBranchMismatchReminderMessage(options) {
     var opts = options || {};
-    var vehicleBranchName = String(opts.vehicleBranchName || '').trim() || 'yeni';
+    var vehicleBranchName = String(opts.vehicleBranchName || '').trim() || 'Yeni';
     var userBranchNames = Array.isArray(opts.userBranchNames)
         ? opts.userBranchNames.map(function(name) { return String(name || '').trim(); }).filter(Boolean)
         : [];
-    var userBranchLabel = userBranchNames.length > 0 ? userBranchNames.join(', ') : 'bilinmeyen';
-    return 'Bu taşıt ' + vehicleBranchName + ' şubesine geçiriliyor ancak atanmış kullanıcı halen '
-        + userBranchLabel + ' şubesine kayıtlı. Kullanıcının şube bilgisini kontrol etmek ister misiniz?';
+    var userBranchLabel = userBranchNames.length > 0 ? userBranchNames.join(', ') : 'Bilinmeyen';
+    return 'Bu Taşıt ' + vehicleBranchName + ' Şubesine Geçiriliyor Ancak Atanmış Kullanıcı Halen '
+        + userBranchLabel + ' Şubesine Kayıtlı. Kullanıcının Şube Bilgisini Kontrol Etmek İster Misiniz?';
 }
 
 /**

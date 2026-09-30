@@ -85,8 +85,22 @@ const MODAL_ID = 'vehicle-user-cross-branch-confirm-modal';
 
   await run('question_hierarchy_text_present', async function() {
     assert.match(dm, /buildVehicleBranchMismatchReminderMessage/);
-    assert.match(dm, /Kullanıcının şube bilgisini kontrol etmek ister misiniz\?/);
+    assert.match(dm, /Kullanıcının Şube Bilgisini Kontrol Etmek İster Misiniz\?/);
     assert.match(dm, /msgEl\.textContent = messageText;/);
+  });
+
+  await run('reminder_copy_template_uses_runtime_branch_names', async function() {
+    assert.match(dm, /'Bu Taşıt ' \+ vehicleBranchName \+ ' Şubesine Geçiriliyor Ancak Atanmış Kullanıcı Halen '/);
+    assert.match(
+      dm,
+      /\+ userBranchLabel \+ ' Şubesine Kayıtlı\. Kullanıcının Şube Bilgisini Kontrol Etmek İster Misiniz\?'/
+    );
+    assert.doesNotMatch(dm, /Bu taşıt |atanmış kullanıcı halen |ister misiniz\?/, 'eski cümle düzeni kalmamalı');
+    const start = dm.indexOf('function buildVehicleBranchMismatchReminderMessage');
+    const end = dm.indexOf('function buildVehicleUserAssignmentFormPlan', start);
+    assert.ok(start >= 0 && end > start, 'copy owner bloğu bulunamadı');
+    const block = dm.slice(start, end);
+    assert.doesNotMatch(block, /MEDİSA|KARYAPI|Medisa|Karyapı/, 'şube adları hard-code edilmemeli');
   });
 
   await run('no_string_parse_hack_in_modal_open_helper', async function() {

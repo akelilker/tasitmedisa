@@ -410,16 +410,39 @@ function createCtx() {
       vehicleBranchName: 'Medisa',
       userBranchNames: ['Karyapı']
     });
-    assert.match(msg, /Bu taşıt Medisa şubesine geçiriliyor/);
-    assert.match(msg, /atanmış kullanıcı halen Karyapı şubesine kayıtlı/);
-    assert.match(msg, /Kullanıcının şube bilgisini kontrol etmek ister misiniz\?/);
+    assert.equal(
+      msg,
+      'Bu Taşıt Medisa Şubesine Geçiriliyor Ancak Atanmış Kullanıcı Halen Karyapı Şubesine Kayıtlı. '
+        + 'Kullanıcının Şube Bilgisini Kontrol Etmek İster Misiniz?'
+    );
     const msg2 = ctx.window.buildVehicleBranchMismatchReminderMessage({
       vehicleBranchName: 'Ankara',
       userBranchNames: ['İzmir', 'Bursa']
     });
-    assert.match(msg2, /Ankara/);
-    assert.match(msg2, /İzmir, Bursa/);
+    assert.equal(
+      msg2,
+      'Bu Taşıt Ankara Şubesine Geçiriliyor Ancak Atanmış Kullanıcı Halen İzmir, Bursa Şubesine Kayıtlı. '
+        + 'Kullanıcının Şube Bilgisini Kontrol Etmek İster Misiniz?'
+    );
     assert.doesNotMatch(msg2, /Medisa|Karyapı/);
+  });
+
+  await run('E2_reminder_message_visible_copy_uses_runtime_branch_names', async function() {
+    const ctx = createCtx();
+    const msg = ctx.window.buildVehicleBranchMismatchReminderMessage({
+      vehicleBranchName: 'MEDİSA',
+      userBranchNames: ['KARYAPI']
+    });
+    assert.equal(
+      msg,
+      'Bu Taşıt MEDİSA Şubesine Geçiriliyor Ancak Atanmış Kullanıcı Halen KARYAPI Şubesine Kayıtlı. '
+        + 'Kullanıcının Şube Bilgisini Kontrol Etmek İster Misiniz?'
+    );
+    assert.equal(
+      ctx.window.buildVehicleBranchMismatchReminderMessage({}),
+      'Bu Taşıt Yeni Şubesine Geçiriliyor Ancak Atanmış Kullanıcı Halen Bilinmeyen Şubesine Kayıtlı. '
+        + 'Kullanıcının Şube Bilgisini Kontrol Etmek İster Misiniz?'
+    );
   });
 
   await run('F_search_separation_assignment_vs_ceza', async function() {
