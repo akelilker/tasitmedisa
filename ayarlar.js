@@ -3440,7 +3440,6 @@
           vehiclesBefore: previousVehicles,
           selectedVehicleIds: selectedVehicleSet,
           targetUserId: savedUserId || '',
-          assignUser: pendingAssignUser,
           isVehicleInScope: function(v) {
             if (scope.isBranchManager && !isWithinUserManagementBranch(v && v.branchId, scope)) return false;
             return true;
@@ -3448,6 +3447,7 @@
         });
 
         // PHASE 3 — CONFIRMATIONS (tüm kararlar mutation/persist öncesi)
+        // Not: çapraz şube ataması geçerli operasyondur; taşıt şubesi kullanıcıya taşınmaz.
         if (assignmentPlan.reassignedFromOther.length > 0) {
           const firstId = String(assignmentPlan.reassignedFromOther[0].vehicleId || '');
           const firstBefore = previousVehicles.find(function(v) { return String(v && v.id) === firstId; });
@@ -3470,30 +3470,6 @@
               + 'Tahsis silinecektir. Emin misiniz?';
           if (!window.confirm(confirmMessage)) {
             return;
-          }
-        }
-
-        const askCrossBranch = typeof window.askVehicleUserCrossBranchAssignmentConfirm === 'function'
-          ? window.askVehicleUserCrossBranchAssignmentConfirm
-          : null;
-        const crossBranchMessage = (typeof window.MEDISA_VEHICLE_USER_CROSS_BRANCH_CONFIRM_MESSAGE === 'string'
-          && window.MEDISA_VEHICLE_USER_CROSS_BRANCH_CONFIRM_MESSAGE)
-          ? window.MEDISA_VEHICLE_USER_CROSS_BRANCH_CONFIRM_MESSAGE
-          : 'Atamak İstenilen Kullanıcı, Farklı Şubeye Kayıtlıdır. Taşıtın Tahsisli Olduğu Şubeyi Güncellemeniz Gerekli. Onaylıyor Musunuz?';
-        if (assignmentPlan.crossBranchAssigned.length > 0) {
-          if (!askCrossBranch) {
-            alert(crossBranchMessage);
-            return;
-          }
-          for (let i = 0; i < assignmentPlan.crossBranchAssigned.length; i++) {
-            if (i > 0) {
-              await new Promise(function(resolveGap) { setTimeout(resolveGap, 60); });
-            }
-            const crossBranchOk = await askCrossBranch(crossBranchMessage);
-            if (crossBranchOk !== true) {
-              // ENTIRE_FORM_SAVE = ABORTED — önceki YES'ler dahil hiçbir mutate/persist yok
-              return;
-            }
           }
         }
 

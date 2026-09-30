@@ -9923,6 +9923,52 @@
   };
 
   /**
+   * Şube değişikliğinde atanmış kullanıcı hatırlatması gerekir mi?
+   * Hatırlatma yalnız UX'tir; şube değişikliğini bloke etmez.
+   * @returns {Promise<{remind:boolean, assignedUserId:string}>}
+   */
+  function resolveSubeDegisiklikUserReminder(vehicle, yeniSubeId) {
+    const noReminder = { remind: false, assignedUserId: '' };
+    const mismatchFn = typeof window.isVehicleBranchOutsideUserBranches === 'function'
+      ? window.isVehicleBranchOutsideUserBranches
+      : null;
+    if (!mismatchFn) return Promise.resolve(noReminder);
+    const assignedUserId = vehicle.assignedUserId != null ? String(vehicle.assignedUserId).trim() : '';
+    if (!assignedUserId) return Promise.resolve(noReminder);
+    const assignedUser = readUsers().find(u => String(u.id) === assignedUserId);
+    if (!assignedUser) return Promise.resolve(noReminder);
+    if (!mismatchFn(yeniSubeId, assignedUser)) return Promise.resolve(noReminder);
+
+    const askFn = typeof window.askVehicleBranchMismatchReminder === 'function'
+      ? window.askVehicleBranchMismatchReminder
+      : null;
+    if (!askFn) return Promise.resolve(noReminder);
+
+    const branches = readBranches();
+    const yeniSube = branches.find(b => String(b.id) === String(yeniSubeId));
+    const getBranchIdsFn = typeof window.getUserBranchIds === 'function'
+      ? window.getUserBranchIds
+      : function() { return []; };
+    const userBranchNames = getBranchIdsFn(assignedUser).map(function(branchId) {
+      const branch = branches.find(b => String(b.id) === String(branchId));
+      return branch && branch.name ? String(branch.name) : String(branchId || '');
+    }).filter(Boolean);
+    const buildMessageFn = typeof window.buildVehicleBranchMismatchReminderMessage === 'function'
+      ? window.buildVehicleBranchMismatchReminderMessage
+      : null;
+    const message = buildMessageFn
+      ? buildMessageFn({
+        vehicleBranchName: (yeniSube && yeniSube.name) || String(yeniSubeId || ''),
+        userBranchNames: userBranchNames
+      })
+      : 'Taşıtın yeni şubesi atanmış kullanıcının şubeleriyle eşleşmiyor. Kullanıcının şube bilgisini kontrol etmek ister misiniz?';
+
+    return askFn(message).then(function(answer) {
+      return { remind: answer === true, assignedUserId: assignedUserId };
+    });
+  }
+
+  /**
    * Şube değişikliği kaydet
    */
   window.updateSubeDegisiklik = function() {
@@ -9952,35 +9998,44 @@
     const eskiSube = branches.find(b => String(b.id) === String(eskiSubeId));
     const yeniSube = branches.find(b => String(b.id) === String(yeniSubeId));
     const normalizedSubeId = yeniSube ? yeniSube.id : yeniSubeId;
-    vehicle.branchId = normalizedSubeId;
-    if (window.MedisaVehicleNotificationDomain.vehicleNeedsK2Belgesi(vehicle)) {
-      const targetK2Group = window.MedisaVehicleNotificationDomain.getK2BelgeGroupForVehicle(vehicle);
-      vehicle.tasitKartiExpiryDate = String(targetK2Group && targetK2Group.expiryDate || '').trim();
-    } else {
-      vehicle.tasitKartiExpiryDate = '';
-    }
 
-    const event = {
-      id: Date.now().toString(),
-      type: 'sube-degisiklik',
-      date: formatDateForDisplay(new Date()),
-      timestamp: new Date().toISOString(),
-      data: {
-        eskiSubeId: eskiSubeId,
-        yeniSubeId: normalizedSubeId,
-        eskiSubeAdi: eskiSube?.name || '',
-        yeniSubeAdi: yeniSube?.name || '',
-        surucu: getEventPerformerName(vehicle),
-        kaydeden: getRecorderDisplayName()
+    return resolveSubeDegisiklikUserReminder(vehicle, normalizedSubeId).then(function(reminder) {
+      vehicle.branchId = normalizedSubeId;
+      if (window.MedisaVehicleNotificationDomain.vehicleNeedsK2Belgesi(vehicle)) {
+        const targetK2Group = window.MedisaVehicleNotificationDomain.getK2BelgeGroupForVehicle(vehicle);
+        vehicle.tasitKartiExpiryDate = String(targetK2Group && targetK2Group.expiryDate || '').trim();
+      } else {
+        vehicle.tasitKartiExpiryDate = '';
       }
-    };
 
-    vehicle.events.unshift(event);
-    return writeVehicles(vehicles).then(function() {
-      return completeDynamicEventSave({
-        modalType: 'sube',
-        vehicleId: vehicleId,
-        message: 'Şube değişikliği kaydedildi.'
+      const event = {
+        id: Date.now().toString(),
+        type: 'sube-degisiklik',
+        date: formatDateForDisplay(new Date()),
+        timestamp: new Date().toISOString(),
+        data: {
+          eskiSubeId: eskiSubeId,
+          yeniSubeId: normalizedSubeId,
+          eskiSubeAdi: eskiSube?.name || '',
+          yeniSubeAdi: yeniSube?.name || '',
+          surucu: getEventPerformerName(vehicle),
+          kaydeden: getRecorderDisplayName()
+        }
+      };
+
+      vehicle.events.unshift(event);
+      return writeVehicles(vehicles).then(function() {
+        return completeDynamicEventSave({
+          modalType: 'sube',
+          vehicleId: vehicleId,
+          message: 'Şube değişikliği kaydedildi.'
+        });
+      }).then(function() {
+        // Persist başarılıysa: EVET sonucu kullanıcı düzenleme ekranını açar (otomatik şube değişikliği yok).
+        if (reminder.remind && reminder.assignedUserId
+          && typeof window.openUserFormModal === 'function') {
+          window.openUserFormModal(reminder.assignedUserId);
+        }
       });
     });
   };
@@ -10063,16 +10118,8 @@
       return;
     }
 
-    const needsTransferFn = typeof window.needsVehicleBranchTransferForAssignment === 'function'
-      ? window.needsVehicleBranchTransferForAssignment
-      : null;
-    const needsTransfer = needsTransferFn ? !!needsTransferFn(vehicle, user) : false;
-    const confirmMessage = (typeof window.MEDISA_VEHICLE_USER_CROSS_BRANCH_CONFIRM_MESSAGE === 'string'
-      && window.MEDISA_VEHICLE_USER_CROSS_BRANCH_CONFIRM_MESSAGE)
-      ? window.MEDISA_VEHICLE_USER_CROSS_BRANCH_CONFIRM_MESSAGE
-      : 'Atamak İstenilen Kullanıcı, Farklı Şubeye Kayıtlıdır. Taşıtın Tahsisli Olduğu Şubeyi Güncellemeniz Gerekli. Onaylıyor Musunuz?';
-
-    function commitKullaniciAtama(transferConfirmed) {
+    // Çapraz şube ataması geçerli operasyondur: yalnız assignedUserId/tahsisKisi değişir.
+    function commitKullaniciAtama() {
       const freshUsers = readUsers();
       const freshUser = freshUsers.find(u => String(u.id) === String(yeniKullaniciId));
       if (!freshUser || (isAssignableFn && !isAssignableFn(freshUser))) {
@@ -10080,15 +10127,6 @@
         restoreKullaniciSelectToPrevious(eskiKullaniciId);
         return Promise.resolve();
       }
-      if (needsTransfer && !transferConfirmed) {
-        restoreKullaniciSelectToPrevious(eskiKullaniciId);
-        return Promise.resolve();
-      }
-      if (needsTransferFn && needsTransferFn(vehicle, freshUser) && !transferConfirmed) {
-        restoreKullaniciSelectToPrevious(eskiKullaniciId);
-        return Promise.resolve();
-      }
-
       const preCommitSnapshot = {
         branchId: vehicle.branchId,
         assignedUserId: vehicle.assignedUserId,
@@ -10115,43 +10153,10 @@
       const nowIso = new Date().toISOString();
       const dateDisp = formatDateForDisplay(new Date());
 
-      if (transferConfirmed) {
-        const branches = readBranches();
-        const eskiSubeId = vehicle.branchId || '';
-        const eskiSube = branches.find(b => String(b.id) === String(eskiSubeId));
-        const applyTransfer = typeof window.applyVehicleBranchTransferForUserAssignment === 'function'
-          ? window.applyVehicleBranchTransferForUserAssignment
-          : null;
-        const transferred = applyTransfer
-          ? applyTransfer(vehicle, freshUser)
-          : false;
-        if (!transferred) {
-          alert('Taşıt şubesi güncellenemedi. Atama iptal edildi.');
-          restoreKullaniciSelectToPrevious(eskiKullaniciId);
-          return Promise.resolve();
-        }
-        const yeniSube = branches.find(b => String(b.id) === String(vehicle.branchId));
-        vehicle.events.unshift({
-          id: Date.now().toString() + '-sube',
-          type: 'sube-degisiklik',
-          date: dateDisp,
-          timestamp: nowIso,
-          data: {
-            eskiSubeId: eskiSubeId,
-            yeniSubeId: vehicle.branchId,
-            eskiSubeAdi: eskiSube?.name || '',
-            yeniSubeAdi: yeniSube?.name || '',
-            surucu: getEventPerformerName(vehicle),
-            kaydeden: getRecorderDisplayName(),
-            kaynak: 'kullanici-atama-cross-branch'
-          }
-        });
-      } else {
-        const canonicalBranchId = typeof window.getUserCanonicalBranchId === 'function'
-          ? window.getUserCanonicalBranchId(freshUser)
-          : (freshUser.branchId || '');
-        if (!vehicle.branchId && canonicalBranchId) vehicle.branchId = canonicalBranchId;
-      }
+      const canonicalBranchId = typeof window.getUserCanonicalBranchId === 'function'
+        ? window.getUserCanonicalBranchId(freshUser)
+        : (freshUser.branchId || '');
+      if (!vehicle.branchId && canonicalBranchId) vehicle.branchId = canonicalBranchId;
 
       vehicle.assignedUserId = normalizedKullaniciId;
       vehicle.tahsisKisi = freshUser.name || '';
@@ -10182,25 +10187,7 @@
       });
     }
 
-    if (needsTransfer) {
-      const askConfirm = typeof window.askVehicleUserCrossBranchAssignmentConfirm === 'function'
-        ? window.askVehicleUserCrossBranchAssignmentConfirm
-        : null;
-      if (!askConfirm) {
-        alert(confirmMessage);
-        restoreKullaniciSelectToPrevious(eskiKullaniciId);
-        return;
-      }
-      return askConfirm(confirmMessage).then(function(ok) {
-        if (ok !== true) {
-          restoreKullaniciSelectToPrevious(eskiKullaniciId);
-          return;
-        }
-        return commitKullaniciAtama(true);
-      });
-    }
-
-    return commitKullaniciAtama(false);
+    return commitKullaniciAtama();
   };
 
   /**
