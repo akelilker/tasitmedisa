@@ -1145,7 +1145,13 @@ function showModuleSpinner() {
   wrap.innerHTML = '<div class="module-load-spinner-dot"></div><div class="module-load-spinner-dot"></div><div class="module-load-spinner-dot"></div><span class="module-load-spinner-text">Yükleniyor…</span>';
   document.body.appendChild(wrap);
   _moduleSpinnerEl = wrap;
-  requestAnimationFrame(function() { wrap.classList.add('active'); });
+  /* Gecikmiş aktivasyon: show/hide aynı görevde kapandıysa veya element değiştiyse stale rAF açamaz. */
+  var scheduledEl = wrap;
+  requestAnimationFrame(function() {
+    if (_moduleSpinnerDepth <= 0) return;
+    if (_moduleSpinnerEl !== scheduledEl) return;
+    scheduledEl.classList.add('active');
+  });
 }
 function hideModuleSpinner() {
   _moduleSpinnerDepth = Math.max(0, _moduleSpinnerDepth - 1);

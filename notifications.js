@@ -1727,7 +1727,6 @@
     }
     html += '</div></div></div></div>';
     bodyEl.innerHTML = html;
-    wireMonthlyTodoModalBodyInteraction(bodyEl);
   }
 
   function isMonthlyTodoDesktopView() {
@@ -1775,27 +1774,6 @@
     } else {
       window.setTimeout(openDetail, 0);
     }
-  }
-
-  function wireMonthlyTodoModalBodyInteraction(bodyEl) {
-    if (!bodyEl) return;
-    if (bodyEl._medisaMonthlyTodoBodyRev === MONTHLY_TODO_INTERACTION_REV) return;
-    if (bodyEl._medisaMonthlyTodoBodyClickHandler) {
-      bodyEl.removeEventListener('click', bodyEl._medisaMonthlyTodoBodyClickHandler);
-    }
-    bodyEl._medisaMonthlyTodoBodyRev = MONTHLY_TODO_INTERACTION_REV;
-    var handler = function(ev) {
-      var target = ev.target;
-      if (!target || typeof target.closest !== 'function') return;
-      if (target.closest('.monthly-todo-wa-link')) return;
-      var row = target.closest('.monthly-todo-task-row');
-      if (!row || !bodyEl.contains(row)) return;
-      ev.preventDefault();
-      ev.stopPropagation();
-      openMonthlyTodoRowVehicleDetail(row, bodyEl.closest('#monthly-todo-modal'));
-    };
-    bodyEl._medisaMonthlyTodoBodyClickHandler = handler;
-    bodyEl.addEventListener('click', handler);
   }
 
   function renderMonthlyTodoModalContent() {
@@ -1889,6 +1867,7 @@
       if (!row || !modalEl.contains(row)) return;
       ev.preventDefault();
       ev.stopPropagation();
+      /* Tek canonical row-click owner: body üzerinde ikinci bir row-click listener bağlanmaz. */
       openMonthlyTodoRowVehicleDetail(row, modalEl);
     }
     function onMonthlyTodoModalKeydown(ev) {
@@ -1913,8 +1892,6 @@
     modalEl.addEventListener('click', onMonthlyTodoModalClick, true);
     modalEl.addEventListener('keydown', onMonthlyTodoModalKeydown);
     wireMonthlyTodoWhatsAppLinkHandler(modalEl);
-    var bodyEl = modalEl.querySelector('.monthly-todo-modal-body');
-    wireMonthlyTodoModalBodyInteraction(bodyEl);
   }
 
   function wireMonthlyTodoModalCloseUiOnce(modalEl) {

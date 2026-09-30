@@ -35,6 +35,7 @@
     "tool:verify-driver-login-border": "node scripts/verify-driver-login-input-border-invariants.js",
     "tool:verify-ios-document-viewer": "node scripts/verify-medisa-ios-document-viewer-invariants.js",
     "tool:verify-monthly-whatsapp-audit": "node scripts/verify-medisa-monthly-todo-whatsapp-audit-invariants.js",
+    "tool:verify-monthly-todo-detail-spinner": "node scripts/verify-medisa-monthly-todo-vehicle-detail-spinner-invariants.js",
     "tool:verify-deploy": "node scripts/verify-medisa-deploy-invariants.js",
     "tool:verify-staging-isolation": "node scripts/verify-medisa-staging-isolation.js",
     "tool:verify-staging-ftps": "node scripts/verify-medisa-staging-ftps.js",
