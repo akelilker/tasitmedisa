@@ -74,3 +74,9 @@ data/kasko-deger-listesi.index.lock
 .tools/
 .cursor/rules/ironbee-devtools-use.mdc
 /.playwright-mcp
+
+# Undotted local runtime leftovers (app uses data/.medisa_* equivalents)
+data/medisa_data.lock
+data/medisa_full_backup_last.json
+data/orphan_pdf_rapor.csv
+data/orphan_pdf_rapor.txt
