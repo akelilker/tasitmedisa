@@ -269,7 +269,7 @@ test('pin/SW chain', function() {
   assert.match(scriptCore, /tasitlar:\s*'20260930\.2'/);
   assert.match(sw, /CACHE_VERSION = 'medisa-v2\.360'/);
   assert.match(read('index.html'), /script-core\.js\?v=20260930\.2/);
-  assert.match(read('index.html'), /style-core\.css\?v=20260930\.2/);
+  assert.match(read('index.html'), /style-core\.css\?v=20261002\.1/);
 });
 
 console.log('');
