@@ -1919,7 +1919,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu .m
   /* Footer glow tek kaynaktan yönetilir (aşağıdaki ana footer bloğu) */
   /* Anasayfa masaüstü: başlık kutunun içine sığsın */
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-spacer {
-    flex: 0 0 16px;
+    flex: 0 0 32px;
     min-width: 0;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero h1 {
