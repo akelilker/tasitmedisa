@@ -4174,9 +4174,6 @@
                 return afterSave().then(function() {
                 if (typeof window.showCenteredInfoBox === 'function') {
                   window.showCenteredInfoBox('Kasko listesi başarıyla güncellendi!', {
-                    anchorEl: document.getElementById('kasko-yukle-btn'),
-                    offsetAbove: 18,
-                    variant: 'bare-text',
                     autoCloseMs: 3000
                   });
                 } else if (typeof window.showInfoModal === 'function') {
@@ -5048,69 +5045,26 @@
       }
     }
 
-    function resetCenteredInfoBoxAnchorState() {
+    function resetCenteredInfoBoxState() {
       const overlay = document.getElementById('centered-info-box');
-      const inner = overlay ? overlay.querySelector('.centered-info-box-inner') : null;
       clearCenteredInfoBoxTimer();
       if (overlay) {
-        overlay.classList.remove('centered-info-box-overlay--anchored');
         overlay.classList.remove('centered-info-box-overlay--bare-text');
       }
-      if (!inner) return;
-      inner.style.removeProperty('top');
-      inner.style.removeProperty('left');
-      inner.style.removeProperty('right');
-      inner.style.removeProperty('bottom');
-    }
-
-    function positionCenteredInfoBoxAboveAnchor(anchorEl, offsetAbove) {
-      const overlay = document.getElementById('centered-info-box');
-      const inner = overlay ? overlay.querySelector('.centered-info-box-inner') : null;
-      if (!overlay || !inner || !anchorEl || typeof anchorEl.getBoundingClientRect !== 'function') return;
-
-      const rect = anchorEl.getBoundingClientRect();
-      const innerRect = inner.getBoundingClientRect();
-      const gap = Number.isFinite(offsetAbove) ? offsetAbove : 15;
-      const viewportWidth = window.innerWidth || document.documentElement.clientWidth || 0;
-      const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 0;
-      const minMargin = 16;
-      const maxLeft = Math.max(minMargin, viewportWidth - innerRect.width - minMargin);
-      const desiredLeft = rect.left + (rect.width / 2) - (innerRect.width / 2);
-      const desiredTop = rect.top - innerRect.height - gap;
-      const left = Math.min(Math.max(minMargin, desiredLeft), maxLeft);
-      const top = Math.max(minMargin, Math.min(desiredTop, viewportHeight - innerRect.height - minMargin));
-
-      overlay.classList.add('centered-info-box-overlay--anchored');
-      inner.style.left = left + 'px';
-      inner.style.top = top + 'px';
     }
 
     const originalShowCenteredInfoBox = window.showCenteredInfoBox;
     window.showCenteredInfoBox = function showCenteredInfoBox(message, options) {
       if (typeof originalShowCenteredInfoBox !== 'function') return;
-      resetCenteredInfoBoxAnchorState();
+      resetCenteredInfoBoxState();
       originalShowCenteredInfoBox(message);
 
       const overlay = document.getElementById('centered-info-box');
-
-      let anchorEl = options && options.anchorEl ? options.anchorEl : null;
-      let offsetAbove = options && Number.isFinite(options.offsetAbove) ? options.offsetAbove : 15;
       const variant = options && typeof options.variant === 'string' ? options.variant : '';
       const autoCloseMs = options && Number.isFinite(options.autoCloseMs) ? options.autoCloseMs : 0;
 
       if (overlay && variant === 'bare-text') {
         overlay.classList.add('centered-info-box-overlay--bare-text');
-      }
-
-      if (!anchorEl && typeof message === 'string' && message.indexOf('Kasko listesi') !== -1) {
-        anchorEl = document.getElementById('tsb-indir-btn');
-        offsetAbove = 15;
-      }
-
-      if (anchorEl) {
-        requestAnimationFrame(function() {
-          positionCenteredInfoBoxAboveAnchor(anchorEl, offsetAbove);
-        });
       }
 
       if (autoCloseMs > 0) {
@@ -5122,7 +5076,7 @@
 
     const originalCloseCenteredInfoBox = window.closeCenteredInfoBox;
     window.closeCenteredInfoBox = function closeCenteredInfoBox() {
-      resetCenteredInfoBoxAnchorState();
+      resetCenteredInfoBoxState();
       if (typeof originalCloseCenteredInfoBox === 'function') {
         originalCloseCenteredInfoBox();
       }
