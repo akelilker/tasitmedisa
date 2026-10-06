@@ -3706,23 +3706,27 @@ body.modal-open .app-container {
   }
 }
 
-/* --- iOS standalone PWA chrome (html.medisa-ios27-pwa; sürüm gate yok, sahsicari ios-pwa ile aynı kapsam) --- */
+/* --- iOS standalone PWA chrome (html.medisa-ios27-pwa; class = JS standalone gate, display-mode media kullanılmaz) --- */
 html.medisa-ios27-pwa {
   background-color: var(--bg, #080d16) !important;
   background: var(--bg, #080d16) !important;
   min-height: 100% !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
 }
 
 html.medisa-ios27-pwa body {
   background-color: var(--bg, #080d16) !important;
   background: var(--bg, #080d16) !important;
+  padding: 0 !important;
+  min-height: 100dvh !important;
+  box-sizing: border-box !important;
 }
 
 html.medisa-ios27-pwa .app-container {
   background-color: var(--bg, #080d16) !important;
 }
 
-/* iOS 27 PWA: Üst safe-area overlay düzeyinde tek sefer uygulanır, container margin-top sıfırlanır */
 html.medisa-ios27-pwa .modal-overlay .modal-container {
   margin-top: 0 !important;
 }
@@ -3731,30 +3735,72 @@ html.medisa-ios27-pwa .olay-ekle-modal .modal-container {
   margin-top: 0 !important;
 }
 
-/* iOS 27+ standalone: safe-area üst bandı sahsicari container modeli — tek owner app-container padding */
-@media (max-width: 768px) and (display-mode: standalone) {
-  html.medisa-ios27-pwa,
-  html.medisa-ios27-pwa body {
-    padding-top: 0 !important;
-  }
+/* sahsicari modeli: safe-area yalnızca .app-container padding-top; html/body/content-wrap çift inset yok */
+html.medisa-ios27-pwa body:not(.dashboard-page):not(.admin-report-page) .app-container {
+  margin-top: 0 !important;
+  padding-top: env(safe-area-inset-top, 0px) !important;
+  padding-left: env(safe-area-inset-left, 0px) !important;
+  padding-right: env(safe-area-inset-right, 0px) !important;
+  box-shadow: 0 2px 14px rgba(var(--theme-color-rgb), 0.125) !important;
+  min-height: 100dvh !important;
+  height: 100dvh !important;
+  max-height: 100dvh !important;
+}
 
-  html.medisa-ios27-pwa body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-container {
-    padding-top: env(safe-area-inset-top) !important;
-    box-shadow: 0 2px 14px rgba(var(--theme-color-rgb), 0.125) !important;
-  }
+html.medisa-ios27-pwa body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-container::after {
+  display: none !important;
+}
 
-  html.medisa-ios27-pwa body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-container::after {
-    display: none !important;
-  }
+html.medisa-ios27-pwa body:not(.dashboard-page):not(.admin-report-page) .app-container::before {
+  top: env(safe-area-inset-top, 0px) !important;
+}
 
-  html.medisa-ios27-pwa body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-container::before {
-    top: env(safe-area-inset-top) !important;
-  }
+html.medisa-ios27-pwa body:not(.dashboard-page):not(.admin-report-page) .content-wrap {
+  padding-top: 12px !important;
+  box-shadow: none !important;
+}
 
-  html.medisa-ios27-pwa body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap {
-    padding-top: 12px !important;
-    box-shadow: none !important;
-  }
+/* Footer: safe-area tek katman (sahsicari global-status-bar); height+padding-bottom çift sayımı kaldır */
+html.medisa-ios27-pwa #app-footer {
+  bottom: 0 !important;
+  height: calc(var(--app-footer-real-height, 38px) + env(safe-area-inset-bottom, 0px)) !important;
+  min-height: calc(var(--app-footer-real-height, 38px) + env(safe-area-inset-bottom, 0px)) !important;
+  padding-top: 2px !important;
+  padding-bottom: env(safe-area-inset-bottom, 0px) !important;
+  box-sizing: border-box !important;
+  align-items: flex-start !important;
+  justify-content: center !important;
+}
+
+html.medisa-ios27-pwa #app-footer .footer-content {
+  height: var(--app-footer-real-height, 38px) !important;
+  min-height: var(--app-footer-real-height, 38px) !important;
+  max-height: var(--app-footer-real-height, 38px) !important;
+  padding-bottom: 4px !important;
+  box-sizing: border-box !important;
+  align-items: center !important;
+}
+
+html.medisa-ios27-pwa body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-container {
+  padding-bottom: var(--app-footer-real-height, 38px) !important;
+}
+
+/* Driver login/dashboard: safe-area owner container (driver-shell byte gate; html.medisa-ios27-pwa yeterli) */
+html.medisa-ios27-pwa body.login-page .driver-dashboard-container,
+html.medisa-ios27-pwa body.dashboard-page .driver-dashboard-container {
+  padding-top: env(safe-area-inset-top, 0px) !important;
+  padding-bottom: var(--app-footer-real-height) !important;
+}
+
+html.medisa-ios27-pwa body.login-page .driver-dashboard-container::before,
+html.medisa-ios27-pwa body.dashboard-page .driver-dashboard-container::before {
+  top: env(safe-area-inset-top, 0px) !important;
+  bottom: var(--app-footer-real-height) !important;
+}
+
+html.medisa-ios27-pwa body.login-page .driver-header-fixed,
+html.medisa-ios27-pwa body.dashboard-page .driver-header-fixed {
+  padding-top: 4px !important;
 }
 
 /* ========== LAZY LOAD – Modül yüklenirken spinner ========== */

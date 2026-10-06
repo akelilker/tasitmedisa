@@ -3,6 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <script>
+    (function () {
+        var ua = navigator.userAgent || '';
+        var ios = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
+        if (!ios) return;
+        var pwa = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+        if (!pwa) return;
+        document.documentElement.classList.add('medisa-ios27-pwa');
+    })();
+    </script>
     <title>Taşıt Yönetim Sistemi</title>
     <!-- Paylaşım önizlemesi (WhatsApp, vb.): logo ve başlık -->
     <meta property="og:type" content="website">
@@ -30,14 +40,14 @@
     <meta name="msapplication-TileColor" content="#080d16">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="apple-mobile-web-app-title" content="Taşıt Yönetim Sistemi">
     <meta name="format-detection" content="telephone=no">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../style-core.css?v=20261006.1">
-<link rel="stylesheet" href="driver-shell.css?v=20260925.6">
+    <link rel="stylesheet" href="../style-core.css?v=20261006.3">
+<link rel="stylesheet" href="driver-shell.css?v=20260925.7">
 <script defer src="../portal-session.js?v=20260731.3"></script>
 <script defer src="../script-core.js?v=20261006.2"></script>
 </head>
