@@ -3,6 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <script>
+    (function () {
+        var ua = navigator.userAgent || '';
+        var ios = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
+        if (!ios) return;
+        var pwa = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+        if (!pwa) return;
+        var m = ua.match(/OS\s+(\d+)[_.]/i);
+        var major = m && m[1] ? parseInt(m[1], 10) : NaN;
+        if (!isNaN(major) && major >= 27) {
+            document.documentElement.classList.add('medisa-ios27-pwa');
+        }
+    })();
+    </script>
     <title>Taşıt Yönetim Sistemi</title>
     <!-- Paylaşım önizlemesi (WhatsApp, vb.): logo ve başlık -->
     <meta property="og:type" content="website">
@@ -160,9 +174,9 @@
     </style>
 
     <!-- CSS Preload + Async Load -->
-    <link rel="preload" href="style-core.css?v=20261002.2" as="style">
-    <link rel="stylesheet" href="style-core.css?v=20261002.2">
-    <noscript><link rel="stylesheet" href="style-core.css?v=20261002.2"></noscript>
+    <link rel="preload" href="style-core.css?v=20261006.1" as="style">
+    <link rel="stylesheet" href="style-core.css?v=20261006.1">
+    <noscript><link rel="stylesheet" href="style-core.css?v=20261006.1"></noscript>
     <script>
         (function() {
             function getMainAppBasePath() {

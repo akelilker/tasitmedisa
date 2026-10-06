@@ -3731,6 +3731,32 @@ html.medisa-ios27-pwa .olay-ekle-modal .modal-container {
   margin-top: 0 !important;
 }
 
+/* iOS 27+ standalone: safe-area üst bandı sahsicari container modeli — tek owner app-container padding */
+@media (max-width: 768px) and (display-mode: standalone) {
+  html.medisa-ios27-pwa,
+  html.medisa-ios27-pwa body {
+    padding-top: 0 !important;
+  }
+
+  html.medisa-ios27-pwa body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-container {
+    padding-top: env(safe-area-inset-top) !important;
+    box-shadow: 0 2px 14px rgba(var(--theme-color-rgb), 0.125) !important;
+  }
+
+  html.medisa-ios27-pwa body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-container::after {
+    display: none !important;
+  }
+
+  html.medisa-ios27-pwa body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-container::before {
+    top: env(safe-area-inset-top) !important;
+  }
+
+  html.medisa-ios27-pwa body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap {
+    padding-top: 12px !important;
+    box-shadow: none !important;
+  }
+}
+
 /* ========== LAZY LOAD – Modül yüklenirken spinner ========== */
 .module-load-spinner {
   position: fixed;
