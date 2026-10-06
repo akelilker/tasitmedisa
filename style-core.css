@@ -3706,7 +3706,7 @@ body.modal-open .app-container {
   }
 }
 
-/* --- iOS 27 PWA Safe-Area Scoped İzolasyon (Yalnız html.medisa-ios27-pwa) --- */
+/* --- iOS standalone PWA chrome (html.medisa-ios27-pwa; sürüm gate yok, sahsicari ios-pwa ile aynı kapsam) --- */
 html.medisa-ios27-pwa {
   background-color: var(--bg, #080d16) !important;
   background: var(--bg, #080d16) !important;
