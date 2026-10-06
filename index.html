@@ -10,11 +10,7 @@
         if (!ios) return;
         var pwa = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
         if (!pwa) return;
-        var m = ua.match(/OS\s+(\d+)[_.]/i);
-        var major = m && m[1] ? parseInt(m[1], 10) : NaN;
-        if (!isNaN(major) && major >= 27) {
-            document.documentElement.classList.add('medisa-ios27-pwa');
-        }
+        document.documentElement.classList.add('medisa-ios27-pwa');
     })();
     </script>
     <title>Taşıt Yönetim Sistemi</title>
@@ -833,7 +829,7 @@
     <script defer src="portal-session.js?v=20260731.3"></script>
     <script defer src="data-manager.js?v=20260930.3"></script>
     <script defer src="data-service.js?v=20260718.2"></script>
-    <script defer src="script-core.js?v=20261005.1"></script>
+    <script defer src="script-core.js?v=20261006.2"></script>
 </body>
 </html>
 

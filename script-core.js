@@ -168,16 +168,22 @@ window.getMedisaIOSMajorVersion = function getMedisaIOSMajorVersion() {
     return null;
   }
   var ua = navigator.userAgent || '';
-  var m = ua.match(/OS\s+(\d+)[_.]/i);
-  if (m && m[1]) {
-    var v = parseInt(m[1], 10);
-    if (!isNaN(v)) return v;
+  var osM = ua.match(/OS\s+(\d+)[_.]/i);
+  var osVer = osM && osM[1] ? parseInt(osM[1], 10) : NaN;
+  var verM = ua.match(/Version\/(\d+)(?:[._]|\s|$)/i);
+  var safariVer = verM && verM[1] ? parseInt(verM[1], 10) : NaN;
+
+  // WebKit 26+: donmuş OS token (çoğunlukla 18_x); gerçek major çoğu zaman Version/ içinde
+  if (!isNaN(safariVer)) {
+    if (isNaN(osVer) || osVer <= 18 || safariVer > osVer) {
+      return safariVer;
+    }
   }
-  // iPadOS touch Mac (navigator.platform === 'MacIntel') userAgent Safari token fallback
-  var vMatch = ua.match(/Version\/(\d+)\./i);
-  if (vMatch && vMatch[1]) {
-    var ver = parseInt(vMatch[1], 10);
-    if (!isNaN(ver)) return ver;
+  if (!isNaN(osVer)) {
+    return osVer;
+  }
+  if (!isNaN(safariVer)) {
+    return safariVer;
   }
   return null;
 };
@@ -193,11 +199,9 @@ window.isIOSPWA = function isIOSPWA() {
   return !!isStandalone;
 };
 
-/** iOS 27+ standalone PWA tespiti */
+/** iOS standalone PWA üst chrome (html.medisa-ios27-pwa); sürüm gate yok — sahsicari ios-pwa ile aynı */
 window.isMedisaIOS27PWA = function isMedisaIOS27PWA() {
-  if (typeof window.isIOSPWA !== 'function' || !window.isIOSPWA()) return false;
-  var major = typeof window.getMedisaIOSMajorVersion === 'function' ? window.getMedisaIOSMajorVersion() : null;
-  return typeof major === 'number' && major >= 27;
+  return typeof window.isIOSPWA === 'function' && window.isIOSPWA();
 };
 
 /** iOS 27+ PWA runtime class initializer — tek owner */
