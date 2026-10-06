@@ -3753,6 +3753,11 @@ html.medisa-ios27-pwa body:not(.dashboard-page):not(.login-page):not(.admin-repo
 
 html.medisa-ios27-pwa body:not(.dashboard-page):not(.admin-report-page) .app-container::before {
   top: env(safe-area-inset-top, 0px) !important;
+  bottom: calc(var(--app-footer-real-height, 38px) + env(safe-area-inset-bottom, 0px)) !important;
+}
+
+html.medisa-ios27-pwa body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .app-container::before {
+  bottom: calc(var(--app-footer-real-height, 38px) + var(--app-footer-gap, 17px) + env(safe-area-inset-bottom, 0px)) !important;
 }
 
 html.medisa-ios27-pwa body:not(.dashboard-page):not(.admin-report-page) .content-wrap {
@@ -3760,7 +3765,7 @@ html.medisa-ios27-pwa body:not(.dashboard-page):not(.admin-report-page) .content
   box-shadow: none !important;
 }
 
-/* Footer: safe-area tek katman (sahsicari global-status-bar); height+padding-bottom çift sayımı kaldır */
+/* Footer: sahsicari global-status-bar — height = footer-h + sa-bot; padding-bottom = sa-bot; içerik ortada */
 html.medisa-ios27-pwa #app-footer {
   bottom: 0 !important;
   height: calc(var(--app-footer-real-height, 38px) + env(safe-area-inset-bottom, 0px)) !important;
@@ -3768,15 +3773,20 @@ html.medisa-ios27-pwa #app-footer {
   padding-top: 2px !important;
   padding-bottom: env(safe-area-inset-bottom, 0px) !important;
   box-sizing: border-box !important;
-  align-items: flex-start !important;
+  display: flex !important;
+  align-items: center !important;
   justify-content: center !important;
 }
 
 html.medisa-ios27-pwa #app-footer .footer-content {
-  height: var(--app-footer-real-height, 38px) !important;
-  min-height: var(--app-footer-real-height, 38px) !important;
-  max-height: var(--app-footer-real-height, 38px) !important;
-  padding-bottom: 4px !important;
+  width: 100% !important;
+  max-width: 500px !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  margin: 0 auto !important;
+  padding: 0 12px !important;
+  padding-bottom: 0 !important;
   box-sizing: border-box !important;
   align-items: center !important;
 }
@@ -3789,18 +3799,41 @@ html.medisa-ios27-pwa body:not(.dashboard-page):not(.login-page):not(.admin-repo
 html.medisa-ios27-pwa body.login-page .driver-dashboard-container,
 html.medisa-ios27-pwa body.dashboard-page .driver-dashboard-container {
   padding-top: env(safe-area-inset-top, 0px) !important;
-  padding-bottom: var(--app-footer-real-height) !important;
+  padding-bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0px)) !important;
 }
 
 html.medisa-ios27-pwa body.login-page .driver-dashboard-container::before,
 html.medisa-ios27-pwa body.dashboard-page .driver-dashboard-container::before {
   top: env(safe-area-inset-top, 0px) !important;
-  bottom: var(--app-footer-real-height) !important;
+  bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0px)) !important;
 }
 
 html.medisa-ios27-pwa body.login-page .driver-header-fixed,
 html.medisa-ios27-pwa body.dashboard-page .driver-header-fixed {
   padding-top: 4px !important;
+}
+
+/* iOS PWA: @media standalone #app-footer bloğu (3631) ios27 footer modelini ezmesin */
+@media (max-width: 768px) and (display-mode: standalone) {
+  html.medisa-ios27-pwa body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
+    height: calc(var(--app-footer-real-height, 38px) + env(safe-area-inset-bottom, 0px)) !important;
+    min-height: calc(var(--app-footer-real-height, 38px) + env(safe-area-inset-bottom, 0px)) !important;
+    padding-top: 2px !important;
+    padding-bottom: env(safe-area-inset-bottom, 0px) !important;
+    align-items: center !important;
+    box-shadow:
+      0 -1px 0 var(--footer-top-highlight),
+      var(--footer-red-glow) !important;
+  }
+
+  html.medisa-ios27-pwa body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer .footer-content {
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    padding: 0 12px !important;
+    padding-bottom: 0 !important;
+    align-items: center !important;
+  }
 }
 
 /* ========== LAZY LOAD – Modül yüklenirken spinner ========== */
