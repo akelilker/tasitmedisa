@@ -3,6 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <script>
+  (function () {
+    var ua = navigator.userAgent || '';
+    var ios = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
+    if (!ios) return;
+    var pwa = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+    if (!pwa) return;
+    document.documentElement.classList.add('medisa-ios27-pwa');
+  })();
+  </script>
   <title>TYS - Kullanıcı Raporları</title>
   <meta property="og:type" content="website">
   <meta property="og:title" content="TYS - Kullanıcı Raporları">
@@ -31,11 +41,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../style-core.css?v=20261007.1">
+  <link rel="stylesheet" href="../style-core.css?v=20261007.2">
   <link rel="stylesheet" href="admin-report.css?v=20260923.1">
 </head>
 <body class="admin-report-page">
-  <div id="ios-status-fill" aria-hidden="true"></div>
   <div class="admin-app-container">
     <div class="admin-content-wrap">
   <div class="hero hero-two-rows admin-report-hero">
@@ -224,7 +233,7 @@
   </div>
 
   <script defer src="../portal-session.js?v=20260731.3"></script>
-  <script defer src="../script-core.js?v=20261007.1"></script>
+  <script defer src="../script-core.js?v=20261007.2"></script>
   <script defer src="admin-report.js?v=20260917.1"></script>
 </body>
 </html>
