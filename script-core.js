@@ -204,74 +204,102 @@ window.isMedisaIOS27PWA = function isMedisaIOS27PWA() {
   return typeof window.isIOSPWA === 'function' && window.isIOSPWA();
 };
 
-/** iOS 27+ PWA runtime class initializer — tek owner */
+/** iOS 27+ PWA: env(safe-area-*) ölçümü + html token (--medisa-ios27-*) — tek owner */
+window.applyMedisaIOS27PWASafeAreaTokens = function applyMedisaIOS27PWASafeAreaTokens() {
+  if (typeof window.isMedisaIOS27PWA !== 'function' || !window.isMedisaIOS27PWA()) {
+    return;
+  }
+  var root = document.documentElement;
+  if (!root) {
+    return;
+  }
+
+  var probe = document.createElement('div');
+  probe.setAttribute('aria-hidden', 'true');
+  probe.style.cssText = [
+    'position:fixed',
+    'top:0',
+    'left:0',
+    'right:0',
+    'bottom:0',
+    'visibility:hidden',
+    'pointer-events:none',
+    'margin:0',
+    'border:0',
+    'box-sizing:border-box',
+    'padding-top:env(safe-area-inset-top,0px)',
+    'padding-right:env(safe-area-inset-right,0px)',
+    'padding-bottom:env(safe-area-inset-bottom,0px)',
+    'padding-left:env(safe-area-inset-left,0px)'
+  ].join(';');
+  root.appendChild(probe);
+
+  var cs = window.getComputedStyle(probe);
+  var top = parseFloat(cs.paddingTop) || 0;
+  var right = parseFloat(cs.paddingRight) || 0;
+  var bottom = parseFloat(cs.paddingBottom) || 0;
+  var left = parseFloat(cs.paddingLeft) || 0;
+  probe.remove();
+
+  try {
+    var vv = window.visualViewport;
+    if (vv) {
+      var vvTop = Math.max(0, vv.offsetTop || 0);
+      var vvBottom = Math.max(0, window.innerHeight - vv.height - vvTop);
+      if (top < vvTop) {
+        top = vvTop;
+      }
+      if (bottom < vvBottom) {
+        bottom = vvBottom;
+      }
+    }
+  } catch (eVv) {}
+
+  var sessionKey = 'medisa-ios27-safe-bottom-px';
+  try {
+    var remembered = parseFloat(sessionStorage.getItem(sessionKey));
+    if (!isNaN(remembered) && remembered > bottom) {
+      bottom = remembered;
+    }
+    if (bottom > 0) {
+      sessionStorage.setItem(sessionKey, String(bottom));
+    }
+  } catch (eStore) {}
+
+  var frameTop = Math.max(top, 10);
+  root.style.setProperty('--medisa-ios27-safe-top', top + 'px');
+  root.style.setProperty('--medisa-ios27-safe-right', right + 'px');
+  root.style.setProperty('--medisa-ios27-safe-bottom', bottom + 'px');
+  root.style.setProperty('--medisa-ios27-safe-left', left + 'px');
+  root.style.setProperty('--medisa-ios27-frame-top', frameTop + 'px');
+};
+
 (function initMedisaIOS27PWAClass() {
   try {
     if (typeof window !== 'undefined' && document && document.documentElement) {
       if (typeof window.isMedisaIOS27PWA === 'function' && window.isMedisaIOS27PWA()) {
         document.documentElement.classList.add('medisa-ios27-pwa');
+        if (typeof window.applyMedisaIOS27PWASafeAreaTokens === 'function') {
+          window.applyMedisaIOS27PWASafeAreaTokens();
+        }
       }
     }
   } catch (e) {}
 })();
 
-/**
- * TEMPORARY — iOS standalone PWA ölçüm paneli (follow-up PR'da kaldırılacak).
- * Yalnızca isIOSPWA(); masaüstü / normal Safari'de görünmez.
- */
-(function initMedisaIOSPWADiagReadout() {
-  function uaVersionToken() {
-    var m = (navigator.userAgent || '').match(/Version\/(\d+(?:[._]\d+)?)/i);
-    return m && m[1] ? m[1].replace(/_/g, '.') : 'n/a';
+(function initMedisaIOS27PWASafeAreaListeners() {
+  if (typeof window.isMedisaIOS27PWA !== 'function' || !window.isMedisaIOS27PWA()) {
+    return;
   }
-
-  function mount() {
-    if (typeof window.isIOSPWA !== 'function' || !window.isIOSPWA()) {
-      return;
+  function refresh() {
+    if (typeof window.applyMedisaIOS27PWASafeAreaTokens === 'function') {
+      window.applyMedisaIOS27PWASafeAreaTokens();
     }
-    if (document.getElementById('medisa-ios-pwa-diag')) {
-      return;
-    }
-
-    var probe = document.createElement('div');
-    probe.setAttribute('aria-hidden', 'true');
-    probe.style.cssText =
-      'position:absolute;visibility:hidden;pointer-events:none;' +
-      'padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);';
-    (document.body || document.documentElement).appendChild(probe);
-
-    var panel = document.createElement('div');
-    panel.id = 'medisa-ios-pwa-diag';
-    panel.setAttribute('data-temporary-diag', 'ios-pwa-safe-area');
-    panel.setAttribute('aria-hidden', 'true');
-    (document.body || document.documentElement).appendChild(panel);
-
-    function refresh() {
-      var cs = window.getComputedStyle(probe);
-      var iosMajor = typeof window.getMedisaIOSMajorVersion === 'function'
-        ? window.getMedisaIOSMajorVersion()
-        : null;
-      var hasIos27Class = document.documentElement.classList.contains('medisa-ios27-pwa');
-      panel.textContent = [
-        'inset-top=' + cs.paddingTop,
-        'inset-bot=' + cs.paddingBottom,
-        'innerH=' + window.innerHeight,
-        'screenH=' + (window.screen ? window.screen.height : 'n/a'),
-        'iosMajor=' + (iosMajor != null ? iosMajor : 'n/a'),
-        'medisa-ios27-pwa=' + (hasIos27Class ? 'yes' : 'no'),
-        'Version/' + uaVersionToken()
-      ].join('\n');
-    }
-
-    refresh();
-    window.addEventListener('resize', refresh);
-    window.addEventListener('orientationchange', refresh);
   }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', mount);
-  } else {
-    mount();
+  window.addEventListener('resize', refresh);
+  window.addEventListener('orientationchange', refresh);
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', refresh);
   }
 })();
 

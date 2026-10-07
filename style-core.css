@@ -3706,43 +3706,13 @@ body.modal-open .app-container {
   }
 }
 
-/* TEMPORARY (follow-up PR'da kaldır): iOS PWA status-bar dolgu + safe-area ölçüm paneli */
-#ios-status-fill {
-  display: none;
-}
-
-html.medisa-ios27-pwa #ios-status-fill {
-  display: block;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  width: 100%;
-  height: max(env(safe-area-inset-top, 0px), 6px);
-  min-height: 6px;
-  background: var(--bg, #080d16);
-  z-index: 10050;
-  pointer-events: none;
-}
-
-html.medisa-ios27-pwa #medisa-ios-pwa-diag {
-  position: fixed;
-  left: 6px;
-  bottom: calc(var(--app-footer-real-height, 38px) + env(safe-area-inset-bottom, 0px) + 10px);
-  z-index: 10055;
-  max-width: min(48vw, 200px);
-  padding: 4px 6px;
-  background: rgba(0, 0, 0, 0.78);
-  color: #6ee7a0;
-  font: 10px/1.35 ui-monospace, SFMono-Regular, Menlo, monospace;
-  white-space: pre;
-  pointer-events: none;
-  border-radius: 4px;
-  opacity: 0.94;
-}
-
 /* --- iOS standalone PWA chrome (html.medisa-ios27-pwa; class = JS standalone gate, display-mode media kullanılmaz) --- */
 html.medisa-ios27-pwa {
+  --medisa-ios27-safe-top: env(safe-area-inset-top, 0px);
+  --medisa-ios27-safe-right: env(safe-area-inset-right, 0px);
+  --medisa-ios27-safe-bottom: env(safe-area-inset-bottom, 0px);
+  --medisa-ios27-safe-left: env(safe-area-inset-left, 0px);
+  --medisa-ios27-frame-top: max(var(--medisa-ios27-safe-top), 10px);
   background-color: var(--bg, #080d16) !important;
   background: var(--bg, #080d16) !important;
   min-height: 100% !important;
@@ -3773,9 +3743,9 @@ html.medisa-ios27-pwa .olay-ekle-modal .modal-container {
 /* sahsicari modeli: safe-area yalnızca .app-container padding-top; html/body/content-wrap çift inset yok */
 html.medisa-ios27-pwa body:not(.dashboard-page):not(.admin-report-page) .app-container {
   margin-top: 0 !important;
-  padding-top: env(safe-area-inset-top, 0px) !important;
-  padding-left: env(safe-area-inset-left, 0px) !important;
-  padding-right: env(safe-area-inset-right, 0px) !important;
+  padding-top: var(--medisa-ios27-frame-top) !important;
+  padding-left: var(--medisa-ios27-safe-left) !important;
+  padding-right: var(--medisa-ios27-safe-right) !important;
   box-shadow: 0 2px 14px rgba(var(--theme-color-rgb), 0.125) !important;
   min-height: 100dvh !important;
   height: 100dvh !important;
@@ -3787,12 +3757,12 @@ html.medisa-ios27-pwa body:not(.dashboard-page):not(.login-page):not(.admin-repo
 }
 
 html.medisa-ios27-pwa body:not(.dashboard-page):not(.admin-report-page) .app-container::before {
-  top: env(safe-area-inset-top, 0px) !important;
-  bottom: calc(var(--app-footer-real-height, 38px) + env(safe-area-inset-bottom, 0px)) !important;
+  top: var(--medisa-ios27-frame-top) !important;
+  bottom: calc(var(--app-footer-real-height, 38px) + var(--medisa-ios27-safe-bottom)) !important;
 }
 
 html.medisa-ios27-pwa body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .app-container::before {
-  bottom: calc(var(--app-footer-real-height, 38px) + var(--app-footer-gap, 17px) + env(safe-area-inset-bottom, 0px)) !important;
+  bottom: calc(var(--app-footer-real-height, 38px) + var(--app-footer-gap, 17px) + var(--medisa-ios27-safe-bottom)) !important;
 }
 
 html.medisa-ios27-pwa body:not(.dashboard-page):not(.admin-report-page) .content-wrap {
@@ -3803,10 +3773,10 @@ html.medisa-ios27-pwa body:not(.dashboard-page):not(.admin-report-page) .content
 /* Footer: sahsicari global-status-bar — height = footer-h + sa-bot; padding-bottom = sa-bot; içerik ortada */
 html.medisa-ios27-pwa #app-footer {
   bottom: 0 !important;
-  height: calc(var(--app-footer-real-height, 38px) + env(safe-area-inset-bottom, 0px)) !important;
-  min-height: calc(var(--app-footer-real-height, 38px) + env(safe-area-inset-bottom, 0px)) !important;
+  height: calc(var(--app-footer-real-height, 38px) + var(--medisa-ios27-safe-bottom)) !important;
+  min-height: calc(var(--app-footer-real-height, 38px) + var(--medisa-ios27-safe-bottom)) !important;
   padding-top: 2px !important;
-  padding-bottom: env(safe-area-inset-bottom, 0px) !important;
+  padding-bottom: var(--medisa-ios27-safe-bottom) !important;
   box-sizing: border-box !important;
   display: flex !important;
   align-items: center !important;
@@ -3833,14 +3803,40 @@ html.medisa-ios27-pwa body:not(.dashboard-page):not(.login-page):not(.admin-repo
 /* Driver login/dashboard: safe-area owner container (driver-shell byte gate; html.medisa-ios27-pwa yeterli) */
 html.medisa-ios27-pwa body.login-page .driver-dashboard-container,
 html.medisa-ios27-pwa body.dashboard-page .driver-dashboard-container {
-  padding-top: env(safe-area-inset-top, 0px) !important;
-  padding-bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0px)) !important;
+  padding-top: var(--medisa-ios27-frame-top) !important;
+  padding-bottom: calc(var(--app-footer-real-height) + var(--medisa-ios27-safe-bottom)) !important;
 }
 
 html.medisa-ios27-pwa body.login-page .driver-dashboard-container::before,
 html.medisa-ios27-pwa body.dashboard-page .driver-dashboard-container::before {
-  top: env(safe-area-inset-top, 0px) !important;
-  bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0px)) !important;
+  top: var(--medisa-ios27-frame-top) !important;
+  bottom: calc(var(--app-footer-real-height) + var(--medisa-ios27-safe-bottom)) !important;
+}
+
+html.medisa-ios27-pwa body.login-page #app-footer.login-footer {
+  height: calc(var(--app-footer-real-height) + var(--medisa-ios27-safe-bottom)) !important;
+  min-height: calc(var(--app-footer-real-height) + var(--medisa-ios27-safe-bottom)) !important;
+  padding-top: 2px !important;
+  padding-bottom: var(--medisa-ios27-safe-bottom) !important;
+}
+
+html.medisa-ios27-pwa body.login-page #app-footer.login-footer .footer-content {
+  padding-bottom: 0 !important;
+}
+
+html.medisa-ios27-pwa body.admin-report-page .admin-app-container {
+  padding-top: var(--medisa-ios27-frame-top) !important;
+}
+
+html.medisa-ios27-pwa body.admin-report-page .admin-app-container::before {
+  top: var(--medisa-ios27-frame-top) !important;
+  bottom: calc(var(--app-footer-real-height, 42px) + var(--medisa-ios27-safe-bottom)) !important;
+}
+
+html.medisa-ios27-pwa body.admin-report-page #app-footer.admin-footer,
+html.medisa-ios27-pwa body.admin-report-page .admin-footer {
+  min-height: calc(var(--app-footer-real-height, 42px) + var(--medisa-ios27-safe-bottom)) !important;
+  padding-bottom: var(--medisa-ios27-safe-bottom) !important;
 }
 
 html.medisa-ios27-pwa body.login-page .driver-header-fixed,
@@ -3851,10 +3847,10 @@ html.medisa-ios27-pwa body.dashboard-page .driver-header-fixed {
 /* iOS PWA: @media standalone #app-footer bloğu (3631) ios27 footer modelini ezmesin */
 @media (max-width: 768px) and (display-mode: standalone) {
   html.medisa-ios27-pwa body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
-    height: calc(var(--app-footer-real-height, 38px) + env(safe-area-inset-bottom, 0px)) !important;
-    min-height: calc(var(--app-footer-real-height, 38px) + env(safe-area-inset-bottom, 0px)) !important;
+    height: calc(var(--app-footer-real-height, 38px) + var(--medisa-ios27-safe-bottom)) !important;
+    min-height: calc(var(--app-footer-real-height, 38px) + var(--medisa-ios27-safe-bottom)) !important;
     padding-top: 2px !important;
-    padding-bottom: env(safe-area-inset-bottom, 0px) !important;
+    padding-bottom: var(--medisa-ios27-safe-bottom) !important;
     align-items: center !important;
     box-shadow:
       0 -1px 0 var(--footer-top-highlight),
