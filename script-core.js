@@ -215,6 +215,66 @@ window.isMedisaIOS27PWA = function isMedisaIOS27PWA() {
   } catch (e) {}
 })();
 
+/**
+ * TEMPORARY — iOS standalone PWA ölçüm paneli (follow-up PR'da kaldırılacak).
+ * Yalnızca isIOSPWA(); masaüstü / normal Safari'de görünmez.
+ */
+(function initMedisaIOSPWADiagReadout() {
+  function uaVersionToken() {
+    var m = (navigator.userAgent || '').match(/Version\/(\d+(?:[._]\d+)?)/i);
+    return m && m[1] ? m[1].replace(/_/g, '.') : 'n/a';
+  }
+
+  function mount() {
+    if (typeof window.isIOSPWA !== 'function' || !window.isIOSPWA()) {
+      return;
+    }
+    if (document.getElementById('medisa-ios-pwa-diag')) {
+      return;
+    }
+
+    var probe = document.createElement('div');
+    probe.setAttribute('aria-hidden', 'true');
+    probe.style.cssText =
+      'position:absolute;visibility:hidden;pointer-events:none;' +
+      'padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);';
+    (document.body || document.documentElement).appendChild(probe);
+
+    var panel = document.createElement('div');
+    panel.id = 'medisa-ios-pwa-diag';
+    panel.setAttribute('data-temporary-diag', 'ios-pwa-safe-area');
+    panel.setAttribute('aria-hidden', 'true');
+    (document.body || document.documentElement).appendChild(panel);
+
+    function refresh() {
+      var cs = window.getComputedStyle(probe);
+      var iosMajor = typeof window.getMedisaIOSMajorVersion === 'function'
+        ? window.getMedisaIOSMajorVersion()
+        : null;
+      var hasIos27Class = document.documentElement.classList.contains('medisa-ios27-pwa');
+      panel.textContent = [
+        'inset-top=' + cs.paddingTop,
+        'inset-bot=' + cs.paddingBottom,
+        'innerH=' + window.innerHeight,
+        'screenH=' + (window.screen ? window.screen.height : 'n/a'),
+        'iosMajor=' + (iosMajor != null ? iosMajor : 'n/a'),
+        'medisa-ios27-pwa=' + (hasIos27Class ? 'yes' : 'no'),
+        'Version/' + uaVersionToken()
+      ].join('\n');
+    }
+
+    refresh();
+    window.addEventListener('resize', refresh);
+    window.addEventListener('orientationchange', refresh);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', mount);
+  } else {
+    mount();
+  }
+})();
+
 /** KM gösterimi: rakam + binlik nokta; boşta '–' (rapor/admin ile uyumlu) */
 window.formatKm = function(value) {
   if (value == null || value === '') return '–';
