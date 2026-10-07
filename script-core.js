@@ -204,103 +204,15 @@ window.isMedisaIOS27PWA = function isMedisaIOS27PWA() {
   return typeof window.isIOSPWA === 'function' && window.isIOSPWA();
 };
 
-/** iOS 27+ PWA: env(safe-area-*) ölçümü + html token (--medisa-ios27-*) — tek owner */
-window.applyMedisaIOS27PWASafeAreaTokens = function applyMedisaIOS27PWASafeAreaTokens() {
-  if (typeof window.isMedisaIOS27PWA !== 'function' || !window.isMedisaIOS27PWA()) {
-    return;
-  }
-  var root = document.documentElement;
-  if (!root) {
-    return;
-  }
-
-  var probe = document.createElement('div');
-  probe.setAttribute('aria-hidden', 'true');
-  probe.style.cssText = [
-    'position:fixed',
-    'top:0',
-    'left:0',
-    'right:0',
-    'bottom:0',
-    'visibility:hidden',
-    'pointer-events:none',
-    'margin:0',
-    'border:0',
-    'box-sizing:border-box',
-    'padding-top:env(safe-area-inset-top,0px)',
-    'padding-right:env(safe-area-inset-right,0px)',
-    'padding-bottom:env(safe-area-inset-bottom,0px)',
-    'padding-left:env(safe-area-inset-left,0px)'
-  ].join(';');
-  root.appendChild(probe);
-
-  var cs = window.getComputedStyle(probe);
-  var top = parseFloat(cs.paddingTop) || 0;
-  var right = parseFloat(cs.paddingRight) || 0;
-  var bottom = parseFloat(cs.paddingBottom) || 0;
-  var left = parseFloat(cs.paddingLeft) || 0;
-  probe.remove();
-
-  try {
-    var vv = window.visualViewport;
-    if (vv) {
-      var vvTop = Math.max(0, vv.offsetTop || 0);
-      var vvBottom = Math.max(0, window.innerHeight - vv.height - vvTop);
-      if (top < vvTop) {
-        top = vvTop;
-      }
-      if (bottom < vvBottom) {
-        bottom = vvBottom;
-      }
-    }
-  } catch (eVv) {}
-
-  var sessionKey = 'medisa-ios27-safe-bottom-px';
-  try {
-    var remembered = parseFloat(sessionStorage.getItem(sessionKey));
-    if (!isNaN(remembered) && remembered > bottom) {
-      bottom = remembered;
-    }
-    if (bottom > 0) {
-      sessionStorage.setItem(sessionKey, String(bottom));
-    }
-  } catch (eStore) {}
-
-  var frameTop = Math.max(top, 10);
-  root.style.setProperty('--medisa-ios27-safe-top', top + 'px');
-  root.style.setProperty('--medisa-ios27-safe-right', right + 'px');
-  root.style.setProperty('--medisa-ios27-safe-bottom', bottom + 'px');
-  root.style.setProperty('--medisa-ios27-safe-left', left + 'px');
-  root.style.setProperty('--medisa-ios27-frame-top', frameTop + 'px');
-};
-
+/** iOS 27+ PWA runtime class initializer — tek owner */
 (function initMedisaIOS27PWAClass() {
   try {
     if (typeof window !== 'undefined' && document && document.documentElement) {
       if (typeof window.isMedisaIOS27PWA === 'function' && window.isMedisaIOS27PWA()) {
         document.documentElement.classList.add('medisa-ios27-pwa');
-        if (typeof window.applyMedisaIOS27PWASafeAreaTokens === 'function') {
-          window.applyMedisaIOS27PWASafeAreaTokens();
-        }
       }
     }
   } catch (e) {}
-})();
-
-(function initMedisaIOS27PWASafeAreaListeners() {
-  if (typeof window.isMedisaIOS27PWA !== 'function' || !window.isMedisaIOS27PWA()) {
-    return;
-  }
-  function refresh() {
-    if (typeof window.applyMedisaIOS27PWASafeAreaTokens === 'function') {
-      window.applyMedisaIOS27PWASafeAreaTokens();
-    }
-  }
-  window.addEventListener('resize', refresh);
-  window.addEventListener('orientationchange', refresh);
-  if (window.visualViewport) {
-    window.visualViewport.addEventListener('resize', refresh);
-  }
 })();
 
 /** KM gösterimi: rakam + binlik nokta; boşta '–' (rapor/admin ile uyumlu) */
