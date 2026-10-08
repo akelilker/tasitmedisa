@@ -701,11 +701,15 @@ async function loadDashboard() {
             document.body.classList.add('password-change-gate-active');
         }
 
-        var currentSession = await fetchCurrentPortalSession(token);
-        if (!currentSession) {
-            clearStoredPortalTokens();
-            window.location.href = runtime.paths.DRIVER_PAGE_BASE + 'index.html';
-            return;
+        var isOffline = typeof navigator !== 'undefined' && navigator.onLine === false;
+        var currentSession = null;
+        if (!isOffline) {
+            currentSession = await fetchCurrentPortalSession(token);
+            if (!currentSession) {
+                clearStoredPortalTokens();
+                window.location.href = runtime.paths.DRIVER_PAGE_BASE + 'index.html';
+                return;
+            }
         }
 
         var accessContext = buildPortalAccessContext(tokenPayload, false, currentSession);

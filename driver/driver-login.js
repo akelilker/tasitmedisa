@@ -239,6 +239,12 @@ clearStoredPortalTokens();
 return false;
 }
 
+// Çevrimdışı: sunucu oturum doğrulaması yapılamaz; geçerli token claim'leri ile yönlendir
+// (ana uygulamanın local exp kontrolüyle aynı davranış; token silinmez).
+if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+return routeByToken(token, fallbackDashboard, routeOptions);
+}
+
 var currentSession = await fetchCurrentPortalSession(token);
 if (!currentSession) {
 clearStoredPortalTokens();
