@@ -25,9 +25,9 @@ if (document.readyState === 'loading') {
 document.addEventListener('DOMContentLoaded', applyMedisaIosPwaClass);
 }
 
-var VERSION = '20261008.1';
+var VERSION = '20261009.1';
 window.MEDISA_DRIVER_ASSET_VERSIONS = window.MEDISA_DRIVER_ASSET_VERSIONS || {
-bootstrap: '20261008.1',
+bootstrap: '20261009.1',
 login: '20261008.1',
 dashboardCore: '20261009.1',
 history: '20260926.1',
