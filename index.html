@@ -170,9 +170,9 @@
     </style>
 
     <!-- CSS Preload + Async Load -->
-    <link rel="preload" href="style-core.css?v=20261007.3" as="style">
-    <link rel="stylesheet" href="style-core.css?v=20261007.3">
-    <noscript><link rel="stylesheet" href="style-core.css?v=20261007.3"></noscript>
+    <link rel="preload" href="style-core.css?v=20261009.1" as="style">
+    <link rel="stylesheet" href="style-core.css?v=20261009.1">
+    <noscript><link rel="stylesheet" href="style-core.css?v=20261009.1"></noscript>
     <script>
         (function() {
             function getMainAppBasePath() {
@@ -538,6 +538,7 @@
                     <div id="settings-menu" class="settings-dropdown">
                         <button id="settings-branch-btn" onclick="openBranchManagement()">Şube Yönetimi</button>
                         <button id="settings-user-btn" onclick="openUserManagement()">Kullanıcı Yönetimi</button>
+                        <button id="settings-quick-access-btn" onclick="openHizliErisim()" style="display:none;">Hızlı Erişim</button>
                         <button id="settings-required-documents-btn" onclick="openZorunluEvraklar()">Zorunlu Evraklar</button>
                         <button id="dis-veri-btn" onclick="openDisVeriPanel()" style="display:none;"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg> Dış Veri Yönetimi</button>
                         <div id="settings-data-wrap" class="has-submenu-wrapper">
@@ -605,6 +606,8 @@
         </main>
 
     </div>
+
+    <div id="hizli-erisim-satiri" class="hizli-erisim-satiri" style="display:none;" aria-label="Hızlı Erişim"></div>
 
     <a id="main-user-panel-link" href="driver/index.html?portal=main-app" class="user-panel-link" title="Kullanıcı Paneli">
         <span class="user-panel-link-inner">
@@ -827,9 +830,9 @@
     </script>
 
     <script defer src="portal-session.js?v=20260731.3"></script>
-    <script defer src="data-manager.js?v=20260930.3"></script>
+    <script defer src="data-manager.js?v=20261009.1"></script>
     <script defer src="data-service.js?v=20260718.2"></script>
-    <script defer src="script-core.js?v=20261007.3"></script>
+    <script defer src="script-core.js?v=20261009.2"></script>
 </body>
 </html>
 

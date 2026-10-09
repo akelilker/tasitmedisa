@@ -197,7 +197,7 @@
 
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20260930.2';
+  const MEDISA_TASITLAR_MODULE_VERSION = '20261009.1';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
@@ -1399,6 +1399,9 @@
     if (typeof window.resetModalInputs === 'function') {
       window.resetModalInputs(modal);
     }
+    clearPendingVehicleDocumentDrop();
+    var stagedDocumentInput = modal.querySelector('#ruhsat-file-input');
+    if (stagedDocumentInput) stagedDocumentInput.value = '';
     modal.querySelectorAll('.date-placeholder').forEach(function(el) { el.remove(); });
     modal.querySelectorAll('.dynamic-event-save-message').forEach(function(el) { el.remove(); });
     modal.querySelectorAll('.universal-btn-save').forEach(function(btn) { btn.disabled = false; });
@@ -2659,6 +2662,7 @@
       }
 
       window.currentDetailVehicleId = vehicleId;
+      discardStagedVehicleDocumentFileIfVehicleChanged(vehicleId);
 
       // iOS yazıcı izin prompt'unu azaltmak için yazdırma script'ini önceden yükle
       if (!window._printScriptPromise) {
@@ -5729,10 +5733,170 @@
         '<text x="12" y="18.1" fill="currentColor" stroke="none" font-family="Arial, sans-serif" font-size="3.8" font-weight="800" text-anchor="middle">K</text>' +
         svgClose;
     }
-    return svgOpen +
+      return svgOpen +
       '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>' +
       '<path d="M14 2v6h6"></path><path d="M16 13H8"></path><path d="M16 17H8"></path><path d="M10 9H8"></path>' +
       svgClose;
+  }
+
+  function isVehicleDocumentDesktopDragContext() {
+    return typeof window.matchMedia === 'function'
+      && window.matchMedia('(min-width: 641px)').matches;
+  }
+
+  function isVehicleDocumentPdfFile(file) {
+    if (!file) return false;
+    var name = String(file.name || '').toLowerCase();
+    return file.type === 'application/pdf' || name.endsWith('.pdf');
+  }
+
+  var pendingVehicleDocumentDrop = null;
+  var vehicleDocumentPageDragGuardBound = false;
+
+  function clearPendingVehicleDocumentDrop() {
+    pendingVehicleDocumentDrop = null;
+  }
+
+  function stagePendingVehicleDocumentDrop(vehicleId, documentType, file) {
+    pendingVehicleDocumentDrop = {
+      vehicleId: String(vehicleId || ''),
+      documentType: String(documentType || ''),
+      file: file
+    };
+  }
+
+  function takePendingVehicleDocumentDrop(vehicleId, documentType) {
+    var pending = pendingVehicleDocumentDrop;
+    if (!pending || !pending.file) return null;
+    pendingVehicleDocumentDrop = null;
+    if (pending.vehicleId !== String(vehicleId || '')) return null;
+    if (pending.documentType !== String(documentType || '')) return null;
+    return pending.file;
+  }
+
+  function isVehicleDocumentDragSurfaceActive() {
+    if (!isVehicleDocumentDesktopDragContext()) return false;
+    var modal = document.getElementById('dinamik-olay-modal');
+    return !!(modal && modal.classList.contains('active') && modal.dataset.eventType === 'documents');
+  }
+
+  function ensureVehicleDocumentPageDragGuard() {
+    if (vehicleDocumentPageDragGuardBound) return;
+    vehicleDocumentPageDragGuardBound = true;
+    document.addEventListener('dragover', function(event) {
+      if (!isVehicleDocumentDragSurfaceActive()) return;
+      event.preventDefault();
+    }, true);
+    document.addEventListener('drop', function(event) {
+      if (!isVehicleDocumentDragSurfaceActive()) return;
+      event.preventDefault();
+    }, true);
+  }
+
+  function discardStagedVehicleDocumentFileIfVehicleChanged(nextVehicleId) {
+    var nextId = String(nextVehicleId || '');
+    var pendingMismatch = !!(pendingVehicleDocumentDrop && pendingVehicleDocumentDrop.vehicleId !== nextId);
+    var modal = document.getElementById('dinamik-olay-modal');
+    var pinned = modal && modal.dataset ? String(modal.dataset.vehicleId || '') : '';
+    var modalOpen = !!(modal && modal.classList.contains('active') && modal.dataset.eventType === 'documents');
+    var pinnedMismatch = !!(modalOpen && pinned && pinned !== nextId);
+    if (!pendingMismatch && !pinnedMismatch) return;
+    clearPendingVehicleDocumentDrop();
+    var input = document.getElementById('ruhsat-file-input');
+    if (!input) return;
+    input.value = '';
+    var selectBox = document.querySelector('#ruhsat-modal-content .ruhsat-select-box');
+    if (selectBox) {
+      selectBox.classList.remove('upload-success');
+      selectBox.innerHTML = '<span class="ruhsat-select-box-icon" aria-hidden="true">+</span>';
+    }
+    var confirmEl = document.querySelector('#ruhsat-modal-content .ruhsat-upload-replace-confirm');
+    if (confirmEl) confirmEl.hidden = true;
+    var saveBtn = document.getElementById('dinamik-olay-kaydet-btn');
+    if (saveBtn) setRuhsatSaveBtnVisibility(saveBtn, false);
+  }
+
+  function openVehicleDocumentFromCardDrop(vehicleId, docKey, file) {
+    var vid = String(vehicleId || '');
+    var dt = String(docKey || '');
+    if (!vid || !dt || !file) return;
+    stagePendingVehicleDocumentDrop(vid, dt, file);
+    if (typeof window.openVehicleDocumentModal !== 'function') {
+      clearPendingVehicleDocumentDrop();
+      return;
+    }
+    var opened = window.openVehicleDocumentModal(vid, dt);
+    if (opened === false) {
+      clearPendingVehicleDocumentDrop();
+      return;
+    }
+    var modal = document.getElementById('dinamik-olay-modal');
+    var content = document.getElementById('ruhsat-modal-content');
+    var openedForDrop = !!(modal
+      && modal.dataset.eventType === 'documents'
+      && String(modal.dataset.vehicleId || '') === vid
+      && content
+      && String(content.dataset.vehicleId || '') === vid);
+    if (!openedForDrop) {
+      clearPendingVehicleDocumentDrop();
+      return;
+    }
+    if (!content.querySelector('#ruhsat-file-input')) {
+      renderRuhsatUploadForm(content, document.getElementById('dinamik-olay-kaydet-btn'), true, dt);
+    }
+    if (pendingVehicleDocumentDrop) clearPendingVehicleDocumentDrop();
+  }
+
+  function bindVehicleDocumentCardDragDrop(card, vehicleId, docKey) {
+    var dragDepth = 0;
+    function clearDrag() {
+      dragDepth = 0;
+      card.classList.remove('vehicle-document-card--drag-over');
+    }
+    card.addEventListener('dragenter', function(event) {
+      if (!isVehicleDocumentDesktopDragContext()) {
+        clearDrag();
+        return;
+      }
+      event.preventDefault();
+      dragDepth += 1;
+      card.classList.add('vehicle-document-card--drag-over');
+    });
+    card.addEventListener('dragover', function(event) {
+      if (!isVehicleDocumentDesktopDragContext()) {
+        clearDrag();
+        return;
+      }
+      event.preventDefault();
+      event.stopPropagation();
+      if (event.dataTransfer) event.dataTransfer.dropEffect = 'copy';
+    });
+    card.addEventListener('dragleave', function() {
+      if (!isVehicleDocumentDesktopDragContext()) {
+        clearDrag();
+        return;
+      }
+      dragDepth -= 1;
+      if (dragDepth <= 0) clearDrag();
+    });
+    card.addEventListener('drop', function(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      clearDrag();
+      if (!isVehicleDocumentDesktopDragContext()) return;
+      var files = event.dataTransfer && event.dataTransfer.files ? event.dataTransfer.files : null;
+      if (!files || !files.length) return;
+      if (files.length > 1) {
+        alert('Yalnızca tek dosya bırakılabilir.');
+        return;
+      }
+      var droppedFile = files[0];
+      if (!isVehicleDocumentPdfFile(droppedFile)) {
+        alert('Yalnızca PDF dosyası yüklenebilir.');
+        return;
+      }
+      openVehicleDocumentFromCardDrop(vehicleId, docKey, droppedFile);
+    });
   }
 
   function buildVehicleDocumentCardElement(vehicle, docKey, vehicleId) {
@@ -5767,6 +5931,7 @@
       e.stopPropagation();
       window.openVehicleDocumentModal(vid, docKey);
     };
+    bindVehicleDocumentCardDragDrop(card, vid, docKey);
     return card;
   }
 
@@ -7958,6 +8123,7 @@
     const content = DOM.dinamikOlayFormIcerik;
     const saveBtn = DOM.dinamikOlayKaydetBtn;
     if (!modal || !content || !saveBtn) return;
+    ensureVehicleDocumentPageDragGuard();
     modal.dataset.eventType = 'documents';
     if (DOM.dinamikOlayBaslik) DOM.dinamikOlayBaslik.textContent = 'BELGELER';
     renderVehicleContextRow(modal, vehicle);
@@ -7993,17 +8159,18 @@
     const dt = String(documentType || 'ruhsat').trim() || 'ruhsat';
     const cfg = getVehicleDocumentConfig(dt);
     const vid = (vehicleId || window.currentDetailVehicleId || '').toString();
-    if (!vid) return;
+    if (!vid) return false;
     pinRuhsatUploadVehicleContext(vid);
     var vehicle = findVehicleForDocumentUpload(vid);
     if (dt === 'satis_sozlesmesi' && !vehicleAllowsSatisSozlesmesi(vehicle)) {
       alert('Satış Sözleşmesi yalnızca stoktan düşen (satış veya pert) taşıtlarda kullanılabilir.');
-      return;
+      return false;
     }
     const modal = DOM.dinamikOlayModal;
     const content = DOM.dinamikOlayFormIcerik;
     const saveBtn = DOM.dinamikOlayKaydetBtn;
-    if (!modal || !content || !saveBtn) return;
+    if (!modal || !content || !saveBtn) return false;
+    ensureVehicleDocumentPageDragGuard();
     modal.dataset.eventType = 'documents';
     if (DOM.dinamikOlayBaslik) DOM.dinamikOlayBaslik.textContent = cfg.title + ' YÜKLEME';
     renderVehicleContextRow(modal, vehicle);
@@ -8159,6 +8326,7 @@
     }
     modal.style.display = 'flex';
     requestAnimationFrame(function() { modal.classList.add('active'); });
+    return true;
   };
 
   // Sunucu tarafı upload_max_filesize ile aynı olmalıdır (owner: upload_ruhsat.php).
@@ -8425,6 +8593,8 @@
         assignRuhsatUploadFileAndDispatchChange(droppedFile);
       });
     }
+    var stagedDropFile = takePendingVehicleDocumentDrop(pinnedVehicleId, cfg.key);
+    if (stagedDropFile) assignRuhsatUploadFileAndDispatchChange(stagedDropFile);
   }
 
   function setRuhsatUploadProgressVisible(visible, percent, indeterminate) {

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Hızlı Erişim + Belge birleşik fixture</title>
+  <link rel="stylesheet" href="../../style-core.css?v=20261009.1" />
+  <link rel="stylesheet" href="../../tasitlar-base.css" />
+  <link rel="stylesheet" href="../../tasitlar-extra.css?v=20261009.1" />
+</head>
+<body>
+  <div id="hizli-erisim-satiri"></div>
+  <script>
+    window.__alerts = [];
+    window.__uploads = [];
+    window.alert = function(message) { window.__alerts.push(String(message)); };
+    window.fetch = function() { return Promise.reject(new Error('fixture-offline')); };
+    window.parseVehicleDateRawToIso = function(value) { return value ? '2026-12-31' : ''; };
+    function b64url(value) {
+      return btoa(JSON.stringify(value)).replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
+    }
+    var fixtureToken = b64url({ alg: 'none', typ: 'JWT' }) + '.' + b64url({
+      exp: 9999999999,
+      rol: 'genel_yonetici',
+      user_id: 'u-qa',
+      driver_dashboard: true,
+      yonetici_only: false,
+      ilk_giris_parola_degistirme_zorunlu: false
+    }) + '.sig';
+    window.medisaPortalSession = {
+      getStoredToken: function() { return fixtureToken; },
+      clearStoredTokens: function() {}
+    };
+    window.__vehicles = [
+      { id: 'v-qa', plaka: '34 QA 01', plate: '34 QA 01', brandModel: 'Hizli', assignedUserId: 'u-qa', version: 1, needsTakograf: false, needsK2: false },
+      { id: 'v-other', plaka: '06 XX 02', plate: '06 XX 02', brandModel: 'Diger', assignedUserId: 'u-other', version: 1, ruhsatPath: 'docs/ruhsat.pdf' }
+    ];
+    window.MedisaVehicleNotificationDomain = {
+      vehicleNeedsK2Belgesi: function() { return false; },
+      vehicleNeedsTakograf: function() { return false; },
+      vehicleNeedsTrafikSigortasi: function() { return true; },
+      vehicleNeedsEgzozMuayene: function() { return false; },
+      getK2BelgeGroups: function() { return []; },
+      getK2BelgeGroupForBranch: function() { return null; },
+      getK2BelgeGroupForVehicle: function() { return null; },
+      getK2BelgesiExpiryDateForVehicle: function() { return ''; },
+      getK2BelgesiDocumentPathForVehicle: function() { return ''; },
+      isVehicleOperationallyInactive: function() { return false; },
+      getEgzozMuayeneState: function() { return {}; },
+      isEgzozMuayeneCritical: function() { return false; }
+    };
+    window.getMedisaVehicles = function() { return window.__vehicles; };
+    window.getMedisaBranches = function() { return []; };
+    window.getMedisaUsers = function() { return []; };
+  </script>
+  <script src="../../data-manager.js?v=20261009.1"></script>
+  <script src="../../tasitlar.js?v=20261009.1"></script>
+  <script>
+    window.saveRuhsatUpload = function(documentType) {
+      var input = document.getElementById('ruhsat-file-input');
+      var file = input && input.files && input.files[0] ? input.files[0] : null;
+      var modal = document.getElementById('dinamik-olay-modal');
+      window.__uploads.push({
+        documentType: String(documentType || ''),
+        vehicleId: modal && modal.dataset ? String(modal.dataset.vehicleId || '') : '',
+        fileName: file ? file.name : ''
+      });
+    };
+    window.appData = window.appData || {};
+    window.appData.tasitlar = window.__vehicles;
+    window.__fixtureReady = typeof window.renderQuickAccessRow === 'function'
+      && typeof window.openVehicleDocumentsModal === 'function';
+  </script>
+</body>
+</html>
