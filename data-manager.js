@@ -851,26 +851,8 @@ function formatQuickAccessPlaka(plaka) {
     return raw;
 }
 
-function getQuickAccessVehicleType(vehicle) {
-    if (!vehicle) return 'otomobil';
-    var raw = String(vehicle.vehicleType != null ? vehicle.vehicleType : (vehicle.tip != null ? vehicle.tip : '')).trim().toLowerCase();
-    if (raw === 'otomobil' || raw === 'minivan' || raw === 'kamyon' || raw === 'romork') return raw;
-    return 'otomobil';
-}
-
-function getQuickAccessVehicleIcon(vehicle) {
-    var type = getQuickAccessVehicleType(vehicle);
-    var svg = '';
-    if (type === 'minivan') {
-        svg = '<svg class="hizli-erisim-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h10v8H3z"/><path d="M13 10h4l3 3v2h-7z"/><circle cx="7" cy="17" r="1.6"/><circle cx="17" cy="17" r="1.6"/><path d="M5 17v-2"/><path d="M15 17v-2"/></svg>';
-    } else if (type === 'kamyon') {
-        svg = '<svg class="hizli-erisim-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 5h12v10H2z"/><path d="M14 8h4l3 3v4h-7z"/><circle cx="6" cy="17.5" r="1.6"/><circle cx="17" cy="17.5" r="1.6"/></svg>';
-    } else if (type === 'romork') {
-        svg = '<svg class="hizli-erisim-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 6h7v8H2z"/><path d="M9 7h3v7H9z"/><circle cx="4.5" cy="16.5" r="1.6"/><circle cx="10.5" cy="16.5" r="1.6"/></svg>';
-    } else {
-        svg = '<svg class="hizli-erisim-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 16l-1-5 2-4h14l2 4-1 5"/><path d="M3 16h18"/><circle cx="7" cy="17" r="1.6"/><circle cx="17" cy="17" r="1.6"/></svg>';
-    }
-    return svg;
+function getQuickAccessVehicleIcon() {
+    return '<svg class="hizli-erisim-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.2 16.8C6.2 8.2 17.8 8.2 17.8 16.8H6.2"/><circle cx="12" cy="13.2" r="1.15"/><path d="M8.2 13.2H10.5"/><path d="M13.5 13.2H15.8"/></svg>';
 }
 
 function renderQuickAccessRow() {
@@ -919,7 +901,7 @@ function renderQuickAccessRow() {
         var plate = formatQuickAccessPlaka(v.plaka != null ? v.plaka : (v.plate || ''));
         var href = DRIVER_DASHBOARD_URL + '?vehicle=' + encodeURIComponent(String(id));
         html += '<a href="' + escapeQuickAccessHtml(href) + '" class="hizli-erisim-oge" data-vehicle-id="' + escapeQuickAccessHtml(String(id)) + '" title="' + escapeQuickAccessHtml(plate) + '" aria-label="' + escapeQuickAccessHtml(plate) + '">'
-            + getQuickAccessVehicleIcon(v)
+            + getQuickAccessVehicleIcon()
             + '<span class="hizli-erisim-plaka">' + escapeQuickAccessHtml(plate) + '</span>'
             + '</a>';
     });
