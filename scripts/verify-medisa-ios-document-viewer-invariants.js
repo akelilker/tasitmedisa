@@ -274,7 +274,7 @@ test('pin/SW chain', function() {
   assert.doesNotMatch(indexHtml, /major\s*>=\s*27/);
   assert.match(read('script-core.js'), /safariVer > osVer/);
   assert.match(read('script-core.js'), /isMedisaIOS27PWA[\s\S]{0,220}isIOSPWA\(\)/);
-  assert.match(read('index.html'), /style-core\.css\?v=20261009\.2/);
+  assert.match(read('index.html'), /style-core\.css\?v=20261009\.3/);
 });
 
 console.log('');
