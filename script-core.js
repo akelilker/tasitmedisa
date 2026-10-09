@@ -2411,6 +2411,7 @@ window.ensureMedisaVehicleNotificationDomainReady = function() {
     };
   }
   window.openBranchManagement = wrapAyarlar('openBranchManagement');
+  window.openHizliErisim = wrapAyarlar('openHizliErisim');
   window.openUserManagement = wrapAyarlar('openUserManagement');
   window.openUserFormModal = wrapAyarlar('openUserFormModal');
   window.openZorunluEvraklar = wrapAyarlar('openZorunluEvraklar');

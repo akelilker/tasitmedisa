@@ -230,9 +230,70 @@ if (implementationPresent) {
   });
   test('global ayarlar proxyleri registry ensure kullanır', function() {
     assert.match(core, /MedisaMainSurfaceRegistry\.ensure\('settings'\)/);
-    ['openBranchManagement', 'openUserManagement', 'openUserFormModal', 'openZorunluEvraklar', 'openDataManagement', 'openDisVeriPanel', 'exportData', 'showLastBackupMetadata', 'importData'].forEach(function(name) {
+    ['openBranchManagement', 'openHizliErisim', 'openUserManagement', 'openUserFormModal', 'openZorunluEvraklar', 'openDataManagement', 'openDisVeriPanel', 'exportData', 'showLastBackupMetadata', 'importData'].forEach(function(name) {
       assert.ok(core.includes("wrapAyarlar('" + name + "')"), name + ' proxy eksik');
     });
+  });
+  test('Hızlı Erişim ilk tıklamada modal açar, ikinci tıklamada ayarlar yeniden yüklemez', function() {
+    assert.match(index, /onclick="openHizliErisim\(\)"/);
+    assert.match(owners.settings, /window\.openHizliErisim\s*=\s*function openHizliErisim\(\)/);
+    var start = core.indexOf('  function wrapAyarlar(fnName) {');
+    var end = core.indexOf('  /* medisa-shell-intent-handlers:begin */');
+    assert.ok(start !== -1 && end > start, 'wrapAyarlar bloğu bulunmalı');
+    var run = new Function(
+      'window',
+      'showModuleSpinner',
+      'hideModuleSpinner',
+      'showSurfaceOpenError',
+      core.slice(start, end)
+    );
+    function boot() {
+      var state = { loads: [], hizli: 0, branch: 0, user: 0, window: null };
+      state.window = {
+        MedisaMainSurfaceRegistry: {
+          ensure: function(name) {
+            state.loads.push(name);
+            state.window.openHizliErisim = function() { state.hizli += 1; };
+            state.window.openBranchManagement = function() { state.branch += 1; };
+            state.window.openUserManagement = function() { state.user += 1; };
+            return {
+              then: function(onOk) {
+                onOk();
+                return {
+                  catch: function() {
+                    return { finally: function(done) { done(); } };
+                  }
+                };
+              }
+            };
+          }
+        }
+      };
+      run(state.window, function() {}, function() {}, function() { throw new Error('Ayarlar açılamadı'); });
+      return state;
+    }
+
+    var hizli = boot();
+    assert.notStrictEqual(hizli.window.openHizliErisim, hizli.window.openBranchManagement);
+    hizli.window.openHizliErisim();
+    assert.deepStrictEqual(hizli.loads, ['settings']);
+    assert.equal(hizli.hizli, 1);
+    hizli.window.openHizliErisim();
+    assert.deepStrictEqual(hizli.loads, ['settings']);
+    assert.equal(hizli.hizli, 2);
+    hizli.window.openBranchManagement();
+    hizli.window.openUserManagement();
+    assert.deepStrictEqual(hizli.loads, ['settings']);
+    assert.equal(hizli.branch, 1);
+    assert.equal(hizli.user, 1);
+
+    var branchFirst = boot();
+    branchFirst.window.openBranchManagement();
+    assert.deepStrictEqual(branchFirst.loads, ['settings']);
+    assert.equal(branchFirst.branch, 1);
+    branchFirst.window.openUserManagement();
+    assert.deepStrictEqual(branchFirst.loads, ['settings']);
+    assert.equal(branchFirst.user, 1);
   });
   test('ayarlar mobil form focus selector gri normal owner\'dan spesifik', function() {
     var ayarlarCss = read('ayarlar.css');
