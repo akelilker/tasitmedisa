@@ -267,14 +267,14 @@ test('iOS kart İndir ikonu görünür; tıklama canonical viewer Kaydet/Paylaş
 test('pin/SW chain', function() {
   assert.match(tasitlar, /MEDISA_TASITLAR_MODULE_VERSION = '20261009\.1'/);
   assert.match(scriptCore, /tasitlar:\s*'20261009\.1'/);
-  assert.match(sw, /CACHE_VERSION = 'medisa-v2\.373'/);
+  assert.match(sw, /CACHE_VERSION = 'medisa-v2\.374'/);
   assert.match(read('index.html'), /script-core\.js\?v=20261009\.3/);
   const indexHtml = read('index.html');
   assert.match(indexHtml, /classList\.add\('medisa-ios27-pwa'\)/);
   assert.doesNotMatch(indexHtml, /major\s*>=\s*27/);
   assert.match(read('script-core.js'), /safariVer > osVer/);
   assert.match(read('script-core.js'), /isMedisaIOS27PWA[\s\S]{0,220}isIOSPWA\(\)/);
-  assert.match(read('index.html'), /style-core\.css\?v=20261009\.1/);
+  assert.match(read('index.html'), /style-core\.css\?v=20261009\.2/);
 });
 
 console.log('');

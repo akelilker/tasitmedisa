@@ -2528,19 +2528,22 @@ body.modal-open .user-panel-link {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 3px;
-  color: rgba(255, 255, 255, 0.85);
+  gap: 5px;
+  color: #d6dbe3;
   text-decoration: none;
   pointer-events: auto;
+  padding: 2px 4px;
+  min-width: 44px;
   transition: transform 0.18s ease, color 0.18s ease;
   transform-origin: center center;
   -webkit-tap-highlight-color: transparent;
 }
 
 .hizli-erisim-svg {
-  width: 30px;
-  height: 30px;
+  width: 44px;
+  height: 44px;
   display: block;
+  flex-shrink: 0;
 }
 
 .hizli-erisim-plaka {
