@@ -29,7 +29,7 @@ var VERSION = '20261008.1';
 window.MEDISA_DRIVER_ASSET_VERSIONS = window.MEDISA_DRIVER_ASSET_VERSIONS || {
 bootstrap: '20261008.1',
 login: '20261008.1',
-dashboardCore: '20261008.1',
+dashboardCore: '20261009.1',
 history: '20260926.1',
 documents: '20260820.1',
 feedback: '20260813.1',

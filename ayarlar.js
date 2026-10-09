@@ -381,6 +381,36 @@
                     </div>
                 </div>
             </div>
+        </div>
+
+<div id="hizli-erisim-modal" class="modal-overlay ayarlar-modal-overlay compact-confirm-modal">
+            <div class="modal-container" onclick="event.stopPropagation();">
+                <div class="modal-header">
+                    <h2>HIZLI ERİŞİM</h2>
+                    <button class="modal-close" onclick="closeHizliErisim()">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="modal-body" onclick="event.stopPropagation();">
+                    <div class="hizli-erisim-toggle-row">
+                        <span class="hizli-erisim-toggle-label">Hızlı Erişim</span>
+                        <label class="hizli-erisim-switch">
+                            <input type="checkbox" id="hizli-erisim-aktif" onchange="syncHizliErisimToggle()">
+                            <span class="hizli-erisim-switch-slider"></span>
+                        </label>
+                    </div>
+                    <div class="hizli-erisim-list-title">Kısayolda Gösterilecek Taşıtlar</div>
+                    <div id="hizli-erisim-arac-list" class="hizli-erisim-arac-list"></div>
+                    <div id="hizli-erisim-limit-msg" class="hizli-erisim-limit-msg" role="status" aria-live="polite"></div>
+                    <div class="universal-btn-group">
+                        <button type="button" class="universal-btn-save" onclick="saveHizliErisim()">Kaydet</button>
+                        <button type="button" class="universal-btn-cancel" onclick="closeHizliErisim()">Vazgeç</button>
+                    </div>
+                </div>
+            </div>
         </div>`;
     var fragment = document.createDocumentFragment();
     while (host.firstChild) fragment.appendChild(host.firstChild);
@@ -426,6 +456,135 @@
       if (settingsMenu) settingsMenu.classList.remove('open');
       syncSettingsOpenState();
     }
+
+    // --- Hızlı Erişim (kullanıcı başına cihaz tercihi) ---
+    function hizliErisimGetSessionUserId() {
+      const session = window.medisaSession || {};
+      return String((session.user && session.user.id) || '').trim();
+    }
+
+    function hizliErisimGetLimit() {
+      if (typeof window.getQuickAccessVehicleLimit === 'function') {
+        return window.getQuickAccessVehicleLimit();
+      }
+      return 4;
+    }
+
+    function hizliErisimEscape(value) {
+      return String(value == null ? '' : value)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
+    function hizliErisimFormatPlaka(plaka) {
+      const raw = String(plaka == null ? '' : plaka);
+      try {
+        const isMobile = window.matchMedia && window.matchMedia('(max-width: 640px)').matches;
+        if (isMobile) return raw.replace(/\s+/g, '');
+      } catch (e) {}
+      return raw;
+    }
+
+    function hizliErisimReadPref() {
+      const userId = hizliErisimGetSessionUserId();
+      if (window.medisaQuickAccessPref && typeof window.medisaQuickAccessPref.read === 'function') {
+        return window.medisaQuickAccessPref.read(userId);
+      }
+      return { aktif: false, aracIds: [] };
+    }
+
+    function renderHizliErisimAracList() {
+      const listEl = document.getElementById('hizli-erisim-arac-list');
+      if (!listEl) return;
+      let vehicles = [];
+      if (typeof window.getAssignedVehiclesForSessionUser === 'function') {
+        vehicles = window.getAssignedVehiclesForSessionUser(window.medisaSession || null);
+      }
+      const pref = hizliErisimReadPref();
+      const selectedSet = {};
+      (pref.aracIds || []).forEach(function (id) { selectedSet[String(id)] = true; });
+
+      if (!vehicles.length) {
+        listEl.innerHTML = '<div class="hizli-erisim-empty">Size atanmış taşıt bulunamadı.</div>';
+        return;
+      }
+
+      listEl.innerHTML = vehicles.map(function (v) {
+        const id = String(v.id);
+        const plate = hizliErisimFormatPlaka(v.plaka != null ? v.plaka : (v.plate || ''));
+        const checked = selectedSet[id] ? ' checked' : '';
+        return '<label class="hizli-erisim-arac-item">'
+          + '<input type="checkbox" class="hizli-erisim-arac-check" data-vehicle-id="' + hizliErisimEscape(id) + '"' + checked + ' onchange="syncHizliErisimLimit()">'
+          + '<span class="hizli-erisim-arac-plate">' + hizliErisimEscape(plate) + '</span>'
+          + '</label>';
+      }).join('');
+    }
+
+    window.openHizliErisim = function openHizliErisim() {
+      const modal = document.getElementById('hizli-erisim-modal');
+      if (!modal) return;
+      closeSettingsDropdown();
+      const pref = hizliErisimReadPref();
+      const toggle = document.getElementById('hizli-erisim-aktif');
+      if (toggle) toggle.checked = !!pref.aktif;
+      renderHizliErisimAracList();
+      syncHizliErisimToggle();
+      syncHizliErisimLimit();
+      document.body.classList.add('modal-open');
+      modal.style.display = 'flex';
+      requestAnimationFrame(function () { modal.classList.add('active'); });
+    };
+
+    window.closeHizliErisim = function closeHizliErisim() {
+      const modal = document.getElementById('hizli-erisim-modal');
+      if (modal) {
+        modal.classList.remove('active');
+        modal.style.display = 'none';
+      }
+      if (typeof window.updateFooterDim === 'function') window.updateFooterDim();
+    };
+
+    window.syncHizliErisimToggle = function syncHizliErisimToggle() {
+      const toggle = document.getElementById('hizli-erisim-aktif');
+      const modal = document.getElementById('hizli-erisim-modal');
+      if (modal) {
+        modal.classList.toggle('hizli-erisim-disabled', !(toggle && toggle.checked));
+      }
+    };
+
+    window.syncHizliErisimLimit = function syncHizliErisimLimit() {
+      const listEl = document.getElementById('hizli-erisim-arac-list');
+      if (!listEl) return;
+      const limit = hizliErisimGetLimit();
+      const checks = listEl.querySelectorAll('.hizli-erisim-arac-check:checked');
+      const msgEl = document.getElementById('hizli-erisim-limit-msg');
+      if (checks.length >= limit) {
+        if (msgEl) msgEl.textContent = 'En fazla ' + limit + ' taşıt seçebilirsiniz.';
+        listEl.querySelectorAll('.hizli-erisim-arac-check:not(:checked)').forEach(function (cb) { cb.disabled = true; });
+      } else {
+        if (msgEl) msgEl.textContent = '';
+        listEl.querySelectorAll('.hizli-erisim-arac-check').forEach(function (cb) { cb.disabled = false; });
+      }
+    };
+
+    window.saveHizliErisim = function saveHizliErisim() {
+      const userId = hizliErisimGetSessionUserId();
+      const toggle = document.getElementById('hizli-erisim-aktif');
+      const aktif = !!(toggle && toggle.checked);
+      const listEl = document.getElementById('hizli-erisim-arac-list');
+      const aracIds = [];
+      if (listEl) {
+        listEl.querySelectorAll('.hizli-erisim-arac-check:checked').forEach(function (cb) {
+          const id = cb.getAttribute('data-vehicle-id');
+          if (id) aracIds.push(id);
+        });
+      }
+      if (window.medisaQuickAccessPref && typeof window.medisaQuickAccessPref.write === 'function') {
+        window.medisaQuickAccessPref.write(userId, { aktif: aktif, aracIds: aracIds });
+      }
+      if (typeof window.renderQuickAccessRow === 'function') window.renderQuickAccessRow();
+      window.closeHizliErisim();
+    };
 
     window.reopenSettingsMenu = function reopenSettingsMenu() {
       const settingsMenu = document.getElementById('settings-menu');

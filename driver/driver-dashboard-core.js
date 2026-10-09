@@ -649,6 +649,39 @@ console.warn('[Medisa] clearDriverActionQuery:', e);
 }
 }
 
+function getDriverVehicleFromQuery() {
+try {
+var search = window.location && window.location.search ? window.location.search : '';
+if (!search) return '';
+var params = new URLSearchParams(search);
+var raw = params.get('vehicle');
+return raw == null ? '' : String(raw).trim();
+} catch (e) {
+return '';
+}
+}
+
+function clearDriverVehicleQuery() {
+try {
+var u = new URL(window.location.href);
+u.searchParams.delete('vehicle');
+var qs = u.searchParams.toString();
+var newUrl = u.pathname + (qs ? '?' + qs : '') + (u.hash || '');
+history.replaceState(null, '', newUrl);
+} catch (e) {
+console.warn('[Medisa] clearDriverVehicleQuery:', e);
+}
+}
+
+function redirectToDriverLoginPreservingTarget() {
+try {
+var target = window.location.pathname + window.location.search;
+window.location.href = runtime.paths.DRIVER_PAGE_BASE + 'index.html?next=' + encodeURIComponent(target);
+} catch (e) {
+window.location.href = runtime.paths.DRIVER_PAGE_BASE + 'index.html';
+}
+}
+
 function tryOpenDriverKmActionFromQuery() {
 if (driverKmActionHandled) return;
 if (getDriverActionFromQuery() !== 'km') return;
@@ -682,7 +715,7 @@ async function loadDashboard() {
         const token = getStoredPortalToken();
 
         if (!token) {
-            window.location.href = runtime.paths.DRIVER_PAGE_BASE + 'index.html';
+            redirectToDriverLoginPreservingTarget();
             return;
         }
 
@@ -690,7 +723,7 @@ async function loadDashboard() {
         var nowTs = Math.floor(Date.now() / 1000);
         if (!tokenPayload || !tokenPayload.exp || Number(tokenPayload.exp) < nowTs) {
             clearStoredPortalTokens();
-            window.location.href = runtime.paths.DRIVER_PAGE_BASE + 'index.html';
+            redirectToDriverLoginPreservingTarget();
             return;
         }
 
@@ -707,7 +740,7 @@ async function loadDashboard() {
             currentSession = await fetchCurrentPortalSession(token);
             if (!currentSession) {
                 clearStoredPortalTokens();
-                window.location.href = runtime.paths.DRIVER_PAGE_BASE + 'index.html';
+                redirectToDriverLoginPreservingTarget();
                 return;
             }
         }
@@ -793,6 +826,15 @@ async function loadDashboard() {
         if (emptyStateEl) emptyStateEl.style.display = 'none';
         const vehicles = data.vehicles;
         const records = data.records;
+        // Hızlı Erişim: URL'deki vehicle paramını ilk çizimden önce uygula; geçersizse güvenli varsayılan kalır.
+        const requestedVehicleId = getDriverVehicleFromQuery();
+        if (requestedVehicleId) {
+            const requested = vehicles.find(function (v) { return String(v && v.id) === String(requestedVehicleId); });
+            if (requested) {
+                selectedVehicleId = String(requested.id);
+            }
+            clearDriverVehicleQuery();
+        }
         selectedVehicleId = selectedVehicleId || (vehicles[0] != null && vehicles[0].id != null ? String(vehicles[0].id) : null);
         if (!getSelectedVehicle() && vehicles && vehicles.length && vehicles[0] != null) {
             selectedVehicleId = String(vehicles[0].id);
@@ -1803,7 +1845,32 @@ window.medisaPortalSession.clearRememberCredentials();
 }
 }
 
+function clearDriverQuickAccessPref(userId) {
+try {
+if (window.medisaQuickAccessPref) {
+if (userId && typeof window.medisaQuickAccessPref.clear === 'function') {
+window.medisaQuickAccessPref.clear(userId);
+return;
+}
+if (!userId && typeof window.medisaQuickAccessPref.clearAll === 'function') {
+window.medisaQuickAccessPref.clearAll();
+return;
+}
+}
+var prefix = 'medisa_hizli_erisim_';
+var targetKey = userId ? (prefix + String(userId)) : '';
+var doomed = [];
+for (var i = 0; i < localStorage.length; i++) {
+var k = localStorage.key(i);
+if (!k || k.indexOf(prefix) !== 0) continue;
+if (targetKey ? (k === targetKey) : true) doomed.push(k);
+}
+doomed.forEach(function (k) { localStorage.removeItem(k); });
+} catch (e) {}
+}
+
 function forgetThisDevice() {
+clearDriverQuickAccessPref(null);
 if (window.medisaPortalSession && typeof window.medisaPortalSession.forgetThisDevice === 'function') {
 window.medisaPortalSession.forgetThisDevice();
 } else {
@@ -1836,6 +1903,8 @@ forgetThisDevice();
 }
 
 function logout() {
+    var uid = currentUser && currentUser.id ? String(currentUser.id) : '';
+    if (uid) clearDriverQuickAccessPref(uid);
     clearStoredPortalTokens();
     window.location.href = runtime.paths.DRIVER_PAGE_BASE + 'index.html?force=login';
 }

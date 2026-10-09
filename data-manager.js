@@ -539,6 +539,9 @@ function closeMainAppSettingsMenus() {
 /** Ana uygulama ayarlar menüsü: oturumu kapat, portal girişine yönlendir */
 function medisaMainAppLogout() {
     try {
+        var session = window.medisaSession || getDefaultSession();
+        var userId = String((session.user && session.user.id) || '').trim();
+        if (userId) clearQuickAccessPref(userId);
         clearPortalSessionAndDocumentCaches();
         setMedisaSession(getDefaultSession());
         if (typeof document !== 'undefined' && document.body) {
@@ -554,6 +557,7 @@ window.medisaMainAppLogout = medisaMainAppLogout;
 
 function medisaMainAppForgetThisDevice() {
     try {
+        clearAllQuickAccessPrefs();
         if (window.medisaPortalSession && typeof window.medisaPortalSession.forgetThisDevice === 'function') {
             window.medisaPortalSession.forgetThisDevice();
         } else {
@@ -733,6 +737,195 @@ function canShowMainUserPanelLink(sessionData) {
     var session = sessionData && typeof sessionData === 'object' ? sessionData : getDefaultSession();
     if (!hasMainAppAccessForSession(session)) return false;
     return hasAssignedVehicleForSessionUser(session);
+}
+
+/** Hızlı Erişim: gerçek panel geçiş yetkisi + güncel atanmış araç. Mevcut link koşulunu değiştirmez. */
+function canShowQuickAccess(sessionData) {
+    var session = sessionData && typeof sessionData === 'object' ? sessionData : getDefaultSession();
+    if (!canShowMainUserPanelLink(session)) return false;
+    return canUseDriverPanelTransition(session);
+}
+
+/* Hızlı Erişim — kullanıcı başına cihaz tercihi (localStorage). Geçici UI tercihi; kalıcı iş verisi değil. */
+function getQuickAccessPrefKey(userId) {
+    return 'medisa_hizli_erisim_' + String(userId == null ? '' : userId);
+}
+
+function readQuickAccessPref(userId) {
+    var key = getQuickAccessPrefKey(userId);
+    if (key === 'medisa_hizli_erisim_') return { aktif: false, aracIds: [] };
+    try {
+        var raw = localStorage.getItem(key);
+        if (!raw) return { aktif: false, aracIds: [] };
+        var parsed = JSON.parse(raw);
+        var aracIds = Array.isArray(parsed && parsed.aracIds)
+            ? parsed.aracIds.map(function (id) { return String(id); }).filter(Boolean)
+            : [];
+        return { aktif: !!(parsed && parsed.aktif === true), aracIds: aracIds };
+    } catch (e) {
+        return { aktif: false, aracIds: [] };
+    }
+}
+
+function writeQuickAccessPref(userId, pref) {
+    var key = getQuickAccessPrefKey(userId);
+    if (key === 'medisa_hizli_erisim_') return;
+    try {
+        var safe = {
+            aktif: !!(pref && pref.aktif === true),
+            aracIds: Array.isArray(pref && pref.aracIds)
+                ? pref.aracIds.map(function (id) { return String(id); }).filter(Boolean)
+                : []
+        };
+        localStorage.setItem(key, JSON.stringify(safe));
+    } catch (e) {}
+}
+
+function clearQuickAccessPref(userId) {
+    var key = getQuickAccessPrefKey(userId);
+    if (key === 'medisa_hizli_erisim_') return;
+    try { localStorage.removeItem(key); } catch (e) {}
+}
+
+function clearAllQuickAccessPrefs() {
+    try {
+        var doomed = [];
+        for (var i = 0; i < localStorage.length; i++) {
+            var k = localStorage.key(i);
+            if (k && k.indexOf('medisa_hizli_erisim_') === 0) doomed.push(k);
+        }
+        doomed.forEach(function (k) { try { localStorage.removeItem(k); } catch (e) {} });
+    } catch (e) {}
+}
+
+window.medisaQuickAccessPref = {
+    read: readQuickAccessPref,
+    write: writeQuickAccessPref,
+    clear: clearQuickAccessPref,
+    clearAll: clearAllQuickAccessPrefs
+};
+window.renderQuickAccessRow = renderQuickAccessRow;
+window.getQuickAccessVehicleLimit = getQuickAccessVehicleLimit;
+window.getAssignedVehiclesForSessionUser = getAssignedVehiclesForSessionUser;
+window.formatQuickAccessPlaka = formatQuickAccessPlaka;
+
+function getAssignedVehiclesForSessionUser(sessionData) {
+    var session = sessionData && typeof sessionData === 'object' ? sessionData : getDefaultSession();
+    var userId = String((session.user && session.user.id) || '').trim();
+    if (!userId) return [];
+    var vehicles = Array.isArray(window.appData && window.appData.tasitlar) ? window.appData.tasitlar : [];
+    return vehicles.filter(function (vehicle) {
+        return vehicle && String(vehicle.assignedUserId == null ? '' : vehicle.assignedUserId).trim() === userId;
+    });
+}
+
+function getQuickAccessVehicleLimit() {
+    try {
+        var isMobile = typeof window.matchMedia === 'function'
+            ? window.matchMedia('(max-width: 640px)').matches
+            : window.innerWidth <= 640;
+        return isMobile ? 3 : 4;
+    } catch (e) {
+        return 4;
+    }
+}
+
+function escapeQuickAccessHtml(value) {
+    return String(value == null ? '' : value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+function formatQuickAccessPlaka(plaka) {
+    if (!plaka) return '';
+    var raw = String(plaka);
+    try {
+        var isMobile = typeof window.matchMedia === 'function'
+            ? window.matchMedia('(max-width: 640px)').matches
+            : window.innerWidth <= 640;
+        if (isMobile) return raw.replace(/\s+/g, '');
+    } catch (e) {}
+    return raw;
+}
+
+function getQuickAccessVehicleType(vehicle) {
+    if (!vehicle) return 'otomobil';
+    var raw = String(vehicle.vehicleType != null ? vehicle.vehicleType : (vehicle.tip != null ? vehicle.tip : '')).trim().toLowerCase();
+    if (raw === 'otomobil' || raw === 'minivan' || raw === 'kamyon' || raw === 'romork') return raw;
+    return 'otomobil';
+}
+
+function getQuickAccessVehicleIcon(vehicle) {
+    var type = getQuickAccessVehicleType(vehicle);
+    var svg = '';
+    if (type === 'minivan') {
+        svg = '<svg class="hizli-erisim-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h10v8H3z"/><path d="M13 10h4l3 3v2h-7z"/><circle cx="7" cy="17" r="1.6"/><circle cx="17" cy="17" r="1.6"/><path d="M5 17v-2"/><path d="M15 17v-2"/></svg>';
+    } else if (type === 'kamyon') {
+        svg = '<svg class="hizli-erisim-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 5h12v10H2z"/><path d="M14 8h4l3 3v4h-7z"/><circle cx="6" cy="17.5" r="1.6"/><circle cx="17" cy="17.5" r="1.6"/></svg>';
+    } else if (type === 'romork') {
+        svg = '<svg class="hizli-erisim-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 6h7v8H2z"/><path d="M9 7h3v7H9z"/><circle cx="4.5" cy="16.5" r="1.6"/><circle cx="10.5" cy="16.5" r="1.6"/></svg>';
+    } else {
+        svg = '<svg class="hizli-erisim-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 16l-1-5 2-4h14l2 4-1 5"/><path d="M3 16h18"/><circle cx="7" cy="17" r="1.6"/><circle cx="17" cy="17" r="1.6"/></svg>';
+    }
+    return svg;
+}
+
+function renderQuickAccessRow() {
+    if (typeof document === 'undefined') return;
+    if (getCurrentPathname().indexOf('/driver/') !== -1) return;
+
+    var row = document.getElementById('hizli-erisim-satiri');
+    if (!row) return;
+
+    var session = window.medisaSession || getDefaultSession();
+    if (!canShowQuickAccess(session)) {
+        row.style.display = 'none';
+        row.innerHTML = '';
+        return;
+    }
+
+    var userId = String((session.user && session.user.id) || '').trim();
+    if (!userId) {
+        row.style.display = 'none';
+        row.innerHTML = '';
+        return;
+    }
+
+    var pref = readQuickAccessPref(userId);
+    if (!pref.aktif || !pref.aracIds.length) {
+        row.style.display = 'none';
+        row.innerHTML = '';
+        return;
+    }
+
+    var assigned = getAssignedVehiclesForSessionUser(session);
+    var assignedById = {};
+    assigned.forEach(function (v) { assignedById[String(v.id)] = v; });
+
+    var selected = pref.aracIds.filter(function (id) { return assignedById[String(id)]; });
+    if (!selected.length) {
+        row.style.display = 'none';
+        row.innerHTML = '';
+        return;
+    }
+
+    var html = '';
+    selected.forEach(function (id) {
+        var v = assignedById[String(id)];
+        if (!v) return;
+        var plate = formatQuickAccessPlaka(v.plaka != null ? v.plaka : (v.plate || ''));
+        var href = DRIVER_DASHBOARD_URL + '?vehicle=' + encodeURIComponent(String(id));
+        html += '<a href="' + escapeQuickAccessHtml(href) + '" class="hizli-erisim-oge" data-vehicle-id="' + escapeQuickAccessHtml(String(id)) + '" title="' + escapeQuickAccessHtml(plate) + '" aria-label="' + escapeQuickAccessHtml(plate) + '">'
+            + getQuickAccessVehicleIcon(v)
+            + '<span class="hizli-erisim-plaka">' + escapeQuickAccessHtml(plate) + '</span>'
+            + '</a>';
+    });
+
+    row.innerHTML = html;
+    row.style.display = '';
 }
 
 function buildAuthHeaders(extraHeaders) {
@@ -948,6 +1141,15 @@ function clearMainAppAuthGate() {
     document.body.classList.remove('main-auth-gate-active');
 }
 
+function syncMainAppQuickAccessMenuItem(sessionData) {
+    if (typeof document === 'undefined') return;
+    var session = sessionData && typeof sessionData === 'object' ? sessionData : getDefaultSession();
+    var btn = document.getElementById('settings-quick-access-btn');
+    if (!btn) return;
+    var show = !!(session.authenticated) && canShowQuickAccess(session);
+    btn.style.display = show ? '' : 'none';
+}
+
 function applyMainAppSessionUiState() {
     if (typeof document === 'undefined') return;
     if (getCurrentPathname().indexOf('/driver/') !== -1) return;
@@ -956,6 +1158,8 @@ function applyMainAppSessionUiState() {
 
     var session = window.medisaSession || getDefaultSession();
     syncMainAppHeaderUserName(session);
+    renderQuickAccessRow();
+    syncMainAppQuickAccessMenuItem(session);
     var showLogoutActions = !!getStoredPortalToken();
     var logoutBtn = document.getElementById('settings-logout-btn');
     if (logoutBtn) {
