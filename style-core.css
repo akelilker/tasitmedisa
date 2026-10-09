@@ -2529,7 +2529,7 @@ body.modal-open .user-panel-link {
   flex-direction: column;
   align-items: center;
   gap: 5px;
-  color: #d6dbe3;
+  color: var(--border-subtle);
   text-decoration: none;
   pointer-events: auto;
   padding: 2px 4px;
@@ -2556,6 +2556,12 @@ body.modal-open .user-panel-link {
 
 .hizli-erisim-oge:active {
   transform: scale(0.94);
+}
+
+@media (min-width: 641px) {
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hizli-erisim-oge {
+    color: rgba(196, 210, 228, 0.56);
+  }
 }
 
 @media (hover: hover) and (min-width: 641px) {

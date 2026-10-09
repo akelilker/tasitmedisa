@@ -40,27 +40,30 @@ test('birleşik script-core her iki modül sürümünü taşır ve yeni shell pi
     assert.doesNotMatch(read(name), /script-core\.js\?v=20261009\.1/);
     assert.doesNotMatch(read(name), /script-core\.js\?v=20261009\.2/);
   });
-  assert.match(index, /style-core\.css\?v=20261009\.2/);
-  assert.match(index, /data-manager\.js\?v=20261009\.3/);
-  assert.doesNotMatch(index, /data-manager\.js\?v=20261009\.2/);
+  assert.match(index, /style-core\.css\?v=20261009\.3/);
+  assert.match(index, /data-manager\.js\?v=20261009\.4/);
+  assert.doesNotMatch(index, /data-manager\.js\?v=20261009\.3/);
 });
 
 test('SW önbelleği shell pinleriyle birebir ve önceki 370 kimliğinden ayrılır', function() {
-  assert.match(sw, /CACHE_VERSION = 'medisa-v2\.374'/);
+  assert.match(sw, /CACHE_VERSION = 'medisa-v2\.375'/);
   assert.doesNotMatch(sw, /medisa-v2\.370/);
   assert.doesNotMatch(sw, /medisa-v2\.371/);
   assert.doesNotMatch(sw, /medisa-v2\.372/);
   assert.doesNotMatch(sw, /medisa-v2\.373/);
-  assert.match(sw, /'\/style-core\.css\?v=20261009\.2'/);
+  assert.doesNotMatch(sw, /medisa-v2\.374/);
+  assert.match(sw, /'\/style-core\.css\?v=20261009\.3'/);
   assert.match(sw, /'\/script-core\.js\?v=20261009\.3'/);
-  assert.match(sw, /'\/data-manager\.js\?v=20261009\.3'/);
+  assert.match(sw, /'\/data-manager\.js\?v=20261009\.4'/);
 });
 
 test('Hızlı Erişim ve belge kartı drop ownerları birlikte durur', function() {
   assert.match(dataManager, /function canShowQuickAccess\(sessionData\)/);
   assert.match(dataManager, /function getQuickAccessVehicleIcon\(\)/);
-  assert.match(dataManager, /fill="currentColor"/);
-  assert.match(dataManager, /M17 3\.34a10 10 0 1 1 -15 8\.66/);
+  assert.match(dataManager, /stroke="currentColor"/);
+  assert.match(dataManager, /stroke-width="1\.35"/);
+  assert.match(dataManager, /M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0/);
+  assert.doesNotMatch(dataManager, /M17 3\.34a10 10 0 1 1 -15 8\.66/);
   assert.doesNotMatch(dataManager, /M6\.2 16\.8C6\.2 8\.2 17\.8 8\.2 17\.8 16\.8H6\.2/);
   assert.doesNotMatch(dataManager, /function getQuickAccessVehicleType/);
   assert.doesNotMatch(dataManager, /M4 16l-1-5/);
