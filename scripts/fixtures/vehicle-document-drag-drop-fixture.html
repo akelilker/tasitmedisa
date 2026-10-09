@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Belge kartı sürükle-bırak fixture</title>
+  <link rel="stylesheet" href="../../style-core.css?v=20261007.3" />
+  <link rel="stylesheet" href="../../tasitlar-base.css" />
+  <link rel="stylesheet" href="../../tasitlar-extra.css?v=20261009.1" />
+  <style>
+    body { margin: 0; background: #0f1419; }
+    #dinamik-olay-modal { position: relative; min-height: 100vh; }
+  </style>
+</head>
+<body>
+  <script>
+    window.__alerts = [];
+    window.__uploads = [];
+    window.alert = function(message) { window.__alerts.push(String(message)); };
+    window.parseVehicleDateRawToIso = function(value) {
+      return value ? '2026-12-31' : '';
+    };
+    window.MedisaVehicleNotificationDomain = {
+      vehicleNeedsK2Belgesi: function(vehicle) { return !!(vehicle && vehicle.needsK2); },
+      vehicleNeedsTakograf: function(vehicle) { return !!(vehicle && vehicle.needsTakograf); },
+      vehicleNeedsTrafikSigortasi: function() { return true; },
+      vehicleNeedsEgzozMuayene: function() { return false; },
+      getK2BelgeGroups: function() { return []; },
+      getK2BelgeGroupForBranch: function() { return null; },
+      getK2BelgeGroupForVehicle: function() { return null; },
+      getK2BelgesiExpiryDateForVehicle: function() { return '31/12/2026'; },
+      getK2BelgesiDocumentPathForVehicle: function() { return ''; },
+      isVehicleOperationallyInactive: function() { return false; },
+      getEgzozMuayeneState: function() { return {}; },
+      isEgzozMuayeneCritical: function() { return false; }
+    };
+    window.__vehicles = [
+      { id: 'v-empty', plate: '34 ABC 01', brandModel: 'Bos Kart', version: 1, needsTakograf: true, needsK2: true },
+      { id: 'v-full', plate: '06 DEF 02', brandModel: 'Dolu Kart', version: 3, ruhsatPath: 'docs/ruhsat.pdf', sigortaPolicePath: 'docs/sigorta.pdf', kaskoPolicePath: 'docs/kasko.pdf', tasitKartiPath: 'docs/kart.pdf', takografBelgesiPath: 'docs/tako.pdf', needsTakograf: true, needsK2: true },
+      { id: 'v-sold', plate: '35 GHI 03', brandModel: 'Satilan', version: 2, satildiMi: true, arsivNedeni: 'satis', needsTakograf: false, needsK2: false }
+    ];
+    window.getMedisaVehicles = function() { return window.__vehicles; };
+    window.getMedisaBranches = function() { return []; };
+    window.getMedisaUsers = function() { return []; };
+    window.appData = { tasitlar: window.__vehicles };
+  </script>
+  <script src="../../tasitlar.js?v=20261009.1"></script>
+  <script>
+    window.saveRuhsatUpload = function(documentType) {
+      var input = document.getElementById('ruhsat-file-input');
+      var file = input && input.files && input.files[0] ? input.files[0] : null;
+      var modal = document.getElementById('dinamik-olay-modal');
+      window.__uploads.push({
+        documentType: String(documentType || ''),
+        vehicleId: modal && modal.dataset ? String(modal.dataset.vehicleId || '') : '',
+        contentVehicleId: (document.getElementById('ruhsat-modal-content') || {}).dataset
+          ? String(document.getElementById('ruhsat-modal-content').dataset.vehicleId || '')
+          : '',
+        fileName: file ? file.name : '',
+        fileSize: file ? file.size : 0
+      });
+    };
+    window.__fixtureReady = typeof window.openVehicleDocumentsModal === 'function';
+  </script>
+</body>
+</html>

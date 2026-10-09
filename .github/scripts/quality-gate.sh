@@ -68,6 +68,12 @@ npm run tool:verify-satis-sozlesmesi
 echo "[quality-gate] Vehicle document delete invariants"
 npm run tool:verify-document-delete
 
+echo "[quality-gate] Vehicle document drag-drop invariants"
+npm run tool:verify-document-drag-drop
+
+echo "[quality-gate] Quick access and document drag-drop preflight"
+npm run tool:verify-quick-access-documents-preflight
+
 echo "[quality-gate] Settings branch/user delete invariants"
 npm run tool:verify-settings-delete
 
