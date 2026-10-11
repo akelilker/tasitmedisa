@@ -315,7 +315,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="data-management-actions">
-                        <button type="button" onclick="exportData()" class="data-management-text-btn">
+                        <button id="data-management-export-btn" type="button" onclick="exportData()" class="data-management-text-btn">
                             <img class="data-management-action-icon" src="icon/data-backup.svg?v=20260611.1" alt="" aria-hidden="true">
                             <span>Yedek Al</span>
                         </button>
@@ -4417,7 +4417,6 @@
     function notifyExportDataResult(message, isError) {
       if (typeof window.showCenteredInfoBox === 'function') {
         window.showCenteredInfoBox(message, {
-          variant: 'bare-text',
           autoCloseMs: isError ? 3500 : 2200
         });
         return;
@@ -4456,10 +4455,22 @@
       return null;
     }
 
+    let exportInFlight = false;
+
     // Veri dışa aktar — canonical sunucu data.json exact download (browser state yok)
     window.exportData = async function exportData() {
+      if (exportInFlight) return;
       if (!requireBackupPermission()) return;
+      exportInFlight = true;
+      const exportButton = document.getElementById('data-management-export-btn');
+      const dismissButton = document.querySelector('#centered-info-box .centered-info-tamam');
+      if (exportButton) {
+        exportButton.disabled = true;
+        exportButton.setAttribute('aria-busy', 'true');
+      }
+      if (dismissButton) dismissButton.hidden = true;
       try {
+        window.showCenteredInfoBox('Yedek hazırlanıyor, lütfen bekleyin…');
         const requestOptions = { method: 'GET', cache: 'no-store' };
         if (typeof window.buildAuthHeaders === 'function') {
           requestOptions.headers = window.buildAuthHeaders();
@@ -4471,6 +4482,7 @@
           notifyExportDataResult('Yedek alınamadı. Sunucu verisi indirilemedi.', true);
           return;
         }
+        window.showCenteredInfoBox('Yedek dosyası alınıyor, lütfen bekleyin…');
         const blob = await res.blob();
         if (!blob || blob.size === 0) {
           notifyExportDataResult('Yedek alınamadı. Sunucu verisi indirilemedi.', true);
@@ -4483,12 +4495,17 @@
         link.download = filename;
         link.click();
         URL.revokeObjectURL(link.href);
-        setTimeout(function() {
-          notifyExportDataResult('Yedek başarıyla indirildi!', false);
-        }, 0);
+        notifyExportDataResult('Yedek hazır. İndirme başlatıldı.', false);
       } catch (error) {
         console.error('[Medisa] Yedekleme hatası:', error);
         notifyExportDataResult('Yedek alınamadı. Sunucu verisi indirilemedi.', true);
+      } finally {
+        exportInFlight = false;
+        if (exportButton) {
+          exportButton.disabled = false;
+          exportButton.removeAttribute('aria-busy');
+        }
+        if (dismissButton) dismissButton.hidden = false;
       }
     };
 
@@ -5235,6 +5252,7 @@
 
     const originalCloseCenteredInfoBox = window.closeCenteredInfoBox;
     window.closeCenteredInfoBox = function closeCenteredInfoBox() {
+      if (exportInFlight) return;
       resetCenteredInfoBoxState();
       if (typeof originalCloseCenteredInfoBox === 'function') {
         originalCloseCenteredInfoBox();
