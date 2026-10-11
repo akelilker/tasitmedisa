@@ -1936,24 +1936,41 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu .m
     width: min(250px, calc(100vw - 32px));
     max-width: calc(100vw - 32px);
   }
-  /* Masaüstü: Bildirim kutusu stabil genişlikte kalsın, resize'da bozulmasın */
-  .settings-dropdown:not(#notifications-dropdown) button:not(.notification-item) {
-    text-align: center; /* Masaüstünde ortalı */
-    justify-content: center; /* Flexbox için ortalama */
-    /* Ayarlar dişlisi: ayarlar.css lazy-load öncesi; 8 satırda Çıkış footer altında kalmasın */
-    min-height: 44px;
-    padding: 10px;
+  /* Ayarlar menüsü: ilk açılışta da ayarlar.css içindeki onaylı masaüstü ölçüsü. */
+  #settings-menu.settings-dropdown.open {
+    gap: 3px !important;
   }
-  /* Ayarlar dişlisi: KAYIT/TAŞIT/RAPOR (.menu-btn) cold silver — resting + hover (ayarlar.css öncesi) */
-  #settings-menu.settings-dropdown > button:not(.cache-clear-btn):not(.settings-logout-btn),
-  #settings-menu.settings-dropdown .has-submenu-wrapper .has-submenu {
-    border: 1px solid rgba(196, 210, 228, 0.62) !important;
+  #settings-menu > button,
+  #settings-menu .has-submenu-wrapper .has-submenu {
+    text-align: center;
+    justify-content: center;
+    height: 35px !important;
+    min-height: 35px !important;
+    max-height: 35px !important;
+    padding: 7px 16px !important;
+    border-radius: 12px !important;
+    background: linear-gradient(180deg, var(--hero-gradient-start), var(--hero-gradient-end)) !important;
     box-shadow:
       0 4px 10px rgba(0, 0, 0, 0.22),
       inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
+    font-weight: 700 !important;
+    font-size: clamp(12px, 2.8vw, 14px) !important;
+    letter-spacing: 0.06em !important;
+    margin-bottom: 0 !important;
+  }
+  #settings-menu > .has-submenu-wrapper {
+    margin-bottom: 0 !important;
+  }
+  #settings-menu.settings-dropdown > button:not(.cache-clear-btn):not(.settings-logout-btn),
+  #settings-menu.settings-dropdown .has-submenu-wrapper .has-submenu {
+    border: 1px solid rgba(196, 210, 228, 0.62) !important;
+    color: var(--txt);
   }
   #settings-menu.settings-dropdown > button:not(.cache-clear-btn):not(.settings-logout-btn):hover,
   #settings-menu.settings-dropdown .has-submenu-wrapper .has-submenu:hover {
+    transform: none;
+    color: var(--txt-white);
+    font-size: inherit !important;
     border: 1px solid rgba(255, 255, 255, 0.88) !important;
     box-shadow:
       0 6px 16px rgba(0, 0, 0, 0.30),
@@ -1962,6 +1979,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu .m
   }
   #settings-menu.settings-dropdown > button.cache-clear-btn:hover,
   #settings-menu.settings-dropdown > button.settings-logout-btn:hover {
+    transform: none;
+    font-size: calc(17px + 1pt) !important;
     border: 1px solid rgba(var(--theme-color-rgb), 1) !important;
     box-shadow: 0 8px 18px rgba(var(--theme-color-rgb), 0.28) !important;
   }
