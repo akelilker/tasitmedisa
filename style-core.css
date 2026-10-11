@@ -1572,7 +1572,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
  * Ayarlar / bildirim açık: tam ekran body::before + backdrop-filter kullanılmaz.
  * body::before z-index 10040 tüm .app-container üstünde; backdrop alttaki her şeyi
  * (ikon satırı dahil) flu gösterir — çocuk z-index ile kurtulmaz.
- * Flu yalnızca .hero ve #main-menu üzerinde (ikon satırıyla kardeş).
+ * Flu .hero, #main-menu ve hızlı erişim satırında (ikon satırıyla kardeş).
  */
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page)::before {
   content: '';
@@ -1610,10 +1610,15 @@ body.settings-open:not(.dashboard-page):not(.login-page):not(.admin-report-page)
 }
 
 body.settings-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero,
-body.settings-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu.menu-container{
+body.settings-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu.menu-container,
+body.settings-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hizli-erisim-satiri{
   filter: blur(2px);
   opacity: 0.92;
   transition: filter 0.18s ease, opacity 0.18s ease;
+}
+
+body.settings-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hizli-erisim-satiri {
+  z-index: 0;
 }
 
 /* Önbellek / bilgi onay: flu yalnızca içerik; kırmızı çerçeve pseudo'ları keskin kalsın */
