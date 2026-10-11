@@ -2534,7 +2534,7 @@ body.modal-open .user-panel-link {
   pointer-events: auto;
   padding: 2px 4px;
   min-width: 44px;
-  transition: transform 0.18s ease, color 0.18s ease;
+  transition: transform 0.18s ease;
   transform-origin: center center;
   -webkit-tap-highlight-color: transparent;
 }
@@ -2559,6 +2559,10 @@ body.modal-open .user-panel-link {
 }
 
 @media (min-width: 641px) {
+  .hizli-erisim-svg {
+    width: 48px;
+    height: 48px;
+  }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hizli-erisim-oge {
     color: rgba(196, 210, 228, 0.56);
   }
@@ -2567,7 +2571,6 @@ body.modal-open .user-panel-link {
 @media (hover: hover) and (min-width: 641px) {
   .hizli-erisim-oge:hover {
     transform: scale(1.08);
-    color: #ffffff;
   }
 }
 
