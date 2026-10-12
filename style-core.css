@@ -2600,6 +2600,13 @@ body.modal-open .user-panel-link {
 
 /* Masaüstü 4 / mobil 3 üst sınır (render'da tümü basılır, CSS kırpma yapar) */
 @media (max-width: 640px) {
+  .hizli-erisim-svg {
+    width: 56px;
+    height: 56px;
+  }
+  .hizli-erisim-plaka {
+    font-size: 14px;
+  }
   .hizli-erisim-oge:nth-child(n+4) {
     display: none;
   }
