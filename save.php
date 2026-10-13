@@ -52,6 +52,10 @@ $result = medisaMutateData(function (&$data) use ($incomingData) {
         return medisaBuildErrorResult('Bu ekran için yetkiniz yok.', 403);
     }
 
+    if (array_key_exists('_medisaQuickAccessPref', $incomingData)
+        || array_key_exists('_medisaQuickAccessOnlyIfMissing', $incomingData)) {
+        return medisaSaveQuickAccessPref($incomingData, $data, $context);
+    }
     return medisaSaveApplyIncomingData($incomingData, $data, $context);
 });
 

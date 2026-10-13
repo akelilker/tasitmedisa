@@ -539,9 +539,6 @@ function closeMainAppSettingsMenus() {
 /** Ana uygulama ayarlar menüsü: oturumu kapat, portal girişine yönlendir */
 function medisaMainAppLogout() {
     try {
-        var session = window.medisaSession || getDefaultSession();
-        var userId = String((session.user && session.user.id) || '').trim();
-        if (userId) clearQuickAccessPref(userId);
         clearPortalSessionAndDocumentCaches();
         setMedisaSession(getDefaultSession());
         if (typeof document !== 'undefined' && document.body) {
@@ -746,38 +743,72 @@ function canShowQuickAccess(sessionData) {
     return canUseDriverPanelTransition(session);
 }
 
-/* Hızlı Erişim — kullanıcı başına cihaz tercihi (localStorage). Geçici UI tercihi; kalıcı iş verisi değil. */
+/* Hızlı Erişim — kullanıcı hesabında sunucu tercihi; localStorage yalnız eski seçimin aktarımı içindir. */
 function getQuickAccessPrefKey(userId) {
     return 'medisa_hizli_erisim_' + String(userId == null ? '' : userId);
 }
 
 function readQuickAccessPref(userId) {
-    var key = getQuickAccessPrefKey(userId);
-    if (key === 'medisa_hizli_erisim_') return { aktif: false, aracIds: [] };
-    try {
-        var raw = localStorage.getItem(key);
-        if (!raw) return { aktif: false, aracIds: [] };
-        var parsed = JSON.parse(raw);
-        var aracIds = Array.isArray(parsed && parsed.aracIds)
-            ? parsed.aracIds.map(function (id) { return String(id); }).filter(Boolean)
-            : [];
-        return { aktif: !!(parsed && parsed.aktif === true), aracIds: aracIds };
-    } catch (e) {
-        return { aktif: false, aracIds: [] };
-    }
+    var session = window.medisaSession || getDefaultSession();
+    var user = session.user || {};
+    var pref = session.authenticated && String(user.id || '') === String(userId || '') ? user.quickAccessPref : null;
+    return {
+        aktif: !!(pref && pref.aktif === true),
+        aracIds: Array.isArray(pref && pref.aracIds) ? pref.aracIds.map(String) : []
+    };
 }
 
-function writeQuickAccessPref(userId, pref) {
-    var key = getQuickAccessPrefKey(userId);
-    if (key === 'medisa_hizli_erisim_') return;
+async function writeQuickAccessPref(userId, pref, onlyIfMissing) {
+    var session = window.medisaSession || getDefaultSession();
+    var user = session.user || {};
+    if (!session.authenticated || !userId || String(user.id || '') !== String(userId)
+        || !serverDatasetTrusted || !Object.prototype.hasOwnProperty.call(user, 'quickAccessPref')
+        || (typeof navigator !== 'undefined' && navigator.onLine === false)) return false;
     try {
         var safe = {
             aktif: !!(pref && pref.aktif === true),
             aracIds: Array.isArray(pref && pref.aracIds)
-                ? pref.aracIds.map(function (id) { return String(id); }).filter(Boolean)
+                ? pref.aracIds.map(function (id) { return String(id).trim(); }).filter(Boolean)
                 : []
         };
-        localStorage.setItem(key, JSON.stringify(safe));
+        var response = await fetch(API_SAVE, {
+            method: 'POST',
+            headers: buildAuthHeaders({ 'Content-Type': 'application/json' }),
+            body: JSON.stringify({ _medisaQuickAccessPref: safe, _medisaQuickAccessOnlyIfMissing: onlyIfMissing === true })
+        });
+        if (!response.ok) return false;
+        var result = await response.json();
+        if (!result || result.success !== true || !result.quickAccessPref
+            || !Array.isArray(result.quickAccessPref.aracIds)) return false;
+        var current = window.medisaSession || getDefaultSession();
+        if (!current.authenticated || String((current.user && current.user.id) || '') !== String(userId)) return false;
+        current.user.quickAccessPref = result.quickAccessPref;
+        clearQuickAccessPref(userId);
+        renderQuickAccessRow();
+        return true;
+    } catch (e) {
+        return false;
+    }
+}
+
+async function migrateQuickAccessPref() {
+    var session = window.medisaSession || getDefaultSession();
+    var user = session.user || {};
+    if (!session.authenticated || !user.id || !serverDatasetTrusted
+        || !Object.prototype.hasOwnProperty.call(user, 'quickAccessPref')) return;
+    if (user.quickAccessPref !== null) {
+        clearQuickAccessPref(user.id);
+        return;
+    }
+    try {
+        var raw = localStorage.getItem(getQuickAccessPrefKey(user.id));
+        if (!raw) return;
+        var legacy = JSON.parse(raw);
+        if (!legacy || typeof legacy.aktif !== 'boolean' || !Array.isArray(legacy.aracIds)) return;
+        var assigned = getAssignedVehiclesForSessionUser(session).map(function (v) { return String(v.id); });
+        var ids = legacy.aracIds.map(function (id) { return String(id).trim(); });
+        legacy.aracIds = ids.filter(function (id, index) { return assigned.indexOf(id) !== -1 && ids.indexOf(id) === index; }).slice(0, 4);
+        await writeQuickAccessPref(user.id, legacy, true);
     } catch (e) {}
 }
 
@@ -1482,6 +1513,7 @@ async function loadDataFromServer(forceRefresh) {
             setMedisaSession(data.session || getSessionFromToken());
 
             serverDatasetTrusted = true;
+            await migrateQuickAccessPref();
             setServerDatasetBaseline(window.appData);
             persistOfflineAppDataSnapshot(window.appData);
             return window.appData;

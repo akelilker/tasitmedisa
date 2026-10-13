@@ -1178,6 +1178,7 @@ function medisaBuildSessionPayload($context) {
             'role' => $context['role'] ?? 'kullanici',
             'branch_ids' => $context['branch_ids'] ?? [],
             'kullanici_paneli' => $context['kullanici_paneli'] ?? false,
+            'quickAccessPref' => is_array($user['quickAccessPref'] ?? null) ? $user['quickAccessPref'] : null,
         ],
         'role' => $context['role'] ?? 'kullanici',
         'branch_ids' => $context['branch_ids'] ?? [],
@@ -2675,6 +2676,11 @@ function medisaReconcileUserCredentials($currentUsers, $incomingUsers, $password
         $currentPasswordChangeRequired = is_array($currentUser)
             ? medisaUserRequiresFirstLoginPasswordChange($currentUser)
             : false;
+        // Kullanıcı formu/eskimiş istemci, kişisel hızlı erişim tercihini değiştiremez.
+        unset($user['quickAccessPref']);
+        if (is_array($currentUser['quickAccessPref'] ?? null)) {
+            $user['quickAccessPref'] = $currentUser['quickAccessPref'];
+        }
         $unexpectedPlainPassword = trim((string)(
             $user['sifre']
             ?? $user['yeni_sifre']
@@ -2744,6 +2750,52 @@ function medisaReconcileUserCredentials($currentUsers, $incomingUsers, $password
         'success' => true,
         'users' => array_values($reconciled),
     ];
+}
+
+/** Oturum sahibinin hızlı erişim tercihi; genel veri/kullanıcı kaydından ayrıdır. */
+function medisaSaveQuickAccessPref(array $incomingData, array &$data, array $context) {
+    if (!in_array($context['role'] ?? '', ['genel_yonetici', 'sube_yonetici'], true)) {
+        return medisaBuildErrorResult('Bu ekran için yetkiniz yok.', 403);
+    }
+    if (array_diff(array_keys($incomingData), ['_medisaQuickAccessPref', '_medisaQuickAccessOnlyIfMissing'])) {
+        return medisaBuildErrorResult('Hızlı erişim isteği yalnız bu tercihi içermeli.', 400);
+    }
+    $userId = (string)($context['user_id'] ?? '');
+    $index = $userId !== '' ? medisaFindUserIndex($data, $userId) : -1;
+    if ($index < 0) return medisaBuildErrorResult('Kullanıcı bulunamadı.', 403);
+    $onlyIfMissing = $incomingData['_medisaQuickAccessOnlyIfMissing'] ?? false;
+    if (!is_bool($onlyIfMissing)) return medisaBuildErrorResult('Geçersiz aktarım isteği.', 400);
+    // Kilit altında kontrol: başka cihazdaki seçim eski yerel veriyle ezilmez.
+    if ($onlyIfMissing && is_array($data['users'][$index]['quickAccessPref'] ?? null)) {
+        return medisaBuildMutationResult(true, [
+            'quickAccessPref' => $data['users'][$index]['quickAccessPref'],
+            'save' => false,
+        ]);
+    }
+    $pref = $incomingData['_medisaQuickAccessPref'] ?? null;
+    if (!is_array($pref) || !is_bool($pref['aktif'] ?? null)
+        || !is_array($pref['aracIds'] ?? null) || !array_is_list($pref['aracIds'])
+        || count($pref['aracIds']) > 4 || array_diff(array_keys($pref), ['aktif', 'aracIds'])) {
+        return medisaBuildErrorResult('Geçersiz hızlı erişim tercihi.', 400);
+    }
+    $assignedIds = [];
+    foreach (($data['tasitlar'] ?? []) as $vehicle) {
+        if ((string)($vehicle['assignedUserId'] ?? '') === $userId) {
+            $assignedIds[(string)($vehicle['id'] ?? '')] = true;
+        }
+    }
+    $ids = [];
+    foreach ($pref['aracIds'] as $id) {
+        if (!is_string($id) && !is_int($id)) return medisaBuildErrorResult('Geçersiz taşıt kimliği.', 400);
+        $id = trim((string)$id);
+        if ($id === '' || isset($ids[$id])) return medisaBuildErrorResult('Geçersiz taşıt seçimi.', 400);
+        if (!isset($assignedIds[$id])) return medisaBuildErrorResult('Yalnız size atanmış taşıtları seçebilirsiniz.', 403);
+        $ids[$id] = $id;
+    }
+    $pref = ['aktif' => $pref['aktif'], 'aracIds' => array_values($ids)];
+    $unchanged = ($data['users'][$index]['quickAccessPref'] ?? null) === $pref;
+    $data['users'][$index]['quickAccessPref'] = $pref;
+    return medisaBuildMutationResult(true, ['quickAccessPref' => $pref, 'save' => !$unchanged]);
 }
 
 function medisaSaveApplyIncomingData(array $incomingData, array &$data, array $context) {

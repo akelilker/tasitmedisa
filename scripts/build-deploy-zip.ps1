@@ -25,7 +25,22 @@ $excludePatterns = @(
     ".agents/",
     ".vscode/",
     "data/",
-    "*.zip"
+    "*.zip",
+    "scripts/",
+    "docs/",
+    "assets/",
+    "_ux-test-output/",
+    "AGENTS.md",
+    "DEPLOYMENT.md",
+    "DEVELOPER_REPORT.md",
+    "README.md",
+    "package.json",
+    "package-lock.json",
+    ".cpanel.yml",
+    ".cursorignore",
+    ".editorconfig",
+    ".gitignore",
+    ".gitattributes"
 )
 
 function Test-ExcludedPath([string]$Path) {
@@ -37,6 +52,10 @@ function Test-ExcludedPath([string]$Path) {
             }
         } elseif ($pattern.StartsWith("*.")) {
             if ($normalized.EndsWith($pattern.Substring(1))) {
+                return $true
+            }
+        } elseif ($pattern -eq ".git") {
+            if ($normalized.StartsWith(".git")) {
                 return $true
             }
         } elseif ($normalized -eq $pattern) {

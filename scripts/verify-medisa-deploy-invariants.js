@@ -25,6 +25,37 @@ assert.match(
   /RewriteRule\s+\^data\(\/\|\$\)\s+-\s+\[F,L,NC\]/,
   'Kök .htaccess data/ yolunu reddetmeli.'
 );
+assert.match(
+  htaccess,
+  /RewriteRule\s+\^\(\?:scripts\|docs\)\(\?:\/\|\$\)\s+-\s+\[F,L,NC\]/,
+  'Kök .htaccess scripts/ ve docs/ yollarını reddetmeli.'
+);
+
+const deployZip = fs.readFileSync(path.join(root, 'scripts', 'build-deploy-zip.ps1'), 'utf8');
+for (const token of [
+  '"scripts/"',
+  '"docs/"',
+  '"assets/"',
+  '"_ux-test-output/"',
+  '"AGENTS.md"',
+  '"DEPLOYMENT.md"',
+  '"DEVELOPER_REPORT.md"',
+  '"README.md"',
+  '"package.json"',
+  '"package-lock.json"',
+  '".cpanel.yml"',
+  '".cursorignore"',
+  '".editorconfig"',
+  '".gitignore"',
+  '".gitattributes"'
+]) {
+  assert.equal(deployZip.includes(token), true, 'Plesk deploy zip dışarıda bırakmalı: ' + token);
+}
+assert.match(
+  deployZip,
+  /\$pattern -eq "\.git"[\s\S]*\$normalized\.StartsWith\("\.git"\)/,
+  'Plesk deploy zip .git ile başlayan yolları dışlamalı.'
+);
 assert.match(htaccess, /Header always set X-Frame-Options "SAMEORIGIN"/, 'Anti-frame başlığı eksik.');
 assert.match(htaccess, /Header always set X-Content-Type-Options "nosniff"/, 'nosniff başlığı eksik.');
 assert.match(
@@ -103,6 +134,8 @@ assert.equal(fs.existsSync(path.join(root, 'service_worker.js')), false, 'Legacy
 
 const stagingBuild = fs.readFileSync(path.join(root, 'scripts', 'build-medisa-staging-deploy.js'), 'utf8');
 assert.match(stagingBuild, /patchServiceWorker\(path\.join\(outDir, 'sw\.js'\)\)/, 'Staging build canonical sw.js patch etmeli.');
+assert.match(stagingBuild, /'\.gitignore'/, 'Staging deploy .gitignore kopyalamamalı.');
+assert.match(stagingBuild, /'\.gitattributes'/, 'Staging deploy .gitattributes kopyalamamalı.');
 
 const cssSmokePath = path.join(root, '.github', 'workflows', 'staging-a2-t4-css-smoke.yml');
 if (fs.existsSync(cssSmokePath)) {

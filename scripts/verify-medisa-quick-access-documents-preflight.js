@@ -7,6 +7,7 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+const { execFileSync } = require('node:child_process');
 
 const ROOT = path.join(__dirname, '..');
 const read = (rel) => fs.readFileSync(path.join(ROOT, rel), 'utf8');
@@ -32,29 +33,29 @@ function test(name, fn) {
 }
 
 test('birleşik script-core her iki modül sürümünü taşır ve yeni shell pin kullanır', function() {
-  assert.match(core, /tasitlar:\s*'20261009\.1'/);
-  assert.match(core, /ayarlarJs:\s*'20261011\.1'/);
-  assert.match(tasitlar, /MEDISA_TASITLAR_MODULE_VERSION = '20261009\.1'/);
+  assert.match(core, /tasitlar:\s*'20261014\.1'/);
+  assert.match(core, /ayarlarJs:\s*'20261012\.2'/);
+  assert.match(tasitlar, /MEDISA_TASITLAR_MODULE_VERSION = '20261014\.1'/);
   shells.forEach(function(name) {
-    assert.match(read(name), /script-core\.js\?v=20261011\.1/);
+    assert.match(read(name), /script-core\.js\?v=20261014\.1/);
     assert.doesNotMatch(read(name), /script-core\.js\?v=20261009\.1/);
     assert.doesNotMatch(read(name), /script-core\.js\?v=20261009\.2/);
   });
   assert.match(index, /style-core\.css\?v=20261012\.1/);
-  assert.match(index, /data-manager\.js\?v=20261009\.4/);
+  assert.match(index, /data-manager\.js\?v=20261012\.2/);
   assert.doesNotMatch(index, /data-manager\.js\?v=20261009\.3/);
 });
 
 test('SW önbelleği shell pinleriyle birebir ve önceki 370 kimliğinden ayrılır', function() {
-  assert.match(sw, /CACHE_VERSION = 'medisa-v2\.380'/);
+  assert.match(sw, /CACHE_VERSION = 'medisa-v2\.382'/);
   assert.doesNotMatch(sw, /medisa-v2\.370/);
   assert.doesNotMatch(sw, /medisa-v2\.371/);
   assert.doesNotMatch(sw, /medisa-v2\.372/);
   assert.doesNotMatch(sw, /medisa-v2\.373/);
   assert.doesNotMatch(sw, /medisa-v2\.374/);
   assert.match(sw, /'\/style-core\.css\?v=20261012\.1'/);
-  assert.match(sw, /'\/script-core\.js\?v=20261011\.1'/);
-  assert.match(sw, /'\/data-manager\.js\?v=20261009\.4'/);
+  assert.match(sw, /'\/script-core\.js\?v=20261014\.1'/);
+  assert.match(sw, /'\/data-manager\.js\?v=20261012\.2'/);
 });
 
 test('Hızlı Erişim ve belge kartı drop ownerları birlikte durur', function() {
@@ -75,6 +76,11 @@ test('Hızlı Erişim ve belge kartı drop ownerları birlikte durur', function(
   assert.match(tasitlar, /takePendingVehicleDocumentDrop\(pinnedVehicleId, cfg\.key\)/);
   assert.doesNotMatch(tasitlar, /<<<<<<<|>>>>>>>/);
   assert.doesNotMatch(sw, /<<<<<<<|>>>>>>>/);
+});
+
+test('Hızlı erişim hesap kaydı, atanmış taşıt yetkisi ve eski seçim aktarımı', function() {
+  execFileSync('php', [path.join(__dirname, 'verify-medisa-quick-access-account.php')], { stdio: 'pipe' });
+  execFileSync(process.execPath, [path.join(__dirname, 'verify-medisa-quick-access-account.js')], { stdio: 'pipe' });
 });
 
 console.log('');

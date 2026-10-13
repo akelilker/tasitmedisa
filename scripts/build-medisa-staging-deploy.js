@@ -52,9 +52,9 @@ function isExcludedDirName(name) {
   return false;
 }
 const EXCLUDE_FILE_NAMES = new Set([
-  '.cpanel.yml', '.cursorignore', '.editorconfig', 'AGENTS.md',
-  'DEPLOYMENT.md', 'DEVELOPER_REPORT.md', 'README.md', 'package.json',
-  'package-lock.json', 'config.local.php'
+  '.cpanel.yml', '.cursorignore', '.editorconfig', '.gitignore', '.gitattributes',
+  'AGENTS.md', 'DEPLOYMENT.md', 'DEVELOPER_REPORT.md', 'README.md',
+  'package.json', 'package-lock.json', 'config.local.php'
 ]);
 
 function rmrf(p) {
