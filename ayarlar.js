@@ -567,7 +567,7 @@
       }
     };
 
-    window.saveHizliErisim = function saveHizliErisim() {
+    window.saveHizliErisim = async function saveHizliErisim() {
       const userId = hizliErisimGetSessionUserId();
       const toggle = document.getElementById('hizli-erisim-aktif');
       const aktif = !!(toggle && toggle.checked);
@@ -579,8 +579,21 @@
           if (id) aracIds.push(id);
         });
       }
-      if (window.medisaQuickAccessPref && typeof window.medisaQuickAccessPref.write === 'function') {
-        window.medisaQuickAccessPref.write(userId, { aktif: aktif, aracIds: aracIds });
+      const saveButton = document.querySelector('#hizli-erisim-modal .universal-btn-save');
+      if (saveButton && saveButton.disabled) return;
+      if (saveButton) saveButton.disabled = true;
+      let saved = false;
+      try {
+        if (window.medisaQuickAccessPref && typeof window.medisaQuickAccessPref.write === 'function') {
+          saved = await window.medisaQuickAccessPref.write(userId, { aktif: aktif, aracIds: aracIds });
+        }
+      } finally {
+        if (saveButton) saveButton.disabled = false;
+      }
+      if (!saved) {
+        const msgEl = document.getElementById('hizli-erisim-limit-msg');
+        if (msgEl) msgEl.textContent = 'Hızlı erişim kaydedilemedi. İnternet bağlantınızı kontrol edip tekrar deneyin.';
+        return;
       }
       if (typeof window.renderQuickAccessRow === 'function') window.renderQuickAccessRow();
       window.closeHizliErisim();

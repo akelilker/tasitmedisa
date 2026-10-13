@@ -197,7 +197,7 @@
 
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20261009.1';
+  const MEDISA_TASITLAR_MODULE_VERSION = '20261014.1';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
@@ -8367,7 +8367,8 @@
     uploadBox.appendChild(selectBox);
     uploadBox.appendChild(input);
     content.appendChild(uploadBox);
-    if (hasExistingRuhsat && cfg.key !== 'tasit_karti') {
+    if ((hasExistingRuhsat && cfg.key !== 'tasit_karti')
+      || (!hasExistingRuhsat && isVehicleDocumentDesktopDragContext())) {
       var hintEl = document.createElement('p');
       hintEl.className = 'ruhsat-upload-hint';
       hintEl.id = 'ruhsat-upload-hint';
@@ -8550,30 +8551,37 @@
       input.dispatchEvent(new Event('change', { bubbles: true }));
     }
     if (isDesktopDragDropContext()) {
-      uploadBox.addEventListener('dragenter', function() {
+      // İlk yüklemede ikon satırı dar kalır; boş modal gövdesi de dosya kabul eder.
+      // Kalıcı gövdede handler ataması tekrar açılışlarda birikmez; eski form işlenmez.
+      var uploadDropTarget = hasExistingRuhsat ? uploadBox : (content.closest('.modal-body') || content);
+      uploadDropTarget.ondragenter = function() {
+        if (!input.isConnected) return;
         if (!isDesktopDragDropContext()) {
           clearRuhsatUploadDragOverState();
           return;
         }
         dragDepth += 1;
         uploadBox.classList.add('ruhsat-upload-box--drag-over');
-      });
-      uploadBox.addEventListener('dragover', function(event) {
+      };
+      uploadDropTarget.ondragover = function(event) {
+        if (!input.isConnected) return;
         event.preventDefault();
         event.stopPropagation();
         if (!isDesktopDragDropContext()) {
           clearRuhsatUploadDragOverState();
         }
-      });
-      uploadBox.addEventListener('dragleave', function() {
+      };
+      uploadDropTarget.ondragleave = function() {
+        if (!input.isConnected) return;
         if (!isDesktopDragDropContext()) {
           clearRuhsatUploadDragOverState();
           return;
         }
         dragDepth -= 1;
         if (dragDepth <= 0) clearRuhsatUploadDragOverState();
-      });
-      uploadBox.addEventListener('drop', function(event) {
+      };
+      uploadDropTarget.ondrop = function(event) {
+        if (!input.isConnected) return;
         event.preventDefault();
         event.stopPropagation();
         clearRuhsatUploadDragOverState();
@@ -8591,7 +8599,7 @@
           return;
         }
         assignRuhsatUploadFileAndDispatchChange(droppedFile);
-      });
+      };
     }
     var stagedDropFile = takePendingVehicleDocumentDrop(pinnedVehicleId, cfg.key);
     if (stagedDropFile) assignRuhsatUploadFileAndDispatchChange(stagedDropFile);

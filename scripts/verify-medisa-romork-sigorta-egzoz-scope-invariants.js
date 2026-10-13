@@ -140,14 +140,14 @@ test('asset pin chain bumped for changed runtime modules', function() {
   assert.match(coreSrc, /vehicleNotificationDomain:\s*'20260817\.2'/);
   assert.match(coreSrc, /kayitJs:\s*'20260905\.1'/);
   assert.match(coreSrc, /notifications:\s*'20260930\.1'/);
-  assert.match(coreSrc, /tasitlar:\s*'20261009\.1'/);
-  assert.match(coreSrc, /ayarlarJs:\s*'20261011\.1'/);
+  assert.match(coreSrc, /tasitlar:\s*'20261014\.1'/);
+  assert.match(coreSrc, /ayarlarJs:\s*'20261012\.2'/);
   assert.match(coreSrc, /kayitCss:\s*'20260923\.2'/);
-  assert.match(tasitlarSrc, /MEDISA_TASITLAR_MODULE_VERSION = '20261009\.1'/);
-  assert.match(read('index.html'), /data-manager\.js\?v=20261009\.4/);
-  assert.match(read('index.html'), /script-core\.js\?v=20261011\.1/);
-  assert.match(read('sw.js'), /CACHE_VERSION = 'medisa-v2\.380'/);
-  assert.match(read('sw.js'), /'\/script-core\.js\?v=20261011\.1'/);
+  assert.match(tasitlarSrc, /MEDISA_TASITLAR_MODULE_VERSION = '20261014\.1'/);
+  assert.match(read('index.html'), /data-manager\.js\?v=20261012\.2/);
+  assert.match(read('index.html'), /script-core\.js\?v=20261014\.1/);
+  assert.match(read('sw.js'), /CACHE_VERSION = 'medisa-v2\.382'/);
+  assert.match(read('sw.js'), /'\/script-core\.js\?v=20261014\.1'/);
 });
 
 test('notification merge simulation: romork excludes sigorta/egzoz merges', function() {

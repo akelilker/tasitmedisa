@@ -1903,8 +1903,6 @@ forgetThisDevice();
 }
 
 function logout() {
-    var uid = currentUser && currentUser.id ? String(currentUser.id) : '';
-    if (uid) clearDriverQuickAccessPref(uid);
     clearStoredPortalTokens();
     window.location.href = runtime.paths.DRIVER_PAGE_BASE + 'index.html?force=login';
 }

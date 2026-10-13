@@ -196,7 +196,7 @@ function assertPdfDropParityContract(block, label) {
   ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(function(eventName) {
     assert.match(
       block,
-      new RegExp("addEventListener\\('" + eventName + "'"),
+      new RegExp("(?:addEventListener\\('" + eventName + "'|\\.on" + eventName + "\\s*=)"),
       label + ': ' + eventName + ' binding'
     );
   });
