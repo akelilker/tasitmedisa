@@ -49,7 +49,7 @@
     <link rel="stylesheet" href="../style-core.css?v=20261012.1">
 <link rel="stylesheet" href="driver-shell.css?v=20260925.7">
 <script defer src="../portal-session.js?v=20260731.3"></script>
-<script defer src="../script-core.js?v=20261014.1"></script>
+<script defer src="../script-core.js?v=20261014.2"></script>
 </head>
 <body class="dashboard-page driver-splash-active">
     <div id="driver-splash" class="driver-splash driver-splash--dashboard" aria-hidden="false">
@@ -450,21 +450,66 @@
         </div>
 
     </div>
-    <!-- Muayene teyit popover: body seviyesinde, overflow'dan etkilenmez -->
-    <div id="muayene-confirm-popover" class="muayene-confirm-popover" style="display: none;">
-        <p>Muayene Bitiş Tarihi <strong id="muayene-calc-date">--/--/----</strong> olarak belirlenmiştir. Evrak üzerinden doğruluğunu teyit etmeniz gerekmektedir. Teyit edildi mi?</p>
-        <div class="muayene-confirm-actions">
-            <button type="button" class="btn-confirm-no" onclick="cancelMuayeneSubmit()">Hayır</button>
-            <button type="button" class="btn-confirm-yes" onclick="confirmMuayeneSubmit()">Evet</button>
+    <div id="info-modal" class="modal-overlay ayarlar-modal-overlay compact-confirm-modal" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="driver-info-modal-title">
+        <div class="modal-container" onclick="event.stopPropagation();">
+            <div class="modal-header">
+                <h2 id="driver-info-modal-title">BİLGİ</h2>
+                <button type="button" class="modal-close" onclick="if(typeof closeInfoModal==='function')closeInfoModal();" aria-label="Kapat">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="info-message"></p>
+                <div class="info-modal-actions">
+                    <button type="button" class="info-modal-ok-btn" onclick="if(typeof closeInfoModal==='function')closeInfoModal();">Tamam</button>
+                </div>
+            </div>
         </div>
     </div>
-    <div id="driver-forget-device-confirm" class="muayene-confirm-popover driver-forget-device-confirm" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="driver-forget-device-confirm-title" aria-hidden="true">
-        <p id="driver-forget-device-confirm-title">Bu cihazda kayıtlı giriş bilgileri silinecek ve oturum kapanacak. Devam edilsin mi?</p>
-        <div class="muayene-confirm-actions">
-            <button type="button" class="btn-confirm-no" onclick="closeForgetThisDeviceConfirm()">Hayır</button>
-            <button type="button" class="btn-confirm-yes" onclick="confirmForgetThisDevice()">Evet</button>
+
+    <div id="muayene-confirm-modal" class="modal-overlay ayarlar-modal-overlay compact-confirm-modal" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="muayene-confirm-title" aria-hidden="true">
+        <div class="modal-container" onclick="event.stopPropagation();">
+            <div class="modal-header">
+                <h2 id="muayene-confirm-title">MUAYENE TEYİT</h2>
+                <button type="button" class="modal-close" onclick="cancelMuayeneSubmit()" aria-label="Kapat">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p class="compact-confirm-message">Muayene Bitiş Tarihi <strong id="muayene-calc-date">--/--/----</strong> olarak belirlenmiştir. Evrak üzerinden doğruluğunu teyit etmeniz gerekmektedir. Teyit edildi mi?</p>
+                <div class="universal-btn-group">
+                    <button type="button" class="universal-btn-save" onclick="confirmMuayeneSubmit()">Evet</button>
+                    <button type="button" class="universal-btn-cancel" onclick="cancelMuayeneSubmit()">Hayır</button>
+                </div>
+            </div>
         </div>
     </div>
-<script defer src="driver-script.js?v=20261012.2"></script>
+    <div id="driver-forget-device-confirm" class="modal-overlay ayarlar-modal-overlay compact-confirm-modal driver-forget-device-confirm" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="driver-forget-device-confirm-title" aria-hidden="true">
+        <div class="modal-container" onclick="event.stopPropagation();">
+            <div class="modal-header">
+                <h2 id="driver-forget-device-confirm-title">BU CİHAZI UNUT</h2>
+                <button type="button" class="modal-close" onclick="closeForgetThisDeviceConfirm()" aria-label="Kapat">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p class="compact-confirm-message">Bu cihazda kayıtlı giriş bilgileri silinecek ve oturum kapanacak. Devam edilsin mi?</p>
+                <div class="universal-btn-group">
+                    <button type="button" class="universal-btn-save" onclick="confirmForgetThisDevice()">Evet</button>
+                    <button type="button" class="universal-btn-cancel" onclick="closeForgetThisDeviceConfirm()">Hayır</button>
+                </div>
+            </div>
+        </div>
+    </div>
+<script defer src="driver-script.js?v=20261014.2"></script>
 </body>
 </html>

@@ -142,6 +142,7 @@ function createHarness(opts) {
       return next;
     },
     normalizeUsers: stubNormalizeUsers,
+    medisaInfo(msg) { alerts.push(String(msg)); },
     __medisaLogError() {}
   };
 
@@ -200,6 +201,7 @@ function createHarness(opts) {
     String,
     setTimeout: function(fn) { fn(); return 0; },
     alert: function(msg) { alerts.push(String(msg)); },
+    medisaInfo: function(msg) { alerts.push(String(msg)); },
     getDefaultAyarlarBackup: function() {
       return { sirketAdi: 'Medisa', k2Belgesi: { expiryDate: '', documentPath: '', updatedAt: '' } };
     },

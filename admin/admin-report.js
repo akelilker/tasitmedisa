@@ -2206,10 +2206,10 @@
           loadPendingRequests();
           loadReport();
         }
-        alert(data.message || (action === 'approve' ? 'Onaylandı.' : 'Reddedildi.'));
+        window.medisaInfo(data.message || (action === 'approve' ? 'Onaylandı.' : 'Reddedildi.'));
       })
       .catch(function (err) {
-        alert('İşlem gönderilemedi.');
+        window.medisaInfo('İşlem gönderilemedi.');
       });
   }
 
@@ -2254,7 +2254,7 @@
         if (err && err.message === 'auth') {
           return;
         }
-        alert((err && err.message) ? err.message : 'Excel indirilemedi.');
+        window.medisaInfo((err && err.message) ? err.message : 'Excel indirilemedi.');
       });
   }
 

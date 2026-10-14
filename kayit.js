@@ -2222,7 +2222,7 @@
       window.MedisaMainSurfaceRegistry.ensure('settings').then(function() {
         ensureAyarlarAndOpen();
       }).catch(function() {
-        alert('Ayarlar modülü yüklenemedi.');
+        window.medisaInfo('Ayarlar modülü yüklenemedi.');
       });
       return;
     }
@@ -2371,7 +2371,7 @@
 
     // Hata varsa uyarı göster ve çık
     if (errors.length > 0) {
-      alert(`Lütfen Aşağıdaki Alanları Doldurun:\n\n• ${errors.join('\n• ')}`);
+      window.medisaInfo(`Lütfen Aşağıdaki Alanları Doldurun:\n\n• ${errors.join('\n• ')}`);
 
       // İlk hatalı alana focus
       if (plateEl && !plate) plateEl.focus();
@@ -2477,7 +2477,7 @@
     // Tescil tarihi onay modalını aç (kayıt işlemi oradan devam edecek)
     showTescilTarihConfirmModal(record);
     } catch (error) {
-      alert('Kayıt sırasında bir hata oluştu! Lütfen tekrar deneyin.');
+      window.medisaInfo('Kayıt sırasında bir hata oluştu! Lütfen tekrar deneyin.');
     } finally {
       if (saveBtn) saveBtn.disabled = false;
     }
@@ -2593,7 +2593,7 @@
 
     const validation = validateDateInput(dateStr);
     if (!validation.valid) {
-      alert(validation.message);
+      window.medisaInfo(validation.message);
       inputEl.classList.add('field-error');
       inputEl.focus();
       return;
@@ -2767,7 +2767,7 @@
 
       saveVehiclesViaApi(vehicles).then(function() {
         if (window.updateNotifications) window.updateNotifications();
-        alert(isEditMode ? "Kayıt Güncellendi!" : "Yeni Kayıt Oluşturuldu!");
+        window.medisaInfo(isEditMode ? "Kayıt Güncellendi!" : "Yeni Kayıt Oluşturuldu!");
         window.closeVehicleModal();
         pendingRecordData = null;
       }).catch(function(err) {
@@ -2783,16 +2783,16 @@
           console.error('[Medisa] Taşıt kayıt hatası:', err);
         }
         if (err && err.conflict) {
-          alert('Dikkat! Bu taşıt siz ekranı açtıktan sonra başka biri tarafından güncellenmiş. Veri ezilmesini önlemek için lütfen sayfayı yenileyip güncel durumu kontrol edin.');
+          window.medisaInfo('Dikkat! Bu taşıt siz ekranı açtıktan sonra başka biri tarafından güncellenmiş. Veri ezilmesini önlemek için lütfen sayfayı yenileyip güncel durumu kontrol edin.');
           return;
         }
-        alert(serverMsg && serverMsg.indexOf('HTTP error') === -1
+        window.medisaInfo(serverMsg && serverMsg.indexOf('HTTP error') === -1
           ? ('Kayıt başarısız: ' + serverMsg)
           : 'Sunucuya kayıt yapılamadı. Lütfen tekrar deneyin.');
       });
     } catch (error) {
       console.error('[Medisa] Taşıt kayıt istisnası:', error);
-      alert('Kayıt sırasında bir hata oluştu! Lütfen tekrar deneyin.');
+      window.medisaInfo('Kayıt sırasında bir hata oluştu! Lütfen tekrar deneyin.');
     }
   }
 

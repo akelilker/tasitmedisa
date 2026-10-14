@@ -291,7 +291,7 @@
 
       return saveVehiclesList(vehicles).catch(function(err) {
         if (err && err.conflict === true) {
-          alert('Dikkat! Bu taşıt siz işlem yaparken başka biri tarafından güncellenmiş. Veri ezilmesini önlemek için lütfen sayfayı yenileyip güncel durumu kontrol edin.');
+          window.medisaInfo('Dikkat! Bu taşıt siz işlem yaparken başka biri tarafından güncellenmiş. Veri ezilmesini önlemek için lütfen sayfayı yenileyip güncel durumu kontrol edin.');
           if (typeof window.loadDataFromServer === 'function') {
             window.loadDataFromServer(true).then(function() {
               if (typeof window.renderBranchDashboard === 'function') window.renderBranchDashboard();

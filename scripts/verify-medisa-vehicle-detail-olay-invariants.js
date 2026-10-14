@@ -361,7 +361,7 @@ test('Sigorta/Kasko dosya seçimi açık submit bekler; diğer belgeler otomatik
 test('Poliçe tarih doğrulama hatası seçilen dosyayı korur', function() {
   assert.match(
     ruhsatUploadForm,
-    /alert\(dateValidation\.message\);\s*if \(!waitsForPolicyUploadSubmit\) resetSelectedUploadFile\(\);\s*return false;/
+    /window\.medisaInfo\(dateValidation\.message\);\s*if \(!waitsForPolicyUploadSubmit\) resetSelectedUploadFile\(\);\s*return false;/
   );
 });
 

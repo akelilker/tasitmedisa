@@ -562,7 +562,7 @@ if (!record) return;
 const visibleSection = window._editRequestVisibleSection || 'km';
 const reason = document.getElementById('edit-reason').value.trim();
 if (!reason) {
-alert('Düzeltme sebebini yazmalısınız!');
+window.medisaInfo('Düzeltme sebebini yazmalısınız!');
 return;
 }
 
@@ -573,7 +573,7 @@ var newKmVal = document.getElementById('new-km').value.trim();
 newKm = newKmVal ? parseInt(newKmVal.replace(/\./g, ''), 10) : null;
 kmChanged = newKm !== null && newKm !== (record.guncel_km || 0);
 if (newKm !== null && newKm <= 0) {
-alert('Geçerli bir KM değeri girin!');
+window.medisaInfo('Geçerli bir KM değeri girin!');
 return;
 }
 } else if (visibleSection === 'bakim') {
@@ -587,7 +587,7 @@ kazaChanged = (newKaza || '') !== (currentKaza || '');
 }
 
 if (!kmChanged && !bakimChanged && !kazaChanged) {
-alert('En az bir alanda değişiklik yapmalısınız!');
+window.medisaInfo('En az bir alanda değişiklik yapmalısınız!');
 return;
 }
 
@@ -614,17 +614,17 @@ body: JSON.stringify(payload)
 const data = await response.json();
 
 if (data.success) {
-alert('✓ Düzeltme talebiniz gönderildi. Admin onayı bekleniyor.');
+window.medisaInfo('✓ Düzeltme talebiniz gönderildi. Admin onayı bekleniyor.');
 closeEditRequest();
 if (document.getElementById('history-list').parentElement && document.getElementById('history-modal').classList.contains('show')) {
 renderHistoryList();
 }
 } else {
-alert('❌ ' + data.message);
+window.medisaInfo('❌ ' + data.message);
 }
 
 } catch (error) {
-alert('❌ Bağlantı hatası!');
+window.medisaInfo('❌ Bağlantı hatası!');
 }
 };
 runtime.registerFeature('history', {

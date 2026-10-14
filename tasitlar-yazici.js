@@ -647,7 +647,7 @@
         done = true;
         relaxIframeAfterPrintPaint();
         cleanup();
-        alert('Yazdırma başlatılamadı. Lütfen tekrar deneyin.');
+        window.medisaInfo('Yazdırma başlatılamadı. Lütfen tekrar deneyin.');
       }
 
       try {
@@ -716,7 +716,7 @@
     var vehicles = readVehicles();
     var vehicle = vehicles.find(function(v) { return String(v.id) === String(vehicleId); });
     if (!vehicle) {
-      alert('Taşıt bulunamadı!');
+      window.medisaInfo('Taşıt bulunamadı!');
       return;
     }
     function runPrint() {

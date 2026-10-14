@@ -119,7 +119,7 @@ return true;
 
 const APP_VERSION = 'v78.1';
 function showDriverOfflineReadonlyMessage() {
-alert('İnternet bağlantısı yok. Son kayıtlı veri görüntüleniyor; değişiklikler kaydedilemez.');
+window.medisaInfo('İnternet bağlantısı yok. Son kayıtlı veri görüntüleniyor; değişiklikler kaydedilemez.');
 }
 function ensureDriverOnlineForWrite() {
 if (typeof navigator !== 'undefined' && navigator.onLine === false) {
@@ -760,7 +760,7 @@ async function loadDashboard() {
                 passwordFeature.openMandatoryDriverPasswordChange();
             } catch (featureError) {
                 console.error('Zorunlu parola ekranı yükleme hatası:', featureError);
-                alert('Zorunlu parola ekranı yüklenemedi. İnternet bağlantınızı kontrol edip sayfayı yenileyin.');
+                window.medisaInfo('Zorunlu parola ekranı yüklenemedi. İnternet bağlantınızı kontrol edip sayfayı yenileyin.');
             }
             return;
         }
@@ -797,7 +797,7 @@ async function loadDashboard() {
                 window.location.href = runtime.paths.MAIN_APP_URL;
                 return;
             }
-            alert('Oturum süresi doldu! Lütfen tekrar giriş yapın.');
+            window.medisaInfo('Oturum süresi doldu! Lütfen tekrar giriş yapın.');
             logout();
             return;
         }
@@ -907,7 +907,7 @@ function applyVehicleVersionUpdate(vehicleId, nextVersion) {
 
 async function handleDriverConflictResponse(result, fallbackMessage) {
     if (!result || result.conflict !== true) return false;
-    alert(result.message || fallbackMessage || 'Veri başka biri tarafından güncellendi. Güncel veriler yüklendi.');
+    window.medisaInfo(result.message || fallbackMessage || 'Veri başka biri tarafından güncellendi. Güncel veriler yüklendi.');
     await loadDashboard();
     return true;
 }
@@ -1881,20 +1881,26 @@ window.location.href = runtime.paths.DRIVER_PAGE_BASE + 'index.html?force=login'
 }
 
 function openForgetThisDeviceConfirm() {
-var popover = document.getElementById('driver-forget-device-confirm');
-if (!popover) {
+var modal = document.getElementById('driver-forget-device-confirm');
+if (!modal) {
 forgetThisDevice();
 return;
 }
-popover.style.display = 'block';
-popover.setAttribute('aria-hidden', 'false');
+modal.setAttribute('aria-hidden', 'false');
+modal.style.display = 'flex';
+requestAnimationFrame(function() {
+modal.classList.add('active');
+document.body.classList.add('modal-open');
+});
 }
 
 function closeForgetThisDeviceConfirm() {
-var popover = document.getElementById('driver-forget-device-confirm');
-if (!popover) return;
-popover.style.display = 'none';
-popover.setAttribute('aria-hidden', 'true');
+var modal = document.getElementById('driver-forget-device-confirm');
+if (!modal) return;
+modal.classList.remove('active');
+modal.style.display = 'none';
+modal.setAttribute('aria-hidden', 'true');
+document.body.classList.remove('modal-open');
 }
 
 function confirmForgetThisDevice() {
