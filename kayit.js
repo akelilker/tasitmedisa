@@ -787,11 +787,11 @@
       return;
     }
     vehicleDateCalendarState.adapter = adapter || null;
-    const selectedDate = getVehicleCalendarDateFromIso(readVehicleDateCalendarIso(input)) || new Date();
+    const viewDate = new Date();
     vehicleDateCalendarState.input = input;
     vehicleDateCalendarState.anchor = anchor;
-    vehicleDateCalendarState.year = selectedDate.getFullYear();
-    vehicleDateCalendarState.month = selectedDate.getMonth();
+    vehicleDateCalendarState.year = viewDate.getFullYear();
+    vehicleDateCalendarState.month = viewDate.getMonth();
     anchor.setAttribute('aria-expanded', 'true');
     renderVehicleDateCalendarPanel();
     positionVehicleDateCalendarPanel();

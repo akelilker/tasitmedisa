@@ -605,6 +605,35 @@ select option:active {
     filter: none !important;
     opacity: 1 !important;
 }
+/* Kayıt: tarih takvimi açıkken yalnız form arka planı flu; header net kalır. */
+#vehicle-modal:has(.vehicle-date-calendar-panel.open) .modal-body .universal-btn-group,
+#vehicle-modal:has(.vehicle-date-calendar-panel.open) .modal-body .universal-btn-group .universal-btn-save,
+#vehicle-modal:has(.vehicle-date-calendar-panel.open) .modal-body .universal-btn-group .universal-btn-cancel {
+    pointer-events: none !important;
+}
+#vehicle-modal:has(.vehicle-date-calendar-panel.open) .modal-body .modal-column-left,
+#vehicle-modal:has(.vehicle-date-calendar-panel.open) .modal-body .modal-column-right > *:not(:has(.vehicle-date-calendar-panel.open)),
+#vehicle-modal:has(.vehicle-date-calendar-panel.open) .modal-body .universal-btn-group {
+    filter: blur(2px);
+    opacity: 0.92;
+    transition: filter 0.18s ease, opacity 0.18s ease;
+}
+#vehicle-modal:has(.vehicle-date-calendar-panel.open) .vehicle-date-picker-wrap,
+#vehicle-modal:has(.vehicle-date-calendar-panel.open) .vehicle-date-calendar-panel.open {
+    filter: none !important;
+    opacity: 1 !important;
+}
+.egzoz-dialog-overlay:has(.vehicle-date-calendar-panel.open) .egzoz-dialog-body > *:not(.egzoz-dialog-date-field),
+.egzoz-dialog-overlay:has(.vehicle-date-calendar-panel.open) .egzoz-dialog-body .universal-btn-group {
+    filter: blur(2px);
+    opacity: 0.92;
+    transition: filter 0.18s ease, opacity 0.18s ease;
+}
+.egzoz-dialog-overlay:has(.vehicle-date-calendar-panel.open) .vehicle-date-picker-wrap,
+.egzoz-dialog-overlay:has(.vehicle-date-calendar-panel.open) .vehicle-date-calendar-panel.open {
+    filter: none !important;
+    opacity: 1 !important;
+}
 .vehicle-branch-dropdown-wrap.single-branch .vehicle-branch-list {
     display: none !important;
 }
