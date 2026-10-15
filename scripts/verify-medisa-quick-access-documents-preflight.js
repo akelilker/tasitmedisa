@@ -41,21 +41,21 @@ test('birleşik script-core her iki modül sürümünü taşır ve yeni shell pi
     assert.doesNotMatch(read(name), /script-core\.js\?v=20261009\.1/);
     assert.doesNotMatch(read(name), /script-core\.js\?v=20261009\.2/);
   });
-  assert.match(index, /style-core\.css\?v=20261015\.2/);
-  assert.match(index, /data-manager\.js\?v=20261014\.2/);
+  assert.match(index, /style-core\.css\?v=20261015\.3/);
+  assert.match(index, /data-manager\.js\?v=20261015\.3/);
   assert.doesNotMatch(index, /data-manager\.js\?v=20261009\.3/);
 });
 
 test('SW önbelleği shell pinleriyle birebir ve önceki 370 kimliğinden ayrılır', function() {
-  assert.match(sw, /CACHE_VERSION = 'medisa-v2\.385'/);
+  assert.match(sw, /CACHE_VERSION = 'medisa-v2\.386'/);
   assert.doesNotMatch(sw, /medisa-v2\.370/);
   assert.doesNotMatch(sw, /medisa-v2\.371/);
   assert.doesNotMatch(sw, /medisa-v2\.372/);
   assert.doesNotMatch(sw, /medisa-v2\.373/);
   assert.doesNotMatch(sw, /medisa-v2\.374/);
-  assert.match(sw, /'\/style-core\.css\?v=20261015\.2'/);
+  assert.match(sw, /'\/style-core\.css\?v=20261015\.3'/);
   assert.match(sw, /'\/script-core\.js\?v=20261015\.1'/);
-  assert.match(sw, /'\/data-manager\.js\?v=20261014\.2'/);
+  assert.match(sw, /'\/data-manager\.js\?v=20261015\.3'/);
 });
 
 test('Hızlı Erişim ve belge kartı drop ownerları birlikte durur', function() {
@@ -69,6 +69,12 @@ test('Hızlı Erişim ve belge kartı drop ownerları birlikte durur', function(
   assert.doesNotMatch(dataManager, /function getQuickAccessVehicleType/);
   assert.doesNotMatch(dataManager, /M4 16l-1-5/);
   assert.match(dataManager, /function renderQuickAccessRow\(\)/);
+  assert.match(dataManager, /function getQuickAccessVehicleLimit\(\) \{\s*return 4;\s*\}/);
+  assert.doesNotMatch(dataManager, /return isMobile \? 3 : 4/);
+  assert.match(dataManager, /hizli-erisim-kaydir/);
+  const styleCore = read('style-core.css');
+  assert.match(styleCore, /\.hizli-erisim-satiri\.hizli-erisim-kaydir[\s\S]*scroll-snap-type:\s*x mandatory/);
+  assert.match(styleCore, /scroll-snap-align:\s*center/);
   assert.match(dataManager, /DRIVER_DASHBOARD_URL \+ '\?vehicle=' \+ encodeURIComponent\(String\(id\)\)/);
   assert.match(index, /id="hizli-erisim-satiri"/);
   assert.match(tasitlar, /function bindVehicleDocumentCardDragDrop\(card, vehicleId, docKey\)/);

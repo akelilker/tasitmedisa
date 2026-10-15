@@ -855,14 +855,7 @@ function getAssignedVehiclesForSessionUser(sessionData) {
 }
 
 function getQuickAccessVehicleLimit() {
-    try {
-        var isMobile = typeof window.matchMedia === 'function'
-            ? window.matchMedia('(max-width: 640px)').matches
-            : window.innerWidth <= 640;
-        return isMobile ? 3 : 4;
-    } catch (e) {
-        return 4;
-    }
+    return 4;
 }
 
 function escapeQuickAccessHtml(value) {
@@ -901,6 +894,7 @@ function renderQuickAccessRow() {
     if (!canShowQuickAccess(session)) {
         row.style.display = 'none';
         row.innerHTML = '';
+        row.classList.remove('hizli-erisim-kaydir');
         return;
     }
 
@@ -908,6 +902,7 @@ function renderQuickAccessRow() {
     if (!userId) {
         row.style.display = 'none';
         row.innerHTML = '';
+        row.classList.remove('hizli-erisim-kaydir');
         return;
     }
 
@@ -915,6 +910,7 @@ function renderQuickAccessRow() {
     if (!pref.aktif || !pref.aracIds.length) {
         row.style.display = 'none';
         row.innerHTML = '';
+        row.classList.remove('hizli-erisim-kaydir');
         return;
     }
 
@@ -926,6 +922,7 @@ function renderQuickAccessRow() {
     if (!selected.length) {
         row.style.display = 'none';
         row.innerHTML = '';
+        row.classList.remove('hizli-erisim-kaydir');
         return;
     }
 
@@ -942,6 +939,7 @@ function renderQuickAccessRow() {
     });
 
     row.innerHTML = html;
+    row.classList.toggle('hizli-erisim-kaydir', selected.length >= 4);
     row.style.display = '';
 }
 

@@ -2636,13 +2636,28 @@ body.modal-open .user-panel-link {
   }
 }
 
-/* Mobil: 4 kısayol (375px+) taşmadan; ikonlar RAPORLAR–Kullanıcı Paneli arasında yukarı */
+/* Mobil: en fazla 4 kısayol; 4 seçiliyse 3 görünür + yatay kaydırma, ≤3 ortada */
 @media (max-width: 640px) {
   .hizli-erisim-satiri {
     bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + clamp(68px, 13vh, 96px) + env(safe-area-inset-bottom, 0));
     gap: clamp(4px, 2.1vw, 12px);
     padding: 0 clamp(6px, 2vw, 12px);
     max-width: min(500px, 100vw);
+    overscroll-behavior-x: contain;
+  }
+  .hizli-erisim-satiri.hizli-erisim-kaydir {
+    justify-content: flex-start;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    pointer-events: auto;
+    touch-action: pan-x;
+  }
+  .hizli-erisim-satiri.hizli-erisim-kaydir::-webkit-scrollbar {
+    display: none;
+    height: 0;
   }
   .hizli-erisim-oge {
     flex: 1 1 0;
@@ -2650,6 +2665,12 @@ body.modal-open .user-panel-link {
     max-width: 76px;
     gap: 4px;
     padding: 2px 0;
+  }
+  .hizli-erisim-satiri.hizli-erisim-kaydir .hizli-erisim-oge {
+    flex: 0 0 calc((100% - (2 * clamp(4px, 2.1vw, 12px))) / 3);
+    max-width: none;
+    scroll-snap-align: center;
+    scroll-snap-stop: always;
   }
   .hizli-erisim-svg {
     width: 68px;
