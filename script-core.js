@@ -1146,7 +1146,7 @@ function showModuleSpinner() {
   wrap.className = 'module-load-spinner';
   wrap.setAttribute('aria-live', 'polite');
   wrap.setAttribute('aria-label', 'Yükleniyor');
-  wrap.innerHTML = '<div class="module-load-spinner-dot"></div><div class="module-load-spinner-dot"></div><div class="module-load-spinner-dot"></div><span class="module-load-spinner-text">Yükleniyor…</span>';
+  wrap.innerHTML = '<div class="module-load-spinner-dots" aria-hidden="true"><div class="module-load-spinner-dot"></div><div class="module-load-spinner-dot"></div><div class="module-load-spinner-dot"></div></div><span class="module-load-spinner-text">Yükleniyor…</span>';
   document.body.appendChild(wrap);
   _moduleSpinnerEl = wrap;
   /* Gecikmiş aktivasyon: show/hide aynı görevde kapandıysa veya element değiştiyse stale rAF açamaz. */
@@ -1837,7 +1837,7 @@ var MEDISA_MODULE_VERSIONS = {
   kayitJs: '20261014.2',
   kayitCss: '20260923.2',
   ayarlarJs: '20261014.2',
-  ayarlarCss: '20261014.2',
+  ayarlarCss: '20261015.1',
   tasitlarYazici: '20261014.2',
   vehicleNotificationDomain: '20260817.2'
 };
