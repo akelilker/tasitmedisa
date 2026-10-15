@@ -631,6 +631,18 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
   filter: none !important;
   opacity: 1 !important;
 }
+/* Olay Ekle: tarih takvimi açıkken yalnız form arka planı flu; universal-back-bar net kalır. */
+#dinamik-olay-modal:has(.vehicle-date-calendar-panel.open) #dinamik-olay-form-icerik > *:not(:has(.vehicle-date-calendar-panel.open)),
+#dinamik-olay-modal:has(.vehicle-date-calendar-panel.open) .universal-btn-group {
+  filter: blur(2px);
+  opacity: 0.92;
+  transition: filter 0.18s ease, opacity 0.18s ease;
+}
+#dinamik-olay-modal:has(.vehicle-date-calendar-panel.open) .vehicle-date-picker-wrap,
+#dinamik-olay-modal:has(.vehicle-date-calendar-panel.open) .vehicle-date-calendar-panel.open {
+  filter: none !important;
+  opacity: 1 !important;
+}
 
 /* Olay Ekle (13 modal): input/textarea arka planı; select’te ok için background-color (shorthand yok) */
 .olay-ekle-modal .modal-body .form-input:not(select),
