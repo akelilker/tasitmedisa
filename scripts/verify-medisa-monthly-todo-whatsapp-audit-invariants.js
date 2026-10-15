@@ -138,6 +138,10 @@ function createRecordHarness(opts) {
   // Pull the exact recordMonthlyTodoWhatsAppOpened function body from source.
   const fnSrc = extractNamedFunction(src, 'recordMonthlyTodoWhatsAppOpened');
   assert.ok(fnSrc, 'recordMonthlyTodoWhatsAppOpened bulunmalı');
+  // Runtime artık native alert yerine window.medisaInfo (in-app bilgi modalı) kullanır; mesajları aynı listeye topla.
+  if (sandbox.window && typeof sandbox.window.medisaInfo !== 'function') {
+    sandbox.window.medisaInfo = function(m) { alerts.push(String(m)); };
+  }
   vm.createContext(sandbox);
   vm.runInContext(fnSrc + '\nthis.record = recordMonthlyTodoWhatsAppOpened;', sandbox);
 
