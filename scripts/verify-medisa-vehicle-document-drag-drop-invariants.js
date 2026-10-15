@@ -118,10 +118,10 @@ test('drag-over vurgusu mevcut kart owner CSS içindedir ve satış sözleşmesi
 test('modül sürümü ve script-core pin tasitlar değişimine hizalıdır', function() {
   assert.match(tasitlar, /MEDISA_TASITLAR_MODULE_VERSION = '20261014\.2'/);
   assert.match(read('script-core.js'), /tasitlar:\s*'20261014\.2'/);
-  assert.match(read('index.html'), /script-core\.js\?v=20261014\.2/);
-  assert.match(read('sw.js'), /'\/script-core\.js\?v=20261014\.2'/);
-  assert.match(read('sw.js'), /CACHE_VERSION = 'medisa-v2\.384'/);
-  assert.match(read('index.html'), /style-core\.css\?v=20261015\.1/);
+  assert.match(read('index.html'), /script-core\.js\?v=20261015\.1/);
+  assert.match(read('sw.js'), /'\/script-core\.js\?v=20261015\.1'/);
+  assert.match(read('sw.js'), /CACHE_VERSION = 'medisa-v2\.385'/);
+  assert.match(read('index.html'), /style-core\.css\?v=20261015\.2/);
   assert.match(read('script-core.js'), /ayarlarJs:\s*'20261014\.2'/);
 });
 

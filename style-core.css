@@ -2077,7 +2077,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu .m
     height: auto !important;
     max-height: calc(100vh - 80px - 52px) !important;
     max-height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 80px) !important;
-    margin: 80px auto 52px auto;
+    margin: auto !important;
     border-radius: 10px;
     border: 0.5px solid var(--border-light);
     box-shadow: none;
@@ -2193,6 +2193,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .c
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .compact-confirm-modal.modal-overlay.open {
     align-items: center !important;
     justify-content: center !important;
+    bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + 22px + env(safe-area-inset-bottom, 0)) !important;
     background: rgba(8, 13, 22, 0.55) !important;
     background-color: rgba(8, 13, 22, 0.55) !important;
     backdrop-filter: none !important;
@@ -2635,17 +2636,31 @@ body.modal-open .user-panel-link {
   }
 }
 
-/* Masaüstü 4 / mobil 3 üst sınır (render'da tümü basılır, CSS kırpma yapar) */
+/* Mobil: 4 kısayol (375px+) taşmadan; ikonlar RAPORLAR–Kullanıcı Paneli arasında yukarı */
 @media (max-width: 640px) {
+  .hizli-erisim-satiri {
+    bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + clamp(68px, 13vh, 96px) + env(safe-area-inset-bottom, 0));
+    gap: clamp(4px, 2.1vw, 12px);
+    padding: 0 clamp(6px, 2vw, 12px);
+    max-width: min(500px, 100vw);
+  }
+  .hizli-erisim-oge {
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: 76px;
+    gap: 4px;
+    padding: 2px 0;
+  }
   .hizli-erisim-svg {
-    width: 62px;
-    height: 62px;
+    width: 68px;
+    height: 68px;
+    max-width: 100%;
   }
   .hizli-erisim-plaka {
-    font-size: 15px;
-  }
-  .hizli-erisim-oge:nth-child(n+4) {
-    display: none;
+    font-size: clamp(10px, 2.65vw, 14px);
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
 @media (min-width: 641px) {
@@ -3528,7 +3543,25 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap)) !important;
         bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
     }
-    
+
+    /* Kompakt bilgi/onay: viewport ortası + footer kırmızı glow üstü kesilmesin */
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .compact-confirm-modal.modal-overlay.active,
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .compact-confirm-modal.modal-overlay.open {
+        align-items: center !important;
+        justify-content: center !important;
+        padding: max(12px, env(safe-area-inset-top)) 12px max(12px, env(safe-area-inset-bottom)) !important;
+        bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + 22px + env(safe-area-inset-bottom, 0)) !important;
+        background: rgba(8, 13, 22, 0.55) !important;
+        background-color: rgba(8, 13, 22, 0.55) !important;
+    }
+    body.modal-open .compact-confirm-modal.modal-overlay .modal-container {
+        margin: auto !important;
+        height: auto !important;
+        max-height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 48px) !important;
+    }
+    #info-modal.compact-confirm-modal.modal-overlay .modal-container {
+        margin: auto !important;
+    }
 
     /* === ANA KAYIT MODALI KURTARMA (Dar alana sığması için alt alta dizilmek zorundadır) === */
     #vehicle-modal .modal-body .form-section-inline:has(.radio-group),
@@ -3655,6 +3688,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         align-items: center !important;
         justify-content: center !important;
         padding: env(safe-area-inset-top) 12px env(safe-area-inset-bottom) !important;
+        bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + 22px + env(safe-area-inset-bottom, 0)) !important;
         background: rgba(8, 13, 22, 0.55) !important;
         background-color: rgba(8, 13, 22, 0.55) !important;
         backdrop-filter: none !important;
@@ -3731,6 +3765,14 @@ body.modal-open .app-container {
     opacity: 1 !important;
     margin: 0;
     text-align: center;
+    padding-left: 48px !important;
+    padding-right: 48px !important;
+    box-sizing: border-box;
+    width: 100% !important;
+    max-width: 100% !important;
+    white-space: normal !important;
+    line-height: 1.15 !important;
+    font-size: clamp(14px, 3.8vw, 17px) !important;
 }
 
 /* PWA Update Toast */
@@ -4108,20 +4150,20 @@ html.medisa-ios27-pwa body.dashboard-page .driver-header-fixed {
 /* ========== LAZY LOAD – Modül yüklenirken spinner ========== */
 .module-load-spinner {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 12px;
   background: rgba(8, 13, 22, 0.85);
   z-index: 10002;
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.2s ease, visibility 0.2s ease;
   pointer-events: auto;
+  box-sizing: border-box;
+  padding: env(safe-area-inset-top) 16px env(safe-area-inset-bottom);
 }
 .module-load-spinner.active {
   opacity: 1;
@@ -4132,32 +4174,30 @@ html.medisa-ios27-pwa body.dashboard-page .driver-header-fixed {
 .module-load-spinner:not(.active) {
   pointer-events: none !important;
 }
+.module-load-spinner-dots {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
 .module-load-spinner-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
   background: var(--theme-color, #d40000);
   animation: module-spinner-bounce 0.6s ease-in-out infinite both;
-  margin: 0 4px;
+  flex-shrink: 0;
 }
 .module-load-spinner-dot:nth-child(1) { animation-delay: 0s; }
 .module-load-spinner-dot:nth-child(2) { animation-delay: 0.15s; }
 .module-load-spinner-dot:nth-child(3) { animation-delay: 0.3s; }
-.module-load-spinner {
-  flex-direction: row;
-  flex-wrap: wrap;
-  gap: 12px;
-  justify-content: center;
-}
-.module-load-spinner-dot {
-  display: inline-block;
-}
 .module-load-spinner-text {
   font-size: 14px;
   color: var(--txt-muted, rgba(255,255,255,0.6));
-  width: 100%;
   text-align: center;
-  margin-top: 4px;
+  margin: 0;
+  line-height: 1.3;
 }
 @keyframes module-spinner-bounce {
   0%, 80%, 100% { transform: scale(0.6); opacity: 0.6; }
