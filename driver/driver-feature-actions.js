@@ -111,10 +111,16 @@ var n = parseInt(String(val).replace(/\D/g, ''), 10);
 return isNaN(n) ? null : n;
 }
 
-function resolveGuncelKmForBakim(guncelKm, bakimKmRaw) {
+async function resolveGuncelKmForBakim(guncelKm, bakimKmRaw) {
 var bakimKmNum = parseDriverKmInput(bakimKmRaw);
 if (bakimKmNum === null || bakimKmNum <= guncelKm) return guncelKm;
-if (confirm('Bildirilmek İstenen Km Bilgisi, Taşıtın Bildirilmiş Km\'sinden Fazladır. Taşıt Km Bilgisini de Güncellemek İster misiniz?')) {
+var kmAnswer = typeof window.medisaAskCompactConfirm === 'function'
+? await window.medisaAskCompactConfirm({
+title: 'ONAY',
+message: 'Bildirilmek İstenen Km Bilgisi, Taşıtın Bildirilmiş Km\'sinden Fazladır. Taşıt Km Bilgisini de Güncellemek İster misiniz?'
+})
+: null;
+if (kmAnswer === true) {
 return bakimKmNum;
 }
 return guncelKm;
@@ -133,7 +139,7 @@ var rec = h.getExistingRecord(vid);
 if (rec != null && rec.guncel_km != null) guncelKm = parseInt(String(rec.guncel_km).replace(/\D/g, ''), 10);
 }
 if (!guncelKm || guncelKm <= 0) {
-alert('Lütfen geçerli bir KM değeri girin (Km alanı veya mevcut kayıt).');
+window.medisaInfo('Lütfen geçerli bir KM değeri girin (Km alanı veya mevcut kayıt).');
 if (guncelKmEl) guncelKmEl.focus();
 return;
 }
@@ -141,7 +147,7 @@ var btnBildir, btnVazgec, formActions, successMsg;
 if (type === 'kaza') {
 var kazaAciklama = (document.getElementById('kaza-detay-' + vid) || {}).value.trim();
 if (!kazaAciklama) {
-alert('Kaza bildirimi için açıklama girin.');
+window.medisaInfo('Kaza bildirimi için açıklama girin.');
 return;
 }
 btnBildir = document.querySelector('#kaza-block-' + vid + ' .universal-btn-save');
@@ -151,7 +157,7 @@ successMsg = document.getElementById('kaza-success-' + vid);
 } else {
 var bakimAciklama = (document.getElementById('bakim-detay-' + vid) || {}).value.trim();
 if (!bakimAciklama) {
-alert('Bakım bildirimi için açıklama girin.');
+window.medisaInfo('Bakım bildirimi için açıklama girin.');
 return;
 }
 btnBildir = document.querySelector('#bakim-block-' + vid + ' .universal-btn-save');
@@ -160,7 +166,7 @@ formActions = document.querySelector('#bakim-block-' + vid + ' .universal-btn-gr
 successMsg = document.getElementById('bakim-success-' + vid);
 }
 if (type === 'bakim') {
-guncelKm = resolveGuncelKmForBakim(guncelKm, ((document.getElementById('bakim-km-' + vid) || {}).value || '').trim());
+guncelKm = await resolveGuncelKmForBakim(guncelKm, ((document.getElementById('bakim-km-' + vid) || {}).value || '').trim());
 }
 if (btnBildir) btnBildir.disabled = true;
 if (btnVazgec) btnVazgec.disabled = true;
@@ -257,11 +263,11 @@ h.loadDashboard();
 }
 }, 4000);
 } else {
-alert(data.message || 'Kayıt yapılamadı.');
+window.medisaInfo(data.message || 'Kayıt yapılamadı.');
 }
 } catch (err) {
 console.error('Bildirim kaydetme hatası:', err);
-alert('Bağlantı hatası.');
+window.medisaInfo('Bağlantı hatası.');
 } finally {
 if (btnBildir) btnBildir.disabled = false;
 if (btnVazgec) btnVazgec.disabled = false;
@@ -273,7 +279,7 @@ if (!h.ensureDriverOnlineForWrite()) return;
 const kmEl = document.getElementById('km-' + vid);
 const km = kmEl ? parseInt(String(kmEl.value).replace(/\D/g, ''), 10) : 0;
 if (!km || km <= 0) {
-alert('Lütfen geçerli bir KM değeri girin!');
+window.medisaInfo('Lütfen geçerli bir KM değeri girin!');
 if (kmEl) kmEl.focus();
 return;
 }
@@ -282,7 +288,7 @@ var rec = h.getExistingRecord(vid);
 var oncekiKm = (vehicle && (vehicle.guncelKm != null ? vehicle.guncelKm : '')) || (rec && rec.guncel_km != null ? rec.guncel_km : '');
 var oncekiKmNum = parseInt(String(oncekiKm).replace(/\D/g, ''), 10) || 0;
 if (oncekiKmNum > 0 && km < oncekiKmNum) {
-alert('Bildirilmek İstenen Km, Önceki Kayıtlarla Uyuşmamaktadır. Şirket Yetkilisi İle Görüşün');
+window.medisaInfo('Bildirilmek İstenen Km, Önceki Kayıtlarla Uyuşmamaktadır. Şirket Yetkilisi İle Görüşün');
 if (kmEl) kmEl.focus();
 return;
 }
@@ -410,7 +416,7 @@ function getDriverMuayenePayload(vehicleId) {
 const suffix = vehicleId ? '-' + String(vehicleId) : '';
 const tarih = document.getElementById('driver-muayene-tarih' + suffix)?.value.trim() || '';
 if (!tarih) {
-alert('Tarih zorunludur!');
+window.medisaInfo('Tarih zorunludur!');
 return null;
 }
 const egzozCheckbox = document.getElementById('driver-muayene-egzoz-different' + suffix);
@@ -419,7 +425,7 @@ const egzozMuayeneYapilmaDate = egzozDifferent
 ? (document.getElementById('driver-muayene-egzoz-tarih' + suffix)?.value.trim() || '')
 : '';
 if (egzozDifferent && !egzozMuayeneYapilmaDate) {
-alert('Egzoz Muayene Tarihi zorunludur!');
+window.medisaInfo('Egzoz Muayene Tarihi zorunludur!');
 const egzozInput = document.getElementById('driver-muayene-egzoz-tarih' + suffix);
 if (egzozInput) egzozInput.focus();
 return null;
@@ -428,29 +434,28 @@ return { tarih: tarih, egzozMuayeneYapilmaDate: egzozMuayeneYapilmaDate };
 }
 
 function positionAndShowMuayenePopover(dateInputEl) {
-var popover = document.getElementById('muayene-confirm-popover');
-if (!popover || !dateInputEl) return;
-var inputRect = dateInputEl.getBoundingClientRect();
-var container = dateInputEl.closest('.driver-report-block') || document.body;
-var containerRect = container.getBoundingClientRect();
+var modal = document.getElementById('muayene-confirm-modal');
+if (!modal) return;
 if (s.pendingMuayeneVehicleId) {
 var btnGroup = document.querySelector('#muayene-block-' + s.pendingMuayeneVehicleId + ' .universal-btn-group');
 if (btnGroup) btnGroup.style.visibility = 'hidden';
 }
-popover.style.visibility = 'hidden';
-popover.style.display = 'block';
-var popoverRect = popover.getBoundingClientRect();
-var top = inputRect.bottom + 5;
-var left = containerRect.left + (containerRect.width / 2) - (popoverRect.width / 2);
-var leftClamped = Math.max(16, Math.min(left, window.innerWidth - popoverRect.width - 16));
-popover.style.top = top + 'px';
-popover.style.left = leftClamped + 'px';
-popover.style.visibility = '';
+modal.setAttribute('aria-hidden', 'false');
+modal.style.display = 'flex';
+requestAnimationFrame(function() {
+modal.classList.add('active');
+document.body.classList.add('modal-open');
+});
 }
 
 function hideMuayenePopoverAndRestore() {
-var popover = document.getElementById('muayene-confirm-popover');
-if (popover) popover.style.display = 'none';
+var modal = document.getElementById('muayene-confirm-modal');
+if (modal) {
+modal.classList.remove('active');
+modal.style.display = 'none';
+modal.setAttribute('aria-hidden', 'true');
+}
+document.body.classList.remove('modal-open');
 if (s.pendingMuayeneVehicleId) {
 var btnGroup = document.querySelector('#muayene-block-' + s.pendingMuayeneVehicleId + ' .universal-btn-group');
 if (btnGroup) btnGroup.style.visibility = '';
@@ -506,11 +511,11 @@ if (!refreshDriverMuayeneLocally(vid, result)) {
 await h.loadDashboard();
 }
 } else {
-alert(result.message || 'Kayıt başarısız!');
+window.medisaInfo(result.message || 'Kayıt başarısız!');
 }
 } catch (err) {
 console.error(err);
-alert('Bağlantı hatası!');
+window.medisaInfo('Bağlantı hatası!');
 } finally {
 s.isMuayeneConfirmed = false;
 }
@@ -524,13 +529,13 @@ let data = {};
 if (type === 'anahtar') {
 const block = document.getElementById('anahtar-block-' + vehicleId);
 const active = block ? block.querySelector('.driver-radio-btn.active') : null;
-if (!active) { alert('Lütfen Durum seçiniz!'); return; }
+if (!active) { window.medisaInfo('Lütfen Durum seçiniz!'); return; }
 const durum = active.dataset.value;
 data = { durum: durum, detay: durum === 'var' ? window.capitalizeWords(document.getElementById('driver-anahtar-detay-' + vehicleId)?.value.trim() || '') : '' };
 } else if (type === 'lastik') {
 const block = document.getElementById('lastik-block-' + vehicleId);
 const active = block ? block.querySelector('.driver-radio-btn.active') : null;
-if (!active) { alert('Lütfen Durum seçiniz!'); return; }
+if (!active) { window.medisaInfo('Lütfen Durum seçiniz!'); return; }
 const durum = active.dataset.value;
 data = { durum: durum, adres: durum === 'var' ? window.capitalizeWords(document.getElementById('driver-lastik-adres-' + vehicleId)?.value.trim() || '') : '' };
 } else if (type === 'muayene') {
@@ -549,7 +554,7 @@ return;
 data = payload;
 } else if (type === 'sigorta') {
 const tarih = document.getElementById('driver-sigorta-tarih-' + vehicleId)?.value.trim() || '';
-if (!tarih) { alert('Tarih zorunludur!'); return; }
+if (!tarih) { window.medisaInfo('Tarih zorunludur!'); return; }
 data = {
 tarih: tarih,
 firma: window.capitalizeWords(document.getElementById('driver-sigorta-firma-' + vehicleId)?.value.trim() || ''),
@@ -558,7 +563,7 @@ iletisim: document.getElementById('driver-sigorta-iletisim-' + vehicleId)?.value
 };
 } else if (type === 'kasko') {
 const tarih = document.getElementById('driver-kasko-tarih-' + vehicleId)?.value.trim() || '';
-if (!tarih) { alert('Tarih zorunludur!'); return; }
+if (!tarih) { window.medisaInfo('Tarih zorunludur!'); return; }
 data = {
 tarih: tarih,
 firma: window.capitalizeWords(document.getElementById('driver-kasko-firma-' + vehicleId)?.value.trim() || ''),
@@ -642,11 +647,11 @@ await h.loadDashboard();
 await h.loadDashboard();
 }
 } else {
-alert(result.message || 'Kayıt başarısız!');
+window.medisaInfo(result.message || 'Kayıt başarısız!');
 }
 } catch (err) {
 console.error(err);
-alert('Bağlantı hatası!');
+window.medisaInfo('Bağlantı hatası!');
 }
 };
 

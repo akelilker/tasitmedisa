@@ -728,7 +728,7 @@ if (implementationPresent) {
     assert.match(vehiclesYazici, /id="print-preview-close"/);
   });
   test('tasitlarYazici sürüm registry paritesi', function() {
-    assert.match(core, /tasitlarYazici:\s*'20260906\.1'/);
+    assert.match(core, /tasitlarYazici:\s*'20261014\.2'/);
   });
 }
 

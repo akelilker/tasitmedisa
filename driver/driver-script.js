@@ -25,18 +25,18 @@ if (document.readyState === 'loading') {
 document.addEventListener('DOMContentLoaded', applyMedisaIosPwaClass);
 }
 
-var VERSION = '20261012.2';
+var VERSION = '20261014.2';
 window.MEDISA_DRIVER_ASSET_VERSIONS = window.MEDISA_DRIVER_ASSET_VERSIONS || {
-bootstrap: '20261012.2',
+bootstrap: '20261014.2',
 login: '20261008.1',
-dashboardCore: '20261012.2',
-history: '20260926.1',
+dashboardCore: '20261014.2',
+history: '20261014.2',
 documents: '20260820.1',
 feedback: '20260813.1',
 password: '20260913.2',
-actions: '20260718.1',
+actions: '20261014.2',
 shellCss: '20260925.7',
-featureCss: '20260913.1'
+featureCss: '20261014.2'
 };
 
 var APP_ROOT = (function() {
@@ -319,7 +319,7 @@ return api;
 }).catch(function(err) {
 inFlight = null;
 var message = (err && err.message) ? err.message : featureOfflineMessage();
-alert(message);
+window.medisaInfo(message);
 throw err;
 });
 return inFlight.then(invoke);
@@ -357,7 +357,7 @@ return;
 if (fnName === 'openForgetThisDeviceConfirm' || fnName === 'closeForgetThisDeviceConfirm') {
 return;
 }
-alert('Panel henüz hazır değil. Lütfen tekrar deneyin.');
+window.medisaInfo('Panel henüz hazır değil. Lütfen tekrar deneyin.');
 };
 }
 
@@ -422,7 +422,7 @@ interactiveAt: Date.now()
 });
 }).catch(function(err) {
 console.error('[Medisa] driver surface yuklenemedi:', err);
-alert('Kullanıcı paneli yüklenemedi. Lütfen sayfayı yenileyin.');
+window.medisaInfo('Kullanıcı paneli yüklenemedi. Lütfen sayfayı yenileyin.');
 });
 }
 

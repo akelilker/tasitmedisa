@@ -2096,6 +2096,43 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu .m
     padding-bottom: 32px !important;
 }
 
+/* Kompakt onay/bilgi: header her zaman görünür; içerik yatay + dikey ortalı */
+.compact-confirm-modal .modal-header {
+    display: flex !important;
+}
+.compact-confirm-modal .modal-body {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    padding-top: 24px !important;
+    padding-bottom: 24px !important;
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+    box-sizing: border-box;
+}
+.compact-confirm-modal .modal-body > * {
+    max-width: 100%;
+}
+.compact-confirm-modal .compact-confirm-info-list {
+    align-self: stretch;
+}
+.compact-confirm-modal .compact-confirm-message,
+.compact-confirm-modal #info-message {
+    width: 100%;
+    text-align: center !important;
+}
+.compact-confirm-modal .universal-btn-group,
+.compact-confirm-modal .info-modal-actions {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    align-self: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 .compact-confirm-modal .compact-confirm-message {
     color: var(--form-label-color);
     font-size: 14px;
@@ -2584,8 +2621,8 @@ body.modal-open .user-panel-link {
 
 @media (min-width: 641px) {
   .hizli-erisim-svg {
-    width: 48px;
-    height: 48px;
+    width: 54px;
+    height: 54px;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hizli-erisim-oge {
     color: rgba(196, 210, 228, 0.56);
@@ -2601,11 +2638,11 @@ body.modal-open .user-panel-link {
 /* Masaüstü 4 / mobil 3 üst sınır (render'da tümü basılır, CSS kırpma yapar) */
 @media (max-width: 640px) {
   .hizli-erisim-svg {
-    width: 56px;
-    height: 56px;
+    width: 62px;
+    height: 62px;
   }
   .hizli-erisim-plaka {
-    font-size: 14px;
+    font-size: 15px;
   }
   .hizli-erisim-oge:nth-child(n+4) {
     display: none;
@@ -3346,7 +3383,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     #cache-confirm-modal .modal-header,
     #info-modal .modal-header,
     #tescil-tarih-confirm-modal .modal-header,
-    #tescil-tarih-input-modal .modal-header {
+    #tescil-tarih-input-modal .modal-header,
+    .compact-confirm-modal .modal-header {
         background: var(--modal-header-red-gradient) !important;
         background-size: 100% 100% !important;
     }
@@ -3658,6 +3696,7 @@ body.modal-open .app-container {
 }
 
 /* === KÜÇÜK MODALLAR İÇİN STANDART HEADER (v79) === */
+.compact-confirm-modal .modal-header,
 #cache-confirm-modal .modal-header,
 #info-modal .modal-header,
 #tescil-tarih-confirm-modal .modal-header,
@@ -3676,6 +3715,7 @@ body.modal-open .app-container {
     border-bottom: none !important;
 }
 
+.compact-confirm-modal .modal-header h2,
 #cache-confirm-modal .modal-header h2,
 #info-modal .modal-header h2,
 #tescil-tarih-confirm-modal .modal-header h2,

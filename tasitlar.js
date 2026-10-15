@@ -197,7 +197,7 @@
 
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20261014.1';
+  const MEDISA_TASITLAR_MODULE_VERSION = '20261014.2';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
@@ -2657,7 +2657,7 @@
       const vehicles = readVehicles();
       const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
       if (!vehicle) {
-        alert("Taşıt bulunamadı!");
+        window.medisaInfo("Taşıt bulunamadı!");
         return;
       }
 
@@ -2959,12 +2959,12 @@
           if (typeof window.printVehicleCard === 'function') {
             window.printVehicleCard(vehicle.id);
           } else {
-            alert('Yazdırma modülü yüklenemedi!');
+            window.medisaInfo('Yazdırma modülü yüklenemedi!');
           }
         }).catch(function() {
           printBtn.innerHTML = originalText;
           printBtn.disabled = false;
-          alert('Bağlantı hatası: Yazdırma modülü indirilemedi.');
+          window.medisaInfo('Bağlantı hatası: Yazdırma modülü indirilemedi.');
         });
       };
       toolbarRight.appendChild(printBtn);
@@ -3787,7 +3787,7 @@
       if (typeof window.renderVehicles === 'function') window.renderVehicles();
     }).catch(function() {
       setCellFromNotesString(savedBuf.originalNotes != null ? savedBuf.originalNotes : '');
-      alert('Notlar kaydedilemedi. Tekrar deneyin.');
+      window.medisaInfo('Notlar kaydedilemedi. Tekrar deneyin.');
     });
   }
 
@@ -4907,21 +4907,21 @@
       if (type === 'sube' || type === 'kullanici') {
         const lockedVehicle = readVehicles().find(v => String(v.id) === String(effectiveVid));
         if (isArchivedVehicleAssignmentLocked(lockedVehicle)) {
-          alert('Arşivdeki taşıtlarda kullanıcı/şube ataması yapılamaz.');
+          window.medisaInfo('Arşivdeki taşıtlarda kullanıcı/şube ataması yapılamaz.');
           return;
         }
       }
       if (type === 'tasitkarti') {
         const k2ScopeVehicle = readVehicles().find(v => String(v.id) === String(effectiveVid));
         if (!window.MedisaVehicleNotificationDomain.vehicleNeedsK2Belgesi(k2ScopeVehicle)) {
-          alert('Taşıt Kartı güncellemesi sadece K2 belgesi kapsamındaki taşıtlarda kullanılır.');
+          window.medisaInfo('Taşıt Kartı güncellemesi sadece K2 belgesi kapsamındaki taşıtlarda kullanılır.');
           return;
         }
       }
       if (type === 'sigorta') {
         const sigortaScopeVehicle = readVehicles().find(v => String(v.id) === String(effectiveVid));
         if (!window.MedisaVehicleNotificationDomain.vehicleNeedsTrafikSigortasi(sigortaScopeVehicle)) {
-          alert('Trafik sigortası güncellemesi römork/yarı römork taşıtlarda kullanılmaz.');
+          window.medisaInfo('Trafik sigortası güncellemesi römork/yarı römork taşıtlarda kullanılmaz.');
           return;
         }
       }
@@ -5887,12 +5887,12 @@
       var files = event.dataTransfer && event.dataTransfer.files ? event.dataTransfer.files : null;
       if (!files || !files.length) return;
       if (files.length > 1) {
-        alert('Yalnızca tek dosya bırakılabilir.');
+        window.medisaInfo('Yalnızca tek dosya bırakılabilir.');
         return;
       }
       var droppedFile = files[0];
       if (!isVehicleDocumentPdfFile(droppedFile)) {
-        alert('Yalnızca PDF dosyası yüklenebilir.');
+        window.medisaInfo('Yalnızca PDF dosyası yüklenebilir.');
         return;
       }
       openVehicleDocumentFromCardDrop(vehicleId, docKey, droppedFile);
@@ -6745,7 +6745,7 @@
       } else if (st === 401 || st === 403) {
         msg = 'Bu belge için oturum veya yetki yetersiz. Tekrar giriş yapmayı deneyin.';
       }
-      alert(msg);
+      window.medisaInfo(msg);
       throw err;
     }
 
@@ -7324,7 +7324,7 @@
           var name = shareErr && shareErr.name;
           if (name === 'AbortError') return;
           if (name === 'NotAllowedError') {
-            alert('Paylaşım izni verilmedi. Viewer açık kaldı; tekrar deneyebilirsiniz.');
+            window.medisaInfo('Paylaşım izni verilmedi. Viewer açık kaldı; tekrar deneyebilirsiniz.');
             return;
           }
           showShareFallback();
@@ -7389,7 +7389,7 @@
         if (pages && typeof window.openMedisaIosPwaPrintPreview === 'function') {
           window.openMedisaIosPwaPrintPreview(buildIosPwaPdfPrintHtml(pages), cfg.label + ' Yazdır');
         } else {
-          alert(cfg.label + ' yazdırma hazır değil. Tekrar deneyin.');
+          window.medisaInfo(cfg.label + ' yazdırma hazır değil. Tekrar deneyin.');
           printReady = false;
           updatePrintButton();
         }
@@ -7411,7 +7411,7 @@
         printBusy = false;
         printReady = false;
         updatePrintButton();
-        alert(cfg.label + ' yazdırma hazırlanamadı. Bağlantınızı kontrol edip tekrar deneyin.');
+        window.medisaInfo(cfg.label + ' yazdırma hazırlanamadı. Bağlantınızı kontrol edip tekrar deneyin.');
       });
     }
 
@@ -7643,7 +7643,7 @@
         if (!shouldContinuePrintAction()) return;
         var preparedIosImageUrl = getCachedRuhsatDocumentObjectUrl(vehicleId, documentUrl, dt);
         if (!preparedIosImageUrl) {
-          alert(cfg.label + ' hazırlanamadı. Bağlantınızı kontrol edip tekrar deneyin.');
+          window.medisaInfo(cfg.label + ' hazırlanamadı. Bağlantınızı kontrol edip tekrar deneyin.');
           return;
         }
         window.openMedisaIosPwaPrintPreview(buildImagePrintHtml(preparedIosImageUrl), cfg.label + ' Yazdır');
@@ -7662,7 +7662,7 @@
         if (!shouldContinuePrintAction()) return;
         var preparedPdfPageUrls = getReadyIosPwaPdfPrintPageUrls(buildRuhsatCacheKey(vehicleId, documentUrl, dt));
         if (!preparedPdfPageUrls) {
-          alert(cfg.label + ' hazırlanamadı. Bağlantınızı kontrol edip tekrar deneyin.');
+          window.medisaInfo(cfg.label + ' hazırlanamadı. Bağlantınızı kontrol edip tekrar deneyin.');
           return;
         }
         window.openMedisaIosPwaPrintPreview(buildIosPwaPdfPrintHtml(preparedPdfPageUrls), cfg.label + ' Yazdır');
@@ -8086,9 +8086,9 @@
               console.error(cfg.label + ' görüntüleme hazırlanamadı', fetchErr || err);
               var st = (fetchErr && fetchErr.httpStatus) || (err && err.httpStatus);
               if (st === 404) {
-                alert(cfg.label + ' veya taşıt kaydı sunucuda bulunamadı (dosya eksik veya veri senkron değil). Sayfayı yenileyip tekrar deneyin.');
+                window.medisaInfo(cfg.label + ' veya taşıt kaydı sunucuda bulunamadı (dosya eksik veya veri senkron değil). Sayfayı yenileyip tekrar deneyin.');
               } else if (st === 401 || st === 403) {
-                alert('Bu belge için oturum veya yetki yetersiz. Tekrar giriş yapmayı deneyin.');
+                window.medisaInfo('Bu belge için oturum veya yetki yetersiz. Tekrar giriş yapmayı deneyin.');
               }
             });
         });
@@ -8105,9 +8105,9 @@
         console.error(cfg.label + ' görüntüleme hazırlanamadı', err);
         var st = err && err.httpStatus;
         if (st === 404) {
-          alert(cfg.label + ' veya taşıt kaydı sunucuda bulunamadı (dosya eksik veya veri senkron değil). Sayfayı yenileyip tekrar deneyin.');
+          window.medisaInfo(cfg.label + ' veya taşıt kaydı sunucuda bulunamadı (dosya eksik veya veri senkron değil). Sayfayı yenileyip tekrar deneyin.');
         } else if (st === 401 || st === 403) {
-          alert('Bu belge için oturum veya yetki yetersiz. Tekrar giriş yapmayı deneyin.');
+          window.medisaInfo('Bu belge için oturum veya yetki yetersiz. Tekrar giriş yapmayı deneyin.');
         }
       });
     }
@@ -8163,7 +8163,7 @@
     pinRuhsatUploadVehicleContext(vid);
     var vehicle = findVehicleForDocumentUpload(vid);
     if (dt === 'satis_sozlesmesi' && !vehicleAllowsSatisSozlesmesi(vehicle)) {
-      alert('Satış Sözleşmesi yalnızca stoktan düşen (satış veya pert) taşıtlarda kullanılabilir.');
+      window.medisaInfo('Satış Sözleşmesi yalnızca stoktan düşen (satış veya pert) taşıtlarda kullanılabilir.');
       return false;
     }
     const modal = DOM.dinamikOlayModal;
@@ -8380,9 +8380,9 @@
     replaceConfirm.hidden = true;
     replaceConfirm.innerHTML =
       '<div class="ruhsat-upload-replace-message">Yüklü Dosya Silinecektir. Dosyayı Yüklemek İstediğinizden Emin Misiniz?</div>' +
-      '<div class="ruhsat-upload-replace-actions">' +
-      '<button type="button" class="ruhsat-upload-confirm-yes">Evet</button>' +
-      '<button type="button" class="ruhsat-upload-confirm-no">Hayır</button>' +
+      '<div class="ruhsat-upload-replace-actions universal-btn-group">' +
+      '<button type="button" class="universal-btn-save">Evet</button>' +
+      '<button type="button" class="universal-btn-cancel">Hayır</button>' +
       '</div>';
     content.appendChild(replaceConfirm);
     var progressWrap = document.createElement('div');
@@ -8439,7 +8439,7 @@
     function validateSelectedDocumentBeforeUpload() {
       const selectedUploadFile = input && input.files && input.files[0] ? input.files[0] : null;
       if (selectedUploadFile && selectedUploadFile.size > MEDISA_VEHICLE_DOCUMENT_MAX_UPLOAD_MB * 1024 * 1024) {
-        alert('Seçilen PDF ' + MEDISA_VEHICLE_DOCUMENT_MAX_UPLOAD_MB + ' MB sınırını aşıyor. Daha küçük bir PDF yükleyin.');
+        window.medisaInfo('Seçilen PDF ' + MEDISA_VEHICLE_DOCUMENT_MAX_UPLOAD_MB + ' MB sınırını aşıyor. Daha küçük bir PDF yükleyin.');
         resetSelectedUploadFile();
         return false;
       }
@@ -8447,14 +8447,14 @@
       if (cfg.key === 'tasit_karti') {
         const expiryValidation = validateTasitKartiK2SourceDate(activeVehicle);
         if (expiryValidation.valid) return true;
-        alert(expiryValidation.message);
+        window.medisaInfo(expiryValidation.message);
         resetSelectedUploadFile();
         return false;
       }
       if (cfg.key === 'sigorta' || cfg.key === 'kasko' || cfg.key === 'takograf') {
         const dateValidation = validatePolicyDocumentOperationDate(cfg.key);
         if (dateValidation.valid) return true;
-        alert(dateValidation.message);
+        window.medisaInfo(dateValidation.message);
         if (!waitsForPolicyUploadSubmit) resetSelectedUploadFile();
         return false;
       }
@@ -8485,8 +8485,8 @@
         requestSelectedDocumentUpload();
       };
     }
-    var confirmYesBtn = replaceConfirm ? replaceConfirm.querySelector('.ruhsat-upload-confirm-yes') : null;
-    var confirmNoBtn = replaceConfirm ? replaceConfirm.querySelector('.ruhsat-upload-confirm-no') : null;
+    var confirmYesBtn = replaceConfirm ? replaceConfirm.querySelector('.universal-btn-save') : null;
+    var confirmNoBtn = replaceConfirm ? replaceConfirm.querySelector('.universal-btn-cancel') : null;
     if (confirmYesBtn) {
       confirmYesBtn.onclick = function(e) {
         e.stopPropagation();
@@ -8542,7 +8542,7 @@
     function assignRuhsatUploadFileAndDispatchChange(file) {
       if (input.disabled) return;
       if (typeof DataTransfer !== 'function') {
-        alert('Bu tarayıcı sürükle-bırak dosya atamasını desteklemiyor. Dosya Seç ile yükleyin.');
+        window.medisaInfo('Bu tarayıcı sürükle-bırak dosya atamasını desteklemiyor. Dosya Seç ile yükleyin.');
         return;
       }
       var dt = new DataTransfer();
@@ -8590,12 +8590,12 @@
         var files = event.dataTransfer && event.dataTransfer.files ? event.dataTransfer.files : null;
         if (!files || !files.length) return;
         if (files.length > 1) {
-          alert('Yalnızca tek dosya bırakılabilir.');
+          window.medisaInfo('Yalnızca tek dosya bırakılabilir.');
           return;
         }
         var droppedFile = files[0];
         if (!isRuhsatUploadPdfFile(droppedFile)) {
-          alert('Yalnızca PDF dosyası yüklenebilir.');
+          window.medisaInfo('Yalnızca PDF dosyası yüklenebilir.');
           return;
         }
         assignRuhsatUploadFileAndDispatchChange(droppedFile);
@@ -8798,11 +8798,11 @@
     const vehicleId = resolveRuhsatUploadVehicleId();
     const vehicle = findVehicleForDocumentUpload(vehicleId);
     if (!input || !input.files || !input.files[0]) {
-      alert(cfg.missingAlert);
+      window.medisaInfo(cfg.missingAlert);
       return;
     }
     if (!vehicleId || !vehicle) {
-      alert('Taşıt kimliği bulunamadı. Belgeler ekranını kapatıp taşıt detayından yeniden açın.');
+      window.medisaInfo('Taşıt kimliği bulunamadı. Belgeler ekranını kapatıp taşıt detayından yeniden açın.');
       return;
     }
     const vehicleVersion = String(Number(vehicle.version) || 1);
@@ -8826,14 +8826,14 @@
       uploadUrlParams.set('tasitKartiExpiryDateBefore', tasitKartiExpiryDateBefore);
       const expiryValidation = validateTasitKartiK2SourceDate(vehicle);
       if (!expiryValidation.valid) {
-        alert(expiryValidation.message);
+        window.medisaInfo(expiryValidation.message);
         return;
       }
     }
     if (cfg.key === 'sigorta' || cfg.key === 'kasko' || cfg.key === 'takograf') {
       const dateValidation = validatePolicyDocumentOperationDate(cfg.key);
       if (!dateValidation.valid) {
-        alert(dateValidation.message);
+        window.medisaInfo(dateValidation.message);
         return;
       }
       if (dateValidation.iso) {
@@ -8956,10 +8956,10 @@
           } else {
             afterRefresh();
           }
-          alert('Bu taşıt başka biri tarafından güncellenmiş. Güncel veriler yüklendi, lütfen dosyayı yeniden seçin.');
+          window.medisaInfo('Bu taşıt başka biri tarafından güncellenmiş. Güncel veriler yüklendi, lütfen dosyayı yeniden seçin.');
           return;
         }
-        alert((err && err.message) ? err.message : 'Y\u00fckleme s\u0131ras\u0131nda hata olu\u015ftu.');
+        window.medisaInfo((err && err.message) ? err.message : 'Y\u00fckleme s\u0131ras\u0131nda hata olu\u015ftu.');
       });
   };
 
@@ -8979,7 +8979,7 @@
     const vid = String(vehicleId || '').trim();
     const vehicle = findVehicleForDocumentUpload(vid);
     if (!vid || !vehicle) {
-      alert('Taşıt kimliği bulunamadı. Belgeler ekranını kapatıp taşıt detayından yeniden açın.');
+      window.medisaInfo('Taşıt kimliği bulunamadı. Belgeler ekranını kapatıp taşıt detayından yeniden açın.');
       return;
     }
     const documentPathBefore = getVehicleDocumentPath(vehicle, cfg.key);
@@ -9050,10 +9050,10 @@
           } else {
             afterRefresh();
           }
-          alert('Belge başka biri tarafından güncellenmiş. Güncel veriler yüklendi.');
+          window.medisaInfo('Belge başka biri tarafından güncellenmiş. Güncel veriler yüklendi.');
           return;
         }
-        alert((err && err.message) ? err.message : 'Belge silinirken hata oluştu.');
+        window.medisaInfo((err && err.message) ? err.message : 'Belge silinirken hata oluştu.');
       });
     });
   }
@@ -9110,7 +9110,7 @@
         } else if (st === 401 || st === 403) {
           msg = 'Bu belge için oturum veya yetki yetersiz. Tekrar giriş yapmayı deneyin.';
         }
-        alert(msg);
+        window.medisaInfo(msg);
       });
       return;
     }
@@ -9129,7 +9129,7 @@
       } else if (st === 401 || st === 403) {
         msg = 'Bu belge için oturum veya yetki yetersiz. Tekrar giriş yapmayı deneyin.';
       }
-      alert(msg);
+      window.medisaInfo(msg);
     });
   };
 
@@ -9286,7 +9286,7 @@
   /**
    * Bakım olayı kaydet
    */
-  window.saveBakimEvent = function() {
+  window.saveBakimEvent = async function() {
     const svc = resolveVehicleContextForDynamicSave();
     if (!svc) return;
     const vehicleId = svc.vehicleId;
@@ -9300,7 +9300,7 @@
     const tutar = document.getElementById('bakim-tutar')?.value.trim() || '';
 
     if (!tarih || !islemler) {
-      alert('Tarih ve Yapılan İşlemler zorunludur!');
+      window.medisaInfo('Tarih ve Yapılan İşlemler zorunludur!');
       return;
     }
 
@@ -9312,8 +9312,13 @@
     let kmRevisionEvent = null;
 
     if (bakimKmNum !== null && eskiKmNum > 0 && bakimKmNum > eskiKmNum) {
-      const shouldUpdateVehicleKm = confirm('Bildirilmek İstenen Km Bilgisi, Taşıtın Bildirilmiş Km\'sinden Fazladır. Taşıt Km Bilgisini de Güncellemek İster misiniz?');
-      if (shouldUpdateVehicleKm) {
+      const kmConfirmAnswer = typeof window.medisaAskCompactConfirm === 'function'
+        ? await window.medisaAskCompactConfirm({
+          title: 'ONAY',
+          message: 'Bildirilmek İstenen Km Bilgisi, Taşıtın Bildirilmiş Km\'sinden Fazladır. Taşıt Km Bilgisini de Güncellemek İster misiniz?'
+        })
+        : null;
+      if (kmConfirmAnswer === true) {
         const yeniKm = String(bakimKmNum);
         vehicle.guncelKm = yeniKm;
         kmRevisionEvent = {
@@ -9372,7 +9377,7 @@
     const aciklama = document.getElementById('kaza-aciklama')?.value.trim() || '';
 
     if (!tarih) {
-      alert('Tarih zorunludur!');
+      window.medisaInfo('Tarih zorunludur!');
       return;
     }
 
@@ -9449,7 +9454,7 @@
     const aciklama = document.getElementById('ceza-aciklama')?.value.trim() || '';
 
     if (!tarih || !tutar) {
-      alert('Tarih ve Ceza Tutarı zorunludur!');
+      window.medisaInfo('Tarih ve Ceza Tutarı zorunludur!');
       return;
     }
 
@@ -9541,7 +9546,7 @@
     const iletisim = document.getElementById(config.iletisimInputId)?.value.trim() || '';
 
     if (!tarih) {
-      alert('Tarih zorunludur!');
+      window.medisaInfo('Tarih zorunludur!');
       return;
     }
 
@@ -9553,7 +9558,7 @@
 
     if (config.vehicleDateField === 'sigortaDate'
       && !window.MedisaVehicleNotificationDomain.vehicleNeedsTrafikSigortasi(vehicle)) {
-      alert('Trafik sigortası güncellemesi römork/yarı römork taşıtlarda kullanılmaz.');
+      window.medisaInfo('Trafik sigortası güncellemesi römork/yarı römork taşıtlarda kullanılmaz.');
       return;
     }
 
@@ -9630,7 +9635,7 @@
     const not = document.getElementById('takograf-not')?.value.trim() || '';
 
     if (!tarih || !parseGgAaYyyyToIso(tarih)) {
-      alert('Takograf Kalibrasyon Tarihi zorunludur!');
+      window.medisaInfo('Takograf Kalibrasyon Tarihi zorunludur!');
       if (tarihInput) tarihInput.focus();
       return;
     }
@@ -9641,7 +9646,7 @@
     const vehicle = svc.vehicle;
     const vehicles = svc.vehicles;
     if (!window.MedisaVehicleNotificationDomain.vehicleNeedsTakograf(vehicle)) {
-      alert('Takograf kalibrasyonu sadece büyük ticari taşıtlarda kullanılır.');
+      window.medisaInfo('Takograf kalibrasyonu sadece büyük ticari taşıtlarda kullanılır.');
       return;
     }
 
@@ -9685,7 +9690,7 @@
     const tarih = normalizeGgAaYyyyInputElement(tarihInput);
 
     if (!tarih || !parseGgAaYyyyToIso(tarih)) {
-      alert('Taşıt Kartı Yapılma Tarihi zorunludur!');
+      window.medisaInfo('Taşıt Kartı Yapılma Tarihi zorunludur!');
       if (tarihInput) tarihInput.focus();
       return;
     }
@@ -9694,7 +9699,7 @@
     if (!svc) return;
     const expiryValidation = validateTasitKartiK2SourceDate(svc.vehicle);
     if (!expiryValidation.valid) {
-      alert(expiryValidation.message);
+      window.medisaInfo(expiryValidation.message);
       return;
     }
 
@@ -9702,7 +9707,7 @@
     const vehicle = svc.vehicle;
     const vehicles = svc.vehicles;
     if (!window.MedisaVehicleNotificationDomain.vehicleNeedsK2Belgesi(vehicle)) {
-      alert('Taşıt Kartı güncellemesi sadece K2 belgesi kapsamındaki taşıtlarda kullanılır.');
+      window.medisaInfo('Taşıt Kartı güncellemesi sadece K2 belgesi kapsamındaki taşıtlarda kullanılır.');
       return;
     }
 
@@ -9748,7 +9753,7 @@
     const egzozYapilmaIso = egzozDifferent ? parseGgAaYyyyToIso(egzozYapilmaGgAa) : '';
 
     if (!tarih) {
-      alert('Tarih zorunludur!');
+      window.medisaInfo('Tarih zorunludur!');
       return;
     }
 
@@ -9760,7 +9765,7 @@
     const needsEgzoz = window.MedisaVehicleNotificationDomain.vehicleNeedsEgzozMuayene(vehicle);
 
     if (needsEgzoz && egzozDifferent && !egzozYapilmaIso) {
-      alert('Egzoz Muayene Tarihi zorunludur!');
+      window.medisaInfo('Egzoz Muayene Tarihi zorunludur!');
       if (egzozInput) egzozInput.focus();
       return;
     }
@@ -9885,7 +9890,7 @@
     const yeniKaskoKodu = inputElement ? inputElement.value.trim() : '';
 
     if (!yeniKaskoKodu) {
-      alert('Lütfen Kasko Kodunu giriniz.');
+      window.medisaInfo('Lütfen Kasko Kodunu giriniz.');
       return;
     }
 
@@ -9940,13 +9945,13 @@
 
     const yeniKm = kmInput.value.trim().replace(/\./g, ''); // Noktaları temizle
     if (!yeniKm) {
-      alert('Lütfen kilometre bilgisi giriniz!');
+      window.medisaInfo('Lütfen kilometre bilgisi giriniz!');
       return;
     }
 
     // Numeric kontrol
     if (isNaN(yeniKm) || !/^\d+$/.test(yeniKm)) {
-      alert('Lütfen geçerli bir kilometre değeri giriniz!');
+      window.medisaInfo('Lütfen geçerli bir kilometre değeri giriniz!');
       return;
     }
 
@@ -9963,7 +9968,7 @@
     const eskiKmNum = parseInt(String(eskiKm).replace(/\D/g, ''), 10) || 0;
     const yeniKmNum = parseInt(yeniKm, 10) || 0;
     if (eskiKmNum > 0 && yeniKmNum < eskiKmNum) {
-      alert('Bildirilmek İstenen Km, Önceki Kayıtlarla Uyuşmamaktadır. Şirket Yetkilisi İle Görüşün');
+      window.medisaInfo('Bildirilmek İstenen Km, Önceki Kayıtlarla Uyuşmamaktadır. Şirket Yetkilisi İle Görüşün');
       return;
     }
 
@@ -10163,7 +10168,7 @@
 
     const yeniSubeId = selectEl.value;
     if (!yeniSubeId) {
-      alert('Lütfen bir şube seçiniz!');
+      window.medisaInfo('Lütfen bir şube seçiniz!');
       return;
     }
 
@@ -10173,7 +10178,7 @@
     const vehicle = svc.vehicle;
     const vehicles = svc.vehicles;
     if (isArchivedVehicleAssignmentLocked(vehicle)) {
-      alert('Arşivdeki taşıtlarda kullanıcı/şube ataması yapılamaz.');
+      window.medisaInfo('Arşivdeki taşıtlarda kullanıcı/şube ataması yapılamaz.');
       return;
     }
 
@@ -10235,7 +10240,7 @@
 
     const yeniKullaniciId = selectEl.value;
     if (!yeniKullaniciId || yeniKullaniciId === '__add_user__') {
-      alert('Lütfen bir kullanıcı seçiniz!');
+      window.medisaInfo('Lütfen bir kullanıcı seçiniz!');
       return;
     }
 
@@ -10245,7 +10250,7 @@
     const vehicle = svc.vehicle;
     const vehicles = svc.vehicles;
     if (isArchivedVehicleAssignmentLocked(vehicle)) {
-      alert('Arşivdeki taşıtlarda kullanıcı/şube ataması yapılamaz.');
+      window.medisaInfo('Arşivdeki taşıtlarda kullanıcı/şube ataması yapılamaz.');
       return;
     }
 
@@ -10287,7 +10292,7 @@
           message: 'Kullanıcı ataması güncellendi.'
         });
       }).catch(function(err) {
-        alert((err && err.message) || 'Kayıt başarısız.');
+        window.medisaInfo((err && err.message) || 'Kayıt başarısız.');
       });
     }
 
@@ -10299,7 +10304,7 @@
       ? window.isAssignableVehicleUserCandidate
       : null;
     if (!user || (isAssignableFn && !isAssignableFn(user))) {
-      alert('Seçilen kullanıcı atamaya uygun değil.');
+      window.medisaInfo('Seçilen kullanıcı atamaya uygun değil.');
       restoreKullaniciSelectToPrevious(eskiKullaniciId);
       return;
     }
@@ -10309,7 +10314,7 @@
       const freshUsers = readUsers();
       const freshUser = freshUsers.find(u => String(u.id) === String(yeniKullaniciId));
       if (!freshUser || (isAssignableFn && !isAssignableFn(freshUser))) {
-        alert('Seçilen kullanıcı atamaya uygun değil.');
+        window.medisaInfo('Seçilen kullanıcı atamaya uygun değil.');
         restoreKullaniciSelectToPrevious(eskiKullaniciId);
         return Promise.resolve();
       }
@@ -10369,7 +10374,7 @@
         });
       }).catch(function(err) {
         restoreVehicleAfterFailedPersist();
-        alert((err && err.message) || 'Kayıt başarısız.');
+        window.medisaInfo((err && err.message) || 'Kayıt başarısız.');
       });
     }
 
@@ -10524,12 +10529,12 @@
     const islemTuru = activeBtn && activeBtn.dataset ? String(activeBtn.dataset.value || '').trim() : '';
 
     if (islemTuru !== 'satis' && islemTuru !== 'pert') {
-      alert('Lütfen işlem türünü seçin (Satış veya Pert)!');
+      window.medisaInfo('Lütfen işlem türünü seçin (Satış veya Pert)!');
       return;
     }
 
     if (!tarih) {
-      alert('Satış/Pert tarihi zorunludur!');
+      window.medisaInfo('Satış/Pert tarihi zorunludur!');
       return;
     }
 

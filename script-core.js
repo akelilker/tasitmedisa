@@ -665,7 +665,7 @@ window.openMedisaIosPwaPrintPreview = function openMedisaIosPwaPrintPreview(prin
           frameWindow.focus();
           frameWindow.print();
         } catch (printErr) {
-          alert('Yazdırma başlatılamadı. Lütfen tekrar deneyin.');
+          window.medisaInfo('Yazdırma başlatılamadı. Lütfen tekrar deneyin.');
         }
       }
     },
@@ -1292,6 +1292,41 @@ window.clearModalClosing = function(modal) {
   }, 260);
 };
 
+/** Bilgi kutusu (alert yerine) — #info-modal + Tamam; modal yoksa alert. */
+window.closeInfoModal = function closeInfoModal() {
+  var modal = document.getElementById('info-modal');
+  if (!modal) return;
+  modal.classList.remove('active');
+  setTimeout(function() {
+    modal.style.display = 'none';
+    if (typeof window.updateFooterDim === 'function') {
+      window.updateFooterDim();
+    } else {
+      document.body.classList.remove('modal-open');
+    }
+  }, 300);
+};
+
+window.medisaInfo = function medisaInfo(message) {
+  var modal = document.getElementById('info-modal');
+  var messageEl = document.getElementById('info-message');
+  if (!modal || !messageEl) {
+    if (typeof alert === 'function') alert(message);
+    return;
+  }
+  var safeMsg = (typeof window.escapeHtml === 'function'
+    ? window.escapeHtml(message)
+    : String(message).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'));
+  messageEl.innerHTML = safeMsg.replace(/\n/g, '<br>');
+  document.body.classList.add('modal-open');
+  modal.style.display = 'flex';
+  requestAnimationFrame(function() { modal.classList.add('active'); });
+};
+
+if (typeof window.showInfoModal !== 'function') {
+  window.showInfoModal = window.medisaInfo;
+}
+
 /**
  * Ortak Evet/Hayır onay owner'ı (.compact-confirm-modal kontratı).
  * Ayarlar ve Taşıtlar modülleri aynı modalı paylaşır; ikinci kopya açılmaz.
@@ -1796,14 +1831,14 @@ document.addEventListener('DOMContentLoaded', () => {
 // style-core.css ana/paylaşılan shell HTML ile yüklenir; taşıt lazy asset sürümünden bağımsızdır.
 // tasitlar loader (bu nesne) ile MEDISA_TASITLAR_MODULE_VERSION kendi aralarında eşit kalmalıdır.
 var MEDISA_MODULE_VERSIONS = {
-  tasitlar: '20261014.1',
-  notifications: '20260930.1',
+  tasitlar: '20261014.2',
+  notifications: '20261014.2',
   raporlar: '20260801.3',
-  kayitJs: '20260905.1',
+  kayitJs: '20261014.2',
   kayitCss: '20260923.2',
-  ayarlarJs: '20261012.2',
-  ayarlarCss: '20261005.1',
-  tasitlarYazici: '20260906.1',
+  ayarlarJs: '20261014.2',
+  ayarlarCss: '20261014.2',
+  tasitlarYazici: '20261014.2',
   vehicleNotificationDomain: '20260817.2'
 };
 window.MEDISA_MODULE_VERSIONS = MEDISA_MODULE_VERSIONS;
@@ -2238,7 +2273,7 @@ window.ensureMedisaVehicleNotificationDomainReady = function() {
       window.showCenteredInfoBox(message);
       return;
     }
-    alert(message);
+    window.medisaInfo(message);
   }
 
   function ensureVehicleNotificationTargetReady(targetName) {

@@ -2078,14 +2078,14 @@
             const Excel = ExcelJS || window.ExcelJS;
         const data = getStokReportExportData();
         if (!data) {
-            alert('Lütfen önce bir şube seçin veya "Tümü" seçeneğini kullanın.');
+            window.medisaInfo('Lütfen önce bir şube seçin veya "Tümü" seçeneğini kullanın.');
             return;
         }
         const { vehicles, titleText, dateRangeText, branches } = data;
         const excelColumns = getStokExportExpandedColumns();
         const excelSplitMuayeneOpts = { printSeparateMuayeneColumns: true };
         if (vehicles.length === 0) {
-            alert('Export Edilecek Taşıt Bulunamadı.');
+            window.medisaInfo('Export Edilecek Taşıt Bulunamadı.');
             return;
         }
 
@@ -2210,7 +2210,7 @@
         } catch (error) {
             if (typeof window.__medisaLogError === 'function') window.__medisaLogError('Excel export', error);
             else console.error('Excel export hatası:', error);
-            alert('Excel dosyası oluşturulurken bir hata oluştu. Lütfen tekrar deneyin.');
+            window.medisaInfo('Excel dosyası oluşturulurken bir hata oluştu. Lütfen tekrar deneyin.');
         }
     };
 
@@ -2505,11 +2505,11 @@
     window.printStokReport = function() {
         const data = getStokReportExportData();
         if (!data) {
-            alert('Lütfen önce bir şube seçin veya "Tümü" seçeneğini kullanın.');
+            window.medisaInfo('Lütfen önce bir şube seçin veya "Tümü" seçeneğini kullanın.');
             return;
         }
         if (data.vehicles.length === 0) {
-            alert('Yazdırılacak Taşıt Bulunamadı.');
+            window.medisaInfo('Yazdırılacak Taşıt Bulunamadı.');
             return;
         }
         const { vehicles, titleText, dateRangeText } = data;
@@ -2561,7 +2561,7 @@
 
         function failPrintJob() {
             finishPrintJob();
-            alert('Yazdırma başlatılamadı. Lütfen tekrar deneyin.');
+            window.medisaInfo('Yazdırma başlatılamadı. Lütfen tekrar deneyin.');
         }
 
         try {

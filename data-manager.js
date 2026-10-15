@@ -491,6 +491,10 @@ function showOfflineReadonlyWarning() {
         window.showInfoModal(message);
         return;
     }
+    if (typeof window.medisaInfo === 'function') {
+        window.medisaInfo(message);
+        return;
+    }
     if (typeof alert === 'function') {
         alert(message);
     }
@@ -2594,7 +2598,7 @@ window.writeVehicles = function(arr) {
                 replaceMedisaCollection('vehicles', previousVehicles, { reason: 'vehicle-conflict-rollback' });
             }
             if (typeof window.onMedisaConflict === 'function') window.onMedisaConflict();
-            else alert('Dikkat! Veri başka biri tarafından güncellenmiş. Lütfen sayfayı yenileyin.');
+            else window.medisaInfo('Dikkat! Veri başka biri tarafından güncellenmiş. Lütfen sayfayı yenileyin.');
             return Promise.reject(err);
         }
         await restoreMedisaCollectionAfterWriteFailure('vehicles', previousVehicles, 'vehicle-write-error');

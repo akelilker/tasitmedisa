@@ -284,10 +284,10 @@ function createCtx() {
     assert.ok(start >= 0 && end > start);
     const block = ayarlar.slice(start, end);
     const planIdx = block.indexOf('buildPlanFn(');
-    const reassignConfirmIdx = block.indexOf('if (!window.confirm(confirmMessage))');
+    const reassignConfirmIdx = block.indexOf('medisaAskCompactConfirm');
     const applyIdx = block.indexOf('applyPlanFn(vehiclesDesired, assignmentPlan');
     const persistIdx = block.indexOf('persistUserManagementState(users, vehiclesDesired');
-    const successAlertIdx = block.indexOf("alert(id ? 'Kullanıcı güncellendi.'");
+    const successAlertIdx = block.indexOf("window.medisaInfo(id ? 'Kullanıcı güncellendi.'");
     assert.ok(planIdx >= 0, 'plan üretimi bulunamadı');
     assert.ok(reassignConfirmIdx > planIdx, 'başka kullanıcıya tahsisli confirmation plandan sonra');
     assert.ok(applyIdx > reassignConfirmIdx, 'apply tüm onaylardan sonra');
@@ -306,7 +306,7 @@ function createCtx() {
       ayarlar.indexOf('window.saveUser = async function saveUser'),
       ayarlar.indexOf('window.editUser = function editUser')
     );
-    const confirmPos = block.indexOf('window.confirm(confirmMessage)');
+    const confirmPos = block.indexOf('medisaAskCompactConfirm');
     const applyPos = block.indexOf('applyPlanFn(vehiclesDesired');
     assert.ok(confirmPos >= 0 && applyPos > confirmPos);
   });

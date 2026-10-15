@@ -1859,85 +1859,9 @@ body.dashboard-page.driver-feedback-modal-open #app-footer{
   color: rgba(74, 222, 128, 0.95);
 }
 
-/* Muayene teyit popover - tarih inputu altında 5px, sağ grid içinde yatay ortalı (top/left JS ile) */
-.muayene-confirm-popover{
-  position: fixed;
-  width: min(280px, calc(100vw - 32px));
-  max-width: 320px;
-  background: var(--card-bg, #1a1a1a);
-  border: 1px solid var(--theme-color);
-  border-radius: 8px;
-  padding: 12px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.5), 0 0 15px rgba(var(--theme-color-rgb, 59, 130, 246), 0.2);
+/* Muayene teyit + Bu Cihazı Unut: ortak compact-confirm modal kontratı (style-core owner) */
+.dashboard-page .driver-forget-device-confirm.modal-overlay {
   z-index: 10020;
-  font-size: 13px;
-  color: #fff;
-}
-
-.muayene-confirm-popover p{
-  margin: 0 0 12px 0;
-  line-height: 1.4;
-}
-
-.muayene-confirm-popover.driver-forget-device-confirm{
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-/* Mobil + masaüstü: çerçeve ikiye bölünmüş, her buton kendi alanında yatay ortalı */
-.muayene-confirm-actions{
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0;
-}
-
-/* Hayır: yeşil metin + yeşil çerçeve. Hover: sadece scale + arka plan (layout değişmez, modal esnemez) */
-.muayene-confirm-actions .btn-confirm-no{
-  background: transparent;
-  color: var(--green, #4ade80);
-  border: 1px solid var(--green, #4ade80);
-  padding: 5px 20px;
-  border-radius: 6px;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  justify-self: center;
-  transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
-}
-
-.muayene-confirm-actions .btn-confirm-no:hover{
-  background: rgba(74, 222, 128, 0.2);
-  box-shadow: 0 0 0 1px var(--green, #4ade80);
-  transform: scale(1.02);
-}
-
-/* Evet: kırmızı metin + kırmızı çerçeve. Hover: sadece scale + arka plan (layout değişmez, modal esnemez) */
-.muayene-confirm-actions .btn-confirm-yes{
-  background: transparent;
-  color: var(--theme-color);
-  border: 1px solid var(--theme-color);
-  padding: 5px 20px;
-  border-radius: 6px;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  justify-self: center;
-  transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
-}
-
-.muayene-confirm-actions .btn-confirm-yes:hover{
-  background: rgba(var(--theme-color-rgb), 0.2);
-  box-shadow: 0 0 0 1px var(--theme-color);
-  transform: scale(1.02);
-}
-
-/* Masaüstü: butonlar 4px daha kısa (dikey), yatayda 8px daha geniş */
-@media (min-width: 769px) {
-  .muayene-confirm-actions .btn-confirm-no,
-.muayene-confirm-actions .btn-confirm-yes{
-    padding: 6px 24px;
-  }
 }
 
 #history-modal .universal-back-bar .universal-back-label,

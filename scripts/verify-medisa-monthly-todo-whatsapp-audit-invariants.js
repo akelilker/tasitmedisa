@@ -138,6 +138,10 @@ function createRecordHarness(opts) {
   // Pull the exact recordMonthlyTodoWhatsAppOpened function body from source.
   const fnSrc = extractNamedFunction(src, 'recordMonthlyTodoWhatsAppOpened');
   assert.ok(fnSrc, 'recordMonthlyTodoWhatsAppOpened bulunmalı');
+  // Runtime artık native alert yerine window.medisaInfo (in-app bilgi modalı) kullanır; mesajları aynı listeye topla.
+  if (sandbox.window && typeof sandbox.window.medisaInfo !== 'function') {
+    sandbox.window.medisaInfo = function(m) { alerts.push(String(m)); };
+  }
   vm.createContext(sandbox);
   vm.runInContext(fnSrc + '\nthis.record = recordMonthlyTodoWhatsAppOpened;', sandbox);
 
@@ -272,9 +276,9 @@ function createRecordHarness(opts) {
     assert.match(core, /notifications\.js\?v=' \+ V\.notifications/);
     assert.match(core, /notifications\.css\?v=' \+ V\.notifications/);
     assert.match(index, new RegExp('script-core\\.js\\?v=' + scriptPin.replace(/\./g, '\\.')));
-    assert.match(index, /data-manager\.js\?v=20261012\.2/);
+    assert.match(index, /data-manager\.js\?v=20261014\.2/);
     assert.match(adminHtml, /admin-report\.css\?v=20260923\.1/);
-    assert.match(adminHtml, /admin-report\.js\?v=20260917\.1/);
+    assert.match(adminHtml, /admin-report\.js\?v=20261014\.2/);
   });
 
   await run('source: monthly todo tarih metni warning class severity hizası', function() {

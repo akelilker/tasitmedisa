@@ -458,7 +458,7 @@
     const overlay = document.getElementById('centered-info-box');
     const msgEl = document.getElementById('centered-info-message');
     if (!overlay || !msgEl) {
-      alert(msg);
+      window.medisaInfo(msg);
       return;
     }
     window.closeCenteredInfoBox = window.closeCenteredInfoBox || function closeCenteredInfoBox() {
@@ -1426,7 +1426,7 @@
   function recordMonthlyTodoWhatsAppOpened(reminderKey, anchorEl) {
     if (!reminderKey || !anchorEl) return;
     if (monthlyTodoWaSaveInflight[reminderKey]) {
-      alert('Kayıt işlemi devam ediyor');
+      window.medisaInfo('Kayıt işlemi devam ediyor');
       return;
     }
     var logs = ensureMonthlyTodoWhatsAppLogs();
@@ -1480,7 +1480,7 @@
     function failPersist() {
       rollbackLog();
       finishInflight();
-      alert('WhatsApp bağlantısı açıldı ancak bildirim geçmişi sunucuya kaydedilemedi.');
+      window.medisaInfo('WhatsApp bağlantısı açıldı ancak bildirim geçmişi sunucuya kaydedilemedi.');
     }
 
     if (typeof window.saveDataToServer !== 'function') {
@@ -1508,7 +1508,7 @@
   function wireMonthlyTodoWhatsAppLinkHandler(modalEl) {
     if (!modalEl || modalEl._medisaMonthlyTodoWaBound) return;
     modalEl._medisaMonthlyTodoWaBound = true;
-    modalEl.addEventListener('click', function(ev) {
+    modalEl.addEventListener('click', async function(ev) {
       var el = ev.target;
       if (!el || typeof el.closest !== 'function') return;
       var link = el.closest('a.monthly-todo-wa-link');
@@ -1520,7 +1520,13 @@
       ev.stopPropagation();
       var logs = ensureMonthlyTodoWhatsAppLogs();
       if (logs[reminderKey]) {
-        if (!window.confirm(MONTHLY_TODO_WA_REOPEN_CONFIRM)) return;
+        const waReopenAnswer = typeof window.medisaAskCompactConfirm === 'function'
+          ? await window.medisaAskCompactConfirm({
+            title: 'ONAY',
+            message: MONTHLY_TODO_WA_REOPEN_CONFIRM
+          })
+          : null;
+        if (waReopenAnswer !== true) return;
       }
       window.open(waUrl, '_blank', 'noopener,noreferrer');
       var rk = reminderKey;

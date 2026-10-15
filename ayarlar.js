@@ -1270,9 +1270,9 @@
         confirm.hidden = true;
         confirm.innerHTML =
           '<div class="required-k2-replace-message">Yüklü Dosya Silinecektir. Dosyayı Yüklemek İstediğinizden Emin Misiniz?</div>' +
-          '<div class="required-k2-replace-actions">' +
-          '<button type="button" class="required-k2-confirm-yes">Evet</button>' +
-          '<button type="button" class="required-k2-confirm-no">Hayır</button>' +
+          '<div class="required-k2-replace-actions universal-btn-group">' +
+          '<button type="button" class="universal-btn-save">Evet</button>' +
+          '<button type="button" class="universal-btn-cancel">Hayır</button>' +
           '</div>';
         area.parentNode.insertBefore(confirm, area.nextSibling);
       }
@@ -1288,7 +1288,7 @@
       const dateInput = document.getElementById('required-k2-expiry-date');
       const isoDate = parseZorunluEvrakDate(dateInput ? dateInput.value : '');
       if (isoDate) return isoDate;
-      alert('K2 Belgesi Geçerlilik tarihi geçerli olmalıdır. Örnek: 17/05/2027');
+      window.medisaInfo('K2 Belgesi Geçerlilik tarihi geçerli olmalıdır. Örnek: 17/05/2027');
       if (dateInput) dateInput.focus();
       return '';
     }
@@ -1371,8 +1371,8 @@
 
       if (replaceConfirm && replaceConfirm.dataset.k2ConfirmBound !== '1') {
         replaceConfirm.dataset.k2ConfirmBound = '1';
-        const yesBtn = replaceConfirm.querySelector('.required-k2-confirm-yes');
-        const noBtn = replaceConfirm.querySelector('.required-k2-confirm-no');
+        const yesBtn = replaceConfirm.querySelector('.universal-btn-save');
+        const noBtn = replaceConfirm.querySelector('.universal-btn-cancel');
         if (yesBtn) {
           yesBtn.addEventListener('click', function(event) {
             event.stopPropagation();
@@ -1408,7 +1408,7 @@
         function assignK2DocumentFileAndDispatchChange(file) {
           if (fileInput.disabled) return;
           if (typeof DataTransfer !== 'function') {
-            alert('Bu tarayıcı sürükle-bırak dosya atamasını desteklemiyor. Dosya Seç ile yükleyin.');
+            window.medisaInfo('Bu tarayıcı sürükle-bırak dosya atamasını desteklemiyor. Dosya Seç ile yükleyin.');
             return;
           }
           var dt = new DataTransfer();
@@ -1448,12 +1448,12 @@
           var files = event.dataTransfer && event.dataTransfer.files ? event.dataTransfer.files : null;
           if (!files || !files.length) return;
           if (files.length > 1) {
-            alert('Yalnızca tek dosya bırakılabilir.');
+            window.medisaInfo('Yalnızca tek dosya bırakılabilir.');
             return;
           }
           var droppedFile = files[0];
           if (!isK2DocumentPdfFile(droppedFile)) {
-            alert('Yalnızca PDF dosyası yüklenebilir.');
+            window.medisaInfo('Yalnızca PDF dosyası yüklenebilir.');
             return;
           }
           assignK2DocumentFileAndDispatchChange(droppedFile);
@@ -1553,7 +1553,7 @@
       } catch (error) {
         zorunluEvrakK2DeleteInFlight = false;
         setZorunluEvraklarK2ActionsDisabled(actionsHost, false);
-        alert((error && error.message) ? error.message : 'K2 belgesi silinemedi.');
+        window.medisaInfo((error && error.message) ? error.message : 'K2 belgesi silinemedi.');
         if (typeof window.loadDataFromServer === 'function') {
           try {
             await window.loadDataFromServer(false);
@@ -1647,7 +1647,7 @@
     window.viewZorunluEvrakK2 = function viewZorunluEvrakK2() {
       const state = getZorunluEvraklarK2State();
       if (!String(state.documentPath || '').trim()) {
-        alert('K2 belgesi henüz yüklenmedi.');
+        window.medisaInfo('K2 belgesi henüz yüklenmedi.');
         return;
       }
       const blankTab = openZorunluEvrakK2BlankTab();
@@ -1667,7 +1667,7 @@
             showZorunluEvrakK2TabError(blankTab, err && err.message ? err.message : 'Belge açılamadı.');
             return;
           }
-          alert((err && err.message) ? err.message : 'Belge açılamadı.');
+          window.medisaInfo((err && err.message) ? err.message : 'Belge açılamadı.');
         });
     };
 
@@ -1714,9 +1714,9 @@
         }
         if (typeof window.updateNotifications === 'function') window.updateNotifications();
         refreshZorunluEvraklarK2View();
-        alert('K2 belgesi bilgisi kaydedildi.');
+        window.medisaInfo('K2 belgesi bilgisi kaydedildi.');
       } catch (err) {
-        alert((err && err.message) ? err.message : 'K2 belgesi kaydedilemedi.');
+        window.medisaInfo((err && err.message) ? err.message : 'K2 belgesi kaydedilemedi.');
       }
     };
 
@@ -2000,7 +2000,7 @@
 
       // Validasyon
       if (!name) {
-        alert('Şube Adı Giriniz.');
+        window.medisaInfo('Şube Adı Giriniz.');
         if (nameInput) nameInput.focus();
         return;
       }
@@ -2035,7 +2035,7 @@
             window.appData.branches = previousBranches;
           }
           renderBranchList();
-          alert('Şube sunucuya kaydedilemedi. Lütfen tekrar deneyin.');
+          window.medisaInfo('Şube sunucuya kaydedilemedi. Lütfen tekrar deneyin.');
           return;
         }
 
@@ -2045,7 +2045,7 @@
         // Ana modalı güncelle
         renderBranchList();
 
-        alert(id ? 'Şube güncellendi.' : 'Şube Eklendi.');
+        window.medisaInfo(id ? 'Şube güncellendi.' : 'Şube Eklendi.');
       } catch (error) {
         if (previousBranches) {
           if (typeof window.replaceMedisaBranches === 'function') {
@@ -2055,7 +2055,7 @@
           }
           renderBranchList();
         }
-        alert('Şube kaydı sırasında bir hata Oluştu! Lütfen tekrar deneyin.');
+        window.medisaInfo('Şube kaydı sırasında bir hata Oluştu! Lütfen tekrar deneyin.');
       } finally {
         if (saveBtn) saveBtn.disabled = false;
       }
@@ -2125,11 +2125,15 @@
       });
 
       if (blockers.total > 0) {
-        alert(buildBranchDeleteBlockerMessage(blockers));
+        window.medisaInfo(buildBranchDeleteBlockerMessage(blockers));
         return;
       }
 
-      if (!confirm('Bu ŞUBEyi silmek istediğinizden emin misiniz?')) return;
+      const branchDeleteAnswer = await window.medisaAskCompactConfirm({
+        title: 'ONAY',
+        message: 'Bu ŞUBEyi silmek istediğinizden emin misiniz?'
+      });
+      if (branchDeleteAnswer !== true) return;
 
       const branches = readBranches();
       const filtered = branches.filter(b => b.id !== id);
@@ -2142,7 +2146,7 @@
             window.appData.branches = branches;
           }
           renderBranchList();
-          alert('Şube silme işlemi sunucuya kaydedilemedi. Lütfen tekrar deneyin.');
+          window.medisaInfo('Şube silme işlemi sunucuya kaydedilemedi. Lütfen tekrar deneyin.');
           return;
         }
       } catch (error) {
@@ -2152,7 +2156,7 @@
           window.appData.branches = branches;
         }
         renderBranchList();
-        alert('Şube silinirken bir hata oluştu! Lütfen tekrar deneyin.');
+        window.medisaInfo('Şube silinirken bir hata oluştu! Lütfen tekrar deneyin.');
         return;
       }
 
@@ -2162,7 +2166,7 @@
       // Ana modalı güncelle
       renderBranchList();
 
-      alert('Şube Silindi.');
+      window.medisaInfo('Şube Silindi.');
     };
 
     // Liste Render
@@ -3251,7 +3255,7 @@
         const users = readAllUsers();
         const user = users.find(u => String(u.id) === String(editId));
         if (!user || !isUserManageableInUserManagement(user, scope)) {
-          alert('Bu kullanıcıyı düzenleme yetkiniz yok.');
+          window.medisaInfo('Bu kullanıcıyı düzenleme yetkiniz yok.');
           return;
         }
         preferredBranchId = getUserPrimaryBranchId(user);
@@ -3473,7 +3477,7 @@
       let previousVehicles = null;
       try {
         if (!modal) {
-          alert('Form modalı bulunamadı!');
+          window.medisaInfo('Form modalı bulunamadı!');
           return;
         }
 
@@ -3489,7 +3493,7 @@
         const scope = getUserManagementSessionScope();
 
         if (!nameInput) {
-          alert('Form alanları bulunamadı!');
+          window.medisaInfo('Form alanları bulunamadı!');
           return;
         }
 
@@ -3520,20 +3524,20 @@
         const hasAssignedVehicles = selectedVehicleIds.length > 0;
         const kullanici_paneli = hasAssignedVehicles;
         if (protectGm && role !== 'genel_yonetici') {
-          alert('Sistemde en az bir aktif genel yönetici bulunmalıdır.');
+          window.medisaInfo('Sistemde en az bir aktif genel yönetici bulunmalıdır.');
           return;
         }
         if (scope.isBranchManager && requestedBranchId && !isWithinUserManagementBranch(requestedBranchId, scope)) {
-          alert('Yalnızca yetkili şubelerinize kullanıcı kaydedebilirsiniz.');
+          window.medisaInfo('Yalnızca yetkili şubelerinize kullanıcı kaydedebilirsiniz.');
           return;
         }
         if (role === 'genel_yonetici' && scope.role !== 'genel_yonetici') {
-          alert('Genel Yönetici kullanıcıyı yalnızca Genel Yönetici oturumu oluşturabilir.');
+          window.medisaInfo('Genel Yönetici kullanıcıyı yalnızca Genel Yönetici oturumu oluşturabilir.');
           if (roleSelect) roleSelect.focus();
           return;
         }
         if (role !== 'genel_yonetici' && !branchId) {
-          alert('Kullanıcı eklemek için şube seçimi zorunludur.');
+          window.medisaInfo('Kullanıcı eklemek için şube seçimi zorunludur.');
           if (branchSelect) {
             branchSelect.classList.add('input-error');
             branchSelect.focus();
@@ -3549,12 +3553,12 @@
 
         // Validasyon
         if (!name || !name.trim()) {
-          alert('Ad Soyad giriniz.');
+          window.medisaInfo('Ad Soyad giriniz.');
           nameInput.focus();
           return;
         }
         if (sifre !== '' && sifre.length < 6) {
-          alert('Şifre en az 6 karakter olmalıdır.');
+          window.medisaInfo('Şifre en az 6 karakter olmalıdır.');
           if (passwordInput) passwordInput.focus();
           return;
         }
@@ -3568,15 +3572,15 @@
         const selectedVehicleSet = new Set(selectedVehicleIds.map(function(vehicleId) { return String(vehicleId); }));
 
         if (id && !existingUser) {
-          alert('Kullanıcı bulunamadı.');
+          window.medisaInfo('Kullanıcı bulunamadı.');
           return;
         }
         if (scope.isBranchManager && !branchId) {
-          alert('Yönetilen şube bulunamadı.');
+          window.medisaInfo('Yönetilen şube bulunamadı.');
           return;
         }
         if (scope.isBranchManager && existingUser && !isUserManageableInUserManagement(existingUser, scope)) {
-          alert('Bu kullanıcıyı kaydetme yetkiniz yok.');
+          window.medisaInfo('Bu kullanıcıyı kaydetme yetkiniz yok.');
           return;
         }
 
@@ -3584,7 +3588,7 @@
         const needsPortalCredentials = hasAssignedVehicles && (role === 'kullanici' || role === 'sube_yonetici');
         const hasExistingPortalPassword = !!(existingUser && existingUser.portal_sifresi_var === true);
         if (needsPortalCredentials && (!kullanici_adi || (!sifre && !hasExistingPortalPassword))) {
-          alert('Taşıt atanan kullanıcı veya yönetici için "Kullanıcı Adı (portal girişi)" ve "Şifre (portal girişi)" zorunludur. Bu bilgilerle kullanıcı paneline girilebilir.');
+          window.medisaInfo('Taşıt atanan kullanıcı veya yönetici için "Kullanıcı Adı (portal girişi)" ve "Şifre (portal girişi)" zorunludur. Bu bilgilerle kullanıcı paneline girilebilir.');
           if (usernameInput) usernameInput.focus();
           return;
         }
@@ -3605,7 +3609,7 @@
           ? window.buildVehicleUserAssignmentFormPlan
           : null;
         if (!buildPlanFn) {
-          alert('Atama planı hazırlanamadı. Lütfen sayfayı yenileyip tekrar deneyin.');
+          window.medisaInfo('Atama planı hazırlanamadı. Lütfen sayfayı yenileyip tekrar deneyin.');
           return;
         }
         const assignmentPlan = buildPlanFn({
@@ -3640,7 +3644,11 @@
               + 'Bu tahsis silinecektir. Emin misiniz?'
             : 'Taşıt "' + firstPlaka + '" "' + assignedName + '" adlı kullanıcıya tahsis edilmiş.\n'
               + 'Tahsis silinecektir. Emin misiniz?';
-          if (!window.confirm(confirmMessage)) {
+          const reassignAnswer = await window.medisaAskCompactConfirm({
+            title: 'ONAY',
+            message: confirmMessage
+          });
+          if (reassignAnswer !== true) {
             return;
           }
         }
@@ -3691,7 +3699,7 @@
           ? window.applyVehicleUserAssignmentFormPlan
           : null;
         if (!applyPlanFn || applyPlanFn(vehiclesDesired, assignmentPlan, savedUserId, assignUserFinal) !== true) {
-          alert('Taşıt atama planı uygulanamadı. Kayıt iptal edildi.');
+          window.medisaInfo('Taşıt atama planı uygulanamadı. Kayıt iptal edildi.');
           return;
         }
 
@@ -3705,7 +3713,7 @@
         if (persisted !== true) {
           setUserManagementLocalState(previousUsers, previousVehicles);
           renderUserList();
-          alert('Kullanıcı sunucuya kaydedilemedi. Bu nedenle portal girişi açılmaz. Lütfen tekrar deneyin.');
+          window.medisaInfo('Kullanıcı sunucuya kaydedilemedi. Bu nedenle portal girişi açılmaz. Lütfen tekrar deneyin.');
           return;
         }
 
@@ -3721,13 +3729,13 @@
 
         renderUserList();
 
-        alert(id ? 'Kullanıcı güncellendi.' : 'Kullanıcı Eklendi.');
+        window.medisaInfo(id ? 'Kullanıcı güncellendi.' : 'Kullanıcı Eklendi.');
       } catch (error) {
         console.error('Kullanıcı kayıt hatası:', error);
         if (previousUsers && previousVehicles) {
           if (isUserManagementSaveConflict(error)) {
             const reloadOk = await refreshUserManagementAfterSaveConflict(previousUsers, previousVehicles);
-            alert(
+            window.medisaInfo(
               reloadOk
                 ? buildUserSaveConflictAlertMessage(error)
                 : 'Sunucu ile senkron güncellenemedi. Sayfayı yenileyip tekrar deneyin.'
@@ -3735,10 +3743,10 @@
           } else {
             setUserManagementLocalState(previousUsers, previousVehicles);
             if (typeof renderUserList === 'function') renderUserList();
-            alert('Kullanıcı kaydı sırasında bir hata oluştu! Lütfen tekrar deneyin.');
+            window.medisaInfo('Kullanıcı kaydı sırasında bir hata oluştu! Lütfen tekrar deneyin.');
           }
         } else {
-          alert('Kullanıcı kaydı sırasında bir hata oluştu! Lütfen tekrar deneyin.');
+          window.medisaInfo('Kullanıcı kaydı sırasında bir hata oluştu! Lütfen tekrar deneyin.');
         }
       } finally {
         if (saveBtn) saveBtn.disabled = false;
@@ -3811,11 +3819,11 @@
       const targetUser = previousUsers.find(function(user) { return String(user.id) === String(id); });
       if (!targetUser) return;
       if (scope.isBranchManager && !isUserManageableInUserManagement(targetUser, scope)) {
-        alert('Bu kullanıcıyı silme yetkiniz yok.');
+        window.medisaInfo('Bu kullanıcıyı silme yetkiniz yok.');
         return;
       }
       if (isProtectedGeneralManagerTarget(targetUser, scope)) {
-        alert('Sistemde en az bir aktif genel yönetici bulunmalıdır.');
+        window.medisaInfo('Sistemde en az bir aktif genel yönetici bulunmalıdır.');
         return;
       }
 
@@ -3828,11 +3836,15 @@
       });
 
       if (blockers.total > 0) {
-        alert(buildUserDeleteBlockerMessage(blockers));
+        window.medisaInfo(buildUserDeleteBlockerMessage(blockers));
         return;
       }
 
-      if (!confirm('Bu Kullanıcıyı silmek istediğinizden emin misiniz?')) return;
+      const userDeleteAnswer = await window.medisaAskCompactConfirm({
+        title: 'ONAY',
+        message: 'Bu Kullanıcıyı silmek istediğinizden emin misiniz?'
+      });
+      if (userDeleteAnswer !== true) return;
 
       const previousVehicles = cloneStorageState(vehicles);
       const filtered = previousUsers.filter(u => String(u.id) !== String(id));
@@ -3842,7 +3854,7 @@
       } catch (error) {
         if (isUserManagementSaveConflict(error)) {
           const reloadOk = await refreshUserManagementAfterSaveConflict(previousUsers, previousVehicles);
-          alert(
+          window.medisaInfo(
             reloadOk
               ? buildUserSaveConflictAlertMessage(error)
               : 'Sunucu ile senkron güncellenemedi. Sayfayı yenileyip tekrar deneyin.'
@@ -3850,13 +3862,13 @@
           return;
         }
         console.error('Kullanıcı silme hatası:', error);
-        alert('Kullanıcı silinirken bir hata oluştu! Lütfen tekrar deneyin.');
+        window.medisaInfo('Kullanıcı silinirken bir hata oluştu! Lütfen tekrar deneyin.');
         return;
       }
       if (persisted !== true) {
         setUserManagementLocalState(previousUsers, previousVehicles);
         renderUserList();
-        alert('Kullanıcı silme işlemi sunucuya kaydedilemedi. Lütfen tekrar deneyin.');
+        window.medisaInfo('Kullanıcı silme işlemi sunucuya kaydedilemedi. Lütfen tekrar deneyin.');
         return;
       }
 
@@ -3866,7 +3878,7 @@
       // Ana modalı güncelle
       renderUserList();
 
-      alert('Kullanıcı Silindi.');
+      window.medisaInfo('Kullanıcı Silindi.');
     };
 
     function buildUserCardNameMarkup(rawName) {
@@ -4116,7 +4128,7 @@
 
     function requireBackupPermission() {
       if (canManageBackups()) return true;
-      alert('Veri yedekleme işlemleri yalnızca Genel Yönetici tarafından kullanılabilir.');
+      window.medisaInfo('Veri yedekleme işlemleri yalnızca Genel Yönetici tarafından kullanılabilir.');
       return false;
     }
 
@@ -4223,7 +4235,7 @@
       }
       function onXlsxFail() {
         if (typeof window.closeCenteredInfoBox === 'function') window.closeCenteredInfoBox();
-        alert('Excel kütüphanesi yüklenemedi. Lütfen internet bağlantınızı kontrol edin.');
+        window.medisaInfo('Excel kütüphanesi yüklenemedi. Lütfen internet bağlantınızı kontrol edin.');
       }
 
       if (typeof window.__medisaLoadScriptOnce === 'function') {
@@ -4257,7 +4269,7 @@
           } else if (typeof window.showInfoModal === 'function') {
             window.showInfoModal(msg);
           } else {
-            alert(msg);
+            window.medisaInfo(msg);
           }
         }
 
@@ -4351,7 +4363,7 @@
                 } else if (typeof window.showInfoModal === 'function') {
                   window.showInfoModal('Kasko listesi başarıyla güncellendi!');
                 } else {
-                  alert('Kasko listesi başarıyla güncellendi!');
+                  window.medisaInfo('Kasko listesi başarıyla güncellendi!');
                 }
                 });
               });
@@ -4596,7 +4608,7 @@
           return;
         } catch (_infoErr) {}
       }
-      alert(msg);
+      window.medisaInfo(msg);
     }
 
     function scheduleImportTerminalReload(options) {
@@ -4605,18 +4617,18 @@
         || 'İşlem tamamlandı ancak sayfa yenilenemedi. Lütfen sayfayı manuel yenileyin.';
       try {
         if (!window.location || typeof window.location.reload !== 'function') {
-          alert(manualMsg);
+          window.medisaInfo(manualMsg);
           return;
         }
         setTimeout(function() {
           try {
             window.location.reload();
           } catch (_reloadErr) {
-            alert(manualMsg);
+            window.medisaInfo(manualMsg);
           }
         }, 500);
       } catch (_schedErr) {
-        alert(manualMsg);
+        window.medisaInfo(manualMsg);
       }
     }
 
@@ -4760,7 +4772,7 @@
         }
         try { restoreImportRollbackSnapshot(preSnapshot); } catch (_rollErr) {}
         closeInfoBoxSafe();
-        alert(failMsg);
+        window.medisaInfo(failMsg);
         scheduleImportTerminalReload();
       }
 
@@ -4788,7 +4800,7 @@
 
       writeImportSuccessMetadataBestEffort(backup, restoredBlob);
       closeInfoBoxSafe();
-      alert(successMsg);
+      window.medisaInfo(successMsg);
       scheduleImportTerminalReload();
       return true;
     }
@@ -4809,7 +4821,7 @@
       } catch (snapErr) {
         if (typeof window.__medisaLogError === 'function') window.__medisaLogError('Yedek snapshot', snapErr);
         else console.error('Yedek snapshot hatası:', snapErr);
-        alert('Yedek Dosyası Okunamadı!');
+        window.medisaInfo('Yedek Dosyası Okunamadı!');
         return { started: true, blocked: false, ok: false, reason: 'snapshot' };
       }
 
@@ -4822,7 +4834,7 @@
         try {
           if (preSnapshot) restoreImportRollbackSnapshot(preSnapshot);
         } catch (_rollErr) {}
-        alert('Yedek sunucuya kaydedilemedi. Mevcut verileriniz korundu.\n\nSayfa Yenilenecek.');
+        window.medisaInfo('Yedek sunucuya kaydedilemedi. Mevcut verileriniz korundu.\n\nSayfa Yenilenecek.');
         scheduleImportTerminalReload();
         return { started: true, blocked: false, ok: false, reason: 'apply' };
       }
@@ -4835,19 +4847,27 @@
       var hooks = ui && typeof ui === 'object' ? ui : {};
       var confirmFn = typeof hooks.confirm === 'function'
         ? hooks.confirm
-        : function(msg) { return window.confirm(msg); };
+        : function(msg) {
+            if (typeof window.medisaAskCompactConfirm === 'function') {
+              return window.medisaAskCompactConfirm({
+                title: 'ONAY',
+                message: String(msg || '')
+              }).then(function(answer) { return answer === true; });
+            }
+            return Promise.resolve(window.confirm(msg));
+          };
 
       var parsed;
       try {
         parsed = JSON.parse(fileText);
       } catch (_parseErr) {
-        alert('Yedek Dosyası Okunamadı!');
+        window.medisaInfo('Yedek Dosyası Okunamadı!');
         return Promise.resolve({ outcome: 'parse_error', ok: false });
       }
 
       var backup = normalizeBackupPayload(parsed, 'file');
       if (!backup) {
-        alert('Geçersiz Yedek Dosyası!');
+        window.medisaInfo('Geçersiz Yedek Dosyası!');
         return Promise.resolve({ outcome: 'validation_error', ok: false });
       }
 
@@ -4862,19 +4882,20 @@
         kayitLine +
         '\n\nMevcut veriler silinecek! Emin misiniz?';
 
-      if (!confirmFn(message)) {
-        return Promise.resolve({ outcome: 'cancelled', ok: false });
-      }
-
-      return runConfirmedImportTransaction(backup).then(function(result) {
-        if (result && result.blocked) {
-          return { outcome: 'blocked', ok: false, result: result };
+      return Promise.resolve(confirmFn(message)).then(function(confirmed) {
+        if (!confirmed) {
+          return { outcome: 'cancelled', ok: false };
         }
-        return {
-          outcome: result && result.ok ? 'success' : 'failed',
-          ok: !!(result && result.ok),
-          result: result
-        };
+        return runConfirmedImportTransaction(backup).then(function(result) {
+          if (result && result.blocked) {
+            return { outcome: 'blocked', ok: false, result: result };
+          }
+          return {
+            outcome: result && result.ok ? 'success' : 'failed',
+            ok: !!(result && result.ok),
+            result: result
+          };
+        });
       });
     }
     /* medisa-import-sot:end */
@@ -4925,7 +4946,7 @@
           if (input.parentNode) input.parentNode.removeChild(input);
         }, 30000);
       } catch (err) {
-        alert('Dosya seçici açılamadı. Lütfen tekrar deneyin.');
+        window.medisaInfo('Dosya seçici açılamadı. Lütfen tekrar deneyin.');
       }
     };
 
@@ -4971,16 +4992,16 @@
           const msg = (payload && payload.message)
             ? String(payload.message)
             : 'ZIP yedekten geri yükleme başarısız.';
-          alert(msg);
+          window.medisaInfo(msg);
           return;
         }
-        alert('Tam yedek başarıyla geri yüklendi. Sayfa yenilenecek.');
+        window.medisaInfo('Tam yedek başarıyla geri yüklendi. Sayfa yenilenecek.');
         scheduleImportTerminalReload({
           manualRefreshMessage: 'Geri yükleme tamamlandı ancak sayfa yenilenemedi. Lütfen sayfayı manuel yenileyin.'
         });
       } catch (err) {
         console.error('[Medisa] ZIP restore hatası:', err);
-        alert('ZIP yedekten geri yükleme başarısız.');
+        window.medisaInfo('ZIP yedekten geri yükleme başarısız.');
       } finally {
         importInFlight = false;
       }
@@ -5179,36 +5200,10 @@
       }
     };
 
-    // BİLGİ MODALI (Alert yerine)
-    window.showInfoModal = function showInfoModal(message) {
-      const modal = document.getElementById('info-modal');
-      const messageEl = document.getElementById('info-message');
-      if (!modal || !messageEl) return;
-
-      // mesajı güvenli şekilde formatla (önce escape, sonra satır sonlarını <br> ile değiştir)
-      var safeMsg = (typeof window.escapeHtml === 'function' ? window.escapeHtml(message) : String(message).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'));
-      messageEl.innerHTML = safeMsg.replace(/\n/g, '<br>');
-
-      // Body'ye modal-open class'ı ekle
-      document.body.classList.add('modal-open');
-
-      modal.style.display = 'flex';
-      requestAnimationFrame(() => modal.classList.add('active'));
-    };
-
-    window.closeInfoModal = function closeInfoModal() {
-      const modal = document.getElementById('info-modal');
-      if (!modal) return;
-      modal.classList.remove('active');
-      setTimeout(() => {
-        modal.style.display = 'none';
-        if (typeof window.updateFooterDim === 'function') {
-          window.updateFooterDim();
-        } else {
-          document.body.classList.remove('modal-open');
-        }
-      }, 300);
-    };
+    // BİLGİ MODALI (Alert yerine) — owner script-core.js medisaInfo
+    if (typeof window.medisaInfo === 'function') {
+      window.showInfoModal = window.medisaInfo;
+    }
 
     // Ortada bilgi kutusu - Üstteki modal (dis-veri-panel vb.) kapanmaz
     window.showCenteredInfoBox = function showCenteredInfoBox(message) {

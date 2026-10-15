@@ -269,8 +269,8 @@ run('user_guard_message_lists_only_positive_counts', function () {
 });
 
 run('delete_still_requires_explicit_confirm', function () {
-  assert.match(ayarlarJs, /if \(!confirm\('Bu ŞUBEyi silmek istediğinizden emin misiniz\?'\)\) return;/);
-  assert.match(ayarlarJs, /if \(!confirm\('Bu Kullanıcıyı silmek istediğinizden emin misiniz\?'\)\) return;/);
+  assert.match(ayarlarJs, /medisaAskCompactConfirm\([\s\S]*?Bu ŞUBEyi silmek istediğinizden emin misiniz\?/);
+  assert.match(ayarlarJs, /medisaAskCompactConfirm\([\s\S]*?Bu Kullanıcıyı silmek istediğinizden emin misiniz\?/);
 });
 
 if (failures > 0) {
