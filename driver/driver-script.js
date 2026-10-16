@@ -25,9 +25,9 @@ if (document.readyState === 'loading') {
 document.addEventListener('DOMContentLoaded', applyMedisaIosPwaClass);
 }
 
-var VERSION = '20261016.1';
+var VERSION = '20261016.2';
 window.MEDISA_DRIVER_ASSET_VERSIONS = window.MEDISA_DRIVER_ASSET_VERSIONS || {
-bootstrap: '20261016.1',
+bootstrap: '20261016.2',
 login: '20261008.1',
 dashboardCore: '20261016.1',
 history: '20261014.2',
@@ -36,7 +36,7 @@ feedback: '20260813.1',
 password: '20260913.2',
 actions: '20261016.1',
 shellCss: '20260925.7',
-featureCss: '20261016.1'
+featureCss: '20261016.2'
 };
 
 var APP_ROOT = (function() {
