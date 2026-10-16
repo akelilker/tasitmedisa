@@ -170,9 +170,9 @@
     </style>
 
     <!-- CSS Preload + Async Load -->
-    <link rel="preload" href="style-core.css?v=20261016.1" as="style">
-    <link rel="stylesheet" href="style-core.css?v=20261016.1">
-    <noscript><link rel="stylesheet" href="style-core.css?v=20261016.1"></noscript>
+    <link rel="preload" href="style-core.css?v=20261016.2" as="style">
+    <link rel="stylesheet" href="style-core.css?v=20261016.2">
+    <noscript><link rel="stylesheet" href="style-core.css?v=20261016.2"></noscript>
     <script>
         (function() {
             function getMainAppBasePath() {
@@ -670,7 +670,7 @@
             </div>
         </div>
 
-        <div id="forget-device-confirm-modal" class="modal-overlay ayarlar-modal-overlay" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="forget-device-confirm-title" aria-describedby="forget-device-confirm-message">
+        <div id="forget-device-confirm-modal" class="modal-overlay ayarlar-modal-overlay compact-confirm-modal compact-confirm-destructive" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="forget-device-confirm-title" aria-describedby="forget-device-confirm-message">
             <div class="modal-container" onclick="event.stopPropagation();">
                 <div class="modal-header">
                     <h2 id="forget-device-confirm-title">Bu Cihazı Unut</h2>
@@ -682,7 +682,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <p id="forget-device-confirm-message">Bu cihazda saklanan kullanıcı adı, parola ve oturum bilgileri silinecek.</p>
+                    <p id="forget-device-confirm-message" class="compact-confirm-message">Bu cihazda saklanan kullanıcı adı, parola ve oturum bilgileri silinecek.</p>
                     <div class="universal-btn-group">
                         <button type="button" class="universal-btn-save" id="forget-device-confirm-submit" onclick="if(typeof confirmMedisaMainAppForgetThisDevice==='function')confirmMedisaMainAppForgetThisDevice();">Bu Cihazı Unut</button>
                         <button type="button" class="universal-btn-cancel" id="forget-device-confirm-cancel" onclick="if(typeof closeMedisaMainAppForgetThisDeviceConfirm==='function')closeMedisaMainAppForgetThisDeviceConfirm();">Vazgeç</button>
