@@ -4270,3 +4270,27 @@ html.medisa-ios27-pwa body.dashboard-page .driver-header-fixed {
     box-shadow: 0 2px 16px rgba(0, 0, 0, 0.32);
   }
 }
+
+/* Yıkıcı kompakt onay (Bu Cihazı Unut): Önbellek onayıyla aynı — sol onay kırmızı, sağ vazgeç yeşil */
+.compact-confirm-destructive .universal-btn-save {
+  color: var(--theme-color) !important;
+  border: 1px solid rgba(var(--theme-color-rgb), 0.45) !important;
+}
+.compact-confirm-destructive .universal-btn-save:hover {
+  background: rgba(var(--theme-color-rgb), 0.12) !important;
+  border-color: var(--theme-color) !important;
+}
+.compact-confirm-destructive .universal-btn-cancel {
+  color: var(--green-success) !important;
+  border: 1px solid rgba(var(--green-success-rgb), 0.45) !important;
+}
+.compact-confirm-destructive .universal-btn-cancel:hover {
+  background: rgba(var(--green-success-rgb), 0.12) !important;
+  border-color: var(--green-success) !important;
+}
+@media (max-width: 640px) {
+  .compact-confirm-destructive .universal-btn-save,
+  .compact-confirm-destructive .universal-btn-cancel {
+    font-size: 12.5px !important;
+  }
+}
