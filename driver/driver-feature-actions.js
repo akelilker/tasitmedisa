@@ -572,6 +572,12 @@ iletisim: document.getElementById('driver-kasko-iletisim-' + vehicleId)?.value.t
 };
 } else return;
 try {
+if (type === 'sigorta' || type === 'kasko') {
+var docsApi = runtime.features.documents;
+if (docsApi && typeof docsApi.uploadPendingDriverPolicyIfAny === 'function') {
+await docsApi.uploadPendingDriverPolicyIfAny(vehicleId, type);
+}
+}
 const res = await fetch(p.API_BASE + 'driver_event.php', {
 method: 'POST',
 headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + s.currentToken },

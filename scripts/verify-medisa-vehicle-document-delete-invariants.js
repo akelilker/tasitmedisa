@@ -722,9 +722,10 @@ test('Upload owner davranışı korunur: paylaşılan audit/safeId owner core.ph
   assert.match(corePhp, /function medisaDeleteVehicleDocumentFiles\(/);
   assert.doesNotMatch(uploadPhp, /function medisaUploadDocumentHistoryMeta/, 'kopya audit haritası kalmamalı');
   assert.doesNotMatch(uploadPhp, /function medisaBuildVehicleDocumentUploadEvent/, 'kopya event builder kalmamalı');
-  assert.match(uploadPhp, /medisaBuildVehicleDocumentHistoryEvent\('yukle', \$documentType/);
-  assert.match(uploadPhp, /\$safeId = medisaResolveVehicleDocumentSafeFileId\(/);
-  assert.match(uploadPhp, /move_uploaded_file\(\$file\['tmp_name'\], \$targetPath\)/, 'mevcut yükleme akışı korunmalı');
+  assert.match(corePhp, /medisaBuildVehicleDocumentHistoryEvent\('yukle', \$documentType/);
+  assert.match(corePhp, /function medisaPersistVehicleDocumentPdfFile\(/);
+  assert.match(uploadPhp, /medisaPersistVehicleDocumentPdfFile\(/);
+  assert.match(uploadPhp, /medisaApplyVehicleDocumentUploadMutation/);
 });
 
 Promise.all(pendingAsync).then(function() {
