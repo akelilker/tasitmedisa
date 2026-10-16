@@ -424,7 +424,7 @@ document.body.classList.add('driver-history-or-edit-modal-open');
 } else {
 document.body.classList.remove('driver-history-or-edit-modal-open');
 }
-if (id === 'driver-feedback-modal' || id === 'driver-documents-modal') {
+if (id === 'driver-feedback-modal' || id === 'driver-documents-modal' || id === 'driver-policy-upload-modal') {
 document.body.classList.add('driver-feedback-modal-open');
 } else {
 document.body.classList.remove('driver-feedback-modal-open');
@@ -1325,6 +1325,9 @@ function buildDriverActionArea(vehicle, existingRecord, bakimVar, kazaVar, opts)
 <div class="form-group"><label for="driver-sigorta-firma-${vid}">Firma (isteğe bağlı)</label><input type="text" id="driver-sigorta-firma-${vid}" class="form-input" placeholder="Sigorta Firması" style="width:100%"></div>
 <div class="form-group"><label for="driver-sigorta-acente-${vid}">Acente (isteğe bağlı)</label><input type="text" id="driver-sigorta-acente-${vid}" class="form-input" placeholder="Acente Adı" style="width:100%"></div>
 <div class="form-group"><label for="driver-sigorta-iletisim-${vid}">İletişim (isteğe bağlı)</label><input type="text" id="driver-sigorta-iletisim-${vid}" class="form-input" placeholder="Telefon / E-posta" inputmode="tel" style="width:100%"></div>
+<div class="form-group driver-policy-upload-trigger-wrap">
+<button type="button" class="driver-policy-upload-trigger" onclick="openDriverPolicyUploadModal('sigorta','${vid}','renewal')">Poliçe Yükle</button>
+</div>
 <div class="universal-btn-group">
 <button type="button" class="universal-btn-save" onclick="saveDriverEventFromBlock('sigorta','${vid}')">Bildir</button>
 <button type="button" class="universal-btn-cancel" onclick="cancelDriverActionForm('sigorta','${vid}')">Vazgeç</button>
@@ -1338,6 +1341,9 @@ function buildDriverActionArea(vehicle, existingRecord, bakimVar, kazaVar, opts)
 <div class="form-group"><label for="driver-kasko-firma-${vid}">Firma (isteğe bağlı)</label><input type="text" id="driver-kasko-firma-${vid}" class="form-input" placeholder="Kasko Firması" style="width:100%"></div>
 <div class="form-group"><label for="driver-kasko-acente-${vid}">Acente (isteğe bağlı)</label><input type="text" id="driver-kasko-acente-${vid}" class="form-input" placeholder="Acente Adı" style="width:100%"></div>
 <div class="form-group"><label for="driver-kasko-iletisim-${vid}">İletişim (isteğe bağlı)</label><input type="text" id="driver-kasko-iletisim-${vid}" class="form-input" placeholder="Telefon / E-posta" inputmode="tel" style="width:100%"></div>
+<div class="form-group driver-policy-upload-trigger-wrap">
+<button type="button" class="driver-policy-upload-trigger" onclick="openDriverPolicyUploadModal('kasko','${vid}','renewal')">Poliçe Yükle</button>
+</div>
 <div class="universal-btn-group">
 <button type="button" class="universal-btn-save" onclick="saveDriverEventFromBlock('kasko','${vid}')">Bildir</button>
 <button type="button" class="universal-btn-cancel" onclick="cancelDriverActionForm('kasko','${vid}')">Vazgeç</button>

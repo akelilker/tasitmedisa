@@ -16,52 +16,11 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-function medisaUploadSizeToBytes($value) {
-    $raw = trim((string)$value);
-    if ($raw === '') {
-        return 0;
-    }
-    $unit = strtolower(substr($raw, -1));
-    $number = (float)$raw;
-    if ($number <= 0) {
-        return 0;
-    }
-    switch ($unit) {
-        case 'g':
-            $number *= 1024;
-            // fall through
-        case 'm':
-            $number *= 1024;
-            // fall through
-        case 'k':
-            $number *= 1024;
-            break;
-    }
-    return (int)$number;
-}
-
 $contentLength = isset($_SERVER['CONTENT_LENGTH']) ? (int)$_SERVER['CONTENT_LENGTH'] : 0;
-$postMaxBytes = medisaUploadSizeToBytes(ini_get('post_max_size'));
-if ($contentLength > 0 && $postMaxBytes > 0 && $contentLength > $postMaxBytes) {
-    http_response_code(400);
-    echo json_encode(['error' => 'Dosya boyutu sunucu limitini aşıyor. Daha küçük bir PDF deneyin veya PDF boyutunu düşürüp tekrar yükleyin.'], JSON_UNESCAPED_UNICODE);
-    exit;
-}
-
-$hasUploadedFile = false;
-foreach (['document', 'ruhsat'] as $uploadFieldKey) {
-    if (!isset($_FILES[$uploadFieldKey]) || !is_array($_FILES[$uploadFieldKey])) {
-        continue;
-    }
-    $uploadError = (int)($_FILES[$uploadFieldKey]['error'] ?? UPLOAD_ERR_NO_FILE);
-    if ($uploadError !== UPLOAD_ERR_NO_FILE) {
-        $hasUploadedFile = true;
-        break;
-    }
-}
-if ($contentLength > 0 && empty($_POST) && !$hasUploadedFile) {
-    http_response_code(400);
-    echo json_encode(['error' => 'Yükleme verisi sunucuya ulaşmadı. Dosya boyutu sunucu limitini aşmış olabilir; daha küçük bir PDF deneyin.'], JSON_UNESCAPED_UNICODE);
+$uploadLimitCheck = medisaValidateVehicleDocumentHttpUploadLimits($contentLength, $_POST, $_FILES, ['document', 'ruhsat']);
+if (($uploadLimitCheck['ok'] ?? false) !== true) {
+    http_response_code((int)($uploadLimitCheck['status'] ?? 400));
+    echo json_encode(['error' => $uploadLimitCheck['error'] ?? 'Yükleme başarısız'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
@@ -91,95 +50,6 @@ if (!$config) {
 }
 $isSettingsDocument = !empty($config['settingsKey']);
 $requestedBranchId = trim((string)medisaUploadRequestValue('branchId', '', true));
-
-function medisaNormalizeUploadDocumentDateToIso($rawDate) {
-    $value = trim((string)$rawDate);
-    if ($value === '') {
-        return '';
-    }
-    if (preg_match('/^(\d{4})-(\d{2})-(\d{2})$/', $value, $m)) {
-        return checkdate((int)$m[2], (int)$m[3], (int)$m[1]) ? sprintf('%04d-%02d-%02d', (int)$m[1], (int)$m[2], (int)$m[3]) : '';
-    }
-    if (preg_match('/^(\d{1,2})[.\/-](\d{1,2})[.\/-](\d{4})$/', $value, $m)) {
-        return checkdate((int)$m[2], (int)$m[1], (int)$m[3]) ? sprintf('%04d-%02d-%02d', (int)$m[3], (int)$m[2], (int)$m[1]) : '';
-    }
-    if (preg_match('/^(\d{2})(\d{2})(\d{4})$/', $value, $m)) {
-        return checkdate((int)$m[2], (int)$m[1], (int)$m[3]) ? sprintf('%04d-%02d-%02d', (int)$m[3], (int)$m[2], (int)$m[1]) : '';
-    }
-    return '';
-}
-
-function medisaUploadAddYears($dateStr, $years) {
-    $value = trim((string)$dateStr);
-    if ($value === '') {
-        return '';
-    }
-    try {
-        $dt = new DateTime($value);
-        $dt->modify('+' . (int)$years . ' years');
-        return $dt->format('Y-m-d');
-    } catch (Exception $e) {
-        return '';
-    }
-}
-
-function medisaNormalizeUploadDocumentPath($path) {
-    $normalized = ltrim(str_replace('\\', '/', trim((string)$path)), '/');
-    if (strpos($normalized, 'data/') === 0) {
-        $normalized = substr($normalized, 5);
-    }
-    return $normalized;
-}
-
-function medisaUploadVehicleNeedsK2($vehicle) {
-    if (!is_array($vehicle)) {
-        return false;
-    }
-    $typeKey = strtolower(trim((string)($vehicle['vehicleType'] ?? $vehicle['tip'] ?? '')));
-    return in_array($typeKey, ['minivan', 'kamyon', 'romork'], true);
-}
-
-function medisaUploadVehicleNeedsTakograf($vehicle) {
-    if (!is_array($vehicle)) {
-        return false;
-    }
-    $typeKey = strtolower(trim((string)($vehicle['vehicleType'] ?? $vehicle['tip'] ?? '')));
-    return $typeKey === 'kamyon';
-}
-
-function medisaCanMergeVehicleDocumentUpload($vehicle, $config, $documentType, $clientDocumentPath, $clientTasitKartiSyncDate, $hasClientDocumentPath, $hasClientTasitKartiSyncDate, $k2ExpiryDate = '') {
-    if (!$hasClientDocumentPath || !is_array($vehicle) || !is_array($config)) {
-        return false;
-    }
-
-    $pathField = (string)($config['pathField'] ?? '');
-    if ($pathField === '') {
-        return false;
-    }
-
-    $serverDocumentPath = medisaNormalizeUploadDocumentPath($vehicle[$pathField] ?? '');
-    if ($serverDocumentPath !== medisaNormalizeUploadDocumentPath($clientDocumentPath)) {
-        return false;
-    }
-
-    if ($documentType === 'tasit_karti') {
-        if (!$hasClientTasitKartiSyncDate) {
-            return false;
-        }
-        $k2SourceExpiryDate = medisaNormalizeUploadDocumentDateToIso($k2ExpiryDate);
-        if ($k2SourceExpiryDate !== '') {
-            if ($k2SourceExpiryDate === $clientTasitKartiSyncDate) {
-                return true;
-            }
-        }
-        $serverExpiryDate = medisaNormalizeUploadDocumentDateToIso($vehicle['tasitKartiExpiryDate'] ?? '');
-        if ($serverExpiryDate !== $clientTasitKartiSyncDate) {
-            return false;
-        }
-    }
-
-    return true;
-}
 
 $vehicleId = trim((string)medisaUploadRequestValue('vehicleId', '', true));
 $vehicleVersionRaw = medisaUploadRequestValue('vehicleVersion', null, true);
@@ -300,277 +170,64 @@ if (!$isSettingsDocument) {
     exit;
 }
 
-$fileKey = isset($_FILES['document']) ? 'document' : 'ruhsat';
-
-if (!isset($_FILES[$fileKey]) || $_FILES[$fileKey]['error'] !== UPLOAD_ERR_OK) {
-    $err = $_FILES[$fileKey]['error'] ?? -1;
-    switch ($err) {
-        case UPLOAD_ERR_INI_SIZE:
-        case UPLOAD_ERR_FORM_SIZE:
-            $uploadMaxFilesize = trim((string)ini_get('upload_max_filesize'));
-            $msg = $uploadMaxFilesize !== ''
-                ? 'Dosya boyutu sunucu limitini aşıyor (en fazla ' . $uploadMaxFilesize . '). Daha küçük bir PDF yükleyin.'
-                : 'Dosya boyutu sunucu limitini aşıyor. Daha küçük bir PDF yükleyin.';
-            break;
-        case UPLOAD_ERR_PARTIAL:
-            $msg = 'PDF sunucuya eksik ulaştı. Wi-Fi veya daha güçlü mobil sinyal ile tekrar deneyin.';
-            break;
-        case UPLOAD_ERR_NO_FILE:
-            $msg = 'PDF sunucuya ulaşmadı. Dosyayı yeniden seçip tekrar deneyin.';
-            break;
-        case UPLOAD_ERR_NO_TMP_DIR:
-            $msg = 'Sunucu geçici yükleme klasörü bulunamadığı için dosya alınamadı.';
-            break;
-        case UPLOAD_ERR_CANT_WRITE:
-            $msg = 'Sunucu dosyayı geçici alana yazamadı.';
-            break;
-        case UPLOAD_ERR_EXTENSION:
-            $msg = 'Sunucu dosya yüklemeyi bir PHP eklentisi nedeniyle durdurdu.';
-            break;
-        default:
-            if (!isset($_FILES[$fileKey])) {
-                if ($contentLength > 0) {
-                    $msg = 'PDF sunucuya iletilemedi. Wi-Fi veya daha güçlü mobil sinyal ile tekrar deneyin.';
-                } else {
-                    $msg = 'PDF seçimi sunucuya gönderilemedi. Dosyayı yeniden seçip tekrar deneyin.';
-                }
-            } else {
-                $msg = 'Dosya yüklenemedi. Hata kodu: ' . (string)$err;
-            }
-            break;
-    }
-    http_response_code(400);
-    echo json_encode(['error' => $msg], JSON_UNESCAPED_UNICODE);
+$fileResolution = medisaResolveVehicleDocumentUploadedFile($_FILES, ['document', 'ruhsat'], $contentLength);
+if (($fileResolution['ok'] ?? false) !== true) {
+    http_response_code((int)($fileResolution['status'] ?? 400));
+    echo json_encode(['error' => $fileResolution['error'] ?? 'Dosya yüklenemedi'], JSON_UNESCAPED_UNICODE);
     exit;
 }
-
-$file = $_FILES[$fileKey];
-
-$handle = fopen($file['tmp_name'], 'rb');
-$header = $handle ? fread($handle, 1024) : '';
-if ($handle) {
-    fclose($handle);
-}
-
-if (strpos((string)$header, '%PDF') === false) {
-    http_response_code(400);
-    echo json_encode(['error' => 'Geçersiz PDF dosyası'], JSON_UNESCAPED_UNICODE);
-    exit;
-}
+$file = $fileResolution['file'];
 
 $k2GroupForUpload = $documentType === 'k2' ? medisaFindK2BelgeGroupByBranchId($preloadData, $requestedBranchId) : null;
-$safeId = medisaResolveVehicleDocumentSafeFileId(
-    $documentType,
-    $config,
-    $vehicleId,
-    (string)($k2GroupForUpload['id'] ?? ''),
-    $requestedBranchId
-);
-
 $plate = strtoupper(preg_replace('/[^A-Z0-9]/', '', (string)medisaUploadRequestValue('plaka', '')));
 if ($plate === '') {
     $plate = $isSettingsDocument
         ? strtoupper((string)($config['fallbackName'] ?? $documentType))
         : strtoupper(preg_replace('/[^A-Z0-9]/', '', (string)($preVehicle['plate'] ?? $preVehicle['plaka'] ?? '')));
 }
-if ($plate === '') {
-    $plate = strtoupper($safeId);
-}
 
-$filename = $documentType === 'k2'
-    ? 'k2_' . $safeId . '.pdf'
-    : $plate . '_' . $documentType . '_' . time() . '.pdf';
-$dataDir = __DIR__ . '/data/' . $config['dir'];
-if (!is_dir($dataDir)) {
-    @mkdir($dataDir, 0755, true);
-}
-
-$targetPath = $dataDir . '/' . $filename;
-if (!move_uploaded_file($file['tmp_name'], $targetPath)) {
-    http_response_code(500);
-    echo json_encode(['error' => 'Dosya kaydedilemedi'], JSON_UNESCAPED_UNICODE);
+$persistResult = medisaPersistVehicleDocumentPdfFile($file, $documentType, $config, [
+    'vehicleId' => $vehicleId,
+    'branchId' => $requestedBranchId,
+    'k2Group' => $k2GroupForUpload,
+    'plate' => $plate,
+    'vehiclePlate' => is_array($preVehicle) ? (string)($preVehicle['plate'] ?? $preVehicle['plaka'] ?? '') : '',
+]);
+if (($persistResult['ok'] ?? false) !== true) {
+    http_response_code((int)($persistResult['status'] ?? 500));
+    echo json_encode(['error' => $persistResult['error'] ?? 'Dosya kaydedilemedi'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
-$legacyTargetPath = $dataDir . '/' . $safeId . '.pdf';
-$previewDir = __DIR__ . '/data/' . $config['dir'] . '_preview';
-$previewPath = $previewDir . '/' . $safeId . '.jpg';
-
-$documentPath = $config['dir'] . '/' . $filename;
-$result = medisaMutateData(function (&$data) use ($vehicleId, $vehicleVersion, $documentPath, $config, $isSettingsDocument, $documentType, $requestedBranchId, $tasitKartiK2ExpiryDate, $clientDocumentPath, $clientTasitKartiSyncDate, $hasClientDocumentPath, $hasClientTasitKartiSyncDate, $documentOperationDate) {
-    $auth = medisaResolveAuthorizedContext($data, 'view_main_app');
-    if (($auth['success'] ?? false) !== true) {
-        return medisaBuildErrorResult($auth['message'] ?? 'Bu işlem için yetkiniz yok.', (int)($auth['status'] ?? 403));
-    }
-    $context = $auth['context'];
-
-    if ($documentType === 'k2') {
-        $group = medisaFindK2BelgeGroupByBranchId($data, $requestedBranchId);
-        if (!$group || !medisaCanAccessK2BelgeGroup($group, $context)) {
-            return medisaBuildErrorResult('Bu K2 grubu için yetkiniz yok.', 403);
+$documentPath = (string)$persistResult['documentPath'];
+$targetPath = (string)$persistResult['targetPath'];
+$mutationParams = [
+    'documentType' => $documentType,
+    'documentPath' => $documentPath,
+    'vehicleId' => $vehicleId,
+    'vehicleVersion' => $vehicleVersion,
+    'config' => $config,
+    'isSettingsDocument' => $isSettingsDocument,
+    'branchId' => $requestedBranchId,
+    'tasitKartiK2ExpiryDate' => $tasitKartiK2ExpiryDate,
+    'clientDocumentPath' => $clientDocumentPath,
+    'hasClientDocumentPath' => $hasClientDocumentPath,
+    'clientTasitKartiSyncDate' => $clientTasitKartiSyncDate,
+    'hasClientTasitKartiSyncDate' => $hasClientTasitKartiSyncDate,
+    'documentOperationDate' => $documentOperationDate,
+];
+$result = medisaMutateData(function (&$data) use ($mutationParams) {
+    return medisaApplyVehicleDocumentUploadMutation($data, $mutationParams, function (array &$data) {
+        $auth = medisaResolveAuthorizedContext($data, 'view_main_app');
+        if (($auth['success'] ?? false) !== true) {
+            return medisaBuildErrorResult($auth['message'] ?? 'Bu işlem için yetkiniz yok.', (int)($auth['status'] ?? 403));
         }
-        foreach ($data['ayarlar']['k2BelgeGruplari'] as &$candidate) {
-            if (($candidate['id'] ?? '') === $group['id']) {
-                $candidate['documentPath'] = $documentPath;
-                $candidate['updatedAt'] = date('c');
-            }
-        }
-        unset($candidate);
-        medisaSyncTasitKartiExpiryForK2Branches($data, $group['branchIds'], $group['expiryDate']);
-        $updatedGroup = medisaFindK2BelgeGroupById($data, $group['id']);
-        return ['success' => true, 'group' => $updatedGroup];
-    }
-    if ($isSettingsDocument) {
-        if (($context['role'] ?? '') !== 'genel_yonetici') {
-            return medisaBuildErrorResult('Bu belgeyi güncelleme yetkiniz yok.', 403);
-        }
-        if (!isset($data['ayarlar']) || !is_array($data['ayarlar'])) {
-            $data['ayarlar'] = [];
-        }
-        $settingsKey = (string)($config['settingsKey'] ?? '');
-        if ($settingsKey === '') {
-            return medisaBuildErrorResult('Belge ayar anahtarı bulunamadı.', 500);
-        }
-        if (!isset($data['ayarlar'][$settingsKey]) || !is_array($data['ayarlar'][$settingsKey])) {
-            $data['ayarlar'][$settingsKey] = [];
-        }
-        $settingsPathField = (string)($config['settingsPathField'] ?? 'documentPath');
-        $data['ayarlar'][$settingsKey][$settingsPathField] = $documentPath;
-        $data['ayarlar'][$settingsKey]['updatedAt'] = date('c');
-
-        return [
-            'success' => true,
-            'settingsKey' => $settingsKey,
-            'settingsDocument' => $data['ayarlar'][$settingsKey],
-        ];
-    }
-
-    $vehicleIndex = medisaFindVehicleIndex($data, $vehicleId);
-    if ($vehicleIndex < 0) {
-        return medisaBuildErrorResult('Taşıt bulunamadı!', 404);
-    }
-
-    $vehicle = &$data['tasitlar'][$vehicleIndex];
-    if (!medisaCanManageVehicleRecord($vehicle, $context)) {
-        return medisaBuildErrorResult('Bu taşıtı güncelleme yetkiniz yok.', 403);
-    }
-    if ($documentType === 'tasit_karti' && !medisaUploadVehicleNeedsK2($vehicle)) {
-        return medisaBuildErrorResult('Bu taşıt tipi için Taşıt Kartı yüklenemez.', 400);
-    }
-    if ($documentType === 'takograf' && !medisaUploadVehicleNeedsTakograf($vehicle)) {
-        return medisaBuildErrorResult('Bu taşıt tipi için Takograf Belgesi yüklenemez.', 400);
-    }
-    if ($documentType === 'satis_sozlesmesi') {
-        if (!medisaVehicleAllowsSatisSozlesmesi($vehicle)) {
-            return medisaBuildErrorResult('Satış Sözleşmesi yalnızca stoktan düşen (satış veya pert) taşıtlara yüklenebilir.', 403);
-        }
-    }
-
-    $versionCheck = medisaEnsureVehicleVersion($vehicle, $vehicleVersion, 'Bu taşıt başka biri tarafından güncellendi. Güncel veriler yüklendi.');
-    if ($versionCheck !== true) {
-        if ($documentOperationDate !== '') {
-            return $versionCheck;
-        }
-        $k2ExpiryDateForMerge = $documentType === 'tasit_karti'
-            ? (medisaResolveK2BelgeGroupForVehicle($data, $vehicle)['expiryDate'] ?? '')
-            : '';
-        $canMergeDocumentUpload = medisaCanMergeVehicleDocumentUpload(
-            $vehicle,
-            $config,
-            $documentType,
-            $clientDocumentPath,
-            $clientTasitKartiSyncDate,
-            $hasClientDocumentPath,
-            $hasClientTasitKartiSyncDate,
-            $k2ExpiryDateForMerge
-        );
-        if (!$canMergeDocumentUpload) {
-            return $versionCheck;
-        }
-    }
-
-    $pathField = (string)($config['pathField'] ?? '');
-    $previousDocumentPath = medisaNormalizeUploadDocumentPath($vehicle[$pathField] ?? '');
-    $vehicle[$pathField] = $documentPath;
-    $documentEventExtra = [];
-    if ($documentType === 'tasit_karti') {
-        $k2ExpiryDate = medisaNormalizeUploadDocumentDateToIso(medisaResolveK2BelgeGroupForVehicle($data, $vehicle)['expiryDate'] ?? '');
-        if ($k2ExpiryDate === '') {
-            return medisaBuildErrorResult('Taşıt Kartı yüklemek için önce K2 Belgesi Geçerlilik Süresi kaydedilmelidir.', 400);
-        }
-        $vehicle['tasitKartiExpiryDate'] = $k2ExpiryDate;
-        $documentEventExtra['expiryDate'] = $k2ExpiryDate;
-    } elseif ($documentOperationDate !== '') {
-        if ($documentType === 'takograf') {
-            $expiryDate = medisaUploadAddYears($documentOperationDate, 2);
-            if ($expiryDate === '') {
-                return medisaBuildErrorResult('Geçersiz işlem tarihi.', 400);
-            }
-            $vehicle['takografKalibrasyonDate'] = $documentOperationDate;
-            $vehicle['takografExpiryDate'] = $expiryDate;
-        } else {
-            $expiryDate = medisaUploadAddYears($documentOperationDate, 1);
-            if ($expiryDate === '') {
-                return medisaBuildErrorResult('Geçersiz işlem tarihi.', 400);
-            }
-            if ($documentType === 'sigorta') {
-                $vehicle['sigortaDate'] = $expiryDate;
-            } elseif ($documentType === 'kasko') {
-                $vehicle['kaskoDate'] = $expiryDate;
-            }
-        }
-        $documentEventExtra['operationDate'] = $documentOperationDate;
-        $documentEventExtra['expiryDate'] = $expiryDate;
-    }
-    $documentEventExtra['vehicleId'] = (string)$vehicleId;
-    $documentEventExtra['plakaSnapshot'] = trim((string)($vehicle['plate'] ?? $vehicle['plaka'] ?? ''));
-    $documentEvent = medisaBuildVehicleDocumentHistoryEvent('yukle', $documentType, $documentPath, $previousDocumentPath, $context, $documentEventExtra);
-    if ($documentEvent) {
-        if (!isset($vehicle['events']) || !is_array($vehicle['events'])) {
-            $vehicle['events'] = [];
-        }
-        array_unshift($vehicle['events'], $documentEvent);
-    }
-    $newVehicleVersion = medisaBumpVehicleVersion($vehicle);
-
-    $payload = [
-        'success' => true,
-        'vehicleId' => (string)$vehicleId,
-        'vehicleVersion' => $newVehicleVersion,
-        'vehicleVersions' => [[
-            'id' => (string)$vehicleId,
-            'version' => $newVehicleVersion,
-        ]],
-    ];
-    if ($config['pathField'] === 'ruhsatPath') {
-        $payload['ruhsatPath'] = $documentPath;
-    }
-    if ($documentType === 'tasit_karti') {
-        $payload['tasitKartiExpiryDate'] = $vehicle['tasitKartiExpiryDate'];
-    }
-    if ($documentType === 'sigorta' && $documentOperationDate !== '') {
-        $payload['sigortaDate'] = $vehicle['sigortaDate'] ?? '';
-    }
-    if ($documentType === 'kasko' && $documentOperationDate !== '') {
-        $payload['kaskoDate'] = $vehicle['kaskoDate'] ?? '';
-    }
-    if ($documentType === 'takograf' && $documentOperationDate !== '') {
-        $payload['takografKalibrasyonDate'] = $vehicle['takografKalibrasyonDate'] ?? '';
-        $payload['takografExpiryDate'] = $vehicle['takografExpiryDate'] ?? '';
-    }
-    if ($documentEvent) {
-        $payload['documentEvent'] = $documentEvent;
-    }
-    return $payload;
+        return ['success' => true, 'context' => $auth['context']];
+    });
 });
 
 if (($result['success'] ?? false) === true) {
-    if ($legacyTargetPath !== $targetPath) {
-        @copy($targetPath, $legacyTargetPath);
-    }
-    if (is_file($previewPath)) {
-        @unlink($previewPath);
-    }
+    medisaFinalizeVehicleDocumentUploadFilesystem($documentType, $persistResult);
     $result['documentType'] = $documentType;
     $result['documentPath'] = $documentPath;
     $result['ruhsatPath'] = $documentType === 'ruhsat' ? $documentPath : null;

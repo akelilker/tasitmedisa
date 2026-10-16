@@ -341,6 +341,27 @@
         </div>
         </div>
 
+        <div id="driver-policy-upload-modal" class="driver-modal modal-overlay" aria-hidden="true">
+        <div class="driver-modal-content modal-container driver-policy-upload-container" onclick="event.stopPropagation();">
+            <div class="modal-header">
+                <h2 id="driver-policy-upload-title">Poliçe Yükle</h2>
+                <button type="button" onclick="closeDriverPolicyUploadModal(true)" class="modal-close driver-policy-upload-close" aria-label="Kapat">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body driver-policy-upload-body">
+                <div id="driver-policy-upload-content" class="driver-policy-upload-content"></div>
+                <div class="driver-policy-upload-actions universal-btn-group">
+                    <button type="button" id="driver-policy-upload-save" class="universal-btn-save">Kaydet</button>
+                    <button type="button" id="driver-policy-upload-cancel" class="universal-btn-cancel" onclick="closeDriverPolicyUploadModal(true)">Vazgeç</button>
+                </div>
+            </div>
+        </div>
+        </div>
+
         <div id="driver-documents-modal" class="driver-modal modal-overlay">
         <div class="driver-modal-content modal-container" onclick="event.stopPropagation();">
             <div class="modal-header">
@@ -510,6 +531,6 @@
             </div>
         </div>
     </div>
-<script defer src="driver-script.js?v=20261014.2"></script>
+<script defer src="driver-script.js?v=20261016.1"></script>
 </body>
 </html>

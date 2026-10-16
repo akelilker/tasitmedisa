@@ -1234,6 +1234,174 @@ body.dashboard-page.driver-feedback-modal-open #app-footer{
   justify-content: center;
 }
 
+.driver-document-card-wrap{
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 0 1 140px;
+  max-width: 168px;
+  min-width: 0;
+}
+
+.driver-document-upload-add{
+  appearance: none;
+  -webkit-appearance: none;
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  color: #ffffff;
+  font-size: 22px;
+  line-height: 1;
+  padding: 0;
+  margin: 2px 0 0;
+  cursor: pointer;
+  align-self: center;
+}
+
+.driver-document-upload-add:hover,
+.driver-document-upload-add:focus-visible{
+  outline: none;
+  color: #a0aec0;
+}
+
+.driver-policy-upload-trigger-wrap{
+  margin-top: 4px;
+}
+
+.driver-policy-upload-trigger{
+  appearance: none;
+  -webkit-appearance: none;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 8px;
+  background: transparent;
+  color: #ffffff;
+  font: inherit;
+  font-size: 14px;
+  padding: 10px 14px;
+  width: 100%;
+  cursor: pointer;
+  text-align: center;
+}
+
+.driver-policy-upload-trigger:hover,
+.driver-policy-upload-trigger:focus-visible{
+  border-color: rgba(255, 255, 255, 0.4);
+  outline: none;
+}
+
+#driver-policy-upload-modal .modal-body{
+  padding: 20px !important;
+  box-sizing: border-box !important;
+}
+
+.driver-policy-upload-content{
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.driver-policy-upload-box{
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.driver-policy-upload-select{
+  appearance: none;
+  -webkit-appearance: none;
+  border: 1px dashed rgba(255, 255, 255, 0.35);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  color: #ffffff;
+  width: 72px;
+  height: 72px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+}
+
+.driver-policy-upload-select.upload-success{
+  border-color: rgba(72, 187, 120, 0.65);
+}
+
+.driver-policy-upload-select-icon{
+  font-size: 28px;
+  line-height: 1;
+}
+
+.driver-policy-upload-file-native{
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.driver-policy-upload-file-row{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  box-sizing: border-box;
+  color: #a0aec0;
+  font-size: 14px;
+}
+
+.driver-policy-upload-file-name{
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.driver-policy-upload-file-remove{
+  appearance: none;
+  border: none;
+  background: transparent;
+  color: #ffffff;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 4px;
+}
+
+.driver-policy-upload-progress{
+  width: 100%;
+}
+
+.driver-policy-upload-progress-track{
+  width: 100%;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  overflow: hidden;
+}
+
+.driver-policy-upload-progress-bar{
+  height: 100%;
+  width: 0;
+  background: #e53e3e;
+  transition: width .15s ease;
+}
+
+.driver-policy-upload-progress-pct{
+  margin-top: 6px;
+  text-align: center;
+  font-size: 12px;
+  color: #a0aec0;
+}
+
+.driver-policy-upload-actions{
+  margin-top: 16px;
+}
+
 .driver-document-card{
   flex: 0 1 140px;
   min-width: 0;
@@ -1402,6 +1570,19 @@ body.dashboard-page.driver-feedback-modal-open #app-footer{
 
   #driver-documents-modal .driver-documents-row{
     gap: 20px;
+  }
+
+  #driver-documents-modal .driver-documents-row{
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  #driver-documents-modal .driver-document-card-wrap{
+    flex: 1 1 42%;
+    max-width: 48%;
   }
 
   #driver-documents-modal .driver-documents-row-pair{

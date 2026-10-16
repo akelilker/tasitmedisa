@@ -346,12 +346,13 @@ test('PHP: config + preserve + archive helpers + upload gate', function() {
   assert.match(preserve, /satisSozlesmesiPath/);
   assert.match(corePhp, /satis-sozlesmesi/);
   assert.match(corePhp, /'slug'\s*=>\s*'satis-sozlesmesi',\s*'label'\s*=>\s*'Satış Sözleşmesi'/);
-  assert.match(uploadPhp, /medisaBuildVehicleDocumentHistoryEvent\('yukle'/);
+  assert.match(corePhp, /medisaBuildVehicleDocumentHistoryEvent\('yukle'/);
   assert.match(uploadPhp, /medisaVehicleAllowsSatisSozlesmesi\(\$preVehicle\)/);
-  assert.match(uploadPhp, /medisaVehicleAllowsSatisSozlesmesi\(\$vehicle\)/);
-  assert.match(uploadPhp, /Satış Sözleşmesi yalnızca stoktan düşen \(satış veya pert\) taşıtlara yüklenebilir/);
-  assert.match(uploadPhp, /\$documentEventExtra\['vehicleId'\]\s*=\s*\(string\)\$vehicleId/);
-  assert.match(uploadPhp, /\$documentEventExtra\['plakaSnapshot'\]/);
+  assert.match(corePhp, /medisaVehicleAllowsSatisSozlesmesi\(\$vehicle\)/);
+  assert.match(corePhp, /Satış Sözleşmesi yalnızca stoktan düşen \(satış veya pert\) taşıtlara yüklenebilir/);
+  assert.match(corePhp, /\$documentEventExtra\['vehicleId'\]\s*=\s*\(string\)\$vehicleId/);
+  assert.match(corePhp, /\$documentEventExtra\['plakaSnapshot'\]/);
+  assert.match(uploadPhp, /medisaApplyVehicleDocumentUploadMutation/);
   assert.doesNotMatch(uploadPhp, /Pert nedeniyle arşivlenen taşıtlara Satış Sözleşmesi yüklenemez/);
 });
 
@@ -697,7 +698,7 @@ test('cache / modül pin parity', function() {
   assert.match(scriptCore, /base \+ 'notifications\.css\?v=' \+ V\.notifications/);
   assert.match(scriptCore, /var AYARLAR_JS\s*=\s*base \+ 'ayarlar\.js\?v=' \+ V\.ayarlarJs;/);
   assert.match(scriptCore, /var AYARLAR_CSS\s*=\s*base \+ 'ayarlar\.css\?v=' \+ V\.ayarlarCss;/);
-  assert.match(sw, /CACHE_VERSION\s*=\s*'medisa-v2\.387'/);
+  assert.match(sw, /CACHE_VERSION\s*=\s*'medisa-v2\.388'/);
   assert.match(indexHtml, /script-core\.js\?v=\d{8}\.\d+/);
   styleCorePins.forEach(function(pin, index) {
     assert.ok(pin, 'style-core.css pin #' + (index + 1) + ' bulunmalı');

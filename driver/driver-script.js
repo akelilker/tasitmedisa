@@ -25,18 +25,18 @@ if (document.readyState === 'loading') {
 document.addEventListener('DOMContentLoaded', applyMedisaIosPwaClass);
 }
 
-var VERSION = '20261014.2';
+var VERSION = '20261016.1';
 window.MEDISA_DRIVER_ASSET_VERSIONS = window.MEDISA_DRIVER_ASSET_VERSIONS || {
-bootstrap: '20261014.2',
+bootstrap: '20261016.1',
 login: '20261008.1',
-dashboardCore: '20261014.2',
+dashboardCore: '20261016.1',
 history: '20261014.2',
-documents: '20260820.1',
+documents: '20261016.1',
 feedback: '20260813.1',
 password: '20260913.2',
-actions: '20261014.2',
+actions: '20261016.1',
 shellCss: '20260925.7',
-featureCss: '20261014.2'
+featureCss: '20261016.1'
 };
 
 var APP_ROOT = (function() {
@@ -370,6 +370,8 @@ window.medisaInfo('Panel henüz hazır değil. Lütfen tekrar deneyin.');
 ['submitEditRequest', 'history', 'submitEditRequest'],
 ['openDriverDocumentsModal', 'documents', 'openDriverDocumentsModal'],
 ['closeDriverDocumentsModal', 'documents', 'closeDriverDocumentsModal'],
+['openDriverPolicyUploadModal', 'documents', 'openDriverPolicyUploadModal'],
+['closeDriverPolicyUploadModal', 'documents', 'closeDriverPolicyUploadModal'],
 ['openDriverFeedbackModal', 'feedback', 'openDriverFeedbackModal'],
 ['closeDriverFeedbackModal', 'feedback', 'closeDriverFeedbackModal'],
 ['submitDriverFeedback', 'feedback', 'submitDriverFeedback'],
