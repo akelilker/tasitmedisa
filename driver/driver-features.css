@@ -3311,3 +3311,57 @@ body.dashboard-page:has(.driver-modal.show) .driver-dashboard-container::before{
     box-shadow: none !important;
   }
 }
+
+/* Mobil/PWA dashboard: iki sütun dikeyde footer glow'unun üst kenarına kadar dolsun (glow alanı boş kalır) */
+@media (max-width: 640px) {
+  .dashboard-page .driver-panels-inner{
+    --driver-glow-clear: 52px; /* panels-inner zaten footer + safe-area üstünde biter */
+  }
+  .dashboard-page .driver-left-panel{
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  .dashboard-page .driver-left-panel-content{
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    margin-bottom: calc(var(--driver-glow-clear) - 31px) /* altındaki 31px geri satırı: çizgi butonlarla aynı yerde biter */ !important;
+    overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior: contain;
+    scrollbar-width: none;
+  }
+  .dashboard-page .driver-left-panel-content::-webkit-scrollbar{ display: none; }
+  .dashboard-page .driver-left-panel .driver-vehicle-info{
+    flex: 1 1 auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    min-height: min-content;
+  }
+  .dashboard-page .driver-right-panel{
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  .dashboard-page .driver-right-panel > .driver-action-area{
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    margin-bottom: var(--driver-glow-clear) !important;
+  }
+  .dashboard-page .driver-action-area-inner:not(.driver-km-open):not(.driver-modal-open){
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
+  .dashboard-page .driver-action-area-inner:not(.driver-km-open):not(.driver-modal-open) > .driver-action-group:not(:has(.show)){
+    flex: 1 1 0;
+    min-height: 42px;
+    max-height: 72px;
+  }
+  .dashboard-page .driver-action-area-inner:not(.driver-km-open):not(.driver-modal-open) > .driver-action-group:not(:has(.show)) > .driver-action-btn{
+    flex: 1 1 auto;
+    min-height: 42px;
+  }
+}
