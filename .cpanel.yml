@@ -86,6 +86,7 @@ deployment:
     - /bin/test -f driver/driver_password_reset_request.php
     - /bin/test -f driver/driver_request.php
     - /bin/test -f driver/driver_save.php
+    - /bin/test -f driver/driver_upload_document.php
     - /bin/test -f driver/index.html
     - /bin/test -f driver/manifest.json
     - /bin/test -f .htaccess

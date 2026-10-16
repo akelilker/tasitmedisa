@@ -587,14 +587,6 @@
     setVehicleDateInputValue(input, iso || '');
   }
 
-  function getVehicleCalendarDateFromIso(iso) {
-    const normalized = parseVehicleDateRawToIso(iso);
-    if (!normalized) return null;
-    const parts = normalized.split('-').map(Number);
-    const date = new Date(parts[0], parts[1] - 1, parts[2]);
-    return Number.isNaN(date.getTime()) ? null : date;
-  }
-
   function getVehicleDateCalendarContainer(input) {
     if (input) {
       const egzozOverlay = input.closest('.egzoz-dialog-overlay');

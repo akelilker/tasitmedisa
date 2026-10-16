@@ -143,9 +143,7 @@ Kalan işler **düşük öncelikli UX, hijyen ve backlog** kalemleridir.
 - Repo genelinde `searchParams.set('token')`, `appendMedisaDocumentAuthToUrl` ve `allowQueryToken=true` çağrısı **yok**.
 - Tüm API uçları `validateToken()` / `validateToken(false)` ile Bearer-only çalışıyor.
 
-**Kalan iş (hijyen backlog, canlı risk değil):**
-- `medisaReadAccessToken($allowQueryToken)` ve `allowQueryToken` parametresi ölü kod olarak duruyor; hiçbir çağrıda `true` geçilmiyor.
-- Uzun vadede parametre ve `$_GET['token']` branch'i kaldırılabilir.
+**Kalan iş:** Yok. `medisaReadAccessToken()` artık parametresiz; `allowQueryToken` parametresi ve query token dalı kaldırıldı (2026-10-16 doğrulandı).
 
 ---
 
@@ -246,7 +244,7 @@ Kalan işler **düşük öncelikli UX, hijyen ve backlog** kalemleridir.
 
 | No | Sorun | Dosya | Öncelik (eski) | Durum (güncel) | Aksiyon |
 |----|-------|-------|----------------|----------------|---------|
-| 1 | Query Token / URL exposure | core.php + belge akışı | ORTA | **ÇÖZÜLDÜ / STALE** | `allowQueryToken` hijyen backlog |
+| 1 | Query Token / URL exposure | core.php + belge akışı | ORTA | **ÇÖZÜLDÜ / STALE** | Kapandı (allowQueryToken kaldırıldı) |
 | 2 | Şube izolasyonu | core.php 1120-1177 | ORTA | **YANLIŞ ALARM** | Kod değişikliği yok |
 | 3 | JSON UTF-8 verify | core.php saveData | ORTA | **BACKLOG** | Tasarım backlog |
 | 4 | Driver ARIA | driver/index.html | DÜŞÜK | **BACKLOG (A11Y)** | Mini UX fix |
@@ -260,7 +258,7 @@ Kalan işler **düşük öncelikli UX, hijyen ve backlog** kalemleridir.
 
 1. **Driver ARIA** mini UX fix (`driver/index.html` + `driver-script.js`)
 2. **Vehicle modal** `type="button"` semantik mini fix (`index.html` ~495-496)
-3. **`allowQueryToken` dead code cleanup** tasarımı (`core.php` hijyen)
+3. ~~`allowQueryToken` dead code cleanup~~ (tamamlandı)
 4. **Notification scope** production dry-run/apply operasyonu (migration owner hazır; runtime kontrat kapalı)
 5. **Runtime data health** PII-free boyut/count çıktısını periyodik izle (`tool:inspect-runtime-data-health`)
 6. **`saveData` post-write verify** tasarımı (maliyet/fayda değerlendirmesi sonrası)
@@ -293,7 +291,6 @@ Durum: PRODUCTION READY ✅
 - Vehicle modal butonlarına `type="button"` ekle
 
 ### Orta Vadeli (hijyen)
-- `allowQueryToken` ölü kodunu kaldır
 - Notification eski `scope:*` kayıtlarını yalnız ayrı production-data mutation izniyle temizle (runtime write allowlist’te değil)
 
 ### Uzun Vadeli (opsiyonel)
