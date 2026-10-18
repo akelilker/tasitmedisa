@@ -52,29 +52,11 @@
 
   function getNotificationRecorderDisplayName() {
     if (typeof window.getRecorderDisplayName === 'function') {
-      return window.getRecorderDisplayName();
-    }
-    try {
-      var sess = typeof window.medisaSession === 'object' && window.medisaSession ? window.medisaSession : null;
-      if (sess && sess.authenticated) {
-        var u = sess.user || {};
-        var sessionName = String(u.name || u.isim || '').trim();
-        if (!sessionName && u.id) {
-          var users = readUsers();
-          var found = Array.isArray(users) ? users.find(function(x) { return String(x && x.id) === String(u.id); }) : null;
-          if (found) sessionName = String(found.name || found.isim || '').trim();
-        }
-        if (sessionName) return formatAdSoyad(sessionName);
+      var globalRecorderName = window.getRecorderDisplayName();
+      if (typeof globalRecorderName === 'string' && globalRecorderName.trim()) {
+        return globalRecorderName;
       }
-    } catch (e0) { /* ignore */ }
-    try {
-      var ad = window.appData && (window.appData.recorderDisplayName || window.appData.fleetOperatorName || window.appData.operatorName);
-      if (ad && String(ad).trim()) return toTitleCase(String(ad).trim());
-    } catch (e1) { /* ignore */ }
-    try {
-      var ls = typeof localStorage !== 'undefined' ? localStorage.getItem('medisa_recorder_display_name') : '';
-      if (ls && String(ls).trim()) return toTitleCase(String(ls).trim());
-    } catch (e2) { /* ignore */ }
+    }
     return 'Yönetim';
   }
 

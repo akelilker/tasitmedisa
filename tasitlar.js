@@ -197,7 +197,7 @@
 
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20261015.3';
+  const MEDISA_TASITLAR_MODULE_VERSION = '20261019.1';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
@@ -560,7 +560,7 @@
     return resolveMainAppEventSurucuName(vehicle);
   }
 
-  /** Ana panelde kayıt yapan görünen ad (ceza/satış tarihçesi); önce oturumdaki kullanıcı, sonra ayar, son çare Yönetim */
+  /** Ana panelde kayıt yapan görünen ad (ceza/satış tarihçesi); owner: window.getRecorderDisplayName (script-core.js), son çare Yönetim */
   function getRecorderDisplayName() {
     if (
       typeof window.getRecorderDisplayName === 'function' &&
@@ -571,28 +571,6 @@
         return globalRecorderName;
       }
     }
-
-    try {
-      var sess = typeof window.medisaSession === 'object' && window.medisaSession ? window.medisaSession : null;
-      if (sess && sess.authenticated) {
-        var u = sess.user || {};
-        var sessionName = String(u.name || u.isim || '').trim();
-        if (!sessionName && u.id) {
-          var users = readUsers();
-          var found = Array.isArray(users) ? users.find(function(x) { return String(x && x.id) === String(u.id); }) : null;
-          if (found) sessionName = String(found.name || found.isim || '').trim();
-        }
-        if (sessionName) return formatAdSoyad(sessionName);
-      }
-    } catch (e0) { /* ignore */ }
-    try {
-      var ad = window.appData && (window.appData.recorderDisplayName || window.appData.fleetOperatorName || window.appData.operatorName);
-      if (ad && String(ad).trim()) return toTitleCase(String(ad).trim());
-    } catch (e) { /* ignore */ }
-    try {
-      var ls = typeof localStorage !== 'undefined' ? localStorage.getItem('medisa_recorder_display_name') : '';
-      if (ls && String(ls).trim()) return toTitleCase(String(ls).trim());
-    } catch (e2) { /* ignore */ }
     return 'Y\u00F6netim';
   }
 

@@ -461,7 +461,6 @@ function syncDataLoadState() {
     isDataLoaded = hasUsableAppData(window.appData);
     window.__medisaDataLoaded = !!isDataLoaded;
     window.__medisaDataLoading = !!isDataLoading;
-    window.__medisaServerDatasetTrusted = !!serverDatasetTrusted;
 }
 syncDataLoadState();
 
