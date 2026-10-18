@@ -1831,8 +1831,8 @@ document.addEventListener('DOMContentLoaded', () => {
 // style-core.css ana/paylaşılan shell HTML ile yüklenir; taşıt lazy asset sürümünden bağımsızdır.
 // tasitlar loader (bu nesne) ile MEDISA_TASITLAR_MODULE_VERSION kendi aralarında eşit kalmalıdır.
 var MEDISA_MODULE_VERSIONS = {
-  tasitlar: '20261015.3',
-  notifications: '20261014.2',
+  tasitlar: '20261019.1',
+  notifications: '20261019.1',
   raporlar: '20260801.3',
   kayitJs: '20261015.3',
   kayitCss: '20261015.3',
@@ -1879,22 +1879,6 @@ function medisaResolveRecorderDisplayName() {
       if (sessionName) return localFormatAdSoyad(sessionName);
     }
   } catch (e0) { /* ignore */ }
-
-  try {
-    var ad = window.appData && (window.appData.recorderDisplayName || window.appData.fleetOperatorName || window.appData.operatorName);
-    if (ad && String(ad).trim()) {
-      if (typeof window.toTitleCase === 'function') return window.toTitleCase(String(ad).trim());
-      return localTitleCase(String(ad).trim());
-    }
-  } catch (e1) { /* ignore */ }
-
-  try {
-    var ls = typeof localStorage !== 'undefined' ? localStorage.getItem('medisa_recorder_display_name') : '';
-    if (ls && String(ls).trim()) {
-      if (typeof window.toTitleCase === 'function') return window.toTitleCase(String(ls).trim());
-      return localTitleCase(String(ls).trim());
-    }
-  } catch (e2) { /* ignore */ }
 
   return 'Yönetim';
 }
