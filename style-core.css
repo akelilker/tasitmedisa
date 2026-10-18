@@ -4140,7 +4140,8 @@ html.medisa-ios27-pwa body:not(.dashboard-page):not(.login-page):not(.admin-repo
   padding-bottom: var(--app-footer-real-height, 38px) !important;
 }
 
-/* Driver login/dashboard: safe-area owner container (driver-shell byte gate; html.medisa-ios27-pwa yeterli) */
+/* Driver login/dashboard: safe-area owner container (driver-shell byte gate; html.medisa-ios27-pwa yeterli).
+   black-translucent: çerçeve (::before) ekranın en üst kavisinden başlar; içerik padding-top inset ile status bar altında. */
 html.medisa-ios27-pwa body.login-page .driver-dashboard-container,
 html.medisa-ios27-pwa body.dashboard-page .driver-dashboard-container {
   padding-top: env(safe-area-inset-top, 0px) !important;
@@ -4149,7 +4150,7 @@ html.medisa-ios27-pwa body.dashboard-page .driver-dashboard-container {
 
 html.medisa-ios27-pwa body.login-page .driver-dashboard-container::before,
 html.medisa-ios27-pwa body.dashboard-page .driver-dashboard-container::before {
-  top: env(safe-area-inset-top, 0px) !important;
+  top: 0 !important;
   bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0px)) !important;
 }
 
