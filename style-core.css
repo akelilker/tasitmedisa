@@ -4078,10 +4078,13 @@ html.medisa-ios27-pwa .olay-ekle-modal .modal-container {
   margin-top: 0 !important;
 }
 
-/* sahsicari modeli: safe-area yalnızca .app-container padding-top; html/body/content-wrap çift inset yok */
+/* sahsicari modeli: safe-area yalnızca .app-container padding-top; html/body/content-wrap çift inset yok.
+   Üst kırmızı çizgiyi yalnız ::before çizer (top: inset); container border-top (mobil 0.5px) inset kadar yukarıda,
+   status bar altında ikinci kavisli çizgi bırakmasın. */
 html.medisa-ios27-pwa body:not(.dashboard-page):not(.admin-report-page) .app-container {
   margin-top: 0 !important;
   padding-top: env(safe-area-inset-top, 0px) !important;
+  border-top: none !important;
   padding-left: env(safe-area-inset-left, 0px) !important;
   padding-right: env(safe-area-inset-right, 0px) !important;
   box-shadow: 0 2px 14px rgba(var(--theme-color-rgb), 0.125) !important;
