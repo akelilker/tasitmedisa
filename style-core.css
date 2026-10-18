@@ -4079,12 +4079,11 @@ html.medisa-ios27-pwa .olay-ekle-modal .modal-container {
 }
 
 /* sahsicari modeli: safe-area yalnızca .app-container padding-top; html/body/content-wrap çift inset yok.
-   Üst kırmızı çizgiyi yalnız ::before çizer (top: inset); container border-top (mobil 0.5px) inset kadar yukarıda,
-   status bar altında ikinci kavisli çizgi bırakmasın. */
+   index.html black-translucent: kırmızı çerçeve (container border-top + ::before) ekranın en üst kavisine kadar çıkar;
+   içerik (header) padding-top inset ile status bar altında kalır. */
 html.medisa-ios27-pwa body:not(.dashboard-page):not(.admin-report-page) .app-container {
   margin-top: 0 !important;
   padding-top: env(safe-area-inset-top, 0px) !important;
-  border-top: none !important;
   padding-left: env(safe-area-inset-left, 0px) !important;
   padding-right: env(safe-area-inset-right, 0px) !important;
   box-shadow: 0 2px 14px rgba(var(--theme-color-rgb), 0.125) !important;
@@ -4098,7 +4097,7 @@ html.medisa-ios27-pwa body:not(.dashboard-page):not(.login-page):not(.admin-repo
 }
 
 html.medisa-ios27-pwa body:not(.dashboard-page):not(.admin-report-page) .app-container::before {
-  top: env(safe-area-inset-top, 0px) !important;
+  top: 0 !important;
   bottom: calc(var(--app-footer-real-height, 38px) + env(safe-area-inset-bottom, 0px)) !important;
 }
 
