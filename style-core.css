@@ -4053,7 +4053,8 @@ body.modal-open .app-container {
 html.medisa-ios27-pwa {
   background-color: var(--bg, #080d16) !important;
   background: var(--bg, #080d16) !important;
-  min-height: 100% !important;
+  /* black-translucent: iOS viewport'u status bar kadar kısa hesaplar; fixed footer ve dvh kaplar ekran altına insin */
+  min-height: calc(100% + env(safe-area-inset-top, 0px)) !important;
   padding: 0 !important;
   box-sizing: border-box !important;
 }
