@@ -3249,3 +3249,15 @@
     transform: translateX(-30px);
   }
 }
+
+/* Tarihçe (mobil): uzun detay değerleri (ör. belge adı) satırı taşırıp yatay kaydırma açmasın */
+@media (max-width: 640px) {
+  #vehicle-history-modal #history-content {
+    overflow-x: hidden !important;
+  }
+  #vehicle-history-modal .history-detail-part {
+    white-space: normal;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+}
