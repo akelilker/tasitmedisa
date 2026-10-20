@@ -2637,17 +2637,55 @@ window.addEventListener('dataLoaded', () => {
   window.registerServiceWorker({
     paths: paths,
     scope: scope,
-    onUpdate: function() {
+    onUpdate: function() { medisaQueueUpdateToast(); }
+  });
+
+  // Güncelleme bildirimi: giriş sonrası açılış (splash) bitmeden gösterilmez; login sayfasında
+  // yakalanan bildirim yönlendirmede kaybolmasın diye sessionStorage ile bir sonraki sayfaya taşınır.
+  var UPDATE_PENDING_KEY = 'medisaUpdateToastPending';
+  var UPDATE_WAIT_MAX_MS = 15000;
+  var updateToastShown = false;
+  function medisaSplashBusy() {
+    var b = document.body;
+    if (!b) return true;
+    return b.classList.contains('app-loading') || b.classList.contains('driver-splash-active');
+  }
+  function medisaIsLoginPage() {
+    return !!(document.body && document.body.classList.contains('login-page'));
+  }
+  function medisaQueueUpdateToast() {
+    try { sessionStorage.setItem(UPDATE_PENDING_KEY, '1'); } catch (eQ) {}
+    var startedAt = Date.now();
+    (function waitSplash() {
+      if (medisaSplashBusy() && Date.now() - startedAt < UPDATE_WAIT_MAX_MS) {
+        setTimeout(waitSplash, 250);
+        return;
+      }
+      // Splash kapanış geçişi (350ms) otursun
+      setTimeout(medisaShowUpdateToast, 400);
+    })();
+  }
+  function medisaShowUpdateToast() {
+    if (updateToastShown) return;
+    updateToastShown = true;
+    if (!medisaIsLoginPage()) {
+      try { sessionStorage.removeItem(UPDATE_PENDING_KEY); } catch (eR) {}
+    }
       var toast = document.createElement('div');
       toast.className = 'update-toast';
       toast.innerHTML = '<span class="update-toast-text">Yeni sürüm mevcut</span><button type="button" class="update-toast-btn">Yenile</button>';
       document.body.appendChild(toast);
       requestAnimationFrame(function() { toast.classList.add('visible'); });
       if (toast.querySelector('.update-toast-btn')) {
-        toast.querySelector('.update-toast-btn').addEventListener('click', function() { window.location.reload(true); });
+        toast.querySelector('.update-toast-btn').addEventListener('click', function() {
+          try { sessionStorage.removeItem(UPDATE_PENDING_KEY); } catch (eC) {}
+          window.location.reload(true);
+        });
       }
-    }
-  });
+  }
+  try {
+    if (sessionStorage.getItem(UPDATE_PENDING_KEY) === '1') medisaQueueUpdateToast();
+  } catch (eP) {}
 })();
 
 /* =========================================
