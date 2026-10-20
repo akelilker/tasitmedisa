@@ -145,10 +145,12 @@ if (implementationPresent) {
     assert.match(core, /Bu bölüm ilk kullanım için internet bağlantısı gerektiriyor\./);
   });
 
-  test('feature assetleri SW install-time precache listesinde yok', function() {
+  test('feature assetleri SW install-time precache listesinde (offline, 2026-10-20 kararı)', function() {
     const cacheFiles = sw.match(/const CACHE_FILES\s*=\s*\[([\s\S]*?)\];/);
     assert.ok(cacheFiles);
-    assert.doesNotMatch(cacheFiles[1], /kayit|tasitlar|raporlar|ayarlar/);
+    assert.match(cacheFiles[1], /kayit/);
+    assert.match(cacheFiles[1], /tasitlar/);
+    assert.match(cacheFiles[1], /ayarlar/);
   });
 
   [

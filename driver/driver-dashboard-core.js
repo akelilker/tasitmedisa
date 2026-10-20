@@ -41,7 +41,38 @@ return window.medisaPortalSession && typeof window.medisaPortalSession.getStored
 : null;
 }
 
+var DRIVER_DATA_CACHE_PREFIX = 'medisa_driver_data_cache_v1:';
+function getDriverDataCacheKey(tokenPayload) {
+var uid = tokenPayload && tokenPayload.user_id != null ? String(tokenPayload.user_id) : '';
+return uid ? DRIVER_DATA_CACHE_PREFIX + uid : '';
+}
+function writeDriverDataCache(tokenPayload, data) {
+var key = getDriverDataCacheKey(tokenPayload);
+if (!key || !data || data.success !== true) return;
+try { localStorage.setItem(key, JSON.stringify({ savedAt: Date.now(), data: data })); } catch (e) {}
+}
+function readDriverDataCache(tokenPayload) {
+var key = getDriverDataCacheKey(tokenPayload);
+if (!key) return null;
+try {
+var raw = localStorage.getItem(key);
+var parsed = raw ? JSON.parse(raw) : null;
+return parsed && parsed.data && parsed.data.success === true ? parsed.data : null;
+} catch (e) {
+return null;
+}
+}
+function clearDriverDataCache() {
+try {
+for (var i = localStorage.length - 1; i >= 0; i--) {
+var k = localStorage.key(i);
+if (k && k.indexOf(DRIVER_DATA_CACHE_PREFIX) === 0) localStorage.removeItem(k);
+}
+} catch (e) {}
+}
+
 function clearStoredPortalTokens() {
+clearDriverDataCache();
 if (window.medisaPortalSession && typeof window.medisaPortalSession.clearStoredTokens === 'function') {
 window.medisaPortalSession.clearStoredTokens();
 }
@@ -54,12 +85,13 @@ const response = await fetch(runtime.paths.MAIN_SESSION_URL + '?session=1&_=' + 
 headers: { 'Authorization': 'Bearer ' + token },
 cache: 'no-store'
 });
-if (!response.ok) return null;
+// Ağ/sunucu erişilemezse (offline SW 503, 5xx, fetch hatası) 'network' döner: token silinmez.
+if (!response.ok) return response.status >= 500 ? 'network' : null;
 const text = await response.text();
 const data = text ? JSON.parse(text) : {};
 return data && data.session && typeof data.session === 'object' ? data.session : null;
 } catch (e) {
-return null;
+return 'network';
 }
 }
 
@@ -738,7 +770,12 @@ async function loadDashboard() {
         var currentSession = null;
         if (!isOffline) {
             currentSession = await fetchCurrentPortalSession(token);
-            if (!currentSession) {
+            if (currentSession === 'network') {
+                // Sunucuya ulaşılamıyor: token korunur, çevrimdışı (salt okunur) devam
+                isOffline = true;
+                currentSession = null;
+            }
+            if (!isOffline && !currentSession) {
                 clearStoredPortalTokens();
                 redirectToDriverLoginPreservingTarget();
                 return;
@@ -748,7 +785,7 @@ async function loadDashboard() {
         var accessContext = buildPortalAccessContext(tokenPayload, false, currentSession);
         if (accessContext.passwordChangeRequired === true) {
             if (document.body) document.body.classList.add('password-change-gate-active');
-            currentUser = currentSession.user || null;
+            currentUser = (currentSession && currentSession.user) || null;
             syncDriverHeaderUserName();
             const mandatorySpinner = document.getElementById('loading-spinner');
             if (mandatorySpinner) mandatorySpinner.style.display = 'none';
@@ -772,16 +809,35 @@ async function loadDashboard() {
         }
         syncDashboardHomeLinkVisibility(accessContext);
 
-        const response = await fetch(runtime.paths.API_BASE + 'driver_data.php?_=' + Date.now(), {
-            headers: {
-                'Authorization': 'Bearer ' + token
-            },
-            cache: 'no-store'
-        });
+        var response = null;
+        // Offline yolda await kalmadığı için script değerlendirmesi bitsin (alttaki const'lar TDZ'de kalmasın)
+        await Promise.resolve();
+        if (!isOffline) {
+            try {
+                response = await fetch(runtime.paths.API_BASE + 'driver_data.php?_=' + Date.now(), {
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    },
+                    cache: 'no-store'
+                });
+            } catch (netErr) {
+                response = null;
+            }
+        }
+        // Çevrimdışı / sunucuya ulaşılamıyor: son başarılı veri salt okunur gösterilir (yazma kuyruğu yok)
+        var offlineDriverData = null;
+        if (!response || response.status >= 500) {
+            offlineDriverData = readDriverDataCache(tokenPayload);
+            if (!offlineDriverData) throw new Error('Çevrimdışı: kayıtlı veri yok.');
+        }
         var data;
         try {
+            if (offlineDriverData) {
+                data = offlineDriverData;
+            } else {
             var text = await response.text();
             data = text ? JSON.parse(text) : {};
+            }
         } catch (parseErr) {
             console.error('Veri yükleme hatası (JSON parse):', parseErr);
             throw new Error('Sunucu yanıtı işlenemedi.');
@@ -802,6 +858,11 @@ async function loadDashboard() {
             return;
         }
 
+        if (offlineDriverData) {
+            window.medisaInfo('İnternet bağlantısı yok. Son kayıtlı veriler gösteriliyor; değişiklikler kaydedilemez.');
+        } else {
+            writeDriverDataCache(tokenPayload, data);
+        }
         currentUser = data.user;
         syncDriverHeaderUserName();
         allHistoryRecords = data.records || [];
