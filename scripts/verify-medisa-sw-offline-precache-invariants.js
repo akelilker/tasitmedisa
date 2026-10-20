@@ -61,5 +61,12 @@ test('offline navigation: ignoreSearch + path-aware redirect', () => {
   assert.match(sw, /Response\.redirect\(/);
   assert.match(sw, /'\/driver\/dashboard\.html' : '\/driver\/index\.html'/);
 });
+test('static network-first timeout: yaln\u0131z GET statik, API/PHP hari\u00e7', () => {
+  assert.match(sw, /const NETWORK_TIMEOUT_MS = 3500;/);
+  const apiIdx = sw.indexOf("url.pathname.includes('/api/') || url.pathname.includes('.php')");
+  const toIdx = sw.indexOf('}, NETWORK_TIMEOUT_MS);');
+  assert.ok(apiIdx > 0 && toIdx > apiIdx, 'timeout API/PHP dal\u0131ndan sonra (statik dalda) olmal\u0131');
+  assert.match(sw, /if \(request\.method !== 'GET'\) \{\s*event\.respondWith\(networkPromise\.catch\(offlineFallback\)\);/);
+});
 console.log(failed ? 'FAILED ' + failed : 'All passed');
 process.exit(failed ? 1 : 0);

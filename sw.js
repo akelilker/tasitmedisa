@@ -1,7 +1,9 @@
 // Service Worker - Medisa Taşıt Yönetim Sistemi
 // Version 2.15 - Güvenli offline okuma kabuğu
 
-const CACHE_VERSION = 'medisa-v2.401';
+const CACHE_VERSION = 'medisa-v2.402';
+// Statik/sayfa isteklerinde ağ bu sürede cevap vermezse önbellek kullanılır (API/PHP hariç)
+const NETWORK_TIMEOUT_MS = 3500;
 // Raporlar modülü (raporlar.js / raporlar.css): ana shell cache'inden ayrı; MEDISA_MODULE_VERSIONS.raporlar ile senkron tut
 const CACHE_RAPORLAR_VERSION = 'medisa-raporlar-20261020.1';
 
@@ -183,8 +185,12 @@ self.addEventListener('fetch', (event) => {
   }
   
   // Static dosyalar - NETWORK-FIRST (Önce internetten güncelini çek)
-  event.respondWith(
-    fetch(request)
+  // Zayıf ağ: NETWORK_TIMEOUT_MS (3.5 sn) içinde cevap yoksa ve önbellekte varsa önbellekten ver;
+  // ağ isteği arka planda sürer ve gelirse önbelleği günceller. Önbellekte yoksa ağı beklemeye devam eder.
+  // (Sürüm karışması yok: JS/CSS ?v= ile versiyonlu; eski HTML kendi ?v= dosyalarını ister, aynı cache'de.)
+  const isNavigation = request.mode === 'navigate' || request.destination === 'document';
+  let cachePutPromise = Promise.resolve();
+  const networkPromise = fetch(request)
       .then((response) => {
         if (!response || response.status !== 200 || response.type === 'error') {
           return response;
@@ -192,25 +198,54 @@ self.addEventListener('fetch', (event) => {
         // Başarılıysa cache'i yenile (raporlar modülü ayrı önbellek adı)
         const responseClone = response.clone();
         const targetCache = isRaporlarModuleAssetUrl(url) ? CACHE_RAPORLAR_VERSION : CACHE_VERSION;
-        caches.open(targetCache).then((cache) => {
-          cache.put(request, responseClone);
-        });
+        cachePutPromise = caches.open(targetCache).then((cache) => cache.put(request, responseClone)).catch(() => {});
         return response;
-      })
-      .catch(() => {
+      });
+  const offlineFallback = () => {
         // İnternet yoksa eski önbellekten getir; hiçbir zaman undefined dönme (Response gerekli)
         const origin = self.location.origin;
         return caches.match(request)
           .then((cachedResponse) => {
             if (cachedResponse) return cachedResponse;
-            if (request.mode === 'navigate' || request.destination === 'document') {
+            if (isNavigation) {
               return offlineNavigationResponse(request, url, origin);
             }
             return new Response('Not in cache', { status: 503 });
           })
           .then((res) => res || new Response('Not in cache', { status: 503 }));
-      })
-  );
+  };
+  if (request.method !== 'GET') {
+    event.respondWith(networkPromise.catch(offlineFallback));
+    return;
+  }
+  event.respondWith(new Promise((resolve) => {
+    let settled = false;
+    const timer = setTimeout(() => {
+      caches.match(request, isNavigation ? { ignoreSearch: true } : undefined)
+        .then((cached) => {
+          if (cached && !settled) {
+            settled = true;
+            resolve(cached);
+          }
+        })
+        .catch(() => {});
+    }, NETWORK_TIMEOUT_MS);
+    networkPromise.then((response) => {
+      clearTimeout(timer);
+      if (!settled) {
+        settled = true;
+        resolve(response);
+      }
+    }, () => {
+      clearTimeout(timer);
+      if (!settled) {
+        settled = true;
+        resolve(offlineFallback());
+      }
+    });
+  }));
+  // Arka plan güncellemesi SW kapanmadan tamamlansın
+  event.waitUntil(networkPromise.then(() => cachePutPromise, () => {}));
 });
 
 // Offline sayfa açılışı: ?sorgu yok sayılarak eşleştir; yoksa yola göre doğru sayfaya YÖNLENDİR
