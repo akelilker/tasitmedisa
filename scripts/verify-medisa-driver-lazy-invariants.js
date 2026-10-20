@@ -175,11 +175,11 @@ test('SW statikleri network-first ve cache fallback ile saklar', () => {
 test('Uncached offline feature kontrollü mesaj kontratı var', () => {
   assert.match(files.bootstrap, /Bu bölüm ilk kullanım için internet bağlantısı gerektiriyor\./);
 });
-test('Driver feature assetleri SW install precache listesinde yok', () => {
+test('Driver feature assetleri SW install precache listesinde (offline, 2026-10-20 kararı)', () => {
   const cacheStart = files.sw.indexOf('const CACHE_FILES');
   const cacheEnd = files.sw.indexOf('];', cacheStart);
   const cacheList = files.sw.slice(cacheStart, cacheEnd);
-  assert.doesNotMatch(cacheList, /driver-(?:script|shell|feature|login|dashboard)/);
+  assert.match(cacheList, /driver-(?:script|shell|feature|login|dashboard)/);
 });
 test('Boot metrics varsayılan kapalı ve business veri içermez', () => {
   assert.match(files.bootstrap, /medisaPerf|medisa_perf_debug/);

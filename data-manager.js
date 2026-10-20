@@ -153,6 +153,9 @@ let serverDatasetTrusted = false;
 /** Ardışık save isteklerini sıraya alır; eşzamanlı çağrılarda biri false dönüp veri kaybı yaşanmasın. */
 let saveMutex = Promise.resolve();
 let offlineReadonlyWarnAt = 0;
+// load.php 503 yeniden deneme üst sınırı (offline'da sonsuz döngü olmasın)
+let load503RetryCount = 0;
+const LOAD_503_RETRY_MAX = 5;
 var MEDISA_COLLECTION_APP_KEYS = {
     vehicles: 'tasitlar',
     branches: 'branches',
@@ -1426,9 +1429,11 @@ async function loadDataFromServer(forceRefresh) {
             });
 
             if (!response.ok && response.status === 503) {
-                if ((typeof navigator !== 'undefined' && navigator.onLine === false) || readOfflineAppDataSnapshot()) {
+                if ((typeof navigator !== 'undefined' && navigator.onLine === false) || readOfflineAppDataSnapshot() || load503RetryCount >= LOAD_503_RETRY_MAX) {
+                    load503RetryCount = 0;
                     return finishLoadError(new Error('HTTP 503'));
                 }
+                load503RetryCount++;
                 isDataLoading = false;
                 loadPromise = null;
                 syncDataLoadState();
@@ -1436,6 +1441,7 @@ async function loadDataFromServer(forceRefresh) {
                 return await loadDataFromServer(forceRefresh);
             }
 
+            load503RetryCount = 0;
             if (response.status === 401) {
                 handleMedisaHttpAuthStatus(401, { commitEmptyDataset: true });
                 var authErr = new Error('Unauthorized');

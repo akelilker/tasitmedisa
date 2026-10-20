@@ -100,12 +100,13 @@ const response = await fetch(MAIN_SESSION_URL + '?session=1&_=' + Date.now(), {
 headers: { 'Authorization': 'Bearer ' + token },
 cache: 'no-store'
 });
-if (!response.ok) return null;
+// Ağ/sunucu erişilemezse (offline SW 503, 5xx, fetch hatası) 'network' döner: token silinmez.
+if (!response.ok) return response.status >= 500 ? 'network' : null;
 const text = await response.text();
 const data = text ? JSON.parse(text) : {};
 return data && data.session && typeof data.session === 'object' ? data.session : null;
 } catch (e) {
-return null;
+return 'network';
 }
 }
 
@@ -246,6 +247,9 @@ return routeByToken(token, fallbackDashboard, routeOptions);
 }
 
 var currentSession = await fetchCurrentPortalSession(token);
+if (currentSession === 'network') {
+return routeByToken(token, fallbackDashboard, routeOptions);
+}
 if (!currentSession) {
 clearStoredPortalTokens();
 return false;
