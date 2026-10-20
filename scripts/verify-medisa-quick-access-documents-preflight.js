@@ -47,7 +47,7 @@ test('birleşik script-core her iki modül sürümünü taşır ve yeni shell pi
 });
 
 test('SW önbelleği shell pinleriyle birebir ve önceki 370 kimliğinden ayrılır', function() {
-  assert.match(sw, /CACHE_VERSION = 'medisa-v2\.401'/);
+  assert.match(sw, /CACHE_VERSION = 'medisa-v2\.402'/);
   assert.doesNotMatch(sw, /medisa-v2\.370/);
   assert.doesNotMatch(sw, /medisa-v2\.371/);
   assert.doesNotMatch(sw, /medisa-v2\.372/);
