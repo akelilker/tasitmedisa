@@ -331,29 +331,7 @@
     align-items: center;
 }
 
-#info-modal .info-modal-ok-btn {
-    min-width: 168px;
-    min-height: 44px;
-    padding: 0 30px !important;
-    background: transparent !important;
-    border: 1px solid rgba(var(--green-success-rgb), 0.62) !important;
-    color: var(--green-success) !important;
-    border-radius: 8px !important;
-    cursor: pointer !important;
-    font-weight: 600 !important;
-    font-size: 14px !important;
-    line-height: 1.2 !important;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    box-sizing: border-box;
-    flex-shrink: 0;
-}
-
-#info-modal .info-modal-ok-btn:hover {
-    background: rgba(var(--green-success-rgb), 0.10) !important;
-    border-color: var(--green-success) !important;
-}
+/* #info-modal Tamam butonu: style-core.css (#info-modal .info-modal-actions .universal-btn-cancel) */
 
 /* Genel Modal Header Stili (masaüstü; mobilde style-core başlık/gradient) */
 @media (min-width: 641px) {
