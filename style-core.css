@@ -2762,8 +2762,8 @@ body.modal-open .hizli-erisim-satiri {
 .hizli-erisim-switch {
   position: relative;
   display: inline-block;
-  width: 44px;
-  height: 24px;
+  width: 34px;
+  height: 18px;
   flex-shrink: 0;
 }
 
@@ -2777,31 +2777,43 @@ body.modal-open .hizli-erisim-satiri {
   position: absolute;
   cursor: pointer;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(255, 255, 255, 0.14);
-  border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.14));
+  box-sizing: border-box;
+  background: rgba(8, 13, 22, 0.72);
+  border: 1px solid rgba(190, 200, 214, 0.34);
   border-radius: 999px;
-  transition: background 0.2s ease;
+  transition: background 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+}
+
+.hizli-erisim-switch:hover .hizli-erisim-switch-slider {
+  border-color: rgba(190, 200, 214, 0.55);
 }
 
 .hizli-erisim-switch-slider::before {
   content: '';
   position: absolute;
-  height: 18px;
-  width: 18px;
-  left: 2px;
-  top: 2px;
-  background: #ffffff;
+  height: 10px;
+  width: 10px;
+  left: 3px;
+  top: 3px;
+  background: rgba(190, 200, 214, 0.72);
   border-radius: 50%;
-  transition: transform 0.2s ease;
+  transition: transform 0.22s ease, background 0.22s ease;
 }
 
 .hizli-erisim-switch input:checked + .hizli-erisim-switch-slider {
-  background: var(--theme-color, #e11d48);
-  border-color: var(--theme-color, #e11d48);
+  background: rgba(224, 0, 0, 0.16);
+  border-color: rgba(224, 0, 0, 0.8);
+  box-shadow: 0 0 8px rgba(224, 0, 0, 0.28);
 }
 
 .hizli-erisim-switch input:checked + .hizli-erisim-switch-slider::before {
-  transform: translateX(20px);
+  background: #e00000;
+  transform: translateX(16px);
+}
+
+.hizli-erisim-switch input:focus-visible + .hizli-erisim-switch-slider {
+  outline: 1px solid rgba(224, 0, 0, 0.7);
+  outline-offset: 2px;
 }
 
 .hizli-erisim-list-title {
@@ -3970,6 +3982,18 @@ body.modal-open .app-container {
 .update-toast-btn:hover {
     background: var(--green-success);
     color: var(--bg);
+}
+
+/* Masaüstü (fare/hassas işaretçi): kompakt onay/bilgi/Hızlı Erişim overlay'i footer üst kenarına kadar insin.
+   Eskiden overlay footer+gap+22px'te bitiyordu: üstü karartılmış yan çizgiler ve footer glow'u, altı karartılmamış
+   kalıyor; sınırda sert bir bant/kesik çizgi görünüyordu. Modal konumu padding ile aynı kalır. Dokunmatik/mobil/iOS PWA etkilenmez. */
+@media (min-width: 641px) and (hover: hover) and (pointer: fine) {
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .compact-confirm-modal.modal-overlay.active,
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .compact-confirm-modal.modal-overlay.open {
+        bottom: var(--app-footer-real-height) !important;
+        bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
+        padding-bottom: calc(var(--app-footer-gap) + 22px) !important;
+    }
 }
 
 /* ========== MASAÜSTÜ FERAHLAMA OPERASYONU ========== */
