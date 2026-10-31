@@ -478,10 +478,18 @@
 
     function hizliErisimFormatPlaka(plaka) {
       const raw = String(plaka == null ? '' : plaka);
-      try {
-        const isMobile = window.matchMedia && window.matchMedia('(max-width: 640px)').matches;
-        if (isMobile) return raw.replace(/\s+/g, '');
-      } catch (e) {}
+      if (typeof window.formatPlaka === 'function') {
+        const formatted = window.formatPlaka(raw);
+        if (formatted && formatted !== '-') return formatted;
+      }
+      return raw.replace(/\s+/g, '').toLocaleUpperCase('tr-TR');
+    }
+
+    function hizliErisimFormatMarkaModel(v) {
+      const raw = String(v.brandModel || ((v.brand || v.marka || '') + ' ' + (v.model || ''))).trim();
+      if (!raw) return '';
+      if (typeof window.formatBrandModel === 'function') return window.formatBrandModel(raw);
+      if (typeof window.toTitleCase === 'function') return window.toTitleCase(raw);
       return raw;
     }
 
@@ -513,9 +521,13 @@
         const id = String(v.id);
         const plate = hizliErisimFormatPlaka(v.plaka != null ? v.plaka : (v.plate || ''));
         const checked = selectedSet[id] ? ' checked' : '';
-        return '<label class="hizli-erisim-arac-item">'
+        const markaModel = hizliErisimFormatMarkaModel(v);
+        return '<label class="hizli-erisim-arac-item medisa-boxed-select-option">'
           + '<input type="checkbox" class="hizli-erisim-arac-check" data-vehicle-id="' + hizliErisimEscape(id) + '"' + checked + ' onchange="syncHizliErisimLimit()">'
+          + '<span class="hizli-erisim-arac-label">'
           + '<span class="hizli-erisim-arac-plate">' + hizliErisimEscape(plate) + '</span>'
+          + (markaModel ? '<span class="hizli-erisim-arac-sep">-</span><span class="hizli-erisim-arac-brand">' + hizliErisimEscape(markaModel) + '</span>' : '')
+          + '</span>'
           + '</label>';
       }).join('');
     }

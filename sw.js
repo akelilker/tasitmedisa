@@ -1,7 +1,7 @@
 // Service Worker - Medisa Taşıt Yönetim Sistemi
 // Version 2.15 - Güvenli offline okuma kabuğu
 
-const CACHE_VERSION = 'medisa-v2.403';
+const CACHE_VERSION = 'medisa-v2.404';
 // Statik/sayfa isteklerinde ağ bu sürede cevap vermezse önbellek kullanılır (API/PHP hariç)
 const NETWORK_TIMEOUT_MS = 3500;
 // Raporlar modülü (raporlar.js / raporlar.css): ana shell cache'inden ayrı; MEDISA_MODULE_VERSIONS.raporlar ile senkron tut
@@ -23,9 +23,9 @@ function getBase() {
 const CACHE_FILES = [
   '/',
   '/index.html',
-  '/style-core.css?v=20261026.1',
+  '/style-core.css?v=20261031.1',
   '/script-core.js?v=20261020.3',
-  '/data-manager.js?v=20261020.1',
+  '/data-manager.js?v=20261031.1',
   '/data-service.js?v=20261014.2',
   '/portal-session.js?v=20260731.3',
   '/manifest.json?v=20260506-1',
@@ -45,7 +45,7 @@ const CACHE_FILES = [
   '/vehicle-notification-domain.js?v=20260817.2',
   '/kayit.js?v=20261015.3',
   '/kayit.css?v=20261015.3',
-  '/ayarlar.js?v=20261014.2',
+  '/ayarlar.js?v=20261031.1',
   '/ayarlar.css?v=20261026.1',
   // Kullanıcı paneli (driver) sayfaları ve kabuk/özellik dosyaları (driver-script.js MEDISA_DRIVER_ASSET_VERSIONS ile aynı)
   '/driver/index.html',

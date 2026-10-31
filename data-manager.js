@@ -872,13 +872,11 @@ function escapeQuickAccessHtml(value) {
 function formatQuickAccessPlaka(plaka) {
     if (!plaka) return '';
     var raw = String(plaka);
-    try {
-        var isMobile = typeof window.matchMedia === 'function'
-            ? window.matchMedia('(max-width: 640px)').matches
-            : window.innerWidth <= 640;
-        if (isMobile) return raw.replace(/\s+/g, '');
-    } catch (e) {}
-    return raw;
+    if (typeof window.formatPlaka === 'function') {
+        var formatted = window.formatPlaka(raw);
+        if (formatted && formatted !== '-') return formatted;
+    }
+    return raw.replace(/\s+/g, '').toLocaleUpperCase('tr-TR');
 }
 
 function getQuickAccessVehicleIcon() {
