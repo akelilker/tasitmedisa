@@ -1201,6 +1201,16 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-returni
     }
 }
 
+/* Masaüstü: kompakt onay/bilgi/Hızlı Erişim modalı yarı saydam overlay ile açıkken yan kırmızı çizgiler
+   footer gap'inde kesilip yatay "bant" bırakmasın — kapalı durumdaki gibi footer üst kenarına kadar insin.
+   Tam ekran modallar (opak overlay) yukarıdaki gap davranışında kalır. Mobil/iOS PWA etkilenmez. */
+@media (min-width: 641px) {
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open:has(.compact-confirm-modal.active) .app-container::before {
+        bottom: var(--app-footer-real-height);
+        bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0));
+    }
+}
+
 /* İÇERİK ALANI - Havada durma (yan kırmızı çerçeve), taşma yok */
 .content-wrap {
     flex: 1;
@@ -2729,18 +2739,24 @@ body.modal-open .hizli-erisim-satiri {
   display: none !important;
 }
 
-/* Hızlı Erişim modal — toggle + araç listesi */
+/* Hızlı Erişim modal — toggle + araç listesi
+   Standartlar: .form-label (sola yaslı etiket), .medisa-boxed-select-option (kutulu satır),
+   .user-vehicle-row (onay kutusu + "PLAKA - Marka Model"). Hepsi style-core'da: ayarlar.css geç yüklense de bozulmaz. */
 .hizli-erisim-toggle-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
+  width: 100%;
   margin-bottom: 12px;
+  box-sizing: border-box;
 }
 
 .hizli-erisim-toggle-label {
-  color: #ffffff;
-  font-size: 14px;
+  color: var(--form-label-color, #ffffff);
+  font-size: 13px;
   font-weight: 600;
+  text-align: left;
 }
 
 .hizli-erisim-switch {
@@ -2789,57 +2805,140 @@ body.modal-open .hizli-erisim-satiri {
 }
 
 .hizli-erisim-list-title {
-  color: #a0aec0;
-  font-size: 12px;
-  letter-spacing: 0.5px;
-  margin-bottom: 8px;
+  align-self: stretch;
+  width: 100%;
+  margin: 0 0 4px 0;
+  color: var(--form-label-color, #ffffff);
+  font-size: 13px;
+  font-weight: 600;
+  text-align: left;
+  box-sizing: border-box;
 }
 
 .hizli-erisim-arac-list {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  max-height: 220px;
+  gap: 4px;
+  width: 100%;
+  max-height: 200px;
+  margin: 0;
+  overflow-x: hidden;
   overflow-y: auto;
-  margin-bottom: 8px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
+  box-sizing: border-box;
 }
 
 .hizli-erisim-arac-item {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 8px 10px;
-  border-radius: 8px;
+  justify-content: flex-start;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+  min-height: 27px;
+  padding: 2px 10px;
+  box-sizing: border-box;
+  color: var(--txt);
+  text-align: left;
   cursor: pointer;
-  color: #ffffff;
+}
+
+.hizli-erisim-arac-item:has(.hizli-erisim-arac-check:disabled) {
+  opacity: 0.52;
+  cursor: default;
 }
 
 .hizli-erisim-arac-check {
   flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  margin: 0 0 0 1px;
+  cursor: pointer;
+  background-color: var(--bg-content) !important;
+  border: 1px solid rgba(var(--theme-color-rgb), 0.65);
+  border-radius: 4px;
+  appearance: none;
+  -webkit-appearance: none;
+  box-shadow: none !important;
+}
+
+.hizli-erisim-arac-check:checked {
+  border-color: var(--theme-color);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ff2b2b' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E") !important;
+  background-size: 12px 12px;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.hizli-erisim-arac-check:disabled {
+  cursor: default;
+}
+
+.hizli-erisim-arac-label {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--txt);
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .hizli-erisim-arac-plate {
-  font-size: 13px;
+  flex-shrink: 0;
+  white-space: nowrap;
   letter-spacing: 0.4px;
 }
 
+.hizli-erisim-arac-sep {
+  flex-shrink: 0;
+  opacity: 0.9;
+}
+
+.hizli-erisim-arac-brand {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .hizli-erisim-empty {
-  color: #a0aec0;
+  width: 100%;
+  color: var(--form-label-color, #ffffff);
   font-size: 13px;
   padding: 12px 0;
+  text-align: center;
 }
 
 .hizli-erisim-limit-msg {
+  align-self: stretch;
+  width: 100%;
   color: var(--theme-color, #e11d48);
   font-size: 12px;
-  min-height: 16px;
-  margin-bottom: 8px;
+  margin-top: 8px;
+  text-align: center;
+}
+
+.hizli-erisim-limit-msg:empty {
+  display: none;
+  margin: 0;
 }
 
 .hizli-erisim-disabled .hizli-erisim-arac-list,
 .hizli-erisim-disabled .hizli-erisim-list-title {
   opacity: 0.45;
   pointer-events: none;
+}
+
+@media (max-width: 640px) {
+  .hizli-erisim-arac-item {
+    min-height: 32px;
+  }
 }
 
 /* 4. FOOTER (GÜÇLI KIRMIZI TEMA + AYRILIK) – yükseklik/padding ezilmesin */
