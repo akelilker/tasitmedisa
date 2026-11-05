@@ -553,8 +553,7 @@ box-sizing: border-box !important;
 /* Başlık tablosu ayrı; sticky gerekmez */
 #reports-modal #stok-list-container .stok-list-table thead th {
     position: relative;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.22);
-    padding-bottom: 6px;
+    border-bottom: none;
     background: var(--bg);
 }
 /* Muayene + Egzoz iki sütun: ekstra genişlik (tarih tam görünsün; egzoz sütunu 86px izi) */
@@ -748,8 +747,8 @@ gap: 4px;
 align-items: stretch;
 padding: 6px 2px 4px 2px;
 margin-bottom: 4px;
-border-bottom: 1px solid rgba(255, 255, 255, 0.22);
-box-shadow: 0 2px 0 0 var(--bg);
+border-bottom: none;
+box-shadow: none;
 backdrop-filter: none;
 -webkit-backdrop-filter: none;
 }
@@ -1082,6 +1081,32 @@ white-space: normal;
 @media (min-width: 641px) {
   #stok-list-container .stok-list-header-cell {
     white-space: normal;
+  }
+
+  /* Başlık: metin + ok aynı satırda, ikisi birden hücre ortasında. Ok alta inmez. */
+  #reports-modal #stok-list-container .stok-list-header-cell {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+  }
+  #reports-modal #stok-list-container .stok-list-header-cell .stok-header-text {
+    flex: 0 1 auto !important;
+    align-self: center !important;
+    width: auto !important;
+    max-width: 100% !important;
+    text-align: center !important;
+  }
+  #reports-modal #stok-list-container .stok-sortable-header .stok-header-text {
+    max-width: calc(100% - 12px) !important;
+  }
+  #reports-modal #stok-list-container .stok-sortable-header .stok-sort-icon {
+    position: static !important;
+    align-self: center !important;
+    flex: 0 0 auto !important;
+    transform: none !important;
   }
 
   #stok-list-container .stok-list-header-cell .stok-header-text {
@@ -1603,17 +1628,6 @@ padding-top: 0 !important;
 margin-bottom: 0 !important;
 overflow: visible;
 position: relative;
-}
-#stok-list-container .stok-list-top-controls::after {
-content: "";
-position: absolute;
-left: 0;
-right: 0;
-bottom: -5px;
-height: 1px;
-background: rgba(var(--theme-color-rgb), 0.42);
-z-index: 3;
-pointer-events: none;
 }
 #stok-list-container:has(.stok-list-top-controls) > .stok-list-container {
 margin-top: 0 !important; /* Sütun başlıkları üzerindeki boşluk 6px azaltıldı */
@@ -3042,14 +3056,16 @@ padding: 0 !important;
   hyphens: none !important;
 }
 #reports-modal #stok-list-container .stok-list-header-cell[data-col="sube"] {
-  display: grid !important;
-  place-items: center !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
   text-align: center !important;
 }
 #reports-modal #stok-list-container .stok-list-header-cell[data-col="sube"] .stok-header-text {
-  width: 100% !important;
+  width: auto !important;
+  max-width: calc(100% - 12px) !important;
+  white-space: nowrap !important;
   text-align: center !important;
-  justify-content: center !important;
 }
 
 /* Yazdır: sadece Excel ile aynı rapor tablosu görünsün (ekran görüntüsü değil) */

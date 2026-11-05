@@ -2313,7 +2313,7 @@
     window.handleStokSearch = (typeof window.debounce === 'function') ? window.debounce(handleStokSearchImpl, 200) : handleStokSearchImpl;
 
     // Yazdır – Excel ile aynı veriyi tablo olarak yazdırır (ekran görüntüsü değil)
-    const stokPrintHeaders = { sira:'No.', sube:'Şube', yil:'Yıl', marka:'Marka/Mod.', tasitTipi:'Taş. tip.', plaka:'Plaka', sanziman:'Şanz', km:'KM', sigorta:'Sig. bit.', kasko:'Kas. bit.', kaskoDegeri:'Kas. değ.', muayene:'Muayene', egzozMuayene:'Egzoz', kredi:'Hak M.', lastik:'Lastik', utts:'UTTS', takip:'Takip', tramer:'Tramer', boya:'Boya', kullanici:'Kullanıcı', tescil:'Tescil' };
+    const stokPrintHeaders = { sira:'No.', sube:'Şube', yil:'Yıl', marka:'Marka/Mod.', tasitTipi:'Taş. Tip.', plaka:'Plaka', sanziman:'Şanz', km:'KM', sigorta:'Sig. bit.', kasko:'Kas. bit.', kaskoDegeri:'Kas. değ.', muayene:'Muayene', egzozMuayene:'Egzoz', kredi:'Hak M.', lastik:'Lastik', utts:'UTTS', takip:'Takip', tramer:'Tramer', boya:'Boya', kullanici:'Kullanıcı', tescil:'Tescil' };
     /* Yazdır: marka/şube dengesi; marka geniş kalır, şube okunabilir pay alır */
     const stokPrintColumnWeights = {
         sira: 3,
@@ -2368,7 +2368,7 @@
         sube: 22,
         yil: 9,
         marka: 40,
-        tasitTipi: 12,
+        tasitTipi: 16,
         plaka: 12,
         sanziman: 12,
         km: 14,
