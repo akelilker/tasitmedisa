@@ -209,6 +209,24 @@ display: none;
 display: block;
 }
 
+/* İlk şube ekranı: boş alan varsa kart grubunu dikey ortala; liste görünümünü etkileme */
+#reports-modal .modal-body:not(:has(#stok-list-container .stok-list-top-controls)) {
+display: flex;
+flex-direction: column;
+}
+
+#reports-modal .modal-body #view-stok.active:not(:has(#stok-list-container .stok-list-top-controls)) {
+display: flex;
+flex: 1;
+min-height: 0;
+flex-direction: column;
+}
+
+#reports-modal .modal-body #view-stok.active:not(:has(#stok-list-container .stok-list-top-controls)) #stok-branch-grid {
+margin-top: auto;
+margin-bottom: auto;
+}
+
 @keyframes fadeIn {
 from {
 opacity: 0;

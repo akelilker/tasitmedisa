@@ -3192,6 +3192,18 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 }
 #vehicles-modal .modal-body::-webkit-scrollbar { display: none; }
 
+/* İlk şube ekranı: boş alan varsa kart grubunu dikey ortala; taşmada üstten başlayıp kaydırılabilir kalsın */
+#vehicles-modal:not(.has-vehicles-list-scroll) .modal-body {
+    display: flex;
+    flex-direction: column;
+}
+#vehicles-modal:not(.has-vehicles-list-scroll) #vehicles-modal-content {
+    width: 100%;
+    margin-top: auto;
+    margin-bottom: auto;
+    box-sizing: border-box;
+}
+
 /* Liste görünümü: scroll tek yüzeyde (modal-body, raporlar modalı ile aynı model); sütun başlığı sticky */
 #vehicles-modal.has-vehicles-list-scroll .modal-body {
     overflow-y: auto !important;
