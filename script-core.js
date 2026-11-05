@@ -1833,7 +1833,7 @@ document.addEventListener('DOMContentLoaded', () => {
 var MEDISA_MODULE_VERSIONS = {
   tasitlar: '20261020.2',
   notifications: '20261019.1',
-  raporlar: '20261020.1',
+  raporlar: '20261105.1',
   kayitJs: '20261015.3',
   kayitCss: '20261015.3',
   ayarlarJs: '20261031.1',
