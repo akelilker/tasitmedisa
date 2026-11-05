@@ -1998,9 +1998,7 @@
                         break;
                     }
 
-                    value = typeof window.getVehicleTypeLabel === 'function'
-                        ? window.getVehicleTypeLabel(String(tasitTipiText).toLowerCase())
-                        : tasitTipiText;
+                    value = getStokTasitTipiDisplayLabel({ vehicleType: tasitTipiText });
 
                     value = String(value).trim();
                     break;
