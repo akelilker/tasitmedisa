@@ -197,7 +197,7 @@
 
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20261106.1';
+  const MEDISA_TASITLAR_MODULE_VERSION = '20261107.1';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
@@ -859,6 +859,15 @@
   function getVSearchInput() { return document.getElementById('v-search-input'); }
   function getVSearchContainer() { return document.getElementById('v-search-container'); }
   function getVTransmissionDropdown() { return document.getElementById('v-transmission-dropdown'); }
+  /** Liste bağlamına geri dönüşte arama kutusunu önceki metinle açar (closeSearchBox'ın tersi). */
+  function restoreVehicleSearchBoxValue(query) {
+    const q = (typeof query === 'string') ? query : '';
+    const input = getVSearchInput();
+    // Kullanıcı kutuda aktif yazıyorsa değeri biz yazmayalım: imleç sona kaçar, büyük/küçük harf ezilir.
+    if (input && document.activeElement !== input) input.value = q;
+    const box = getVSearchContainer();
+    if (box && q) box.classList.add('open');
+  }
   function getVehiclesListViewportWidth() {
     var modalBody = document.querySelector('#vehicles-modal .modal-body');
     var scrollWrap = document.querySelector('#vehicles-modal .vehicles-list-scroll');
@@ -1967,6 +1976,10 @@
         if (typeof window.clearModalClosing === 'function') window.clearModalClosing(modal);
         closeSearchBox(true);
         syncVehiclesListModeClass(false);
+        // Taşıtlar ekranı tamamen kapandı: liste bağlamı (arşiv/şube/arama) burada biter.
+        // Böylece bildirimden açılan detayın geri oku eski bir arşiv/şube hedefine sapmaz.
+        lastListContext = null;
+        setTransmissionFilter('');
         // X butonu sadece modalı kapatır, geri gitme işlemi yapmaz
         // Geri butonları zaten mevcut
         // renderBranchDashboard() çağrılmaz
@@ -2060,6 +2073,32 @@
     }
   }
 
+  /**
+   * Genel arama sonuçlarında (search-global) sol geri oku şube seçimine bağlar.
+   * updateToolbar çağırmaz: arama input focus/value korunur.
+   * Detay geri oku (Arama Sonuçları) ile karışmaz; bu ok yalnızca liste toolbar'ındadır.
+   */
+  function syncSearchResultsToolbarBack() {
+    const { toolbar } = ensureToolbar();
+    if (!toolbar) return;
+    const left = toolbar.querySelector('.vt-left');
+    if (!left) return;
+    const isSearch = !!(DOM.vehiclesModalContent && DOM.vehiclesModalContent.dataset.renderScope === 'search-global');
+    if (!isSearch) {
+      if (left.querySelector('.universal-back-bar')) left.innerHTML = '';
+      return;
+    }
+    if (left.querySelector('.universal-back-btn')) return;
+    left.innerHTML = `
+                <div class="universal-back-bar universal-back-bar--toolbar">
+                    <button type="button" class="universal-back-btn" onclick="goBackToVehiclesDashboard()" aria-label="Şube Seçimi">
+                        <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        <span class="universal-back-label">Şube Seçimi</span>
+                    </button>
+                </div>
+        `;
+  }
+
   // --- 1. DASHBOARD RENDER ---
   /**
    * Ana şube dashboard grid'ini render eder
@@ -2078,6 +2117,12 @@
   window.renderBranchDashboard = function(forceRender = false, options = {}) {
     currentView = 'dashboard';
     activeBranchId = null;
+    // Şube seçim ekranı liste bağlamının gerçek sonudur: arşiv/şube/arama hedefi burada sıfırlanır.
+    // Tek şube otomatik geçişi hemen ardından yeni bağlam kurar.
+    // Liste bitti: şanzıman filtresi de owner setTransmissionFilter ile düşer; yeni genel aramaya sızmaz.
+    // Şube/arşiv ↔ detay turunda renderBranchDashboard çağrılmaz, filtre korunur.
+    lastListContext = null;
+    setTransmissionFilter('');
     closeSearchBox(true);
     updateToolbar('dashboard');
 
@@ -2177,10 +2222,13 @@
   // --- 2. LİSTE RENDER (Şube Detayı) ---
   window.openBranchList = function(branchId, branchName, options = {}) {
     currentView = 'list';
-    /* Varsayılan görünüm: tüm taşıtlar, şube ve tahsis edilmemiş listeleri liste (dar tablo) olarak açılır. */
-    viewMode = 'list';
+    /* Varsayılan görünüm: tüm taşıtlar, şube ve tahsis edilmemiş listeleri liste (dar tablo) olarak açılır.
+       Detaydan geri dönüşte options.viewMode ile kart/liste korunur. */
+    viewMode = (options.viewMode === 'card' || options.viewMode === 'list') ? options.viewMode : 'list';
     activeBranchId = branchId; // 'all', '', veya 'id'
-    lastListContext = { mode: 'branch', branchId: branchId, branchName: branchName };
+    /* Arama metni bağlamla taşınır: detaydan geri dönüşte son arama korunur. */
+    const restoredQuery = (typeof options.query === 'string') ? options.query : '';
+    lastListContext = { mode: 'branch', branchId: branchId, branchName: branchName, query: restoredQuery, viewMode: viewMode };
     isAutoSingleBranchVehiclesView = options.autoSingleBranch === true;
     invalidateVehicleListRenderCache();
     closeSearchBox(true);
@@ -2188,25 +2236,48 @@
       ? (typeof toTitleCase === 'function' ? toTitleCase(branchName) : branchName)
       : ((typeof toTitleCase === 'function' ? toTitleCase(branchName) : branchName) + ' Taşıtlar');
     updateToolbar('detail', displayTitle);
+    restoreVehicleSearchBoxValue(restoredQuery);
 
-    renderVehicles();
+    renderVehicles(restoredQuery);
   };
 
   /**
    * Arşiv görünümünü açar (satildiMi === true olan taşıtları listeler).
    * Toolbar'da "Geri" ile dashboard'a dönülür.
    */
-  window.openArchiveView = function() {
+  window.openArchiveView = function(options = {}) {
     currentView = 'list';
-    viewMode = 'list';
+    viewMode = (options.viewMode === 'card' || options.viewMode === 'list') ? options.viewMode : 'list';
     activeBranchId = '__archive__';
-    lastListContext = { mode: 'archive' };
+    const restoredQuery = (typeof options.query === 'string') ? options.query : '';
+    lastListContext = { mode: 'archive', query: restoredQuery, viewMode: viewMode };
     isAutoSingleBranchVehiclesView = false;
     invalidateVehicleListRenderCache();
     closeSearchBox(true);
     updateToolbar('detail', 'Arşiv');
-    renderVehicles();
+    restoreVehicleSearchBoxValue(restoredQuery);
+    renderVehicles(restoredQuery);
   };
+
+  /**
+   * Genel arama sonuç ekranı (mevcut renderScope='search-global' kontratı korunur).
+   * Detaydan geri dönüşte aynı sorgu ve filtrelerle yeniden çizilir.
+   * currentView='dashboard' bilinçli korunur: genel aramada toolbar dashboard kontratındadır
+   * ve closeSearchBox'ın search-global → renderBranchDashboard sözleşmesi buna bağlıdır.
+   * Toolbar burada yeniden kurulmaz; dashboard toolbar'ı arama girdisini elinde tutar (focus korunur).
+   */
+  function applyVehicleSearchResults(query) {
+    const rawQuery = (query == null) ? '' : String(query);
+    currentView = 'dashboard';
+    activeBranchId = 'all';
+    viewMode = 'list';
+    lastListContext = { mode: 'search', branchId: 'all', query: rawQuery, viewMode: 'list' };
+    renderVehicles(rawQuery);
+    if (DOM.vehiclesModalContent) DOM.vehiclesModalContent.dataset.renderScope = 'search-global';
+    syncVehiclesListModeClass(true);
+    restoreVehicleSearchBoxValue(rawQuery);
+    syncSearchResultsToolbarBack();
+  }
 
   /** Taşıt listesini şube/arama/filtre/sıralamadan sonra kart veya liste olarak render eder. @param {string} [query] Opsiyonel metin araması */
   function renderVehicles(query = '') {
@@ -2809,6 +2880,8 @@
       if (!returnToMonthlyTodoAfterVehicleDetail && lastListContext) {
         if (lastListContext.mode === 'archive') {
           backLabel = 'Arşiv';
+        } else if (lastListContext.mode === 'search') {
+          backLabel = 'Arama Sonuçları';
         } else if (lastListContext.branchId === 'all') {
           backLabel = 'Taşıtlar';
         } else {
@@ -3039,6 +3112,9 @@
     setVehiclesDetailUnderlay(false);
     window.currentDetailVehicleId = null;
     returnToMonthlyTodoAfterVehicleDetail = false;
+    // Tüm modallar kapanıp ana ekrana dönüldü: liste bağlamı (arşiv/şube/arama) burada sona erer.
+    lastListContext = null;
+    setTransmissionFilter('');
     // iOS: print() çağrısı iframe.onload/setTimeout ile geç tetiklenebiliyor.
     // Kullanıcı başka ekrana giderken bekleyen print'in çalışmaması için token iptal ediyoruz.
     window.__ruhsatPrintToken = null;
@@ -3085,9 +3161,14 @@
       return;
     }
     if (lastListContext && lastListContext.mode === 'archive') {
-      openArchiveView();
+      openArchiveView({ query: lastListContext.query || '', viewMode: lastListContext.viewMode });
+    } else if (lastListContext && lastListContext.mode === 'search') {
+      applyVehicleSearchResults(lastListContext.query || '');
     } else if (lastListContext && lastListContext.mode === 'branch') {
-      openBranchList(lastListContext.branchId, lastListContext.branchName);
+      openBranchList(lastListContext.branchId, lastListContext.branchName, {
+        query: lastListContext.query || '',
+        viewMode: lastListContext.viewMode
+      });
     } else {
       renderBranchDashboard();
     }
@@ -3133,6 +3214,8 @@
       if (currentView === 'dashboard' && modalContent && modalContent.dataset.renderScope === 'search-global') {
           renderBranchDashboard();
       } else if (currentView === 'list') {
+          // Kullanıcı aramayı bilinçli kapattı: bağlamdaki sorgu da düşer, geri dönüş boş listeyi getirir.
+          if (lastListContext) lastListContext.query = '';
           renderVehicles('');
       }
   };
@@ -3210,25 +3293,28 @@
   };
 
   var handleSearchImpl = function(val) {
+      // Debounce kuyruğunda bekleyen eski bir çağrı, kullanıcı aramayı kapattıktan/başka ekrana
+      // geçtikten sonra sonucu geri getirmesin: canlı girdi değeriyle eşleşmeyen çağrı düşer.
+      const rawVal = (val == null) ? '' : String(val);
+      const liveInput = getVSearchInput();
+      if (liveInput && String(liveInput.value || '') !== rawVal) return;
+
       if (searchMode === 'local') {
-          renderVehicles(val);
+          // Liste içi arama: sorgu, detaydan geri dönüş bağlamına yazılır.
+          if (lastListContext && (lastListContext.mode === 'branch' || lastListContext.mode === 'archive')) {
+              lastListContext.query = rawVal;
+          }
+          renderVehicles(rawVal);
       } else {
           // Genel arama: şube dashboard yerine mevcut kolonlu taşıt listesini filtreli göster.
-          if (!val) {
+          if (!rawVal) {
               renderBranchDashboard();
               return;
           }
-          const q = normalizeVehicleSearchText(val);
-          currentView = 'dashboard';
-          activeBranchId = 'all';
-          viewMode = 'list';
-          renderVehicles(q);
-          modalContent.dataset.renderScope = 'search-global';
-          syncVehiclesListModeClass(true);
+          applyVehicleSearchResults(normalizeVehicleSearchText(rawVal));
       }
   };
   window.handleSearch = (typeof window.debounce === 'function') ? window.debounce(handleSearchImpl, 200) : handleSearchImpl;
-
 
   // Şanzıman menüsünü dış tıklamada kapat – modal içi stopPropagation’ı aşmak için
   function onTransmissionCloseCheck(e) {
@@ -3357,8 +3443,16 @@
 
   window.toggleViewMode = function() {
       viewMode = (viewMode === 'card') ? 'list' : 'card';
+      if (lastListContext && (lastListContext.mode === 'branch' || lastListContext.mode === 'archive')) {
+          lastListContext.viewMode = viewMode;
+      }
+      // updateToolbar input'u yeniden kurar; sorguyu önce yakala.
+      const keptQuery = (getVSearchInput() && getVSearchInput().value)
+        || (lastListContext && lastListContext.query)
+        || '';
       updateToolbar('detail', document.querySelector('.active-branch-title')?.textContent || '');
-      renderVehicles(getVSearchInput()?.value || '');
+      restoreVehicleSearchBoxValue(keptQuery);
+      renderVehicles(keptQuery);
   };
 
   // --- VEHICLE DETAIL - NEW FUNCTIONS ---
