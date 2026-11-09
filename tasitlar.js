@@ -197,7 +197,7 @@
 
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20261109.1';
+  const MEDISA_TASITLAR_MODULE_VERSION = '20261109.2';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
@@ -867,7 +867,15 @@
     if (input && document.activeElement !== input) input.value = q;
     const box = getVSearchContainer();
     if (box && q) box.classList.add('open');
+    syncVehicleSearchClear();
   }
+  function syncVehicleSearchClear() {
+    const input = getVSearchInput();
+    const field = input && input.closest ? input.closest('.v-search-field') : null;
+    if (!field) return;
+    field.classList.toggle('has-value', !!(input.value && String(input.value).length));
+  }
+  window.syncVehicleSearchClear = syncVehicleSearchClear;
   function getVehiclesListViewportWidth() {
     var modalBody = document.querySelector('#vehicles-modal .modal-body');
     var scrollWrap = document.querySelector('#vehicles-modal .vehicles-list-scroll');
@@ -2004,6 +2012,11 @@
   function updateToolbar(mode, title = '') {
     const { toolbar } = ensureToolbar();
     if (!toolbar) return;
+    const vehicleSearchFieldHtml = ''
+      + '<div class="v-search-field">'
+      + '<input type="text" id="v-search-input" class="v-search-input" placeholder="Plaka, marka, kullan\u0131c\u0131 ara..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" oninput="handleSearch(this.value);syncVehicleSearchClear()">'
+      + '<button type="button" class="v-search-clear" onmousedown="event.preventDefault()" onclick="clearVehicleSearch(event)" aria-label="Aramay\u0131 temizle" title="Temizle">\u00D7</button>'
+      + '</div>';
 
     if (mode === 'dashboard') {
         // DASHBOARD MODU: Sağda Genel Arama, Şanzıman filtresi ve Arşiv (filtre butonu yok)
@@ -2011,7 +2024,7 @@
             <div class="vt-left"></div>
             <div class="vt-right">
                 <div id="v-search-container" class="v-search-container">
-                    <input type="text" id="v-search-input" class="v-search-input" placeholder="Plaka, marka, kullan\u0131c\u0131 ara..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" oninput="handleSearch(this.value)">
+                    ${vehicleSearchFieldHtml}
                 </div>
                 <button class="vt-icon-btn search-toggle-btn" onclick="toggleSearchBox('global')" title="Genel Arama">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg>
@@ -2047,7 +2060,7 @@
             </div>
             <div class="vt-right">
                 <div id="v-search-container" class="v-search-container">
-                    <input type="text" id="v-search-input" class="v-search-input" placeholder="Plaka, marka, kullan\u0131c\u0131 ara..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" oninput="handleSearch(this.value)">
+                    ${vehicleSearchFieldHtml}
                 </div>
                 <button class="vt-icon-btn search-toggle-btn" onclick="toggleSearchBox('local')" title="Ara">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg>
@@ -2121,13 +2134,16 @@
     // Tek şube otomatik geçişi hemen ardından yeni bağlam kurar.
     // Liste bitti: şanzıman filtresi de owner setTransmissionFilter ile düşer; yeni genel aramaya sızmaz.
     // Şube/arşiv ↔ detay turunda renderBranchDashboard çağrılmaz, filtre korunur.
+    const keepSearchOpen = options.keepSearchOpen === true;
     lastListContext = null;
-    setTransmissionFilter('');
-    closeSearchBox(true);
-    updateToolbar('dashboard');
+    if (!keepSearchOpen) {
+      setTransmissionFilter('');
+      closeSearchBox(true);
+      updateToolbar('dashboard');
+    }
 
     const branches = readBranches();
-    const allowSingleBranchBypass = options.allowSingleBranchBypass !== false;
+    const allowSingleBranchBypass = options.allowSingleBranchBypass !== false && !keepSearchOpen;
     const singleVisibleBranch = allowSingleBranchBypass ? getSingleVisibleVehicleBranch() : null;
     if (singleVisibleBranch) {
       openBranchList(singleVisibleBranch.id, singleVisibleBranch.name, { autoSingleBranch: true });
@@ -2204,6 +2220,10 @@
     lastDashboardRenderSignature = renderSignature;
     syncVehiclesListModeClass(false);
     fitVehicleTextBoxes(modalContent);
+    if (keepSearchOpen) {
+      syncSearchResultsToolbarBack();
+      syncVehicleSearchClear();
+    }
 
     /* Layout flex ile; kolon sayısı .branch-card width/flex ile belirlenir */
   };
@@ -3194,6 +3214,7 @@
       } else {
           box.classList.add('open');
           input.value = '';
+          syncVehicleSearchClear();
           /* iOS: odak aynı kullanıcı hareketinde (büyüteç tıkı) verilmeli; gecikme klavyeyi kaçırabiliyor */
           try { input.focus({ preventScroll: true }); } catch (e) { try { input.focus(); } catch (e2) {} }
           setTimeout(function() {
@@ -3202,11 +3223,32 @@
       }
   };
 
+  window.clearVehicleSearch = function(ev) {
+      if (ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
+      }
+      const input = getVSearchInput();
+      if (!input) return;
+      input.value = '';
+      syncVehicleSearchClear();
+      if (searchMode === 'local') {
+        if (lastListContext && (lastListContext.mode === 'branch' || lastListContext.mode === 'archive')) {
+          lastListContext.query = '';
+        }
+        renderVehicles('');
+      } else if (modalContent && modalContent.dataset.renderScope === 'search-global') {
+        renderBranchDashboard(false, { keepSearchOpen: true });
+      }
+      try { input.focus({ preventScroll: true }); } catch (e) { try { input.focus(); } catch (e2) {} }
+  };
+
   window.closeSearchBox = function(silent) {
       const box = getVSearchContainer();
       if (box) box.classList.remove('open');
       const input = getVSearchInput();
       if (input) input.value = '';
+      syncVehicleSearchClear();
 
       if (silent === true) return;
 

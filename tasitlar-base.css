@@ -3077,6 +3077,13 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     width: 360px;
     max-width: min(360px, calc(100vw - 120px)); /* Büyüteç+vites+liste ikonları (≈120px) her zaman görünsün, taşma/kesilme olmasın */
 }
+.v-search-field {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+    height: 32px;
+    overflow: hidden;
+}
 .v-search-container .v-search-input {
     flex: 1;
     min-width: 0;
@@ -3094,6 +3101,42 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     transition: border-color 0.2s;
     height: 32px;
     box-sizing: border-box;
+}
+.v-search-field.has-value .v-search-input {
+    padding-right: 28px;
+}
+.v-search-clear {
+    display: none;
+    position: absolute;
+    right: 4px;
+    top: 6px;
+    width: 20px;
+    height: 20px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    color: var(--theme-color, #d40000);
+    font-size: 18px;
+    line-height: 20px;
+    text-align: center;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+}
+.v-search-field.has-value .v-search-clear {
+    display: block;
+}
+.v-search-clear:hover,
+.v-search-clear:focus,
+.v-search-clear:active {
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    color: var(--theme-color, #d40000);
+    outline: none;
 }
 .v-search-input:focus {
     border-color: var(--theme-color);
