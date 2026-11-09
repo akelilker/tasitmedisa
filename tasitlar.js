@@ -197,7 +197,7 @@
 
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20261107.1';
+  const MEDISA_TASITLAR_MODULE_VERSION = '20261109.1';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
@@ -1858,7 +1858,7 @@
       toolbar.className = 'vehicles-toolbar';
     }
 
-    if (toolbar.parentElement !== modal || toolbar.previousElementSibling !== header || toolbar.nextElementSibling !== modalBody) {
+    if (toolbar.parentElement !== header.parentElement || toolbar.previousElementSibling !== header || toolbar.nextElementSibling !== modalBody) {
       header.after(toolbar);
     }
 
