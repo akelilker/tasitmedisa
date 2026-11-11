@@ -2124,6 +2124,23 @@ body.dashboard-page.driver-feedback-modal-open #app-footer{
   color: var(--txt);
 }
 
+#history-modal .history-vehicle-trigger{
+  width: auto;
+  flex: 0 1 auto;
+  justify-content: flex-start;
+  padding: 4px 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  text-align: left;
+}
+
+#history-modal .history-vehicle-trigger:hover,
+#history-modal .history-vehicle-trigger:focus-visible{
+  border: 0;
+  box-shadow: none;
+}
+
 /* Plaka listesi: tema uyumlu koyu arka plan */
 .history-vehicle-dropdown{
   position: absolute;
