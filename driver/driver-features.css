@@ -2097,8 +2097,8 @@ body.dashboard-page.driver-feedback-modal-open #app-footer{
   font-size: 13px;
   font-weight: 800;
   letter-spacing: 0.2px;
-  line-height: 1.05;
-  transform: translateY(1px);
+  line-height: 1.18;
+  vertical-align: middle;
   white-space: nowrap;
 }
 
@@ -2106,7 +2106,8 @@ body.dashboard-page.driver-feedback-modal-open #app-footer{
   color: rgba(222, 229, 238, 0.82);
   font-size: 12px;
   font-weight: 650;
-  line-height: 1.12;
+  line-height: 1.18;
+  vertical-align: middle;
 }
 
 #history-modal .history-vehicle-trigger.history-all-selected .history-vehicle-trigger-text{
