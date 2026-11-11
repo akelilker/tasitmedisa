@@ -168,7 +168,10 @@ successMsg = document.getElementById('bakim-success-' + vid);
 if (type === 'bakim') {
 guncelKm = await resolveGuncelKmForBakim(guncelKm, ((document.getElementById('bakim-km-' + vid) || {}).value || '').trim());
 }
-if (btnBildir) btnBildir.disabled = true;
+if (btnBildir) {
+btnBildir.disabled = true;
+btnBildir.textContent = 'Kaydediliyor...';
+}
 if (btnVazgec) btnVazgec.disabled = true;
 var payload = {
 arac_id: parseInt(vid, 10),
@@ -269,7 +272,10 @@ window.medisaInfo(data.message || 'Kayıt yapılamadı.');
 console.error('Bildirim kaydetme hatası:', err);
 window.medisaInfo('Bağlantı hatası.');
 } finally {
-if (btnBildir) btnBildir.disabled = false;
+if (btnBildir) {
+btnBildir.disabled = false;
+btnBildir.textContent = 'Bildir';
+}
 if (btnVazgec) btnVazgec.disabled = false;
 }
 };
@@ -298,7 +304,10 @@ const formContent = document.querySelector('#km-block-' + vid + ' .driver-km-for
 const successMsg = document.getElementById('km-success-' + vid);
 const errorEl = document.getElementById('km-error-' + vid);
 if (errorEl) { errorEl.classList.remove('show'); errorEl.textContent = ''; }
-if (btnBildir) btnBildir.disabled = true;
+if (btnBildir) {
+btnBildir.disabled = true;
+btnBildir.textContent = 'Kaydediliyor...';
+}
 if (btnVazgec) btnVazgec.disabled = true;
 try {
 const response = await fetch(p.API_BASE + 'driver_save.php', {
@@ -376,7 +385,10 @@ if (errorEl) { errorEl.textContent = data.message || 'Kayıt yapılamadı.'; err
 console.error('Km kaydetme hatası:', err);
 if (errorEl) { errorEl.textContent = 'Bağlantı hatası.'; errorEl.classList.add('show'); }
 } finally {
-if (btnBildir) btnBildir.disabled = false;
+if (btnBildir) {
+btnBildir.disabled = false;
+btnBildir.textContent = 'Bildir';
+}
 if (btnVazgec) btnVazgec.disabled = false;
 }
 };

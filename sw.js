@@ -1,7 +1,7 @@
 // Service Worker - Medisa Taşıt Yönetim Sistemi
 // Version 2.15 - Güvenli offline okuma kabuğu
 
-const CACHE_VERSION = 'medisa-v2.413';
+const CACHE_VERSION = 'medisa-v2.414';
 // Statik/sayfa isteklerinde ağ bu sürede cevap vermezse önbellek kullanılır (API/PHP hariç)
 const NETWORK_TIMEOUT_MS = 3500;
 // Raporlar modülü (raporlar.js / raporlar.css): ana shell cache'inden ayrı; MEDISA_MODULE_VERSIONS.raporlar ile senkron tut
@@ -52,15 +52,15 @@ const CACHE_FILES = [
   '/driver/dashboard.html',
   '/driver/manifest.json?v=20260506-1',
   '/driver/driver-shell.css?v=20260925.7',
-  '/driver/driver-script.js?v=20261020.1',
+  '/driver/driver-script.js?v=20261112.1',
   '/driver/driver-login.js?v=20261020.1',
   '/driver/driver-dashboard-core.js?v=20261020.1',
-  '/driver/driver-features.css?v=20261016.2',
+  '/driver/driver-features.css?v=20261112.1',
   '/driver/driver-feature-history.js?v=20261014.2',
   '/driver/driver-feature-documents.js?v=20261016.1',
   '/driver/driver-feature-feedback.js?v=20260813.1',
   '/driver/driver-feature-password.js?v=20260913.2',
-  '/driver/driver-feature-actions.js?v=20261016.1'
+  '/driver/driver-feature-actions.js?v=20261112.1'
 ];
 // Raporlar modülü ayrı önbellekte tutulur (CACHE_RAPORLAR_VERSION)
 const CACHE_RAPORLAR_FILES = [
