@@ -2652,9 +2652,13 @@ body.dashboard-page.driver-history-or-edit-modal-open #app-footer .status.status
     white-space: nowrap !important;
     overflow: hidden !important;
     text-overflow: clip !important;
-    padding-left: 18px !important;
-    padding-right: 18px !important;
-    font-size: calc(14px - 1pt) !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    font-size: clamp(11.5px, calc(5.2vw - 5px), 16px) !important;
+  }
+  /* Çoklu taşıt: plaka metni kırmızı ok alanına girmesin (ok görünürken sağda yer ayrılır) */
+  .dashboard-page .driver-plate-dropdown-row:has(.driver-plate-trigger:not([style*="none"])) .driver-current-plaka{
+    padding-right: 13px !important;
   }
   .dashboard-page .driver-plate-dropdown-row .driver-plate-trigger{
     right: -8px !important;
