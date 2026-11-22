@@ -267,7 +267,7 @@ test('iOS kart İndir ikonu görünür; tıklama canonical viewer Kaydet/Paylaş
 test('pin/SW chain', function() {
   assert.match(tasitlar, /MEDISA_TASITLAR_MODULE_VERSION = '20261109\.2'/);
   assert.match(scriptCore, /tasitlar:\s*'20261109\.2'/);
-  assert.match(sw, /CACHE_VERSION = 'medisa-v2\.418'/);
+  assert.match(sw, /CACHE_VERSION = 'medisa-v2\.419'/);
   assert.match(read('index.html'), /script-core\.js\?v=20261112\.1/);
   const indexHtml = read('index.html');
   assert.match(indexHtml, /classList\.add\('medisa-ios27-pwa'\)/);
@@ -275,6 +275,13 @@ test('pin/SW chain', function() {
   assert.match(read('script-core.js'), /safariVer > osVer/);
   assert.match(read('script-core.js'), /isMedisaIOS27PWA[\s\S]{0,220}isIOSPWA\(\)/);
   assert.match(read('index.html'), /style-core\.css\?v=20261116\.1/);
+});
+
+test('iOS 27+ status-bar meta gate (iOS 26 black-translucent korunur)', function() {
+  ['index.html', 'driver/index.html', 'driver/dashboard.html'].forEach(function(name) {
+    const html = read(name);
+    assert.match(html, /<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">\s*<script>[^<]*if\(major<27\)return;[^<]*removeChild\(m\)/);
+  });
 });
 
 console.log('');
