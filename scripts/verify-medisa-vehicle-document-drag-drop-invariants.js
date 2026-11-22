@@ -120,7 +120,7 @@ test('modül sürümü ve script-core pin tasitlar değişimine hizalıdır', fu
   assert.match(read('script-core.js'), /tasitlar:\s*'20261109\.2'/);
   assert.match(read('index.html'), /script-core\.js\?v=20261112\.1/);
   assert.match(read('sw.js'), /'\/script-core\.js\?v=20261112\.1'/);
-  assert.match(read('sw.js'), /CACHE_VERSION = 'medisa-v2\.419'/);
+  assert.match(read('sw.js'), /CACHE_VERSION = 'medisa-v2\.420'/);
   assert.match(read('index.html'), /style-core\.css\?v=20261116\.1/);
   assert.match(read('script-core.js'), /ayarlarJs:\s*'20261031\.1'/);
 });

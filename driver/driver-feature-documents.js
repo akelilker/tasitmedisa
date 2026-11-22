@@ -254,6 +254,7 @@ ev.preventDefault();
 ev.stopPropagation();
 const documentType = btn.getAttribute('data-upload-type') || '';
 if (!documentType) return;
+closeDriverDocumentsModal();
 openDriverPolicyUploadModal(documentType, vehicleId, 'documents');
 });
 });
