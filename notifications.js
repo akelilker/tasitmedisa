@@ -971,6 +971,10 @@
       }
     });
 
+    var k2BranchNameMap = {};
+    readBranches().forEach(function(b) {
+      if (b && b.id != null) k2BranchNameMap[String(b.id)] = String(b.name || '').trim();
+    });
     window.MedisaVehicleNotificationDomain.getK2BelgeGroups().forEach(function(group) {
       var k2Date = String(group && group.expiryDate || '').trim();
       if (!k2Date) return;
@@ -981,10 +985,16 @@
       });
       if (!visible) return;
       var wK2 = checkK2BelgesiWarnings(k2Date);
+      var k2BranchLabel = (Array.isArray(group.branchIds) ? group.branchIds : [])
+        .map(function(id) { return k2BranchNameMap[String(id)] || ''; })
+        .filter(Boolean)
+        .map(function(name) { return toTitleCase(name); })
+        .join(', ');
       var k2Task = {
         id: 'k2|' + String(group.id),
         k2GroupId: String(group.id),
         branchIds: Array.isArray(group.branchIds) ? group.branchIds.slice() : [],
+        k2BranchLabel: k2BranchLabel,
         vehicle: { id: '', plate: 'Şirket Evrakı', brandModel: 'K2 Belgesi' },
         type: 'K2 Belgesi',
         field: 'k2BelgesiExpiryDate',
@@ -2492,13 +2502,19 @@
             const isOrangeDateSeverity = notif.warningClass === 'date-warning-orange';
             const shouldKeepDateSeverityClass = isRedDateSeverity || isOrangeDateSeverity;
 
+            let k2Subject = 'K2 Belgesi';
+            if (notif.type === 'k2' && notif.k2BranchLabel) {
+              const k2Label = String(notif.k2BranchLabel);
+              const k2BranchWord = /şube/i.test(k2Label) ? '' : (k2Label.indexOf(',') !== -1 ? ' Şubeleri' : ' Şubesi');
+              k2Subject = `${k2Label}${k2BranchWord} K2 Belgesi`;
+            }
             let messageText = '';
             if (notif.type === 'k2' && notif.days < 0) {
-                messageText = `K2 Belgesi Tarihi ${Math.abs(notif.days)} Gün Geçti.`;
+                messageText = `${k2Subject} Tarihi ${Math.abs(notif.days)} Gün Geçti.`;
             } else if (notif.type === 'k2' && notif.days === 0) {
-                messageText = 'K2 Belgesi Tarihi Bugün Bitiyor.';
+                messageText = `${k2Subject} Tarihi Bugün Bitiyor.`;
             } else if (notif.type === 'k2') {
-                messageText = `K2 Belgesi Tarihi ${notif.days} Gün Sonra Bitecek.`;
+                messageText = `${k2Subject} Tarihi ${notif.days} Gün Sonra Bitecek.`;
             } else if (notif.days <= 0 && notif.type === 'kasko') {
                 messageText = `${notif.plate} Plakalı Taşıtın Kasko Süresi Bitmiştir.`;
             } else if (notif.type === 'egzoz' && notif.missing) {

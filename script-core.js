@@ -1832,7 +1832,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // tasitlar loader (bu nesne) ile MEDISA_TASITLAR_MODULE_VERSION kendi aralarında eşit kalmalıdır.
 var MEDISA_MODULE_VERSIONS = {
   tasitlar: '20261109.2',
-  notifications: '20261019.1',
+  notifications: '20261112.1',
   raporlar: '20261106.1',
   kayitJs: '20261015.3',
   kayitCss: '20261015.3',
