@@ -51,6 +51,7 @@
     <!-- iOS PWA -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <script>/* iOS 27+: black-translucent kaldırılır (iOS üst 62px'i kendisi tutuyor; meta yokken çerçeve saatin hemen altından 0'dan başlar). iOS 26 ve altı değişmez. */(function(){var ua=navigator.userAgent||'';if(!/iPad|iPhone|iPod/.test(ua))return;var v=ua.match(/Version\/(\d+)/),o=ua.match(/OS (\d+)_/);var major=Math.max(v?+v[1]:0,o?+o[1]:0);if(major<27)return;var m=document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');if(m&&m.parentNode)m.parentNode.removeChild(m);})();</script>
     <meta name="apple-mobile-web-app-title" content="Taşıt Yönetim Sistemi">
 
     <!-- Critical CSS: FOUC/CLS için minimal kurallar; tam footer/modal token ve kurallar style-core.css (pin bu shell HTML owner'ında; tasitlar lazy sürümünden bağımsız) -->
