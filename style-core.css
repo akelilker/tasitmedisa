@@ -4444,3 +4444,37 @@ html.medisa-ios27-pwa body.dashboard-page .driver-header-fixed {
     font-size: 12.5px !important;
   }
 }
+
+/* --- Admin Kullanıcı Raporları (mobil): style-core .universal-back-btn display !important,
+   toolbar geri butonunun [hidden]/display:none kuralını eziyordu → mobilde çift geri. Mobilde tek geri: liste içi bar. --- */
+@media (max-width: 768px) {
+  body.admin-report-page #user-analytics-toolbar-back.universal-back-btn {
+    display: none !important;
+  }
+
+  /* Footer: ana uygulama gibi ekranın altında sabit; içerik altında kalmaz (container alt boşluğu = footer + safe-area) */
+  html body.admin-report-page #app-footer.admin-footer {
+    position: fixed !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100% !important;
+    max-width: 500px !important;
+    margin: 0 auto !important;
+    height: calc(var(--app-footer-real-height, 42px) + env(safe-area-inset-bottom, 0px)) !important;
+    min-height: calc(var(--app-footer-real-height, 42px) + env(safe-area-inset-bottom, 0px)) !important;
+    padding-top: 2px !important;
+    padding-bottom: env(safe-area-inset-bottom, 0px) !important;
+    z-index: 1000;
+  }
+
+  html body.admin-report-page .admin-app-container {
+    padding-bottom: calc(var(--app-footer-real-height, 42px) + env(safe-area-inset-bottom, 0px)) !important;
+  }
+}
+
+@media (max-width: 768px) and (display-mode: standalone) {
+  html body.admin-report-page #app-footer.admin-footer {
+    max-width: none !important;
+  }
+}

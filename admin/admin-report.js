@@ -1920,6 +1920,21 @@
     return period && period !== '-' ? period : 'KM kaydı yok';
   }
 
+  /* Şube filtreli görünümde yalnız o şubeye bağlı kullanıcıda şube adı tekrar edilmez */
+  function getUserAnalyticsRowBranchLabel(record) {
+    if (!record || !record.branchLabel || record.branchLabel === '-') return '';
+    if (userAnalyticsBranchId && userAnalyticsBranchId !== 'all' && record.branchLabel === getSelectedBranchLabel()) return '';
+    return record.branchLabel;
+  }
+
+  /* Mobil satır: plaka + marka tek satır (sağ sütun mobilde alta düşüp KM/dönem tekrarı yapıyordu) */
+  function getUserAnalyticsMobileVehicleLine(record) {
+    var hasVehicle = (record.activeVehicleCount || 0) > 0 || (record.relatedVehicleCount || 0) > 0;
+    if (!hasVehicle) return record.marka;
+    var plate = record.plaka + ((record.activeVehicleCount || 0) > 1 ? ' +' + (record.activeVehicleCount - 1) : '');
+    return record.marka ? plate + ' · ' + record.marka : plate;
+  }
+
   function buildMetricBadges(record) {
     var html = '<div class="user-analytics-metric-badges">';
     html += '<span class="metric-pill metric-road">' + escapeHtmlLocal(formatDistanceKm(record.totalDistanceKm)) + '</span>';
@@ -1977,7 +1992,7 @@
     var records = getFilteredUserAnalyticsRecords();
 
     var html = '<div class="user-analytics-list-shell">';
-    html += '<div class="universal-back-bar"><button type="button" class="universal-back-btn" id="user-analytics-back-to-branches" title="Geri Dön"><svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg><span class="universal-back-label">Şubelere Dön</span></button></div>';
+    html += '<div class="universal-back-bar"><button type="button" class="universal-back-btn" id="user-analytics-back-to-branches" title="Geri Dön"><svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg><span class="universal-back-label">Şubeler</span></button></div>';
     html += '<div class="user-analytics-statebar"><span class="user-analytics-state-label">' + escapeHtmlLocal(getSelectedBranchLabel()) + '</span><strong>' + records.length + ' Kullanıcı</strong></div>';
 
     if (!records.length) {
@@ -2000,12 +2015,18 @@
       records.forEach(function(record) {
         html += '<button type="button" class="kullanici-list-item user-analytics-list-item user-analytics-clickable" data-user-id="' + escapeHtmlLocal(record.id) + '">';
         html += '<div class="kullanici-list-item-left">';
-        var listAdSoyadDisplay = isMonthlyMobileViewport() ? formatAdSoyad(record.adSoyad) : capitalizeWords(record.adSoyad);
+        var listIsMobile = isMonthlyMobileViewport();
+        var listAdSoyadDisplay = listIsMobile ? formatAdSoyad(record.adSoyad) : capitalizeWords(record.adSoyad);
+        var listBranchLabel = getUserAnalyticsRowBranchLabel(record);
         html += '<div class="kullanici-list-item-name">' + escapeHtmlLocal(listAdSoyadDisplay) + '</div>';
-        html += '<div class="user-analytics-list-item-subtitle">' + escapeHtmlLocal(record.marka) + '</div>';
-        html += '<div class="user-analytics-list-item-meta"><span>' + escapeHtmlLocal(record.branchLabel) + '</span><span>' + escapeHtmlLocal(formatLastReportPeriod(record.lastReportPeriod)) + '</span></div>';
+        html += '<div class="user-analytics-list-item-subtitle">' + escapeHtmlLocal(listIsMobile ? getUserAnalyticsMobileVehicleLine(record) : record.marka) + '</div>';
+        html += '<div class="user-analytics-list-item-meta">' + (listBranchLabel ? '<span>' + escapeHtmlLocal(listBranchLabel) + '</span>' : '') + '<span>' + escapeHtmlLocal(formatLastReportPeriod(record.lastReportPeriod)) + '</span></div>';
         html += buildMetricBadges(record);
         html += '</div>';
+        if (listIsMobile) {
+          html += '</button>';
+          return;
+        }
         html += '<div class="kullanici-list-item-right">';
         html += '<div class="kullanici-list-item-plate">' + escapeHtmlLocal(record.plaka) + '</div>';
         html += '<div class="kullanici-list-item-brand">' + escapeHtmlLocal(formatDistanceKm(record.totalDistanceKm)) + '</div>';
@@ -2020,8 +2041,11 @@
         html += '<button type="button" class="card user-analytics-card user-analytics-clickable" data-user-id="' + escapeHtmlLocal(record.id) + '">';
         html += '<div class="card-plate">' + escapeHtmlLocal(capitalizeWords(record.adSoyad)) + '</div>';
         html += '<div class="card-brand-model">' + escapeHtmlLocal(record.marka) + '</div>';
-        html += '<div class="card-third-line">' + escapeHtmlLocal(record.plaka + ' · ' + record.branchLabel) + '</div>';
-        html += '<div class="user-analytics-card-summary"><span>' + escapeHtmlLocal(formatDistanceKm(record.totalDistanceKm)) + '</span><span>' + escapeHtmlLocal(record.kmReportCount) + ' dönem</span></div>';
+        var cardBranchLabel = getUserAnalyticsRowBranchLabel(record);
+        html += '<div class="card-third-line">' + escapeHtmlLocal(cardBranchLabel ? record.plaka + ' · ' + cardBranchLabel : record.plaka) + '</div>';
+        if (!isMonthlyMobileViewport()) {
+          html += '<div class="user-analytics-card-summary"><span>' + escapeHtmlLocal(formatDistanceKm(record.totalDistanceKm)) + '</span><span>' + escapeHtmlLocal(record.kmReportCount) + ' dönem</span></div>';
+        }
         html += buildMetricBadges(record);
         html += '</button>';
       });

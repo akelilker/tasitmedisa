@@ -41,19 +41,19 @@ test('birleşik script-core her iki modül sürümünü taşır ve yeni shell pi
     assert.doesNotMatch(read(name), /script-core\.js\?v=20261009\.1/);
     assert.doesNotMatch(read(name), /script-core\.js\?v=20261009\.2/);
   });
-  assert.match(index, /style-core\.css\?v=20261031\.2/);
+  assert.match(index, /style-core\.css\?v=20261116\.1/);
   assert.match(index, /data-manager\.js\?v=20261031\.1/);
   assert.doesNotMatch(index, /data-manager\.js\?v=20261009\.3/);
 });
 
 test('SW önbelleği shell pinleriyle birebir ve önceki 370 kimliğinden ayrılır', function() {
-  assert.match(sw, /CACHE_VERSION = 'medisa-v2\.417'/);
+  assert.match(sw, /CACHE_VERSION = 'medisa-v2\.418'/);
   assert.doesNotMatch(sw, /medisa-v2\.370/);
   assert.doesNotMatch(sw, /medisa-v2\.371/);
   assert.doesNotMatch(sw, /medisa-v2\.372/);
   assert.doesNotMatch(sw, /medisa-v2\.373/);
   assert.doesNotMatch(sw, /medisa-v2\.374/);
-  assert.match(sw, /'\/style-core\.css\?v=20261031\.2'/);
+  assert.match(sw, /'\/style-core\.css\?v=20261116\.1'/);
   assert.match(sw, /'\/script-core\.js\?v=20261112\.1'/);
   assert.match(sw, /'\/data-manager\.js\?v=20261031\.1'/);
 });
