@@ -692,6 +692,25 @@ body::-webkit-scrollbar,
 }
 
 @media (max-width: 640px) {
+  .medisa-preview-shell:not(.medisa-preview-shell--embedded) {
+    overflow-x: hidden;
+  }
+
+  .medisa-preview-shell:not(.medisa-preview-shell--embedded) .medisa-preview-shell-header {
+    flex-wrap: wrap;
+  }
+
+  .medisa-preview-shell:not(.medisa-preview-shell--embedded) .medisa-preview-shell-title {
+    flex-basis: 100%;
+    order: -1;
+  }
+
+  .medisa-preview-shell:not(.medisa-preview-shell--embedded) .medisa-preview-shell-actions {
+    flex: 1 1 auto;
+    flex-wrap: wrap;
+    min-width: 0;
+  }
+
   .medisa-preview-shell--embedded .medisa-preview-shell-header {
     margin-bottom: 8px;
     gap: 6px;

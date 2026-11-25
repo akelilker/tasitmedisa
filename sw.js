@@ -1,7 +1,7 @@
 // Service Worker - Medisa Taşıt Yönetim Sistemi
 // Version 2.15 - Güvenli offline okuma kabuğu
 
-const CACHE_VERSION = 'medisa-v2.420';
+const CACHE_VERSION = 'medisa-v2.421';
 // Statik/sayfa isteklerinde ağ bu sürede cevap vermezse önbellek kullanılır (API/PHP hariç)
 const NETWORK_TIMEOUT_MS = 3500;
 // Raporlar modülü (raporlar.js / raporlar.css): ana shell cache'inden ayrı; MEDISA_MODULE_VERSIONS.raporlar ile senkron tut
@@ -23,8 +23,8 @@ function getBase() {
 const CACHE_FILES = [
   '/',
   '/index.html',
-  '/style-core.css?v=20261116.1',
-  '/script-core.js?v=20261112.1',
+  '/style-core.css?v=20261125.1',
+  '/script-core.js?v=20261125.1',
   '/data-manager.js?v=20261031.1',
   '/data-service.js?v=20261014.2',
   '/portal-session.js?v=20260731.3',
@@ -36,9 +36,9 @@ const CACHE_FILES = [
   '/icon/medisa-round-pwa-192.png',
   '/icon/marker.png?v=20260421.1',
   // Lazy modüller (offline): URL'ler script-core.js MEDISA_MODULE_VERSIONS loader'ı ile birebir aynı olmalı
-  '/tasitlar.js?v=20261109.2',
-  '/tasitlar-base.css?v=20261109.2',
-  '/tasitlar-extra.css?v=20261109.2',
+  '/tasitlar.js?v=20261125.1',
+  '/tasitlar-base.css?v=20261125.1',
+  '/tasitlar-extra.css?v=20261125.1',
   '/tasitlar-yazici.js?v=20261014.2',
   '/notifications.js?v=20261112.1',
   '/notifications.css?v=20261112.1',

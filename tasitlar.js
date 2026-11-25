@@ -197,7 +197,7 @@
 
 
 (function() {
-  const MEDISA_TASITLAR_MODULE_VERSION = '20261109.2';
+  const MEDISA_TASITLAR_MODULE_VERSION = '20261125.1';
   window.__medisaTasitlarModuleReady = false;
   window.__medisaTasitlarModuleVersion = MEDISA_TASITLAR_MODULE_VERSION;
 
@@ -7198,6 +7198,7 @@
     var printBusy = false;
     var shareFallbackVisible = false;
     var hostIsIos = isIosCanonicalDocumentViewerHost();
+    var hostIsIosPwa = !!(typeof window.isIOSPWA === 'function' && window.isIOSPWA());
     var zoomLevel = 1;
     var MEDISA_VIEWER_MIN_ZOOM = 0.5;
     var MEDISA_VIEWER_MAX_ZOOM = 3;
@@ -7221,13 +7222,15 @@
       if (!shellApi) return;
       if (cachedEntry && cachedEntry.file) {
         shellApi.setActionState('share', {
-          label: 'Kaydet / Paylaş',
-          disabled: false
+          label: hostIsIosPwa ? 'Paylaş / Yazdır' : 'Kaydet / Paylaş',
+          disabled: false,
+          primary: hostIsIosPwa
         });
       } else {
         shellApi.setActionState('share', {
           label: 'Hazırlanıyor…',
-          disabled: true
+          disabled: true,
+          primary: hostIsIosPwa
         });
       }
     }
@@ -7477,6 +7480,10 @@
 
     function runPrintAction() {
       if (printBusy || isStale()) return;
+      if (hostIsIosPwa) {
+        shareCachedFile();
+        return;
+      }
       if (!hostIsIos) {
         // Desktop/masaüstü: mevcut authenticated orijinal belge + native yazdırma owner'ı korunur.
         openVehicleDocumentInNewTab(
@@ -7535,8 +7542,12 @@
         actions.push({ id: 'zoom-out', label: '−' });
         actions.push({ id: 'zoom-in', label: '+' });
       }
-      actions.push({ id: 'share', label: 'Hazırlanıyor…', disabled: true });
-      actions.push({ id: 'print', label: 'Yazdır', primary: true });
+      if (hostIsIosPwa) {
+        actions.push({ id: 'share', label: 'Hazırlanıyor…', disabled: true, primary: true });
+      } else {
+        actions.push({ id: 'share', label: 'Hazırlanıyor…', disabled: true });
+        actions.push({ id: 'print', label: 'Yazdır', primary: true });
+      }
       return actions;
     }
 
@@ -7544,6 +7555,7 @@
       id: 'medisa-ios-document-viewer-overlay',
       title: titleText,
       subtitle: 'Belge görüntüleyici',
+      showClose: !hostIsIos,
       actions: buildViewerActions(),
       panelClassName: 'medisa-preview-shell-panel--document-viewer',
       mountPanel: function(panel) {
